@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head/head'); %>
+</head>
+
+<body>
+        <%- include('../partials/header/header'); %>
+    <div class="container" style="padding-top: 70px;"></div>
+    <br>
+        <% if (userInfo.admin) { %>
+            <%- include('../partials/mainCharts/adminChartDemo'); %>
+        <% } else { %>
+            <%- include('../partials/mainCharts/userChartDemo'); %>
+        <% } %>
+    
+        <div class="d-block mx-auto mt-1 text-center bg-primary-light">    
+            <%- include('../partials/forms/formularioBuscarCliente'); %>
+            <%- include('../partials/data/dataClientSearch'); %>
+        </div>
+        <!-- ------------ Lista de Clientes ------------ -->
+        <section class="mx-auto align-items-start" style="width: 94%;">
+            <div class="row">
+                <div class="col-12">
+                    <hr>
+                    <h4 class="text-uppercase">Lista de Clientes</h4>
+                    <p>Departamento de Ingeniería Prodismo</p>
+                    <hr>
+                </div>
+            </div>
+        </section>
+        
+        <div class="d-block mx-auto mb-3 text-center w-75">
+            <%- include('../partials/data/dataClientList'); %>
+        </div>
+    <br>
+        
+    <footer>
+        <%- include('../partials/footer/footer'); %>
+    </footer>
+
+    <!--    scripts     -->
+    <script type="text/javascript" src="../../index.js"></script>
+    <script type="text/javascript" src="../../search.js"></script>
+    <script type="text/javascript" src="../../clock.js"></script>
+    <script type="text/javascript" src="../../expiresSession.js"></script>
+</body>
+</html>

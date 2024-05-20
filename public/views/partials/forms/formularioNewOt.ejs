@@ -1,0 +1,224 @@
+<div class="card mx-auto" style="width: 95vw;">
+    <div class="card card-body d-flex justify-content-center">
+        <div class="form-group col-12 mx-auto my-2 w-100 border px-5 py-1 text-white" style="background-color: #a3aeb4;">
+
+            <form id="formNewOt" action="/api/proyectos/oci" method="post" name="formNewOt">
+
+                <fieldset>
+                    <% if ( proyecto.length > 0 ) { 
+                        if (proyecto[0].project[0].oci.length == 1 && proyecto[0].project[0].oci[0].visible) { %>
+                            
+                            <h5 id="tituloForm"
+                                class="d-block mx-auto my-2 text-center text-dark">
+                                Agregar Nueva/s OT's a OCI # <strong><%= proyecto[0].project[0].oci[0].ociNumber %></strong> - Alias: "<%= proyecto[0].project[0].oci[0].ociAlias %>" <br> Proyecto: "<%= proyecto[0].project[0].projectName %>"
+                            </h5>
+                            <hr>
+                        <% } else { %>
+
+                            <h5 id="tituloForm"
+                                class="d-block mx-auto my-2 text-center text-dark">
+                                Agregar Nueva/s OT's a OCI # <strong class="bg-danger">(Seleccionar # OCI)</strong> - Alias: "Alias" <br> Proyecto: "<%= proyecto[0].project[0].projectName %>"
+                            </h5>
+                            <hr>
+                        <% }
+                    } %>
+                        <div class="row my-3">
+                            <div class="col-12">
+                                <% let j=0;
+                                if ( proyecto.length > 0 ) {
+                                    for ( let m = 0; proyecto.length > m; m++ ) { %>
+                                        <input class="form-control" type="hidden" name="projectIdHidden" id="projectIdHidden"
+                                            value="<%= proyecto[m]._id %>">
+                                        <input class="form-control" type="hidden" name="projectNameHidden" id="projectNameHidden"
+                                            value="<%= proyecto[0].project[0].projectName %>">
+                                        
+                                        <% var arrayOciVisibles = [];
+                                        for ( let k = 0; proyecto[m].project[j].oci.length > k; k++ ) {
+                                            if (proyecto[m].project[j].oci[k].visible) {
+                                                arrayOciVisibles.push(proyecto[m].project[j].oci[k])
+                                            }
+                                        }
+
+                                        if ( proyecto[m].project[j].oci.length >= 2 ) {
+                                            
+                                            for ( let k = 0; arrayOciVisibles.length > k; k++ ) { %>
+                                                <div class="form-check form-check-inline">
+                                                    <% if ( arrayOciVisibles[k].ociStatus ) { %>
+                                                        <label class="form-check-label" for="radioSelectedValue<%=k %>">OCI # <%= arrayOciVisibles[k].ociNumber %> - Alias: "<%= arrayOciVisibles[k].ociAlias %>"</label>
+                                                        <input class="form-check-input" 
+                                                            type="radio" 
+                                                            name="ociNumber" 
+                                                            id="radioSelectedValue<%= k %>"
+                                                            value="<%= arrayOciVisibles[k].ociNumber %>" 
+                                                            value2="<%= arrayOciVisibles[k].ociAlias %>"
+                                                            required>
+                                                    <% } else { %>
+                                                        <label class="form-check-label text-secondary" for="radioSelectedValue<%=k %>">OCI # <%= arrayOciVisibles[k].ociNumber %> - Alias: "<%= arrayOciVisibles[k].ociAlias %>"</label>
+                                                        <input class="form-check-input"
+                                                            type="radio"
+                                                            name="ociNumber"
+                                                            id="radioSelectedValue<%= k %>"
+                                                            value="<%= arrayOciVisibles[k].ociNumber %>"
+                                                            value2="<%= arrayOciVisibles[k].ociAlias %>"
+                                                            disabled>
+                                                    <% } %>
+                                                </div>
+
+                                            <% } %>
+                                                <input class="form-input" type="hidden" name="ociNumberK" id="ociNumberK" value="">
+                                                <input class="form-input" type="hidden" name="ociNumberHidden" id="ociNumberHidden" value="">    
+                                                <input class="form-input" type="hidden" name="ociAlias" id="ociAliasHidden" value="<%= arrayOciVisibles[k].ociAlias %>">
+                                        <% } else { %>
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label"
+                                                        for="radioSelectedValue0">OCI #<%= arrayOciVisibles[0].ociNumber %> - Alias: "<%= arrayOciVisibles[0].ociAlias %>"</label>
+
+                                                    <input class="form-check-input" 
+                                                        type="radio" 
+                                                        name="ociNumber"
+                                                        id="radioSelectedValue0"
+                                                        value="<%= arrayOciVisibles[0].ociNumber %>"
+                                                        value2="<%= arrayOciVisibles[0].ociAlias %>"
+                                                        checked>
+
+                                                    <input class="form-input" type="hidden" name="ociNumberId"
+                                                        id="ociNumberId0" value="<%=proyecto[m].project[j].oci[0]._id %>">
+                                                    <input class="form-input" type="hidden" name="ociNumberK" id="ociNumberK"
+                                                        value="0">
+                                                    <input class="form-input" type="hidden" name="ociNumberHidden" id="ociNumberHidden"
+                                                        value="<%= arrayOciVisibles[0].ociNumber %>">
+                                                    <input class="form-input" type="hidden" name="ociAlias" id="ociAliasHidden"
+                                                    value="<%= arrayOciVisibles[0].ociAlias %>">    
+                                                </div>
+                                        <% } 
+                                    }
+
+                                } else { %>
+                                    <span class="badge rounded-pill bg-danger text-white"> No hay datos cargados aún</span>
+                                <% } %>
+
+                            </div>
+
+                            <br>
+                        </div>
+
+                    <hr>
+
+                    <div class="row my-3">
+                        <div class="col-11">
+                            <div class="accordion" id="accordionPanelsStayOpenExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                                        <button class="accordion-button" id="buttonOne" title="Informacion OT" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOneForm"
+                                            aria-expanded="false" aria-controls="panelsStayOpen-collapseOneForm">
+                                            <strong>Información OT</strong>
+                                            
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapseOneForm" class="accordion-collapse collapse"
+                                        aria-labelledby="panelsStayOpen-headingOne">
+                                        <div class="accordion-body" id="div_body">
+                                            <div class="row my-2" id="otItemRow">
+                                                <div class="row">
+                                                    <strong>#1</strong>
+                                                </div>
+                                                <div class="col-1">
+                                                    <label for="otNumber" id="labelOtNumber">
+                                                        OT#                                                        
+                                                    </label>
+                                                    <input type="number" name="otNumber" id="otNumber"
+                                                        class="form-control mt-3" min="0" max="9999" placeholder="Número OT">
+                                                </div>
+                                                <div class="col-1">
+                                                    <label for="opNumber" id="labelOpNumber">
+                                                        OP#
+                                                    </label>
+                                                    <input type="number" name="opNumber" id="opNumber"
+                                                        class="form-control mt-3" min="0" max="9999" placeholder="Número OP">
+                                                </div>
+                                                <div class="col-2">
+                                                    <label for="opDescription" id="labelOpDescription">
+                                                        Descripción OP
+                                                    </label>
+                                                    <input type="text" name="opDescription" id="opDescription"
+                                                        class="form-control mt-3" placeholder="Descripcion OP">
+                                                </div>
+                                                <div class="col-1">
+                                                    <label for="otStatus" id="labelOtStatus">
+                                                        Status OT
+                                                    </label>
+                                                    <br>
+                                                    <div class="form-check form-switch d-inline-block mt-2">
+                                                        <input class="form-check-input mt-3" type="checkbox" id="otStatus"
+                                                            name="otStatus" aria-checked="true" style="cursor: pointer;"
+                                                            checked>
+                                                        <label class="form-check-label mt-2" for="otStatus">
+                                                            Activa
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-2">
+                                                    <label for="internoDiseno" id="labelInternoDiseno">
+                                                        Diseño seguido por
+                                                        <button type="button" title="Buscar Diseñador" id="searchDesignUser" class="btn btn-light rounded-circle ms-1">
+                                                            <i class="fa-solid fa-database"></i>
+                                                        </button>
+                                                    </label>
+                                                    <input type="text" name="internoDiseno" id="internoDiseno"
+                                                        class="form-control" placeholder="Diseño">
+                                                </div>
+                                                <div class="col-2">
+                                                    <label for="internoSimulacion" id="labelInternoSimulacion">
+                                                        Simulación seguida por
+                                                        <button type="button" title="Buscar Simulador" id="searchSimulationUser" class="btn btn-light rounded-circle ms-1">
+                                                            <i class="fa-solid fa-database"></i>
+                                                        </button>
+                                                    </label>
+                                                    <input type="text" name="internoSimulacion" id="internoSimulacion"
+                                                        class="form-control" placeholder="Simulación">
+                                                </div>
+                                                <div class="col-2">
+                                                    <label for="externoDiseno" id="labelExternoDiseno">
+                                                        Proveedor externo
+                                                    </label>
+                                                    <input type="text" name="externoDiseno" id="externoDiseno"
+                                                        class="form-control mt-3" placeholder="Proveedor">
+                                                </div>
+                                                <div class="col-1">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <button 
+                                    type="button"
+                                    title="Agregar nueva OT"
+                                    id="btnAddNewRow"
+                                    class="btn btn-primary rounded-circle me-2 my-2"
+                                    disabled>
+                                        <i class="fa-solid fa-plus-circle"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <% if ( proyecto.length > 0 ) { %>
+                        <input type="hidden" name="idHidden" id="idHidden" class="form-control" value="<%= userInfo.id %>" hidden>
+                        <input type="hidden" name="clientIdHidden" id="clientIdHidden" class="form-control" value="<%= proyecto[0].client[0]._id %>" hidden>
+                        <input type="hidden" name="otQuantity" id="otQuantity" class="form-control" value="1" hidden>
+                        <br>
+                    <% } %>
+                        <div class="d-flex justify-content-center my-2">
+                            <button type="button" title="Guardar" id="btnNewOt" class="btn btn-primary mx-auto">Guardar <i class="fa-solid fa-save"></i></button>
+                            <button type="reset" title="Reset" class="btn btn-danger mx-auto">Reset <i class="fa-solid fa-rotate-left"></i></button>
+                        </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>

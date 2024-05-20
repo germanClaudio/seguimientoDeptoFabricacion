@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head/head'); %>
+</head>
+
+<body>
+    <%- include('../partials/header/header'); %>
+           
+    <div class="container" style="padding-top: 70px;"></div>
+    <br>
+    
+        <section class="mx-auto" style="width: 94%;">
+            <div class="row">
+                <div class="col-12">
+                    <hr>
+                    <h4 class="text-uppercase">Actualizar o Eliminar Usuario <strong><%=usuario.name%> <%=usuario.lastName%></strong></h4>
+                    <p>Departamento de Ingeniería Prodismo</p>
+                    <hr>
+                </div>
+            </div>
+        </section>
+
+        <%- include('../partials/forms/formUpdateUser'); %>
+            <br>
+            <footer>
+                <%- include('../partials/footer/footer'); %>
+            </footer>
+
+            <!--    scripts     -->
+            <script type="text/javascript" src="../../../userDetail.js"></script>
+            <script type="text/javascript" src="../../../clock.js"></script>
+            <script type="text/javascript" src="../../../expiresSession.js"></script>
+</body>
+
+</html>

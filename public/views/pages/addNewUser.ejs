@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head/head'); %>
+</head>
+
+<body>
+    <%- include('../partials/header/header'); %>
+
+        <div class="container" style="padding-top: 70px;"></div>
+            <br>
+            <div class="collapse" id="collapseExample">
+                <%- include('../partials/forms/formularioUsers'); %>
+            </div>
+            <br>
+
+            <%- include('../partials/btnHeaderTop/btnHeaderTop-newUser'); %>
+
+            <section class="mx-auto" style="width: 94%;">
+                    <div class="row">
+                        <div class="col-12 text-left">
+                            <hr>
+                            <h4 class="text-uppercase">Lista de Usuarios</h4>
+                            <p>Departamento de Ingeniería Prodismo</p>
+                            <hr>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="d-block mx-auto px-5 mb-5 text-center w-100">
+                    <%- include('../partials/data/dataUsersTable'); %>
+                </div>
+                
+                <div class="d-block mx-auto my-2 pb-5 text-center">
+                    <!-- <a class="btn btn-primary my-2 me-5" href="/api/auth/index"><i class="fa-solid fa-home"
+                            aria-hidden="true"></i> Regresar al Home </a> -->
+                    <a class="btn btn-secondary my-1 mx-auto" href="#"> Ir arriba <i class="fa-solid fa-arrow-up"></i></a>
+                </div>
+                <br>
+                <footer>
+                    <%- include('../partials/footer/footer'); %>
+                </footer>
+                        <!--    scripts     -->
+                        <script type="text/javascript" src="../../../usuarios.js"></script>
+                        <script type="text/javascript" src="../../../clock.js"></script>
+                        <script type="text/javascript" src="../../../expiresSession.js"></script>
+                
+</body>
+
+</html>

@@ -1,0 +1,15 @@
+<% if (userInfo.admin) { %>
+        <div class="d-block mx-auto w-100 text-center alert alert-success mt-1" style="padding-top: 82px;"
+                role="alert" id="mostrarUserName">
+                <%= userInfo.name %>, <%= userInfo.lastName %> - <span id="mostrarRolUser" class="badge rounded-pill bg-primary">Admin</span>
+                <img id="avatarUser" class="img-fluid rounded-circle float-end me-5 my-auto" alt="Avatar" src="<%= userInfo.avatar %>" width="58px" height="58px">
+                <div class="d-none" id="userBanner_<%= userInfo._id %>"><%= userInfo._id %></div>
+        </div>
+<% } else { %>
+        <div class="d-block mx-auto w-100 text-center alert alert-success mt-1" style="padding-top: 82px;"
+                role="alert" id="mostrarUserName">
+                <%= userInfo.name %>, <%= userInfo.lastName %> - <span id="mostrarRolUser" class="badge rounded-pill bg-info text-dark">User</span>
+                <img id="avatarUser" class="img-fluid rounded-circle float-end me-5 my-auto" alt="Avatar" src="<%= userInfo.avatar %>" width="58px" height="58px">
+                <div class="d-none" id="<%= userInfo._id %>"></div>
+        </div>
+<% } %>

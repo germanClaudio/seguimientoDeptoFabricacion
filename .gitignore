@@ -1,0 +1,10 @@
+node_modules/
+
+error.log
+info.log
+warn.log
+.rest
+.env
+compose.yaml
+
+web-app-seguimiento-proyectos-793b60720f6d.json

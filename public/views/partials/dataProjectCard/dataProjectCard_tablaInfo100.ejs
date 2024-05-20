@@ -1,0 +1,489 @@
+<!-- --------- tabla Info al 100% ----------- -->
+<table id="tablaInfo100<%=k%>"
+    class="table-responsive align-middle col-5 border-end border-dark"
+    style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #aac">
+        <tr>
+            <th colspan="2" class="text-center">
+                INFO 100%
+                <button
+                    id="posBtnAddDataInfo100<%=k%>"
+                    type="button"
+                    name="btnInfo100"
+                    class="btn btn-small btn-success m-1"
+                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
+                    title="Agregar Datos"
+                    value="<%=k%>">
+                    <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                </button>
+            </th>
+        </tr>
+        <tr>
+            <th style="width:50vw" scope="col-1"
+                class="text-center pb-1"> LDM 100% | Rev
+            </th>
+            <th style="width:50vw" scope="col-1"
+                class="text-center pb-1"> Info 100% | Rev
+            </th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+
+        <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length>n; n++) {
+            if (proyecto[m].project[j].oci[k].otProject[n].visible) {
+
+                var arrRes100Ldm = [];
+                var valueArrayRes100Ldm = 0;
+                var arrResRevision100Ldm = [];
+                var arrResCreador100Ldm = [];
+                var arrResModificador100Ldm = [];
+                var arrResFecha100Ldm = [];
+                var arrResFechaMod100Ldm = [];
+
+                var arrRes100Info = [];
+                var valueArrayRes100Info = 0;
+                var arrResRevision100Info = [];
+                var arrResCreador100Info = [];
+                var arrResModificador100Info = [];
+                var arrResFecha100Info = [];
+                var arrResFechaMod100Info = [];
+
+                if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
+                    <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
+                        <% for (let q = 16; totalColDataInfo100 > q; q++) {
+                            if (q==16) { %>
+                                <!-- LDM 100% data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                        proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100.length > 0) {
+
+                                            for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100.length > i; i++) {
+                                                var pathToMongoDBOtInfo100 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100[i]
+                                                
+                                                if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100) {
+                                                    let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100.length)
+                                                    var res100Ldm = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100[largoArray-1].ldm100)
+                                                    var resRevision100Ldm = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100[largoArray-1].revisionLdm100
+                                                    
+                                                    if (i == 0) {
+                                                        arrRes100Ldm.push(pathToMongoDBOtInfo100.ldm100)
+                                                        arrResRevision100Ldm.push(pathToMongoDBOtInfo100.revisionLdm100)
+                                                    
+                                                    } else if (i >= 1 && pathToMongoDBOtInfo100.revisionLdm100 != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100[i-1].revisionLdm100) {
+                                                        arrRes100Ldm.push(pathToMongoDBOtInfo100.ldm100)
+                                                        arrResRevision100Ldm.push(pathToMongoDBOtInfo100.revisionLdm100)
+                                                    }
+                                                        arrResCreador100Ldm.push(pathToMongoDBOtInfo100.creator[0].username)
+                                                        arrResModificador100Ldm.push(pathToMongoDBOtInfo100.modificator[0].username)
+                                                        arrResFecha100Ldm.push(pathToMongoDBOtInfo100.timestamp)
+                                                        arrResFechaMod100Ldm.push(pathToMongoDBOtInfo100.modifiedOn)
+                                                        valueArrayRes100Ldm = parseInt(arrRes100Ldm.length-1)
+                                                                                    
+                                                } else {
+                                                    var res100Ldm = 0
+                                                    var resRevision100Ldm = 0
+                                                }
+                                            }
+
+                                            if (arrRes100Ldm.length == 1 ) {
+                                                var anteriorDisabled = "disabled"
+                                                var siguienteDisabled = "disabled"
+                                            } else if (arrRes100Ldm.length == arrResRevision100Ldm.length) {
+                                                var anteriorDisabled = ""
+                                                var siguienteDisabled = "disabled"
+                                            } else {
+                                                var anteriorDisabled = ""
+                                                var siguienteDisabled = "disabled"
+                                            }
+
+                                    } else {
+                                        var anteriorDisabled = "disabled"
+                                        var siguienteDisabled = "disabled"
+                                        var res100Ldm = 0
+                                        var resRevision100Ldm = 0
+                                        arrRes100Ldm.push(res100Ldm)
+                                        arrResRevision100Ldm.push(resRevision100Ldm)
+                                        valueArrayRes100Ldm = 0
+                                    } %>
+
+                                        <div id="btnAnteriorSiguiente100Info<%=k%>_<%=n%>_<%=q%>">
+                                            <button id="btnAnterior100Info<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnAnterior100Info"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm me-1"
+                                                title="Ver anterior"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrRes100Ldm %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes100Ldm %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision100Ldm %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreador100Ldm %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificador100Ldm %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFecha100Ldm %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMod100Ldm %>">
+
+                                            <span id="res100Ldm<%=k%>_<%=n%>_<%=q%>"
+                                                name="res100Ldm"
+                                                class="text-dark"
+                                                style="font-size: .9rem;"
+                                                valueCreador=""
+                                                valueFecha=""
+                                                valueModificador=""
+                                                valueFechaMod="">
+                                                <%= res100Ldm %>%
+                                            </span>
+                                            <% if (res100Ldm == 100) { %>
+                                                <i class="fa-solid fa-circle-check fa-lg"
+                                                    style="color: #0eb405;"
+                                                    aria-hidden="true">
+                                                </i>
+                                            <% } else if (res100Ldm == 0) { %>
+                                                <i class="fa-solid fa-spinner fa-lg fa-spin-pulse"
+                                                    style="color: #b60101f5;"
+                                                    aria-hidden="true">
+                                                </i>
+                                            <% } else { %>
+                                                <i class="fa-solid fa-person-digging fa-lg"
+                                                    style="color: #161085;"
+                                                    aria-hidden="true">
+                                                </i>
+                                            <% } %>
+                                            |
+                                            <span id="resRevision100Ldm<%=k%>_<%=n%>_<%=q%>"
+                                                name="resRevision100Ldm"
+                                                class="badge text-dark my-2"
+                                                style="cursor: help;"
+                                                valueRevision=""
+                                                valueCreador=""
+                                                valueFecha=""
+                                                valueModificador=""
+                                                valueFechaMod="">
+                                                <%= resRevision100Ldm %>
+                                            </span>
+                                            
+
+                                            <button id="btnSiguiente100Info<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnSiguiente100Info"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm ms-1"
+                                                title="Ver siguiente"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                </td>
+                            <% } else { %>
+                                <!-- Info 100 data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                        proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100.length > 0) {
+
+                                            for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100.length > i; i++) {
+                                                var pathToMongoDBOtInfo100 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100[i]
+
+                                                if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100) {
+                                                    let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100.length)
+                                                    var res100Info = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100[largoArray-1].info100)
+                                                    var resRevision100Info = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100[largoArray-1].revisionInfo100
+                                                    
+                                                    if (i == 0) {
+                                                        arrRes100Info.push(pathToMongoDBOtInfo100.info100)
+                                                        arrResRevision100Info.push(pathToMongoDBOtInfo100.revisionInfo100)
+                                                    
+                                                    } else if (i >= 1 && pathToMongoDBOtInfo100.revisionInfo100 != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100[i-1].revisionInfo100) {
+                                                        arrRes100Info.push(pathToMongoDBOtInfo100.info100)
+                                                        arrResRevision100Info.push(pathToMongoDBOtInfo100.revisionInfo100)
+                                                    }
+                                                        arrResCreador100Info.push(pathToMongoDBOtInfo100.creator[0].username)
+                                                        arrResModificador100Info.push(pathToMongoDBOtInfo100.modificator[0].username)
+                                                        arrResFecha100Info.push(pathToMongoDBOtInfo100.timestamp)
+                                                        arrResFechaMod100Info.push(pathToMongoDBOtInfo100.modifiedOn)
+                                                        valueArrayRes100Info = parseInt(arrRes100Info.length-1)
+                                                                                    
+                                                } else {
+                                                    var res100Info = 0
+                                                    var resRevision100Info = 0
+                                                }
+                                            }
+
+                                            if (arrRes100Info.length == 1 ) {
+                                                var anteriorDisabled = "disabled"
+                                                var siguienteDisabled = "disabled"
+                                            } else if (arrRes100Info.length == arrResRevision100Info.length) {
+                                                var anteriorDisabled = ""
+                                                var siguienteDisabled = "disabled"
+                                            } else {
+                                                var anteriorDisabled = ""
+                                                var siguienteDisabled = "disabled"
+                                            }
+
+                                    } else {
+                                        var anteriorDisabled = "disabled"
+                                        var siguienteDisabled = "disabled"
+                                        var res100Info = 0
+                                        var resRevision100Info = 0
+                                        arrRes100Info.push(res100Info)
+                                        arrResRevision100Info.push(resRevision100Info)
+                                        valueArrayRes100Info = 0
+                                    } %>
+
+                                        <div id="btnAnteriorSiguiente100Info<%=k%>_<%=n%>_<%=q%>">
+                                            <button id="btnAnterior100Info<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnAnterior100Info"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm me-1"
+                                                title="Ver anterior"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrRes100Info %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes100Info %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision100Info %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreador100Info %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificador100Info %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFecha100Info %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMod100Info %>">
+
+                                            <span id="res100Info<%=k%>_<%=n%>_<%=q%>"
+                                                name="res100Info"
+                                                class="text-dark"
+                                                style="font-size: .9rem;"
+                                                valueCreador=""
+                                                valueFecha=""
+                                                valueModificador=""
+                                                valueFechaMod="">
+                                                <%= res100Info %>%
+                                            </span>
+                                            <% if (res100Info == 100) { %>
+                                                <i class="fa-solid fa-circle-check fa-lg"
+                                                    style="color: #0eb405;"
+                                                    aria-hidden="true">
+                                                </i>
+                                            <% } else if (res100Info == 0) { %>
+                                                <i class="fa-solid fa-spinner fa-lg fa-spin-pulse"
+                                                    style="color: #b60101f5;"
+                                                    aria-hidden="true">
+                                                </i>
+                                            <% } else { %>
+                                                <i class="fa-solid fa-person-digging fa-lg"
+                                                    style="color: #161085;"
+                                                    aria-hidden="true">
+                                                </i>
+                                            <% } %>
+                                            |
+                                            <span id="resRevision100Info<%=k%>_<%=n%>_<%=q%>"
+                                                name="resRevision100Info"
+                                                class="badge text-dark my-2"
+                                                style="cursor: help;"
+                                                valueRevision=""
+                                                valueCreador=""
+                                                valueFecha=""
+                                                valueModificador=""
+                                                valueFechaMod="">
+                                                <%= resRevision100Info %>
+                                            </span>
+                                            
+
+                                            <button id="btnSiguiente100Info<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnSiguiente100Info"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm ms-1"
+                                                title="Ver siguiente"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+                <% } else { %>
+                    <tr class="pe-none" style="height: 7vh; background-color: #dedede;">
+                        <% for (let q = 16; totalColDataInfo100 > q; q++) {
+                            if (q==16) { %>
+                                <!-- LDM 100% data Inactivo-->
+                                <td class="text-center align-middle">
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                        proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100.length > 0) {
+
+                                            for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100.length > i; i++) {
+                                                if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100) {
+                                                    let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100.length)
+                                                    var res100Ldm = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100[largoArray-1].ldm1000)
+                                                    var resRevision100Ldm = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100[largoArray-1].revisionLdm100
+                                                    
+                                                    if (i == 0) {
+                                                        arrRes100Ldm.push(pathToMongoDBOtInfo100.ldm100)
+                                                        arrResRevision100Ldm.push(pathToMongoDBOtInfo100.revisionLdm100)
+                                                    
+                                                    } else if (i >= 1 && pathToMongoDBOtInfo100.revisionLdm100 != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100[i-1].revisionLdm100) {
+                                                        arrRes100Ldm.push(pathToMongoDBOtInfo100.ldm100)
+                                                        arrResRevision100Ldm.push(pathToMongoDBOtInfo100.revisionLdm100)
+                                                    }
+                                                    valueArrayRes100Ldm = parseInt(arrRes100Ldm.length-1)
+                                                                                    
+                                                } else {
+                                                    var res100Ldm = 0
+                                                    var resRevision100Ldm = 0
+                                                }
+                                            }
+
+                                            var res100Ldm = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100[0].ldm100
+
+                                    } else {
+                                        var res100Ldm = 0
+                                        var resRevision100Ldm = 0
+                                        arrRes100Ldm.push(res100Ldm)
+                                        arrResRevision100Ldm.push(resRevision100Ldm)
+                                        valueArrayRes100Ldm = 0
+                                    } %>
+
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrRes100Ldm %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes100Ldm %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision100Ldm %>">
+                                        
+                                        <span id="res100Ldm<%=k%>_<%=n%>_<%=q%>"
+                                            name="res100Ldm"
+                                            class="text-dark"
+                                            style="font-size: .9rem;"
+                                            valueCreador=""
+                                            valueFecha=""
+                                            valueModificador=""
+                                            valueFechaMod="">
+                                            <%= res100Ldm %>%
+                                        </span>
+                                        <% if (res100Ldm == 100) { %>
+                                            <i class="fa-solid fa-circle-check fa-lg"
+                                                style="color: #64b464;"
+                                                aria-hidden="true">
+                                            </i>
+                                        <% } else if (res100Ldm == 0) { %>
+                                            <i class="fa-solid fa-spinner fa-lg fa-spin"
+                                                style="color: #b47777;"
+                                                aria-hidden="true">
+                                            </i>
+                                        <% } else { %>
+                                            <i class="fa-solid fa-person-digging fa-lg"
+                                                style="color: #5d5b84;"
+                                                aria-hidden="true">
+                                            </i>
+                                        <% } %>
+                                        |
+                                        <span id="resRevision100Ldm<%=k%>_<%=n%>_<%=q%>"
+                                            name="resRevision100Ldm"
+                                            class="badge text-dark my-2"
+                                            style="cursor: help;"
+                                            valueRevision=""
+                                            valueCreador=""
+                                            valueFecha=""
+                                            valueModificador=""
+                                            valueFechaMod="">
+                                            <%= resRevision100Ldm %>
+                                        </span>
+                                </td>    
+
+                            <% } else { %>
+                                <!-- Info 100 data Inactivo-->
+                                <td class="text-center align-middle">
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                        proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100.length > 0) {
+
+                                            for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100.length > i; i++) {
+                                                if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100) {
+                                                    let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100.length)
+                                                    var res100Info = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100[largoArray-1].info100)
+                                                    var resRevision100Info = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100[largoArray-1].revisionInfo100
+                                                    
+                                                    if (i == 0) {
+                                                        arrRes100Info.push(pathToMongoDBOtInfo100.info100)
+                                                        arrResRevision100Info.push(pathToMongoDBOtInfo100.revisionInfo100)
+                                                    
+                                                    } else if (i >= 1 && pathToMongoDBOtInfo100.revisionInfo100 != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoInfo100[i-1].revisionInfo100) {
+                                                        arrRes100Info.push(pathToMongoDBOtInfo100.info100)
+                                                        arrResRevision100Info.push(pathToMongoDBOtInfo100.revisionInfo100)
+                                                    }
+                                                    valueArrayRes100Info = parseInt(arrRes100Info.length-1)
+                                                                                    
+                                                } else {
+                                                    var res100Info = 0
+                                                    var resRevision100Info = 0
+                                                }
+                                            }
+
+                                            var res100Info = pathToMongoDBOtInfo100.info100
+                                            
+
+                                    } else {
+                                        var anteriorDisabled = "disabled"
+                                        var siguienteDisabled = "disabled"
+                                        var res100Info = 0
+                                        var resRevision100Info = 0
+                                        arrRes100Info.push(res100Info)
+                                        arrResRevision100Info.push(resRevision100Info)
+                                        valueArrayRes100Info = 0
+                                    } %>
+
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrRes100Info %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes100Info %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision100Info %>">
+                                        
+                                        <span id="res100Info<%=k%>_<%=n%>_<%=q%>"
+                                            name="res100Info"
+                                            class="text-dark"
+                                            style="font-size: .9rem;"
+                                            valueCreador=""
+                                            valueFecha=""
+                                            valueModificador=""
+                                            valueFechaMod="">
+                                            <%= res100Info %>%
+                                        </span>
+                                        <% if (res100Info == 100) { %>
+                                            <i class="fa-solid fa-circle-check fa-lg"
+                                                style="color: #64b564;"
+                                                aria-hidden="true">
+                                            </i>
+                                        <% } else if (res100Info == 0) { %>
+                                            <i class="fa-solid fa-spinner fa-lg"
+                                                style="color: #b47777;"
+                                                aria-hidden="true">
+                                            </i>
+                                        <% } else { %>
+                                            <i class="fa-solid fa-person-digging fa-lg"
+                                                style="color: #5b5b84;"
+                                                aria-hidden="true">
+                                            </i>
+                                        <% } %>
+                                        |
+                                        <span id="resRevision100Info<%=k%>_<%=n%>_<%=q%>"
+                                            name="resRevision100Info"
+                                            class="badge text-dark my-2"
+                                            style="cursor: help;"
+                                            valueRevision=""
+                                            valueCreador=""
+                                            valueFecha=""
+                                            valueModificador=""
+                                            valueFechaMod="">
+                                            <%= resRevision100Info %>
+                                        </span>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+                <% }
+            }
+        } %>
+    </tbody>
+</table>

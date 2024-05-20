@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head/head'); %>
+</head>
+
+<body>
+    
+        <%- include('../partials/header/header'); %>
+    
+    <div class="container" style="padding-top: 70px;"></div>
+    <br>
+        <div class="collapse mt-5 mx-auto" id="collapseExample">
+            <%- include('../partials/forms/formularioNewOt', { k: data.k, m: data.m, j: data.j }); %>
+        </div>
+            
+            <div class="d-block m-auto my-1 text-center">
+                <%- include('../partials/btnHeaderTop/btnProjectSelectedDetail'); %>
+            </div>
+
+            <section class="mx-auto align-items-start" style="width: 95%;">
+                <div class="row">
+                    <div class="col-12">
+                        <hr>
+                        <h4 id="projectNameTitle" class="text-uppercase"></h4>
+                        <p>Departamento de Ingeniería Prodismo</p>
+                        <hr>
+                    </div>
+                </div>
+            </section>
+            <div id="updateCliente">
+            </div>
+            <%- include('../partials/data/dataProjectCard', { k: data.k, m: data.m, j: data.j, slide: data.slide}); %>
+                <br>
+                <footer>
+                    <%- include('../partials/footer/footer'); %>
+                </footer>
+
+                <!--    scripts     -->
+                <script type="text/javascript" src="../../../projectInfo.js"></script>
+                <%  if (proyecto[0].project[0].levelProject == 'aRiesgo') { %>
+                    <script type="text/javascript" src="../../../projectInfoR14.js"></script>
+                    <script type="text/javascript" src="../../../projectInfoProceso3d.js"></script>
+                    <script type="text/javascript" src="../../../projectInfoDisenoPrimera.js"></script>
+                    <script type="text/javascript" src="../../../projectInfoDisenoSegunda.js"></script>
+                    <script type="text/javascript" src="../../../projectInfo80.js"></script>
+                    <script type="text/javascript" src="../../../projectInfoSim0.js"></script>
+                <% } else if (proyecto[0].project[0].levelProject == 'paraCotizar') {%>
+                    <script type="text/javascript" src="../../../projectInfoR14.js"></script>
+                    <script type="text/javascript" src="../../../projectInfoProceso3d.js"></script>
+                <% } else {%>
+                    <script type="text/javascript" src="../../../projectInfoR14.js"></script>
+                    <script type="text/javascript" src="../../../projectInfoProceso3d.js"></script>
+                    <script type="text/javascript" src="../../../projectInfoDisenoPrimera.js"></script>
+                    <script type="text/javascript" src="../../../projectInfoDisenoSegunda.js"></script>
+                    <script type="text/javascript" src="../../../projectInfo80.js"></script>
+                    <script type="text/javascript" src="../../../projectInfo100.js"></script>
+                    <script type="text/javascript" src="../../../projectInfoSim0.js"></script>
+                    <script type="text/javascript" src="../../../projectInfoSim1.js"></script>
+                    <script type="text/javascript" src="../../../projectInfoSim2_3.js"></script>
+                    <script type="text/javascript" src="../../../projectInfoSim4Primera.js"></script>
+                    <script type="text/javascript" src="../../../projectInfoSim4Segunda.js"></script>
+                    <script type="text/javascript" src="../../../projectInfoSim5.js"></script>
+                <% } %>
+                <script type="text/javascript" src="../../../clock.js"></script>
+                <script type="text/javascript" src="../../../expiresSession.js"></script>
+
+</body>
+
+</html>

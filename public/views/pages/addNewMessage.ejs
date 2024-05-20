@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head/head'); %>
+</head>
+
+<body>
+        <%- include('../partials/header/header'); %>
+
+        <div class="container" style="padding-top: 70px;"></div>
+    <br>
+
+    <%- include('../partials/btnHeaderTop/btnHeaderTop-newMessage'); %>
+
+    <!-- ------------ Mensaje ------------ -->
+    <section class="mx-auto align-items-start" style="width: 94%;">
+        <div class="row">
+            <div class="col-12 text-left">
+                <hr>
+                <h4><strong><%= userInfo.name %></strong>, comunicate con otros miembros del equipo</h4>
+                <p>Departamento de Ingeniería Prodismo</p>
+                <hr>
+            </div>
+        </div>
+    </section>
+
+    <%- include('../partials/data/dataMsg'); %>
+        <br>
+
+        <div class="d-block mx-auto my-5 text-center">
+                <a class="btn btn-primary mb-5" href="/api/auth/index"><i class="icon-home" aria-hidden="true"></i> Volver al Home</a>
+        </div>
+        <br>
+        <%- include('../partials/forms/formularioChat'); %>
+    <br>
+               
+    <footer>
+        <%- include('../partials/footer/footer'); %>
+    </footer>
+
+<!--    scripts     -->
+<script type="text/javascript" src="../../../mensajes.js"></script>
+<script type="text/javascript" src="../../../clock.js"></script>
+<script type="text/javascript" src="../../../expiresSession.js"></script>
+
+</body>
+
+</html>

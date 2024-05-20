@@ -1,0 +1,66 @@
+        <!-- columna #1 datos de proyecto -->
+        <div class="col-1 mx-auto my-2">
+            <div class="top-0 start-100">
+                <img src="<%= proyecto[0].client[0].logo %>" class="img-fluid rounded mb-2"
+                alt="Logo Cliente" width="85px">
+                <div id="projectIdHidden" value="<%= proyecto[0].project[0].id %>" style="display: none;"></div>
+            </div>
+            <h6 class="card-title">
+                <%= proyecto[0].project[0].projectName %>
+            </h6>
+            <br>
+            <a href="/api/clientes/<%= proyecto[0].client[0].id %>">
+                <img src="<%= proyecto[0].project[0].imageProject %>" class="img-fluid rounded mb-2"
+                    alt="Imagen Proyecto" width="120px">
+            </a>
+            <p class="card-text">
+                <small>
+                    <strong class="mx-2">
+                        <%= proyecto[0].project[0].projectDescription %>
+                    </strong>
+                </small>
+            </p>
+            <% if (proyecto[0].project[0].levelProject == 'ganado') { %>
+                <span class="badge rounded-pill bg-success text-white">Ganado</span>
+            <% } else if (proyecto[0].project[0].levelProject == 'paraCotizar') { %>
+                <span class="badge rounded-pill bg-secondary text-warning">Para Cotizar</span>
+            <% } else { %>
+                <span class="badge rounded-pill bg-danger text-white">A riesgo</span>
+            <% } %>
+                <p class="card-text my-3">
+                    <small class="text-muted"> Prio:
+                        <span class="badge bg-dark text-white mx-2">
+                        <%= proyecto[0].project[0].prioProject %>
+                        </span>
+                    </small>
+                </p>
+
+            <% if (proyecto[0].project[0].statusProject) {
+                const status="Activo" %>
+                <span id="statusProjectBoolean" class="badge rounded-pill bg-primary text-white mx-2">
+                    <%= status %>
+                </span>
+            <% } else {
+                const status="Inactivo" %>
+                <span id="statusProjectBoolean" class="badge rounded-pill bg-danger text-white mx-2">
+                    <%= status %>
+                </span>
+            <% } %>
+                <br>
+                <p class="card-text my-3">
+                    <%= proyecto[0].project[0].codeProject %>
+                </p>
+                <br>
+                <p class="card-text">
+                    Cantidad de OCI's
+                        <% let ociTotalCount = 0 
+                            for ( let k=0; proyecto[0].project[0].oci.length> k; k++) {
+                                if (proyecto[0].project[0].oci[k].visible) {
+                                    ociTotalCount++
+                                }
+                            } %>
+                    <span id="ociTotalQty" class="badge rounded-pill bg-primary text-white mx-auto">
+                        <%= ociTotalCount %>
+                    </span>
+                </p>
+        </div>

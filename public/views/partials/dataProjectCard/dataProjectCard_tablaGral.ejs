@@ -1,0 +1,262 @@
+<!-- tabla general -->
+<table id="tablaGeneral<%=k%>"
+    name="tablaGeneral"
+    class="table-responsive align-middle col-3 border-end border-dark display"
+    style="font-size: 10pt">
+    <thead class="align-middle"
+        style="background-color: #ccc">
+        <tr>
+            <th colspan="5" class="text-center"> <div class="mb-3">GENERAL</div>
+            </th>
+        </tr>
+        <tr>
+            <th style="width:20vw" scope="col-1"
+                class="text-center pb-1"> Acciones </th>
+            <th style="width:10vw" scope="col-1"
+                class="text-center pb-1"> Status </th>
+            <th style="width:10vw" scope="col-1"
+                class="text-center pb-1"> OT# </th>
+            <th style="width:10vw" scope="col-1"
+                class="text-center pb-1"> OP# </th>
+            <th style="width:60vw" scope="col-1"
+                class="text-center pb-1"> Descriptivo </th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        
+        <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length > n; n++) {
+            if (proyecto[m].project[j].oci[k].otProject[n].visible) {
+                if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
+                    <tr id="rowSelected<%=k%>_<%=n%>" name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
+                        <td class="text-center align-middle">
+                            <% if ( userInfo.admin ) { %>
+                                <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
+                                    <input id="checkSelect<%=k%>_<%=n%>"
+                                        title="Cehckbox  OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
+                                        class="form-check-input my-auto me-2"
+                                        type="checkbox"
+                                        value=""
+                                        name="checkSelect">
+                                    <button id="btnEditOt<%=k%>_<%=n%>"
+                                        type="button"
+                                        class="btn btn-sm btn-light"
+                                        value="edit"
+                                        name="btnEditOt"
+                                        title="Editar OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button id="btnStatusOt<%=k%>_<%=n%>"
+                                        type="button"
+                                        class="btn btn-sm btn-light"
+                                        value="changeStatus"
+                                        name="btnStatusOt"
+                                        title="Cambiar status OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
+                                        <i class="fa-solid fa-power-off"></i>
+                                    </button>
+                                    <button id="btnDeleteOt<%=k%>_<%=n%>"
+                                        type="button"
+                                        class="btn btn-sm btn-light"
+                                        value="delete"
+                                        name="btnDeleteOt"
+                                        title="Eliminar OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            <% } else { %>
+                                <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
+                                    <input id="checkSelect<%=k%>_<%=n%>"
+                                        class="form-check-input my-auto me-2"
+                                        type="checkbox"
+                                        value=""
+                                        name="checkSelect">
+                                    <button id="btnEditOt<%=k%>_<%=n%>"
+                                        type="button"
+                                        class="btn btn-sm btn-light"
+                                        value="edit"
+                                        name="btnEditOt"
+                                        title="Editar OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button id="btnStatusOt<%=k%>_<%=n%>"
+                                        type="button"
+                                        class="btn btn-sm btn-light disabled"
+                                        value="changeStatus"
+                                        name="btnStatusOt"
+                                        title="Cambiar status OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;">
+                                        <i class="fa-solid fa-power-off"></i>
+                                    </button>
+                                    <button id="btnDeleteOt<%=k%>_<%=n%>"
+                                        type="button"
+                                        class="btn btn-sm btn-light disabled"
+                                        value="delete"
+                                        name="btnDeleteOt"
+                                        title="Eliminar OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            <% } %>
+                        </td>
+                        <!-- status OT -->
+                        <td class="text-center align-middle">
+                            <% if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
+                                <span id="lastOtStatus<%=k%>_<%=n%>"
+                                    class="badge rounded-pill bg-success text-white my-2">
+                                    Activo
+                                </span>
+                            <% } else { %>
+                                <span id="lastOtStatus<%=k%>_<%=n%>"
+                                    class="badge rounded-pill bg-danger text-white my-2">
+                                    Inactivo
+                                </span>
+                            <% } %>
+                        </td>
+                        <!-- OT Number -->
+                        <td class="text-center align-middle">
+                            <span id="lastOtNumber<%=k%>_<%=n%>"
+                                class="badge rounded-pill bg-dark text-white my-2">
+                                <%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>
+                            </span>
+                        </td>
+                        <!-- OP Number -->
+                        <td class="text-center align-middle">
+                            <span id="lastOpNumber<%=k%>_<%=n%>"
+                                class="badge rounded-pill bg-secondary text-white my-2">
+                                <%= proyecto[m].project[j].oci[k].otProject[n].opNumber %>
+                            </span>
+                        </td>
+                        <!-- op Description -->
+                        <td class="text-center align-middle">
+                            <small id="lastOpDescription<%=k%>_<%=n%>"
+                                class="text-dark my-2">
+                                <%= proyecto[m].project[j].oci[k].otProject[n].opDescription %>
+                            </small>
+                        </td>
+                    </tr>
+                <% } else { %>
+                    <tr style="height: 7vh; background-color: #dedede;" >
+                        <td class="text-center align-middle">
+                            <% if ( userInfo.admin) { %>
+                                <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
+                                    <input id="checkSelect<%=k%>_<%=n%>"
+                                        class="form-check-input my-auto me-2"
+                                        type="checkbox"
+                                        value=""
+                                        name="checkSelect"
+                                        disabled>
+                                    <button id="btnEditOt<%=k%>_<%=n%>"
+                                        type="button"
+                                        class="btn btn-sm btn-light"
+                                        value="edit"
+                                        name="btnEditOt"
+                                        title="Editar OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;"
+                                        disabled>
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button id="btnStatusOt<%=k%>_<%=n%>"
+                                        type="button"
+                                        class="btn btn-sm btn-light"
+                                        value="changeStatus"
+                                        name="btnStatusOt"
+                                        title="Cambiar status OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
+                                        <i class="fa-solid fa-power-off"></i>
+                                    </button>
+                                    <button id="btnDeleteOt<%=k%>_<%=n%>"
+                                        type="button"
+                                        class="btn btn-sm btn-light"
+                                        value="delete"
+                                        name="btnDeleteOt"
+                                        title="Eliminar OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;"
+                                        disabled>
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            <% } else { %>
+                                <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
+                                    <input id="checkSelect<%=k%>_<%=n%>"
+                                        class="form-check-input my-auto me-2"
+                                        type="checkbox"
+                                        value=""
+                                        name="checkSelect"
+                                        style="background-color: #575757;"
+                                        disabled>
+                                    <button id="btnEditOt<%=k%>_<%=n%>"
+                                        type="button"
+                                        class="btn btn-sm btn-light"
+                                        value="edit"
+                                        name="btnEditOt"
+                                        title="Solo Admin puede Editar OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;"
+                                        disabled>
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button id="btnStatusOt<%=k%>_<%=n%>"
+                                        type="button"
+                                        class="btn btn-sm btn-light disabled"
+                                        value="changeStatus"
+                                        name="btnStatusOt"
+                                        title="Solo Admin puede cambiar status OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;"
+                                        disabled>
+                                        <i class="fa-solid fa-power-off"></i>
+                                    </button>
+                                    <button id="btnDeleteOt<%=k%>_<%=n%>"
+                                        type="button"
+                                        class="btn btn-sm btn-light disabled"
+                                        value="delete"
+                                        name="btnDeleteOt"
+                                        title="Solo Admin puede eliminar OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;"
+                                        disabled>
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            <% } %>
+                        </td>
+                        <!-- status OT -->
+                        <td class="text-center align-middle">
+                            <% if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
+                                <span id="lastOtStatus<%=k%>_<%=n%>"
+                                    class="badge rounded-pill bg-success text-white my-2">
+                                    Activo</span>
+                            <% } else { %>
+                                <span id="lastOtStatus<%=k%>_<%=n%>"
+                                    class="badge rounded-pill bg-danger text-white my-2">
+                                    Inactivo</span>
+                            <% } %>
+                        </td>
+                        <!-- OT Number -->
+                        <td class="text-center align-middle">
+                            <span id="lastOtNumber<%=k%>_<%=n%>"
+                                class="badge rounded-pill bg-dark text-white my-2">
+                                <%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>
+                            </span>
+                        </td>
+                        <!-- OP Number -->
+                        <td class="text-center align-middle">
+                            <span id="lastOpNumber<%=k%>_<%=n%>"
+                                class="badge rounded-pill bg-secondary text-white my-2">
+                                <%= proyecto[m].project[j].oci[k].otProject[n].opNumber %>
+                            </span>
+                        </td>
+                        <!-- op Description -->
+                        <td class="text-center align-middle">
+                            <small id="lastOpDescription<%=k%>_<%=n%>"
+                                class="text-dark my-2">
+                                <%= proyecto[m].project[j].oci[k].otProject[n].opDescription %>
+                            </small>
+                        </td>
+                    </tr>
+                <% }
+            }    
+        } %>    
+    </tbody>
+</table>

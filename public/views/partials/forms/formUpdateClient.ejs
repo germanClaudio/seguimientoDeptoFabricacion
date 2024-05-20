@@ -1,0 +1,139 @@
+<div class="form-group col-12 mx-auto mt-2 mb-5 w-75 border px-5 py-1 text-white bg-opacity-75" style="background-color: #666666;">
+    <form id="formUpdateClient" enctype="multipart/form-data" action="/api/clientes/update/<%=cliente._id%>" method="post">
+        <fieldset>
+            <div class="row justify-content-start align-items-center mt-2">
+                <div class="col-3 mx-auto my-2">
+                    <label for="idDisable">Id#</label>
+                    <input type="text" name="idDisable" id="idDisable" class="form-control-plaintext text-white"
+                        value="<%=cliente._id%>" disabled>
+                </div>
+                                
+                <div class="col mx-auto my-1">
+                    <label for="idCreator">Creado por</label>
+                    <input type="text" name="idCreator" id="idCreator" class="form-control-plaintext text-white small"
+                        value="<%=cliente.creator[0].name%> <%=cliente.creator[0].lastName%>" disabled>
+                </div>
+                
+                <div class="col mx-auto my-1">
+                    <label for="timestampDisable">Fecha creación</label>
+                    <input type="text" name="timestampDisable" id="timestampDisable" class="form-control-plaintext text-white small"
+                        value="<%=cliente.timestamp%>" disabled>
+                </div>
+                
+                <div class="col mx-auto my-1">
+                    <label for="modificatorDisable">Modificado por</label>
+                    <% if (cliente.modificator[0].name !== "") { %>
+                        <input type="text" name="modificatorDisable" id="modificatorDisable" class="form-control-plaintext text-white small"
+                            value="<%=cliente.modificator[0].name%> <%=cliente.modificator[0].lastName%>" disabled>
+                    <% } else { %>
+                        <input type="text" name="modificatorDisable" id="modificatorDisable" class="form-control-plaintext text-white small"
+                            value="" disabled>
+                    <% } %>        
+                </div>
+                
+                <div class="col-auto mx-auto my-1">
+                    <label for="modifiedOnDisable">Fecha modificación</label>
+                    <input type="text" name="modifiedOnDisable" id="modifiedOnDisable" class="form-control-plaintext text-white small"
+                        value="<%=cliente.modifiedOn%>" disabled>
+                </div>
+            </div>    
+                <hr class="border my-1">
+            <div class="row justify-content-start align-items-center my-2">
+                <div class="col my-1 mx-auto">
+                    <label class="form-label" for="name">Nombre Cliente</label>
+                    <input type="text" name="name" id="name" class="form-control" value="<%=cliente.name %>" autocomplete="on"
+                        placeholder="Nombre Cliente" required>
+                </div>
+                
+                <div class="col-3 my-1 mx-auto">
+                    <label class="form-label" for="code">Codigo</label>
+                    <input type="text" name="code" id="code" class="form-control" value="<%=cliente.code%>"
+                        placeholder="Codigo" required>
+                </div>
+                
+                <div class="col-2 my-1 mx-auto">
+                    <label class="form-label" for="project">Proyectos</label>
+                    <input type="number" name="project" id="project" class="form-control"
+                        value="<%=cliente.project %>" disabled>
+                </div>
+                
+                <% if(cliente.status) { %>
+                    <div class="col-2 my-1 mx-auto" style="background-color: #55dd5560;">
+                        <label for="statusClient">Status Cliente</label>
+                        <div class="">
+                            <p class="d-inline-block me-1">Inactivo</p>
+                            <div class="form-check form-switch d-inline-block mt-2">
+                                <input id="statusClient" class="form-check-input" type="checkbox" role="switch"
+                                    name="statusClient" style="cursor: pointer;" checked>
+                                <label class="form-check-label" for="statusClient">Activo</label>
+                            </div>    
+                        </div>
+                    </div>
+                <% } else { %>
+                    <div class="col-2 my-1 mx-auto" style="background-color: #dd555560;">
+                        <label for="statusClient">Status Cliente</label>
+                        <div class="">
+                            <p class="d-inline-block me-1">Inactivo</p>
+                            <div class="form-check form-switch d-inline-block mt-2">
+                                <input id="statusClient" class="form-check-input" type="checkbox" role="switch"
+                                    name="statusClient" style="cursor: pointer;">
+                                <label class="form-check-label" for="statusClient">Activo</label>
+                            </div>    
+                        </div>
+                    </div>
+                <% } %>       
+            </div>
+
+            <div class="row justify-content-start align-items-center my-2">
+                <div class="col">
+                    <label for="fileInputTextLogoUpdate" class="form-label">
+                        Seleccione una nueva imagen para el Logo del Cliente
+                    </label>
+                    <input type="text" id="fileInputTextLogoUpdate" name="imageTextLogoUpdate"
+                            value="<%=cliente.logo %>" style="display: none;">
+                    <input type="file" id="fileInputLogoUpdate" name="imageLogoUpdate"
+                        value="" accept="image/*" style="display: none;">
+                    <div id="drop-areaLogoUpdate" class="mb-2 mx-auto">
+                        Arrastra y suelta una imagen aquí
+                    </div>
+                    <button title="Eliminar Imagen"
+                        type="button"
+                        class="btn btn-danger rounded-circle mx-auto"
+                        id="removeImageLogoUpdate"
+                        style="display: none;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    
+                    <div id="alertLogoUpdate" class="alert alert-warning align-items-center mx-auto" role="alert"
+                        style="display: none; font-size: 0.85rem; height: 1.15rem; width: 25rem;">
+                        <strong class="me-2">Error!</strong> Solo puedes ingresar una imagen jpg, png, bmp o jpeg.
+                    </div>
+                    <div id="alertLogoClientSize" class="alert alert-warning align-items-center mx-auto" role="alert"
+                        style="display: none; font-size: 0.85rem; height: 1.15rem; width: 25rem;">
+                        <strong class="me-2">Atención!</strong> El tamaño de la imagen debe ser menor a 3Mb.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row justify-content-start align-items-center my-2">
+                <div class="col">
+                    <label for="fileInputLogoUpdate">Imagen logo cliente actual </label>
+                    <div class="container-fluid my-1 p-1 text-center">
+                        <img src="<%=cliente.logo%>" class="img-thumbnail rounded mx-auto" alt="Logo Cliente" width="200px" height="200px">
+                    </div>
+                <% if( userInfo.admin ) { %>        
+                    <div class="d-flex justify-content-center my-2">
+                        <button id="btnUpdateClient" class="btn btn-success me-3 my-2" disabled>Actualizar <i class="fa-solid fa-save"></i></button>
+                        <a class="btn btn-primary mx-3 my-2" href="/api/clientes">Volver <i class="fa-solid fa-arrow-left"></i></a>
+                        <a class="btn btn-danger ms-3 my-2" href="/api/clientes/delete/<%=cliente._id%>">Eliminar <i class="fa-solid fa-trash"></i></a>
+                    </div>
+                <% } else { %>
+                    <div class="d-flex justify-content-center my-2">
+                        <a class="btn btn-primary mx-auto my-2" href="/api/clientes">Volver <i class="fa-solid fa-arrow-left"></i></a>
+                    </div>
+                <% } %>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>

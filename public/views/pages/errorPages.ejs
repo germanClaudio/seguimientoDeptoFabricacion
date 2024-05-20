@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+ 
+<head>
+    <%- include('../partials/head/head'); %>
+</head>
+
+<body>
+    <%- include('../partials/header/headerLogin'); %>
+
+    <% if (flag.dirNumber === 498) { %>
+        <%- include('../partials/errorPages/498_page_Invalid_Token'); %>
+
+    <% } else if (flag.dirNumber === 401) { %>
+        <%- include('../partials/errorPages/401_page_NotAuth_User'); %>
+
+    <% } else if (flag.dirNumber === 400) { %>
+        <%- include('../partials/errorPages/404_pageNotFound'); %>
+
+    <% } else { %>
+    <%- include('../partials/errorPages/serverError500', {error: error, errorInfo: errorInfo}); %>
+
+    <% } %>
+
+    <footer>
+        <%- include('../partials/footer/footer'); %>
+    </footer>
+    
+    <!-- Optional JavaScript -->
+    
+</body>
+ 
+</html>

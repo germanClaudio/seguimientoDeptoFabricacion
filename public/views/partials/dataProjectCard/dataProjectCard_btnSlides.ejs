@@ -1,0 +1,125 @@
+<!-- mostrar botones de acuerdo a cantidad de slides -->
+<div class="carousel-indicators position-absolute top-100 start-0 pb-5">
+    <% if (proyecto[0].project[0].levelProject == 'paraCotizar') { %>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="0" class="bg-dark"
+            aria-current="true" aria-label="Slide 1"
+            title="Simulacion 0">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="1" class="bg-dark"
+            aria-label="Slide 2"
+            title="Proceso 3D">
+        </button>
+
+    <% } else if (proyecto[0].project[0].levelProject == 'aRiesgo') { %>                                            
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="0" class="bg-dark"
+            aria-current="true" aria-label="Slide 1"
+            title="R-14">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="1" class="bg-dark"
+            aria-label="Slide 2"
+            title="Proceso 3D">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="2" class="bg-dark"
+            aria-label="Slide 3" title="Diseño Primera Parte">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="3" class="bg-dark"
+            aria-label="Slide 4" title="Diseño Segunda Parte">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="4" class="bg-dark"
+            aria-label="Slide 5" title="Info 80%">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="5" class="bg-dark"
+            aria-label="Slide 6" title="Simulacion 0">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="6" class="bg-dark"
+            aria-label="Slide 7" title="Simulacion 1">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="7" class="bg-dark"
+            aria-label="Slide 8" title="Simulacion 2 y 3">
+        </button>
+        
+    <% } else { %>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="0" class="bg-dark"
+            aria-current="true" aria-label="Slide 1"
+            title="R-14">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="1" class="bg-dark"
+            aria-label="Slide 2"
+            title="Proceso 3D">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="2" class="bg-dark"
+            aria-label="Slide 3" title="Diseño Primera Parte">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="3" class="bg-dark"
+            aria-label="Slide 4" title="Diseño Segunda Parte">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="4" class="bg-dark"
+            aria-label="Slide 5" title="Info 80%">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="5" class="bg-dark"
+            aria-label="Slide 6" title="Info 100%">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="6" class="bg-dark"
+            aria-label="Slide 7" title="Simulacion 0">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="7" class="bg-dark"
+            aria-label="Slide 8" title="Simulacion 1">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="8" class="bg-dark"
+            aria-label="Slide 9" title="Simulacion 2 y 3">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="9" class="bg-dark"
+            aria-label="Slide 10" title="Simulacion 4 Primera Parte">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="10" class="bg-dark"
+            aria-label="Slide 11" title="Simulacion 4 Segunda Parte">
+        </button>
+        <button type="button" name="btnInferiorCarousel"
+            data-bs-target="#carouselExampleControls<%=k%>"
+            data-bs-slide-to="11" class="bg-dark"
+            aria-label="Slide 12" title="Simulacion 5">
+        </button>
+    <% } %>        
+</div>

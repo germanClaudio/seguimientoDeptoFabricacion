@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head/head'); %>
+</head>
+
+<body>
+    <header>
+        <%- include('../partials/header/headerLogin'); %>
+    </header>
+
+    <br>
+    <div class="container-fluid" style="background-color: #F5F7FA;">
+        <section class="mx-auto " style="width: 65%;">
+            <div class="row">
+                <div class="col-12 mt-5 mb-3">
+                  <h4 class="text-uppercase">Aplicación de Seguimiento</h4>
+                  <p>Departamento de Ingeniería Prodismo</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-8 mt-3 mb-5 mx-auto">
+                  <a href="/api/auth/login" style="text-decoration: none;">
+                    <div class="card rounded-3 card_dashboard">
+                      <div class="card-content">
+                        <div class="card-body">
+                          <div class="media d-flex mx-1">
+                            <div class="media-body text-center m-3">
+                              <h3 class="danger mb-3">
+                                Eyyy!!...<strong><%= username %></strong>, te has desloggeado!
+                              </h3>
+                              <h3 class="danger mb-3">
+                                Te extrañaremos <%= userInfo.name %>
+                              </h3>
+                                <i class="fa-solid fa-computer-mouse"></i>
+                                <span>Haz clic aquí para regresar al Login</span>
+                            </div>
+                            <div class="align-self-center mx-auto">
+                                <i class="fa-regular fa-frown-o fa-4x" style="color: #24285b;" aria-hidden="true"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </div>                
+              </div>
+        </section>
+    </div>
+
+    <footer>
+        <%- include('../partials/footer/footer'); %>
+    </footer>
+        <!--    scripts     -->
+        
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+        <div class="main-container fixed-bottom m-b-60">
+            <div class="content-container mx-auto">
+                <div class="chat-module">
+                    <div class="chat-module-bottom">
+                        <form class="chat-form mx-auto" onsubmit="return addMessage(this)">
+                            <input type="hidden" name="email" id="author"
+                                value="<%= userInfo.email %>"></input>
+                        
+                            <input type="hidden" name="name" id="name"
+                                value="<%= userInfo.name %>"></input>
+
+                            <input type="hidden" name="lastName" id="lastName"
+                                value="<%= userInfo.lastName %>"></input>
+                        
+                            <input type="hidden" name="alias" id="alias"
+                                value="<%= userInfo.username %>"></input>
+                        
+                            <input type="hidden" name="avatar" id="avatar"
+                                value="<%= userInfo.avatar %>"></input>
+
+                            <textarea class="form-control" name="text" id="text"
+                                placeholder="Escribe un mensaje aquí" rows="3" required>
+                            </textarea>
+                            <div class="ms-1 mt-1" id="messageTextLength"></div>
+                            <div class="chat-form-buttons">
+                                <button
+                                    type="button"
+                                    class="btn btn-link"
+                                    name="botonEmojis"
+                                    id="botonEmojis">
+                                    <i class="fa-regular fa-smile"></i>
+                                </button>
+                                <div class="custom-file custom-file-naked">
+                                    <input type="file" class="custom-file-input" id="customFile" style="display: none;">
+                                    <label class="custom-file-label" for="customFile">
+                                        <i class="fa-solid fa-paperclip"></i>
+                                    </label>
+                                </div>
+                                <button 
+                                    class="btn btn-warning m-auto p-1 text-nowrap text-center"
+                                    name="botonMensaje"
+                                    type="button"
+                                    id="botonMensaje">
+                                    <i class="icon-paper-plane"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

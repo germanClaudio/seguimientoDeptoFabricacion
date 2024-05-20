@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head/head'); %>
+</head>
+
+<body>
+    <header>
+        <%- include('../partials/header/headerLogin'); %>
+    </header>
+    <div class="container my-4 mx-auto">
+        <br>
+        <%- include('../partials/forms/formularioLogin'); %>
+    </div>
+    <% if (!flag && !fail) { %>
+        <div class="alert alert-success mx-auto my-5 text-center w-25 text-white shadow-lg" id="alert2" style="background-color: rgb(0, 10, 90);">
+            Aplicación de Seguimiento<br>
+            Departamento de Ingeniería
+        </div>
+    <% } else if (flag && fail) { %>
+            <div class="alert alert-danger mx-auto my-5 text-center w-25 shadow-lg" id="alert1">
+                <strong><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> El Usuario no Existe o<br>Password incorrecto!</strong></div>
+    <% } else { %>
+        <div class="alert alert-warning mx-auto my-5 text-center w-25" id="alert3">Usuario <strong><%=username%></strong> registrado exitosamente! <i class="fa fa-check" aria-hidden="true" style="color:green;"></i></div>
+    <% } %>
+
+    <br>
+    <footer>
+        <%- include('../partials/footer/footer'); %>
+    </footer>    
+        <!--    scripts     -->       
+            <script type="text/javascript" src="../../login.js"></script>
+       
+</body>
+
+</html>

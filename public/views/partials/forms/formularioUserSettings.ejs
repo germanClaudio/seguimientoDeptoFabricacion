@@ -1,0 +1,174 @@
+<div class="form-group col-10 mx-auto mt-2 mb-5 w-75 border p-3 text-white bg-opacity-75" style="background-color: #929292;">
+    <form id="formUpdateUserSettings" enctype="multipart/form-data" action="/api/usuarios/updateUserSettings/<%=usuario._id%>" method="post">
+        <fieldset>
+            <div class="row my-2 mx-auto">
+                <div class="col-2">
+                    <label for="idDisable">Id#</label>
+                    <input type="text" name="idDisable" id="idDisable" class="form-control-plaintext text-white"
+                        value="<%=usuario._id%>" disabled>
+                </div>
+                <br>
+                <div class="col-1">
+                    <label for="legajoIdDisable">Legajo #</label>
+                    <input type="text" name="legajoIdDisable" id="legajoIdDisable" class="form-control-plaintext text-white"
+                        value="<%=usuario.legajoId%>" disabled>
+                </div>
+                <br>
+                <div class="col-2">
+                    <label for="creatorDisable">Creado por</label>
+                    <input type="text" name="creatorDisable" id="creatorDisable"
+                        class="form-control-plaintext text-white" value="<%=usuario.creator[0].name%>, <%=usuario.creator[0].lastName%>" disabled>    
+                </div>
+                <br>
+                <div class="col-2">
+                    <label for="timestampDisable">Fecha Creación</label>
+                    <input type="text" name="timestampDisable" id="timestampDisable"
+                        class="form-control-plaintext text-white" value="<%=usuario.timestamp%>" disabled>
+                </div>
+                <br>
+                <div class="col-2">
+                    <label for="modifiedDisable">Modificado por</label>
+                    <% if (usuario.modificator !== [] ) {
+                        if (usuario.modificator[0].name !== "") { %>
+                        <input type="text" name="modifiedDisable" id="modifiedDisable"
+                        class="form-control-plaintext text-white" value="<%= usuario.modificator[0].name %>, <%= usuario.modificator[0].lastName %>"
+                        disabled>
+
+                        <% } else { %>
+                            <input type="text" name="modifiedDisable" id="modifiedDisable"
+                            class="form-control-plaintext text-white" value="" disabled>
+
+                        <% } %>        
+                    <% } else { %>
+                        <input type="text" name="modifiedDisable" id="modifiedDisable"
+                        class="form-control-plaintext text-white" value="" disabled>
+
+                    <% } %>
+                </div>
+                <br>
+                <br>
+                <div class="col-auto">
+                    <label for="modifiedOnDisable">Fecha Modificación</label>
+                    <input type="text" name="modifiedOnDisable" id="modifiedOnDisable"
+                        class="form-control-plaintext text-white" value="<%=usuario.modifiedOn%>" disabled>
+                </div>
+            </div>
+            <hr>
+            <div class="row justify-content-center align-items-center my-3 mx-3">
+                <div class="col-3">
+                    <label for="permisoDisable">Permisos</label><br>
+                    <% if (usuario.permiso === "diseno") { %>
+                        <span name="permisoDisable" id="permisoDisable" class="badge rounded-pill text-bg-primary mt-3"
+                            value=" <%=usuario.permiso %>" disabled>Diseño</span>
+                    <% } else if (usuario.permiso === "simulacion") { %>
+                        <span name="permisoDisable" id="permisoDisable" class="badge rounded-pill text-bg-warninig text-dark mt-3"
+                            value=" <%=usuario.permiso %>" disabled>Simulacion</span>
+                    <% } else { %>
+                        <span name="permisoDisable" id="permisoDisable" class="badge rounded-pill text-bg-info text-dark mt-3"
+                            value=" <%=usuario.permiso %>" disabled>Diseño/Simulacion</span>
+                    <% } %> 
+                </div>
+
+                <%  if (usuario.admin) { %>
+                    <div class="col-3 mx-5" style="background-color: #00029063;">
+                        <label for="creatorDisable">Rol</label>
+                        <input type="text" name="rolDisable" id="rolDisable"
+                            class="form-control-plaintext text-white" value="Administrador" disabled>    
+                    </div>
+                <% } else { %>
+                    <div class="col-3 mx-5" style="background-color: #009e0344;">
+                        <label for="creatorDisable">Rol</label>
+                        <input type="text" name="rolDisable" id="rolDisable"
+                            class="form-control-plaintext text-white" value="Usuario" disabled>    
+                    </div>
+                <% } %>
+
+                <%  if (usuario.status) { %>
+                    <div class="col-3 mx-5" style="background-color: #55dd5544;">
+                        <label for="statusDisable">Status</label>
+                        <input type="text" name="statusDisable" id="statusDisable"
+                            class="form-control-plaintext text-white" value="Activo" disabled>
+                    </div>
+                <% } %> 
+            </div>
+
+            <hr>
+
+            <div class="row my-3 mx-auto">
+                <div class="col-3">
+                    <label for="name">Nombre</label>
+                    <input type="text" name="name" id="name" class="form-control" value="<%=usuario.name%>"
+                        placeholder="Nombre" required>
+                </div>
+                <br>
+                <div class="col-3">
+                    <label for="lastName">Apellido</label>
+                    <input type="text" name="lastName" id="lastName" class="form-control" value="<%=usuario.lastName%>"
+                        placeholder="Apellido" required>
+                </div>
+                <br>
+                <div class="col-3">
+                    <label for="email">Em@il</label>
+                    <input type="email" name="email" id="email" class="form-control" value="<%=usuario.email%>"
+                        placeholder="Ejemplo@dominio.com" required>
+                </div>
+                <br>
+                <div class="col">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" class="form-control" value="<%=usuario.username%>"
+                        placeholder="Username" disabled>
+                    <input type="hidden" name="usernameHidden" id="usernameHidden" class="form-control" value="<%=usuario.username%>">
+                </div>
+                <br>
+            </div>
+
+            <br>
+
+            <div class="row justify-content-start align-items-center my-3 mx-auto">
+                <div class="col">
+                    <label for="fileInputAvatarUser" class="form-label">
+                        Seleccione una nueva imagen de Avatar Usuario
+                    </label>
+                    <input type="text" id="fileInputTextAvatarUser" name="imageTextAvatarUser"
+                        value="<%=usuario.avatar%>" style="display: none;">
+                            
+                        <input type="file" id="fileInputAvatarUser" name="imageAvatarUser"
+                            value="" accept="image/*" style="display: none;">
+                        <div id="drop-areaAvatarUser" class="my-3 mx-auto">
+                            Arrastra y suelta una imagen aquí
+                        </div>
+                        <button title="Eliminar Imagen" class="btn btn-danger rounded-circle mx-auto"
+                                id="removeImageAvatarUser" style="display: none;">
+                                <i class="fa-solid fa-xmark"></i>
+                        </button>
+                        
+                        <div id="alertAvatarUser" class="alert alert-warning align-items-center w-50 mx-auto" role="alert"
+                            style="display: none; font-size: 0.85rem; height: 1.15rem;">
+                            <strong class="me-2">Error!</strong> Solo puedes ingresar una imagen jpg, png, bmp o jpeg.
+                        </div>
+                        <div id="alertSizeAvatarUser" class="alert alert-warning align-items-center w-50 mx-auto" role="alert"
+                            style="display: none; font-size: 0.85rem; height: 1.15rem; width: 25rem;">
+                            <strong class="me-2">Atención!</strong> El tamaño de la imagen debe ser menor a 3Mb.
+                        </div>
+                </div>
+            </div>
+
+            <br>
+           
+            <div class="row justify-content-start align-items-center my-3 mx-auto">
+                <div class="col">
+                    <label for="imagenAvatar">Imagen avatar Usuario actual </label>
+                    <div class="container-fluid my-1 p-1 text-center">
+                        <img src="<%=usuario.avatar%>" name="imagenAvatar" class="img-thumbnail rounded mx-auto" alt="Avatar Usuario" width="200px" height="200px">
+                    </div>
+                </div>
+            </div>
+                        
+            <div class="d-flex justify-content-center my-2">
+                <button id="btnUpdateUserSettings" class="btn btn-success mx-auto" style="cursor: not-allowed;" disabled>Guardar Cambios <i class="fa-solid fa-save"></i></button>
+                <a class="btn btn-primary mx-auto" href="/api/auth/index"> Volver <i class="fa-solid fa-arrow-left"></i></a>
+            </div>
+
+        </fieldset>
+    </form>
+</div>

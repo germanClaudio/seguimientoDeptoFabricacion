@@ -1,0 +1,589 @@
+<!-- tabla R14 -->
+<table id="tablaR14<%=k%>"
+    class="table-responsive align-middle col-5 border-end border-dark"
+    style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #aac">
+        <tr>
+            <th colspan="2" class="text-center">
+                R-14
+                <button
+                    id="posBtnAddDataR14<%=k%>"
+                    type="button"
+                    name="btnR14"
+                    class="btn btn-small btn-success m-1"
+                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
+                    title="Agregar/Modificar Datos"
+                    value="<%=k%>">
+                    <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>                                                    
+                </button>
+            </th>
+        </tr>
+        <tr>
+            <th id="colData0" style="width:50vw" scope="col-1"
+                class="text-center pb-1"> Proceso R14 | Rev.
+            </th>
+            <th id="colData1" style="width:50vw" scope="col-1"
+                class="text-center pb-1"> Aprobado PM | Rev.
+            </th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        
+        <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length > n; n++) {
+            if (proyecto[m].project[j].oci[k].otProject[n].visible) {
+
+                var arrResProcesoR14 = [];
+                var valueArrayResProcesoR14 = 0;
+                var arrResRevisionProcesoR14 = [];
+                var arrResCreadorProcesoR14 = [];
+                var arrResModificadorProcesoR14 = [];
+                var arrResFechaProcesoR14 = [];
+                var arrResFechaModProcesoR14 = [];
+
+                var arrResAprobadoR14 = [];
+                var valueArrayResAprobadoR14 = 0;
+                var arrResRevisionAprobadoR14 = [];
+                var arrResCreadorAprobadoR14 = [];
+                var arrResModificadorAprobadoR14 = [];
+                var arrResFechaAprobadoR14 = [];
+                var arrResFechaModAprobadoR14 = []; 
+
+                if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
+                    <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
+                        <% for (let q = 0; totalColDataR14 > q; q++) {
+                            if (q==0) { %>
+                                <!-- Proceso R14 data Activo--> 
+                                <td class="text-center align-middle">
+
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                            proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14.length > 0) {
+                                        
+                                                for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14.length > i; i++) {
+                                                    var pathToMongoDBOtInfoR14 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14[i]
+                                                    if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14) {
+                                                        let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14.length)
+                                                        var resProcesoR14 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14[largoArray-1].procesoR14
+                                                        var resRevisionProcesoR14 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14[largoArray-1].revisionProcesoR14
+                                                        
+                                                        if (i == 0) {
+                                                            arrResProcesoR14.push(pathToMongoDBOtInfoR14.procesoR14)
+                                                            arrResRevisionProcesoR14.push(pathToMongoDBOtInfoR14.revisionProcesoR14)
+                                                        }
+                                                        else if (i >= 1 && pathToMongoDBOtInfoR14.revisionProcesoR14 != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14[i-1].revisionProcesoR14) {
+                                                            arrResProcesoR14.push(pathToMongoDBOtInfoR14.procesoR14)
+                                                            arrResRevisionProcesoR14.push(pathToMongoDBOtInfoR14.revisionProcesoR14)
+                                                        }
+                                                            arrResCreadorProcesoR14.push(pathToMongoDBOtInfoR14.creator[0].username)
+                                                            arrResModificadorProcesoR14.push(pathToMongoDBOtInfoR14.modificator[0].username)
+                                                            arrResFechaProcesoR14.push(pathToMongoDBOtInfoR14.timestamp)
+                                                            arrResFechaModProcesoR14.push(pathToMongoDBOtInfoR14.modifiedOn)
+                                                            valueArrayResProcesoR14 = parseInt(arrResProcesoR14.length-1)
+                                                                                                    
+                                                    } else {
+                                                        var resProcesoR14 = 'S/D'
+                                                        var resRevisionProcesoR14 = 0
+                                                    }
+                                                }
+                                                
+                                                if (arrResProcesoR14.length == 1 ) {
+                                                    var anteriorDisabled = "disabled"
+                                                    var siguienteDisabled = "disabled"
+                                                } else if (arrResProcesoR14.length == arrResRevisionProcesoR14.length) {
+                                                    var anteriorDisabled = ""
+                                                    var siguienteDisabled = "disabled"
+                                                } else {
+                                                    var anteriorDisabled = ""
+                                                    var siguienteDisabled = "disabled"
+                                                }
+                                                
+                                        } else {
+                                            var anteriorDisabled = "disabled"
+                                            var siguienteDisabled = "disabled"
+                                            var resProcesoR14 = "S/D"
+                                            var resRevisionProcesoR14 = 0
+                                            arrResProcesoR14.push(resProcesoR14)
+                                            arrResRevisionProcesoR14.push(resRevisionProcesoR14)
+                                            valueArrayResProcesoR14 = 0
+                                        } %>
+                                    
+                                        <div id="btnAnteriorSiguienteR14<%=k%>_<%=n%>_<%=q%>">
+                                            <button id="btnAnteriorR14<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnAnteriorR14"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm me-2"
+                                                title="Ver anterior"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResProcesoR14 %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResProcesoR14 %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionProcesoR14 %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorProcesoR14 %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorProcesoR14 %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaProcesoR14 %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModProcesoR14 %>">
+            
+                                            <% switch (resProcesoR14) { 
+                                                case "ok": { %>
+                                                        <span id="resProcesoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                            OK
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionProcesoR14<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionProcesoR14"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueRevision=""
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionProcesoR14 %>
+                                                        </span>
+                                                <% break; }        
+                                                case "noOk": { %>
+                                                        <span id="resProcesoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                            No OK
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionProcesoR14<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionProcesoR14"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionProcesoR14 %>
+                                                        </span>
+                                                <% break; }        
+                                                case "pendiente": { %>
+                                                        <span id="resProcesoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                            Pendiente
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionProcesoR14<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionProcesoR14"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionProcesoR14 %>
+                                                        </span>
+                                                <% break; }
+                                                case "noAplica": { %>
+                                                        <span id="resProcesoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                            N/A
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionProcesoR14<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionProcesoR14"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionProcesoR14 %>
+                                                        </span>
+                                                <% break; }
+                                                default: { %>
+                                                        <span id="resProcesoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                            S/D
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionProcesoR14<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionProcesoR14"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionProcesoR14 %>
+                                                        </span>
+                                                <% break; }
+                                            } %>
+            
+                                            <button id="btnSiguienteR14<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnSiguienteR14"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm ms-2"
+                                                title="Ver siguiente"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                </td>
+                            <% } else { %>
+                                <!-- Aprobado Proceso R14 data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                            proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14.length > 0) {
+                                        
+                                                for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14.length > i; i++) {
+                                                    var pathToMongoDBOtInfoR14 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14[i]
+                                                    
+                                                    if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14) {
+                                                        
+                                                        let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14.length)
+                                                        var resAprobadoR14 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14[largoArray-1].aprobadoR14
+                                                        var resRevisionAprobadoR14 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14[largoArray-1].revisionAprobadoR14
+                                                        
+                                                        if (i == 0) {
+                                                            arrResAprobadoR14.push(pathToMongoDBOtInfoR14.aprobadoR14)
+                                                            arrResRevisionAprobadoR14.push(pathToMongoDBOtInfoR14.revisionAprobadoR14)
+                                                        }
+                                                        else if (i >= 1 && pathToMongoDBOtInfoR14.revisionAprobadoR14 != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14[i-1].revisionAprobadoR14) {
+                                                            arrResAprobadoR14.push(pathToMongoDBOtInfoR14.aprobadoR14)
+                                                            arrResRevisionAprobadoR14.push(pathToMongoDBOtInfoR14.revisionAprobadoR14)
+                                                        }
+                                                            arrResCreadorAprobadoR14.push(pathToMongoDBOtInfoR14.creator[0].username)
+                                                            arrResModificadorAprobadoR14.push(pathToMongoDBOtInfoR14.modificator[0].username)
+                                                            arrResFechaAprobadoR14.push(pathToMongoDBOtInfoR14.timestamp)
+                                                            arrResFechaModAprobadoR14.push(pathToMongoDBOtInfoR14.modifiedOn)
+                                                            valueArrayResAprobadoR14 = parseInt(arrResAprobadoR14.length-1)
+                                                                                                    
+                                                    } else {
+                                                        var resAprobadoR14 = 'S/D'
+                                                        var resRevisionAprobadoR14 = 0
+                                                    }
+                                                }
+                                                
+                                                if (arrResAprobadoR14.length == 1 ) {
+                                                    var siguienteDisabled = "disabled"
+                                                    var anteriorDisabled = "disabled"
+                                                } else if (arrResAprobadoR14.length == arrResRevisionAprobadoR14.length) {
+                                                    var anteriorDisabled = ""
+                                                    var siguienteDisabled = "disabled"
+                                                } else {
+                                                    var anteriorDisabled = ""
+                                                    var siguienteDisabled = "disabled"
+                                                }
+                                                
+                                            } else {
+                                                var anteriorDisabled = "disabled"
+                                                var siguienteDisabled = "disabled"
+                                                var resAprobadoR14 = "S/D"
+                                                var resRevisionAprobadoR14 = 0
+                                                arrResAprobadoR14.push(resAprobadoR14)
+                                                arrResRevisionAprobadoR14.push(resRevisionAprobadoR14)
+                                                valueArrayResAprobadoR14 = 0
+                                        } %>
+                                    
+                                        <div id="btnAnteriorSiguienteR14<%=k%>_<%=n%>_<%=q%>">
+                                            <button id="btnAnteriorR14<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnAnteriorR14"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm me-2"
+                                                title="Ver anterior"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResAprobadoR14 %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAprobadoR14 %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAprobadoR14 %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorAprobadoR14 %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorAprobadoR14 %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaAprobadoR14 %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModAprobadoR14 %>">
+            
+                                            <% switch (resAprobadoR14) { 
+                                                case "ok": { %>
+                                                        <span id="resAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                            OK
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionAprobadoR14<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionAprobadoR14"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueRevision=""
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionAprobadoR14 %>
+                                                        </span>
+                                                <% break; }        
+                                                case "noOk": { %>
+                                                        <span id="resAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                            No OK
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionAprobadoR14<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionAprobadoR14"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionAprobadoR14 %>
+                                                        </span>
+                                                <% break; }        
+                                                case "pendiente": { %>
+                                                        <span id="resAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                            Pendiente
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionAprobadoR14<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionAprobadoR14"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionAprobadoR14 %>
+                                                        </span>
+                                                <% break; }
+                                                case "noAplica": { %>
+                                                        <span id="resAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                            N/A
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionAprobadoR14<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionAprobadoR14"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionAprobadoR14 %>
+                                                        </span>
+                                                <% break; }
+                                                default: { %>
+                                                        <span id="resAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                            S/D
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionAprobadoR14<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionAprobadoR14"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionAprobadoR14 %>
+                                                        </span>
+                                                <% break; }
+                                            } %>
+            
+                                            <button id="btnSiguienteR14<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnSiguienteR14"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm ms-2"
+                                                title="Ver siguiente"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                </td>
+                            <% }
+                        } %>
+                        
+                    </tr>
+                <% } else { %>
+                    <tr class="pe-none" name="rowSelected<%=k%>_<%=n%>" style="height: 7vh; background-color: #dedede;">
+                        <% for (let q = 0; totalColDataR14 > q; q++) {
+                            if (q==0) { %>
+                                <!-- Proceso R14 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                        proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14.length > 0) {
+                                    
+                                            for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14.length > i; i++) {
+                                                if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14) {
+                                                    let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14.length)
+                                                    var resProcesoR14 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14[largoArray-1].procesoR14
+                                                    var resRevisionProcesoR14 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14[largoArray-1].revisionProcesoR14
+                                                    
+                                                    if (i == 0) {
+                                                        arrResProcesoR14.push(pathToMongoDBOtInfoR14.procesoR14)
+                                                        arrResRevisionProcesoR14.push(pathToMongoDBOtInfoR14.revisionProcesoR14)
+                                                    }
+                                                    else if (i >= 1 && pathToMongoDBOtInfoR14.revisionProcesoR14 != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14[i-1].revisionProcesoR14) {
+                                                        arrResProcesoR14.push(pathToMongoDBOtInfoR14.procesoR14)
+                                                        arrResRevisionProcesoR14.push(pathToMongoDBOtInfoR14.revisionProcesoR14)
+                                                    }
+                                                    valueArrayResProcesoR14 = parseInt(arrResProcesoR14.length-1)
+                                                                                                
+                                                } else {
+                                                    var resProcesoR14 = ''
+                                                    var resRevisionProcesoR14 = 0
+                                                }
+                                            }
+                                            var resProcesoR14 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14[0].procesoR14
+                                    } else {
+                                        var resProcesoR14 = ""
+                                        var resRevisionProcesoR14 = 0
+                                        arrResProcesoR14.push(0)
+                                        arrResRevisionProcesoR14.push(0)
+                                    } %>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResProcesoR14 %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResProcesoR14 %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionProcesoR14 %>">
+                                    
+                                    <% switch (resProcesoR14) { 
+                                        case "ok": { %>
+                                                <span id="resProcesoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                    OK
+                                                </span>
+                                                |
+                                                <span id="resRevisionProcesoR14<%=k%>_<%=n%>_<%=q%>"class="badge text-dark my-2" >
+                                                    <%= resRevisionProcesoR14 %>
+                                                </span>
+                                        <% break; }        
+                                        case "noOk": { %>
+                                                <span id="resProcesoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                    No OK
+                                                </span>
+                                                |
+                                                <span id="resRevisionProcesoR14<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionProcesoR14 %>
+                                                </span>
+                                        <% break; }        
+                                        case "pendiente": { %>
+                                                <span id="resProcesoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                    Pendiente
+                                                </span>
+                                                |
+                                                <span id="resRevisionProcesoR14<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionProcesoR14 %>
+                                                </span>
+                                        <% break; }
+                                        case "noAplica": { %>
+                                                <span id="resProcesoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                    N/A
+                                                </span>
+                                                |
+                                                <span id="resRevisionProcesoR14<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionProcesoR14 %>
+                                                </span>
+                                        <% break; }
+                                        default: { %>
+                                                <span id="resProcesoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                    S/D
+                                                </span>
+                                                |
+                                                <span id="resRevisionProcesoR14<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionProcesoR14 %>
+                                                </span>
+                                        <% break; }
+                                    } %>
+                                </td>
+                            <% } else { %>
+                                <!-- Aprobado Proceso R14 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                        proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14.length > 0) {
+                                    
+                                            for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14.length > i; i++) {
+                                                
+                                                if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14) {
+                                                    let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14.length)
+                                                    var resAprobadoR14 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14[largoArray-1].aprobadoR14
+                                                    var resRevisionAprobadoR14 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14[largoArray-1].revisionAprobadoR14
+                                                    
+                                                    if (i == 0) {
+                                                        arrResAprobadoR14.push(pathToMongoDBOtInfoR14.aprobadoR14)
+                                                        arrResRevisionAprobadoR14.push(pathToMongoDBOtInfoR14.revisionAprobadoR14)
+                                                    }
+                                                    else if (i >= 1 && pathToMongoDBOtInfoR14.revisionAprobadoR14 != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14[i-1].revisionAprobadoR14) {
+                                                        arrResAprobadoR14.push(pathToMongoDBOtInfoR14.aprobadoR14)
+                                                        arrResRevisionAprobadoR14.push(pathToMongoDBOtInfoR14.revisionAprobadoR14)
+                                                    }
+                                                    valueArrayResAprobadoR14 = parseInt(arrResAprobadoR14.length-1)
+                                                                                                
+                                                } else {
+                                                    var resAprobadoR14 = ''
+                                                    var resRevisionAprobadoR14 = 0
+                                                }
+                                            }
+
+                                            var resAprobadoR14 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoR14[0].aprobadoR14
+                                   
+                                    } else {
+                                        var resAprobadoR14 = ""
+                                        var resRevisionAprobadoR14 = 0
+                                        arrResAprobadoR14.push(resAprobadoR14)
+                                        arrResRevisionAprobadoR14.push(0)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResAprobadoR14 %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAprobadoR14 %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAprobadoR14 %>">
+
+                                    <% switch (resAprobadoR14) { 
+                                        case "ok": { %>
+                                            <span id="resAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">
+                                                OK
+                                            </span>
+                                            |
+                                            <span id="resRevisionAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionAprobadoR14 %>
+                                            </span>
+                                        <% break; }        
+                                        case "noOk": { %>
+                                                <span id="resAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                    No OK
+                                                </span>
+                                                |
+                                                <span id="resRevisionAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionAprobadoR14 %>
+                                                </span>
+                                        <% break; }        
+                                        case "pendiente": { %>
+                                                <span id="resAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                    Pendiente
+                                                </span>
+                                                |
+                                                <span id="resRevisionAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionAprobadoR14 %>
+                                                </span>
+                                        <% break; }
+                                        case "noAplica": { %>
+                                                <span id="resAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                    N/A
+                                                </span>
+                                                |
+                                                <span id="resRevisionAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionAprobadoR14 %>
+                                                </span>
+                                        <% break; }
+                                        default: { %>
+                                                <span id="resAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                    S/D
+                                                </span>
+                                                |
+                                                <span id="resRevisionAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionAprobadoR14 %>
+                                                </span>
+                                        <% break; }
+                                    } %>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+                <% }
+            }
+        } %>
+    </tbody>
+</table>

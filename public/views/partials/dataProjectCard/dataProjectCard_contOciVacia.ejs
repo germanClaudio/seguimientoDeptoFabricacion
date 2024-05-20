@@ -1,0 +1,21 @@
+<div class="container my-3">
+    <span class="badge rounded-pill bg-danger text-white">
+        No hay datos de OT cargados para mostrar
+    </span>
+</div>
+Puedes comenzar a cargar datos de OT en esta OCI# <strong><%= arrayVisibleOci[k].ociNumber %></strong>,<br>
+haciendo click en el siguiente botón
+<button class="btn btn-danger m-1 rounded-circle shadow-lg"
+    id="btnAddOtFormSelected<%=k%>"
+    aria-controls="collapseExample"
+    data-bs-toggle="collapse"
+    data-bs-target="#collapseExample" aria-expanded="false"
+    value="<%=k%>"
+    style="--bs-btn-font-size: .95rem; color: var(--bs-white);"
+    type="button"
+    name="<%= arrayVisibleOci[k].ociNumber %>"
+    title="Agregar OT">
+    
+        <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
+</button>
+                                                        

@@ -1,0 +1,593 @@
+<!-- --------- tabla S5 ----------- -->
+<table id="tabla5Sim<%=k%>"
+    class="table-responsive align-middle col-2 border-end border-dark"
+    style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #88c">
+        <tr>
+            <th colspan="2" class="text-center">
+                Sim 5
+                <button
+                    id="posBtnAddDataS5<%=k%>"
+                    type="button"
+                    name="btn5Sim"
+                    class="btn btn-small btn-success m-1"
+                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
+                    title="Agregar Datos"
+                    value="<%=k%>">
+                    <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                </button>
+            </th>
+        </tr>
+        <tr>
+            <th style="width:50vw" scope="col-1"
+                class="text-center pb-1"> Grillado <i class="fa-solid fa-table-cells fa-lg"></i> | Rev
+            </th>
+            <th style="width:50vw" scope="col-1"
+                class="text-center pb-1"> MP Ensayada | Rev
+            </th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        
+        <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length > n; n++) {
+            if (proyecto[m].project[j].oci[k].otProject[n].visible) {
+
+                var arrResGrillado = [];
+                var valueArrayResGrillado = 0;
+                var arrResRevisionGrillado = [];
+                var arrResCreadorGrillado = [];
+                var arrResModificadorGrillado = [];
+                var arrResFechaGrillado = [];
+                var arrResFechaModGrillado = [];
+
+                var arrResMpEnsayada = [];
+                var valueArrayResMpEnsayada = 0;
+                var arrResRevisionMpEnsayada = [];
+                var arrResCreadorMpEnsayada = [];
+                var arrResModificadorMpEnsayada = [];
+                var arrResFechaMpEnsayada = [];
+                var arrResFechaModMpEnsayada = [];
+
+                if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
+                    <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
+                        <% for (let q = 37; totalColDataSim5 > q; q++) {
+                            
+                            if (q==37) { %>
+                                <!-- Grillado data Activo--> 
+                                <td class="text-center align-middle">
+                                    
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                            proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5.length > 0) {
+                                                
+                                                for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5.length > i; i++) {
+                                                    var pathToMongoDBOtInfoSim5 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5[i]
+                                            
+                                                    if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5) {
+                                                        let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5.length)
+                                                        var resGrillado = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5[largoArray-1].grillado
+                                                        var resRevisionGrillado = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5[largoArray-1].revisionGrillado
+                                                        
+                                                        if (i == 0) {
+                                                            arrResGrillado.push(pathToMongoDBOtInfoSim5.grillado)
+                                                            arrResRevisionGrillado.push(pathToMongoDBOtInfoSim5.revisionGrillado)
+                                                        }
+                                                        else if (i >= 1 && pathToMongoDBOtInfoSim5.revisionGrillado != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5[i-1].revisionGrillado) {
+                                                            arrResGrillado.push(pathToMongoDBOtInfoSim5.grillado)
+                                                            arrResRevisionGrillado.push(pathToMongoDBOtInfoSim5.revisionGrillado)
+                                                        }
+                                                            arrResCreadorGrillado.push(pathToMongoDBOtInfoSim5.creator[0].username)
+                                                            arrResModificadorGrillado.push(pathToMongoDBOtInfoSim5.modificator[0].username)
+                                                            arrResFechaGrillado.push(pathToMongoDBOtInfoSim5.timestamp)
+                                                            arrResFechaModGrillado.push(pathToMongoDBOtInfoSim5.modifiedOn)
+                                                            valueArrayResGrillado = parseInt(arrResGrillado.length-1)
+                                                                                                    
+                                                    } else {
+                                                        var resGrillado = 'S/D'
+                                                        var resRevisionGrillado = 0
+                                                    }
+                                                }
+                                                
+                                                if (arrResGrillado.length == 1 ) {
+                                                    var anteriorDisabled = "disabled"
+                                                    var siguienteDisabled = "disabled"
+                                                } else if (arrResGrillado.length == arrResRevisionGrillado.length) {
+                                                    var anteriorDisabled = ""
+                                                    var siguienteDisabled = "disabled"
+                                                } else {
+                                                    var anteriorDisabled = ""
+                                                    var siguienteDisabled = "disabled"
+                                                }
+                                                
+                                        } else {
+                                            var anteriorDisabled = "disabled"
+                                            var siguienteDisabled = "disabled"
+                                            var resGrillado = "S/D"
+                                            var resRevisionGrillado = 0
+                                            arrResGrillado.push(resGrillado)
+                                            arrResRevisionGrillado.push(resRevisionGrillado)
+                                            valueArrayResGrillado = 0
+                                        } %>
+                                    
+                                        <div id="btnAnteriorSiguiente5Sim<%=k%>_<%=n%>_<%=q%>">
+                                            <button id="btnAnterior5Sim<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnAnterior5Sim"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm me-2"
+                                                title="Ver anterior"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResGrillado %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResGrillado %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionGrillado %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorGrillado %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorGrillado %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaGrillado %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModGrillado %>">
+            
+                                            <% switch (resGrillado) { 
+                                                case "ok": { %>
+                                                        <span id="resGrillado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                            OK
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionGrillado<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionGrillado"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueRevision=""
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionGrillado %>
+                                                        </span>
+                                                <% break; }        
+                                                case "noOk": { %>
+                                                        <span id="resGrillado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                            No OK
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionGrillado<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionGrillado"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionGrillado %>
+                                                        </span>
+                                                <% break; }        
+                                                case "pendiente": { %>
+                                                        <span id="resGrillado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                            Pendiente
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionGrillado<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionGrillado"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionGrillado %>
+                                                        </span>
+                                                <% break; }
+                                                case "noAplica": { %>
+                                                        <span id="resGrillado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                            N/A
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionGrillado<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionGrillado"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionGrillado %>
+                                                        </span>
+                                                <% break; }
+                                                default: { %>
+                                                        <span id="resGrillado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                            S/D
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionGrillado<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionGrillado"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionGrillado %>
+                                                        </span>
+                                                <% break; }
+                                            } %>
+            
+                                            <button id="btnSiguiente5Sim<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnSiguiente5Sim"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm ms-2"
+                                                title="Ver siguiente"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                </td>
+
+                            <% } else { %>
+                                <!-- MP Ensayada data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                            proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5.length > 0) {
+                                                 
+                                                for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5.length > i; i++) {
+                                                    var pathToMongoDBOtInfoSim5 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5[i]
+                                                    
+                                                    if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5) {
+                                                        
+                                                        let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5.length)
+                                                        var resMpEnsayada = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5[largoArray-1].mpEnsayada
+                                                        var resRevisionMpEnsayada = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5[largoArray-1].revisionMpEnsayada
+                                                        
+                                                        if (i == 0) {
+                                                            arrResMpEnsayada.push(pathToMongoDBOtInfoSim5.mpEnsayada)
+                                                            arrResRevisionMpEnsayada.push(pathToMongoDBOtInfoSim5.revisionMpEnsayada)
+                                                        }
+                                                        else if (i >= 1 && pathToMongoDBOtInfoSim5.revisionMpEnsayada != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5[i-1].revisionMpEnsayada) {
+                                                            arrResMpEnsayada.push(pathToMongoDBOtInfoSim5.mpEnsayada)
+                                                            arrResRevisionMpEnsayada.push(pathToMongoDBOtInfoSim5.revisionMpEnsayada)
+                                                        }                                                        
+                                                        arrResCreadorMpEnsayada.push(pathToMongoDBOtInfoSim5.creator[0].username)
+                                                        arrResModificadorMpEnsayada.push(pathToMongoDBOtInfoSim5.modificator[0].username)
+                                                        arrResFechaMpEnsayada.push(pathToMongoDBOtInfoSim5.timestamp)
+                                                        arrResFechaModMpEnsayada.push(pathToMongoDBOtInfoSim5.modifiedOn)
+                                                        valueArrayResMpEnsayada = parseInt(arrResMpEnsayada.length-1)
+                                                                                         
+                                                    } else {
+                                                        var resMpEnsayada = 'S/D'
+                                                        var resRevisionMpEnsayada = 0
+                                                    }
+                                                }
+                                                
+                                                if (arrResMpEnsayada.length == 1 ) {
+                                                    var siguienteDisabled = "disabled"
+                                                    var anteriorDisabled = "disabled"
+                                                } else if (arrResMpEnsayada.length == arrResRevisionMpEnsayada.length) {
+                                                    var anteriorDisabled = ""
+                                                    var siguienteDisabled = "disabled"
+                                                } else {
+                                                    var anteriorDisabled = ""
+                                                    var siguienteDisabled = "disabled"
+                                                }
+                                                
+                                            } else {
+                                                var anteriorDisabled = "disabled"
+                                                var siguienteDisabled = "disabled"
+                                                var resMpEnsayada = "S/D"
+                                                var resRevisionMpEnsayada = 0
+                                                arrResMpEnsayada.push(resMpEnsayada)
+                                                arrResRevisionMpEnsayada.push(resRevisionMpEnsayada)
+                                                valueArrayResMpEnsayada = 0
+                                        } %>
+                                    
+                                        <div id="btnAnteriorSiguiente5Sim<%=k%>_<%=n%>_<%=q%>">
+                                            <button id="btnAnterior5Sim<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnAnterior5Sim"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm me-2"
+                                                title="Ver anterior"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMpEnsayada %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMpEnsayada %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMpEnsayada %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorMpEnsayada %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorMpEnsayada %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMpEnsayada %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModMpEnsayada %>">
+            
+                                            <% switch (resMpEnsayada) { 
+                                                case "ok": { %>
+                                                        <span id="resMpEnsayada<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                            OK
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionMpEnsayada<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionMpEnsayada"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueRevision=""
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionMpEnsayada %>
+                                                        </span>
+                                                <% break; }        
+                                                case "noOk": { %>
+                                                        <span id="resMpEnsayada<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                            No OK
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionMpEnsayada<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionMpEnsayada"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionMpEnsayada %>
+                                                        </span>
+                                                <% break; }        
+                                                case "pendiente": { %>
+                                                        <span id="resMpEnsayada<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                            Pendiente
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionMpEnsayada<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionMpEnsayada"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionMpEnsayada %>
+                                                        </span>
+                                                <% break; }
+                                                case "noAplica": { %>
+                                                        <span id="resMpEnsayada<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                            N/A
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionMpEnsayada<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionMpEnsayada"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionMpEnsayada %>
+                                                        </span>
+                                                <% break; }
+                                                default: { %>
+                                                        <span id="resMpEnsayada<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                            S/D
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionMpEnsayada<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionMpEnsayada"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionMpEnsayada %>
+                                                        </span>
+                                                <% break; }
+                                            } %>
+            
+                                            <button id="btnSiguiente5Sim<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnSiguiente5Sim"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm ms-2"
+                                                title="Ver siguiente"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                </td>
+                            <% }
+                        } %>
+                        
+                    </tr>
+                <% } else { %>
+                    <tr class="pe-none" name="rowSelected<%=k%>_<%=n%>" style="height: 7vh; background-color: #dedede;">
+                        <% for (let q = 37; totalColDataSim5 > q; q++) {
+                            if (q==37) { %>
+                                <!-- Mat Ensayo data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                        proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5.length > 0) {
+                                    
+                                            for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5.length > i; i++) {
+                                                if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5) {
+                                                    let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5.length)
+                                                    var resGrillado = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5[largoArray-1].grillado
+                                                    var resRevisionGrillado = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5[largoArray-1].revisionGrillado
+                                                    
+                                                    if (i == 0) {
+                                                        arrResGrillado.push(pathToMongoDBOtInfoSim5.grillado)
+                                                        arrResRevisionGrillado.push(pathToMongoDBOtInfoSim5.revisionGrillado)
+                                                    }
+                                                    else if (i >= 1 && pathToMongoDBOtInfoSim5.revisionGrillado != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5[i-1].revisionGrillado) {
+                                                        arrResGrillado.push(pathToMongoDBOtInfoSim5.grillado)
+                                                        arrResRevisionGrillado.push(pathToMongoDBOtInfoSim5.revisionGrillado)
+                                                    }
+                                                    valueArrayRes1Sim = parseInt(arrResGrillado.length-1)
+                                                                                                
+                                                } else {
+                                                    var resGrillado = 'S/D'
+                                                    var resRevisionGrillado = 0
+                                                }
+                                            }
+                                            var resGrillado = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5[0].grillado
+                                    } else {
+                                        var resGrillado = "S/D"
+                                        var resRevisionGrillado = 0
+                                        arrResGrillado.push(resGrillado)
+                                        arrResRevisionGrillado.push(resRevisionGrillado)
+                                    } %>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResGrillado %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes1Sim %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionGrillado %>">
+                                    
+                                    <% switch (resGrillado) { 
+                                        case "ok": { %>
+                                                <span id="resGrillado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                    OK
+                                                </span>
+                                                |
+                                                <span id="resRevisionGrillado<%=k%>_<%=n%>_<%=q%>"class="badge text-dark my-2" >
+                                                    <%= resRevisionGrillado %>
+                                                </span>
+                                        <% break; }        
+                                        case "noOk": { %>
+                                                <span id="resGrillado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                    No OK
+                                                </span>
+                                                |
+                                                <span id="resRevisionGrillado<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionGrillado %>
+                                                </span>
+                                        <% break; }        
+                                        case "pendiente": { %>
+                                                <span id="resGrillado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                    Pendiente
+                                                </span>
+                                                |
+                                                <span id="resRevisionGrillado<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionGrillado %>
+                                                </span>
+                                        <% break; }
+                                        case "noAplica": { %>
+                                                <span id="resGrillado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-white my-2">
+                                                    N/A
+                                                </span>
+                                                |
+                                                <span id="resRevisionGrillado<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionGrillado %>
+                                                </span>
+                                        <% break; }
+                                        default: { %>
+                                                <span id="resGrillado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-dark my-2">
+                                                    S/D
+                                                </span>
+                                                |
+                                                <span id="resRevisionGrillado<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionGrillado %>
+                                                </span>
+                                        <% break; }
+                                    } %>
+                                </td>
+
+                            <% } else { %>
+                                <!-- MpEnsayada data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                        proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5.length > 0) {
+                                    
+                                            for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5.length > i; i++) {
+                                                if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5) {
+                                                    let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5.length)
+                                                    var resMpEnsayada = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5[largoArray-1].mpEnsayada
+                                                    var resRevisionMpEnsayada = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5[largoArray-1].revisionMpEnsayada
+                                                    
+                                                    if (i == 0) {
+                                                        arrResMpEnsayada.push(pathToMongoDBOtInfoSim5.mpEnsayada)
+                                                        arrResRevisionMpEnsayada.push(pathToMongoDBOtInfoSim5.revisionMpEnsayada)
+                                                    }
+                                                    else if (i >= 1 && pathToMongoDBOtInfoSim5.revisionMpEnsayada != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5[i-1].revisionMpEnsayada) {
+                                                        arrResMpEnsayada.push(pathToMongoDBOtInfoSim5.mpEnsayada)
+                                                        arrResRevisionMpEnsayada.push(pathToMongoDBOtInfoSim5.revisionMpEnsayada)
+                                                    }
+                                                    valueArrayResMpEnsayada = parseInt(arrResMpEnsayada.length-1)
+                                                                                                
+                                                } else {
+                                                    var resMpEnsayada = 'S/D'
+                                                    var resRevisionMpEnsayada = 0
+                                                }
+                                            }
+
+                                            var resMpEnsayada = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim5[0].mpEnsayada
+                                    
+                                    } else {
+                                        var resMpEnsayada = "S/D"
+                                        var resRevisionMpEnsayada = 0
+                                        arrResMpEnsayada.push(resMpEnsayada)
+                                        arrResRevisionMpEnsayada.push(resRevisionMpEnsayada)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMpEnsayada %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMpEnsayada %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMpEnsayada %>">
+
+                                    <% switch (resMpEnsayada) { 
+                                        case "ok": { %>
+                                            <span id="resMpEnsayada<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">
+                                                OK
+                                            </span>
+                                            |
+                                            <span id="resRevisionMpEnsayada<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionMpEnsayada %>
+                                            </span>
+                                        <% break; }        
+                                        case "noOk": { %>
+                                                <span id="resMpEnsayada<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                    No OK
+                                                </span>
+                                                |
+                                                <span id="resRevisionMpEnsayada<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionMpEnsayada %>
+                                                </span>
+                                        <% break; }        
+                                        case "pendiente": { %>
+                                                <span id="resMpEnsayada<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                    Pendiente
+                                                </span>
+                                                |
+                                                <span id="resRevisionMpEnsayada<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionMpEnsayada %>
+                                                </span>
+                                        <% break; }
+                                        case "noAplica": { %>
+                                                <span id="resMpEnsayada<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-withe my-2">
+                                                    N/A
+                                                </span>
+                                                |
+                                                <span id="resRevisionMpEnsayada<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionMpEnsayada %>
+                                                </span>
+                                        <% break; }
+                                        default: { %>
+                                                <span id="resMpEnsayada<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-dark my-2">
+                                                    S/D
+                                                </span>
+                                                |
+                                                <span id="resRevisionMpEnsayada<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionMpEnsayada %>
+                                                </span>
+                                        <% break; }
+                                    } %>
+                                </td>
+
+                            <% }
+                        } %>
+                    </tr>
+                <% }
+            }
+        } %>
+    </tbody>
+</table>

@@ -1,0 +1,207 @@
+<div class="card mx-auto" style="width: 93vw;">
+    <div class="card card-body d-flex justify-content-center">
+        <div class="form-group col-12 mx-auto my-2 w-100 border px-5 py-1 text-white rounded" style="background-color: #868686;">
+            <form id="formNewProject" enctype="multipart/form-data" action="/api/proyectos" method="post">
+                <fieldset>
+                    <div class="row my-3">
+                        <div class="col-3">
+                            <label for="projectName">Nombre Proyecto</label>
+                            <input type="text" name="projectName" id="projectName" class="form-control"
+                                placeholder="Nombre Proyecto" required>
+                        </div>
+                        <br>
+                        <div class="col-2">
+                            <label for="statusProject">Status Proyecto</label>
+                            <div class="">
+                                <p class="d-inline-block me-1">Inactivo</p>
+                                <div class="form-check form-switch d-inline-block mt-2">
+                                    <input class="form-check-input" type="checkbox" id="statusProject" aria-checked="true" name="statusProject" style="cursor: pointer;" checked>
+                                    <label class="form-check-label" for="statusProject">Activo</label>
+                                </div>    
+                            </div>
+                        </div>
+                        <br>
+                        <div class="col-3">
+                            <label for="levelProject">Nivel</label>
+                            <select id="levelProject" name="levelProject" class="form-select" required>
+                                <option selected disabled value="">Seleccione un Nivel</option>
+                                <option value="ganado">Ganado</option>
+                                <option value="paraCotizar">Para Cotizar</option>
+                                <option value="aRiesgo">A Riesgo</option>
+                            </select>
+                        </div>
+                        <br>
+                        <div class="col-3">
+                            <label for="codeProject">Codigo Proyecto</label>
+                            <input type="text" name="codeProject" id="codeProject" class="form-control"
+                                placeholder="Codigo Proyecto" required>
+                        </div>
+                        <br>
+                    </div>
+
+                    <div class="row my-3">
+                        <div class="col-7">
+                            <label for="projectDescription">Descripción Proyecto</label>
+                            <input type="text" name="projectDescription" id="projectDescription" class="form-control"
+                                placeholder="Descripción Proyecto" required>
+                        </div>
+                        <br>
+                        <div class="col-3">
+                            <label for="prioProject">Prioridad Proyecto</label>
+                            <input type="number" name="prioProject" id="prioProject" class="form-control"
+                                placeholder="Prioridad Proyecto" value="0", required>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-start align-items-center mt-3">
+                        <div class="col">
+                            <label for="imageProject" class="d-flex justify-content-start ms-1">Seleccione una imagen para el Proyecto</label>
+                            <input type="text" id="fileInputTextProject" name="imageProject"
+                                style="display: none;">
+                            <input type="file" id="fileInputProject" name="imageProject"
+                                value="" accept="image/*" style="display: none;">
+                            <div id="drop-areaProject" class="mb-2 mx-auto">
+                                Arrastra y suelta una imagen aquí
+                            </div>
+                            <button
+                                title="Eliminar Imagen"
+                                type="button"
+                                class="btn btn-danger rounded-circle mx-auto"
+                                id="removeImageProject"
+                                style="display: none;">
+                                    <i class="fa-solid fa-xmark"></i>
+                            </button>
+                            
+                            <div id="alertProject" class="alert alert-warning align-items-center mx-auto" role="alert"
+                                style="display: none; font-size: 0.85rem; height: 1.15rem;  width: 28rem;">
+                                <strong class="me-2">Error!</strong> Solo puedes ingresar una imagen jpg, png, bmp o jpeg.
+                            </div>
+                            <div id="alertProjectSize" class="alert alert-warning align-items-center mx-auto" role="alert"
+                                style="display: none; font-size: 0.85rem; height: 1.15rem; width: 25rem;">
+                                <strong class="me-2">Atención!</strong> El tamaño de la imagen debe ser menor a 3Mb.
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="row my-3 m-1">
+                        <div class="col-11">
+                            <div class="accordion" id="accordionPanelsStayOpenExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                                        <button
+                                            class="accordion-button"
+                                            id="buttonOne"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#panelsStayOpen-collapseOneForm" aria-expanded="false"
+                                            aria-controls="panelsStayOpen-collapseOneForm">
+                                            <strong>Información OCI</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapseOneForm" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
+                                        <div class="accordion-body" id="div_body">
+                                            <div class="row my-3" id="ociItemRow">
+                                                <div class="row">
+                                                    <strong>#1</strong>
+                                                </div>
+                                                <div class="col-2">
+                                                    <label for="ociNumber" id="labelOciNumber">Número de OCI</label>
+                                                    <input type="number" name="ociNumber" id="ociNumber" class="form-control"
+                                                    min="0" max="9999" placeholder="Número OCI" required>
+                                                </div>
+                                                <div class="col-3">
+                                                    <label for="ociDescription" id="labelOciDescription">Descripción OCI</label>
+                                                    <textarea type="text" name="ociDescription" id="ociDescription" rows="3"
+                                                    maxlength="100" class="form-control" placeholder="Descripcion OCI" required></textarea>
+                                                </div>
+                                                <div class="col-2">
+                                                    <label for="ociAlias" id="labelOciAlias">Alias OCI</label>
+                                                    <input type="text" name="ociAlias" id="ociAlias"
+                                                    maxlength="50" class="form-control" placeholder="Alias OCI">
+                                                </div>
+                                                <div class="col-1">
+                                                    <label for="ociStatus" id="labelOciStatus">Status OCI</label><br>
+                                                    <div class="d-inline-block me- mt-2">Inactiva</div>
+                                                    <div class="form-check form-switch d-inline-block">
+                                                        <input class="form-check-input" type="checkbox" id="ociStatus"
+                                                        name="ociStatus" aria-checked="true" style="cursor: pointer;" checked>
+                                                        <label class="form-check-label" for="ociStatus">Activa</label>
+                                                    </div>    
+                                                </div>
+                                                <div class="col ms-3">
+                                                    <label for="imageNewOci" id="labelOciImage">Seleccione una imagen para la OCI</label>
+                                                    <input type="text" id="fileInputNewOciText" name="imageOciFileName"
+                                                        value="" style="display: none;">
+                                                    <input type="file" id="fileInputNewOci" name="imageNewOci"
+                                                        value="" accept="image/*" style="display: none;">
+                                                
+                                                    <div id="drop-area-oci" class="mb-2 mx-auto">
+                                                        Arrastra y suelta una imagen aquí
+                                                    </div>
+                                                    <button
+                                                        title="Eliminar Imagen"
+                                                        type="button"
+                                                        class="btn btn-danger rounded-circle mx-auto"
+                                                        id="btnRemoveOciImage0"
+                                                        name="btnRemoveOciImage"
+                                                        style="display: none;">
+                                                        <i class="fa-solid fa-xmark"></i>
+                                                    </button>
+                                                    
+                                                    <div id="alertOci" class="alert alert-warning align-items-center mx-auto" role="alert"
+                                                        style="display: none; font-size: 0.75rem; height: 1.15rem;">
+                                                        <strong class="me-2">Error!</strong> Solo puedes ingresar una imagen jpg, png, bmp o jpeg.
+                                                    </div>
+                                                    <div id="alertOciSize" class="alert alert-warning align-items-center mx-auto" role="alert"
+                                                        style="display: none; font-size: 0.75rem; height: 1.15rem;">
+                                                        <strong class="me-2">Atención!</strong> El tamaño de la imagen debe ser menor a 3Mb.
+                                                    </div>
+                                                </div>
+                                                <div class="col-1 my-1 align-self-middle">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-1">
+                                <div class="d-flex justify-content-center">
+                                    <button
+                                        type="button"
+                                        id="btnAddNewRow"
+                                        title="Agregar nueva línea de OCI" 
+                                        class="btn btn-primary rounded-circle me-2 my-2"
+                                        autocomplete="off" disabled>
+                                        <i class="fa-solid fa-plus-circle"></i>
+                                    </button>
+                                </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <input type="hidden" name="idHidden" id="idHidden" value="<%= userInfo.id %>">
+                    <input type="hidden" name="clientIdHidden" id="clientIdHidden" value="<%= cliente._id %>">
+                    <input type="hidden" name="ociQuantity" id="ociQuantity" value="1">
+                    <br>
+                    <div class="d-flex justify-content-center mb-3">
+                        <button
+                            id="btnNewProject"
+                            type="button"
+                            class="btn btn-primary me-4">Guardar
+                            <i class="fa-solid fa-save"></i>
+                        </button>
+                        <button
+                            type="reset"
+                            class="btn btn-danger ms-4">
+                                Reset <i class="fa-solid fa-rotate-left"></i>
+                        </button>
+                    </div>
+                </fieldset>
+            </form>
+            <div id="mensajeError" class="alert alert-warning align-items-center justify-content-center w-50 mx-auto" role="alert"
+                style="display: none; font-size: 0.85rem; height: 1.15rem;">
+            </div>
+        </div>
+    </div>
+</div>

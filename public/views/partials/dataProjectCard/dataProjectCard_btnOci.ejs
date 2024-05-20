@@ -1,0 +1,64 @@
+<!-- cabecera botonera principal de OCI -->
+<div class="container my-2 mw-100">
+    Puedes agregar mas datos de OT en esta OCI# <strong><%= arrayVisibleOci[k].ociNumber %></strong>, haciendo click en el siguiente botón
+    <button class="btn btn-success m-1 rounded-circle shadow-lg"
+        id="btnAddOtFormSelected<%=k%>"
+        aria-controls="collapseExample"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseExample" aria-expanded="false"
+        style="--bs-btn-font-size: .95rem; color: var(--bs-white);"
+        type="button"
+        value="<%=k%>"
+        name="<%= proyecto[m].project[j].oci[k].ociNumber %>"
+        title="Agregar nueva OT">
+        <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
+    </button>
+    <hr class="border border-primary opacity-75">
+    <div class="row">
+        <div id="posBtnHiddeTableGeneral<%=k%>" class="col-3">
+
+            <button id="btnHiddeTableGeneral<%=k%>"
+                name="btnHiddeTableGeneral"
+                type="button" class="btn btn-primary"
+                title="Ocultar General"
+                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; background-color: #115; border: none">
+                <i class="fa-solid fa-eye-slash"></i>
+            </button>
+
+        </div>
+        <div id="posBtnHiddeTableSeguimiento<%=k%>" class="col-3">
+
+            <button id="btnHiddeTableSeguimiento<%=k%>"
+                name="btnHiddeTableSeguimiento"
+                type="button" class="btn btn-secondary"
+                title="Ocultar Int/Ext"
+                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; background-color: #115; border: none">
+                <i class="fa-solid fa-eye-slash"></i>
+            </button>
+
+        </div>
+        <div id="posCheckSelectionAll<%=k%>" class="col-3">
+
+            <button id="btnCheckSelectionAll<%=k%>"
+                name="btnCheckSelectionAll"
+                type="button" class="btn btn-primary"
+                title="Seleccionar todas las OT"
+                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; border: none">
+                Seleccionar todos <i class="fa-solid fa-check-double"></i>
+            </button>
+
+        </div>
+        <div id="posCheckSelecMasive<%=k%>" class="col-3">
+
+            <button id="btnCheckSelecMasive<%=k%>"
+                name="btnCheckSelecMasive"
+                type="button" class="btn btn-secondary"
+                title="Modificacion multiple de OT's"
+                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; border: none"
+                disabled>
+                <i class="fa-solid fa-list-check"></i> Mod. multiple (0)
+            </button>
+
+        </div>
+    </div>
+</div>

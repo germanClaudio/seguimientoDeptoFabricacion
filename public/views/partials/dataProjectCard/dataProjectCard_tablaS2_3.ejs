@@ -1,0 +1,1146 @@
+<!-- --------- tabla S2-S3 ----------- -->
+<table id="tabla2_3Sim<%=k%>"
+    class="table-responsive align-middle col-2 border-end border-dark"
+    style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #88c">
+        <tr>
+            <th colspan="3" class="text-center border-end">
+                Sim 2
+                <button
+                    id="posBtnAddData2_3Sim<%=k%>"
+                    type="button"
+                    name="btn2_3Sim"
+                    class="btn btn-small btn-success m-1 ms-5"
+                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
+                    title="Agregar Datos"
+                    value="<%=k%>">
+                    <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                </button>
+            </th>
+            <th colspan="1" class="text-center">
+                Sim 3
+            </th>
+        </tr>
+        <tr>
+            <th style="width:25vw" scope="col-1"
+                class="text-center pb-1"> Sim 2 | Rev
+            </th>
+            <th style="width:25vw" scope="col-1"
+                class="text-center pb-1"> Reporte | Rev
+            </th>
+            <th style="width:25vw" scope="col-1"
+                class="text-center pb-1 border-end"> DFN Prodismo | Rev
+            </th>
+            <th style="width:25vw" scope="col-1"
+                class="text-center pb-1"> Sim 3 | Rev
+            </th>
+
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        
+        <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length > n; n++) {
+            if (proyecto[m].project[j].oci[k].otProject[n].visible) {
+
+                var arrRes2Sim = [];
+                var valueArrayRes2Sim = 0;
+                var arrResRevision2Sim = [];
+                var arrResCreador2Sim = [];
+                var arrResModificador2Sim = [];
+                var arrResFecha2Sim = [];
+                var arrResFechaMod2Sim = [];
+
+                var arrResReporte = [];
+                var valueArrayResReporte = 0;
+                var arrResRevisionReporte = [];
+                var arrResCreadorReporte = [];
+                var arrResModificadorReporte = [];
+                var arrResFechaReporte = [];
+                var arrResFechaModReporte = [];
+
+                var arrResDfnProdismo = [];
+                var valueArrayResDfnProdismo = 0;
+                var arrResRevisionDfnProdismo = [];
+                var arrResCreadorDfnProdismo = [];
+                var arrResModificadorDfnProdismo = [];
+                var arrResFechaDfnProdismo = [];
+                var arrResFechaModDfnProdismo = [];
+
+                var arrRes3Sim = [];
+                var valueArrayRes3Sim = 0;
+                var arrResRevision3Sim = [];
+                var arrResCreador3Sim = [];
+                var arrResModificador3Sim = [];
+                var arrResFecha3Sim = [];
+                var arrResFechaMod3Sim = [];
+
+                if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
+                    <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
+                        <% for (let q = 25; totalColDataSim2_3 > q; q++) {
+                            if (q==25) { %>
+                                <!-- Simulacion 2 data Activo--> 
+                                <td class="text-center align-middle">
+
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                            proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length > 0) {
+                                        
+                                                for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length > i; i++) {
+                                                    var pathToMongoDBOtInfoSim2_3 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[i]
+                                                    
+                                                    if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3) {
+                                                        let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length)
+                                                        var res2Sim = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[largoArray-1].sim2
+                                                        var resRevision2Sim = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[largoArray-1].revisionSim2
+                                                        
+                                                        if (i == 0) {
+                                                            arrRes2Sim.push(pathToMongoDBOtInfoSim2_3.sim2)
+                                                            arrResRevision2Sim.push(pathToMongoDBOtInfoSim2_3.revisionSim2)
+                                                        }
+                                                        else if (i >= 1 && pathToMongoDBOtInfoSim2_3.revisionSim2 != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[i-1].revisionSim2) {
+                                                            arrRes2Sim.push(pathToMongoDBOtInfoSim2_3.sim2)
+                                                            arrResRevision2Sim.push(pathToMongoDBOtInfoSim2_3.revisionSim2)
+                                                        }
+                                                            arrResCreador2Sim.push(pathToMongoDBOtInfoSim2_3.creator[0].username)
+                                                            arrResModificador2Sim.push(pathToMongoDBOtInfoSim2_3.modificator[0].username)
+                                                            arrResFecha2Sim.push(pathToMongoDBOtInfoSim2_3.timestamp)
+                                                            arrResFechaMod2Sim.push(pathToMongoDBOtInfoSim2_3.modifiedOn)
+                                                            valueArrayRes2Sim = parseInt(arrRes2Sim.length-1)
+                                                                                                    
+                                                    } else {
+                                                        var res2Sim = 'S/D'
+                                                        var resRevision2Sim = 0
+                                                    }
+                                                }
+                                                
+                                                if (arrRes2Sim.length == 1 ) {
+                                                    var anteriorDisabled = "disabled"
+                                                    var siguienteDisabled = "disabled"
+                                                } else if (arrRes2Sim.length == arrResRevision2Sim.length) {
+                                                    var anteriorDisabled = ""
+                                                    var siguienteDisabled = "disabled"
+                                                } else {
+                                                    var anteriorDisabled = ""
+                                                    var siguienteDisabled = "disabled"
+                                                }
+                                                
+                                        } else {
+                                            var anteriorDisabled = "disabled"
+                                            var siguienteDisabled = "disabled"
+                                            var res2Sim = "S/D"
+                                            var resRevision2Sim = 0
+                                            arrRes2Sim.push(res2Sim)
+                                            arrResRevision2Sim.push(resRevision2Sim)
+                                            valueArrayRes2Sim = 0
+                                        } %>
+                                    
+                                        <div id="btnAnteriorSiguiente2_3Sim<%=k%>_<%=n%>_<%=q%>">
+                                            <button id="btnAnterior2_3Sim<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnAnterior2_3Sim"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm me-2"
+                                                title="Ver anterior"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrRes2Sim %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes2Sim %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision2Sim %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreador2Sim %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificador2Sim %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFecha2Sim %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMod2Sim %>">
+            
+                                            <% switch (res2Sim) { 
+                                                case "ok": { %>
+                                                        <span id="res2Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                            OK
+                                                        </span>
+                                                        |
+                                                        <span id="resRevision2Sim<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevision2Sim"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueRevision=""
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevision2Sim %>
+                                                        </span>
+                                                <% break; }        
+                                                case "noOk": { %>
+                                                        <span id="res2Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                            No OK
+                                                        </span>
+                                                        |
+                                                        <span id="resRevision2Sim<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevision2Sim"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevision2Sim %>
+                                                        </span>
+                                                <% break; }        
+                                                case "pendiente": { %>
+                                                        <span id="res2Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                            Pendiente
+                                                        </span>
+                                                        |
+                                                        <span id="resRevision2Sim<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevision2Sim"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevision2Sim %>
+                                                        </span>
+                                                <% break; }
+                                                case "noAplica": { %>
+                                                        <span id="res2Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                            N/A
+                                                        </span>
+                                                        |
+                                                        <span id="resRevision2Sim<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevision2Sim"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevision2Sim %>
+                                                        </span>
+                                                <% break; }
+                                                default: { %>
+                                                        <span id="res2Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                            S/D
+                                                        </span>
+                                                        |
+                                                        <span id="resRevision2Sim<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevision2Sim"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevision2Sim %>
+                                                        </span>
+                                                <% break; }
+                                            } %>
+            
+                                            <button id="btnSiguiente2_3Sim<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnSiguiente2_3Sim"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm ms-2"
+                                                title="Ver siguiente"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                </td>
+                            <% } else if (q==26) { %>
+                                <!-- Reporte data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                            proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length > 0) {
+                                        
+                                                for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length > i; i++) {
+                                                    var pathToMongoDBOtInfoSim2_3 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[i]
+                                                    
+                                                    if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3) {
+                                                        
+                                                        let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length)
+                                                        var resReporte = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[largoArray-1].reporte
+                                                        var resRevisionReporte = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[largoArray-1].revisionReporte
+                                                        
+                                                        if (i == 0) {
+                                                            arrResReporte.push(pathToMongoDBOtInfoSim2_3.reporte)
+                                                            arrResRevisionReporte.push(pathToMongoDBOtInfoSim2_3.revisionReporte)
+                                                        }
+                                                        else if (i >= 1 && pathToMongoDBOtInfoSim2_3.revisionReporte != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[i-1].revisionReporte) {
+                                                            arrResReporte.push(pathToMongoDBOtInfoSim2_3.reporte)
+                                                            arrResRevisionReporte.push(pathToMongoDBOtInfoSim2_3.revisionReporte)
+                                                        }
+                                                            arrResCreadorReporte.push(pathToMongoDBOtInfoSim2_3.creator[0].username)
+                                                            arrResModificadorReporte.push(pathToMongoDBOtInfoSim2_3.modificator[0].username)
+                                                            arrResFechaReporte.push(pathToMongoDBOtInfoSim2_3.timestamp)
+                                                            arrResFechaModReporte.push(pathToMongoDBOtInfoSim2_3.modifiedOn)
+                                                            valueArrayResReporte = parseInt(arrResReporte.length-1)
+                                                                                                    
+                                                    } else {
+                                                        var resReporte = 'S/D'
+                                                        var resRevisionReporte = 0
+                                                    }
+                                                }
+                                                
+                                                if (arrResReporte.length == 1 ) {
+                                                    var siguienteDisabled = "disabled"
+                                                    var anteriorDisabled = "disabled"
+                                                } else if (arrResReporte.length == arrResRevisionReporte.length) {
+                                                    var anteriorDisabled = ""
+                                                    var siguienteDisabled = "disabled"
+                                                } else {
+                                                    var anteriorDisabled = ""
+                                                    var siguienteDisabled = "disabled"
+                                                }
+                                                
+                                            } else {
+                                                var anteriorDisabled = "disabled"
+                                                var siguienteDisabled = "disabled"
+                                                var resReporte = ""
+                                                var resRevisionReporte = 0
+                                                arrResReporte.push(resReporte)
+                                                arrResRevisionReporte.push(resRevisionReporte)
+                                                valueArrayResReporte = 0
+                                                
+                                        } %>
+                                    
+                                        <div id="btnAnteriorSiguiente2_3Sim<%=k%>_<%=n%>_<%=q%>">
+                                            <button id="btnAnterior2_3Sim<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnAnterior2_3Sim"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm me-2"
+                                                title="Ver anterior"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResReporte %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResReporte %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionReporte %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorReporte %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorReporte %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaReporte %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModReporte %>">
+            
+                                            <% switch (resReporte) { 
+                                                case "ok": { %>
+                                                        <span id="resReporte<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                            OK
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionReporte<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionReporte"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueRevision=""
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionReporte %>
+                                                        </span>
+                                                <% break; }        
+                                                case "noOk": { %>
+                                                        <span id="resReporte<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                            No OK
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionReporte<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionReporte"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionReporte %>
+                                                        </span>
+                                                <% break; }        
+                                                case "pendiente": { %>
+                                                        <span id="resReporte<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                            Pendiente
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionReporte<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionReporte"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionReporte %>
+                                                        </span>
+                                                <% break; }
+                                                case "noAplica": { %>
+                                                        <span id="resReporte<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                            N/A
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionReporte<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionReporte"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionReporte %>
+                                                        </span>
+                                                <% break; }
+                                                default: { %>
+                                                        <span id="resReporte<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                            S/D
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionReporte<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionReporte"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionReporte %>
+                                                        </span>
+                                                <% break; }
+                                            } %>
+            
+                                            <button id="btnSiguiente2_3Sim<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnSiguiente2_3Sim"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm ms-2"
+                                                title="Ver siguiente"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                </td>
+
+                            <% } else if (q==27) { %>
+                                <!-- DfnProdismo Sim1 data Activo-->
+                                <td class="text-center align-middle border-end">
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                            proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length > 0) {
+                                        
+                                                for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length > i; i++) {
+                                                    var pathToMongoDBOtInfoSim2_3 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[i]
+                                                    
+                                                    if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3) {
+                                                        
+                                                        let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length)
+                                                        var resDfnProdismo = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[largoArray-1].dfnProdismo
+                                                        var resRevisionDfnProdismo = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[largoArray-1].revisionDfnProdismo
+                                                        
+                                                        if (i == 0) {
+                                                            arrResDfnProdismo.push(pathToMongoDBOtInfoSim2_3.dfnProdismo)
+                                                            arrResRevisionDfnProdismo.push(pathToMongoDBOtInfoSim2_3.revisionDfnProdismo)
+                                                        }
+                                                        else if (i >= 1 && pathToMongoDBOtInfoSim2_3.revisionDfnProdismo != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[i-1].revisionDfnProdismo) {
+                                                            arrResDfnProdismo.push(pathToMongoDBOtInfoSim2_3.dfnProdismo)
+                                                            arrResRevisionDfnProdismo.push(pathToMongoDBOtInfoSim2_3.revisionDfnProdismo)
+                                                        }
+                                                            arrResCreadorDfnProdismo.push(pathToMongoDBOtInfoSim2_3.creator[0].username)
+                                                            arrResModificadorDfnProdismo.push(pathToMongoDBOtInfoSim2_3.modificator[0].username)
+                                                            arrResFechaDfnProdismo.push(pathToMongoDBOtInfoSim2_3.timestamp)
+                                                            arrResFechaModDfnProdismo.push(pathToMongoDBOtInfoSim2_3.modifiedOn)
+                                                            valueArrayResDfnProdismo = parseInt(arrResDfnProdismo.length-1)
+                                                                                                    
+                                                    } else {
+                                                        var resDfnProdismo = 'S/D'
+                                                        var resRevisionDfnProdismo = 0
+                                                    }
+                                                }
+                                                
+                                                if (arrResDfnProdismo.length == 1 ) {
+                                                    var siguienteDisabled = "disabled"
+                                                    var anteriorDisabled = "disabled"
+                                                } else if (arrResDfnProdismo.length == arrResRevisionDfnProdismo.length) {
+                                                    var anteriorDisabled = ""
+                                                    var siguienteDisabled = "disabled"
+                                                } else {
+                                                    var anteriorDisabled = ""
+                                                    var siguienteDisabled = "disabled"
+                                                }
+                                                
+                                            } else {
+                                                var anteriorDisabled = "disabled"
+                                                var siguienteDisabled = "disabled"
+                                                var resDfnProdismo = "S/D"
+                                                var resRevisionDfnProdismo = 0
+                                                arrResDfnProdismo.push(resDfnProdismo)
+                                                arrResRevisionDfnProdismo.push(resRevisionDfnProdismo)
+                                                valueArrayResDfnProdismo = 0
+                                        } %>
+                                    
+                                        <div id="btnAnteriorSiguiente2_3Sim<%=k%>_<%=n%>_<%=q%>">
+                                            <button id="btnAnterior2_3Sim<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnAnterior2_3Sim"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm me-2"
+                                                title="Ver anterior"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDfnProdismo %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResDfnProdismo %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionDfnProdismo %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorDfnProdismo %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorDfnProdismo %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaDfnProdismo %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModDfnProdismo %>">
+            
+                                            <% switch (resDfnProdismo) { 
+                                                case "ok": { %>
+                                                        <span id="resDfnProdismo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                            OK
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionDfnProdismo<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionDfnProdismo"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueRevision=""
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionDfnProdismo %>
+                                                        </span>
+                                                <% break; }        
+                                                case "noOk": { %>
+                                                        <span id="resDfnProdismo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                            No OK
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionDfnProdismo<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionDfnProdismo"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionDfnProdismo %>
+                                                        </span>
+                                                <% break; }        
+                                                case "pendiente": { %>
+                                                        <span id="resDfnProdismo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                            Pendiente
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionDfnProdismo<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionDfnProdismo"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionDfnProdismo %>
+                                                        </span>
+                                                <% break; }
+                                                case "noAplica": { %>
+                                                        <span id="resDfnProdismo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                            N/A
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionDfnProdismo<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionDfnProdismo"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionDfnProdismo %>
+                                                        </span>
+                                                <% break; }
+                                                default: { %>
+                                                        <span id="resDfnProdismo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                            S/D
+                                                        </span>
+                                                        |
+                                                        <span id="resRevisionDfnProdismo<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevisionDfnProdismo"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevisionDfnProdismo %>
+                                                        </span>
+                                                <% break; }
+                                            } %>
+            
+                                            <button id="btnSiguiente2_3Sim<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnSiguiente2_3Sim"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm ms-2"
+                                                title="Ver siguiente"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                </td>
+
+                            <% } else { %>
+                                <!-- Simulacion 3 data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                            proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length > 0) {
+                                                 
+                                                for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length > i; i++) {
+                                                    var pathToMongoDBOtInfoSim2_3 = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[i]
+                                                    
+                                                    if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3) {
+                                                        
+                                                        let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length)
+                                                        var res3Sim = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[largoArray-1].sim3
+                                                        var resRevision3Sim = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[largoArray-1].revisionSim3
+                                                        
+                                                        if (i == 0) {
+                                                            arrRes3Sim.push(pathToMongoDBOtInfoSim2_3.sim3)
+                                                            arrResRevision3Sim.push(pathToMongoDBOtInfoSim2_3.revisionSim3)
+                                                        }
+                                                        else if (i >= 1 && pathToMongoDBOtInfoSim2_3.revisionSim3 != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[i-1].revisionSim3) {
+                                                            arrRes3Sim.push(pathToMongoDBOtInfoSim2_3.sim3)
+                                                            arrResRevision3Sim.push(pathToMongoDBOtInfoSim2_3.revisionSim3)
+                                                        }                                                        
+                                                        arrResCreador3Sim.push(pathToMongoDBOtInfoSim2_3.creator[0].username)
+                                                        arrResModificador3Sim.push(pathToMongoDBOtInfoSim2_3.modificator[0].username)
+                                                        arrResFecha3Sim.push(pathToMongoDBOtInfoSim2_3.timestamp)
+                                                        arrResFechaMod3Sim.push(pathToMongoDBOtInfoSim2_3.modifiedOn)
+                                                        valueArrayRes3Sim = parseInt(arrRes3Sim.length-1)
+                                                                                         
+                                                    } else {
+                                                        var res3Sim = 'S/D'
+                                                        var resRevision3Sim = 0
+                                                    }
+                                                }
+                                                
+                                                if (arrRes3Sim.length == 1 ) {
+                                                    var siguienteDisabled = "disabled"
+                                                    var anteriorDisabled = "disabled"
+                                                } else if (arrRes3Sim.length == arrResRevision3Sim.length) {
+                                                    var anteriorDisabled = ""
+                                                    var siguienteDisabled = "disabled"
+                                                } else {
+                                                    var anteriorDisabled = ""
+                                                    var siguienteDisabled = "disabled"
+                                                }
+                                                
+                                            } else {
+                                                var anteriorDisabled = "disabled"
+                                                var siguienteDisabled = "disabled"
+                                                var res3Sim = "S/D"
+                                                var resRevision3Sim = 0
+                                                arrRes3Sim.push(res3Sim)
+                                                arrResRevision3Sim.push(resRevision3Sim)
+                                                valueArrayRes3Sim = 0
+                                        } %>
+                                    
+                                        <div id="btnAnteriorSiguiente2_3Sim<%=k%>_<%=n%>_<%=q%>">
+                                            <button id="btnAnterior2_3Sim<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnAnterior2_3Sim"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm me-2"
+                                                title="Ver anterior"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrRes3Sim %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes3Sim %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision3Sim %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreador3Sim %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificador3Sim %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFecha3Sim %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMod3Sim %>">
+            
+                                            <% switch (res3Sim) { 
+                                                case "ok": { %>
+                                                        <span id="res3Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                            OK
+                                                        </span>
+                                                        |
+                                                        <span id="resRevision3Sim<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevision3Sim"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueRevision=""
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevision3Sim %>
+                                                        </span>
+                                                <% break; }        
+                                                case "noOk": { %>
+                                                        <span id="res3Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                            No OK
+                                                        </span>
+                                                        |
+                                                        <span id="resRevision3Sim<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevision3Sim"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevision3Sim %>
+                                                        </span>
+                                                <% break; }        
+                                                case "pendiente": { %>
+                                                        <span id="res3Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                            Pendiente
+                                                        </span>
+                                                        |
+                                                        <span id="resRevision3Sim<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevision3Sim"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevision3Sim %>
+                                                        </span>
+                                                <% break; }
+                                                case "noAplica": { %>
+                                                        <span id="res3Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                            N/A
+                                                        </span>
+                                                        |
+                                                        <span id="resRevision3Sim<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevision3Sim"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevision3Sim %>
+                                                        </span>
+                                                <% break; }
+                                                default: { %>
+                                                        <span id="res3Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                            S/D
+                                                        </span>
+                                                        |
+                                                        <span id="resRevision3Sim<%=k%>_<%=n%>_<%=q%>"
+                                                            name="resRevision3Sim"
+                                                            class="badge text-dark my-2"
+                                                            style="cursor: help;"
+                                                            valueCreador=""
+                                                            valueFecha=""
+                                                            valueModificador=""
+                                                            valueFechaMod="">
+                                                            <%= resRevision3Sim %>
+                                                        </span>
+                                                <% break; }
+                                            } %>
+            
+                                            <button id="btnSiguiente2_3Sim<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnSiguiente2_3Sim"
+                                                value="<%=k%>_<%=n%>_<%=q%>"
+                                                class="btn btn-light btn-sm ms-2"
+                                                title="Ver siguiente"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                </td>
+                            <% }
+                        } %>
+                        
+                    </tr>
+                <% } else { %>
+                    <tr class="pe-none" name="rowSelected<%=k%>_<%=n%>" style="height: 7vh; background-color: #dedede;">
+                        <% for (let q = 25; totalColDataSim2_3 > q; q++) {
+                            if (q==25) { %>
+                                <!-- Sim1 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                        proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length > 0) {
+                                    
+                                            for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length > i; i++) {
+                                                if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3) {
+                                                    let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length)
+                                                    var res1Sim = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[largoArray-1].sim1
+                                                    var resRevision1Sim = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[largoArray-1].revisionSim1
+                                                    
+                                                    if (i == 0) {
+                                                        arrRes1Sim.push(pathToMongoDBOtInfoSim2_3.sim1)
+                                                        arrResRevision1Sim.push(pathToMongoDBOtInfoSim2_3.revisionSim1)
+                                                    }
+                                                    else if (i >= 1 && pathToMongoDBOtInfoSim2_3.revisionSim1 != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[i-1].revisionSim1) {
+                                                        arrRes1Sim.push(pathToMongoDBOtInfoSim2_3.sim1)
+                                                        arrResRevision1Sim.push(pathToMongoDBOtInfoSim2_3.revisionSim1)
+                                                    }
+                                                    valueArrayRes1Sim = parseInt(arrRes1Sim.length-1)
+                                                                                                
+                                                } else {
+                                                    var res1Sim = 'S/D'
+                                                    var resRevision1Sim = 0
+                                                }
+                                            }
+                                            var res1Sim = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[0].sim1
+                                    } else {
+                                        var res1Sim = "S/D"
+                                        var resRevision1Sim = 0
+                                        arrRes1Sim.push(res1Sim)
+                                        arrResRevision1Sim.push(resRevision1Sim)
+                                    } %>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrRes1Sim %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes1Sim %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision1Sim %>">
+                                    
+                                    <% switch (res1Sim) { 
+                                        case "ok": { %>
+                                                <span id="res1Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                    OK
+                                                </span>
+                                                |
+                                                <span id="resRevision1Sim<%=k%>_<%=n%>_<%=q%>"class="badge text-dark my-2" >
+                                                    <%= resRevision1Sim %>
+                                                </span>
+                                        <% break; }        
+                                        case "noOk": { %>
+                                                <span id="res1Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                    No OK
+                                                </span>
+                                                |
+                                                <span id="resRevision1Sim<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevision1Sim %>
+                                                </span>
+                                        <% break; }        
+                                        case "pendiente": { %>
+                                                <span id="res1Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                    Pendiente
+                                                </span>
+                                                |
+                                                <span id="resRevision1Sim<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevision1Sim %>
+                                                </span>
+                                        <% break; }
+                                        case "noAplica": { %>
+                                                <span id="res1Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-white my-2">
+                                                    N/A
+                                                </span>
+                                                |
+                                                <span id="resRevision1Sim<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevision1Sim %>
+                                                </span>
+                                        <% break; }
+                                        default: { %>
+                                                <span id="res1Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-dark my-2">
+                                                    S/D
+                                                </span>
+                                                |
+                                                <span id="resRevision1Sim<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevision1Sim %>
+                                                </span>
+                                        <% break; }
+                                    } %>
+                                </td>
+
+                            <% } else if (q==26) { %>
+                                <!-- Reporte data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                        proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length > 0) {
+                                    
+                                            for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length > i; i++) {
+                                                if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3) {
+                                                    let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length)
+                                                    var resReporte = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[largoArray-1].reporte
+                                                    var resRevisionReporte = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[largoArray-1].revisionReporte
+                                                    
+                                                    if (i == 0) {
+                                                        arrResReporte.push(pathToMongoDBOtInfoSim2_3.reporte)
+                                                        arrResRevisionReporte.push(pathToMongoDBOtInfoSim2_3.revisionReporte)
+                                                    }
+                                                    else if (i >= 1 && pathToMongoDBOtInfoSim2_3.revisionReporte != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[i-1].revisionReporte) {
+                                                        arrResReporte.push(pathToMongoDBOtInfoSim2_3.reporte)
+                                                        arrResRevisionReporte.push(pathToMongoDBOtInfoSim2_3.revisionReporte)
+                                                    }
+                                                    valueArrayResReporte = parseInt(arrResReporte.length-1)
+                                                                                                
+                                                } else {
+                                                    var resReporte = 'S/D'
+                                                    var resRevisionReporte = 0
+                                                }
+                                            }
+
+                                            var resReporte = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[0].reporte
+                                   
+                                    } else {
+                                        var resReporte = "S/D"
+                                        var resRevisionReporte = 0
+                                        arrResReporte.push(resReporte)
+                                        arrResRevisionReporte.push(resRevisionReporte)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResReporte %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResReporte %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionReporte %>">
+
+                                    <% switch (resReporte) { 
+                                        case "ok": { %>
+                                            <span id="resReporte<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">
+                                                OK
+                                            </span>
+                                            |
+                                            <span id="resRevisionReporte<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionReporte %>
+                                            </span>
+                                        <% break; }        
+                                        case "noOk": { %>
+                                                <span id="resReporte<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                    No OK
+                                                </span>
+                                                |
+                                                <span id="resRevisionReporte<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionReporte %>
+                                                </span>
+                                        <% break; }        
+                                        case "pendiente": { %>
+                                                <span id="resReporte<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                    Pendiente
+                                                </span>
+                                                |
+                                                <span id="resRevisionReporte<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionReporte %>
+                                                </span>
+                                        <% break; }
+                                        case "noAplica": { %>
+                                                <span id="resReporte<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-withe my-2">
+                                                    N/A
+                                                </span>
+                                                |
+                                                <span id="resRevisionReporte<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionReporte %>
+                                                </span>
+                                        <% break; }
+                                        default: { %>
+                                                <span id="resReporte<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-dark my-2">
+                                                    S/D
+                                                </span>
+                                                |
+                                                <span id="resRevisionReporte<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionReporte %>
+                                                </span>
+                                        <% break; }
+                                    } %>
+                                </td>
+
+                            <% } else if (q==27) { %>
+                                <!-- Dfn Prodismo data Inactivo -->
+                                <td class="text-center align-middle border-end">
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                        proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length > 0) {
+                                    
+                                            for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length > i; i++) {
+                                                if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3) {
+                                                    let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length)
+                                                    var resDfnProdismo = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[largoArray-1].dfnProdismo
+                                                    var resRevisionDfnProdismo = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[largoArray-1].revisionDfnProdismo
+                                                    
+                                                    if (i == 0) {
+                                                        arrResDfnProdismo.push(pathToMongoDBOtInfoSim2_3.dfnProdismo)
+                                                        arrResRevisionDfnProdismo.push(pathToMongoDBOtInfoSim2_3.revisionDfnProdismo)
+                                                    }
+                                                    else if (i >= 1 && pathToMongoDBOtInfoSim2_3.revisionDfnProdismo != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[i-1].revisionDfnProdismo) {
+                                                        arrResDfnProdismo.push(pathToMongoDBOtInfoSim2_3.dfnProdismo)
+                                                        arrResRevisionDfnProdismo.push(pathToMongoDBOtInfoSim2_3.revisionDfnProdismo)
+                                                    }
+                                                    valueArrayResDfnProdismo = parseInt(arrResDfnProdismo.length-1)
+                                                                                                
+                                                } else {
+                                                    var resDfnProdismo = 'S/D'
+                                                    var resRevisionDfnProdismo = 0
+                                                }
+                                            }
+
+                                            var resDfnProdismo = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[0].dfnProdismo
+                                    
+                                    } else {
+                                        var resDfnProdismo = "S/D"
+                                        var resRevisionDfnProdismo = 0
+                                        arrResDfnProdismo.push(resDfnProdismo)
+                                        arrResRevisionDfnProdismo.push(resRevisionDfnProdismo)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDfnProdismo %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResDfnProdismo %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionDfnProdismo %>">
+
+                                    <% switch (resDfnProdismo) { 
+                                        case "ok": { %>
+                                            <span id="resDfnProdismo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">
+                                                OK
+                                            </span>
+                                            |
+                                            <span id="resRevisionDfnProdismo<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionDfnProdismo %>
+                                            </span>
+                                        <% break; }        
+                                        case "noOk": { %>
+                                                <span id="resDfnProdismo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                    No OK
+                                                </span>
+                                                |
+                                                <span id="resRevisionDfnProdismo<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionDfnProdismo %>
+                                                </span>
+                                        <% break; }        
+                                        case "pendiente": { %>
+                                                <span id="resDfnProdismo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                    Pendiente
+                                                </span>
+                                                |
+                                                <span id="resRevisionDfnProdismo<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionDfnProdismo %>
+                                                </span>
+                                        <% break; }
+                                        case "noAplica": { %>
+                                                <span id="resDfnProdismo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-withe my-2">
+                                                    N/A
+                                                </span>
+                                                |
+                                                <span id="resRevisionDfnProdismo<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionDfnProdismo %>
+                                                </span>
+                                        <% break; }
+                                        default: { %>
+                                                <span id="resDfnProdismo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-dark my-2">
+                                                    S/D
+                                                </span>
+                                                |
+                                                <span id="resRevisionDfnProdismo<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionDfnProdismo %>
+                                                </span>
+                                        <% break; }
+                                    } %>
+                                </td>
+
+                            <% } else { %>
+                                <!-- Sim3 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
+                                        proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length > 0) {
+                                    
+                                            for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length > i; i++) {
+                                                if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3) {
+                                                    let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3.length)
+                                                    var res3Sim = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[largoArray-1].sim3
+                                                    var resRevision3Sim = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[largoArray-1].revisionSim3
+                                                    
+                                                    if (i == 0) {
+                                                        arrRes3Sim.push(pathToMongoDBOtInfoSim2_3.sim3)
+                                                        arrResRevision3Sim.push(pathToMongoDBOtInfoSim2_3.revisionSim3)
+                                                    }
+                                                    else if (i >= 1 && pathToMongoDBOtInfoSim2_3.revisionSim3 != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[i-1].revisionSim3) {
+                                                        arrRes3Sim.push(pathToMongoDBOtInfoSim2_3.sim3)
+                                                        arrResRevision3Sim.push(pathToMongoDBOtInfoSim2_3.revisionSim3)
+                                                    }
+                                                    valueArrayRes3Sim = parseInt(arrRes3Sim.length-1)
+                                                                                                
+                                                } else {
+                                                    var res3Sim = 'S/D'
+                                                    var resRevision3Sim = 0
+                                                }
+                                            }
+
+                                            var res3Sim = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim2_3[0].sim3
+                                    
+                                    } else {
+                                        var res3Sim = "S/D"
+                                        var resRevision3Sim = 0
+                                        arrRes3Sim.push(res3Sim)
+                                        arrResRevision3Sim.push(resRevision3Sim)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrRes3Sim %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes3Sim %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision3Sim %>">
+
+                                    <% switch (res3Sim) { 
+                                        case "ok": { %>
+                                            <span id="res3Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">
+                                                OK
+                                            </span>
+                                            |
+                                            <span id="resRevision3Sim<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevision3Sim %>
+                                            </span>
+                                        <% break; }        
+                                        case "noOk": { %>
+                                                <span id="res3Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                    No OK
+                                                </span>
+                                                |
+                                                <span id="resRevision3Sim<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevision3Sim %>
+                                                </span>
+                                        <% break; }        
+                                        case "pendiente": { %>
+                                                <span id="res3Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                    Pendiente
+                                                </span>
+                                                |
+                                                <span id="resRevision3Sim<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevision3Sim %>
+                                                </span>
+                                        <% break; }
+                                        case "noAplica": { %>
+                                                <span id="res3Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-withe my-2">
+                                                    N/A
+                                                </span>
+                                                |
+                                                <span id="resRevision3Sim<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevision3Sim %>
+                                                </span>
+                                        <% break; }
+                                        default: { %>
+                                                <span id="res3Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-dark my-2">
+                                                    S/D
+                                                </span>
+                                                |
+                                                <span id="resRevision3Sim<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                    <%= resRevision3Sim %>
+                                                </span>
+                                        <% break; }
+                                    } %>
+                                </td>
+
+                            <% }
+                        } %>
+                    </tr>
+                <% }
+            }
+        } %>
+    </tbody>
+</table>

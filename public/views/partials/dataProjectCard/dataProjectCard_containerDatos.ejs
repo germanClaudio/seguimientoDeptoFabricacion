@@ -1,0 +1,37 @@
+<!-- contenedor datos creador por y modificado por -->
+<div class="container" style="font-size: 9pt">
+    <div class="row my-auto">
+        <div class="col-6">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    Creador por: <%= proyecto[m].creator[j].name %>, <%= proyecto[m].creator[j].lastName %>
+                </li>
+                <li class="list-group-item">
+                    Fecha: <%= proyecto[m].timestamp %>
+            </ul>
+            </li>
+        </div>
+        <div class="col-6">
+            <% if (proyecto[m].modificator[j]) { %>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        Modificado por: <%= proyecto[m].modificator[j].name %> <%= proyecto[m].modificator[j].lastName %>
+                    </li>
+                    <li class="list-group-item">
+                        Fecha modificación: <%= proyecto[m].modifiedOn %>
+                    </li>
+                </ul>
+            <% } else { %>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            Modificado por:
+                        </li>
+                        <li class="list-group-item">
+                            Fecha modificación:
+                        </li>
+                    </ul>
+            <% } %>
+        </div>
+
+    </div>
+</div>

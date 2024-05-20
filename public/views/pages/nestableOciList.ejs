@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="../../../assets/libs/css/style.css">
+    <%- include('../partials/head/head'); %>
+    
+    <!-- Bootstrap CSS -->
+    <!-- <link rel="stylesheet" href="../../../assets/vendor/bootstrap/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="../../../assets/vendor/fonts/circular-std/style.css">
+    <link rel="stylesheet" href="../../../assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
+</head>
+
+<body>
+    
+    <%- include('../partials/header/header'); %>
+        
+    <div class="container" style="padding-top: 70px;"></div>
+    <br>
+        <%- include('../partials/btnHeaderTop/btnHeaderTop-ociAll'); %>
+    
+    <!-- ------------ Lista de OCI ------------ -->
+    <section class="mx-auto align-items-start" style="width: 94%;">
+        <div class="row">
+            <div class="col-12 mb-1">
+                <hr>
+                <h4 class="text-uppercase">Listado de OCI</h4>
+                <p>Departamento de Ingeniería Prodismo</p>
+                <hr>
+            </div>
+        </div>
+    </section>
+    
+    <div class="dashboard-main-wrapper">
+        
+        <!-- ========================= wrapper ============================== -->
+
+        <div class="dashboard mx-auto" style="width: 96%;">
+            <div class="container-fluid dashboard-content">
+                    
+                 <% var arrayOci = []
+                    for (let i=0; proyectos.length>i; i++ ) {
+                        if ( proyectos[i].visible ) {
+                            arrayOci.push(proyectos[i].project[0])
+                        }
+                    }
+
+                    var arrayVisibleOci = []
+                    for (let j=0; arrayOci.length>j; j++ ) {
+                        if (arrayOci[j].visible) {
+                            arrayVisibleOci.push(arrayOci[j].oci)
+                        }
+                    }
+                    
+                    var arrayActiveOci = [].concat(...arrayVisibleOci)
+                    var resultArrayOci = []
+                    for (let k=0; arrayActiveOci.length>k; k++ ) {
+                        if (arrayActiveOci[k].visible) {
+                            resultArrayOci.push(arrayActiveOci[k])
+                        }
+                    }
+                    
+                    var arrayResultOciSinOt = []
+                    var arrayResultOciConOt = [] 
+
+                    for (let w=0; resultArrayOci.length>w; w++) {
+                        if (resultArrayOci[w].otProject[0]) {
+                            arrayResultOciConOt.push(resultArrayOci[w])
+                        } else {
+                            arrayResultOciSinOt.push(resultArrayOci[w])
+                        }
+                    } %>
+
+                <!-- ====================================================== -->
+                    
+                <div class="dashboard-short-list">
+                    <div class="row">
+                        <!-- ================== Con OT's ======================= -->
+                        <div id="tablaOciConOt" class="col-xl-6 col-lg-6 col-md-11 col-sm-11 col-11">
+                            <section class="card card-fluid">
+                                <h5 id="titleOciConOt" class="card-header drag-handle align-items-center">
+                                    <span class="badge rounded-pill text-bg-success"> <%= arrayResultOciConOt.length %></span>
+                                     <p class="d-inline ms-2">OCI Activas con Ot's de <%= resultArrayOci.length %></p> 
+                                    <div class="d-inline align-items-end float-end">
+                                        <button id="btnRefreshTablaOciConOt"
+                                            class="btn btn-sm btn-outline-light ms-auto"
+                                            title="Refrescar tabla"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .85rem; background-color: #8cac80; border: none">
+                                            <i class="fa-solid fa-rotate fa-xl"></i>
+                                        </button>
+                                        <button id="btnShowTablaOciConOt"
+                                            class="btn btn-sm btn-outline-light ms-auto"
+                                            title="Ver solo esta tabla"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .85rem; background-color: #8080ac; border: none">
+                                            <i class="fa-solid fa-circle-arrow-right fa-xl"></i>
+                                        </button>
+                                    </div>
+                                </h5>
+                                <div id="items"></div>
+                                <div id="item-2"></div>
+                                <div class="dd" id="nestable">
+                                    <ol class="dd-list">
+                                        <% let dataIdCounterL = 0
+                                            for (let c=0; arrayResultOciConOt.length>c; c++) { 
+                                                dataIdCounterL++  %>
+                                                
+                                                <li id="ociConOtList<%= dataIdCounterL %>" class="dd-item" data-id="<%= dataIdCounterL %>">
+                                                    <div class="dd-handle"> <span class="drag-indicator"></span>
+                                                        <div class="mx-1"><img id="imageOci<%= dataIdCounterL %>_<%= c %>" class="img-fluid mx-2 rounded" src='<%= arrayResultOciConOt[c].ociImage %>' alt="Imagen Oci" width="50px" height="40px"></div>
+                                                        <div class="me-1" > OCI# <strong><%= arrayResultOciConOt[c].ociNumber %></strong></div>
+                                                        <div id="ociDescription<%= dataIdCounterL %>_<%= c %>"> <%= arrayResultOciConOt[c].ociDescription %></div>
+                                                        <div class="dd-nodrag btn-group ms-auto">
+                                                            <button title="Editar OCI#<%= arrayResultOciConOt[c].ociNumber %>" id="btnUpdateOci<%= dataIdCounterL %>_<%= c %>"
+                                                                name="btnUpdateOci"
+                                                                class="btn btn-sm btn-outline-dark">
+                                                                <i class="fa-solid fa-pencil"></i>
+                                                            </button>
+                                                            <button id="btnHiddeOciConOt<%= dataIdCounterL %>"
+                                                                name="btnHiddeOciConOt"
+                                                                class="btn btn-sm btn-outline-dark">
+                                                                <i class="fa-solid fa-eye-slash"></i>
+                                                            </button>
+                                                        </div>
+                                                        
+                                                        <input type="hidden" name="projectIdHidden" id="projectIdHidden<%= dataIdCounterL %>_<%= c %>" value="<%= arrayResultOciConOt[c]._id.toString() %>">
+                                                        <input type="hidden" name="ociNumberHidden" id="ociNumberHidden<%= dataIdCounterL %>_<%= c %>" value="<%= arrayResultOciConOt[c].ociNumber %>">
+                                                        <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden<%= dataIdCounterL %>_<%= c %>" value="<%= c %>">
+                                                        <input type="hidden" name="ociQuantityHidden" id="ociQuantityHidden" value="<%= resultArrayOci.length %>">
+                                                        
+                                                    </div>
+
+                                                    <ol class="dd-list">
+                                                        <% for (let s=0; arrayResultOciConOt[c].otProject.length>s; s++) {
+                                                            if (arrayResultOciConOt[c].otProject[s].visible) {
+                                                                dataIdCounterL++  %>
+
+                                                                <li id="otList<%= dataIdCounterL %>" class="dd-item" data-id="<%= dataIdCounterL %>">
+                                                                    <div class="dd-handle ms-5"> <span class="drag-indicator"></span>
+                                                                        <div class="me-1" > OT# <strong><%= arrayResultOciConOt[c].otProject[s].otNumber %></strong></div>
+                                                                        <div class="me-1"> - OP# <%= arrayResultOciConOt[c].otProject[s].opNumber %></div>
+                                                                        <div class="me-1"> - <%= arrayResultOciConOt[c].otProject[s].opDescription %></div>
+                                                                        <div class="me-2"> <% if (arrayResultOciConOt[c].otProject[s].otStatus) { %>
+                                                                            <span class="badge rounded-pill text-bg-success">Activa</span>
+                                                                            <% } else { %>
+                                                                                <span class="badge rounded-pill text-bg-secondary">Inactiva</span>
+                                                                            <% } %>   
+                                                                        </div>
+                                                                        
+                                                                        <div class="dd-nodrag btn-group ms-auto">
+                                                                            <button class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pencil"></i></button>
+                                                                            <button id="btnHiddeOt<%= dataIdCounterL %>"
+                                                                                name="btnHiddeOt"
+                                                                                class="btn btn-sm btn-outline-danger">
+                                                                                <i class="fa-solid fa-eye-slash"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+
+                                                            <% }
+                                                        } %>
+                                                    </ol>
+
+                                                </li>
+                                            <% } %>
+                                            
+                                    </ol>
+                                </div>
+                            </section>
+                        </div>
+
+                        <!-- ================== Sin OT's ======================= -->
+                        <div id="tablaOciSinOt" class="col-xl-6 col-lg-6 col-md-11 col-sm-11 col-11">
+                            <section class="card card-fluid">
+                                <h5 id="titleOciSinOt" class="card-header drag-handle align-items-center">
+                                    <span class="badge rounded-pill text-bg-warning"><%= arrayResultOciSinOt.length %></span>
+                                    <p class="d-inline ms-2">OCI Activas sin Ot's de <%= resultArrayOci.length %></p>
+                                    <div class="d-inline align-items-end float-end">
+                                        <button id="btnRefreshTablaOciSinOt"
+                                            class="btn btn-sm btn-outline-light ms-auto"
+                                            title="Refrescar tabla"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .85rem; background-color: #8cac80; border: none">
+                                            <i class="fa-solid fa-rotate fa-xl"></i>
+                                        </button>
+                                        <button id="btnShowTablaOciSinOt"
+                                            class="btn btn-sm btn-outline-light ms-auto"
+                                            title="Ver solo esta tabla"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .85rem; background-color: #8080ac; border: none">
+                                            <i class="fa-solid fa-circle-arrow-left fa-xl"></i>
+                                        </button>
+                                    </div>
+                                </h5>
+                                <div class="dd" id="nestable2">
+                                    <ol class="dd-list">
+
+                                        <% let dataIdCounterR = 0
+                                            for (let s=0; arrayResultOciSinOt.length>s; s++) { 
+                                                dataIdCounterR++  %>
+                                                <li id="ociSinOtList<%= dataIdCounterR %>" class="dd-item" data-id="<%= dataIdCounterR %>">
+                                                    <div class="dd-handle"> <span class="drag-indicator"></span>
+                                                        <div class="mx-1"><img class="img-fluid mx-2 rounded" alt="Imagen Oci" src='<%= arrayResultOciSinOt[s].ociImage %>' width="50px" height="40px"></div>
+                                                        <div class="me-1" > OCI# <strong><%= arrayResultOciSinOt[s].ociNumber %></strong></div>
+                                                        <div> - <%= arrayResultOciSinOt[s].ociDescription %></div>
+                                                        <div class="dd-nodrag btn-group ms-auto">
+                                                            <button class="btn btn-sm btn-outline-dark"><i class="fa-solid fa-pencil"></i></button>
+                                                            <button id="btnHiddeOciSinOt<%= dataIdCounterR %>"
+                                                                name="btnHiddeOciSinOt"
+                                                                class="btn btn-sm btn-outline-dark">
+                                                                <i class="fa-solid fa-eye-slash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            <% } %>
+
+                                    </ol>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                        
+                    <!-- ========================= end nestable list ========================== -->
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+    <div class="d-block mx-auto my-4 pb-5 text-center">
+        <a class="btn btn-primary my-1 me-5" href="/api/auth/index">
+            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+             Regresar al Home
+        </a>
+        <a class="btn btn-secondary my-2 ms-5" href="#">
+            <i class="fa-solid fa-arrow-up"></i>
+             Ir arriba
+        </a>
+    </div>
+    <br>
+    <footer>
+        <%- include('../partials/footer/footer'); %>
+    </footer>
+
+    <!--    scripts     -->
+    <script type="text/javascript" src="../../../nestableOciList.js"></script>
+    <script type="text/javascript" src="../../../clock.js"></script>
+    <script type="text/javascript" src="../../../expiresSession.js"></script>
+    <!-- Optional JavaScript -->
+    <script src="../../../assets/vendor/jquery/jquery-3.3.1.min.js"></script>
+    <script src="../../../assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+    <script src="../../../assets/libs/js/main-js.js"></script>
+    <script src="../../../assets/vendor/slimscroll/jquery.slimscroll.js"></script>
+    <script src="../../../assets/vendor/shortable-nestable/Sortable.min.js"></script>
+    <script src="../../../assets/vendor/shortable-nestable/sort-nest.js"></script>
+    <script src="../../../assets/vendor/shortable-nestable/jquery.nestable.js"></script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+      
+        gtag('config', 'UA-23581568-13');
+      </script>
+   
+</body>
+ 
+</html>

@@ -1,0 +1,111 @@
+<div class="form-group col-6 mx-auto my-2 w-75 border rounded p-3 text-white bg-opacity-75" style="background-color: #838383;">
+    <h3 class="mx-auto my-2 text-center">Agregar Nuevo Usuario</h3>
+    <form action="/api/usuarios/newUser" enctype="multipart/form-data" method="post" id="newUserForm">
+        <fieldset>
+            <div class="row my-2 mx-auto">
+                <div class="col-2">
+                    <label for="username">Nombre</label>
+                    <input type="text" name="name" id="name" class="form-control" placeholder="Nombre" required>
+                </div>
+                
+                <div class="col-2">
+                    <label for="lastName">Apellido</label>
+                    <input type="text" name="lastName" id="lastName" class="form-control" placeholder="Apellido"
+                        required>
+                </div>
+                
+                <div class="col-3">
+                    <label for="email">Em@il</label>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="Em@il" required>
+                </div>
+                
+                <div class="col">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" class="form-control" placeholder="Username" required>
+                </div>
+
+                <div class="col">
+                    <label for="userLegajoId">Legajo #</label>
+                    <input type="number" name="userLegajoId" id="userLegajoId" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="row justify-content-start align-items-center my-3 mx-auto">
+                <div class="col">
+                    <label for="fileInputAvatarUser" class="form-label">
+                        Seleccione una imagen de Avatar Usuario
+                    </label>
+                    <input type="text" id="fileInputTextAvatarUser" name="imageTextAvatarUser"
+                            style="display: none;" required>
+                        <input type="file" id="fileInputAvatarUser" name="imageAvatarUser"
+                            value="" accept="image/*" style="display: none;" required>
+                        <div id="drop-areaAvatarUser" class="my-3 mx-auto">
+                            Arrastra y suelta una imagen aquí
+                        </div>
+                        <button title="Eliminar Imagen" class="btn btn-danger rounded-circle mx-auto"
+                                id="removeImageAvatarUser" style="display: none;">
+                                <i class="fa-solid fa-xmark"></i>
+                        </button>
+                        
+                        <div id="alertAvatarUser" class="alert alert-warning align-items-center w-50 mx-auto" role="alert"
+                            style="display: none; font-size: 0.85rem; height: 1.15rem;">
+                            <strong class="me-2">Error!</strong> Solo puedes ingresar una imagen jpg, png, bmp o jpeg.
+                        </div>
+                        <div id="alertSizeAvatarUser" class="alert alert-warning align-items-center mx-auto" role="alert"
+                            style="display: none; font-size: 0.85rem; height: 1.15rem; width: 25rem;">
+                            <strong class="me-2">Atención!</strong> El tamaño de la imagen debe ser menor a 3Mb.
+                        </div>
+                </div>
+            </div> 
+            <div class="row my-2 mx-auto">
+                <div class="col-6 my-2">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" class="form-control" placeholder="Password"
+                    required>
+                    <div id="messagePass"></div>
+                </div>
+                <div class="col-6 my-2">
+                    <label for="confirmPassword">Confirmar Password</label>
+                    <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" placeholder="Confirmar Password"
+                    disabled required>
+                    <div id="messageConfirmPass"></div>
+                </div>
+            </div>
+            
+            <div class="row my-3 mx-auto justify-content-between align-items-center">
+                <div class="col-3 my-3 me-4">
+                    <label class="form-check-label" for="permiso">Seleccione un Permiso</label>
+                    <select class="form-select form-select" aria-label=".form-select" name="permiso" id="permiso">
+                        <option selected value="diseno">Diseño</option>
+                        <option value="simulacion">Simulación</option>
+                        <option value="disenoSimulacion">Diseño/Simulación</option>
+                    </select>
+                </div>
+
+                <div class="col-3 ms-4 my-auto">
+                    <label class="form-check-label" for="status">Status</label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" name="status" id="status" checked disabled>
+                        <label class="form-check-label" for="status">Activo</label>
+                    </div>
+                </div>
+            
+                <div class="col-3 ms-4 my-auto">
+                    <label class="form-check-label" for="admin">Rol</label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" name="admin" id="admin" checked disabled>
+                        <label class="form-check-label" for="status">Usuario</label>
+                    </div>
+                </div>
+                                    
+            </div>    
+            <br>  
+            <div class="d-flex justify-content-center">
+                <button type="button" class="btn btn-primary mx-auto" id="btnAddNewUser" disabled>Guardar Usuario
+                    <i class="fa-solid fa-user-plus"></i></button>
+                <button type="reset" id="btnResetFormNewUser" class="btn btn-danger mx-auto">Reset
+                    <i class="fa-solid fa-rotate-left"></i></button>
+            </div>
+        </fieldset>
+    </form>
+</div>
