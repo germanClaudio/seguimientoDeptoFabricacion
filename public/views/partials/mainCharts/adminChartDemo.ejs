@@ -3,8 +3,8 @@
       <div class="row">
         <div class="col-12">
           <hr>
-          <h4 class="text-uppercase">Aplicación de Seguimiento</h4>
-          <p>Departamento de Ingeniería Prodismo</p>
+          <h4 class="text-uppercase">Aplicación de Seguimiento Proyectos</h4>
+          <p>Departamento de IT Prodismo</p>
           <hr>
         </div>
       </div>
@@ -117,30 +117,32 @@
           </a>
         </div>
       </div>
-    
+      <!-- Estado de Programación / Mecanizado -->
       <div class="row">
         <div class="col-xl-3 col-sm-6 col-12">
-          <div class="card rounded-3 card_dashboard">
-            <div class="card-content">
-              <div class="card-body">
-                <div class="media d-flex mx-2">
-                  <div class="media-body text-left">
-                    <% let arrayActiveProject = []
-                      for (let i=0; clientes.length>i; i++ ) {
-                        if (clientes[i].project>0) {
-                          arrayActiveProject.push(clientes[i].project)
-                        }
-                      } %>
-                    <h3><%= arrayActiveProject.length %></h3>
-                    <span>Clientes con proyectos activos</span>
-                  </div>
-                  <div class="align-self-center ms-auto">
-                    <i class="icon-pin warning font-large-2 float-right"></i>
+          <a href="/api/proyectos/" style="text-decoration: none;">
+            <div class="card rounded-3 card_dashboard">
+              <div class="card-content">
+                <div class="card-body">
+                  <div class="media d-flex mx-2">
+                    <div class="media-body text-left">
+                      <% let arrayActiveProject = []
+                        for (let i=0; clientes.length>i; i++ ) {
+                          if (clientes[i].project>0) {
+                            arrayActiveProject.push(clientes[i].project)
+                          }
+                        } %>
+                      <h3><%= arrayActiveProject.length %></h3>
+                      <span>Estado de Programación / Mecanizado</span>
+                    </div>
+                    <div class="align-self-center ms-auto">
+                      <i class="icon-pin warning font-large-2 float-right"></i>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </a>
         </div>
         <!-- oci's -->
         <div class="col-xl-3 col-sm-6 col-12">

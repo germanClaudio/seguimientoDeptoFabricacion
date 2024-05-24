@@ -184,6 +184,17 @@ permiso.addEventListener('change', ()=>{
     permisoHidden.value = permiso.value
 })
 
+const areaHidden = document.getElementById('areaHidden')
+const area = document.getElementById('area')
+
+document.addEventListener('DOMContentLoaded', ()=> {
+    areaHidden.value = area.value
+})
+
+area.addEventListener('change', ()=>{
+    areaHidden.value = area.value
+})
+
 var inputsDeTexto = document.querySelectorAll('input[type="text"]')
 
     // Agregar un listener de evento a cada input

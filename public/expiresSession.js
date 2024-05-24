@@ -29,7 +29,7 @@ function confirmLogout({userName, rolUser, avatarUser}) {
     const nameUser = userName[0]
     const rol = rolUser
     let spanToShow = ''
-console.log('nameUser: ', nameUser, 'rol: ', rol)
+// console.log('nameUser: ', nameUser, 'rol: ', rol)
     rol === "Admin"? spanToShow = `<span class="badge rounded-pill bg-primary">${rol}</span>`
                         :
                      spanToShow = `<span class="badge rounded-pill bg-info text-dark">${rol}</span>`
@@ -67,20 +67,22 @@ console.log('nameUser: ', nameUser, 'rol: ', rol)
 const logoutSidebar = document.getElementById('logoutSidebar')
 const logoutBanner = document.getElementById('logoutBanner')
 
-function getUserNameAndAvatar() {
+function getUserNameAndAvatar(bar) {
     const userName = (document.getElementById('mostrarUserName').innerText).split('-')
-    const rolUser = document.getElementById('mostrarRolUser').textContent
-    // console.log('rolUser===> ', rolUser)
+    let rolUser = (document.getElementById('mostrarRolUser').innerText.split('\n'))
+    bar === 'banner' ? rolUser = rolUser[0] : rolUser = rolUser[1]
     const avatarUser = document.getElementById('avatarUser').src
     return {userName, rolUser, avatarUser}
 }
 
 logoutSidebar.addEventListener('click', (event) => {
     event.preventDefault()
-    confirmLogout(getUserNameAndAvatar())
+    let sidebar = 'sidebar'
+    confirmLogout(getUserNameAndAvatar(sidebar))
 })
 
 logoutBanner.addEventListener('click', (event) => {
     event.preventDefault()
-    confirmLogout(getUserNameAndAvatar())
+    let banner = 'banner'
+    confirmLogout(getUserNameAndAvatar(banner))
 })

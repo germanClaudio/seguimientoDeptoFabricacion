@@ -123,9 +123,8 @@
                     </div>
                 <% if( userInfo.admin ) { %>        
                     <div class="d-flex justify-content-center my-2">
-                        <button id="btnUpdateClient" class="btn btn-success me-3 my-2" disabled>Actualizar <i class="fa-solid fa-save"></i></button>
-                        <a class="btn btn-primary mx-3 my-2" href="/api/clientes">Volver <i class="fa-solid fa-arrow-left"></i></a>
-                        <a class="btn btn-danger ms-3 my-2" href="/api/clientes/delete/<%=cliente._id%>">Eliminar <i class="fa-solid fa-trash"></i></a>
+                        <button id="btnUpdateClient" class="btn btn-success mx-auto my-2" disabled>Actualizar <i class="fa-solid fa-save"></i></button>
+                        <a class="btn btn-primary mx-auto my-2" href="/api/clientes">Volver <i class="fa-solid fa-arrow-left"></i></a>
                     </div>
                 <% } else { %>
                     <div class="d-flex justify-content-center my-2">
@@ -134,6 +133,7 @@
                 <% } %>
                 </div>
             </div>
+            <!-- <input type="hidden" name="_csrf" value="<%= csrfToken %>"> -->
         </fieldset>
     </form>
 </div>

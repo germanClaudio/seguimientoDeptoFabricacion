@@ -71,34 +71,64 @@
                     <div id="messageConfirmPass"></div>
                 </div>
             </div>
-            
-            <div class="row my-3 mx-auto justify-content-between align-items-center">
-                <div class="col-3 my-3 me-4">
-                    <label class="form-check-label" for="permiso">Seleccione un Permiso</label>
-                    <select class="form-select form-select" aria-label=".form-select" name="permiso" id="permiso">
-                        <option selected value="diseno">Diseño</option>
-                        <option value="simulacion">Simulación</option>
-                        <option value="disenoSimulacion">Diseño/Simulación</option>
-                    </select>
-                </div>
+            <div class="container-fluid my-2"><h4><strong>Permisos, Áreas, Roles y Status</strong></h4>
+                <div class="row my-3 mx-auto justify-content-between align-items-center">
+                    <div class="col-3 my-3 me-2">
+                        <label class="form-check-label" for="permiso">Seleccione un Permiso</label>
+                        <select class="form-select form-select" aria-label=".form-select" name="permiso" id="permiso">
+                            <option selected value="diseno">Diseño</option>
+                            <option value="simulacion">Simulación</option>
+                            <option value="disenoSimulacion">Diseño/Simulación</option>
+                            <option value="projectManager">PM</option>
+                            <option value="cadCam">Cad-Cam</option>
+                            <option value="mecanizado">Mecanizado</option>
+                            <option value="ajuste">Ajuste</option>
+                            <option value="todos" disabled>Todos</option>
+                        </select>
+                    </div>
 
-                <div class="col-3 ms-4 my-auto">
-                    <label class="form-check-label" for="status">Status</label>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" name="status" id="status" checked disabled>
-                        <label class="form-check-label" for="status">Activo</label>
+                    <div class="col-3 my-3 me-2">
+                        <label class="form-check-label" for="permiso">Seleccione un Área</label>
+                        <select class="form-select form-select" aria-label=".form-select" name="area" id="area">
+                            <option selected value="ingenieria">Ingeniería</option>
+                            <option value="fabricacion">Fabricación</option>
+                            <option value="proyectos">Proyectos</option>
+                            <option value="administracion">Administración</option>
+                            <option value="todas" disabled>Todas</option>
+                        </select>
                     </div>
-                </div>
-            
-                <div class="col-3 ms-4 my-auto">
-                    <label class="form-check-label" for="admin">Rol</label>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" name="admin" id="admin" checked disabled>
-                        <label class="form-check-label" for="status">Usuario</label>
+
+                    <div class="col-1 ms-2 my-auto">
+                        <label class="form-check-label" for="status">Status</label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" name="status" id="status" checked disabled>
+                            <label class="form-check-label" for="status">Activo</label>
+                        </div>
                     </div>
+                
+                    <div class="col-2 ms-2 my-auto">
+                        <label class="form-check-label" for="admin">Rol</label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" name="admin" id="admin" checked disabled>
+                            <label class="form-check-label" for="status">Usuario</label>
+                        </div>
+                    </div>
+
+                    <div class="col-2 ms-2 my-auto" style="background-color: #90001f56;">
+                        <label for="superAdmin">SuperAdmin</label>
+                        <div class="">
+                            <p class="d-inline-block me-1">No</p>
+                            <div class="form-check form-switch d-inline-block mt-2">
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                    name="superAdmin" id="superAdmin" disabled>
+                                <label class="form-check-label" for="superAdmin">Sí</label>
+                            </div>   
+                        </div>
+                        
+                    </div>
+                                        
                 </div>
-                                    
-            </div>    
+            </div>
             <br>  
             <div class="d-flex justify-content-center">
                 <button type="button" class="btn btn-primary mx-auto" id="btnAddNewUser" disabled>Guardar Usuario
@@ -106,6 +136,7 @@
                 <button type="reset" id="btnResetFormNewUser" class="btn btn-danger mx-auto">Reset
                     <i class="fa-solid fa-rotate-left"></i></button>
             </div>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         </fieldset>
     </form>
 </div>

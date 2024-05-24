@@ -75,16 +75,34 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
     }
     
     async getUserByUsername(username) {
-        if(username){
-            try {
-                const user = await Usuarios.findOne( { username: `${username}` })
-                // console.log('user:', user)
+        
+        if(username) {
+            const userInput = username; // Nombre de usuario o número de legajo ingresado por el usuario
+            var legajoIdNumber = null;
+
+                // Intentar convertir el input a un número
+                if (!isNaN(userInput)) {
+                    legajoIdNumber = parseInt(userInput, 10);
+                }
+                // console.log('legajoIdNumber:', legajoIdNumber)
+
+                    // Construir la consulta
+                let query = {};
+                if (legajoIdNumber !== null) {
+                    query = { legajoId: legajoIdNumber };
+                } else {
+                    query = { username: { $regex: userInput, $options: 'i' } };
+                }
+                    
+            try {        
+                const user = await Usuarios.findOne(query);
+                //console.log('user:', user)
                 
-                 if ( user === undefined || user === null) {
-                    return false
-                 } else {
-                    return user
-                 }
+                if ( user === undefined || user === null) {
+                   return false
+                } else {
+                   return user
+                }
             } catch (error) {
                 console.error('Aca esta el error vieja: ', error)
             }
@@ -164,6 +182,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                         permiso: newUser.permiso,
                         status: newUser.status,
                         admin: newUser.admin,
+                        admin: newUser.superAdmin,
                         
                         creator: newUser.creator,
                         timestamp: newUser.timestamp,
@@ -421,7 +440,6 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
         }
     }
 
-
     async updateUser(id, updatedUser, userModificator) {
         
         if (updatedUser && userModificator) {
@@ -446,6 +464,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                                 username: updatedUser.username,
                                 avatar: updatedUser.avatar,
                                 admin: updatedUser.admin,
+                                superAdmin: updatedUser.superAdmin,
                                 status: updatedUser.status,
                                 permiso: updatedUser.permiso,
                                 modificator: userModificator,

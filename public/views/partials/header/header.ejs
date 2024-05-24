@@ -46,7 +46,23 @@
                 <div class="vr mx-2" style="color: white;"></div>
 
                 <div class="container text-center m-auto" style="width: 12vw;">
-                    <% if (userInfo.admin) { %>
+                    <% if (userInfo.admin && userInfo.superAdmin) { %>
+                        <div class="mx-auto small">
+                            <span id="mostrarRolUser" class="badge rounded-pill bg-primary position-relative">
+                                SuperAdmin
+                                <span class="position-absolute top-0 start-100 translate-middle">
+                                    <i class="fa-solid fa-crown fa-beat fa-lg"
+                                        title="SuperAdmin"
+                                        style="color: #a89c0d; --fa-rotate-angle: 20deg;">
+                                    </i>
+                                </span>
+                            </span>
+                        </div>
+                        <div class="mx-auto small" id="mostrarUserName">
+                            <%= userInfo.name %>, <%= userInfo.lastName %>
+                        </div>
+                        <div class="d-none" id="userBanner_<%= userInfo._id %>"><%= userInfo._id %></div>
+                    <% } else if (userInfo.admin) { %>
                         <div class="mx-auto small">
                             <span id="mostrarRolUser" class="badge rounded-pill bg-primary">Admin</span>
                         </div>

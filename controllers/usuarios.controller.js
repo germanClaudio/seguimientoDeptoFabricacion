@@ -2,9 +2,13 @@ const UserService = require("../services/users.service.js")
 const ProyectosService = require("../services/projects.service.js")
 const ClientesService = require("../services/clients.service.js")
 const MessagesService = require("../services/messages.service.js")
+const errorMsg = require("../utils/errorMsgToUser.js")
 
 const bCrypt = require('bcrypt')
 const { generateToken } = require('../utils/generateToken')
+
+const csrf = require('csrf');
+const csrfTokens = csrf();
 
 const multer = require('multer')
 
@@ -92,6 +96,28 @@ async function uploadToGCS(req, res) {
     blobStream.end(data)//(req.file.buffer);
 };
 
+function errorInformation(dirNumber){
+    const errorInfo = {
+        errorNumber: errorMsg.lineNumber,
+        errorFunction: errorMsg.functionName,
+        errorFilePath: errorMsg.filePath,
+        status: false,
+        msg: 'controllerError',
+        flag: dirNumber
+    }
+    return errorInfo
+}
+
+function catchError(error) {
+    const dirNumber = 500
+    let errorInfo = errorInformation(dirNumber)
+    
+    res.render('errorPages', {
+        error,
+        errorInfo
+    })
+}
+
 class UsersController {  
     constructor(){
         this.projects = new ProyectosService()
@@ -109,24 +135,30 @@ class UsersController {
         const time = cookie.expires
         const expires = new Date(time)
 
+        const csrfToken = csrfTokens.create(req.csrfSecret);
+
         try {
-            if(usuarios.error) return res.status(400).json({msg: 'No hay usuarios cargados!'}) 
+            if(usuarios.error) {
+                const error = new Error('No existen Usuarios Cargados')
+                const dirNumber = 500
+                let errorInfo = errorInformation(dirNumber)
+                
+                res.render('errorPages', {
+                    error,
+                    errorInfo
+                })
+            }
+
             res.render('addNewUser', {
                 usuarios,
                 username,
                 userInfo,
-                expires
+                expires,
+                csrfToken
             })
+
         } catch (error) {
-            const errorInfo = {
-                errorNumber: 24,
-                status: false,
-                msg: 'controllerError - getAllUsers'
-            }
-            res.render('errorPages', {
-                error,
-                errorInfo
-            })
+            catchError(error)
         }
     }
 
@@ -140,30 +172,30 @@ class UsersController {
         const time = cookie.expires
         const expires = new Date(time)
 
-        const flag = {
-            dirNumber: 404
-        }
+        const csrfToken = csrfTokens.create(req.csrfSecret);
 
         try {
-            if(!usuario) return res.render('errorPages', {username, userInfo, expires, flag})
-            //res.status(404).json({msg: 'Usuario no encontrado'})
+            if(!usuario) {
+                const error = new Error('No existe Usuario')
+                const dirNumber = 500
+                let errorInfo = errorInformation(dirNumber)
+                
+                res.render('errorPages', {
+                    error,
+                    errorInfo
+                })
+            }
             
             res.render('userDetails', {
                 usuario,
                 username,
                 userInfo,
-                expires
+                expires,
+                csrfToken
             })
+
         } catch (error) {
-            const errorInfo = {
-                errorNumber: 54,
-                status: false,
-                msg: 'controllerError - getUserById'
-            }
-            res.render('errorPages', {
-                error,
-                errorInfo
-            })
+            catchError(error)
         }
     }
 
@@ -176,31 +208,31 @@ class UsersController {
         const cookie = req.session.cookie
         const time = cookie.expires
         const expires = new Date(time)
-          
-        const flag = {
-            dirNumber: 404
-        }
+
+        const csrfToken = csrfTokens.create(req.csrfSecret);
 
         try {
-            if(!usuario) return res.render('errorPages', {userInfo, expires, flag})
-            // res.status(404).json({msg: 'Usuario no encontrado'})
+            if(!usuario) {
+                const error = new Error('No existe Usuario')
+                const dirNumber = 404
+                let errorInfo = errorInformation(dirNumber)
+                
+                res.render('errorPages', {
+                    error,
+                    errorInfo
+                })
+            }
             
             res.render('userDetails', {
                 usuario,
                 username,
                 userInfo,
-                expires
+                expires,
+                csrfToken
             })
+
         } catch (error) {
-            const errorInfo = {
-                errorNumber: 86,
-                status: false,
-                msg: 'controllerError - getUserByUsername'
-            }
-            res.render('errorPages', {
-                error,
-                errorInfo
-            })
+            catchError(error)
         }
     }
 
@@ -208,27 +240,23 @@ class UsersController {
         const { username } = req.params
         const { password } = req.body
         const usuario = await this.users.getUserByUsernameAndPassword(username, password)
-        
-        const flag = {
-            dirNumber: 404
-        }
+
+        const csrfToken = csrfTokens.create(req.csrfSecret);
 
         try {
-            if(!usuario) return res.render('errorPages', {flag})
-            
-            res.status(404).json({msg: 'Username desconocido o password incorrecto!!'})
-            res.status(200).json({ Data: usuario })
+            if(!usuario) {
+                const error = new Error('Username desconocido o password incorrecto!!')
+                const dirNumber = 404
+                let errorInfo = errorInformation(dirNumber)
+                
+                res.render('errorPages', {
+                    error,
+                    errorInfo
+                })
+            }
 
         } catch (error) {
-            const errorInfo = {
-                errorNumber: 118,
-                status: false,
-                msg: 'controllerError - getUserByUsernameAndPassword'
-            }
-            res.render('errorPages', {
-                error,
-                errorInfo
-            })
+            catchError(error)
         }
     }
 
@@ -283,6 +311,12 @@ class UsersController {
                 return error
             }
 
+            const csrfToken = req.body._csrf;
+            if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
+                const error = new Error ('Invalid CSRF token')
+                catchError(error)
+            }
+
             const usernameInput = req.body.username.replace(/[!@#$%^&*]/g, "")
 
             const newUser = {
@@ -296,6 +330,7 @@ class UsersController {
                 permiso: req.body.permiso,
                 status: req.body.status === 'on' ? Boolean(true) : Boolean(false) || Boolean(true),
                 admin: req.body.admin === 'on' ? Boolean(true) : Boolean(false),
+                superAdmin: Boolean(false),
                 creator: user,
                 timestamp: now,
                 modificator: modificator,
@@ -312,30 +347,29 @@ class UsersController {
             try {
                 const usuario = await this.users.addNewUser(newUser)
                 const usuarioLog = await this.users.getUserByUsername(username)
-                
-                const flag = {
-                    dirNumber: 404
+
+                if(!usuarioLog) {
+                    const error = new Error('Usuario desconocido!!')
+                    const dirNumber = 404
+                    let errorInfo = errorInformation(dirNumber)
+                    
+                    res.render('errorPages', {
+                        error,
+                        errorInfo
+                    })
                 }
 
-                if(!usuarioLog) return res.render('errorPages', {username, userInfo, expires, flag})
-                
+                const csrfToken = csrfTokens.create(req.csrfSecret);
                 res.render('addNewUser', {
                     usuario,
                     username,
                     userInfo,
-                    expires
+                    expires,
+                    csrfToken
                 })
         
             } catch (error) {
-                const errorInfo = {
-                    errorNumber: 139,
-                    status: false,
-                    msg: 'controllerError - CreateNewUser'
-                }
-                res.render('errorPages', {
-                    error,
-                    errorInfo
-                })
+                catchError(error)
             }
         })
     }
@@ -350,7 +384,7 @@ class UsersController {
                     cb(new Error('Solo se permiten imágenes'));
                 }
             },
-        }); // Almacenamiento en memoria para cargar archivos temporalmente
+        });
 
         const upload = multer({
             storage: storage
@@ -379,21 +413,45 @@ class UsersController {
             const cookie = req.session.cookie
             const time = cookie.expires
             const expires = new Date(time)
-            
+
+            const csrfToken = req.body._csrf;
+            if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
+                
+                const error = new Error ('Invalid CSRF token')
+                catchError(error)
+            }
+
             if(userToModify && userLogged) {
-                               
-                const updatedUser = {
-                    name: req.body.name,
-                    lastName: req.body.lastName,
-                    email: req.body.email,
-                    username: req.body.username,
-                    avatar: req.body.imageTextAvatarUser,
-                    permiso: req.body.permisoHidden,
-                    status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
-                    admin: req.body.admin === 'on' ? Boolean(true) : Boolean(false),
-                    modificator: userModificator,
-                    modifiedOn: now
-                }
+                if (userLogged.superAdmin) {
+                    var updatedUser = {
+                        name: req.body.name,
+                        lastName: req.body.lastName,
+                        email: req.body.email,
+                        username: req.body.username,
+                        avatar: req.body.imageTextAvatarUser,
+                        permiso: req.body.permisoHidden,
+                        status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
+                        admin: req.body.admin === 'on' ? Boolean(true) : Boolean(false),
+                        superAdmin: req.body.superAdmin === 'on' ? Boolean(true) : Boolean(false),
+                        modificator: userModificator,
+                        modifiedOn: now
+                    }
+
+                } else {
+                    var updatedUser = {
+                        name: req.body.name,
+                        lastName: req.body.lastName,
+                        email: req.body.email,
+                        username: req.body.username,
+                        avatar: req.body.imageTextAvatarUser,
+                        permiso: req.body.permisoHidden,
+                        status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
+                        admin: req.body.admin === 'on' ? Boolean(true) : Boolean(false),
+                        superAdmin: Boolean(false),
+                        modificator: userModificator,
+                        modifiedOn: now
+                    }
+                }             
                 
                 if (err) {
                     const error = new Error('No se agregó ningún archivo')
@@ -403,51 +461,34 @@ class UsersController {
                             
                 try {
                     const usuario = await this.users.updateUser(id, updatedUser, userModificator)
-
-                    const flag = {
-                        dirNumber: 404
-                    }
             
-                    if(!usuario) return res.render('errorPages', {username, userInfo, expires, flag})
-                    
+                    if(!usuario) {
+                        const error = new Error('No fue posible Actualizar el Usuario!')
+                        const dirNumber = 404
+                        let errorInfo = errorInformation(dirNumber)
+                        
+                        res.render('errorPages', {
+                            error,
+                            errorInfo
+                        })
+                    }
+                        
+                        const csrfToken = csrfTokens.create(req.csrfSecret);
                         res.render('addNewUser', {
                             usuario,
                             username,
                             userInfo,
-                            expires
+                            expires,
+                            csrfToken
                         })
 
                 } catch (error) {
-                    const flag = {
-                        dirNumber: 500
-                    }
-                    const errorInfo = {
-                        errorNumber: 238,
-                        status: false,
-                        msg: 'controllerError - UpdateUser'
-                    }
-                    res.render('errorPages', {
-                        error,
-                        errorInfo,
-                        flag
-                    })
+                    catchError(error)
                 }
 
             } else {
-                const flag = {
-                    dirNumber: 500
-                }
                 const error = new Error('userToModify || userLogged error')
-                const errorInfo = {
-                    errorNumber: 238,
-                    status: false,
-                    msg: 'controllerError - UpdateUser - Usuario no existe'
-                }
-                res.render('errorPages', {
-                    error,
-                    errorInfo,
-                    flag
-                })
+                catchError(error)
             }
         })
     }
@@ -471,6 +512,19 @@ class UsersController {
         const cookie = req.session.cookie
         const time = cookie.expires
         const expires = new Date(time)
+
+        const csrfToken = req.body._csrf;
+        if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
+            
+            const error = new Error ('Invalid CSRF token')
+            const dirNumber = 500
+            let errorInfo = errorInformation(dirNumber)
+
+            return res.render('errorPages', {
+                error,
+                errorInfo
+            })
+        }
         
         if(userToModify && userLogged) {
             //------ Storage Client Logo Image in Google Store --------
@@ -512,24 +566,30 @@ class UsersController {
                 try {
                     const usuario = await this.users.updateUserPreferences(id, updatedUser, userModificator)
 
-                    const flag = {
-                        dirNumber: 404
-                    }
-            
-                    if(!usuario) return res.render('errorPages', {username, userInfo, expires, flag})
-                        res.render('userSettings', {
-                            usuario,
-                            username,
-                            userInfo,
-                            expires
+                    if(!usuario) {
+                        const error = new Error('No fue posible Actualizar el Usuario!')
+                        const dirNumber = 404
+                        let errorInfo = errorInformation(dirNumber)
+                        
+                        res.render('errorPages', {
+                            error,
+                            errorInfo
                         })
+                    }
+                        
+                    const csrfToken = csrfTokens.create(req.csrfSecret);
+                    res.render('userSettings', {
+                        usuario,
+                        username,
+                        userInfo,
+                        expires,
+                        csrfToken
+                    })
 
                 } catch (error) {
-                    const errorInfo = {
-                        errorNumber: 238,
-                        status: false,
-                        msg: 'controllerError - UpdateUser'
-                    }
+                    const dirNumber = 500
+                    let errorInfo = errorInformation(dirNumber)
+                    
                     res.render('errorPages', {
                         error,
                         errorInfo
@@ -539,11 +599,8 @@ class UsersController {
 
         } else {
             const error = new Error('userToModify || userLogged error')
-            const errorInfo = {
-                errorNumber: 238,
-                status: false,
-                msg: 'controllerError - UpdateUser - Usuario no existe'
-            }
+            const dirNumber = 500
+            let errorInfo = errorInformation(dirNumber)
             res.render('errorPages', {
                 error,
                 errorInfo
@@ -563,20 +620,31 @@ class UsersController {
         const time = cookie.expires
         const expires = new Date(time)
         
-        try {           
+        try {
+            if (!usuario) {
+                const error = new Error(`No fue posible encontrar el Usuario con el id#: ${id}!`)
+                const dirNumber = 404
+                let errorInfo = errorInformation(dirNumber)
+                
+                res.render('errorPages', {
+                    error,
+                    errorInfo
+                })
+            }
+
+            const csrfToken = csrfTokens.create(req.csrfSecret); 
             res.render('userSettings', {
                 usuario,
                 username,
                 userInfo,
-                expires
+                expires,
+                csrfToken
             })
 
         } catch (error) {
-            const errorInfo = {
-                errorNumber: 354,
-                status: false,
-                msg: 'controllerError - getUserSettings'
-            }
+            const dirNumber = 500
+            let errorInfo = errorInformation(dirNumber)
+            
             res.render('errorPages', {
                 error,
                 errorInfo
@@ -588,21 +656,19 @@ class UsersController {
         const users = await this.users.getAllUsers()
         
         try {
-            if(users.error) return res.status(400).json({msg: 'No hay usuarios cargados!'}) 
-            res.send({
-                usersAll: users
-            })
+            if(users.error) {
+                const error = new Error(`No hoy Usuarios cargados!`)
+                const dirNumber = 404
+                let errorInfo = errorInformation(dirNumber)
+                
+                res.render('errorPages', {
+                    error,
+                    errorInfo
+                })
+            }
 
         } catch (error) {
-            const errorInfo = {
-                errorNumber: 323,
-                status: false,
-                msg: 'controllerError - SearchUsers'
-            }
-            res.render('errorPages', {
-                error,
-                errorInfo
-            })
+            catchError(error)
         }
     }
 
@@ -622,31 +688,38 @@ class UsersController {
         const time = cookie.expires
         const expires = new Date(time)
 
+        const csrfToken = req.body._csrf;
+        if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
+            
+            const error = new Error ('Invalid CSRF token')
+            catchError(error)
+        }
+
         try {
             const usuario = await this.users.deleteUserById(id, userModificator)
 
-            const flag = {
-                dirNumber: 404
+            if(!usuario) {
+                const error = new Error(`No hoy Usuarios cargados!`)
+                const dirNumber = 404
+                let errorInfo = errorInformation(dirNumber)
+                
+                res.render('errorPages', {
+                    error,
+                    errorInfo
+                })
             }
-
-            if(!usuario) return res.render('errorPages', {username, userInfo, expires, flag})
             
+            const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewUser', {
                 usuario,
                 username,
                 userInfo,
-                expires
+                expires,
+                csrfToken
             })
+
         } catch (error) {
-            const errorInfo = {
-                errorNumber: 345,
-                status: false,
-                msg: 'controllerError - deleteUserById'
-            }
-            res.render('errorPages', {
-                error,
-                errorInfo
-            })
+            catchError(error)
         }
     }
 
@@ -657,6 +730,19 @@ class UsersController {
         const cookie = req.session.cookie
         const time = cookie.expires
         let expires = new Date(time)
+
+        const csrfToken = req.body._csrf;
+        if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
+            
+            const error = new Error ('Invalid CSRF token')
+            const dirNumber = 500
+            let errorInfo = errorInformation(dirNumber)
+
+            return res.render('errorPages', {
+                error,
+                errorInfo
+            })
+        }
         
         try {
        
@@ -681,8 +767,8 @@ class UsersController {
             boolean = isValidPassword(user, password)
                 
                 if (boolean) {
-                    const usuario = await this.users.getUserByUsernameAndPassword(username, user.password)
-                    const userInfo = await this.users.getUserByUsername(username)
+                    const usuario = await this.users.getUserByUsernameAndPassword(user.username, user.password)
+                    const userInfo = await this.users.getUserByUsername(user.username)
 
                     const clientes = await this.clients.getAllClients()
                     const usuarios = await this.users.getAllUsers()
@@ -693,12 +779,14 @@ class UsersController {
                     const sessions = parseInt(sessionLogin.length+1)
 
                         if (!usuario) {
+                            const csrfToken = csrfTokens.create(req.csrfSecret);
                             return res.render('login', {
                                 flag: false,
-                                fail: false
-                            }) 
-                        }
-                        else if (usuario && userInfo.status ) {
+                                fail: false,
+                                csrfToken
+                            })
+
+                        } else if (usuario && userInfo.status ) {
                             const access_token = generateToken(usuario)
                             
                             req.session.admin = userInfo.admin
@@ -717,8 +805,8 @@ class UsersController {
                                     sessions
                                 })
                             }, 350)
-                        }
-                        else {
+
+                        } else {
                             setTimeout(() => {
                                 return res.render('notAuthorizated', {
                                     userInfo,
@@ -732,37 +820,44 @@ class UsersController {
                 } else {
                     const flag = true
                     const fail = true
+                    const csrfToken = csrfTokens.create(req.csrfSecret);
                     setTimeout(() => {
                         return res.render('login', {
                             flag,
-                            fail
+                            fail,
+                            csrfToken
                         })
                     }, 600)
                 }
 
-        } catch {
-            // res.status(500).send(error)
-            const errorInfo = {
-                errorNumber: 384,
-                status: false,
-                msg: 'controllerError - Login'
-            }
-            res.render('errorPages', {
-                error,
-                errorInfo
-            })
+        } catch (error) {
+            catchError(error)
         }
     }
 
     resetUserPassword = async (req, res) => {
         try {
-            const existeUsuario = await this.users.getUserByEmail(req.body.email) 
+            const existeUsuario = await this.users.getUserByEmail(req.body.email)
+
+            const csrfToken = req.body._csrf;
+            if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
+                
+                const error = new Error ('Invalid CSRF token')
+                const dirNumber = 500
+                let errorInfo = errorInformation(dirNumber)
+
+                return res.render('errorPages', {
+                    error,
+                    errorInfo
+                })
+            }
             
             if (!existeUsuario) {
                 setTimeout(() => {
                     return res.render('notAllowedEmail', {
                     })
                 }, 3000)
+
             } else {
                 const sendEmailToUser = await this.users.resetUserPassword(existeUsuario)
 
@@ -780,27 +875,27 @@ class UsersController {
             }
        
         } catch (error) {
-            const errorInfo = {
-                errorNumber: 488,
-                status: false,
-                msg: 'controllerError -  Reset User Password'
-            }
-            res.render('errorPages', {
-                error,
-                errorInfo
-            })
-            // res.status(500).json({
-            //     status: false,
-            //     msg: 'controllerError - Reset User Password',
-            //     error: error
-            // })
+            catchError(error)
         }
     }
 
     updatePasswordByUser = async (req, res) => {
         const id = req.params.id
         const newPassword = req.body.password
-        const confirmNewPassword = req.body.confirmPassword 
+        const confirmNewPassword = req.body.confirmPassword
+
+        const csrfToken = req.body._csrf;
+        if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
+            
+            const error = new Error ('Invalid CSRF token')
+            const dirNumber = 500
+            let errorInfo = errorInformation(dirNumber)
+
+            return res.render('errorPages', {
+                error,
+                errorInfo
+            })
+        }
         
         if (newPassword === confirmNewPassword) {
             const userToModify = await this.users.getUserById(id)
@@ -833,54 +928,26 @@ class UsersController {
                                 error,
                                 errorInfo
                             }) 
-                        } 
-                        //res.status(404).json({ Msg: 'Password NO guardado' })
+                        }
                         
-                        setTimeout(() => {
-                            const flag = false
-                            const fail = false
-                            
+                        setTimeout(() => {                            
                             res.render('200-PasswordResetSuccess', {
                             })
 
                         }, 3000)
     
                     } catch (error) {
-                        const errorInfo = {
-                            errorNumber: 530,
-                            status: false,
-                            msg: 'controllerError -  updatePasswordByUser'
-                        }
-                        res.render('errorPages', {
-                            error,
-                            errorInfo
-                        })
+                        catchError(error)
                     }
     
             } else {
-                const errorInfo = {
-                    errorNumber: 560,
-                    status: false,
-                    msg: 'controllerError - Usuario no existe!'
-                }
-                res.render('errorPages', {
-                    error,
-                    errorInfo
-                })
-                //return res.status(404).json({ Msg: 'Usuario no existe!' })
+                const error = new Error('Usuario no existe!')
+                catchError(error)
             }
 
         } else {
-            const errorInfo = {
-                errorNumber: 560,
-                status: false,
-                msg: 'controllerError - Password no coinciden!'
-            }
-            res.render('errorPages', {
-                error,
-                errorInfo
-            })
-            // return res.status(404).json({ Msg: 'Password no coinciden!' })
+            const error = new Error('Password no coinciden!')
+            catchError(error)
         }
     }
 
@@ -909,19 +976,7 @@ class UsersController {
             })
 
         } catch (error) {
-            const errorInfo = {
-                errorNumber: 619,
-                status: false,
-                msg: 'controllerError - UserLogout'
-            }
-            res.render('errorPages', {
-                error,
-                errorInfo
-            })
-            // res.status(500).json({
-            //     status: false,
-            //     error: error
-            // })
+            catchError(error)
         }    
     }
 
@@ -950,15 +1005,7 @@ class UsersController {
             }
             
         } catch (error) {
-            const errorInfo = {
-                errorNumber: 655,
-                status: false,
-                msg: 'controllerError - authBloq'
-            }
-            res.render('errorPages', {
-                error,
-                errorInfo
-            })
+            catchError(error)
         }
     }
 
@@ -986,15 +1033,7 @@ class UsersController {
             })
             
         } catch (error) {
-            const errorInfo = {
-                errorNumber: 692,
-                status: false,
-                msg: 'controllerError -  authNoBloq'
-            }
-            res.render('errorPages', {
-                error,
-                errorInfo
-            })
+            catchError(error)
         }
 
     }
@@ -1021,9 +1060,11 @@ class UsersController {
             const { flag, fail } = true
     
             if (!user) {
+                const csrfToken = csrfTokens.create(req.csrfSecret);
                 return res.render('login', {
                     flag,
-                    fail
+                    fail,
+                    csrfToken
                 })
 
             } else if ( user.status ) {
@@ -1059,15 +1100,7 @@ class UsersController {
             }
              
         } catch (error) {
-            const errorInfo = {
-                errorNumber: 759,
-                status: false,
-                msg: 'controllerError - getIndex (UserController)'
-            }
-            res.render('errorPages', {
-                error,
-                errorInfo
-            })
+            catchError(error)
         }
     }
 
@@ -1079,6 +1112,19 @@ class UsersController {
         const cookie = req.session.cookie
         const time = cookie.expires
         const expires = new Date(time)
+
+        const csrfToken = req.body._csrf;
+        if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
+            
+            const error = new Error ('Invalid CSRF token')
+            const dirNumber = 500
+            let errorInfo = errorInformation(dirNumber)
+
+            return res.render('errorPages', {
+                error,
+                errorInfo
+            })
+        }
         
         try {
             const visits = req.session.visits
@@ -1087,19 +1133,27 @@ class UsersController {
             const { flag, fail } = true
             
             if (!user) {
-                return res.render('register', {
-                    flag,
-                    fail
+                const error = new Error('No fue posible encontrar el Usuario!')
+                const dirNumber = 404
+                let errorInfo = errorInformation(dirNumber)
+                
+                res.render('errorPages', {
+                    error,
+                    errorInfo
                 })
-            } else if ( user.status ) {
+
+            } else if ( user && user.status ) {
                 const access_token = generateToken(user)
                 req.session.admin = true
                 req.session.username = userInfo.username
+                const csrfToken = csrfTokens.create(req.csrfSecret);
                 return res.render('clientes', {
                     userInfo,
                     username,
-                    expires
+                    expires,
+                    csrfToken
                 })
+
             } else {
                 return res.render('notAuthorizated', {
                     userInfo,
@@ -1110,15 +1164,7 @@ class UsersController {
             }
             
         } catch (error) {
-            const errorInfo = {
-                errorNumber: 792,
-                status: false,
-                msg: 'controllerError - clientes(User Controller)'
-            }
-            res.render('errorPages', {
-                error,
-                errorInfo
-            })
+            catchError(error)
         }
     }
 }

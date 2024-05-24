@@ -667,7 +667,6 @@ let projectSchema = new Schema({
         type: String,
         maxlength: 1000,
         value: '../../../src/images/upload/LogoClientImages/noImageFound.png'
-        //https://orbis-alliance.com/wp-content/themes/consultix/images/no-image-found-360x260.png'
     },
     codeProject:{
         type: String,

@@ -12,27 +12,27 @@
     <div class="container" style="padding-top: 70px;"></div>
     <br>
     <div class="container-fluid">
-        <% if( userInfo.admin ) { %>
+        <% if( userInfo.admin || userInfo.superAdmin ) { %>
        
         <section class="mx-auto" style="width: 94%;">
             <div class="row">
                 <div class="col-12">
                     <hr>
-                    <h4 class="text-uppercase">Actualizar o Eliminar Cliente <strong><%=cliente.name %></strong></h4>
-                    <p>Departamento de Ingeniería Prodismo</p>
+                    <h4 class="text-uppercase">Actualizar Cliente <strong><%=cliente.name %></strong></h4>
+                    <p>Departamento de IT Prodismo</p>
                     <hr>
                 </div>
             </div>
         </section>
 
         <% } else { %>
-            <!-- <h4 class="mx-auto my-3">Actualizar Cliente <strong><%=cliente.name %></strong></h4> -->
+            
             <section class="mx-auto" style="width: 94%;">
                 <div class="row">
                     <div class="col-12 mt-3 mb-1">
                     <hr>
-                    <h4 class="text-uppercase">Actualizar Cliente <strong><%=cliente.name %></strong></h4>
-                    <p>Departamento de Ingeniería Prodismo</p>
+                    <h4 class="text-uppercase">Visualizar Cliente <strong><%=cliente.name %></strong></h4>
+                    <p>Departamento de IT Prodismo</p>
                     <hr>
                     </div>
                 </div>

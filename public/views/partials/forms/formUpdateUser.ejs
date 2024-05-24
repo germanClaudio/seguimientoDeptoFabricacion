@@ -1,11 +1,17 @@
-<div class="form-group col-10 mx-auto mt-2 mb-5 w-75 border p-3 text-white bg-opacity-75" style="background-color: #666666;">
+<div class="form-group col-10 mx-auto mt-2 mb-5 w-75 border p-3 text-white bg-opacity-75" style="background-color: #7a7a7a87;">
     <form id="formUpdateUser" enctype="multipart/form-data" action="/api/usuarios/update/<%=usuario._id%>" method="post">
         <fieldset>
             <div class="row my-2 mx-auto">
                 <div class="col-2">
                     <label for="idDisable">Id#</label>
-                    <input type="text" name="idDisable" id="idDisable" class="form-control-plaintext text-white"
-                        value="<%=usuario._id%>" disabled>
+                    <% const subStringID = (usuario._id).toString().substring(19)
+                        if (userInfo.superAdmin) { %>
+                            <input type="text" name="idDisable" id="idDisable" class="form-control-plaintext text-white"
+                                value="<%= usuario._id %>" disabled>
+                        <% } else { %>
+                            <input type="text" name="idDisable" id="idDisable" class="form-control-plaintext text-white"
+                                value="...<%= subStringID %>" disabled>
+                        <% } %>
                 </div>
                 <br>
                 <div class="col-1">
@@ -104,7 +110,7 @@
                 </div>
             </div>
             <br>
-            <div class="container-fluid my-auto">Permisos y Rol
+            <div class="container-fluid my-auto"><h4><strong>Permisos, Áreas, Roles y Status</strong></h4>
                 <div class="row my-3 mx-auto justify-content-between align-items-center">
                     <div class="col-3">
                         <label class="form-check-label" for="permiso">Seleccione un permiso</label>
@@ -117,43 +123,97 @@
                                 <option selected disabled value="simulacion">Simulación</option>
                                 <option value="diseno">Diseño</option>
                                 <option value="disenoSimulacion">Diseño/Simulación</option>
-                            <% } else { %>
+                            <% } else if (usuario.permiso === "disenoSimulacion") { %>
                                 <option selected disabled value="disenoSimulacion">Diseño/Simulación</option>
                                 <option value="diseno">Diseño</option>
                                 <option value="simulacion">Simulación</option>
-                            <% } %>    
+                            <% } else if (usuario.permiso === "disenoSimulacion") { %>
+                                <option selected disabled value="disenoSimulacion">Diseño/Simulación</option>
+                                <option value="diseno">Diseño</option>
+                                <option value="simulacion">Simulación</option>
+                            <% } %> 
                         </select>
                         <input type="hidden" id="permisoHidden" name="permisoHidden" value="" style="display: none;">
                     </div>
                     
-                    <%  if (usuario.admin) { %>
-                        <div class="col-3" style="background-color: #00029090;">
+                    <div class="col-3">
+                        <label class="form-check-label" for="area">Seleccione un Área</label>
+                        <select class="form-select form-select" aria-label=".form-select example" name="area" id="area" required>
+                            <% if (usuario.area === "ingenieria") { %>
+                                <option selected disabled value="ingenieria">Ingeniería</option>
+                                <option value="fabricacion">Fabricación</option>
+                                <option value="proyectos">Proyectos</option>
+                                <option value="administracion">Administración</option>
+                                <option value="todas" disabled>Todas</option>
+                            <% } else if (usuario.area === "fabricacion") { %>
+                                <option selected disabled value="fabricacion">Fabricación</option>
+                                <option value="ingenieria">Ingeniería</option>
+                                <option value="proyectos">Proyectos</option>
+                                <option value="administracion">Administracion</option>
+                                <option value="todas" disabled>Todas</option>
+                            <% } else if (usuario.area === "proyectos") { %>
+                                <option selected disabled value="proyectos">Proyectos</option>
+                                <option value="ingenieria">Ingeniería</option>
+                                <option value="fabricacion">Fabricación</option>
+                                <option value="administracion">Administracion</option>
+                                <option value="todas" disabled>Todas</option>
+                            <% } else if (usuario.area === "administracion") { %>
+                                <option selected disabled value="administracion">Administración</option>
+                                <option value="ingenieria">Ingeniería</option>
+                                <option value="fabricacion">Fabricación</option>
+                                <option value="proyectos">Proyectos</option>
+                                <option value="todas" disabled>Todas</option>
+                            <% } else { %>
+                                <option selected disabled value="todas">Todas</option>
+                                <option value="ingenieria">Ingeniería</option>
+                                <option value="fabricacion">Fabricación</option>
+                                <option value="proyectos">Proyectos</option>
+                                <option value="administracion">Administración</option>
+                            <% } %>    
+                        </select>
+                        <input type="hidden" id="areaHidden" name="areaHidden" value="" style="display: none;">
+                    </div>
+
+                    <% if (usuario.superAdmin) { %>
+                        <div class="col-2 me-2" style="background-color: #c3a90047;">
+                            <label for="superAdmin">SuperAdmin</label>
+                            <div class="">
+                                <p class="d-inline-block me-1">No</p>
+                                <div class="form-check form-switch d-inline-block mt-2">
+                                    <input id="SuperAdmin" class="form-check-input" type="checkbox" role="switch"
+                                        name="superAdmin" style="cursor: pointer;" checked>
+                                    <label class="form-check-label" for="superAdmin">Si</label>
+                                </div>    
+                            </div>
+                        </div>
+                    <% } else if (usuario.admin) { %>
+                        <div class="col-2 me-2" style="background-color: #00029090;">
                             <label for="admin">Rol</label>
                             <div class="">
                                 <p class="d-inline-block me-1">Usuario</p>
                                 <div class="form-check form-switch d-inline-block mt-2">
                                     <input id="admin" class="form-check-input" type="checkbox" role="switch"
                                         name="admin" style="cursor: pointer;" checked>
-                                    <label class="form-check-label" for="admin">Administrador</label>
+                                    <label class="form-check-label" for="admin">Admin</label>
                                 </div>    
                             </div>
                         </div>
                     <% } else { %>
-                        <div class="col-3" style="background-color: #009e0360;">
+                        <div class="col-2 me-2" style="background-color: #009e0360;">
                             <label for="admin">Rol</label>
                             <div class="">
                                 <p class="d-inline-block me-1">Usuario</p>
                                 <div class="form-check form-switch d-inline-block mt-2">
                                     <input id="admin" class="form-check-input" type="checkbox" role="switch"
                                         name="admin" style="cursor: pointer;">
-                                    <label class="form-check-label" for="admin">Administrador</label>
+                                    <label class="form-check-label" for="admin">Admin</label>
                                 </div>    
                             </div>
                         </div>
                     <% } %> 
 
                     <%  if (usuario.status) { %>
-                        <div class="col-3" style="background-color: #55dd5560;">
+                        <div class="col-2 ms-2" style="background-color: #55dd5560;">
                             <label for="status">Status Usuario</label>
                             <div class="">
                                 <p class="d-inline-block me-1">Inactivo</p>
@@ -165,7 +225,7 @@
                             </div>
                         </div>
                     <% } else { %>
-                        <div class="col-3" style="background-color: #dd555560;">
+                        <div class="col-2 ms-2" style="background-color: #dd555560;">
                             <label for="status">Status Usuario</label>
                             <div class="">
                                 <p class="d-inline-block me-1">Inactivo</p>
@@ -192,10 +252,9 @@
                         
             <div class="d-flex justify-content-center my-2">
                 <button id="btnUpdateUser" class="btn btn-success mx-auto my-2" disabled>Actualizar Usuario <i class="fa-solid fa-save"></i></button>
-                <a class="btn btn-primary my-2" href="/api/usuarios"> Volver <i class="fa-solid fa-arrow-left"></i></a>
-                <a class="btn btn-danger mx-auto my-2" href="/api/usuarios/delete/<%=usuario._id%>">Eliminar <i class="fa-solid fa-trash"></i></a>
+                <a class="btn btn-primary mx-auto my-2" href="/api/usuarios"> Volver <i class="fa-solid fa-arrow-left"></i></a>
             </div>
-
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         </fieldset>
     </form>
 </div>

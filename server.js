@@ -1,6 +1,8 @@
 const express = require('express')
 const logger = require('morgan')
 const session = require('express-session')
+const cookieParser = require('cookie-parser');
+const csrf = require('csrf');
 const path = require('path')
 
 require('dotenv').config( {
@@ -29,7 +31,6 @@ const advancedOptions = { useNewUrlParser: true, useUnifiedTopology: true }
 
 //________________________________________________________________________________ //
 const passport = require('passport')
-// const { initPassport } = require('./middlewares/passport.js')
 //________________________________________________________________________________ //
 
 const options = require('./options/config.js')
@@ -62,7 +63,6 @@ const initServer = () => {
         saveUninitialized: false,        
     }))
 
-    // initPassport()
     app.use(passport.initialize())
     app.use(passport.session())
        
@@ -71,8 +71,17 @@ const initServer = () => {
     app.use(express.static('public'))
     app.use(express.json())
     app.use(express.urlencoded({ extended: true }))
+    app.use(cookieParser());
     app.use(cors())
     app.use(logger('dev'))
+    const csrfTokens = csrf();
+
+    app.use((req, res, next) => {
+        const csrfSecret = req.cookies.csrfSecret || csrfTokens.secretSync();
+        res.cookie('csrfSecret', csrfSecret, { httpOnly: true });
+        req.csrfSecret = csrfSecret;
+        next();
+      });
         
     ////////////////////// Rutas ////////////////////////////
     app.use('/api/clientes', routerClientes)

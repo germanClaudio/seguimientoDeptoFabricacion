@@ -1,11 +1,12 @@
-<div class="form-group col-4 mx-auto my-2 w-25 border p-3 bg-light .bg-light.bg-gradient text-dark bg-opacity-75 rounded-3 shadow-lg">
+<div class="form-group col-4 mx-auto w-25 border p-3 bg-light .bg-light.bg-gradient text-dark bg-opacity-75 rounded-3 shadow-lg">
     <form id="loginForm" action="login" method="post"> 
         <fieldset>
             <div class="d-flex justify-content-center mx-auto">
-                <img src='../../../src/images/Logo_Prodismo.png' width="150" height="150" class="p-2 my-1 mx-auto">
+                <img src='../../../src/images/LogoProdismoIngresoTransparente.png' width="260" height="240" class="p-2 my-1 mx-auto">
             </div>
-            <label for="username">Usuario</label>
-            <input type="text" name="username" id="username" class="form-control" placeholder="Nombre de Usuario" autocomplete="username" required>
+            <label for="username">Usuario o N° Legajo</label>
+            <input type="text" name="username" id="username" class="form-control"
+                placeholder="Nombre de Usuario o Numero Legajo" autocomplete="username" required>
             <span id="warningUser" class="badge rounded-pill text-bg-warning"></span>
             <br>
             <label for="password">Password</label>
@@ -28,6 +29,7 @@
                 <button id="btnFormLogin" title="Login" type="button" class="btn btn-primary mx-auto">Login <i class="fa-solid fa-sign-in" aria-hidden="true"></i></button>
                 <button type="reset" title="Reset" class="btn btn-danger mx-auto">Reset <i class="fa-solid fa-refresh" aria-hidden="true"></i></button>
             </div>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         </fieldset>
     </form>
 </div>

@@ -33,9 +33,29 @@ const renderUser = (arrUsers) => {
         let optionStatus = element.status ? green : red
         let optionAdmin = element.admin ? dark : grey
         var optionPermiso = element.permiso ? grey : red
+        var optionArea = element.area ? cian : green
         let showStatus = element.status ? active : inactive
         let showAdmin = element.admin ? admin : user
         let idChain = element._id.substring(19)
+        var showArea = "Ingeniería"
+
+            if (element.area === 'ingenieria') {
+                showArea
+                optionArea = cian
+            } else if (element.area === "fabricacion") {
+                showArea = 'Simulación'
+                optionArea = yellow
+            } else if (element.area === "administracion") {
+                showArea = grey
+                optionArea = yellow
+            } else if (element.area === "proyectos") {
+                showArea = dark
+                optionArea = yellow
+            } else {
+                showArea = 'Todas'
+                optionArea = green
+            }
+
         var showPermiso = "Diseño/Simulación"
         
             if (element.permiso === 'diseno') {
@@ -47,11 +67,53 @@ const renderUser = (arrUsers) => {
             } else if (element.permiso === "disenoSimulacion") {
                 showPermiso
                 optionPermiso = red
+            } else if (element.permiso === "cadCam") {
+                showPermiso = 'Cad-Cam'
+                optionPermiso = grey
+            } else if (element.permiso === "projectManager") {
+                showPermiso = 'Project Manager'
+                optionPermiso = dark
+            } else if (element.permiso === "mecanizado") {
+                showPermiso = 'Mecanizado'
+                optionPermiso = yellow
+            } else if (element.permiso === "ajuste") {
+                showPermiso = 'Ajuste'
+                optionPermiso = red
             } else {
-                showPermiso = 'Sin permisos asociados'
+                showPermiso = 'Todos'
+                optionPermiso = green
             }
 
-            if(element.visible) {
+            var superAdmin = element.superAdmin ? '<i class="fa-solid fa-crown fa-rotate-by fa-xl" title="SuperAdmin" style="color: #a89c0d; --fa-rotate-angle: 20deg;"></i>' : null
+
+            if (element.visible && element.superAdmin) {
+                return (`<tr>
+                            <th scope="row" class="text-center"><strong>...${idChain}</strong>${superAdmin}</th>
+                            <td class="text-center" id="legajoId_${element._id}">${element.legajoId}</td>
+                            <td class="text-center" id="name_${element._id}">${element.name}</td>
+                            <td class="text-center" id="lastName_${element._id}">${element.lastName}</td>
+                            <td class="text-center" id="email_${element._id}">${element.email}</td>
+                            <td class="text-center" id="username_${element._id}">${element.username}</td>
+                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Avatar" src='${element.avatar}' width="90px" height="70px"></td>
+                            <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
+                            <td class="text-center">
+                                <span class="badge rounded-pill bg-${optionAdmin} position-relative">
+                                    ${showAdmin}
+                                    <span class="position-absolute top-0 start-100 translate-middle">
+                                        ${superAdmin}
+                                    </span>
+                                </span>
+                            </td>
+                            <td class="text-center"><span class="badge rounded-pill bg-${optionArea}"> ${showArea} </span></td>
+                            <td class="text-center"><span class="badge text-bg-${optionPermiso}"> ${showPermiso} </span></td>
+                            <td class="text-center">
+                                <div class="d-block align-items-center text-center">
+                                    <a href="/api/usuarios/${element._id}" class="btn btn-primary btn-sm me-1"><i class="fa-solid fa-user-pen"></i></a>
+                                    <button id="${element._id}" name="btnDeleteUser" type="button" class="btn btn-danger btn-sm ms-1" title="Eliminar Usuario ${element.username}"><i class="fa-regular fa-trash-can"></i></button>
+                                </div>
+                            </td>
+                        </tr>`)
+            } else {
                 return (`<tr>
                             <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
                             <td class="text-center" id="legajoId_${element._id}">${element.legajoId}</td>
@@ -62,6 +124,7 @@ const renderUser = (arrUsers) => {
                             <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Avatar" src='${element.avatar}' width="90px" height="70px"></td>
                             <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
                             <td class="text-center"><span class="badge rounded-pill bg-${optionAdmin}"> ${showAdmin} </span></td>
+                            <td class="text-center"><span class="badge rounded-pill bg-${optionArea}"> ${showArea} </span></td>
                             <td class="text-center"><span class="badge text-bg-${optionPermiso}"> ${showPermiso} </span></td>
                             <td class="text-center">
                                 <div class="d-block align-items-center text-center">
@@ -149,7 +212,7 @@ const renderUser = (arrUsers) => {
                     Swal.fire({
                         title: `Atención!`,
                         position: 'center',
-                        text: 'Usted no puede eliminase a si mismo',
+                        text: 'Usted no puede eliminase a sí mismo',
                         icon: 'warning',
                         showCancelButton: true,
                         showConfirmButton: false,
@@ -488,14 +551,18 @@ btnAddNewUser.addEventListener('click', (event) => {
 
 const btnResetFormNewUser = document.getElementById('btnResetFormNewUser')
 
-btnResetFormNewUser.addEventListener('click', () => {
-    document.getElementById('messagePass').innerHTML = ""
-    document.getElementById('messageConfirmPass').innerHTML = ""
-    btnAddNewUser.disabled = true
-    btnAddNewUser.style.opacity = (0.4)
-    document.getElementById('confirmPassword').disabled = true
-    removeImageAvatar()
-})
+if (btnResetFormNewUser) {
+    btnResetFormNewUser.addEventListener('click', () => {
+        document.getElementById('messagePass').innerHTML = ""
+        document.getElementById('messageConfirmPass').innerHTML = ""
+        btnAddNewUser.disabled = true
+        btnAddNewUser.style.opacity = (0.4)
+        document.getElementById('confirmPassword').disabled = true
+        alertAvatarUser.style.display = 'none'
+        alertSizeAvatarUser.style.display = 'none'
+        alertRefresh()
+    })
+}
 
 var inputsDeTexto = document.querySelectorAll('input[type="text"]')
 
@@ -525,7 +592,7 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
 
 function disabledBtnAceptar () {
     let btnAceptarFrom = document.getElementById('btnAddNewUser');
-    const allInputs = document.querySelectorAll('input[type="text"],input[type="number"],select,textarea')
+    const allInputs = document.querySelectorAll('input[type="text"],input[type="number"],select,textarea, input[type="check"]' )
     
     allInputs.forEach(function(input) {
         if (input.value) {

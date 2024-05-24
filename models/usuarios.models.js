@@ -41,10 +41,19 @@ const userSchema = new Schema({
         required: false,
         default: false
     },
+    superAdmin: {
+        type: Boolean,
+        required: false,
+        default: false
+    },
     status: {
         type: Boolean,
         required: true,
         default: true
+    },
+    area: { 
+        type: String,
+        default: 'ingenieria'
     },
     permiso: { 
         type: String,

@@ -168,7 +168,7 @@
                 <button id="btnUpdateUserSettings" class="btn btn-success mx-auto" style="cursor: not-allowed;" disabled>Guardar Cambios <i class="fa-solid fa-save"></i></button>
                 <a class="btn btn-primary mx-auto" href="/api/auth/index"> Volver <i class="fa-solid fa-arrow-left"></i></a>
             </div>
-
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         </fieldset>
     </form>
 </div>
