@@ -19,7 +19,8 @@ const userSchema = new Schema({
     username: { 
         type: String,
         required: true,
-        maxlength: 100
+        maxlength: 100,
+        unique: true
     },
     legajoId: {
         type: Number,

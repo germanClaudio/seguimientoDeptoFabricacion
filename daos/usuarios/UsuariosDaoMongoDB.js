@@ -73,6 +73,23 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
             return new Error (`El Usuario no existe con ese ID${id}!`)
         }
     }
+
+    async getUserByLegajoId(legajoId) {
+        if(legajoId){
+            try {
+                const user = await Usuarios.findOne( {legajoId: `${legajoId}`} )
+                if ( user === undefined || user === null) {
+                    return null
+                } else {
+                    return true
+                }
+            } catch (error) {
+                console.error(error)
+            }
+        } else {
+            return new Error (`Error en legajo ID ${legajoId}!`)
+        }
+    }
     
     async getUserByUsername(username) {
         
@@ -271,24 +288,23 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
 
     async getUserByEmail(email) {
         // console.log('email: ', email)
-
         if(email){
             try {
                 const user = await Usuarios.findOne( { email: `${email}` })
                 
-                 if ( user === undefined || user === null) {
+                if ( user === undefined || user === null) {
                     return false
-                 } else if (user.status && user.visible) {
+                } else if (user.status && user.visible) {
                     return user
-                 } else {
+                } else {
                     return false
-                 }
+                }
 
             } catch (error) {
                 console.error('Aca esta el error vieja: ', error)
             }
         } else {
-            return console.error('Aca esta el error(username invalid)')
+            return console.error('Aca esta el error(email invalid)')
         }
     }
 

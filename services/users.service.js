@@ -45,6 +45,11 @@ class UserService {
         return await this.usuarios.getUserById(id)
     }
 
+     // return one user by LegajoId
+     async getUserByLegajoId(legajoId) {
+        return await this.usuarios.getUserByLegajoId(legajoId)
+    }
+
     // return one user by username & password
     async getUserByUsernameAndPassword(username, password) {
         return await this.usuarios.getUserByUsernameAndPassword(username, password)
