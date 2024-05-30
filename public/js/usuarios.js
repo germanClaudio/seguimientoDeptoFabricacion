@@ -439,36 +439,43 @@ removeImageButtonAvatarUser.addEventListener('click', (e)=> {
     e.stopPropagation()
 })
 
+const alertUser = document.getElementById('alertUser')
+console.log('alertUser: ', alertUser)
+        
+function messageNewUser(name, lastName, username, legajoId, email) {
 
-function messageNewUser(name, lastName, username, legajoId) {
-    Swal.fire({
-        title: `Nuevo Usuario <b>${username}</b>`,
-        text: `El usuario ${name} ${lastName} será registrado!`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        focusConfirm: true,
-        confirmButtonText: 'Registrarlo! <i class="fa-solid fa-user-plus"></i>',
-        cancelButtonText: 'Cancelar <i class="fa-solid fa-user-xmark"></i>'
+    if (username, legajoId, email) {
+        Swal.fire({
+            title: `Nuevo Usuario <b>${username}</b>`,
+            text: `El usuario ${name} ${lastName} será registrado!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            focusConfirm: true,
+            confirmButtonText: 'Registrarlo! <i class="fa-solid fa-user-plus"></i>',
+            cancelButtonText: 'Cancelar <i class="fa-solid fa-user-xmark"></i>'
+    
+          }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById("newUserForm").submit()
 
-      }).then((result) => {
-        if (result.isConfirmed) {
-            document.getElementById("newUserForm").submit()
-          Swal.fire(
-            'Creado!',
-            `El usuario ${name} ${lastName}, legajo #:${legajoId}, ha sido registrado exitosamente.`,
-            'success'
-          )
-        } else {
-            Swal.fire(
-                'No registrado!',
-                `El usuario ${name} ${lastName}, no ha sido registrado`,
-                'info'
-              )
-            return false
-        }
-      })
+                Swal.fire(
+                    'Creado!',
+                    `El usuario ${name} ${lastName}, legajo #:${legajoId}, ha sido registrado exitosamente.`,
+                    'success'
+                  )
+            } else {
+                Swal.fire(
+                    'No registrado!',
+                    `El usuario ${name} ${lastName}, no ha sido registrado`,
+                    'info'
+                  )
+                return false
+            }
+          })
+    }
+    
 }
 
 function messageWarningEmptyFields(
@@ -535,7 +542,13 @@ btnAddNewUser.addEventListener('click', (event) => {
     const legajoId = document.getElementById('userLegajoId').value
 
     if (name && lastName && username && legajoId && email && password && confirmPassword) {
-        messageNewUser(name, lastName, username, legajoId)
+        messageNewUser(
+            name, 
+            lastName, 
+            username, 
+            legajoId, 
+            email
+        )
     } else {
         messageWarningEmptyFields(
             name,

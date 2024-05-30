@@ -4,6 +4,7 @@ const routerUsers = Router()
 //const { countVisits } = require('../middlewares/countVisits/countVisits.middleware')
 const { checkAuthentication } = require('../middlewares/chekAuthentication.js')
 const { authUserMiddleware } = require('../middlewares/authUser.middleware.js')
+const { catchError } = require('../middlewares/catchErrors.middleware.js')
 
 const GetUsers = require('../controllers/usuarios.controller.js')
 const getUsers = GetUsers.UsersController
@@ -41,6 +42,10 @@ routerUsers.get("/auth-bloq", checkAuthentication, users.authBloq)
 
 //---------------- Authorizate session --------------
 routerUsers.get("/auth-nobloq", checkAuthentication, users.authNoBloq)
+
+
+//------------- Middleware de manejo de errores -------------
+routerUsers.use(catchError)
 
 
 module.exports = routerUsers

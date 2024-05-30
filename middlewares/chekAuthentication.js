@@ -2,8 +2,7 @@ const ContainerUsers = require('../daos/usuarios/UsuariosDaoFactory.js')
 const containerUser = ContainerUsers.getDaoUsers()
 
 const checkAuthentication = async (req, res, next) => {
-    // console.log('req.isAuthenticated(): ', req.isAuthenticated())
-    
+       
     if (req.isAuthenticated()) {
         return res.redirect("/api/auth/login")
     }
@@ -12,4 +11,6 @@ const checkAuthentication = async (req, res, next) => {
     next();
 }
 
-module.exports = { checkAuthentication }
+module.exports = {
+    checkAuthentication
+}

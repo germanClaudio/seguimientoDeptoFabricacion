@@ -1,0 +1,22 @@
+<div class="dashboard-main-wrapper p-0">
+    <div class="bg-light text-center">
+        <div class="container">
+            <div class="row">
+                <div class="offset-xl-2 col-xl-8 offset-lg-2 col-lg-8 col-md-12 col-sm-12 col-12">
+                    <div class="error-section">
+                        <img src="/src/images/400_notValidImage.png" alt="error 400" class="img-fluid">
+                        <div class="error-section-content">
+                            <h2 class="display-3">Bad Request</h2>
+                            <h5>Lo siento, uno o varios datos no son válidos.</h5>
+                            <p>Mensaje: <strong><%= errorInfo.msgErr %></strong></p>
+                            <p>Function: <%= errorInfo.errorFunction %> - Path: <%= errorInfo.errorFilePath %></p>
+                            <p>User: <%= errorInfo.user %></p>
+                            <button class="btn btn-primary mt-3 me-2" onclick="goBack()">Volver <i class="icon-arrow-left"></i></button>
+                            <a href="/api/auth/index" class="btn btn-danger mt-3 ms-2">Volver al Home <i class="icon-home"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -8,12 +8,12 @@
                         <div class="error-section-content">
                             <h1 class="display-3">Internal Server Error 500</h1>
                             <h5>Lo siento, hubo un error interno en el servidor.</h5>
-                            <h6>Comunique este error al administrador: <b><%= error %></b></h6>
+                            <h6>Comunique este error al administrador: <b><%= errorInfo.msgErr %></b></h6>
                             <p>------------------------------------------------------------</p>
-                            <p>File Path: <%= errorInfo.errorFilePath %></p>
-                            <p>Function: <strong><%= errorInfo.errorFunction %></strong> - Line: <%= errorInfo.errorNumber %></p>
-                            <p>Status: <%= errorInfo.status %> - Mensaje: <strong><%= errorInfo.msg %></strong></p>
-                            <a href="/api/auth/index" class="btn btn-danger mt-3">Volver al Home <i class="icon-home"></i></a>
+                            <p>Error Function: <strong><%= errorInfo.errorFunction %></strong> - Path: <%= errorInfo.errorFilePath %></p>
+                            <p>User: <%= errorInfo.user %> - Status Error: <%= errorInfo.status %></p>
+                            <button class="btn btn-primary mt-3 me-2" onclick="goBack()">Volver</button>
+                            <a href="/api/auth/index" class="btn btn-danger mt-3 ms-2">Volver al Home <i class="icon-home"></i></a>
                         </div>
                     </div>
                 </div>

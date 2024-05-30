@@ -20,6 +20,26 @@ function catchError400(error, res) {
     })
 }
 
+function catchError403(error, res) {
+    const dirNumber = 400
+    let errorInfo = errorInformation(dirNumber)
+    
+    return res.render('errorPages', {
+        error,
+        errorInfo
+    })
+}
+
+function catchError404(error, res) {
+    const dirNumber = 404
+    let errorInfo = errorInformation(dirNumber)
+    
+    return res.render('errorPages', {
+        error,
+        errorInfo
+    })
+}
+
 
 function errorInformation(dirNumber){
     const errorInfo = {
@@ -35,5 +55,7 @@ function errorInformation(dirNumber){
 
 module.exports = {
     catchError500,
-    catchError400
+    catchError400,
+    catchError403,
+    catchError404
 }

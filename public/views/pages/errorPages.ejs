@@ -3,6 +3,11 @@
  
 <head>
     <%- include('../partials/head/head'); %>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
 </head>
 
 <body>
@@ -12,14 +17,17 @@
         <%- include('../partials/errorPages/498_page_Invalid_Token'); %>
 
     <% } else if (errorInfo.flag === 400) { %>
-        <%- include('../partials/errorPages/404_pageNotFound'); %>
+        <%- include('../partials/errorPages/400_page_NotValidData', {error: error, errorInfo: errorInfo}); %>
 
     <% } else if (errorInfo.flag === 401) { %>
         <%- include('../partials/errorPages/401_page_NotAuth_User'); %>
-
+        
     <% } else if (errorInfo.flag === 403) { %>
         <%- include('../partials/errorPages/403_page_Invalid_CSRF_Token'); %>
-
+        
+    <% } else if (errorInfo.flag === 404) { %>
+        <%- include('../partials/errorPages/404_pageNotFound'); %>
+        
     <% } else { %>
         <%- include('../partials/errorPages/serverError500', {error: error, errorInfo: errorInfo}); %>
 

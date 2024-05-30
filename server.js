@@ -5,11 +5,11 @@ const cookieParser = require('cookie-parser');
 const csrf = require('csrf');
 const path = require('path')
 
-require('dotenv').config( {
+require('dotenv').config({
     path: process.env.MODO === 'dev'
-    ? path.resolve(__dirname, '.env')
-    : path.resolve(__dirname, '.env')
- })
+        ? path.resolve(__dirname, '.env')
+        : path.resolve(__dirname, '.env')
+})
 
 const cors = require('cors')
 const { Server: HttpServer } = require('http')
@@ -33,22 +33,23 @@ const advancedOptions = { useNewUrlParser: true, useUnifiedTopology: true }
 const passport = require('passport')
 //________________________________________________________________________________ //
 
-const options = require('./options/config.js')
+const options = require('./options/config.js');
 
-const initServer = () => {    
+const initServer = () => {
 
     const app = express()
     const httpServer = new HttpServer(app)
     const io = new IOServer(httpServer)
 
+
     /////////////////////// configuracion de EJS /////////////////////////
     app.set('view engine', 'ejs')
-    app.set('views', __dirname + '/public/views/pages') 
+    app.set('views', __dirname + '/public/views/pages')
 
     //////////////  middleware  ///////////////////////
     app.set('trust proxy', 1) // trust first proxy ---- 16-1-2024
     app.use(session({
-        secret: process.env.SECRET_KEY_SESSION,    
+        secret: process.env.SECRET_KEY_SESSION,
         store: MongoStore.create({
             mongoUrl: process.env.MONGO_URL_CONNECT_PROD, //MONGO_URL_CONNECT_SESS
             mongoOptions: advancedOptions,
@@ -59,15 +60,14 @@ const initServer = () => {
             sameSite: "lax",  // none, lax, strict 
             secure: false //true     
         },
-        resave: false, 
-        saveUninitialized: false,        
+        resave: false,
+        saveUninitialized: false,
     }))
 
     app.use(passport.initialize())
     app.use(passport.session())
-       
-    app.use(express.static( __dirname + 'src/images'))
-    //app.use(express.static( __dirname + 'src/upload/projectImages'))
+
+    app.use(express.static(__dirname + 'src/images'))
     app.use(express.static('public'))
     app.use(express.json())
     app.use(express.urlencoded({ extended: true }))
@@ -78,11 +78,18 @@ const initServer = () => {
 
     app.use((req, res, next) => {
         const csrfSecret = req.cookies.csrfSecret || csrfTokens.secretSync();
-        res.cookie('csrfSecret', csrfSecret, { httpOnly: true });
+        res.cookie('csrfSecret',
+            csrfSecret,
+            { httpOnly: true,
+              sameSite: "lax",
+            }
+        );
         req.csrfSecret = csrfSecret;
+
         next();
-      });
-        
+    });
+
+
     ////////////////////// Rutas ////////////////////////////
     app.use('/api/clientes', routerClientes)
     app.use('/api/proyectos', routerProyectos)
@@ -90,15 +97,14 @@ const initServer = () => {
     app.use('/api/usuarios', routerUsers)
     app.use('/info', infoRouter)
     app.use('/api/webchat', routerMensajes)
-         
     ////////////////////////////////////////////////////////
 
-//_______________________________ socket.io __________________________________ //   
+    //_______________________________ socket.io __________________________________ //   
     initSocket(io)
-//_____________________________________________________________________________//
+    //_____________________________________________________________________________//
 
     return {
-        listen: port => new Promise((res, rej)=>{
+        listen: port => new Promise((res, rej) => {
             const server = httpServer.listen(port, () => {
                 res(server)
             })

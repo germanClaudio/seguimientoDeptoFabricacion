@@ -54,6 +54,11 @@ class UserService {
     async getUserByUsernameAndPassword(username, password) {
         return await this.usuarios.getUserByUsernameAndPassword(username, password)
     }
+
+    // return one user by username || email || legajoId
+    async getExistingUser(user) {
+        return await this.usuarios.getExistingUser(user)
+    }
     
     // add new user
     async registerNewUser(user) {

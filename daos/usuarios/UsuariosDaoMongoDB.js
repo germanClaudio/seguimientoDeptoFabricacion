@@ -24,7 +24,6 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
             useNewUrlParser: true,
             useUnifiedTopology: true
         })
-        console.log('Connected to MongoDB Server <-123-> configMongoDB')
         console.log('Connected to MongoDB Server 1-2-3 - UsuariosDaoFactory.js')
     }
 
@@ -162,18 +161,34 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
             return new Error (`Usuario no existe o password incorrecto!`)
         }
     }
+
+    async getExistingUser(newUser) {
+        const legajoIdNum = parseInt(newUser.legajoId)
+        
+        if (newUser) {
+            const user = await Usuarios.findOne(
+                { $or: [ {username: `${newUser.username}`},
+                         {legajoId: legajoIdNum},
+                         {email: `${newUser.email}`}
+                       ]
+                }).exec();
+
+            if (user) {
+                return user
+            } else {
+                return false
+            }
+
+        } else {
+            return new Error (`No se pudo crear el Usuario!`)
+        }
+    }
     
     async createNewUser(newUser) {
-        // console.log('usuariosDaoMongoDB: ',newUser)
+        
         if (newUser) {
             let username = newUser.username || "";
             let password = newUser.password || "";
-            
-            const users = await Usuarios.findOne({username: `${newUser.username}`})
-            
-            if (users) {
-                return false
-            }
 
             if (!username || !password ) {
                 process.exit(1)

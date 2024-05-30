@@ -1,8 +1,10 @@
 const FilesService = require("../services/files.service.js")
-const catchErrors = require("../utils/catchErrors.js")
 
 const { Storage } = require('@google-cloud/storage');
 const sharp = require('sharp');
+
+const csrf = require('csrf');
+const csrfTokens = csrf();
 
 const storageToGCS = new Storage({
     projectId: process.env.PROJECT_ID_GCS,
@@ -16,9 +18,18 @@ class FilesController {
     }
 
     uploadToGCS = async (req, res) => {
+
+        const csrfToken = req.body._csrf;
+        if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
+            const error = new Error ('Invalid CSRF token')
+            error.dirNumber = 403
+            return next(error)
+        }
+
         if (!req.file) {
             const error = new Error('No se agregó ningún archivo válido')
-            catchErrors.catchError400(error, res)
+            error.dirNumber = 400
+            return next(error)
         }
     
         let bucket = storageToGCS.bucket(process.env.STORE_BUCKET_GCS); // Nombre bucket en Google Cloud Storage
@@ -58,7 +69,8 @@ class FilesController {
         });
     
         blobStream.on('error', (err) => {
-            catchErrors.catchError400(err, res)
+            err.dirNumber = 500
+            return next(err)
         });
                 
         blobStream.on('finish', () => {
