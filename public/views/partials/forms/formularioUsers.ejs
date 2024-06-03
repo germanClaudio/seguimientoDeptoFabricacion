@@ -26,7 +26,7 @@
 
                 <div class="col">
                     <label for="userLegajoId">Legajo #</label>
-                    <input type="number" name="userLegajoId" id="userLegajoId" class="form-control" required>
+                    <input type="number" name="userLegajoId" id="userLegajoId" class="form-control" min="1" max="9999" maxlength="4" required>
                 </div>
             </div>
 
@@ -136,7 +136,6 @@
                     <i class="fa-solid fa-rotate-left"></i></button>
             </div>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <input type="hidden" name="alertUser" id="alertUser" value="<%= alertUser %>">
         </fieldset>
     </form>
 </div>

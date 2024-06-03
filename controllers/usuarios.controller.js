@@ -12,7 +12,9 @@ const bCrypt = require('bcrypt')
 const csrf = require('csrf');
 const csrfTokens = csrf();
 
+
 const multer = require('multer')
+const catchErrors = require("../utils/catchErrors.js")
 let userPictureNotFound = "../../../src/images/upload/AvatarUsersImages/incognito.jpg"
 
 
@@ -38,23 +40,21 @@ class UsersController {
         try {
             const usuarios = await this.users.getAllUsers()
             if(usuarios.error) {
-                const error = new Error('No existen Usuarios Cargados')
-                error.dirNumber = 400
-                return next(error)
+                const err = new Error('No existen Usuarios Cargados')
+                err.dirNumber = 400
+                return next(err)
             }
-            const alertUser = null
             res.render('addNewUser', {
                 usuarios,
                 username,
                 userInfo,
                 expires,
-                csrfToken,
-                alertUser
+                csrfToken
             })
 
-        } catch (error) {
-            error.dirNumber = 500
-            return next(error)
+        } catch (err) {
+            err.dirNumber = 500
+            return next(err)
         }
     }
 
@@ -72,9 +72,9 @@ class UsersController {
         try {
             const usuario = await this.users.getUserById(id)
             if(!usuario) {
-                const error = new Error('No existe Usuario')
-                error.dirNumber = 400
-                return next(error)
+                const err = new Error('No existe Usuario')
+                err.dirNumber = 400
+                return next(err)
             }
             
             res.render('userDetails', {
@@ -85,9 +85,9 @@ class UsersController {
                 csrfToken
             })
 
-        } catch (error) {
-            error.dirNumber = 500
-            return next(error)
+        } catch (err) {
+            err.dirNumber = 400
+            return next(err)
         }
     }
 
@@ -128,133 +128,116 @@ class UsersController {
         const { username } = req.params
         const { password } = req.body
         
-        const csrfToken = csrfTokens.create(req.csrfSecret);
+        //const csrfToken = csrfTokens.create(req.csrfSecret);
         
         try {
             const usuario = await this.users.getUserByUsernameAndPassword(username, password)
             if(!usuario) {
-                const error = new Error('Username desconocido o password incorrecto!!')
-                error.dirNumber = 400
-                return next(error)
+                const err = new Error('Username desconocido o password incorrecto!!')
+                err.dirNumber = 400
+                return next(err)
             }
 
-        } catch (error) {
-            error.dirNumber = 500
-            return next(error)
+        } catch (err) {
+            err.dirNumber = 500
+            return next(err)
         }
     }
 
     createNewUser = async (req, res, next) => {
         //------ Storage New User Image in Google Store --------        
-            const storage = multer.memoryStorage({
-                fileFilter: (req, file, cb) => {
-                    if (file.mimetype.startsWith('image/')) {
-                        cb(null, true);
-                    } else {
-                        cb(new Error('Solo se permiten imágenes'));
-                        error.dirNumber = 400
-                        return next(error)
-                    }
-                },
-            }); // Almacenamiento en memoria para cargar archivos temporalmente
-                    
-            const uploadMulter = multer({
-                storage: storage
-            }).single('imageAvatarUser')
-
-            uploadMulter(req, res, next, async (err) => {
-
-                if (err) {
-                    err.dirNumber = 400;
-                    return next(err);
+        const storage = multer.memoryStorage({
+            fileFilter: (req, file, cb) => {
+                if (file.mimetype.startsWith('image/')) {
+                    cb(null, true);
+                } else {
+                    cb(new Error('Solo se permiten imágenes'));
                 }
-
-                try {
-                    if(req.file) {
-                        this.files.uploadToGCS(req, res)
-                    }
-
-                } catch (error) {
-                    error.dirNumber = 400
-                    return next(error)
-                }
-            })
-        //*********************************/
-        
-            let username = res.locals.username
-            let userInfo = res.locals.userInfo
-            let userManager = await this.users.getUserByUsername(username)
-            const userId = userManager._id
-            const userCreator = await this.users.getUserById(userId)
-            
-            const user = [{
-                name: userCreator.name,
-                lastName: userCreator.lastName,
-                username: userCreator.username,
-                email: userCreator.email
-            }]
-
-            const modificator = [{
-                name: "",
-                lastName: "",
-                username: "",
-                email: ""
-            }]
-
-            const cookie = req.session.cookie
-            const time = cookie.expires
-            const expires = new Date(time)
-
+            },
+        }); // Almacenamiento en memoria para cargar archivos temporalmente
+    
+        const uploadMulter = multer({
+            storage: storage
+        }).single('imageAvatarUser');
+    
+        // Almacena la imagen y maneja cualquier error
+        uploadMulter(req, res, async (err) => {
+            if (err) {
+                err.dirNumber = 400;
+                return next(err);
+            }
+    
             try {
-                const usernameInput = req.body.username.replace(/[!@#$%^&*]/g, "")
-                const emailInput = req.body.email
-                const legajoIdInput = req.body.userLegajoId
-                         
+                if (req.file) {
+                    await this.files.uploadToGCS(req, res);
+                }
+    
+                let username = res.locals.username;
+                let userInfo = res.locals.userInfo;
+                let userManager = await this.users.getUserByUsername(username);
+                const userId = userManager._id;
+                const userCreator = await this.users.getUserById(userId);
+    
+                const user = [{
+                    name: userCreator.name,
+                    lastName: userCreator.lastName,
+                    username: userCreator.username,
+                    email: userCreator.email
+                }];
+    
+                const modificator = [{
+                    name: "",
+                    lastName: "",
+                    username: "",
+                    email: ""
+                }];
+    
+                const cookie = req.session.cookie;
+                const time = cookie.expires;
+                const expires = new Date(time);
+    
+                const usernameInput = req.body.username.replace(/[!@#$%^&*]/g, "");
+                const emailInput = req.body.email;
+                const legajoIdInput = req.body.userLegajoId;
+    
                 const newUserValid = {
                     username: usernameInput,
                     legajoId: parseInt(legajoIdInput),
                     email: emailInput
+                };
+    
+                const userExist = await this.users.getExistingUser(newUserValid);
+    
+                if (userExist) {
+                    const err = new Error(`Ya existe un Usuario con estos datos.`);
+                    err.dirNumber = 400;
+                    err.data = newUserValid
+                    console.log('6-err:', err);
+                    return next(err);
                 }
-
-                const userValid = await this.users.getExistingUser(newUserValid)
-                
-                if (userValid) {
-                    const usuarios = await containerUser.getAllUsers()
-                    const alertUser = `Ya existe un Usuario o Usuario inválido!!`
-                    const csrfToken = csrfTokens.create(req.csrfSecret);
-                    
-                    return res.status(200).render('addNewUser', {
-                        usuarios,
-                        username,
-                        userInfo,
-                        expires,
-                        csrfToken,
-                        alertUser
-                    })
+    
+                if (req.body.password !== req.body.confirmPassword) {
+                    const err = new Error('Los password no coinciden, no se agregó el usuario');
+                    err.dirNumber = 400;
+                    return next(err);
                 }
-
-                if(req.body.password != req.body.confirmPassword) {
-                    const error = new Error('Los password no coinciden, no se agregó el usuario')
-                    return error
-                }
-
+    
                 const csrfToken = req.body._csrf;
                 if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-                    const error = new Error ('Invalid CSRF token')
-                    return error
+                    const err = new Error('Invalid CSRF token');
+                    err.dirNumber = 400;
+                    return next(err);
                 }
-
-                const selectFieldPermiso = req.body.permiso
-                const selectFieldArea = req.body.area
-
-                // Validar y sanitizar los datos recibidos
+    
+                const selectFieldPermiso = req.body.permiso;
+                const selectFieldArea = req.body.area;
+    
                 if (validateSelectField(selectFieldPermiso) && validateSelectField(selectFieldArea)) {
-                    // Procesar los datos si son válidos
                     if (userInfo.admin && !userInfo.superAdmin) {
-                        req.body.superAdmin = 'off'
-                        req.body.admin = 'off'
+                        req.body.superAdmin = 'off';
+                        req.body.admin = 'off';
                     }
-
+    
                     const newUser = {
                         name: req.body.name,
                         lastName: req.body.lastName,
@@ -269,56 +252,55 @@ class UsersController {
                         admin: req.body.admin === 'on' ? Boolean(true) : Boolean(false),
                         superAdmin: req.body.superAdmin === 'on' ? Boolean(true) : Boolean(false),
                         creator: user,
-                        timestamp: now,
+                        timestamp: new Date(),
                         modificator: modificator,
                         modifiedOn: '',
                         visible: true
-                    }
+                    };
     
-                    const usuario = await this.users.addNewUser(newUser)
-                    const usuarioLog = await this.users.getUserByUsername(username)
+                    const usuario = await this.users.addNewUser(newUser);
+                    const usuarioLog = await this.users.getUserByUsername(username);
     
-                    if(!usuarioLog) {
-                        const error = new Error('Usuario desconocido!!')
-                        error.dirNumber = 401
-                        return error
+                    if (!usuarioLog) {
+                        const err = new Error('Usuario desconocido!!');
+                        err.dirNumber = 401;
+                        return next(err);
                     }
     
                     const csrfToken = csrfTokens.create(req.csrfSecret);
-                    const alertUser = null
-                    res.render('addNewUser', {
+                    
+                    return res.render('addNewUser', {
                         usuario,
                         username,
                         userInfo,
                         expires,
-                        csrfToken,
-                        alertUser
-                    })
-            
+                        csrfToken
+                    });
+    
                 } else {
-                    const error = new Error ('Datos inválidos')
-                    error.dirNumber = 400
-                    return error
+                    const err = new Error('Datos inválidos');
+                    err.dirNumber = 400;
+                    return next(err);
                 }
             
                 function validateSelectField(value) {
-                    // Implementar la validación de los campos select
                     const validOptions = [
                         'diseno', 'simulacion', 'disenoSimulacion', 'projectManager',
                         'cadCam', 'mecanizado', 'ajuste', 'todos',
                         'ingenieria', 'fabricacion', 'proyectos', 'administracion', 'todas'
-                    ]
+                    ];
                     return validOptions.includes(value);
                 }
-
-            } catch (error) {
-                error.dirNumber = 500
-                return error
+    
+            } catch (err) {
+                err.dirNumber = 400;
+                return next(err);
             }
+        })
     }
-
-    updateUser = async (req, res) => {
-         //------ Storage Client Logo Image in Google Store --------
+    
+    updateUser = async (req, res, next) => {
+         //------ Storage User Image in Google Store --------
          const storage = multer.memoryStorage({
             fileFilter: (req, file, cb) => {
                 if (file.mimetype.startsWith('image/')) {
@@ -334,80 +316,80 @@ class UsersController {
         }).single('imageAvatarUser')
 
         upload(req, res, async (err) => {
-            if(req.file) {
-                this.files.uploadToGCS(req, res)
-                // uploadToGCS(req, res)
-            }
-
             if (err) {
-                const error = err //new Error('No se agregó ningún archivo válido')
-                catchErrors.catchError400(error, res)
-            }
-        })
-
-            const id = req.params.id
-
-            let username = res.locals.username
-            let userInfo = res.locals.userInfo
-            const userId = userInfo.id
-            const userToModify = await this.users.getUserById(id)
-            const userLogged = await this.users.getUserById(userId)
-
-            const userModificator = [{
-                name: userInfo.name,
-                lastName: userInfo.lastName,
-                username: userInfo.username,
-                email: userInfo.email
-            }]
-
-            const cookie = req.session.cookie
-            const time = cookie.expires
-            const expires = new Date(time)
-
-            const csrfToken = req.body._csrf;
-            if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-                const error = new Error ('Invalid CSRF token')
-                catchErrors.catchError403(error, res)
+                err.dirNumber = 400;
+                return next(err);
             }
 
-            const usernameInput = req.body.username.replace(/[!@#$%^&*]/g, "")
-            const usernameValid = await this.users.getUserByUsername(usernameInput)
-            console.log('usernameValid', usernameValid)
-            
-            if (usernameValid) {
-                const error = new Error (`Ya existe un Usuario con este Username ${usernameInput} o Username inválido!!`)
-                catchErrors.catchError400(error, res)
-            }
-
-            const emailInput = req.body.email
-            const emailValid = await this.users.getUserByEmail(emailInput)
-            console.log('emailValid', emailValid)
-            if (emailValid) {
-                const error = new Error (`Ya existe un Usuario con este Em@il ${emailInput} o Em@il inválido!!`)
-                catchErrors.catchError400(error, res)
-            }
-
-            const legajoIdInput = req.body.userLegajoId
-            const legajoIdValid = await this.users.getUserByLegajoId(legajoIdInput)
-            console.log('legajoIdValid', legajoIdValid)
-            if (legajoIdValid) {
-                const error = new Error (`Ya existe un Usuario con este Legajo # ${legajoIdInput} o # Legajo inválido!!`)
-                catchErrors.catchError404(error, res)
-            }
-
-            const selectFieldPermiso = req.body.permiso
-            const selectFieldArea = req.body.area
-
-            // Validar y sanitizar los datos recibidos
-            if (validateSelectField(selectFieldPermiso) && validateSelectField(selectFieldArea)) {
-                // Procesar los datos si son válidos
-                if (userInfo.admin && !userInfo.superAdmin) {
-                    req.body.superAdmin = 'off'
-                    req.body.admin = 'off'
+            try {
+                if(req.file) {
+                    await this.files.uploadToGCS(req, res)
                 }
 
-                if(userToModify && userLogged) {
-                    
+                const id = req.params.id
+                let username = res.locals.username
+                let userInfo = res.locals.userInfo
+                const userId = userInfo.id
+                const userToModify = await this.users.getUserById(id)
+                const userLogged = await this.users.getUserById(userId)
+
+                const userModificator = [{
+                    name: userInfo.name,
+                    lastName: userInfo.lastName,
+                    username: userInfo.username,
+                    email: userInfo.email
+                }]
+
+                const cookie = req.session.cookie
+                const time = cookie.expires
+                const expires = new Date(time)
+
+                const csrfToken = req.body._csrf;
+                if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
+                    const err = new Error ('Invalid CSRF token')
+                    err.dirNumber = 400
+                    return next(err);
+                }
+
+                const usernameInput = req.body.username.replace(/[!@#$%^&*]/g, "")
+                const usernameValid = await this.users.getUserByUsername(usernameInput)
+            
+                if (usernameValid) {
+                    const err = new Error (`Ya existe un Usuario con este Username ${usernameInput} o Username inválido!!`)
+                    err.dirNumber = 400
+                    return next(err);
+                }
+
+                const emailInput = req.body.email
+                const emailValid = await this.users.getUserByEmail(emailInput)
+                console.log('emailValid', emailValid)
+                if (emailValid) {
+                    const err = new Error (`Ya existe un Usuario con este Em@il ${emailInput} o Em@il inválido!!`)
+                    err.dirNumber = 400
+                    return next(err);
+                }
+
+                const legajoIdInput = req.body.userLegajoId
+                const legajoIdValid = await this.users.getUserByLegajoId(legajoIdInput)
+                console.log('legajoIdValid', legajoIdValid)
+                if (legajoIdValid) {
+                    const err = new Error (`Ya existe un Usuario con este Legajo # ${legajoIdInput} o # Legajo inválido!!`)
+                    err.dirNumber = 400
+                    return next(err);
+                }
+
+                const selectFieldPermiso = req.body.permiso
+                const selectFieldArea = req.body.area
+
+                // Validar y sanitizar los datos recibidos
+                if (validateSelectField(selectFieldPermiso) && validateSelectField(selectFieldArea)) {
+                    // Procesar los datos si son válidos
+                    if (userInfo.admin && !userInfo.superAdmin) {
+                        req.body.superAdmin = 'off'
+                        req.body.admin = 'off'
+                    }
+
+                    if(userToModify && userLogged) {
                         var updatedUser = {
                             name: req.body.name,
                             lastName: req.body.lastName,
@@ -422,36 +404,42 @@ class UsersController {
                             modificator: userModificator,
                             modifiedOn: now
                         }
-                                
-                    try {
-                        const usuario = await this.users.updateUser(id, updatedUser, userModificator)
-                
-                        if(!usuario) {
-                            const error = new Error('No fue posible Actualizar el Usuario!')
-                            catchErrors.catchError404(error, res)
-                        }
-                            
-                            const csrfToken = csrfTokens.create(req.csrfSecret);
-                            res.render('addNewUser', {
-                                usuario,
-                                username,
-                                userInfo,
-                                expires,
-                                csrfToken
-                            })
 
-                    } catch (error) {
-                        catchErrors.catchError500(error, res)
+                        const usuario = await this.users.updateUser(id, updatedUser, userModificator)
+                    
+                        if(!usuario) {
+                            const err = new Error('No fue posible Actualizar el Usuario!')
+                            err.dirNumber = 400
+                            next(err);
+                        }
+                                
+                        const csrfToken = csrfTokens.create(req.csrfSecret);
+                        return res.render('addNewUser', {
+                            usuario,
+                            username,
+                            userInfo,
+                            expires,
+                            csrfToken
+                        })
+
+                    } else {
+                        const err = new Error('userToModify || userLogged error')
+                        err.dirNumber = 400
+                        next(err);
                     }
 
                 } else {
-                    const error = new Error('userToModify || userLogged error')
-                    catchErrors.catchError400(error, res)
+                    const err = new Error('Error en permiso o área seleccionada')
+                    err.dirNumber = 400
+                    next(err);
                 }
-            }
 
+            } catch (err) {
+                err.dirNumber = 400
+                next(err);
+            }
+             
             function validateSelectField(value) {
-                // Implementar la validación de los campos select
                 const validOptions = [
                     'diseno', 'simulacion', 'disenoSimulacion', 'projectManager',
                     'cadCam', 'mecanizado', 'ajuste', 'todos',
@@ -459,10 +447,10 @@ class UsersController {
                 ]
                 return validOptions.includes(value);
             }
-        // })
+        })
     }
 
-    updateUserPreferences = async (req, res) => {
+    updateUserPreferences = async (req, res, next) => {
         const id = req.params.id
 
         let username = res.locals.username
@@ -577,7 +565,7 @@ class UsersController {
         }
     }
 
-    getUserSettings = async (req, res) => {
+    getUserSettings = async (req, res, next) => {
         const id = req.params.id
 
         let username = res.locals.username
@@ -621,7 +609,7 @@ class UsersController {
         }
     }
 
-    searchUsers = async (req, res) => {
+    searchUsers = async (req, res, next) => {
         const users = await this.users.getAllUsers()
         
         try {
@@ -641,7 +629,7 @@ class UsersController {
         }
     }
 
-    deleteUserById = async (req, res) => {
+    deleteUserById = async (req, res, next) => {
         const { id } = req.params
         let username = res.locals.username
         let userInfo = res.locals.userInfo
@@ -692,7 +680,7 @@ class UsersController {
         }
     }
 
-    login = async (req, res) => {
+    login = async (req, res, next) => {
         const { username, password, sessionStarted } = req.body
         let visits = req.session.visits
     
@@ -804,7 +792,7 @@ class UsersController {
         }
     }
 
-    resetUserPassword = async (req, res) => {
+    resetUserPassword = async (req, res, next) => {
         try {
             const existeUsuario = await this.users.getUserByEmail(req.body.email)
 
@@ -848,7 +836,7 @@ class UsersController {
         }
     }
 
-    updatePasswordByUser = async (req, res) => {
+    updatePasswordByUser = async (req, res, next) => {
         const id = req.params.id
         const newPassword = req.body.password
         const confirmNewPassword = req.body.confirmPassword
@@ -920,7 +908,7 @@ class UsersController {
         }
     }
 
-    userLogout = async (req, res) => {
+    userLogout = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
 
@@ -949,7 +937,7 @@ class UsersController {
         }    
     }
 
-    authBloq = async (req, res) => {
+    authBloq = async (req, res, next) => {
         let username = req.query.username || ""
         const password = req.query.password || ""
     
@@ -978,7 +966,7 @@ class UsersController {
         }
     }
 
-    authNoBloq = async (req, res) => {
+    authNoBloq = async (req, res, next) => {
         let username = req.query.username || ""
         const password = req.query.password || ""
     
@@ -1007,7 +995,7 @@ class UsersController {
 
     }
 
-    index = async (req, res) => {
+    index = async (req, res, next) => {
    
         let username = res.locals.username
         let userInfo = res.locals.userInfo
@@ -1073,7 +1061,7 @@ class UsersController {
         }
     }
 
-    clientes = async (req, res) => {
+    clientes = async (req, res, next) => {
     
         let username = res.locals.username
         let userInfo = res.locals.userInfo

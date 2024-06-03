@@ -102,7 +102,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                 }
                 // console.log('legajoIdNumber:', legajoIdNumber)
 
-                    // Construir la consulta
+                // Construir la consulta
                 let query = {};
                 if (legajoIdNumber !== null) {
                     query = { legajoId: legajoIdNumber };
@@ -112,7 +112,6 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                     
             try {        
                 const user = await Usuarios.findOne(query);
-                //console.log('user:', user)
                 
                 if ( user === undefined || user === null) {
                    return false
@@ -171,16 +170,17 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                          {legajoId: legajoIdNum},
                          {email: `${newUser.email}`}
                        ]
-                }).exec();
+                });
 
             if (user) {
                 return user
+                
             } else {
                 return false
             }
 
         } else {
-            return new Error (`No se pudo crear el Usuario!`)
+            return new Error (`No se pudo encontrar al Usuario!`)
         }
     }
     

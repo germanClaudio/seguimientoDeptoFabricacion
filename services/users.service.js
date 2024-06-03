@@ -60,11 +60,6 @@ class UserService {
         return await this.usuarios.getExistingUser(user)
     }
     
-    // add new user
-    async registerNewUser(user) {
-        return await this.usuarios.registerNewUser(user)
-    }
-
     // Reset user Password and send email to user
     async resetUserPassword(user) {
         return await this.usuarios.resetUserPassword(user)
@@ -79,7 +74,6 @@ class UserService {
     async getUserSettings(id) {
         return await this.usuarios.getUserById(id)
     }
-
 
     // Register new user
     async addNewUser(newUser) {

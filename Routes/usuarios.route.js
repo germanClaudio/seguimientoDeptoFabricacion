@@ -1,10 +1,8 @@
 const { Router } = require('express')
 const routerUsers = Router()
 
-//const { countVisits } = require('../middlewares/countVisits/countVisits.middleware')
 const { checkAuthentication } = require('../middlewares/chekAuthentication.js')
 const { authUserMiddleware } = require('../middlewares/authUser.middleware.js')
-const { catchError } = require('../middlewares/catchErrors.middleware.js')
 
 const GetUsers = require('../controllers/usuarios.controller.js')
 const getUsers = GetUsers.UsersController
@@ -32,7 +30,7 @@ routerUsers.get('/delete/:id', checkAuthentication, authUserMiddleware, users.de
 routerUsers.get('/searchUsers/:all', checkAuthentication, authUserMiddleware, users.searchUsers)
 
 //---------------- Get User Preferences Page -----------------------
-routerUsers.get('/getuserSettings/:id', checkAuthentication, users.getUserSettings)
+routerUsers.get('/getUserSettings/:id', checkAuthentication, users.getUserSettings)
 
 //---------------- Update User Preferences  -----------------------
 routerUsers.post('/updateUserSettings/:id', checkAuthentication, authUserMiddleware, users.updateUserPreferences)
@@ -44,8 +42,10 @@ routerUsers.get("/auth-bloq", checkAuthentication, users.authBloq)
 routerUsers.get("/auth-nobloq", checkAuthentication, users.authNoBloq)
 
 
-//------------- Middleware de manejo de errores -------------
-routerUsers.use(catchError)
-
+// routerUsers.get('/test-error', checkAuthentication, authUserMiddleware, (req, res, next) => {
+//     const err = new Error('Error de prueba');
+//     err.dirNumber
+//     next(err);
+// });
 
 module.exports = routerUsers

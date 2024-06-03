@@ -17,7 +17,7 @@
         <%- include('../partials/errorPages/498_page_Invalid_Token'); %>
 
     <% } else if (errorInfo.flag === 400) { %>
-        <%- include('../partials/errorPages/400_page_NotValidData', {error: error, errorInfo: errorInfo}); %>
+        <%- include('../partials/errorPages/400_page_NotValidData', {error: err, errorInfo: errorInfo}); %>
 
     <% } else if (errorInfo.flag === 401) { %>
         <%- include('../partials/errorPages/401_page_NotAuth_User'); %>

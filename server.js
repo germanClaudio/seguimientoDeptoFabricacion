@@ -34,13 +34,13 @@ const passport = require('passport')
 //________________________________________________________________________________ //
 
 const options = require('./options/config.js');
+const catchErrors = require('./middlewares/errors.middleware.js');
 
 const initServer = () => {
 
     const app = express()
     const httpServer = new HttpServer(app)
     const io = new IOServer(httpServer)
-
 
     /////////////////////// configuracion de EJS /////////////////////////
     app.set('view engine', 'ejs')
@@ -73,9 +73,9 @@ const initServer = () => {
     app.use(express.urlencoded({ extended: true }))
     app.use(cookieParser());
     app.use(cors())
-    app.use(logger('dev'))
-    const csrfTokens = csrf();
+    app.use(logger('dev'));
 
+    const csrfTokens = csrf();
     app.use((req, res, next) => {
         const csrfSecret = req.cookies.csrfSecret || csrfTokens.secretSync();
         res.cookie('csrfSecret',
@@ -85,20 +85,23 @@ const initServer = () => {
             }
         );
         req.csrfSecret = csrfSecret;
-
         next();
     });
 
 
-    ////////////////////// Rutas ////////////////////////////
+    ////////////////////// Rutas ///////////////////////
     app.use('/api/clientes', routerClientes)
     app.use('/api/proyectos', routerProyectos)
     app.use('/api/auth', authRouter)
     app.use('/api/usuarios', routerUsers)
     app.use('/info', infoRouter)
     app.use('/api/webchat', routerMensajes)
-    ////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////
 
+
+    //********* Middleware errores *********/
+    app.use(catchErrors);
+    
     //_______________________________ socket.io __________________________________ //   
     initSocket(io)
     //_____________________________________________________________________________//

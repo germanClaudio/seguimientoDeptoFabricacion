@@ -439,9 +439,7 @@ removeImageButtonAvatarUser.addEventListener('click', (e)=> {
     e.stopPropagation()
 })
 
-const alertUser = document.getElementById('alertUser')
-console.log('alertUser: ', alertUser)
-        
+
 function messageNewUser(name, lastName, username, legajoId, email) {
 
     if (username, legajoId, email) {
@@ -475,7 +473,6 @@ function messageNewUser(name, lastName, username, legajoId, email) {
             }
           })
     }
-    
 }
 
 function messageWarningEmptyFields(
@@ -578,15 +575,14 @@ if (btnResetFormNewUser) {
 }
 
 var inputsDeTexto = document.querySelectorAll('input[type="text"]')
-
     // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
         input.addEventListener('keydown', function(event) {
             // Obtener el código de la tecla presionada
             let key = event.key;
 
-            // Lista de caracteres especiales prohibidos
-            let forbiddenChars = /[#"$%&?¡¿^/()=!'~`\\*{}\[\]<>@]/;
+            // Solo numeros
+            let forbiddenChars = /["$%?¡¿^/()=!'~`\\*{}\[\]<>@]/;
 
             // Verificar si la tecla presionada es un carácter especial
             if (forbiddenChars.test(key)) {
@@ -599,6 +595,30 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
                 input.classList.remove("border")
                 input.classList.remove("border-danger")
                 input.classList.remove("border-2")
+            }
+        })
+    })
+
+var inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
+
+    inpuntDeNumeros.forEach(function(input) {
+        input.addEventListener('input', function(event) {
+            // Obtener el valor actual del input
+            let value = input.value;
+
+            // Obtener el código de la tecla presionada
+            let key = event.key;
+
+            // Expresión regular para números enteros de hasta cuatro cifras (0 a 9999)
+                const regexp = /^[0-9]{1,4}$/;
+
+            // Verificar si el valor cumple con la expresión regular
+            if (!regexp.test(value)) {
+                // Remover el último carácter si no cumple con la expresión regular
+                input.value = value.slice(0, -1);
+                input.classList.add("border", "border-danger", "border-2");
+            } else {
+                input.classList.remove("border", "border-danger", "border-2");
             }
         })
     })

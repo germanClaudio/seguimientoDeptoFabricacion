@@ -210,6 +210,30 @@ const btnAceptarForm = document.getElementById('btnUpdateUserSettings');
             })
         }
     })
+
+    var inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
+
+    inpuntDeNumeros.forEach(function(input) {
+        input.addEventListener('input', function(event) {
+            // Obtener el valor actual del input
+            let value = input.value;
+
+            // Obtener el código de la tecla presionada
+            let key = event.key;
+
+            // Expresión regular para números enteros de hasta cuatro cifras (0 a 9999)
+                const regexp = /^[0-9]{1,4}$/;
+
+            // Verificar si el valor cumple con la expresión regular
+            if (!regexp.test(value)) {
+                // Remover el último carácter si no cumple con la expresión regular
+                input.value = value.slice(0, -1);
+                input.classList.add("border", "border-danger", "border-2");
+            } else {
+                input.classList.remove("border", "border-danger", "border-2");
+            }
+        })
+    })
     
     
     // Crear una nueva instancia de MutationObserver y pasar una función de callback

@@ -7,10 +7,11 @@
                         <img src="/src/images/400_notValidImage.png" alt="error 400" class="img-fluid">
                         <div class="error-section-content">
                             <h2 class="display-3">Bad Request</h2>
-                            <h5>Lo siento, uno o varios datos no son válidos.</h5>
-                            <p>Mensaje: <strong><%= errorInfo.msgErr %></strong></p>
-                            <p>Function: <%= errorInfo.errorFunction %> - Path: <%= errorInfo.errorFilePath %></p>
-                            <p>User: <%= errorInfo.user %></p>
+                            <h5><%= error %></h5>
+                            <% if( errorInfo.errorData ) { %>
+                            <h6>Username: <strong><%= errorInfo.errorData.username %></strong> o Legajo#:<strong><%= errorInfo.errorData.legajoId %></strong> o Em@il: <strong><%= errorInfo.errorData.email %></strong></h6>
+                            <% } %>
+                            <br>
                             <button class="btn btn-primary mt-3 me-2" onclick="goBack()">Volver <i class="icon-arrow-left"></i></button>
                             <a href="/api/auth/index" class="btn btn-danger mt-3 ms-2">Volver al Home <i class="icon-home"></i></a>
                         </div>
