@@ -457,12 +457,13 @@ function messageNewUser(name, lastName, username, legajoId, email) {
           }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById("newUserForm").submit()
-
-                Swal.fire(
-                    'Creado!',
-                    `El usuario ${name} ${lastName}, legajo #:${legajoId}, ha sido registrado exitosamente.`,
-                    'success'
-                  )
+                setTimeout(() => {
+                    Swal.fire(
+                        'Creado!',
+                        `El usuario ${name} ${lastName}, legajo #:${legajoId}, ha sido registrado exitosamente.`,
+                        'success'
+                    )
+                }, 1000)
             } else {
                 Swal.fire(
                     'No registrado!',

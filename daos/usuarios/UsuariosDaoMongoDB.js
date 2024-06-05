@@ -102,7 +102,6 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                 }
                 // console.log('legajoIdNumber:', legajoIdNumber)
 
-                // Construir la consulta
                 let query = {};
                 if (legajoIdNumber !== null) {
                     query = { legajoId: legajoIdNumber };
@@ -478,12 +477,18 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
             try {
                 const userMongoDB = await Usuarios.findById( { _id: id } ) //`${id}`
                             
-                updatedUser.avatar !== '' ? updatedUser.avatar : userMongoDB.avatar
                 updatedUser.name !== '' ? updatedUser.name : userMongoDB.name
                 updatedUser.lastName !== '' ? updatedUser.lastName : userMongoDB.lastName
                 updatedUser.email !== '' ? updatedUser.email : userMongoDB.email
                 updatedUser.username !== '' ? updatedUser.username : userMongoDB.username
-                
+                updatedUser.avatar !== '' ? updatedUser.avatar : userMongoDB.avatar
+                updatedUser.legajoId !== '' ? updatedUser.legajoId : userMongoDB.legajoId
+                updatedUser.area !== '' ? updatedUser.area : userMongoDB.area
+                updatedUser.admin !== '' ? updatedUser.admin : userMongoDB.admin
+                updatedUser.superAdmin !== '' ? updatedUser.superAdmin : userMongoDB.superAdmin
+                updatedUser.status !== '' ? updatedUser.status : userMongoDB.status
+                updatedUser.permiso !== '' ? updatedUser.permiso : userMongoDB.permiso
+
                 if(userMongoDB) {
                     var updatedFinalUser = await Usuarios.updateOne(
                         { _id: userMongoDB._id  },
@@ -494,6 +499,8 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                                 email: updatedUser.email,
                                 username: updatedUser.username,
                                 avatar: updatedUser.avatar,
+                                legajoId: updatedUser.legajoId,
+                                area: updatedUser.area,
                                 admin: updatedUser.admin,
                                 superAdmin: updatedUser.superAdmin,
                                 status: updatedUser.status,
@@ -651,6 +658,8 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
             }
         }
     }
+
+    
 
     async disconnet() {
         await this.disconnection

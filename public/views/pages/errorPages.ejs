@@ -23,13 +23,13 @@
         <%- include('../partials/errorPages/401_page_NotAuth_User'); %>
         
     <% } else if (errorInfo.flag === 403) { %>
-        <%- include('../partials/errorPages/403_page_Invalid_CSRF_Token'); %>
+        <%- include('../partials/errorPages/403_page_Invalid_CSRF_Token', {error: err}); %>
         
     <% } else if (errorInfo.flag === 404) { %>
         <%- include('../partials/errorPages/404_pageNotFound'); %>
         
     <% } else { %>
-        <%- include('../partials/errorPages/serverError500', {error: error, errorInfo: errorInfo}); %>
+        <%- include('../partials/errorPages/serverError500', {error: err, errorInfo: errorInfo}); %>
 
     <% } %>
 

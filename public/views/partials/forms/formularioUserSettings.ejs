@@ -4,8 +4,14 @@
             <div class="row my-2 mx-auto">
                 <div class="col-2">
                     <label for="idDisable">Id#</label>
-                    <input type="text" name="idDisable" id="idDisable" class="form-control-plaintext text-white"
-                        value="<%=usuario._id%>" disabled>
+                    <% const subStringID = (usuario._id).toString().substring(19)
+                        if (userInfo.superAdmin) { %>
+                            <input type="text" name="idDisable" id="idDisable" class="form-control-plaintext text-white"
+                                value="<%= usuario._id %>" disabled>
+                        <% } else { %>
+                            <input type="text" name="idDisable" id="idDisable" class="form-control-plaintext text-white"
+                                value="...<%= subStringID %>" disabled>
+                        <% } %>
                 </div>
                 <br>
                 <div class="col-1">

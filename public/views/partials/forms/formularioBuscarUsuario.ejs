@@ -1,0 +1,66 @@
+<div class="shadow-lg col-md-6 mx-auto my-2 w-75 border rounded p-3 text-white bg-opacity-50" style="background-color: #272787;">
+    <form class="row align-items-center" id="searchFormUser" onsubmit="return searchUsers(this)">
+        <div class="col-md-2">
+            <label class="form-check-label ms-2 text-white" for="queryUsers">Buscar</label>
+            <input class="form-control" type="text" id="queryUsers" name="queryUsers" placeholder="Buscar Usuarios">
+        </div>
+
+        <div class="col-md-2 ms-2">
+            <label class="form-check-label ms-2 text-white" for="status">Status</label>
+            <select class="form-select small" aria-label=".form-select" name="status" id="status" style="font-size: 13px;">
+                <option selected value="todos">Todos</option>
+                <option value="activos">Activos</option>
+                <option value="inactivos">Inactivos</option>
+            </select>
+        </div>
+
+        <div class="col-md-2 ms-2">
+            <label class="form-check-label ms-2 text-white" for="rol">Rol</label>
+            <select class="form-select small" aria-label=".form-select" name="rol" id="rol" style="font-size: 13px;">
+                <option selected value="todos">Todos</option>
+                <option value="administradores">Admin</option>
+                <option value="usuarios">Usuarios</option>
+            </select>
+        </div>
+
+        <div class="col-md-2 ms-2">
+            <label class="form-check-label ms-2 text-white" for="area">Area</label>
+            <select class="form-select small" aria-label=".form-select" name="area" id="area" style="font-size: 13px;">
+                <option selected value="todos">Todos</option>
+                <option value="ingenieria">Ingeniería</option>
+                <option value="fabricacion">Fabricación</option>
+                <option value="proyectos">Proyectos</option>
+                <option value="administracion">Administración</option>
+            </select>
+        </div>
+
+        <div class="col-md-2 ms-2">
+            <label class="form-check-label ms-2 text-white" for="permiso">Permisos</label>
+            <select class="form-select form-select small" aria-label=".form-select" name="permiso" id="permiso" style="font-size: 13px;">
+                <option selected value="todos">Todos</option>
+                <option value="diseno">Diseño</option>
+                <option value="simulacion">Simulación</option>
+                <option value="disenoSimulacion">Diseño/Simulación</option>
+                <option value="projectManager">PM</option>
+                <option value="cadCam">Cad-Cam</option>
+                <option value="mecanizado">Mecanizado</option>
+                <option value="ajuste">Ajuste</option>
+            </select>
+        </div>
+        
+        <div class="col-md">
+            <button
+                class="btn rounded-circle bg-white me-2 text-dark"
+                title="Buscar"
+                type="submit">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <button
+                class="btn rounded-circle bg-white ms-2 text-dark"
+                title="Eliminar filtros"
+                type="reset">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </div>
+    </form>
+</div>

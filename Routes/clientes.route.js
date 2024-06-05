@@ -29,9 +29,6 @@ routerClientes.post('/update/:id', checkAuthentication, authUserMiddleware, clie
 // -------------------  Eliminar Cliente por Id (Status = Inactivo) ------------------ 
 routerClientes.get('/delete/:id', checkAuthentication, authUserMiddleware, clients.deleteClientById)
 
-// -------------------  Buscar cliente ------------------------------------ 
-// routerClientes.get('/buscar/cliente', checkAuthentication, authProductMiddleware, clients.getClientBySearching)
-
 // -------------------  Eliminar todos los Clientes (Status = Inactivo) ------------------ 
 routerClientes.get('/all/delete', checkAuthentication, authUserMiddleware, clients.deleteAllClients)
 

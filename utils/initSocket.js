@@ -1,5 +1,3 @@
-// const console = require('../utils/winston')
-
 const ContainerMessages = require("../daos/mensajes/MensajesDaoFactory.js")
 const containerMsg = ContainerMessages.getDaoMsg()
 
@@ -39,10 +37,6 @@ const initSocket = (io) => {
             io.sockets.emit('clientsAll', await containerClient.getAllClients())
         })
 
-        // socket.on('searchClienteAll', async (name) => {
-        //   io.sockets.emit('searchClientsAll', await containerClient.searchClientsAll(name))
-        // })
-
         socket.on('searchClienteAll', async (query) => {
             io.sockets.emit('searchClientsAll', await containerClient.getClientBySearching(query))
         })
@@ -53,58 +47,15 @@ const initSocket = (io) => {
             await containerUser.getAllUsers()            
         )
         
-        // socket.on('newProducto', async (producto) => {
-        //     await containerProduct.createNewProduct(producto)
-        //     io.sockets.emit('productsAll', await containerProduct.getAllProducts())
-        // })
-        
-        // socket.on('updateProducto', async (id, producto) => {
-        //     await containerProduct.updateProduct(id, producto)
-        //     io.sockets.emit('productsAll', await containerProduct.getAllProducts())
-        // })
-        
-        // socket.on('deleteProducto', async (producto) => {
-        //     await containerProduct.deleteProductById(producto)
-        //     io.sockets.emit('productsAll', await containerProduct.getAllProducts())
-        // })
-
-        // socket.on('searchProductoAll', async (name) => {
-        //   io.sockets.emit('searchProductsAll', await containerProduct.searchProductsAll(name))
-        // })
-        
-        // --------------------------  Products --------------------------------
-        // socket.emit('productsAll',
-        //     await containerProduct.getAllProducts(),
-        //     await containerUser.getAllUsers()
-        // ) 
-        
-        // socket.on('newProducto', async (producto) => {
-        //     await containerProduct.createNewProduct(producto)
-        //     io.sockets.emit('productsAll', await containerProduct.getAllProducts()) //getCotizacionEnDolares())
-        // })
-        
-        // socket.on('updateProducto', async (id, producto) => {
-        //     await containerProduct.updateProduct(id, producto)
-        //     io.sockets.emit('productsAll', await containerProduct.getAllProducts()) //.getCotizacionEnDolares())
-        // })
-        
-        // socket.on('deleteProducto', async (producto) => {
-        //     await containerProduct.deleteProductById(producto)
-        //     io.sockets.emit('productsAll', await containerProduct.getAllProducts())//getCotizacionEnDolares())
-        // })
-
-        // socket.on('searchProductoAll', async (name) => {
-        //   io.sockets.emit('searchProductsAll', await containerProduct.searchProductsAll(name))
-        // })
-        
         //-------------------------------- Users  ----------------------------------
         socket.on('newUsuario', async (usuario) => {
             await containerUser.createNewUser(usuario)
             io.sockets.emit('usersAll', await containerUser.getAllUsers())
         })
         
-        // --------------------------------  Orders  -------------------------------
-        //   socket.emit('ordersAll', await containerCarts.getAllOrders())
+        socket.on('searchUsuarioAll', async (query) => {
+            io.sockets.emit('searchUsersAll', await containerUser.getUsersBySearching(query))
+        })
 
         // -----------------------------  Messages ---------------------------------
             // const normalizarMensajes = (mensajesConId) =>

@@ -313,27 +313,10 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
         }
     }
 
-    // async getClientBySearching(client) {
-    //     if(client) {
-    //         try {
-    //             const nameClient = await Clientes.findOne({ name: `${client}`}).exec();
-    //             const codeClient = await Clientes.findOne({ code: `${client}`}).exec();
-    
-    //             if(nameClient || codeClient) {
-    //                 return nameClient
-    //             } else {
-    //                 return false
-    //             }
-    //         } catch (error) {
-    //             console.error("Error MongoDB getByNameOrCode: ",error)
-    //         }
-    //     } else {
-    //         return new Error (`No se pudo concretar la busqueda en la DB!`)
-    //     }
-    // }
-
     async getClientBySearching(query) {
         var filter
+        var nameAndCodeQuery = [{ 'name': { $regex: `${query.query}`, $options: 'i' } }, 
+                                { 'code': { $regex: `${query.query}`, $options: 'i' } }]
 
         if (query.query === '') {
             if (query.status === 'todos') {
@@ -393,7 +376,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                 }
             }
         }
-        
+
         try {
             switch (filter) {
                 case 'nullAllAll': {
@@ -442,33 +425,27 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                 case 'nullInactiveWith': {
                     var resultados = await Clientes.find({
                         'status': false,
-                        'projects': { $gt: 0 }
+                        'project': { $gt: 0 }
                     })
                     break;
                 }
                 case 'nullInactiveWithout': {
                     var resultados = await Clientes.find({
                         'status': false,
-                        'projects': { $eq: 0 }
+                        'project': { $eq: 0 }
                     })
                     break;
                 }
                 //--------------- input w/text ----------
                 case 'notNullAllAll': {
                     var resultados = await Clientes.find({
-                        $or: [
-                            { 'name': { $regex: `${query.query}`, $options: 'i' } }, 
-                            { 'code': { $regex: `${query.query}`, $options: 'i' } }
-                        ]
+                        $or: nameAndCodeQuery
                     })
                     break;
                 }
                 case 'notNullAllWith': {
                     var resultados = await Clientes.find({
-                        $or: [
-                            { 'name': { $regex: `${query.query}`, $options: 'i' } }, 
-                            { 'code': { $regex: `${query.query}`, $options: 'i' } }
-                        ],
+                        $or: nameAndCodeQuery,
                         $and: [
                             { 'project': { $gt: 0 } }
                         ]
@@ -477,10 +454,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                 }
                 case 'notNullAllWithout': {
                     var resultados = await Clientes.find({
-                        $or: [
-                            { 'name': { $regex: `${query.query}`, $options: 'i' } }, 
-                            { 'code': { $regex: `${query.query}`, $options: 'i' } }
-                        ],
+                        $or: nameAndCodeQuery,
                         $and: [
                             { 'project': { $eq: 0 } }
                         ]
@@ -489,10 +463,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                 }
                 case 'notNullActiveAll': {
                     var resultados = await Clientes.find({
-                        $or: [
-                            { 'name': { $regex: `${query.query}`, $options: 'i' } }, 
-                            { 'code': { $regex: `${query.query}`, $options: 'i' } }
-                        ],
+                        $or: nameAndCodeQuery,
                         $and: [
                             { 'status': true }
                         ]
@@ -501,10 +472,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                 }
                 case 'notNullActiveWith': {
                     var resultados = await Clientes.find({
-                        $or: [
-                            { 'name': { $regex: `${query.query}`, $options: 'i' } }, 
-                            { 'code': { $regex: `${query.query}`, $options: 'i' } }
-                        ],
+                        $or: nameAndCodeQuery,
                         $and: [
                             { 'status': true },
                             { 'project': { $gt: 0 } }
@@ -514,10 +482,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                 }
                 case 'notNullActiveWithout': {
                     var resultados = await Clientes.find({
-                        $or: [
-                            { 'name': { $regex: `${query.query}`, $options: 'i' } }, 
-                            { 'code': { $regex: `${query.query}`, $options: 'i' } }
-                        ],
+                        $or: nameAndCodeQuery,
                         $and: [
                             { 'status': true },
                             { 'project': { $eq: 0 } }
@@ -527,19 +492,13 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                 }
                 case 'notNullInactiveAll': {
                     var resultados = await Clientes.find({
-                        $or: [
-                            { 'name': { $regex: `${query.query}`, $options: 'i' } }, 
-                            { 'code': { $regex: `${query.query}`, $options: 'i' } }
-                        ]
+                        $or: nameAndCodeQuery
                     })
                     break;
                 }
                 case 'notNullInactiveWith': {
                     var resultados = await Clientes.find({
-                        $or: [
-                            { 'name': { $regex: `${query.query}`, $options: 'i' } }, 
-                            { 'code': { $regex: `${query.query}`, $options: 'i' } }
-                        ],
+                        $or: nameAndCodeQuery,
                         $and: [
                             { 'status': false },
                             { 'project': { $gt: 0 } }
@@ -549,10 +508,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                 }
                 case 'notNullInactiveWithout': {
                     var resultados = await Clientes.find({
-                        $or: [
-                            { 'name': { $regex: `${query.query}`, $options: 'i' } }, 
-                            { 'code': { $regex: `${query.query}`, $options: 'i' } }
-                        ],
+                        $or: nameAndCodeQuery,
                         $and: [
                             { 'status': false },
                             { 'project': { $eq: 0 } }
@@ -561,7 +517,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                     break;
                 }
             }
-                
+
             if(resultados) {
                 return resultados
             } else {

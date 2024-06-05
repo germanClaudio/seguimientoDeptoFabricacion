@@ -114,6 +114,11 @@ class UserService {
     async authNoBloq(id, user) {
         return await this.usuarios.authNoBloq(id, user)
     }
+
+    // returns all Users from serching
+    async getUsersBySearching(query) {
+        return await this.usuarios.getUsersBySearching(query)
+    }
 }
 
 module.exports = UserService

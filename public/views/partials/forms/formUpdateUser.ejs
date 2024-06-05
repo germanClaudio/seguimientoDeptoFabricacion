@@ -16,8 +16,13 @@
                 <br>
                 <div class="col-1">
                     <label for="legajoIdDisable">Legajo #</label>
-                    <input type="text" name="legajoIdDisable" id="legajoIdDisable" class="form-control-plaintext text-white"
+                    <% if (userInfo.superAdmin) { %>
+                    <input type="number" name="legajoIdDisable" id="legajoIdDisable" class="form-control"
+                        value="<%=usuario.legajoId%>">
+                    <% } else { %>
+                        <input type="text" name="legajoIdDisable" id="legajoIdDisable" class="form-control-plaintext text-white"
                         value="<%=usuario.legajoId%>" disabled>
+                    <% } %>    
                 </div>
                 <br>
                 <div class="col-2">
@@ -76,8 +81,13 @@
                 <br>
                 <div class="col">
                     <label for="username">Username</label>
-                    <input type="text" name="username" id="username" class="form-control" value="<%=usuario.username%>"
-                        placeholder="Username" required>
+                    <% if (userInfo.superAdmin) { %>
+                        <input type="text" name="username" id="username" class="form-control" value="<%=usuario.username%>"
+                            placeholder="Username" required>
+                    <% } else { %>
+                        <input type="text" name="username" id="username" class="form-control" value="<%=usuario.username%>"
+                            placeholder="Username" disabled>
+                    <% } %>
                 </div>
                 <br>
             </div>

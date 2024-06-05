@@ -65,7 +65,7 @@ const renderSearchedClients = (arrClientSearch) => {
                     <div class="col-md-4 my-auto px-1">
                         <img src="${allClientsFound}"
                             max-width="170vw" class="img-fluid rounded p-1"
-                            alt="Cliente no encontrado">
+                            alt="Todos los Clientes">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
@@ -159,5 +159,212 @@ const renderSearchedClients = (arrClientSearch) => {
     }).join(" ");
 
         document.getElementById('showClientSearch').innerHTML = htmlSearchClient
+    }
+}
+
+
+//**************************************/
+// -------------- Show Searched Users ----------------
+socket.on('searchUsersAll', async (arrUsersSearch) => {
+    renderSearchedUsers (await arrUsersSearch)
+})
+
+const searchUser = () => {
+    const query = document.getElementById('queryUsers').value
+    const status = document.getElementById('status').value
+    const rol = document.getElementById('rol').value
+    const area = document.getElementById('area').value
+    const permiso = document.getElementById('permiso').value
+    
+    socket.emit('searchUsuarioAll', {
+        query,
+        status,
+        rol,
+        area,
+        permiso,
+    })
+    return false
+}
+
+const renderSearchedUsers = (arrUsersSearch) => {
+    
+    if(arrUsersSearch.length === 0) {
+
+        const htmlSearchUserNull = 
+        (`<div class="col mx-auto">
+            <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+                <div class="row g-0">
+                    <div class="col-md-4 my-auto px-1">
+                        <img src="${clientNotFound}"
+                            max-width="170vw" class="img-fluid rounded p-1"
+                            alt="Usuario no encontrado">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Usuario no encontrado</h5>
+                            <p class="card-text">Lo siento, no pudimos encontrar el Usuario</p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    Pruebe nuevamente con un nombre, aplellido, email o legajo diferente
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`
+        )
+        
+        document.getElementById('showUserSearch').innerHTML = htmlSearchUserNull
+    
+    } else if (arrUsersSearch.length === 1 && arrUsersSearch[0] === 'vacio') {
+        
+        const htmlSearchUsersNull = 
+        (`<div class="col mx-auto">
+            <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+                <div class="row g-0">
+                    <div class="col-md-4 my-auto px-1">
+                        <img src="${allClientsFound}"
+                            max-width="170vw" class="img-fluid rounded p-1"
+                            alt="Todos los Usuarios">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Todos los Usuarios</h5>
+                            <p class="card-text">Todos los Usuarios están listados en las tarjetas de abajo</p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    Pruebe nuevamente con un nombre o código diferente o haga scroll hacia abajo
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`
+        )
+        
+        document.getElementById('showUsersSearch').innerHTML = htmlSearchUsersNull
+
+    } else {
+
+        const htmlSearchUsers = arrUsersSearch.map((element) => {
+
+            let disabled = 'disabled'
+            let green = 'success'
+            let red = 'danger'
+            let grey = 'secondary'
+            let blue = 'primary'
+            let cian = 'info'
+            let yellow = 'warning'
+            let white = 'light'
+            let black = 'dark'
+            const active = 'Activo'
+            const inactive = 'Inactivo'
+            const admin = 'Admin'
+            const user = 'User'
+
+            let optionStatus = element.status ? green : red
+            let optionAdmin = element.admin ? dark : grey
+            var optionPermiso = element.permiso ? grey : red
+            var optionArea = element.area ? cian : green
+            let showStatus = element.status ? active : inactive
+            let showAdmin = element.admin ? admin : user
+            var showArea = "Ingeniería"
+            var showPermiso = "Diseño/Simulación"
+            var superAdmin = element.superAdmin ? '<i class="fa-solid fa-crown fa-rotate-by fa-xl" title="SuperAdmin" style="color: #a89c0d; --fa-rotate-angle: 20deg;"></i>' : null
+
+            if (element.visible) {
+                    if (element.area === 'ingenieria') {
+                        showArea
+                        optionArea = cian
+                    } else if (element.area === "fabricacion") {
+                        showArea = 'Simulación'
+                        optionArea = yellow
+                    } else if (element.area === "administracion") {
+                        showArea = grey
+                        optionArea = yellow
+                    } else if (element.area === "proyectos") {
+                        showArea = dark
+                        optionArea = yellow
+                    } else {
+                        showArea = 'Todas'
+                        optionArea = green
+                    }
+
+                    if (element.permiso === 'diseno') {
+                        showPermiso = "Diseño"
+                        optionPermiso = cian
+                    } else if (element.permiso === "simulacion") {
+                        showPermiso = 'Simulación'
+                        optionPermiso = yellow
+                    } else if (element.permiso === "disenoSimulacion") {
+                        showPermiso
+                        optionPermiso = red
+                    } else if (element.permiso === "cadCam") {
+                        showPermiso = 'Cad-Cam'
+                        optionPermiso = grey
+                    } else if (element.permiso === "projectManager") {
+                        showPermiso = 'Project Manager'
+                        optionPermiso = black
+                    } else if (element.permiso === "mecanizado") {
+                        showPermiso = 'Mecanizado'
+                        optionPermiso = yellow
+                    } else if (element.permiso === "ajuste") {
+                        showPermiso = 'Ajuste'
+                        optionPermiso = red
+                    } else {
+                        showPermiso = 'Todos'
+                        optionPermiso = blue
+                    }
+
+                    if (!element.superAdmin) {
+                        disabled = ''
+                    }
+            }
+
+            return (`
+                <div class="col mx-auto">
+                    <div class="card mx-auto rounded-2 shadow-lg" style="max-width: 540px;">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 text-center">
+                                <img src="${element.avatar}"
+                                    max-width="160vw" class="img-fluid rounded p-3 mx-auto"
+                                    alt="Avatar Usuario">
+                            </div>
+                            <div class="col-md-8 border-start">
+                                <div class="card-body">
+                                    <h6 class="card-title"><strong>${element.name} ${element.lastName}</strong></h6>
+                                    <h7 class="card-title">Legajo Id# <strong>${element.legajoId}</strong></h7> 
+                                    <p class="card-text">Em@il: ${element.email}<br></p>
+                                    <p class="card-text">Username: ${element.username}<br></p>
+                                    <span class="badge rounded-pill bg-${optionStatus}">${showStatus}</span><br>
+                                        Rol: <span class="badge rounded-pill bg-${optionAdmin}">${showAdmin}
+                                                <span class="position-absolute top-0 start-100 translate-middle">
+                                                    ${superAdmin}
+                                                </span>
+                                            </span>
+                                        Area: <span class="badge rounded-pill bg-${optionArea}">${showArea}</span><br>
+                                        Permisos: <span class="badge rounded-pill bg-${optionPermiso}">${showPermiso}</span>
+                                </div>
+                                <div class="card-footer px-2">
+                                    <div class="row">
+                                        <div class="col m-auto">
+                                            <a class="btn text-light small" ${disabled} type="submit" href="/api/usuarios/select/${element._id}"
+                                                style="background-color: #272787; font-size: .85rem; width: 8em;">
+                                                    <i class="fa-solid fa-info-circle"></i>
+                                                        Info Usuario
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+            )
+        }).join(" ");
+
+        document.getElementById('showUsersSearch').innerHTML = htmlSearchUsers
     }
 }

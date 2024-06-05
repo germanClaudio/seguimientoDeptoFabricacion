@@ -40,7 +40,13 @@ const initServer = () => {
 
     const app = express()
     const httpServer = new HttpServer(app)
-    const io = new IOServer(httpServer)
+    // const io = new IOServer(httpServer)
+    const io = new IOServer(httpServer, {
+        cors: {
+          origin: "*", // Permitir todas las solicitudes de origen cruzado (modificar según sea necesario)
+          methods: ["GET", "POST"]
+        }
+    })
 
     /////////////////////// configuracion de EJS /////////////////////////
     app.set('view engine', 'ejs')

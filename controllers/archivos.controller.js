@@ -8,7 +8,7 @@ const csrfTokens = csrf();
 
 const storageToGCS = new Storage({
     projectId: process.env.PROJECT_ID_GCS,
-    keyFilename: process.env.URL_LOCATION_CREDENTIALS,
+    keyFilename: process.env.GOOGLE_STORE_CREDENTIALS//URL_LOCATION_CREDENTIALS,
 });
 
 
