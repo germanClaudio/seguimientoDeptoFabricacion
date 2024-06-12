@@ -124,62 +124,45 @@
                 <div class="row my-3 mx-auto justify-content-between align-items-center">
                     <div class="col-3">
                         <label class="form-check-label" for="permiso">Seleccione un permiso</label>
-                        <select class="form-select form-select" aria-label=".form-select example" name="permiso" id="permiso" required>
-                            <% if (usuario.permiso === "diseno") { %>
-                                <option selected disabled value="diseno">Diseño</option>
-                                <option value="simulacion">Simulación</option>
-                                <option value="disenoSimulacion">Diseño/Simulación</option>
-                            <% } else if (usuario.permiso === "simulacion") { %>
-                                <option selected disabled value="simulacion">Simulación</option>
-                                <option value="diseno">Diseño</option>
-                                <option value="disenoSimulacion">Diseño/Simulación</option>
-                            <% } else if (usuario.permiso === "disenoSimulacion") { %>
-                                <option selected disabled value="disenoSimulacion">Diseño/Simulación</option>
-                                <option value="diseno">Diseño</option>
-                                <option value="simulacion">Simulación</option>
-                            <% } else if (usuario.permiso === "disenoSimulacion") { %>
-                                <option selected disabled value="disenoSimulacion">Diseño/Simulación</option>
-                                <option value="diseno">Diseño</option>
-                                <option value="simulacion">Simulación</option>
-                            <% } %> 
+                        <select class="form-select" aria-label=".form-select example" name="permiso" id="permiso" required>
+                            <% 
+                                const opciones = [
+                                    { value: "diseno", text: "Diseño" },
+                                    { value: "simulacion", text: "Simulación" },
+                                    { value: "disenoSimulacion", text: "Diseño/Simulación" },
+                                    { value: "projectManager", text: "PM" },
+                                    { value: "cadCam", text: "Cad-Cam" },
+                                    { value: "mecanizado", text: "Mecanizado" },
+                                    { value: "ajuste", text: "Ajuste" },
+                                    { value: "todos", text: "Todos" },
+                                ];
+                                
+                                opciones.forEach(opcion => {
+                            %>
+                                <option value="<%= opcion.value %>" <%= opcion.value === usuario.permiso ? 'selected disabled' : '' %> > <%= opcion.text %> </option>
+                            <% }) %>
                         </select>
+                        
                         <input type="hidden" id="permisoHidden" name="permisoHidden" value="" style="display: none;">
                     </div>
                     
                     <div class="col-3">
                         <label class="form-check-label" for="area">Seleccione un Área</label>
-                        <select class="form-select form-select" aria-label=".form-select example" name="area" id="area" required>
-                            <% if (usuario.area === "ingenieria") { %>
-                                <option selected disabled value="ingenieria">Ingeniería</option>
-                                <option value="fabricacion">Fabricación</option>
-                                <option value="proyectos">Proyectos</option>
-                                <option value="administracion">Administración</option>
-                                <option value="todas" disabled>Todas</option>
-                            <% } else if (usuario.area === "fabricacion") { %>
-                                <option selected disabled value="fabricacion">Fabricación</option>
-                                <option value="ingenieria">Ingeniería</option>
-                                <option value="proyectos">Proyectos</option>
-                                <option value="administracion">Administracion</option>
-                                <option value="todas" disabled>Todas</option>
-                            <% } else if (usuario.area === "proyectos") { %>
-                                <option selected disabled value="proyectos">Proyectos</option>
-                                <option value="ingenieria">Ingeniería</option>
-                                <option value="fabricacion">Fabricación</option>
-                                <option value="administracion">Administracion</option>
-                                <option value="todas" disabled>Todas</option>
-                            <% } else if (usuario.area === "administracion") { %>
-                                <option selected disabled value="administracion">Administración</option>
-                                <option value="ingenieria">Ingeniería</option>
-                                <option value="fabricacion">Fabricación</option>
-                                <option value="proyectos">Proyectos</option>
-                                <option value="todas" disabled>Todas</option>
-                            <% } else { %>
-                                <option selected disabled value="todas">Todas</option>
-                                <option value="ingenieria">Ingeniería</option>
-                                <option value="fabricacion">Fabricación</option>
-                                <option value="proyectos">Proyectos</option>
-                                <option value="administracion">Administración</option>
-                            <% } %>    
+                        <select class="form-select form-select" aria-label=".form-select example" name="area" id="area" required>  
+                            <% 
+                                const opciones = [
+                                    { value: "diseno", text: "Diseño" },
+                                    { value: "ingenieria", text: "Ingeniería" },
+                                    { value: "fabricacion", text: "Fabricación" },
+                                    { value: "proyectos", text: "Proyectos" },
+                                    { value: "administracion", text: "Administracion" },
+                                    { value: "todas", text: "Todas" },
+                                ];
+                            
+                                opciones.forEach(opcion => {
+                            %>
+                                <option value="<%= opcion.value %>" <%= opcion.value === usuario.area ? 'selected disabled' : '' %> > <%= opcion.text %> </option>
+                            <% }) %>   
                         </select>
                         <input type="hidden" id="areaHidden" name="areaHidden" value="" style="display: none;">
                     </div>

@@ -8,5 +8,7 @@ warn.log
 compose.yaml
 
 web-app-seguimiento-proyectos-793b60720f6d.json
+encryption.js
+generateHexKey.js
 
 azure-webapps-node.yml

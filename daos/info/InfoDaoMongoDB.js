@@ -1,4 +1,4 @@
-const ContainerMongoDB = require('../../contenedores/info/containerMongoDB.js')
+const ContainerMongoDB = require('../../contenedores/containerMongoDB.js')
 
 // const logger = require('../../utils/winston.js')
 

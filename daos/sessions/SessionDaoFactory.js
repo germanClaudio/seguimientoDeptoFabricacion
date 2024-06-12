@@ -2,7 +2,7 @@ const SessionDaoMongoDB = require('./SessionDaoMongoDB.js')
 
 const conexionStr = process.env.MONGO_URL_CONNECT_SESS
 
-const option = process.env.PERSISTENCIA || 'Memoria'
+const option = process.env.PERSISTENCIA || 'Mongo'
 
 let daoSessions
 switch (option) {

@@ -1,8 +1,8 @@
-const ContenedorMongoDB = require('../../contenedores/proyectos/containerMongoDB.js')
+const ContenedorMongoDB = require('../../contenedores/containerMongoDB.js')
 const mongoose = require('mongoose')
 const Proyectos = require('../../models/proyectos.models.js')
 const Clientes = require('../../models/clientes.models.js')
-// const console = require('../../utils/winston.js')
+
 let now = require('../../utils/formatDate.js')
 
 class ProyectosDaoMongoDB extends ContenedorMongoDB {

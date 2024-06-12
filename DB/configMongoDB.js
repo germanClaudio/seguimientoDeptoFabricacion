@@ -6,6 +6,8 @@ const UserSchema = require('../models/usuarios.models.js')
 //------------
 const SessionSchema = require('../models/sessions.models.js')
 
+const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000}
+
 module.exports = class dbConnection {
     
     constructor(cnxStr) {
@@ -18,10 +20,7 @@ module.exports = class dbConnection {
     // -------- Conecta a la base de datos MONGO ----------
     async dbConnection() {
         try {
-            mongoose.connect(this.cnxStr, { //createConnection or connect
-                useNewUrlParser: true,
-                useUnifiedTopology: true
-            })
+            mongoose.connect(this.cnxStr, advancedOptions)
             console.log('Connected to MongoDB Server <-123-> configMongoDB')
            
         } catch (error) {

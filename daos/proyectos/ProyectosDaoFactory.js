@@ -6,7 +6,7 @@ const { options }= require('../../options/config.js')
 const filePath = options.filePath.path
 const cnxStr = process.env.MONGO_URL_CONNECT_PROD
 
-const option = process.env.PERSISTENCIA || 'Memoria'
+const option = process.env.PERSISTENCIA || 'Mongo'
 
 let dao
 switch (option) {

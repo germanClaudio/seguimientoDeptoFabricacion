@@ -1,6 +1,6 @@
-const { dbConnection, dbDisconnection } = require('../../DB/configMongoDB.js')
+const { dbConnection, dbDisconnection } = require('../DB/configMongoDB.js')
 
-class ContenedorMongoDB {
+class ContainerMongoDB {
     constructor(cnxStr) {
         this.cnxStr = cnxStr
         this.connection = dbConnection
@@ -8,4 +8,4 @@ class ContenedorMongoDB {
     }
 }
 
-module.exports = ContenedorMongoDB
+module.exports = ContainerMongoDB

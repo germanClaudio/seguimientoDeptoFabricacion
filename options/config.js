@@ -1,36 +1,8 @@
 const options = {
-    mysql1: {
-    client: 'mysql1',
-    connection: {
-      host : '127.0.0.1',
-      port : 3306,
-      user : 'root',
-      password : '',
-      database : 'products'
-    }
-  },
-
-  mysql: {
-    client: 'mysql',
-    connection: {
-      host : '127.0.0.1',
-      port : 3306,
-      user : 'c2221765_planIng',
-      password : '35Fibawese',
-      database : 'c2221765_planIng'
-    }
-  },
-
-  
-  // mongoDB: {
-  //   connection: {
-  //     URL: "mongodb+srv://germanClaudio:germanclaudio@cluster0.oqkw9q9.mongodb.net/ecommerce?retryWrites=true&w=majority", //mongodb://localhost:27017/ecommerce  127.0.0.1   mongodb+srv://germanClaudio:<password>@cluster0.oqkw9q9.mongodb.net/?retryWrites=true&w=majority
-  //   },
-  // },
-
+      
   mongoDB: {
     connection: {
-      URL: "mongodb+srv://gmontalbetti:4lq4hbqcuub9ti0f@cluster-prodismoing.esbs6pe.mongodb.net/"
+      URL: process.env.MONGO_URL_CONNECT_PROD
     },
   },
 
@@ -39,14 +11,6 @@ const options = {
     pathMsg: './DB/messages.json'
   },
 
-  // sqlite: {
-  //   client: 'sqlite3',
-  //   connection: {
-  //   filePath: './DB/messages.json'
-  //   },
-  //   useNullAsDefault: true
-  // },
-  
   HOST: process.env.HOST || 'localhost',
 }
 

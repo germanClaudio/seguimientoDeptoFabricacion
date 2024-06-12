@@ -6,7 +6,7 @@ const InfoDaoMongoDB = require('./InfoDaoMongoDB.js')
 // const filePath = options.filePath.path
 const cnxStr = process.env.MONGO_URL_CONNECT_ECOM
 
-const option = process.env.PERSISTENCIA || 'Memoria'
+const option = process.env.PERSISTENCIA || 'Mongo'
 
 let daoInfo
 switch (option) {

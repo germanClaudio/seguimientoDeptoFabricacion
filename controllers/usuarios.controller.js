@@ -2,7 +2,8 @@ const UserService = require("../services/users.service.js")
 const ProyectosService = require("../services/projects.service.js")
 const ClientesService = require("../services/clients.service.js")
 const MessagesService = require("../services/messages.service.js")
-const FileService = require("../services/files.service.js")
+//const FileService = require("../services/files.service.js")
+const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
 
 let now = require('../utils/formatDate.js')
 const { generateToken } = require('../utils/generateToken')
@@ -15,7 +16,7 @@ const csrfTokens = csrf();
 const multer = require('multer')
 let userPictureNotFound = "../../../src/images/upload/AvatarUsersImages/incognito.jpg"
 
-const sessionTime = 1*12*60*60*1000   // 12 HORAS
+const sessionTime = parseInt(process.env.SESSION_TIME) //1*12*60*60*1000   // 12 HORAS
 
 
 class UsersController {  
@@ -24,7 +25,7 @@ class UsersController {
         this.clients = new ClientesService()
         this.users = new UserService()
         this.messages = new MessagesService()
-        this.files = new FileService()
+        // this.files = new FileService()
     }
        
     getAllUsers = async (req, res, next) => {
@@ -320,7 +321,7 @@ class UsersController {
 
             try {
                 if(req.file) {
-                    await this.files.uploadToGCS(req, res)
+                    await uploadToGCS(req, res, next)
                 }
 
                 const id = req.params.id
@@ -366,17 +367,17 @@ class UsersController {
                     return next(err);
                 }
 
-                const legajoIdInput = req.body.userLegajoId
+                const legajoIdInput = req.body.legajoIdDisable
                 const legajoIdValid = await this.users.getUserByLegajoId(legajoIdInput)
 
-                if (userToModify.legajoId != legajoIdValid) {
-                    const err = new Error (`Ya existe un Usuario con este Legajo # ${legajoIdInput} o # Legajo inválido!!`)
+                if (userToModify.legajoId != legajoIdValid.legajoId) {
+                    const err = new Error (`Ya existe un Usuario con este Legajo #${legajoIdInput} o # Legajo inválido!!`)
                     err.dirNumber = 400
                     return next(err);
                 }
 
-                const selectFieldPermiso = req.body.permiso
-                const selectFieldArea = req.body.area
+                const selectFieldPermiso = req.body.permisoHidden
+                const selectFieldArea = req.body.areaHidden
 
                 // Validar y sanitizar los datos recibidos
                 if (validateSelectField(selectFieldPermiso) && validateSelectField(selectFieldArea)) {

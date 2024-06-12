@@ -1,4 +1,4 @@
-const ContainerMongoDBSessions = require('../../contenedores/sessions/containerMongoDB.js')
+const ContainerMongoDBSessions = require('../../contenedores/containerMongoDB.js')
 const mongoose = require('mongoose')
 const Sessions = require('../../models/sessions.models.js')
 // const console = require('../../utils/winston.js')

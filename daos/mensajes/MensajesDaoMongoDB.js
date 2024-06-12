@@ -1,4 +1,4 @@
-const ContainerMongoDB = require('../../contenedores/mensajes/containerMongoDB.js')
+const ContainerMongoDB = require('../../contenedores/containerMongoDB.js')
 const mongoose = require('mongoose')
 const Mensajes = require('../../models/mensajes.models.js')
 // const logger = require('../../utils/winston.js')

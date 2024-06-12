@@ -27,7 +27,7 @@ const initSocket = require('./utils/initSocket.js')
 
 //______________________________ mongo para session ______________________________ //
 const MongoStore = require('connect-mongo')
-const advancedOptions = { useNewUrlParser: true, useUnifiedTopology: true }
+const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000}
 
 //________________________________________________________________________________ //
 const passport = require('passport')

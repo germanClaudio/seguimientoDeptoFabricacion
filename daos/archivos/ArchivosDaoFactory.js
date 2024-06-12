@@ -1,25 +1,25 @@
-const ArchivosDaoMongoDB = require('./ArchivosDaoMongoDB.js')
+// const ArchivosDaoMongoDB = require('./ArchivosDaoMongoDB.js')
 
-const cnxStr = process.env.MONGO_URL_CONNECT_PROD
+// const cnxStr = process.env.MONGO_URL_CONNECT_PROD
 
-const option = process.env.PERSISTENCIA || 'Memoria'
+// const option = process.env.PERSISTENCIA || 'Mongo'
 
-let daoFiles
-switch (option) {
-    case 'Mongo':
-        daoFiles = new ArchivosDaoMongoDB(cnxStr)
-        daoFiles.init()
-        break;
+// let daoFiles
+// switch (option) {
+//     case 'Mongo':
+//         daoFiles = new ArchivosDaoMongoDB(cnxStr)
+//         daoFiles.init()
+//         break;
 
-    default:
+//     default:
         
-        daoFiles = new ArchivosDaoMongoDB(cnxStr)
-        daoFiles.init()
-        break;
-}
+//         daoFiles = new ArchivosDaoMongoDB(cnxStr)
+//         daoFiles.init()
+//         break;
+// }
 
-module.exports = class UsuariosDaoFactory {
-    static getDaoFiles() {
-        return daoFiles
-    }
-}
+// module.exports = class UsuariosDaoFactory {
+//     static getDaoFiles() {
+//         return daoFiles
+//     }
+// }

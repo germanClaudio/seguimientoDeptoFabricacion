@@ -1,4 +1,4 @@
-const ContainerMongoDB = require('../../contenedores/usuarios/containerMongoDB.js')
+const ContainerMongoDB = require('../../contenedores/containerMongoDB.js')
 const mongoose = require('mongoose')
 const Usuarios = require('../../models/usuarios.models.js')
 const Sessions = require('../../models/sessions.models.js')
@@ -12,6 +12,8 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs')
 const util = require('util')
 
+const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000}
+
 
 class UsuariosDaoMongoDB extends ContainerMongoDB {
     constructor(cnxStr) {
@@ -20,10 +22,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
 
     async init() {
         // await this.connection
-        mongoose.connect(this.cnxStr, { //createConnection or connect
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        })
+        mongoose.connect(this.cnxStr, advancedOptions)
         console.log('Connected to MongoDB Server 1-2-3 - UsuariosDaoFactory.js')
     }
 
@@ -74,13 +73,14 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
     }
 
     async getUserByLegajoId(legajoId) {
+
         if(legajoId){
             try {
                 const user = await Usuarios.findOne( {legajoId: `${legajoId}`} )
                 if ( user === undefined || user === null) {
                     return null
                 } else {
-                    return true
+                    return user
                 }
             } catch (error) {
                 console.error(error)

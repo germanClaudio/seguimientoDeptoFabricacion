@@ -1,4 +1,4 @@
-const ContenedorMongoDB = require('../../contenedores/clientes/containerMongoDB.js')
+const ContenedorMongoDB = require('../../contenedores/containerMongoDB.js')
 const mongoose = require('mongoose')
 const Clientes = require('../../models/clientes.models.js')
 

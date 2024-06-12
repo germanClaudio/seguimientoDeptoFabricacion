@@ -1,5 +1,3 @@
-const FileService = require("../services/files.service.js")
-
 const { Storage } = require('@google-cloud/storage');
 const sharp = require('sharp');
 
@@ -11,12 +9,8 @@ const { readEncodedFile } = require('../options/fileHandler.js');
 const csrf = require('csrf');
 const csrfTokens = csrf();
 
-class FilesController {  
-    constructor() {
-        this.files = new FileService()
-    }
 
-    uploadToGCS = async (req, res, next) => {
+    async function uploadToGCS(req, res, next) {
 
         const csrfToken = req.body._csrf;
         if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
@@ -85,6 +79,13 @@ class FilesController {
     
         blobStream.end(data)
     }
-}
 
-module.exports = { FilesController }
+    Promise.all(uploadToGCS)
+    .then(() => {
+    //   next();
+    })
+    .catch((err) => {
+    //   next(err);
+    });
+
+module.exports = { uploadToGCS }
