@@ -1,5 +1,5 @@
-let URL_GOOGLE_STORE_AVATARS='https://storage.googleapis.com/imagenesproyectosingenieria/upload/AvatarUsersImages/'
 const socket = io.connect()
+let URL_GOOGLE_STORE_AVATARS='https://storage.googleapis.com/imagenesproyectosingenieria/upload/AvatarUsersImages/'
 
 function formatDate(date) {
     const DD = String(date.getDate()).padStart(2, '0');

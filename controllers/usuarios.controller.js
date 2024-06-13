@@ -2,12 +2,11 @@ const UserService = require("../services/users.service.js")
 const ProyectosService = require("../services/projects.service.js")
 const ClientesService = require("../services/clients.service.js")
 const MessagesService = require("../services/messages.service.js")
-//const FileService = require("../services/files.service.js")
-const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
 
-let now = require('../utils/formatDate.js')
+const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
 const { generateToken } = require('../utils/generateToken')
 
+let now = require('../utils/formatDate.js')
 const bCrypt = require('bcrypt')
 
 const csrf = require('csrf');
@@ -16,7 +15,7 @@ const csrfTokens = csrf();
 const multer = require('multer')
 let userPictureNotFound = "../../../src/images/upload/AvatarUsersImages/incognito.jpg"
 
-const sessionTime = parseInt(process.env.SESSION_TIME) //1*12*60*60*1000   // 12 HORAS
+const sessionTime = parseInt(process.env.SESSION_TIME) // 12 HORAS
 
 
 class UsersController {  
@@ -25,7 +24,6 @@ class UsersController {
         this.clients = new ClientesService()
         this.users = new UserService()
         this.messages = new MessagesService()
-        // this.files = new FileService()
     }
        
     getAllUsers = async (req, res, next) => {
@@ -168,7 +166,7 @@ class UsersController {
     
             try {
                 if (req.file) {
-                    await this.files.uploadToGCS(req, res);
+                    await uploadToGCS(req, res);
                 }
     
                 let username = res.locals.username;
@@ -480,7 +478,7 @@ class UsersController {
 
                 try {
                     if(req.file){
-                        await this.files.uploadToGCS(req)
+                        await uploadToGCS(req)
                     }
 
                     const id = req.params.id

@@ -6,9 +6,19 @@ warn.log
 .rest
 .env
 compose.yaml
+.gitignore
+.dockerignore
+compose-dev.yaml
+
+azure-webapps-node.yml
 
 web-app-seguimiento-proyectos-793b60720f6d.json
 encryption.js
 generateHexKey.js
+generateCodigoSwitch.js
 
 azure-webapps-node.yml
+
+daos/archivos
+controller/archivos.controler
+codigoSwitch.txt

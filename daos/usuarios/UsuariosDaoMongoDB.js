@@ -6,11 +6,10 @@ const Sessions = require('../../models/sessions.models.js')
 const now = require('../../utils/formatDate.js')
 
 const bCrypt = require('bcrypt')
-
 const jwt = require('jsonwebtoken');
-
 const fs = require('fs')
 const util = require('util')
+const { switchFilterUsers } = require('../../utils/switchFilterUsers.js')
 
 const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000}
 
@@ -90,8 +89,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
         }
     }
     
-    async getUserByUsername(username) {
-        
+    async getUserByUsername(username) { 
         if(username) {
             const userInput = username; // Nombre de usuario o número de legajo ingresado por el usuario
             var legajoIdNumber = null;
@@ -125,23 +123,99 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
         }
     }
 
-    async searchUsers(permiso) {
-        if(permiso){
-            try {
-                const users = await Usuarios.find( { permiso: `simulacion` })
-                
-                 if (!users) {
-                    return false
-                 } else {
-                    return users
-                 }
-            } catch (error) {
-                console.error('Aca esta el error: ', error)
+    async getUsersBySearching(query) {
+
+        let number = parseFloat(query.queryUser);
+        if (!isNaN(number)) {
+            var nameAndOthersQueries = [{
+                            $match: {
+                                $expr: {
+                                    $regexMatch: {
+                                        input: { $toString: "$legajoId" },
+                                        regex: `${query.queryUser}`
+                                    },
+                                },
+                            },
+            }]
+            
+        } else {
+            var nameAndOthersQueries = [{ 'name': { $regex: `${query.queryUser}`, $options: 'i' } }, 
+                { 'lastName': { $regex: `${query.queryUser}`, $options: 'i' } },
+                { 'email': { $regex: `${query.queryUser}`, $options: 'i' } }, 
+                { 'username': { $regex: `${query.queryUser}`, $options: 'i' } },
+            ]
+        }
+
+        let filter = 'default'; // Inicializar el filtro predeterminado
+
+        // Definir los valores posibles para cada filtro
+        const posiblesValores = {
+            query: ['', 'noEmptyString', , 'noEmptyNumber'],
+            status: ['todos', true, false],
+            admin: ['todos', true, false],
+            area: ['todos', 'ingenieria', 'fabricacion', 'proyectos', 'administracion'],
+            permiso: ['todos', 'diseno', 'simulacion', 'disenoSimulacion', 'projectManager', 'cadCam', 'mecanizado', 'ajuste']
+        };
+
+        // Generar todas las combinaciones posibles
+        const combinaciones = {};
+        posiblesValores.query.forEach(q => {
+            posiblesValores.status.forEach(s => {
+                posiblesValores.admin.forEach(r => {
+                    posiblesValores.area.forEach(a => {
+                        posiblesValores.permiso.forEach(p => {
+                            const clave = `${q}-${s}-${r}-${a}-${p}`;
+                            combinaciones[clave] = `filterFor-${q}-${s}-${r}-${a}-${p}`;  // Aquí puedes asignar un valor específico para cada combinación
+                        });
+                    });
+                });
+            });
+        });
+
+        // Generar la clave basada en el estado de `query`
+        if (query.queryUser != '') {
+            if (!isNaN(number)) {
+                var queryKey = `noEmptyNumber-todos-todos-todos-todos`;
+            } else {
+                var queryKey = `noEmptyString-${query.statusUser}-${query.rolUser}-${query.areaUser}-${query.permisoUser}`;
             }
         } else {
-            return console.error('Aca esta el error(permiso: invalid)')
+            var queryKey = `${query.queryUser}-${query.statusUser}-${query.rolUser}-${query.areaUser}-${query.permisoUser}`;
+        }
+        
+        // Asignar el filtro basado en la clave generada
+        filter = combinaciones[queryKey] || 'default';
+        try {
+            const resultados = await switchFilterUsers(filter, Usuarios, nameAndOthersQueries)
+
+            if(resultados) {
+                return resultados
+            } else {
+                return resultados = []
+            }
+
+        } catch (error) {
+            console.error("Error MongoDB getClientBySearching: ",error)
         }
     }
+
+    // async searchUsers(permiso) {
+    //     if(permiso){
+    //         try {
+    //             const users = await Usuarios.find( { permiso: `simulacion` })
+                
+    //              if (!users) {
+    //                 return false
+    //              } else {
+    //                 return users
+    //              }
+    //         } catch (error) {
+    //             console.error('Aca esta el error: ', error)
+    //         }
+    //     } else {
+    //         return console.error('Aca esta el error(permiso: invalid)')
+    //     }
+    // }
     
     async getUserByUsernameAndPassword(username, password) {
         if(username || password) {
@@ -658,8 +732,6 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
             }
         }
     }
-
-    
 
     async disconnet() {
         await this.disconnection

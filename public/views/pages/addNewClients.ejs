@@ -15,9 +15,13 @@
         <%- include('../partials/forms/formularioCliente'); %>
     </div>
     <br>
-
+    
     <%- include('../partials/btnHeaderTop/btnHeaderTop-newClient'); %>
-
+    <br>
+    <div class="d-block mx-auto mt-1 text-center bg-primary-light">    
+        <%- include('../partials/forms/formularioBuscarNewCliente'); %>
+        <%- include('../partials/data/dataClientSearch'); %>
+    </div>
             <!-- ------------ Lista de Clientes ------------ -->
             <section class="mx-auto align-items-start" style="width: 94%;">
                 <div class="row">
@@ -45,6 +49,7 @@
                     </footer>
     <!--    scripts     -->
     <script type="text/javascript" src="/js/clientes.js"></script>
+    <script type="text/javascript" src="/js/search.js"></script>
     <script type="text/javascript" src="/js/clock.js"></script>
     <script type="text/javascript" src="/js/expiresSession.js"></script>
 

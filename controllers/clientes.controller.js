@@ -2,95 +2,12 @@ const ClientsService = require("../services/clients.service.js")
 const UserService = require("../services/users.service.js")
 const ProjectsService = require("../services/projects.service.js")
 
+const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
+
 const multer = require('multer')
 
 let now = require('../utils/formatDate.js')
 let imageNotFound = "../../../src/images/upload/LogoClientImages/noImageFound.png"
-
-const { Storage } = require('@google-cloud/storage');
-const sharp = require('sharp');
-
-const storageToGCS = new Storage({
-    projectId: process.env.PROJECT_ID_GCS,
-    keyFilename: process.env.URL_LOCATION_CREDENTIALS, // Ruta al archivo de credenciales de servicio
-});
-
-async function uploadToGCS(req, res) {
-    const error = 'Error en controllerError'
-    const flag = {
-        dirNumber: 500
-    }
-
-    if (!req.file) {
-        const errorInfo = {
-            errorNumber: 17,
-            status: false,
-            msg: 'controllerError - No es un archivo.....'
-        }
-        res.render('errorPages', {
-            error,
-            errorInfo,
-            flag
-        })
-    }
-
-    let bucket = storageToGCS.bucket(process.env.STORE_BUCKET_GCS); // Nombre bucket en Google Cloud Storage
-    let folderName = 'upload';
-    let subFolderName = 'LogoClientImages';
-    let newClientOrUpdate = req.body.imageTextLogoClient || req.body.imageTextLogoUpdate
-    
-    let originalname = (newClientOrUpdate).match(/[^\/]+$/)[0]
-
-    const blob = bucket.file(`${folderName}/${subFolderName}/${originalname}`);
-
-    //**************Comprimir imagenes********************/
-    // Detectar el formato de la imagen
-    const image = sharp(req.file.buffer);
-    const metadata = await image.metadata();
-
-    // Procesar la imagen según su formato
-    let processedImage;
-    if (metadata.format === 'jpeg' || metadata.format === 'jpg') {
-        processedImage = image
-            .resize({ width: 1024, withoutEnlargement: true }) // Redimensionar si es necesario
-            .jpeg({ quality: 80, progressive: true }); // Ajustar la calidad
-    } else if (metadata.format === 'png') {
-        processedImage = image
-            .resize({ width: 1024, withoutEnlargement: true }) // Redimensionar si es necesario
-            .png({ compressionLevel: 9 }); // Ajustar la compresión
-    } else {
-        // Para otros formatos, solo redimensionar
-        processedImage = image.resize({ width: 1024, withoutEnlargement: true });
-    }
-
-    const data = await processedImage.toBuffer();
-    //**************Fin Comprimir imagenes********************/    
-
-    const blobStream = blob.createWriteStream({
-        resumable: false,
-    });
-
-    blobStream.on('error', (err) => {
-        const errorInfo = {
-            errorNumber: 17,
-            status: false,
-            msg: err
-        }
-        res.render('errorPages', {
-            error,
-            errorInfo,
-            flag
-        })
-
-    });
-            
-    blobStream.on('finish', () => {
-        req.file.cloudStorageObject = `${originalname}`
-        req.file.cloudStoragePublicUrl = `https://storage.googleapis.com/${bucket.name}/${folderName}/${subFolderName}/${blob.name}`;
-    });
-
-    blobStream.end(data);
-};
 
 class ClientsController {
     constructor() {
@@ -301,7 +218,7 @@ class ClientsController {
         
         uploadMulter(req, res, async (err) => {
             if(req.file) {
-                uploadToGCS(req, res)
+                await uploadToGCS(req, res, next)
             }
 
             let username = res.locals.username
@@ -401,7 +318,7 @@ class ClientsController {
         
         uploadMulter(req, res, async (err) => {
             if (req.file) {
-                uploadToGCS(req, res)
+                await uploadToGCS(req, res, next)
             }
 
             const id = req.params.id

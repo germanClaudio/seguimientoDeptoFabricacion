@@ -41,6 +41,10 @@ const initSocket = (io) => {
             io.sockets.emit('searchClientsAll', await containerClient.getClientBySearching(query))
         })
 
+        socket.on('searchClienteNew', async (query) => {
+            io.sockets.emit('searchClientsNew', await containerClient.getClientBySearching(query))
+        })
+
         // --------------------------  Projects --------------------------------
         socket.emit('projectsAll',
             await containerProject.getAllProjects(),

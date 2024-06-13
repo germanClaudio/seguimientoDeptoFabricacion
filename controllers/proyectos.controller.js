@@ -2,214 +2,12 @@ const ProyectosService = require("../services/projects.service.js")
 const ClientesService = require("../services/clients.service.js")
 const UserService = require("../services/users.service.js")
 
+const { uploadToGCS, uploadToGCSingleFile } = require("../utils/uploadFilesToGSC.js")
+
 const multer = require('multer')
 
 let now = require('../utils/formatDate.js')
 let imageNotFound = "../../../src/images/upload/LogoClientImages/noImageFound.png"
-
-const { Storage } = require('@google-cloud/storage');
-const sharp = require('sharp');
-
-const storageToGCS = new Storage({
-    projectId: process.env.PROJECT_ID_GCS,
-    keyFilename: process.env.URL_LOCATION_CREDENTIALS, // Ruta al archivo de credenciales de servicio
-});
-
-function uploadToGCS(req, res) { //async
-    const error = 'Error en carga de Imagen o Imagenes a Google Cloud Storage'
-    const flag = {
-        dirNumber: 500
-    }
-
-    if (!req.files || req.files.length === 0) {
-        const errorInfo = {
-            errorNumber: 18.1,
-            status: false,
-            msg: 'controllerError - Uno o varios archivos no son validos!'
-        }
-        
-        res.render('errorPages', {
-            error,
-            errorInfo,
-            flag
-        })
-    }
-    
-    let folderName = 'upload';
-    let subFolderName = 'projectImages';
-
-    // Paso 1: Transformar el objeto recibido a un objeto normal (si es necesario)
-    const data = Object.assign({}, req.body);
-    //console.log('43-data===> ', data)
-
-    // Paso 2: Crear el array con los valores de imageOciFileNameModalX
-    var imagesFileNames = Object.keys(data)
-    .filter(key => key.startsWith('image')) //imageOciFileNameModal
-    .map(key => data[key])
-    .filter(value => value); // Filtrar valores no vacíos
-
-    let newImageFileNames = imagesFileNames.map(element => element.match(/[^\/]+$/)[0])
-
-    // console.log('63-newImageFileNames: ', newImageFileNames);
-
-    //**********req.files******** */
-    for (let x=0; req.files.length>x; x++) {
-        req.files[x].originalname = newImageFileNames[x]
-    }
-    // console.log('69-req.files---> originalname ---->',req.files);
-
-    if (req.files && newImageFileNames) {
-        const uploadPromises = req.files.map(async (file) => {
-            const bucket = storageToGCS.bucket(process.env.STORE_BUCKET_GCS)
-            const blob = bucket.file(`${folderName}/${subFolderName}/${file.originalname}`); // Ruta completa del objeto dentro del bucket
-        
-        //***********Comprimir Imgenes******************/
-        // Detectar el formato de la imagen
-        const image = sharp(file.buffer);
-        const metadata = await image.metadata();
-
-        // Procesar la imagen según su formato
-        let processedImage;
-        if (metadata.format === 'jpeg' || metadata.format === 'jpg') {
-        processedImage = image
-            .resize({ width: 1024, withoutEnlargement: true }) // Redimensionar si es necesario
-            .jpeg({ quality: 80, progressive: true }); // Ajustar la calidad
-        } else if (metadata.format === 'png') {
-        processedImage = image
-            .resize({ width: 1024, withoutEnlargement: true }) // Redimensionar si es necesario
-            .png({ compressionLevel: 9 }); // Ajustar la compresión
-        } else {
-        // Para otros formatos, solo redimensionar
-        processedImage = image.resize({ width: 1024, withoutEnlargement: true });
-        }
-
-        const data = await processedImage.toBuffer();
-        //***********Fin Comprimir Imgenes******************/
-
-            const blobStream = blob.createWriteStream({
-              resumable: false,
-            });
-        
-            return new Promise((resolve, reject) => {
-              blobStream.on('error', (err) => {
-                const errorInfo = {
-                    errorNumber: 14.2,
-                    status: false,
-                    msg: err
-                }
-                res.render('errorPages', {
-                    error,
-                    errorInfo,
-                    flag
-                })
-                reject(err);
-              });
-        
-              blobStream.on('finish', () => {
-                file.cloudStorageObject = `${file.originalname}`
-                file.cloudStoragePublicUrl = `https://storage.googleapis.com/${bucket.name}/${folderName}/${subFolderName}/${blob.name}`;
-                resolve();
-              });
-        
-              blobStream.end(data);
-            });
-        });
-        
-        Promise.all(uploadPromises)
-        .then(() => {
-            //   next();
-        })
-        .catch((err) => {
-            //   next(err);
-            const errorInfo = {
-                errorNumber: 18.1,
-                status: false,
-                msg: 'controllerError: ' + err + ' - Uno o varios archivos no son validos!'
-            }
-            
-            res.render('errorPages', {
-                error,
-                errorInfo,
-                flag
-            })
-        });
-    }
-};
-
-async function uploadToGCSingleFile(req, res) {
-    const error = 'Error en carga de Imagen o Imagenes a Google Cloud Storage'
-    const flag = {
-        dirNumber: 500
-    }
-
-    if (!req.file) {
-        const errorInfo = {
-            errorNumber: 139,
-            status: false,
-            msg: 'controllerError - No es un archivo valido.'
-        }
-        res.render('errorPages', {
-            error,
-            errorInfo,
-            flag
-        })
-    }
-    // console.log('157-req.body: ', req.body)
-    let bucket = storageToGCS.bucket(process.env.STORE_BUCKET_GCS); // Nombre bucket en Google Cloud Storage
-    let folderName = 'upload';
-    let subFolderName = 'projectImages';
-    let updateProjectOrOci = req.body.imageProjectFileName || req.body.imageOciFileName
-    
-    let originalname = (updateProjectOrOci).match(/[^\/]+$/)[0]
-    //console.log('164-originalname: ', originalname)
-    const blob = bucket.file(`${folderName}/${subFolderName}/${originalname}`);
-
-//**************Comprimir imagenes********************/
-    // Detectar el formato de la imagen
-    const image = sharp(req.file.buffer);
-    const metadata = await image.metadata();
-
-    // Procesar la imagen según su formato
-    let processedImage;
-    if (metadata.format === 'jpeg' || metadata.format === 'jpg') {
-        processedImage = image
-            .resize({ width: 1024, withoutEnlargement: true }) // Redimensionar si es necesario
-            .jpeg({ quality: 80, progressive: true }); // Ajustar la calidad
-    } else if (metadata.format === 'png') {
-        processedImage = image
-            .resize({ width: 1024, withoutEnlargement: true }) // Redimensionar si es necesario
-            .png({ compressionLevel: 9 }); // Ajustar la compresión
-    } else {
-        // Para otros formatos, solo redimensionar
-        processedImage = image.resize({ width: 1024, withoutEnlargement: true });
-    }
-
-    const data = await processedImage.toBuffer();
-//**************Fin Comprimir imagenes********************/    
-
-    const blobStream = blob.createWriteStream({
-        resumable: false,
-    });
-
-    blobStream.on('error', (err) => {
-        const errorInfo = {
-            errorNumber: 14,
-            status: false,
-            msg: error
-        }
-        res.render('errorPages', {
-            error,
-            errorInfo,
-            flag
-        })
-    });
-            
-    blobStream.on('finish', () => {
-        req.file.cloudStorageObject = `${originalname}`
-        req.file.cloudStoragePublicUrl = `https://storage.googleapis.com/${bucket.name}/${folderName}/${subFolderName}/${blob.name}`;
-    });
-    blobStream.end(data);
-};
 
 
 class ProjectsController {
@@ -403,10 +201,10 @@ class ProjectsController {
 
         
         uploadImageOciMulter(req, res, async (err) => {
-            console.log('408-req.files: ', req.files)
+            //console.log('408-req.files: ', req.files)
 
             if(req.files && req.files.length != 0){
-                uploadToGCS(req, res) 
+                await uploadToGCS(req, res, next) 
             }
 
             const clientId = req.body.clientIdHidden
@@ -2715,7 +2513,7 @@ class ProjectsController {
         uploadMulter(req, res, async (err) => {
 
             if (req.files && req.files.length != 0) {
-                uploadToGCS(req, res)
+                await uploadToGCS(req, res, next)
             }
               
             const id = req.params.id
@@ -2873,7 +2671,7 @@ class ProjectsController {
 
         uploadMulter(req, res, async (err) => {
             if (req.file) {
-                uploadToGCSingleFile(req, res)
+                await uploadToGCSingleFile(req, res, next)
             }
 
             const statusProject = req.body.statusProjectForm
@@ -2997,7 +2795,7 @@ class ProjectsController {
         uploadMulter(req, res, async (err) => {
             // console.log('req.file: ', req.file)
             if (req.file) {
-                uploadToGCSingleFile(req, res)
+                await uploadToGCSingleFile(req, res, next)
             }
 
             const statusOci = req.body.statusOciForm

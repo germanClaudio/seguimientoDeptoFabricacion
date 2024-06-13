@@ -88,4 +88,88 @@ const csrfTokens = csrf();
     //   next(err);
     });
 
-module.exports = { uploadToGCS }
+    async function uploadToGCSingleFile(req, res, next) {
+        const error = 'Error en carga de Imagen o Imagenes a Google Cloud Storage'
+        const flag = {
+            dirNumber: 500
+        }
+    
+        if (!req.file) {
+            const errorInfo = {
+                errorNumber: 139,
+                status: false,
+                msg: 'controllerError - No es un archivo valido.'
+            }
+            res.render('errorPages', {
+                error,
+                errorInfo,
+                flag
+            })
+        }
+
+        const credentials = await readEncodedFile();
+        const storageToGCS = new Storage({
+            projectId: process.env.PROJECT_ID_GCS,
+            credentials: credentials,
+        });
+
+        let bucket = storageToGCS.bucket(process.env.STORE_BUCKET_GCS); // Nombre bucket en Google Cloud Storage
+        let folderName = 'upload';
+        let subFolderName = 'projectImages';
+        let updateProjectOrOci = req.body.imageProjectFileName || req.body.imageOciFileName
+        
+        let originalname = (updateProjectOrOci).match(/[^\/]+$/)[0]
+        //console.log('164-originalname: ', originalname)
+        const blob = bucket.file(`${folderName}/${subFolderName}/${originalname}`);
+    
+    //**************Comprimir imagenes********************/
+        // Detectar el formato de la imagen
+        const image = sharp(req.file.buffer);
+        const metadata = await image.metadata();
+    
+        // Procesar la imagen según su formato
+        let processedImage;
+        if (metadata.format === 'jpeg' || metadata.format === 'jpg') {
+            processedImage = image
+                .resize({ width: 1024, withoutEnlargement: true }) // Redimensionar si es necesario
+                .jpeg({ quality: 80, progressive: true }); // Ajustar la calidad
+        } else if (metadata.format === 'png') {
+            processedImage = image
+                .resize({ width: 1024, withoutEnlargement: true }) // Redimensionar si es necesario
+                .png({ compressionLevel: 9 }); // Ajustar la compresión
+        } else {
+            // Para otros formatos, solo redimensionar
+            processedImage = image.resize({ width: 1024, withoutEnlargement: true });
+        }
+    
+        const data = await processedImage.toBuffer();
+    //**************Fin Comprimir imagenes********************/    
+    
+        const blobStream = blob.createWriteStream({
+            resumable: false,
+        });
+    
+        blobStream.on('error', (err) => {
+            const errorInfo = {
+                errorNumber: 14,
+                status: false,
+                msg: error
+            }
+            res.render('errorPages', {
+                error,
+                errorInfo,
+                flag
+            })
+        });
+                
+        blobStream.on('finish', () => {
+            req.file.cloudStorageObject = `${originalname}`
+            req.file.cloudStoragePublicUrl = `https://storage.googleapis.com/${bucket.name}/${folderName}/${subFolderName}/${blob.name}`;
+        });
+        blobStream.end(data);
+    };
+
+module.exports = {
+    uploadToGCS,
+    uploadToGCSingleFile,
+}

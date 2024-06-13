@@ -1,7 +1,7 @@
 let clientNotFound = "../../../src/images/upload/LogoClientImages/dead-emoji-face.jpg"
 let allClientsFound = "../../../src/images/upload/LogoClientImages/indiceAbajo.jpeg"
 
-// -------------- Show Searched Clients ----------------
+// -------------- Show Searched Clients Index page----------------
 socket.on('searchClientsAll', async (arrClientSearch) => {
     renderSearchedClients (await arrClientSearch)
 })
@@ -138,7 +138,7 @@ const renderSearchedClients = (arrClientSearch) => {
                                     <div class="col m-auto">
                                         <a class="btn text-light small ${disabled}" type="submit" href="/api/clientes/projects/${element._id}"
                                             style="background-color: #1d1d1d; font-size: .85rem; width: 8em;">
-                                                <i class="fa-solid fa-diagram-project my-auto"></i>
+                                                <i class="icon-rocket"></i>
                                                     Proyectos
                                         </a>        
                                     </div>
@@ -163,31 +163,206 @@ const renderSearchedClients = (arrClientSearch) => {
 }
 
 
-//**************************************/
+// -------------- Show Searched Clients AddNewClient page----------------
+socket.on('searchClientsNew', async (arrClientNewSearch) => {
+    renderSearchedNewClients (await arrClientNewSearch)
+})
+
+const searchClientNew = () => {
+    const query = document.getElementById('query').value
+    const status = document.getElementById('status').value
+    const proyectosRadio = document.getElementsByName('projects')
+    
+    for (let i=0; i<proyectosRadio.length; i++) {
+        if (proyectosRadio[i].checked) {
+            var proyectos = proyectosRadio[i].value
+        }
+      }
+
+    socket.emit('searchClienteNew', {
+        query,
+        status,
+        proyectos
+    })
+    return false
+}
+
+const renderSearchedNewClients = (arrClientNewSearch) => {
+    
+    if(arrClientNewSearch.length === 0) {
+
+        const htmlSearchClientNewNull = 
+        (`<div class="col mx-auto">
+            <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+                <div class="row g-0">
+                    <div class="col-md-4 my-auto px-1">
+                        <img src="${clientNotFound}"
+                            max-width="170vw" class="img-fluid rounded p-1"
+                            alt="Cliente no encontrado">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Cliente no encontrado</h5>
+                            <p class="card-text">Lo siento, no pudimos encontrar el cliente</p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    Pruebe nuevamente con un nombre o código diferente
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`
+        )
+        
+        document.getElementById('showClientSearch').innerHTML = htmlSearchClientNewNull
+    console.log('arrClientNewSearch[0]: ', arrClientNewSearch[0])
+    } else if (arrClientNewSearch.length === 1 && arrClientNewSearch[0] === 'vacio') {
+        
+        const htmlSearchClientNewNull = 
+        (`<div class="col mx-auto">
+            <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+                <div class="row g-0">
+                    <div class="col-md-4 my-auto px-1">
+                        <img src="${allClientsFound}"
+                            max-width="170vw" class="img-fluid rounded p-1"
+                            alt="Todos los Clientes">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Todos los clientes</h5>
+                            <p class="card-text">Todos los clientes están listados en la tabla de abajo</p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    Pruebe nuevamente con un nombre o código diferente o haga scroll hacia abajo
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`
+        )
+        
+        document.getElementById('showClientSearch').innerHTML = htmlSearchClientNewNull
+
+    } else {
+    const htmlSearchNewClient = arrClientNewSearch.map((element) => {
+
+        let disabled = 'disabled'
+        let green = 'success'
+        let red = 'danger'
+        let text = "Activo"
+        let grey = 'secondary'
+        let blue = 'primary'
+        let result = 'S/P'
+        colorResult = grey
+
+        if ( element.status === true && element.project > 0 ) {
+            disabled = ''
+            colorStatus = green
+            colorResult = red
+            result = element.project
+        } else if ( element.status === true && element.project === 0 ) {
+            colorStatus = green
+            colorResult = grey
+        } else if ( element.status === false && element.project > 0 ) {
+            disabled = ''
+            colorStatus = red
+            colorResult = blue
+            result = element.project
+            text = "Inactivo"
+        } else if ( element.status === false && element.project === 0 ) {
+            colorStatus = red
+            text = "Inactivo"
+        }
+
+        return (`
+            <div class="col mx-auto">
+                <div class="card mx-auto rounded-2 shadow-lg" style="max-width: 540px;">
+                    <div class="row align-items-center">
+                        <div class="col-md-4 text-center">
+                            <img src="${element.logo}"
+                                max-width="160vw" class="img-fluid rounded p-3 mx-auto"
+                                alt="Logo Cliente">
+                        </div>
+                        <div class="col-md-8 border-start">
+                            <div class="card-body">
+                                <h5 class="card-title"><strong>${element.name}</strong></h5>
+                                <p class="card-text">Codigo: ${element.code}<br></p>
+                                <span class="badge rounded-pill bg-${colorStatus}">${text}</span><br>
+                                    Proyectos: <span class="badge rounded-pill bg-${colorResult}">${result}
+                                </span>
+                            </div>
+                            <div class="card-footer px-2">
+                                <div class="row">
+                                    <div class="col m-auto">
+                                        <a class="btn text-light small" type="submit" href="/api/clientes/select/${element._id}"
+                                            style="background-color: #6c757d; font-size: .85rem; width: 4em;" title="Editar cliente ${element.name}">
+                                                <i class="fa-regular fa-pen-to-square"></i>
+                                        </a>
+                                    </div>
+
+                                    <div class="col m-auto">
+                                        <a class="btn text-light small ${disabled}" type="submit" href="/api/clientes/projects/${element._id}"
+                                            style="background-color: #0d6efd; font-size: .85rem; width: 4em;" title="Ver proyectos cliente ${element.name}">
+                                                <i class="icon-rocket"></i>
+                                        </a>        
+                                    </div>
+                                    
+                                    <div class="col m-auto">
+                                        <a class="btn text-light small" type="submit" href="/api/clientes/${element._id}"
+                                            style="background-color: #272787; font-size: .85rem; width: 4em;" title="Ver Info cliente ${element.name}">
+                                                <i class="fa-solid fa-info-circle"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+        )
+    }).join(" ");
+
+        document.getElementById('showClientSearch').innerHTML = htmlSearchNewClient
+    }
+}
+
+
+//*******************************************************/
 // -------------- Show Searched Users ----------------
 socket.on('searchUsersAll', async (arrUsersSearch) => {
     renderSearchedUsers (await arrUsersSearch)
 })
 
-const searchUser = () => {
-    const query = document.getElementById('queryUsers').value
-    const status = document.getElementById('status').value
-    const rol = document.getElementById('rol').value
-    const area = document.getElementById('area').value
-    const permiso = document.getElementById('permiso').value
+const searchUsers = () => {
+    const queryUser = document.getElementById('queryUsers').value
+    let statusUser = document.getElementById('statusUser').value
+    let rolUser = document.getElementById('rolUser').value
+    const areaUser = document.getElementById('areaUser').value
+    const permisoUser = document.getElementById('permisoUser').value
+
+    if (statusUser != 'todos') {
+        statusUser === 'activos' ? statusUser = true : statusUser = false
+    }
+    if (rolUser != 'todos') {
+        rolUser === 'administradores' ? rolUser = true : rolUser = false
+    }
     
     socket.emit('searchUsuarioAll', {
-        query,
-        status,
-        rol,
-        area,
-        permiso,
+        queryUser,
+        statusUser,
+        rolUser,
+        areaUser,
+        permisoUser,
     })
     return false
 }
 
 const renderSearchedUsers = (arrUsersSearch) => {
-    
+
     if(arrUsersSearch.length === 0) {
 
         const htmlSearchUserNull = 
@@ -205,7 +380,7 @@ const renderSearchedUsers = (arrUsersSearch) => {
                             <p class="card-text">Lo siento, no pudimos encontrar el Usuario</p>
                             <p class="card-text">
                                 <small class="text-muted">
-                                    Pruebe nuevamente con un nombre, aplellido, email o legajo diferente
+                                    Pruebe nuevamente con un nombre, apellido, email o # legajo diferente.
                                 </small>
                             </p>
                         </div>
@@ -215,8 +390,9 @@ const renderSearchedUsers = (arrUsersSearch) => {
         </div>`
         )
         
-        document.getElementById('showUserSearch').innerHTML = htmlSearchUserNull
-    
+        const showUser = document.getElementById('showUsersSearch')
+        showUser ? showUser.innerHTML = htmlSearchUserNull : null
+
     } else if (arrUsersSearch.length === 1 && arrUsersSearch[0] === 'vacio') {
         
         const htmlSearchUsersNull = 
@@ -231,10 +407,10 @@ const renderSearchedUsers = (arrUsersSearch) => {
                     <div class="col-md-8">
                         <div class="card-body">
                             <h5 class="card-title">Todos los Usuarios</h5>
-                            <p class="card-text">Todos los Usuarios están listados en las tarjetas de abajo</p>
+                            <p class="card-text">Todos los Usuarios están listados en la tabla de abajo</p>
                             <p class="card-text">
                                 <small class="text-muted">
-                                    Pruebe nuevamente con un nombre o código diferente o haga scroll hacia abajo
+                                    Pruebe nuevamente con un nombre, apellido, email, legajo o username diferente o haga scroll hacia abajo
                                 </small>
                             </p>
                         </div>
@@ -265,7 +441,7 @@ const renderSearchedUsers = (arrUsersSearch) => {
             const user = 'User'
 
             let optionStatus = element.status ? green : red
-            let optionAdmin = element.admin ? dark : grey
+            let optionAdmin = element.admin ? black : grey
             var optionPermiso = element.permiso ? grey : red
             var optionArea = element.area ? cian : green
             let showStatus = element.status ? active : inactive
@@ -285,7 +461,7 @@ const renderSearchedUsers = (arrUsersSearch) => {
                         showArea = grey
                         optionArea = yellow
                     } else if (element.area === "proyectos") {
-                        showArea = dark
+                        showArea = black
                         optionArea = yellow
                     } else {
                         showArea = 'Todas'
@@ -335,23 +511,23 @@ const renderSearchedUsers = (arrUsersSearch) => {
                             <div class="col-md-8 border-start">
                                 <div class="card-body">
                                     <h6 class="card-title"><strong>${element.name} ${element.lastName}</strong></h6>
-                                    <h7 class="card-title">Legajo Id# <strong>${element.legajoId}</strong></h7> 
-                                    <p class="card-text">Em@il: ${element.email}<br></p>
-                                    <p class="card-text">Username: ${element.username}<br></p>
-                                    <span class="badge rounded-pill bg-${optionStatus}">${showStatus}</span><br>
-                                        Rol: <span class="badge rounded-pill bg-${optionAdmin}">${showAdmin}
-                                                <span class="position-absolute top-0 start-100 translate-middle">
-                                                    ${superAdmin}
-                                                </span>
+                                    <h7 class="card-title">Legajo #<strong>${element.legajoId}</strong></h7> 
+                                    <p class="card-text mb-1">Em@il: ${element.email}</p>
+                                    <p class="card-text mb-1">Username: ${element.username}</p>
+                                    Status: <span class="badge rounded-pill bg-${optionStatus} my-1">${showStatus}</span><br>
+                                    Rol: <span class="badge rounded-pill bg-${optionAdmin} my-1">${showAdmin}
+                                            <span class="position-absolute top-0 start-100 translate-middle">
+                                                ${superAdmin}
                                             </span>
-                                        Area: <span class="badge rounded-pill bg-${optionArea}">${showArea}</span><br>
-                                        Permisos: <span class="badge rounded-pill bg-${optionPermiso}">${showPermiso}</span>
+                                        </span><br>
+                                    Area: <span class="badge rounded-pill bg-${optionArea} my-1">${showArea}</span><br>
+                                    Permisos: <span class="badge rounded-pill bg-${optionPermiso}">${showPermiso}</span>
                                 </div>
                                 <div class="card-footer px-2">
                                     <div class="row">
                                         <div class="col m-auto">
-                                            <a class="btn text-light small" ${disabled} type="submit" href="/api/usuarios/select/${element._id}"
-                                                style="background-color: #272787; font-size: .85rem; width: 8em;">
+                                            <a class="btn text-light small" ${disabled} type="submit" href="/api/usuarios/${element._id}"
+                                                style="background-color: #272787; font-size: .85rem; width: 15em;">
                                                     <i class="fa-solid fa-info-circle"></i>
                                                         Info Usuario
                                             </a>

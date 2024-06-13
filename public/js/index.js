@@ -77,7 +77,7 @@ const renderClient = (arrClient) => {
                                 </p>
                                 <div class="card-footer card-footer-client">
                                     <a class="btn mx-auto text-light w-75 my-1 small ${disabled}" type="submit" href="/api/clientes/projects/${element._id}" style="background-color: #1d1d1d;">
-                                        <i class="fa-solid fa-diagram-project"></i>
+                                        <i class="icon-rocket"></i>
                                             Proyectos
                                     </a>        
                                     <a class="btn mx-auto text-light w-75 my-1 small" type="submit" href="/api/clientes/select/${element._id}" style="background-color: #272787;">
