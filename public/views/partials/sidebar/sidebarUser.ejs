@@ -1,48 +1,61 @@
-<div class="offcanvas offcanvas-start" style="width: 16%;" data-bs-scroll="true" tabindex="-1"
+<div class="offcanvas offcanvas-start" style="width: auto;" data-bs-scroll="true" tabindex="-1"
     id="offcanvasWithBothOptions"
     aria-labelledby="offcanvasWithBothOptionsLabel">
-    <div class="offcanvas-header">
+    <div class="offcanvas-header mx-auto">
         <img src='/src/images/logo01-negro.png' width="168" height="30"
-                    class="d-inline-block align-text-top">
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+            class="d-none d-xl-inline-block align-text-top">
+        <img src='/src/images/soloLogo01-negro.png' title="Logo Prodismo" width="40" height="30"
+            class="d-xl-none d-inline-block align-text-top">
+        <button type="button" class="btn-close d-none d-xl-inline-block" data-bs-dismiss="offcanvas"
             aria-label="Close">
         </button>
     </div>
-    <hr style="margin: 0;">
+    <hr style="margin: 0; color: rgb(0, 0, 0);">
     <div class="offcanvas-body p-3">
-        <ul class="navbar-nav my-auto list-group list-group-vertical">
+        <ul class="navbar-nav list-group list-group-vertical align-items-lg-start align-items-sm-center">
             <li class="nav-item my-1 active">
-                <a class="nav-link" aria-current="page" href="/api/auth/index">
+                <a class="nav-link" aria-current="page" title="Home" href="/api/auth/index">
                     <i class="fa-solid fa-home" aria-hidden="true"></i>
-                    Home
+                    <span class="d-none d-lg-inline">Home</span>
                 </a>
             </li>
             <li class="nav-item my-1">
-                <a class="nav-link" href="/api/clientes">
+                <a class="nav-link" title="Clientes" href="/api/clientes">
                     <i class="fa-solid fa-handshake" aria-hidden="true"></i>
-                    Clientes
+                    <span class="d-none d-lg-inline">Clientes</span>
                 </a>
             </li>
             <li class="nav-item my-1">
-                <a class="nav-link" href="/api/proyectos">
+                <a class="nav-link" title="Programación" href="/api/programacion">
+                    <i class="icon-calendar" aria-hidden="true"></i>
+                    <span class="d-none d-lg-inline">Programación</span>
+                </a>
+            </li>
+            <li class="nav-item my-1">
+                <a class="nav-link" title="Proyectos" href="/api/proyectos">
                     <i class="icon-rocket" aria-hidden="true"></i>
-                    Proyectos
+                    <span class="d-none d-lg-inline">Proyectos</span>
                 </a>
             </li>
             <li class="nav-item my-1">
-                <a class="nav-link" href="/api/webchat">
+                <a class="nav-link" title="WebChat" href="/api/webchat">
                     <i class="fa-solid fa-comments" aria-hidden="true"></i>
-                    WebChat
+                    <span class="d-none d-lg-inline">WebChat</span>
                 </a>
             </li>
         </ul>
+        <hr class="mb-2" style="margin: 0; color: rgb(0, 0, 0);">
+        <a class="align-items-lg-start align-items-sm-center" title="Settings <%= userInfo.name %> <%= userInfo.lastName %>" href="/api/usuarios/getUserSettings/<%= userInfo._id %>" name="btnSetting" id="btnSetting">
+            <img id="avatarUser" class="img rounded-circle mx-auto d-none d-sm-inline" alt="Avatar <%= userInfo.name %> <%= userInfo.lastName %>"
+                src="<%= userInfo.avatar %>" width="45px" height="45px">
+        </a>
     </div>
         <div class="offcanvas-footer mb-3">
-            <button id="logoutSidebar" class="btn btn-dark mx-2 my-auto" style="width: 95%;" type="button">
+            <button id="logoutSidebar" class="btn btn-dark mx-auto my-auto" title="LogOut" style="width: 95%;" type="button">
                 <i class="fa-solid fa-sign-out"></i>
-                LogOut
+                <span class="d-none d-xl-inline">LogOut</span>
             </button>
-            <p class="my-1 me-2 text-end">Version V0.2.125</p>
+            <p class="my-1 me-2 text-end">V0.2.125</p>
         </div>
 
 </div>

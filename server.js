@@ -18,6 +18,7 @@ const { Server: IOServer } = require('socket.io')
 const routerUsers = require('./Routes/usuarios.route.js')
 const routerClientes = require('./Routes/clientes.route.js')
 const routerProyectos = require('./Routes/proyectos.route.js')
+const routerProgramacion = require('./Routes/programacion.route.js')
 const routerMensajes = require('./Routes/mensajes.route.js')
 
 const { infoRouter } = require('./Routes/info.routes.js')
@@ -98,10 +99,12 @@ const initServer = () => {
     ////////////////////// Rutas ///////////////////////
     app.use('/api/clientes', routerClientes)
     app.use('/api/proyectos', routerProyectos)
+    app.use('/api/programacion', routerProgramacion)
     app.use('/api/auth', authRouter)
     app.use('/api/usuarios', routerUsers)
     app.use('/info', infoRouter)
     app.use('/api/webchat', routerMensajes)
+
     ///////////////////////////////////////////////////
 
 

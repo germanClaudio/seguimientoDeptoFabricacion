@@ -4,31 +4,41 @@
             <a class="navbar-brand mx-2" role="button" href="#offcanvasExample" data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasWithBothOptions"
                 aria-controls="offcanvasWithBothOptions">
-                <img src='/src/images/logo01-bco.png' title="Logo Prodismo" width="168" height="30"
-                    class="d-inline-block align-text-top">
+                <img src='/src/images/logo01-bco.png' title="Logo Prodismo" width="166" height="30"
+                    class="d-none d-xl-inline-block align-text-top">
+                <img src='/src/images/soloLogo01-bco.png' title="Logo Prodismo" width="40" height="30"
+                    class="d-xl-none d-inline-block align-text-top">
             </a>
             <div class="me-auto d-block" id="navbarTogglerDemo02">
                 <ul class="navbar-nav my-auto list-group list-group-horizontal">
-                    <li class="nav-item mx-4 active">
-                        <a class="nav-link" aria-current="page" href="/api/auth/index">
+                    <li class="nav-item mx-4 active d-none d-lg-inline">
+                        <a class="nav-link" aria-current="page" title="Home" href="/api/auth/index">
                             <i class="fa-solid fa-home" aria-hidden="true"></i>
-                            Home
+                            <span class="d-none d-xxl-inline">Home</span>
                         </a>
                     </li>
-                    <li class="nav-item mx-4">
-                        <a class="nav-link" href="/api/clientes"><i class="fa-regular fa-handshake" aria-hidden="true"></i>
-                            Clientes
+                    <li class="nav-item mx-4 d-none d-lg-inline">
+                        <a class="nav-link" title="Clientes" href="/api/clientes">
+                            <i class="fa-regular fa-handshake" aria-hidden="true"></i>
+                            <span class="d-none d-xxl-inline">Clientes</span>
                         </a>
                     </li>
-                    <!-- fa-solid fa-diagram-project -->
-                    <li class="nav-item mx-4">
-                        <a class="nav-link" href="/api/proyectos"><i class="icon-rocket" aria-hidden="true"></i>
-                            Proyectos
+                    <li class="nav-item mx-4 d-none d-lg-inline">
+                        <a class="nav-link" title="Proyectos" href="/api/proyectos">
+                            <i class="icon-rocket" aria-hidden="true"></i>
+                            <span class="d-none d-xxl-inline">Proyectos</span>
                         </a>
                     </li>
-                    <li class="nav-item mx-4">
-                        <a class="nav-link" href="/api/webchat"><i class="fa-solid fa-comments" aria-hidden="true"></i>
-                            WebChat
+                    <li class="nav-item mx-4 d-none d-lg-inline">
+                        <a class="nav-link" title="Programación" href="/api/programacion">
+                            <i class="icon-calendar" aria-hidden="true"></i>
+                            <span class="d-none d-xxl-inline">Programación</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mx-4 d-none d-lg-inline">
+                        <a class="nav-link" title="WebChat" href="/api/webchat">
+                            <i class="fa-solid fa-comments" aria-hidden="true"></i>
+                            <span class="d-none d-xxl-inline">WebChat</span>
                         </a>
                     </li>
                 </ul>
@@ -36,18 +46,18 @@
             <div class="d-flex text-center">
                 <div id="expires" style="display: none;"><%= expires %></div>
 
-                <div class="vr mx-2" style="color: white;"></div>
+                <div class="vr mx-1 d-none d-xl-inline" style="color: white;"></div>
 
-                <div class="container text-center m-auto" style="width: 12vw;">
+                <div class="container text-center m-auto d-none d-xl-inline" style="width: auto;">
                     <div class="mx-auto small" id="countdown"></div>
                     <div class="mx-auto small" id="clock"></div>
                 </div>
 
-                <div class="vr mx-2" style="color: white;"></div>
+                <div class="vr mx-1 d-none d-xl-inline" style="color: white;"></div>
 
-                <div class="container text-center m-auto" style="width: 12vw;">
+                <div class="container text-center m-auto" style="width: auto;">
                     <% if (userInfo.admin && userInfo.superAdmin) { %>
-                        <div class="mx-auto small">
+                        <div class="mx-auto small text-center">
                             <span id="mostrarRolUser" class="badge rounded-pill bg-primary position-relative">
                                 SuperAdmin
                                 <span class="position-absolute top-0 start-100 translate-middle">
@@ -58,23 +68,23 @@
                                 </span>
                             </span>
                         </div>
-                        <div class="mx-auto small" id="mostrarUserName">
+                        <div class="mx-auto small text-center" id="mostrarUserName">
                             <%= userInfo.name %>, <%= userInfo.lastName %>
                         </div>
                         <div class="d-none" id="userBanner_<%= userInfo._id %>"><%= userInfo._id %></div>
                     <% } else if (userInfo.admin) { %>
-                        <div class="mx-auto small">
+                        <div class="mx-auto small text-center">
                             <span id="mostrarRolUser" class="badge rounded-pill bg-primary">Admin</span>
                         </div>
-                        <div class="mx-auto small" id="mostrarUserName">
+                        <div class="mx-auto small text-center" id="mostrarUserName">
                             <%= userInfo.name %>, <%= userInfo.lastName %>
                         </div>
                         <div class="d-none" id="userBanner_<%= userInfo._id %>"><%= userInfo._id %></div>
                     <% } else { %>
-                        <div class="mx-auto small">
+                        <div class="mx-auto small text-center">
                             <span id="mostrarRolUser" class="badge rounded-pill bg-info text-dark">User</span>
                         </div>
-                        <div class="mx-auto small" id="mostrarUserName">
+                        <div class="mx-auto small text-center" id="mostrarUserName">
                             <%= userInfo.name %>, <%= userInfo.lastName %>
                         </div>
                         <div class="d-none" id="<%= userInfo._id %>"></div>
@@ -83,17 +93,16 @@
                 <button type="button" title="Preferencias Usuario" class="btn btn-link rounded-circle my-auto mx-2" name="btnPreferences" id="btnPreferences">
                     <i class="fa-regular fa-star"></i>
                 </button>
-                <a type="button" title="Settings" href="/api/usuarios/getUserSettings/<%= userInfo._id %>" class="btn btn-link rounded-circle my-auto mx-2" name="btnSetting" id="btnSetting">
-                    <i class="fa-solid fa-gear"></i>
+                <a title="Settings <%= userInfo.name %> <%= userInfo.lastName %>" href="/api/usuarios/getUserSettings/<%= userInfo._id %>" name="btnSetting" id="btnSetting">
+                    <img id="avatarUser" class="img rounded-circle me-3 d-none d-lg-inline" alt="Avatar <%= userInfo.name %> <%= userInfo.lastName %>"
+                        src="<%= userInfo.avatar %>" width="55px" height="55px">
                 </a>
-                <img id="avatarUser" class="img rounded-circle me-3" alt="Avatar <%= userInfo.name %> <%= userInfo.lastName %>"
-                    src="<%= userInfo.avatar %>" width="55px" height="55px">
 
-                <div class="vr mx-2" style="color: white;"></div>
+                <div class="vr mx-2 d-none d-xl-inline" style="color: white;"></div>
 
-                <button id="logoutBanner" class="btn btn-light me-2 my-auto" style="width: 6.25rem;" type="button">
+                <button id="logoutBanner" class="btn btn-light me-2 my-auto" title="LogOut" style="width: auto;" type="button">
                     <i class="fa-solid fa-sign-out"></i>
-                    LogOut
+                    <span class="d-none d-xxl-inline">LogOut</span>
                 </button>
 
             </div>

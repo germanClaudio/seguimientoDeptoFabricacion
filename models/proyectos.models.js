@@ -1,5 +1,6 @@
 const { Schema, model, mongoose } = require('mongoose')
 let now = require('../utils/formatDate.js')
+const programacionModels = require('./programacion.models.js')
 
 // ------- Client Schema -------------
 let ClientSchema = new Schema({
@@ -586,6 +587,7 @@ let otProjectSchema = new Schema({
         maxlength: 150,
     },
     otInformation: [otInformationSchema],
+    otDetalles: [programacionModels.ProgramacionSchema],
     creator: [creatorSchema],
     timestamp: {
         type: String,
