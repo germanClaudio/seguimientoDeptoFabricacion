@@ -1,0 +1,55 @@
+<!-- tabla Detalles -->
+                                                                
+<table id="tablaDetalle<%=k%>"
+    name="tablaDetalle"
+    class="table-responsive align-middle col-2 border-end border-dark"
+    style="font-size: 10pt">
+    <thead class="align-middle"
+        style="background-color: #bbc">
+        <tr>
+            <th colspan="2" class="text-center pb-1"> <div class="mb-3">DETALLES</div>
+            </th>
+        </tr>
+        <tr>
+            <th style="width:30vw" scope="col-1"
+                class="text-center"> # Detalle
+            </th>
+            <th style="width:30vw" scope="col-1"
+                class="text-center"> Descripción
+            </th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length> n; n++) { 
+            if (proyecto[m].project[j].oci[k].otProject[n].visible) {
+                if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
+                    <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
+                        <td class="text-center">
+                            <small id="otDesign<%=k%>_<%=n%>" class="text-dark align-middle">
+                                <%= proyecto[m].project[j].oci[k].otProject[n].otDesign %>
+                            </small>
+                        </td>
+                        <td class="text-center align-middle">
+                            <small id="otSimulation<%=k%>_<%=n%>" class="text-dark">
+                                <%= proyecto[m].project[j].oci[k].otProject[n].otSimulation %>
+                            </small>
+                        </td>
+                    </tr>   
+                <% } else { %>
+                    <tr style="height: 7vh; background-color: #dedede;">
+                        <td class="text-center">
+                            <small id="otDesign<%=k%>_<%=n%>" class="text-dark align-middle">
+                                <%= proyecto[m].project[j].oci[k].otProject[n].otDesign %>
+                            </small>
+                        </td>
+                        <td class="text-center align-middle">
+                            <small id="otSimulation<%=k%>_<%=n%>" class="text-dark">
+                                <%= proyecto[m].project[j].oci[k].otProject[n].otSimulation %>
+                            </small>
+                        </td>
+                    </tr>
+                <% }
+            }
+        } %>
+    </tbody>
+</table>

@@ -1,8 +1,7 @@
 <div class="offcanvas offcanvas-start" style="width: auto;" data-bs-scroll="true" tabindex="-1"
-    id="offcanvasWithBothOptions"
-    aria-labelledby="offcanvasWithBothOptionsLabel">
+    id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
     <div class="offcanvas-header mx-auto">
-        <img src='/src/images/logo01-negro.png' width="168" height="30"
+        <img src='/src/images/logo01-negro.png' width="165" height="30"
             class="d-none d-xl-inline-block align-text-top">
         <img src='/src/images/soloLogo01-negro.png' title="Logo Prodismo" width="40" height="30"
             class="d-xl-none d-inline-block align-text-top">
@@ -45,17 +44,34 @@
             </li>
         </ul>
         <hr class="mb-2" style="margin: 0; color: rgb(0, 0, 0);">
-        <a class="align-items-lg-start align-items-sm-center" title="Settings <%= userInfo.name %> <%= userInfo.lastName %>" href="/api/usuarios/getUserSettings/<%= userInfo._id %>" name="btnSetting" id="btnSetting">
-            <img id="avatarUser" class="img rounded-circle mx-auto d-none d-sm-inline" alt="Avatar <%= userInfo.name %> <%= userInfo.lastName %>"
-                src="<%= userInfo.avatar %>" width="45px" height="45px">
-        </a>
+        <div class="container text-center align-items-lg-start align-items-sm-center">
+            <div class="row align-items-center">
+                <div class="col">
+                    <a class="align-items-lg-start align-items-sm-center" title="Settings <%= userInfo.name %> <%= userInfo.lastName %>" href="/api/usuarios/getUserSettings/<%= userInfo._id %>" name="btnSetting" id="btnSetting">
+                        <img id="avatarUser" class="img rounded-circle mx-auto d-none d-sm-inline" alt="Avatar <%= userInfo.name %> <%= userInfo.lastName %>"
+                            src="<%= userInfo.avatar %>" width="45px" height="45px">
+                    </a>
+                </div>
+                <div class="col">
+                    <div class="text-center m-auto d-none d-sm-inline" style="width: auto;">
+                        <div class="mx-auto small text-center">
+                            <span id="mostrarRolUser" class="badge rounded-pill bg-info text-dark">User</span>
+                        </div>
+                        <div class="mx-auto small text-center" id="mostrarUserName">
+                            <%= userInfo.name %>, <%= userInfo.lastName %>
+                        </div>
+                        <div class="d-none" id="<%= userInfo._id %>"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
         <div class="offcanvas-footer mb-3">
             <button id="logoutSidebar" class="btn btn-dark mx-auto my-auto" title="LogOut" style="width: 95%;" type="button">
                 <i class="fa-solid fa-sign-out"></i>
                 <span class="d-none d-xl-inline">LogOut</span>
             </button>
-            <p class="my-1 me-2 text-end">V0.2.125</p>
+            <p class="my-1 me-2 text-end">V0.2.181</p>
         </div>
 
 </div>

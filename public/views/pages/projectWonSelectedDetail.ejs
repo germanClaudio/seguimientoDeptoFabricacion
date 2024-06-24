@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head/head'); %>
+</head>
+
+<body>
+    <%- include('../partials/header/header'); %>
+    
+    <div class="container" style="padding-top: 70px;"></div>
+    <br>
+    <div class="collapse mt-5 mx-auto" id="collapseExample">
+        <%- include('../partials/forms/formularioNewOt', { k: data.k, m: data.m, j: data.j }); %>
+    </div>
+    <div class="d-block m-auto my-1 text-center">
+        <%- include('../partials/btnHeaderTop/btnProjectWonSelectedDetail'); %>
+    </div>
+
+    <section class="mx-auto align-items-start" style="width: 95%;">
+        <div class="row">
+            <div class="col-12">
+                <hr>
+                <h4 id="projectNameTitle" class="text-uppercase"></h4>
+                <p>Departamento de IT Prodismo</p>
+                <hr>
+            </div>
+        </div>
+    </section>
+    <div id="updateCliente">
+    </div>
+            <%- include('../partials/data/dataProjectWonCard', { k: data.k, m: data.m, j: data.j, slide: data.slide}); %>
+                <br>
+                <footer>
+                    <%- include('../partials/footer/footer'); %>
+                </footer>
+
+                <!--    scripts     -->
+                <script type="text/javascript" src="/js/projectWonInfo.js"></script> 
+                <script type="text/javascript" src="/js/projectInfoR14.js"></script>
+                <script type="text/javascript" src="/js/projectInfoProceso3d.js"></script>
+                <script type="text/javascript" src="/js/projectInfoDisenoPrimera.js"></script>
+                <script type="text/javascript" src="/js/projectInfoDisenoSegunda.js"></script>
+                <script type="text/javascript" src="/js/projectInfo80.js"></script>
+                <script type="text/javascript" src="/js/projectInfo100.js"></script>
+                <script type="text/javascript" src="/js/projectInfoSim0.js"></script>
+                <script type="text/javascript" src="/js/projectInfoSim1.js"></script>
+                <script type="text/javascript" src="/js/projectInfoSim2_3.js"></script>
+                <script type="text/javascript" src="/js/projectInfoSim4Primera.js"></script>
+                <script type="text/javascript" src="/js/projectInfoSim4Segunda.js"></script>
+                <script type="text/javascript" src="/js/projectInfoSim5.js"></script>
+                <script type="text/javascript" src="/js/clock.js"></script>
+                <script type="text/javascript" src="/js/expiresSession.js"></script>
+
+</body>
+
+</html>

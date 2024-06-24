@@ -2,7 +2,7 @@ const ContenedorMongoDB = require('../../contenedores/containerMongoDB.js')
 const mongoose = require('mongoose')
 const Proyectos = require('../../models/proyectos.models.js')
 const Clientes = require('../../models/clientes.models.js')
-//const Programas = require('../../models/programas.models.js')
+const Programas = require('../../models/programas.models.js')
 
 let now = require('../../utils/formatDate.js')
 const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000}
@@ -16,13 +16,17 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
         mongoose.connect(this.cnxStr, advancedOptions)
     }
 
-    // get all Programms form DB ----------------
-    async getAllProgramms() {
+    // get all Projects w/ status & visible true and level won form DB ----------------
+    async getAllProjectsWon() {
         try {
-            const projects = await Proyectos.find()
+            const projects = await Proyectos.find(
+                {'project.0.levelProject' : 'ganado',
+                'project.0.visible' : true,
+                'project.0.statusProject' : true}
+            )
 
             if (projects === undefined || projects === null) {
-                return new Error('No hay proyectos cargados en ningún cliente!')
+                return Error('No hay proyectos cargados en ningún cliente!')
             } else {
                 return projects
             }
@@ -33,20 +37,20 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
     }
 
     // get all Projects form DB ----------------
-    async getAllProjects() {
-        try {
-            const projects = await Proyectos.find()
+    // async getAllProjects() {
+    //     try {
+    //         const projects = await Proyectos.find()
 
-            if (projects === undefined || projects === null) {
-                return new Error('No hay proyectos cargados en ningún cliente!')
-            } else {
-                return projects
-            }
-        } catch (error) {
-            console.error("Error MongoDB getClients: ", error)
-            return new Error('No hay proyectos en la DB!')
-        }
-    }
+    //         if (projects === undefined || projects === null) {
+    //             return new Error('No hay proyectos cargados en ningún cliente!')
+    //         } else {
+    //             return projects
+    //         }
+    //     } catch (error) {
+    //         console.error("Error MongoDB getClients: ", error)
+    //         return new Error('No hay proyectos en la DB!')
+    //     }
+    // }
 
     // Search all Clients by Client Name o Code ----------------
     async searchClientsAll(name) {
@@ -2410,6 +2414,7 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
         }
     }
 
+    // ***************** Add Info Simulacion 5 to Ot's ----------------
 
 
     // Update Status Project by Project Id

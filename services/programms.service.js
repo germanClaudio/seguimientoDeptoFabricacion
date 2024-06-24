@@ -1,5 +1,5 @@
-const ProgramacionDaoFactory = require('../daos/programacion/ProgramacionDaoFactory.js')
-const programasDao = ProgramacionDaoFactory.getDao()
+const ProgramacionDaoFactory = require('../daos/programacion/ProgramasDaoFactory.js')
+const programasDao = ProgramacionDaoFactory.getDaoProgramms()
 
 class ProgramasService {
     constructor() {
@@ -8,8 +8,8 @@ class ProgramasService {
     }
 
     // returns all projects
-    async getAllProgramms() {
-        return this.programas.getAllProgramms()
+    async getAllProjectsWon() {
+        return this.programas.getAllProjectsWon()
     }
 
     // returns all projects from one Client
@@ -19,7 +19,7 @@ class ProgramasService {
 
     // returns one project from a ProjectId
     async selectProjectByProjectId(idProject) {
-        return this.proyectos.selectProjectByProjectId(idProject)
+        return this.programas.selectProjectByProjectId(idProject)
     }
 
     // returns all projects from a Main ProjectId

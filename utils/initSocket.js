@@ -7,6 +7,9 @@ const containerClient = ContainerClients.getDao()
 const ContainerProjects = require("../daos/proyectos/ProyectosDaoFactory.js")
 const containerProject = ContainerProjects.getDao()
 
+const ContainerProgramms = require('../daos/programacion/ProgramasDaoFactory.js')
+const containerProgramm = ContainerProgramms.getDaoProgramms()
+
 const ContainerUsers = require("../daos/usuarios/UsuariosDaoFactory.js")
 const containerUser = ContainerUsers.getDaoUsers()
 
@@ -48,6 +51,11 @@ const initSocket = (io) => {
         // --------------------------  Projects --------------------------------
         socket.emit('projectsAll',
             await containerProject.getAllProjects(),
+            await containerUser.getAllUsers()            
+        )
+
+        socket.emit('projectsAllWon',
+            await containerProgramm.getAllProjectsWon(),
             await containerUser.getAllUsers()            
         )
         

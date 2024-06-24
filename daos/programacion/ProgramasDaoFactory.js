@@ -1,4 +1,4 @@
-const ProgramacionDaoMongoDB = require('./ProgramacionDaoMongoDB.js')
+const ProgramacionDaoMongoDB = require('./ProgramasDaoMongoDB.js')
 
 const { options }= require('../../options/config.js')
 
@@ -25,7 +25,7 @@ switch (option) {
 }
 
 module.exports = class ProgramacionDaoFactory {
-    static getDao() {
+    static getDaoProgramms() {
         return dao
     }
 }

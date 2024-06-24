@@ -1,13 +1,16 @@
 const ProyectosService = require("../services/projects.service.js")
 const ClientesService = require("../services/clients.service.js")
 const UserService = require("../services/users.service.js")
-const ProgramasService = require("../services/programation.service.js")
+const ProgramasService = require("../services/programms.service.js")
 
 const { uploadToGCS, uploadToGCSingleFile } = require("../utils/uploadFilesToGSC.js")
 
 const multer = require('multer')
 
 let now = require('../utils/formatDate.js')
+const csrf = require('csrf');
+const csrfTokens = csrf();
+
 let imageNotFound = "../../../src/images/upload/LogoClientImages/noImageFound.png"
 
 
@@ -19,8 +22,8 @@ class ProgramationController {
         this.programms = new ProgramasService()
     }
 
-    getAllProgramms = async (req, res) => {
-        const programas = await this.programms.getAllProgramms()
+    getAllProjectsWon = async (req, res) => {
+        const proyectosGanados = await this.programms.getAllProjectsWon()
 
         let username = res.locals.username
         let userInfo = res.locals.userInfo
@@ -32,29 +35,22 @@ class ProgramationController {
         let cliente = await this.clients.getClientById()
 
         try {
-            if (programas.error) return res.status(400).json({ msg: 'No hay proyectos cargados' })
-            res.render('projectsList', {
-                programas,
+            if (proyectosGanados.error) {
+                const err = new Error('No existen Proyectos Ganados Cargados')
+                err.dirNumber = 400
+                return next(err)
+            }
+            res.render('projectsWonList', {
+                proyectosGanados,
                 cliente,
                 username,
                 userInfo,
                 expires
             })
 
-        } catch (error) {
-            const flag = {
-                dirNumber: 500
-            }
-            const errorInfo = {
-                errorNumber: 19,
-                status: false,
-                msg: 'controllerError - getAllProgramms'
-            }
-            res.render('errorPages', {
-                error,
-                errorInfo,
-                flag
-            })
+        } catch (err) {
+            err.dirNumber = 400
+            return next(err)
         }
     }
 
@@ -179,7 +175,7 @@ class ProgramationController {
     selectProjectById = async (req, res) => {
         const { id } = req.params
 
-        const proyecto = await this.projects.selectProjectByProjectId(id)
+        const proyecto = await this.programms.selectProjectByProjectId(id)
         const idCliente = proyecto[0].client[0]._id
         const cliente = await this.clients.getClientByProjectId(idCliente)
 
@@ -197,8 +193,12 @@ class ProgramationController {
         }
 
         try {
-            if (!proyecto) return res.status(404).json({ msg: 'Proyecto no encontrado' })
-            res.render('projectSelectedDetail', {
+            if (!proyecto) {
+                const err = new Error('Proyecto no encontrado')
+                err.dirNumber = 400
+                return next(err)
+            }  
+            res.render('projectWonSelectedDetail', {
                 proyecto,
                 username,
                 userInfo,
@@ -207,20 +207,9 @@ class ProgramationController {
                 data
             })
 
-        } catch (error) {
-            const flag = {
-                dirNumber: 500
-            }
-            const errorInfo = {
-                errorNumber: 140,
-                status: false,
-                msg: 'controllerError - selectProjectById'
-            }
-            res.render('errorPages', {
-                error,
-                errorInfo,
-                flag
-            })
+        } catch (err) {
+            err.dirNumber = 400
+            return next(err)
         }
     }
 
@@ -3214,4 +3203,6 @@ class ProgramationController {
     }
 }
 
-module.exports = { ProgramationController }
+module.exports = {
+    ProgramationController
+}

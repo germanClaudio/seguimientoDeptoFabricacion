@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head/head'); %>
+</head>
+
+<body>
+        <%- include('../partials/header/header'); %>
+    <div class="container" style="padding-top: 70px;"></div>
+    <div class="container-fluid m-t-30">
+        <%- include('../partials/btnHeaderTop/btnHeaderTop-proyectos'); %>
+    </div>
+       
+    <!-- ------------ Datos de Proyectos ------------ -->
+    <section class="mx-auto align-items-start" style="width: 94%;">
+        <div class="row">
+            <div class="col-12">
+                <hr>
+                <h4 class="text-uppercase">Datos de Proyectos Ganados</h4>
+                <p>Departamento de IT Prodismo</p>
+                <hr>
+            </div>
+        </div>
+    </section>
+    
+        <br>
+    <div class="d-block mx-auto mb-3 text-center w-100 px-3">
+        <%- include('../partials/data/dataProjectsWonTable'); %>
+    </div>
+    <div class="d-block mx-auto my-4 pb-5 text-center">
+        <a class="btn btn-primary my-1 me-5" href="/api/auth/index">
+            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+             Regresar al Home
+        </a>
+        <a class="btn btn-secondary my-2 ms-5" href="#">
+            <i class="fa-solid fa-arrow-up"></i>
+             Ir arriba
+        </a>
+    </div>
+    <footer>
+        <%- include('../partials/footer/footer'); %>
+    </footer>
+<!--    scripts     -->
+<script type="text/javascript" src="/js/projectsWon.js"></script>
+<script type="text/javascript" src="/js/clock.js"></script>
+<script type="text/javascript" src="/js/expiresSession.js"></script>
+
+</body>
+
+</html>

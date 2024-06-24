@@ -1,6 +1,6 @@
 const { Schema, model, mongoose } = require('mongoose')
 let now = require('../utils/formatDate.js')
-const programacionModels = require('./programacion.models.js')
+const programacionModels = require('./programas.models.js')
 
 // ------- Client Schema -------------
 let ClientSchema = new Schema({
