@@ -13,6 +13,9 @@ const varLimMaxColData = 20
 //variable limite maximo de Revisiones por dato
 const varLimMaxRevData = 99
 
+//variable limite maximo de Detalles por OT
+const varLimMaxDetallesOT = 50
+
 // Manejador de eventos de tablas General y Detalle -------------------
 const arrBtnHidde = []
 for (let i = 0; i<varLimMaxOciProyecto; i++) { //25
@@ -685,8 +688,7 @@ function messageUpdateOt(
     statusOt,
     otDescription,
     otDesign,
-    otSimulation,
-    otSupplier
+    otSimulation
 ) {
     
     let numberKOci = parseInt(ociKNumber)
@@ -746,7 +748,7 @@ function messageUpdateOt(
 
                         <div class="row justify-content-evenly mb-3 mx-1 px-1">
                             <div class="col-4">
-                                <label for="designOt" class="form-label d-flex justify-content-start ms-1">Diseño seguido por
+                                <label for="designOt" class="form-label d-flex justify-content-start align-items-center ms-1 mb-2">Diseño seguido por
                                     <button type="button" id="searchDesignUserModal" class="btn btn-light rounded-circle ms-1">
                                         <i class="fa-solid fa-database"></i>
                                     </button>
@@ -755,19 +757,368 @@ function messageUpdateOt(
                                     placeholder="Diseño seguido por" value="${otDesign}" required>
                             </div>
                             <div class="col-4">
-                                <label for="simulationOt" class="form-label d-flex justify-content-start ms-1">Simulación seguida por
+                                <label for="simulationOt" class="form-label d-flex justify-content-start align-items-center ms-1 mb-2">Simulación seguida por
                                     <button type="button" id="searchSimulationUserModal" class="btn btn-light rounded-circle ms-1">
                                         <i class="fa-solid fa-database"></i>
                                     </button>
                                 </label>
                                 <input type="text" id="simulationOt" name="simulationOt" class="form-control"
                                     placeholder="Simulacion seguida por" value="${otSimulation}" required>
+                            </div>                   
+                        </div> 
+
+                            <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden${numberKOci}" value="${numberKOci}">
+                            <input type="hidden" name="otKNumberHidden" id="otKNumberHidden${numberKOt}" value="${numberKOt}">
+                    </fieldset>
+                </form>`
+
+    if(idProjectSelected && numberOt) {
+        Swal.fire({
+            title: `Actualizar OT# ${numberOt} - ${otDescription}`,
+            position: 'center',
+            html: html,
+            width: 950,
+            icon: 'info',
+            showCancelButton: true,
+            showConfirmButton: true,
+            focusConfirm: false,
+            confirmButtonText: 'Actualizar <i class="fa-regular fa-pen-to-square"></i>',
+            cancelButtonText: 'Cancelar <i class="fa-solid fa-ban"></i>',
+            didOpen: ()=> {
+                let btnAceptar = document.getElementsByClassName('swal2-confirm');
+                btnAceptar[0].setAttribute('id','btnAceptarModal')
+                btnAceptar[0].style = "cursor: not-allowed;"
+                btnAceptar[0].disabled = true
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(`formUpdateOt${idProjectSelected}`).submit()
+                Toast.fire({
+                    icon: 'success',
+                    title: `La OT# <b>${numberOt}</b>, se modificó con éxito!`
+                })
+
+            } else {
+                Swal.fire(
+                    'OT no modificada!',
+                    `La OT# <b>${numberOt}</b>, no se modificó!`,
+                    'warning'
+                )
+                return false
+            }
+        })
+        disabledBtnAceptar()
+    } else {
+        Swal.fire({
+            title: 'Error',
+            position: 'center',
+            timer: 3500,
+            text: `La OT# ${numberOt} no se actualizó correctamente!`,
+            icon: 'error',
+            showCancelButton: false,
+            showConfirmButton: false,
+        })
+    }
+
+    var inputsDeTexto = document.querySelectorAll('input[type="text"]')
+
+    // Agregar un listener de evento a cada input
+    inputsDeTexto.forEach(function(input) {
+        input.addEventListener('keydown', function(event) {
+            // Obtener el código de la tecla presionada
+            let key = event.key;
+
+            // Lista de caracteres especiales prohibidos
+            let forbiddenChars = /[#"$%?¡¿^/()=!'~`\\*{}\[\]<>@]/;
+
+            // Verificar si la tecla presionada es un carácter especial
+            if (forbiddenChars.test(key)) {
+                // Cancelar el evento para evitar que se ingrese el carácter
+                event.preventDefault()
+                input.classList.add("border")
+                input.classList.add("border-danger")
+                input.classList.add("border-2")
+            } else {
+                input.classList.remove("border")
+                input.classList.remove("border-danger")
+                input.classList.remove("border-2")
+            }
+        })
+    })
+
+    // //******************** to be done ********************
+    //-----Btns Buscar en BBDD el Usuario Seguidor de Diseño --------------
+    const searchDesignUserModal = document.getElementById('searchDesignUserModal')
+    searchDesignUserModal.addEventListener('click', (event) => {
+    event.preventDefault()
+
+    function cargarUsuarioDiseno() {
+        fetch('../../../api/usuarios/searchUsers/simulacion')
+            .then(response => response.json())
+            .then(users => {
+            const arrayUsuariosDiseno = []
+            const arrayUsersAll = []
+
+            for(let i=0; i<users.usersAll.length; i++) {
+
+                if(users.usersAll[i].status && users.usersAll[i].permiso ==='diseno') {
+                    arrayUsuariosDiseno.push(`
+                                    <label>
+                                        <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-info text-dark my-2">
+                                            <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
+                                            ${users.usersAll[i].name} ${users.usersAll[i].lastName}
+                                        </span>
+                                    </label>`)
+
+                } else if (users.usersAll[i].status && users.usersAll[i].permiso !=='diseno') {
+                    arrayUsersAll.push(`
+                                <label>
+                                    <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-light text-dark my-2">
+                                        <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
+                                        ${users.usersAll[i].name} ${users.usersAll[i].lastName}
+                                    </span>
+                                </label>`)
+                }
+            }
+            
+            const html = `
+                    <hr>
+                        <label>Usuarios Diseño</label>
+                        <div name='container' class="container">
+                            ${arrayUsuariosDiseno.join(' ')}
+                        </div>
+                    <hr>
+                        <label>Usuarios</label>
+                        <div name='container' class="container">
+                            ${arrayUsersAll.join(' ')}
+                        </div>
+                    <hr>`
+
+                    Swal.fire({
+                        title: 'Usuarios',
+                        html: html,
+                        width: 450,
+                        background: "#eee",
+                        allowOutsideClick: false,
+                        showCloseButton: true,
+                        showCancelButton: true,
+                        focusConfirm:false,
+                        cancelButtonText: 'Volver <i class="fa-solid fa-back"></i>',
+                        confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>'    
+                    
+                    }).then((secondResult) => {
+                        const radiosToSelect = document.getElementsByName('radioUsuarios')
+
+                        for(let i=0; i<radiosToSelect.length; i++) {
+                            const radioSelected = document.getElementById(i)
+                            
+                            if (radioSelected.checked) {
+                                var usuariosSeleccionado = radioSelected.value
+                            }
+                        }
+                        
+                        if (secondResult.isConfirmed) {
+                            //const inputUserSelected = document.getElementById('designOt')
+                            //inputUserSelected.value = usuariosSeleccionado
+                            
+                        } else if (secondResult.dismiss === Swal.DismissReason.cancel) {
+                            event.preventDefault()
+                            return messageUpdateOt()
+                        }
+
+                        else {
+                            Swal.fire(
+                                'Usuario no seleccionado!',
+                                `No ha seleccionado ningún usuario!`,
+                                'warning'
+                            )
+                            return false
+                        }
+                    })
+        })
+        .catch(error => {
+        console.error('Error:', error)
+        })
+        }
+        cargarUsuarioDiseno()
+    })
+
+    //-----Btns Buscar en BBDD el Usuario Seguidor de Simulacion --------------
+    const searchSimulationUserModal = document.getElementById('searchSimulationUserModal')
+    searchSimulationUserModal.addEventListener('click', (event) => {
+    event.preventDefault()
+
+    function cargarUsuarioSimulacion() {
+        fetch('../../../api/usuarios/searchUsers/all')
+            .then(response => response.json())
+            .then(users => {
+            const arrayUsuariosSimulacion = []
+            const arrayUsersAll = []
+
+            for(let i=0; i<users.usersAll.length; i++) {
+
+                if(users.usersAll[i].status && users.usersAll[i].permiso ==='simulacion') {
+                    arrayUsuariosSimulacion.push(`
+                                    <label>
+                                        <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-warning text-dark my-2">
+                                            <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
+                                            ${users.usersAll[i].name} ${users.usersAll[i].lastName}
+                                        </span>
+                                    </label>`)
+
+                } else if (users.usersAll[i].status && users.usersAll[i].permiso !=='simulacion') {
+                    arrayUsersAll.push(`
+                                <label>
+                                    <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-light text-dark my-2">
+                                        <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
+                                        ${users.usersAll[i].name} ${users.usersAll[i].lastName}
+                                    </span>
+                                </label>`)
+                }
+            }
+            
+            const html = `
+                    <hr>
+                        <label>Usuarios Simulación</label>
+                        <div name='container' class="container">
+                            ${arrayUsuariosSimulacion.join(' ')}
+                        </div>
+                    <hr>
+                        <label>Usuarios</label>
+                        <div name='container' class="container">
+                            ${arrayUsersAll.join(' ')}
+                        </div>
+                    <hr>`
+
+                    Swal.fire({
+                        title: 'Usuarios',
+                        html: html,
+                        width: 450,
+                        background: "#eee",
+                        allowOutsideClick: false,
+                        showCloseButton: true,
+                        confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>'    
+                    }).then((result) => {
+                        const radiosToSelect = document.getElementsByName('radioUsuarios')
+
+                        for(let i=0; i<radiosToSelect.length; i++) {
+                            const radioSelected = document.getElementById(i)
+                            
+                            if (radioSelected.checked) {
+                                var usuariosSeleccionado = radioSelected.value
+                            }
+                        }
+                        
+                        if (result.isConfirmed) {
+                            const inputUserSelected = document.getElementById('internoSimulacion')
+                            inputUserSelected.value = usuariosSeleccionado
+                        
+                        } else {
+                            Swal.fire(
+                                'Usuario no seleccionado!',
+                                `No ha seleccionado ningún usuario!`,
+                                'warning'
+                            )
+                            return false
+                        }
+                    })
+        })
+        .catch(error => {
+        console.error('Error:', error)
+        })
+        }
+        cargarUsuarioSimulacion()
+    })
+    // ****************** End To be done *******************************
+}
+
+//---- Add Details to OT ----------------
+function messageAddDetalleOt(
+    idProjectSelected,
+    ociKNumber,
+    otNumber,
+    otKNumber,
+    opNumber,
+    statusOt,
+    otDescription,
+    otDesign,
+    otSimulation
+) {
+    
+    let numberKOci = parseInt(ociKNumber)
+    let numberKOt = parseInt(otKNumber)
+    let numberOt = parseInt(otNumber)
+    let numberOp = parseInt(opNumber)
+    let checked = 'checked'
+    statusOt=='Activo' ? checked : checked = ''
+
+    let bgColorStatus
+    statusOt=='Activo' ? bgColorStatus='background-color: #55dd5560;'
+                        : 
+                        bgColorStatus='background-color: #dd555560;'
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'bottom',
+        showConfirmButton: false,
+        timer: 4000,
+        timerProgressBar: false,
+    })
+
+    var html = `<form id="formUpdateOt${idProjectSelected}" action="/api/proyectos/updateOt/${idProjectSelected}" method="post">
+                    <fieldset>
+                        <div class="row justify-content-between mb-3 mx-1 px-1">
+                            <div class="col-4">
+                                <label for="numberOt" class="form-label d-flex justify-content-start ms-1">Número OT</label>
+                                <input type="number" name="numberOt" class="form-control"
+                                    placeholder="Número OT" value="${numberOt}" required>
+                            </div>
+                            
+                            <div class="col-5" style="${bgColorStatus}">
+                                <label for="statusOt" class="form-label d-flex justify-content-start ms-1">Status OT</label>
+                                <div>
+                                    <p class="d-inline-block me-1">Inactiva</p>
+                                    <div class="form-check form-switch d-inline-block mt-2">
+                                        <input id="statusOtForm" class="form-check-input" type="checkbox" role="switch"
+                                            name="statusOtForm" style="cursor: pointer;" ${checked}>
+                                        <label class="form-check-label" for="statusOt">Activa</label>
+                                    </div>    
+                                </div>
+                            </div>
+                        </div>    
+                        
+                        <div class="row mb-3 mx-1 px-1">
+                            <div class="col-8">
+                                <label for="descriptionOt" class="form-label d-flex justify-content-start ms-1">Descripción OT</label>
+                                <input type="text" name="descriptionOt" class="form-control"
+                                    placeholder="Descripción OT" value="${otDescription}" required>
                             </div>
                             <div class="col-4">
-                                <label for="supplierOt" class="form-label d-flex justify-content-start ms-1">Proveedor externo</label>
-                                <input type="text" id="supplierOt" name="supplierOt" class="form-control"
-                                    placeholder="Porveedor" value="${otSupplier}" required>
-                            </div>                      
+                                <label for="numeroOp" class="form-label d-flex justify-content-start ms-1">Número OP</label>
+                                <input type="number" name="numeroOp" class="form-control"
+                                    placeholder="Numero Op" value="${numberOp}" required>
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-evenly mb-3 mx-1 px-1">
+                            <div class="col-4">
+                                <label for="designOt" class="form-label d-flex justify-content-start align-items-center ms-1 mb-2">Diseño seguido por
+                                    <button type="button" id="searchDesignUserModal" class="btn btn-light rounded-circle ms-1">
+                                        <i class="fa-solid fa-database"></i>
+                                    </button>
+                                </label>
+                                <input type="text" id="designOt" name="designOt" class="form-control"
+                                    placeholder="Diseño seguido por" value="${otDesign}" required>
+                            </div>
+                            <div class="col-4">
+                                <label for="simulationOt" class="form-label d-flex justify-content-start align-items-center ms-1 mb-2">Simulación seguida por
+                                    <button type="button" id="searchSimulationUserModal" class="btn btn-light rounded-circle ms-1">
+                                        <i class="fa-solid fa-database"></i>
+                                    </button>
+                                </label>
+                                <input type="text" id="simulationOt" name="simulationOt" class="form-control"
+                                    placeholder="Simulacion seguida por" value="${otSimulation}" required>
+                            </div>                   
                         </div> 
 
                             <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden${numberKOci}" value="${numberKOci}">
@@ -1253,12 +1604,12 @@ var arrayBtnChangeStatusOt = [],
     arrayBtnDeleteOt = [],
     arrayCheckBoxSelect = [],
     arrayBtnCheckSelectionAll = [],
-    arrayBtnCheckSelecMasive = []
+    arrayBtnCheckSelecMasive = [],
+    arrayBtnAddDetallesOt = []
 
     for (let m=0; m<ociTotalQty; m++) {
         let btnCheckSelectionAll = document.getElementById(`btnCheckSelectionAll${m}`)
         if (btnCheckSelectionAll) {
-
             arrayBtnCheckSelectionAll.push(btnCheckSelectionAll)
         }
 
@@ -1288,6 +1639,15 @@ var arrayBtnChangeStatusOt = [],
             if (checkBoxSelect) {
                 arrayCheckBoxSelect.push(checkBoxSelect)
             }
+
+            for (let o=0; o<varLimMaxDetallesOT; o++) {
+                let btnAddDetallesOt = document.getElementById(`btnAddDetallesFormSelected${m}_${n}_${o}`)
+                if (btnAddDetallesOt) {
+                    arrayBtnAddDetallesOt.push(btnAddDetallesOt)
+            }
+
+            }
+
         }
         
     }
@@ -1300,7 +1660,7 @@ function cleanString(cadena) {
     // Eliminar espacios en blanco al principio y al final
     let cadenaSinEspaciosEnd = cadenaSinEtiquetas.trim()
     return cadenaSinEspaciosEnd
-  }
+}
 
 function updateBtnCheckSelecMasive(idOci) {     
     let btnMasive = document.getElementById(`btnCheckSelecMasive${idOci}`)
@@ -1366,6 +1726,42 @@ arrayBtnCheckSelecMasive.forEach(function(elemento) {
                     
             messageUpdateMasiveOt(arrayRowsSelected)
             
+        })
+    }
+})
+
+arrayBtnAddDetallesOt.forEach(function(elemento) {
+    if (elemento.id) {
+        elemento.addEventListener('click', (event) => {
+            event.preventDefault()
+            const elementoId = elemento.id
+            let regex = /^btnAddDetallesFormSelected/;
+
+            // Eliminar el texto inicial de la cadena
+            var idOtOci = elementoId.replace(regex, '')
+            const arrayOciOtSelected = idOtOci.split('_')
+
+            const idProjectSelected = document.getElementById('projectIdHidden').value
+            const ociKNumber = parseInt(arrayOciOtSelected[0])
+            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent)
+            const otKNumber = parseInt(arrayOciOtSelected[1])       
+            const opNumber = parseInt(document.getElementById(`lastOpNumber${idOtOci}`).textContent)
+            const statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent
+            const otDescription = document.getElementById(`lastOpDescription${idOtOci}`).textContent
+            const otDetail =  document.getElementById(`otDesign${idOtOci}`).textContent
+            const detailDescription =  document.getElementById(`otSimulation${idOtOci}`).textContent
+            
+            messageAddDetalleOt(
+                idProjectSelected,
+                ociKNumber,
+                otNumber,
+                otKNumber,
+                opNumber,
+                cleanString(statusOt),
+                cleanString(otDescription),
+                cleanString(otDetail),
+                cleanString(detailDescription)
+            )
         })
     }
 })
@@ -1555,7 +1951,6 @@ arrayBtnCheckSelectionAll.forEach(function(element) {
 
 //-----Btns Buscar en BBDD el Usuario Seguidor de Diseño --------------
 const searchDesignUser = document.getElementById('searchDesignUser')
-
 searchDesignUser.addEventListener('click', (event) => {
     event.preventDefault()
     function cargarUsuarioDiseno() {
@@ -2295,7 +2690,6 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
 }
 
 function changeValueFromArray(arrayFromValues) {
-    
     for (let i = 0; i < arrayFromValues.length; i++) {
         // Modificar valores
         if (arrayFromValues[i] == 'sinDato') {
@@ -2511,7 +2905,6 @@ function swalFireAlert (titulo,
         showCloseButton: true,
         showCancelButton: true,
         showConfirmButton: true,
-        // showLoaderOnConfirm: true,
         focusConfirm: false,
         confirmButtonText: 'Guardar <i class="fa-solid fa-save"></i>',
         cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>',
@@ -2538,7 +2931,116 @@ function swalFireAlert (titulo,
             return false
         }
     })
-}    
+}
+
+//********* Agregar detalles a OT seleccionada *********** */
+var arrayBtnAddDetallesOtFormSelected = []
+for (let i=0; i<radios.length; i++) {
+    var btnAddDetallesOtFormSelected = document.getElementById(`btnAddDetallesFormSelected${i}`)
+    console.log('btnAddDetallesOtFormSelected', btnAddDetallesOtFormSelected)
+    if(btnAddDetallesOtFormSelected) {
+        arrayBtnAddDetallesOtFormSelected.push(btnAddDetallesOtFormSelected)
+    }
+}
+
+arrayBtnAddDetallesOtFormSelected.forEach(function(elemento) {
+    if (elemento) {
+        elemento.addEventListener('click', (event) => {
+            event.preventDefault()
+            const radioSelectedValue = elemento.id
+            //radioSelected(radioSelectedValue, elemento.value)
+            ociNumberHidden.value = radioSelected(radioSelectedValue, elemento.value)
+            lastOtNumberFn(elemento.id)
+            formulario.scrollIntoView({ behavior: 'smooth', top:0 }) //scrollTo({ behavior: 'smooth', block: 'start' })
+        })
+    }
+})
+
+function messageAddDetallesToOt(ociNumber, otArray, ociAlias) {
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'bottom',
+        showConfirmButton: false,
+        timer: 4000,
+        timerProgressBar: false,
+    })
+
+    if (otArray.length > 1) {
+        Swal.fire({
+            title: 'Ingreso de datos!',
+            position: 'center',
+            text: `Se agregarán las OT's ${otArray.join(" - ")}, a la OCI# ${ociNumber} - Alias: ${ociAlias}` ,
+            icon: 'info',
+            showCancelButton: true,
+            showConfirmButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('formNewOt').submit()
+                Toast.fire({
+                    icon: 'success',
+                    title: `OT's ${otArray.join(" - ")}, agregadas con éxito!`
+                })
+            } else {
+                Swal.fire(
+                    'OTs no agregadas!',
+                    `Las OT's ${otArray.join(" - ")}, no fueron agregadas a la OCI# ${ociNumber}`,
+                    'warning'
+                )
+                return false
+            }
+        })
+
+    } else {
+        Swal.fire({
+            title: 'Ingreso de datos!',
+            position: 'center',
+            text: `Se agregará la OT ${otArray}, a la OCI# ${ociNumber} - Alias: ${ociAlias}`,
+            icon: 'info',
+            showCancelButton: true,
+            showConfirmButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('formNewOt').submit()
+                Toast.fire({
+                    icon: 'success',
+                    title: `OT ${otArray.join(" - ")}, agregada con éxito!`
+                })
+            } else {
+                Swal.fire(
+                    'OT no agregada!',
+                    `La OT ${otArray}, no fue agregada a la OCI# ${ociNumber} - Alias: ${ociAlias}`,
+                    'warning'
+                )
+                return false
+            }
+        })
+    }
+}
+
+//******Agregar detalles a OT *********/
+const btnCreateAddDetallesToOt = document.getElementById('idAddDetalles')
+btnCreateAddDetallesToOt.addEventListener('click', (event) => {
+    event.preventDefault()
+    let ociNumberHiddenValue = parseInt(document.getElementById('ociNumberHidden').value)
+    //let otNumberHiddenValue = parseInt(document.getElementById('otNumberHidden').value)
+    //console.log('ociNumberHiddenValue:', ociNumberHiddenValue)
+    if (ociNumberHiddenValue) {
+        const otQuantity = parseInt(document.getElementById('otQuantity').value)
+        let otArray = [document.getElementById(`otNumber`).value]
+        let ociAlias = document.getElementById('ociAliasHidden').value
+        if (otQuantity > 1) {
+            for (let j = 1; j < otQuantity; j++) {
+                let otNumberSelected = document.getElementById(`otNumber${j}`).value
+                otArray.push(otNumberSelected)
+            }
+        }
+        messageAddDetallesToOt(ociNumberHiddenValue, otArray, ociAlias)
+
+    } else {
+        console.log('Hubo un error al seleccionar la OCI!!') //Hacer sweetAlert2
+    }
+})
 
 //***** addDatoToR14 ******
 function addDatoToR14(i, idTabla, qInicial, qFinal) {

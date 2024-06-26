@@ -1,7 +1,7 @@
 <!-- cabecera botonera principal de OCI -->
 <div class="container my-2 mw-100">
     Puedes agregar mas datos de OT en esta OCI# <strong><%= arrayVisibleOci[k].ociNumber %></strong>, haciendo click en el siguiente botón
-    <button class="btn btn-success m-1 rounded-circle shadow-lg"
+    <button class="btn btn-success m-1 rounded-circle shadow"
         id="btnAddOtFormSelected<%=k%>"
         aria-controls="collapseExample"
         data-bs-toggle="collapse"
@@ -19,7 +19,7 @@
 
             <button id="btnHiddeTableGeneral<%=k%>"
                 name="btnHiddeTableGeneral"
-                type="button" class="btn btn-primary"
+                type="button" class="btn btn-primary shadow"
                 title="Ocultar General"
                 style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; background-color: #115; border: none">
                 <i class="fa-solid fa-eye-slash"></i>
@@ -30,7 +30,7 @@
 
             <button id="btnHiddeTableSeguimiento<%=k%>"
                 name="btnHiddeTableSeguimiento"
-                type="button" class="btn btn-secondary"
+                type="button" class="btn btn-secondary shadow"
                 title="Ocultar Int/Ext"
                 style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; background-color: #115; border: none">
                 <i class="fa-solid fa-eye-slash"></i>
@@ -41,7 +41,7 @@
 
             <button id="btnCheckSelectionAll<%=k%>"
                 name="btnCheckSelectionAll"
-                type="button" class="btn btn-primary"
+                type="button" class="btn btn-primary shadow"
                 title="Seleccionar todas las OT"
                 style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; border: none">
                 Seleccionar todos <i class="fa-solid fa-check-double"></i>
@@ -52,7 +52,7 @@
 
             <button id="btnCheckSelecMasive<%=k%>"
                 name="btnCheckSelecMasive"
-                type="button" class="btn btn-secondary"
+                type="button" class="btn btn-secondary shadow"
                 title="Modificacion multiple de OT's"
                 style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; border: none"
                 disabled>

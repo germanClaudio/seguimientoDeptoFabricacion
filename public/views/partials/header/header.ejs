@@ -4,9 +4,9 @@
             <a class="navbar-brand mx-2" role="button" href="#offcanvasExample" data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasWithBothOptions"
                 aria-controls="offcanvasWithBothOptions">
-                <img src='/src/images/logo01-bco.png' title="Logo Prodismo" width="166" height="30"
+                <img src='/src/images/logo01-bco.png' title="Logo Prodismo" width="165px" height="30px"
                     class="d-none d-xl-inline-block align-text-top">
-                <img src='/src/images/soloLogo01-bco.png' title="Logo Prodismo" width="40" height="30"
+                <img src='/src/images/soloLogo01-bco.png' title="Logo Prodismo" width="40px" height="30px"
                     class="d-xl-none d-inline-block align-text-top">
             </a>
             <div class="me-auto d-block" id="navbarTogglerDemo02">
@@ -30,7 +30,7 @@
                         </a>
                     </li>
                     <li class="nav-item mx-4 d-none d-lg-inline">
-                        <a class="nav-link" title="Programación" href="/api/programacion">
+                        <a class="nav-link" title="Programación" href="/api/programas">
                             <i class="icon-calendar" aria-hidden="true"></i>
                             <span class="d-none d-xxl-inline">Programación</span>
                         </a>
@@ -90,17 +90,17 @@
                         <div class="d-none" id="<%= userInfo._id %>"></div>
                     <% } %>
                 </div>
-                <button type="button" title="Preferencias Usuario" class="btn btn-link rounded-circle my-auto mx-2" name="btnPreferences" id="btnPreferences">
+                <button type="button" title="Preferencias Usuario" class="btn btn-link rounded-circle my-auto mx-2 shadow" name="btnPreferences" id="btnPreferences">
                     <i class="fa-regular fa-star"></i>
                 </button>
                 <a title="Settings <%= userInfo.name %> <%= userInfo.lastName %>" href="/api/usuarios/getUserSettings/<%= userInfo._id %>" name="btnSetting" id="btnSetting">
-                    <img id="avatarUser" class="img rounded-circle me-3 d-none d-lg-inline" alt="Avatar <%= userInfo.name %> <%= userInfo.lastName %>"
+                    <img id="avatarUser" class="img rounded-circle me-3 d-none d-lg-inline shadow" alt="Avatar <%= userInfo.name %> <%= userInfo.lastName %>"
                         src="<%= userInfo.avatar %>" width="55px" height="55px">
                 </a>
 
                 <div class="vr mx-2 d-none d-xl-inline" style="color: white;"></div>
 
-                <button id="logoutBanner" class="btn btn-light me-2 my-auto" title="LogOut" style="width: auto;" type="button">
+                <button id="logoutBanner" class="btn btn-light me-2 my-auto shadow" title="LogOut" style="width: auto;" type="button">
                     <i class="fa-solid fa-sign-out"></i>
                     <span class="d-none d-xxl-inline">LogOut</span>
                 </button>

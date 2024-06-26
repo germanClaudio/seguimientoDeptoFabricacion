@@ -1,9 +1,9 @@
 <div class="offcanvas offcanvas-start" style="width: auto;" data-bs-scroll="true" tabindex="-1"
     id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
     <div class="offcanvas-header mx-auto">
-        <img src='/src/images/logo01-negro.png' width="165" height="30"
+        <img src='/src/images/logo01-negro.png' width="165px" height="30px"
             class="d-none d-xl-inline-block align-text-top">
-        <img src='/src/images/soloLogo01-negro.png' title="Logo Prodismo" width="40" height="30"
+        <img src='/src/images/soloLogo01-negro.png' title="Logo Prodismo" width="40px" height="30px"
             class="d-xl-none d-inline-block align-text-top">
         <button type="button" class="btn-close d-none d-xl-inline-block" data-bs-dismiss="offcanvas"
             aria-label="Close">
@@ -25,7 +25,7 @@
                 </a>
             </li>
             <li class="nav-item my-1">
-                <a class="nav-link" title="Programación" href="/api/programacion">
+                <a class="nav-link" title="Programación" href="/api/programas">
                     <i class="icon-calendar" aria-hidden="true"></i>
                     <span class="d-none d-lg-inline">Programación</span>
                 </a>
@@ -48,8 +48,8 @@
             <div class="row align-items-center">
                 <div class="col">
                     <a class="align-items-lg-start align-items-sm-center" title="Settings <%= userInfo.name %> <%= userInfo.lastName %>" href="/api/usuarios/getUserSettings/<%= userInfo._id %>" name="btnSetting" id="btnSetting">
-                        <img id="avatarUser" class="img rounded-circle mx-auto d-none d-sm-inline" alt="Avatar <%= userInfo.name %> <%= userInfo.lastName %>"
-                            src="<%= userInfo.avatar %>" width="45px" height="45px">
+                        <img id="avatarUser" class="img rounded-circle mx-auto d-none d-sm-inline shadow" alt="Avatar <%= userInfo.name %> <%= userInfo.lastName %>"
+                            src="<%= userInfo.avatar %>" width="48px" height="48px">
                     </a>
                 </div>
                 <div class="col">

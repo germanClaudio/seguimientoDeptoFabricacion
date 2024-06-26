@@ -29,10 +29,10 @@
                 if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
                     <tr id="rowSelected<%=k%>_<%=n%>" name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
                         <td class="text-center align-middle">
-                            <% if ( userInfo.admin ) { %>
+                            <% if ( userInfo.admin && userInfo.superAdmin ) { %>
                                 <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
                                     <input id="checkSelect<%=k%>_<%=n%>"
-                                        title="Cehckbox  OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
+                                        title="Checkbox  OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
                                         class="form-check-input my-auto me-2"
                                         type="checkbox"
                                         value=""

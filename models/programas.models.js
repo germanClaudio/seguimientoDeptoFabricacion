@@ -47,7 +47,7 @@ let otDetallesSchema = new Schema({
         type: String,
         default: '',
     },
-    descriptcionDetalle: {
+    descripcionDetalle: {
         type: String,
         default: "",
     },

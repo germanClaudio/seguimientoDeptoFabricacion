@@ -68,7 +68,7 @@ const renderClient = (arrClient) => {
         if(element.visible) {
             return (`<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
                         <div class="card shadow-lg rounded-3 mx-auto my-4" style="width: 15rem; height: 25rem;">
-                            <img src="${element.logo}" class="card-img-top mx-auto px-5 pt-2" alt="Logo Cliente" style="max-height: 10rem">
+                            <img src="${element.logo}" class="card-img-top mx-auto px-5 pt-2" alt="Logo Cliente" style="min-height: 10rem; object-fit: contain;">
                             <div class="card-body">
                                 <h6 class="card-title"><strong>${element.name}</strong></h6>
                                 <p class="card-text">Codigo: ${element.code}<br>

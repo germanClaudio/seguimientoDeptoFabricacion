@@ -298,7 +298,7 @@ class ClientsController {
         })
     }
 
-    updateClient = async (req, res) => {
+    updateClient = async (req, res, next) => {
          //------ Storage Client Logo Image in Google Store --------
          const storage = multer.memoryStorage({
             storage: multer.memoryStorage(),
@@ -309,7 +309,7 @@ class ClientsController {
                     cb(new Error('Solo se permiten imágenes'));
                 }
             },
-        }); // Almacenamiento en memoria para cargar archivos temporalmente
+        });
              
         const uploadMulter = multer({
             storage: storage
@@ -317,44 +317,49 @@ class ClientsController {
 
         
         uploadMulter(req, res, async (err) => {
-            if (req.file) {
-                await uploadToGCS(req, res, next)
-            }
-
-            const id = req.params.id
-        
-            let username = res.locals.username
-            const userInfo = res.locals.userInfo
-            const userId = userInfo.id
-            const userCreator = await this.users.getUserById(userId)
-            
-            const userModificator = [{
-                name: userCreator.name,
-                lastName: userCreator.lastName,
-                username: userCreator.username,
-                email: userCreator.email
-            }]
-
-            const cookie = req.session.cookie
-            const time = cookie.expires
-            const expires = new Date(time)
-                        
-            const updatedCliente = {
-                name: req.body.name,
-                status: req.body.statusClient === 'on' ? true : false,
-                code: req.body.code,
-                logo: req.body.imageTextLogoUpdate,
-                modificator: userModificator,
-                modifiedOn: now
-            }
-            
             if (err) {
-                const error = new Error('No se agregó ningún archivo')
-                error.httpStatusCode = 400
-                return error
+                err.dirNumber = 400;
+                return next(err);
             }
 
             try {
+                if (req.file) {
+                    await uploadToGCS(req, res, next)
+                }
+
+                const id = req.params.id
+            
+                let username = res.locals.username
+                const userInfo = res.locals.userInfo
+                const userId = userInfo.id
+                const userCreator = await this.users.getUserById(userId)
+                
+                const userModificator = [{
+                    name: userCreator.name,
+                    lastName: userCreator.lastName,
+                    username: userCreator.username,
+                    email: userCreator.email
+                }]
+
+                const cookie = req.session.cookie
+                const time = cookie.expires
+                const expires = new Date(time)
+                            
+                const updatedCliente = {
+                    name: req.body.name,
+                    status: req.body.statusClient === 'on' ? true : false,
+                    code: req.body.code,
+                    logo: req.body.imageTextLogoUpdate,
+                    modificator: userModificator,
+                    modifiedOn: now
+                }
+                
+                if (err) {
+                    const error = new Error('No se agregó ningún archivo')
+                    error.httpStatusCode = 400
+                    return error
+                }
+            
                 const cliente = await this.clients.getClientById(id)
                 
                 if (cliente) {
@@ -377,20 +382,9 @@ class ClientsController {
                     return res.render('errorPages', {username, userInfo, expires, flag})
                 }  
     
-            } catch (error) {
-                const flag = {
-                    dirNumber: 500
-                }
-                const errorInfo = {
-                    errorNumber: 271,
-                    status: false,
-                    msg: 'controllerError - updateClient'
-                }
-                res.render('errorPages', {
-                    error,
-                    errorInfo,
-                    flag
-                })
+            } catch (err) {
+                err.dirNumber = 400
+                next(err);
             }
         })       
     }

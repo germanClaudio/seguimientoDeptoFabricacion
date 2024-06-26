@@ -1,16 +1,39 @@
-const { Schema, model } = require('mongoose')
+const { Schema, model, mongoose } = require('mongoose')
+let now = require('../utils/formatDate.js')
 
+// ------- Creator Schema -------------
+let creatorSchema = new Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Usuarios",
+    },
+    name: { 
+        type: String,
+    },
+    lastName: {
+        type: String,
+    },
+    username:{
+        type: String,
+    },
+    email: {
+        type: String,
+    }
+})
+
+// ------- Session Schema -------------
 const sessionSchema = new Schema({
-    // _id: {
-    //     type: String,
-    //     maxlength: 100
-    // },
     expires: {
         type: Date
     },
     session: {
         type: String,
-        maxlength: 500
+        maxlength: 600
+    },
+    creator: [creatorSchema],
+    timestamp: {
+        type: String,
+        default: now,
     }
 })
 

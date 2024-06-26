@@ -124,7 +124,6 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
     }
 
     async getUsersBySearching(query) {
-
         let number = parseFloat(query.queryUser);
         if (!isNaN(number)) {
             var nameAndOthersQueries = [{
