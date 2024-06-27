@@ -24,10 +24,13 @@
     </thead>
     <tbody class="table-group-divider">
         
-        <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length > n; n++) {
+        <% let arrayOtDetalles = [] 
+        for ( let n=0; proyecto[m].project[j].oci[k].otProject.length > n; n++) {
+            for ( let o=0; proyecto[m].project[j].oci[k].otProject[n].otDetalles.length> o; o++) {
+                arrayOtDetalles.push(proyecto[m].project[j].oci[k].otProject[n].otDetalles[o].numeroDetalle)
                 if (proyecto[m].project[j].oci[k].otProject[n].visible) {
                     if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
-                        <tr id="rowSelected<%=k%>_<%=n%>" name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
+                        <tr id="rowSelected<%=k%>_<%=n%>_<%=o%>" name="rowSelected<%=k%>_<%=n%>_<%=o%>" style="height: 7vh;">
                             <td class="text-center align-middle">
                                 <% if ( userInfo.admin && userInfo.superAdmin ) { %>
                                     <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
@@ -257,6 +260,7 @@
                         </tr>
                     <% }
                 }
+            }    
         } %>    
     </tbody>
 </table>

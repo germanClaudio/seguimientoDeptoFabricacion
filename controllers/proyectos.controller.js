@@ -472,7 +472,9 @@ class ProjectsController {
             otInfoSim2_3: [],
             otInfoSim4: [],
             otInfoSim5: []
-          }]
+        }]
+
+        const otDetallesEmpty = []
 
         var arrayOtAddedToOci = []
         for(let i=0; i<otQuantity; i++) {
@@ -488,7 +490,8 @@ class ProjectsController {
                 timestamp: now,
                 modificator: modificator,
                 modifiedOn: "",
-                otInformation: otInformationEmpty
+                otInformation: otInformationEmpty,
+                otDetalle: otDetallesEmpty
             }
             arrayOtAddedToOci.push(otAddedToOci)
         }

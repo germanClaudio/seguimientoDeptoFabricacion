@@ -100,9 +100,18 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                 }
                 // console.log('legajoIdNumber:', legajoIdNumber)
 
+                // Función para verificar si una cadena tiene formato de correo electrónico
+                function esCorreoElectronico(cadena) {
+                    // Expresión regular para validar correos electrónicos
+                    var patronCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    return patronCorreo.test(cadena);
+                }
+
                 let query = {};
                 if (legajoIdNumber !== null) {
                     query = { legajoId: legajoIdNumber };
+                } else if (esCorreoElectronico(userInput)) {
+                    query = { email: { $regex: userInput, $options: 'i' } };
                 } else {
                     query = { username: { $regex: userInput, $options: 'i' } };
                 }

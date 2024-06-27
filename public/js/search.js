@@ -31,11 +31,12 @@ const renderSearchedClients = (arrClientSearch) => {
 
         const htmlSearchClientNull = 
         (`<div class="col mx-auto">
-            <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+            <div class="card rounded-2 mx-auto shadow-lg" style="max-width: 540px;">
                 <div class="row g-0">
                     <div class="col-md-4 my-auto px-1">
                         <img src="${clientNotFound}"
-                            max-width="170vw" class="img-fluid rounded p-1"
+                            style="max-width=170vw; object-fit: contain;"
+                            class="img-fluid rounded p-1"
                             alt="Cliente no encontrado">
                     </div>
                     <div class="col-md-8">
@@ -64,7 +65,8 @@ const renderSearchedClients = (arrClientSearch) => {
                 <div class="row g-0">
                     <div class="col-md-4 my-auto px-1">
                         <img src="${allClientsFound}"
-                            max-width="170vw" class="img-fluid rounded p-1"
+                            style="max-width=170vw; object-fit: contain;"
+                            class="img-fluid rounded p-1"
                             alt="Todos los Clientes">
                     </div>
                     <div class="col-md-8">
@@ -116,46 +118,91 @@ const renderSearchedClients = (arrClientSearch) => {
             text = "Inactivo"
         }
 
-        return (`
-            <div class="col mx-auto">
-                <div class="card mx-auto rounded-2 shadow-lg" style="max-width: 540px;">
-                    <div class="row align-items-center">
-                        <div class="col-md-4 text-center">
-                            <img src="${element.logo}"
-                                max-width="160vw" class="img-fluid rounded p-3 mx-auto"
-                                alt="Logo Cliente">
-                        </div>
-                        <div class="col-md-8 border-start">
-                            <div class="card-body">
-                                <h5 class="card-title"><strong>${element.name}</strong></h5>
-                                <p class="card-text">Codigo: ${element.code}<br></p>
-                                <span class="badge rounded-pill bg-${colorStatus}">${text}</span><br>
-                                    Proyectos: <span class="badge rounded-pill bg-${colorResult}">${result}
-                                </span>
+        if(element.visible) {
+            return (`
+                <div class="col mx-auto">
+                    <div class="card mx-auto rounded-2 shadow-lg" style="max-width: 540px;">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 text-center">
+                                <img src="${element.logo}"
+                                    style="max-width=160vw; object-fit: contain;"
+                                    class="img-fluid rounded p-3 mx-auto"
+                                    alt="Logo Cliente">
                             </div>
-                            <div class="card-footer px-2">
-                                <div class="row">
-                                    <div class="col m-auto">
-                                        <a class="btn text-light small ${disabled}" type="submit" href="/api/clientes/projects/${element._id}"
-                                            style="background-color: #1d1d1d; font-size: .85rem; width: 8em;">
-                                                <i class="icon-rocket"></i>
-                                                    Proyectos
-                                        </a>        
-                                    </div>
-                                    <div class="col m-auto">
-                                        <a class="btn text-light small" type="submit" href="/api/clientes/select/${element._id}"
-                                            style="background-color: #272787; font-size: .85rem; width: 8em;">
-                                                <i class="fa-solid fa-info-circle"></i>
-                                                    Cliente
-                                        </a>
+                            <div class="col-md-8 border-start">
+                                <div class="card-body">
+                                    <h5 class="card-title"><strong>${element.name}</strong></h5>
+                                    <p class="card-text">Codigo: ${element.code}<br></p>
+                                    <span class="badge rounded-pill bg-${colorStatus}">${text}</span><br>
+                                        Proyectos: <span class="badge rounded-pill bg-${colorResult}">${result}
+                                    </span>
+                                </div>
+                                <div class="card-footer px-2">
+                                    <div class="row">
+                                        <div class="col m-auto">
+                                            <a class="btn text-light small ${disabled}" type="submit" href="/api/clientes/projects/${element._id}"
+                                                style="background-color: #1d1d1d; font-size: .85rem; width: 8em;">
+                                                    <i class="icon-rocket"></i>
+                                                        Proyectos
+                                            </a>        
+                                        </div>
+                                        <div class="col m-auto">
+                                            <a class="btn text-light small" type="submit" href="/api/clientes/select/${element._id}"
+                                                style="background-color: #272787; font-size: .85rem; width: 8em;">
+                                                    <i class="fa-solid fa-info-circle"></i>
+                                                        Cliente
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>`
-        )
+                </div>`
+            )
+        } else {
+            return (`
+                <div class="col mx-auto">
+                    <div class="card mx-auto rounded-2 shadow-lg pe-none" contenteditable="false" style="max-width: 540px; background-color: #00000060; opacity: 0.5" title="Consulte a SuperAdmin">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 text-center">
+                                <img src="${element.logo}"
+                                    style="max-width=160vw; object-fit: contain;"
+                                    class="img-fluid rounded p-3 mx-auto"
+                                    alt="Logo Cliente">
+                            </div>
+                            <div class="col-md-8 border-start">
+                                <div class="card-body">
+                                    <h5 class="card-title"><strong>${element.name}</strong></h5>
+                                    <p class="card-text">Codigo: ${element.code}<br></p>
+                                    <span class="badge rounded-pill bg-${colorStatus}">${text}</span><br>
+                                        Proyectos: <span class="badge rounded-pill bg-${colorResult}">${result}
+                                    </span>
+                                </div>
+                                <div class="card-footer px-2">
+                                    <div class="row">
+                                        <div class="col m-auto">
+                                            <a class="btn text-light small ${disabled}" type="submit" href="/api/clientes/projects/${element._id}"
+                                                style="background-color: #1d1d1d; font-size: .85rem; width: 8em;">
+                                                    <i class="icon-rocket"></i>
+                                                        Proyectos
+                                            </a>        
+                                        </div>
+                                        <div class="col m-auto">
+                                            <a class="btn text-light small ${disabled}" type="submit" href="/api/clientes/select/${element._id}"
+                                                style="background-color: #272787; font-size: .85rem; width: 8em;">
+                                                    <i class="fa-solid fa-info-circle"></i>
+                                                        Cliente
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+            )
+        }
     }).join(" ");
 
         document.getElementById('showClientSearch').innerHTML = htmlSearchClient
@@ -197,7 +244,8 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
                 <div class="row g-0">
                     <div class="col-md-4 my-auto px-1">
                         <img src="${clientNotFound}"
-                            max-width="170vw" class="img-fluid rounded p-1"
+                            style="max-width=170vw; object-fit: contain;"
+                            class="img-fluid rounded p-1"
                             alt="Cliente no encontrado">
                     </div>
                     <div class="col-md-8">
@@ -217,7 +265,7 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
         )
         
         document.getElementById('showClientSearch').innerHTML = htmlSearchClientNewNull
-    console.log('arrClientNewSearch[0]: ', arrClientNewSearch[0])
+    
     } else if (arrClientNewSearch.length === 1 && arrClientNewSearch[0] === 'vacio') {
         
         const htmlSearchClientNewNull = 
@@ -226,7 +274,8 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
                 <div class="row g-0">
                     <div class="col-md-4 my-auto px-1">
                         <img src="${allClientsFound}"
-                            max-width="170vw" class="img-fluid rounded p-1"
+                            style="max-width=170vw; object-fit: contain;"
+                            class="img-fluid rounded p-1"
                             alt="Todos los Clientes">
                     </div>
                     <div class="col-md-8">
@@ -248,83 +297,135 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
         document.getElementById('showClientSearch').innerHTML = htmlSearchClientNewNull
 
     } else {
-    const htmlSearchNewClient = arrClientNewSearch.map((element) => {
+        const htmlSearchNewClient = arrClientNewSearch.map((element) => {
 
-        let disabled = 'disabled'
-        let green = 'success'
-        let red = 'danger'
-        let text = "Activo"
-        let grey = 'secondary'
-        let blue = 'primary'
-        let result = 'S/P'
-        colorResult = grey
-
-        if ( element.status === true && element.project > 0 ) {
-            disabled = ''
-            colorStatus = green
-            colorResult = red
-            result = element.project
-        } else if ( element.status === true && element.project === 0 ) {
-            colorStatus = green
+            let disabled = 'disabled'
+            let green = 'success'
+            let red = 'danger'
+            let text = "Activo"
+            let grey = 'secondary'
+            let blue = 'primary'
+            let result = 'S/P'
             colorResult = grey
-        } else if ( element.status === false && element.project > 0 ) {
-            disabled = ''
-            colorStatus = red
-            colorResult = blue
-            result = element.project
-            text = "Inactivo"
-        } else if ( element.status === false && element.project === 0 ) {
-            colorStatus = red
-            text = "Inactivo"
-        }
 
-        return (`
-            <div class="col mx-auto">
-                <div class="card mx-auto rounded-2 shadow-lg" style="max-width: 540px;">
-                    <div class="row align-items-center">
-                        <div class="col-md-4 text-center">
-                            <img src="${element.logo}"
-                                max-width="160vw" class="img-fluid rounded p-3 mx-auto"
-                                alt="Logo Cliente">
-                        </div>
-                        <div class="col-md-8 border-start">
-                            <div class="card-body">
-                                <h5 class="card-title"><strong>${element.name}</strong></h5>
-                                <p class="card-text">Codigo: ${element.code}<br></p>
-                                <span class="badge rounded-pill bg-${colorStatus}">${text}</span><br>
-                                    Proyectos: <span class="badge rounded-pill bg-${colorResult}">${result}
-                                </span>
-                            </div>
-                            <div class="card-footer px-2">
-                                <div class="row">
-                                    <div class="col m-auto">
-                                        <a class="btn text-light small" type="submit" href="/api/clientes/select/${element._id}"
-                                            style="background-color: #6c757d; font-size: .85rem; width: 4em;" title="Editar cliente ${element.name}">
-                                                <i class="fa-regular fa-pen-to-square"></i>
-                                        </a>
-                                    </div>
+            if ( element.status === true && element.project > 0 ) {
+                disabled = ''
+                colorStatus = green
+                colorResult = red
+                result = element.project
+            } else if ( element.status === true && element.project === 0 ) {
+                colorStatus = green
+                colorResult = grey
+            } else if ( element.status === false && element.project > 0 ) {
+                disabled = ''
+                colorStatus = red
+                colorResult = blue
+                result = element.project
+                text = "Inactivo"
+            } else if ( element.status === false && element.project === 0 ) {
+                colorStatus = red
+                text = "Inactivo"
+            }
 
-                                    <div class="col m-auto">
-                                        <a class="btn text-light small ${disabled}" type="submit" href="/api/clientes/projects/${element._id}"
-                                            style="background-color: #0d6efd; font-size: .85rem; width: 4em;" title="Ver proyectos cliente ${element.name}">
-                                                <i class="icon-rocket"></i>
-                                        </a>        
+            if (element.visible) {
+                return (`
+                    <div class="col mx-auto">
+                        <div class="card mx-auto rounded-2 shadow-lg" style="max-width: 540px;">
+                            <div class="row align-items-center">
+                                <div class="col-md-4 text-center">
+                                    <img src="${element.logo}"
+                                        style="max-width=160vw; object-fit: contain;"
+                                        class="img-fluid rounded p-3 mx-auto"
+                                        alt="Logo Cliente">
+                                </div>
+                                <div class="col-md-8 border-start">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><strong>${element.name}</strong></h5>
+                                        <p class="card-text">Codigo: ${element.code}<br></p>
+                                        <span class="badge rounded-pill bg-${colorStatus}">${text}</span><br>
+                                            Proyectos: <span class="badge rounded-pill bg-${colorResult}">${result}
+                                        </span>
                                     </div>
-                                    
-                                    <div class="col m-auto">
-                                        <a class="btn text-light small" type="submit" href="/api/clientes/${element._id}"
-                                            style="background-color: #272787; font-size: .85rem; width: 4em;" title="Ver Info cliente ${element.name}">
-                                                <i class="fa-solid fa-info-circle"></i>
-                                        </a>
+                                    <div class="card-footer px-2">
+                                        <div class="row">
+                                            <div class="col m-auto">
+                                                <a class="btn text-light small" type="submit" href="/api/clientes/select/${element._id}"
+                                                    style="background-color: #6c757d; font-size: .85rem; width: 4em;" title="Editar cliente ${element.name}">
+                                                        <i class="fa-regular fa-pen-to-square"></i>
+                                                </a>
+                                            </div>
+    
+                                            <div class="col m-auto">
+                                                <a class="btn text-light small ${disabled}" type="submit" href="/api/clientes/projects/${element._id}"
+                                                    style="background-color: #0d6efd; font-size: .85rem; width: 4em;" title="Ver proyectos cliente ${element.name}">
+                                                        <i class="icon-rocket"></i>
+                                                </a>        
+                                            </div>
+                                            
+                                            <div class="col m-auto">
+                                                <a class="btn text-light small" type="submit" href="/api/clientes/${element._id}"
+                                                    style="background-color: #272787; font-size: .85rem; width: 4em;" title="Ver Info cliente ${element.name}">
+                                                        <i class="fa-solid fa-info-circle"></i>
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>`
-        )
-    }).join(" ");
+                    </div>`
+                )
+            } else {
+                return (`
+                    <div class="col mx-auto">
+                        <div class="card mx-auto rounded-2 shadow-lg pe-none" contenteditable="false" style="max-width: 540px; background-color: #00000060; opacity: 0.5" title="Consulte a SuperAdmin"">
+                            <div class="row align-items-center">
+                                <div class="col-md-4 text-center">
+                                    <img src="${element.logo}"
+                                        style="max-width=160vw; object-fit: contain;"
+                                        class="img-fluid rounded p-3 mx-auto"
+                                        alt="Logo Cliente">
+                                </div>
+                                <div class="col-md-8 border-start">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><strong>${element.name}</strong></h5>
+                                        <p class="card-text">Codigo: ${element.code}<br></p>
+                                        <span class="badge rounded-pill bg-${colorStatus}">${text}</span><br>
+                                            Proyectos: <span class="badge rounded-pill bg-${colorResult}">${result}
+                                        </span>
+                                    </div>
+                                    <div class="card-footer px-2">
+                                        <div class="row">
+                                            <div class="col m-auto">
+                                                <a class="btn text-light small ${disabled}" type="submit" href="/api/clientes/select/${element._id}"
+                                                    style="background-color: #6c757d; font-size: .85rem; width: 4em;" title="Editar cliente ${element.name}">
+                                                        <i class="fa-regular fa-pen-to-square"></i>
+                                                </a>
+                                            </div>
+    
+                                            <div class="col m-auto">
+                                                <a class="btn text-light small ${disabled}" type="submit" href="/api/clientes/projects/${element._id}"
+                                                    style="background-color: #0d6efd; font-size: .85rem; width: 4em;" title="Ver proyectos cliente ${element.name}">
+                                                        <i class="icon-rocket"></i>
+                                                </a>        
+                                            </div>
+                                            
+                                            <div class="col m-auto">
+                                                <a class="btn text-light small ${disabled}" type="submit" href="/api/clientes/${element._id}"
+                                                    style="background-color: #272787; font-size: .85rem; width: 4em;" title="Ver Info cliente ${element.name}">
+                                                        <i class="fa-solid fa-info-circle"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`
+                )
+            }
+            
+        }).join(" ");
 
         document.getElementById('showClientSearch').innerHTML = htmlSearchNewClient
     }
@@ -371,7 +472,8 @@ const renderSearchedUsers = (arrUsersSearch) => {
                 <div class="row g-0">
                     <div class="col-md-4 my-auto px-1">
                         <img src="${clientNotFound}"
-                            max-width="170vw" class="img-fluid rounded p-1"
+                            style="max-width=170vw; object-fit: contain;"
+                            class="img-fluid rounded p-1"
                             alt="Usuario no encontrado">
                     </div>
                     <div class="col-md-8">
@@ -401,7 +503,8 @@ const renderSearchedUsers = (arrUsersSearch) => {
                 <div class="row g-0">
                     <div class="col-md-4 my-auto px-1">
                         <img src="${allClientsFound}"
-                            max-width="170vw" class="img-fluid rounded p-1"
+                            style="max-width=170vw; object-fit: contain;"
+                            class="img-fluid rounded p-1"
                             alt="Todos los Usuarios">
                     </div>
                     <div class="col-md-8">
@@ -505,7 +608,8 @@ const renderSearchedUsers = (arrUsersSearch) => {
                         <div class="row align-items-center">
                             <div class="col-md-4 text-center">
                                 <img src="${element.avatar}"
-                                    max-width="160vw" class="img-fluid rounded p-3 mx-auto"
+                                    style="max-width=160vw; object-fit: contain;"
+                                    class="img-fluid rounded p-3 mx-auto"
                                     alt="Avatar Usuario">
                             </div>
                             <div class="col-md-8 border-start">

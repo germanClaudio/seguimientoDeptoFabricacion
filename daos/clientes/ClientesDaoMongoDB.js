@@ -73,6 +73,22 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
         }
     }
 
+    async getClientByName(name) {   
+        if(name){
+            try {
+                const client = await Clientes.findOne({name: name})
+                // console.info('Cliente encontrado: ',client)
+                return client
+
+            } catch (error) {
+                console.error("Error MongoDB getClientByName-Dao: ",error)
+            }
+
+        } else {
+            return false
+        }
+    }
+
     async selectClientById(id) {
 
         if(id){
@@ -133,6 +149,27 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
             } catch (error) {
                 console.error("Error MongoDB getClientByProjectId: ",error)
             }
+        }
+    }
+
+    async getExistingClient(newClient) {
+        
+        if (newClient) {
+            const client = await Clientes.findOne(
+                { $or: [ {name: `${newClient.name}`},
+                         {code: `${newClient.code}`}
+                       ]
+                });
+
+            if (client) {
+                return client
+                
+            } else {
+                return false
+            }
+
+        } else {
+            return new Error (`No se pudo encontrar al Cliente!`)
         }
     }
 

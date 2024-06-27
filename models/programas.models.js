@@ -40,29 +40,7 @@ let modificatorSchema = new Schema({
         type: String,
     }
 })
-
-// ------- OT Detalles ---------
-let otDetallesSchema = new Schema({
-    numeroDetalle: { 
-        type: String,
-        default: '',
-    },
-    descripcionDetalle: {
-        type: String,
-        default: "",
-    },
-    creator: [creatorSchema],
-    timestamp: {
-        type: String,
-        default: now,
-    },
-    modificator: [modificatorSchema],
-    modifiedOn: {
-        type: String,
-        default: ""
-    },
-})
-    
+ 
 // ------- OT Distribucion Schema ---------
 let otDistribucionSchema = new Schema({
     mecanizado2dCompleto: { 
@@ -225,11 +203,33 @@ let otMecanizadoSchema = new Schema({
     },
 })
 
+// ------- OT Detalles ---------
 let ProgramacionSchema = new Schema({
-    otDetalles: [otDetallesSchema],
+    numeroDetalle: { 
+        type: String,
+        default: '',
+    },
+    descripcionDetalle: {
+        type: String,
+        default: "",
+    },
     otDistribucion: [otDistribucionSchema],
     otProgramacion: [otProgramacionSchema],
-    otMecanizado: [otMecanizadoSchema]
+    otMecanizado: [otMecanizadoSchema],
+    creator: [creatorSchema],
+    timestamp: {
+        type: String,
+        default: now,
+    },
+    modificator: [modificatorSchema],
+    modifiedOn: {
+        type: String,
+        default: ""
+    },
 })
 
-module.exports = { ProgramacionSchema }//model('Programacion', ProgramacionSchema)
+// let ProgramacionSchema = new Schema({
+//     otDetalles: [otDetallesSchema]
+// })
+
+module.exports = { ProgramacionSchema } //model('Programacion', ProgramacionSchema)

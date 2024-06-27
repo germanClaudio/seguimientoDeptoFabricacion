@@ -166,7 +166,7 @@ class UsersController {
     
             try {
                 if (req.file) {
-                    await uploadToGCS(req, res);
+                    await uploadToGCS(req, res, next);
                 }
     
                 let username = res.locals.username;
@@ -349,26 +349,40 @@ class UsersController {
 
                 const usernameInput = req.body.username.replace(/[!@#$%^&* ]/g, "")
                 const usernameValid = await this.users.getUserByUsername(usernameInput)
-            
-                if (userToModify.username != usernameValid.username) {
+                const otherUsers = await this.users.getAllUsers()
+
+                // Función para eliminar un usuario de la lista si coincide con el usuario a comparar
+                function eliminarUsuario(lista, usuario) {
+                    return lista.filter(u => {
+                        // Compara los campos que sean necesarios
+                        return u._id.toString() !== usuario._id.toString()
+                    })
+                }
+
+                // Eliminar el usuario de la lista
+                let usuariosRestantes = eliminarUsuario(otherUsers, usernameValid)
+
+                const usernames = usuariosRestantes.map(usuario => usuario.username)
+                
+                if (usernames.includes(userToModify.username)) {
                     const err = new Error (`Ya existe un Usuario con este Username ${usernameInput} o Username inválido!!`)
                     err.dirNumber = 400
                     return next(err);
                 }
 
                 const emailInput = req.body.email
-                const emailValid = await this.users.getUserByEmail(emailInput)
+                const emails = usuariosRestantes.map(usuario => usuario.email)
 
-                if (userToModify.email != emailValid.email) {
+                if (emails.includes(userToModify.email)) {
                     const err = new Error (`Ya existe un Usuario con este Em@il ${emailInput} o Em@il inválido!!`)
                     err.dirNumber = 400
                     return next(err);
                 }
 
                 const legajoIdInput = req.body.legajoIdDisable
-                const legajoIdValid = await this.users.getUserByLegajoId(legajoIdInput)
-
-                if (userToModify.legajoId != legajoIdValid.legajoId) {
+                const legajosId = usuariosRestantes.map(usuario => usuario.legajoId);
+           
+                if (legajosId.includes(userToModify.legajoId)) {
                     const err = new Error (`Ya existe un Usuario con este Legajo #${legajoIdInput} o # Legajo inválido!!`)
                     err.dirNumber = 400
                     return next(err);

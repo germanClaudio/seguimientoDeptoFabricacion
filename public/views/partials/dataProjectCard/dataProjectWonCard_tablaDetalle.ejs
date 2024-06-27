@@ -1,5 +1,4 @@
 <!-- tabla Detalles -->
-                                                                
 <table id="tablaDetalle<%=k%>"
     name="tablaDetalle"
     class="table-responsive align-middle col-2 border-end border-dark"
@@ -21,19 +20,18 @@
     </thead>
     <tbody class="table-group-divider">
         <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length> n; n++) {
-            console.log('length: ',proyecto[m].project[j].oci[k].otProject[0].otDetalle)
-            for ( let o=0; proyecto[m].project[j].oci[k].otProject[n].otDetalle.length> o; o++) {
+            for ( let o=0; proyecto[m].project[j].oci[k].otProject[n].otDetalles.length> o; o++) {
                 if (proyecto[m].project[j].oci[k].otProject[n].visible) {
                     if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
-                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" style="height: 7vh;">
+                        <tr id="rowDetalleSelected<%=k%>_<%=n%>_<%=o%>" name="rowSelected<%=k%>_<%=n%>_<%=o%>" style="height: 7vh;">
                             <td class="text-center">
                                 <small id="numeroDetalle<%=k%>_<%=n%>_<%=o%>" class="text-dark align-middle">
-                                    <%= proyecto[m].project[j].oci[k].otProject[n].otDetalle[o].numeroDetalle %>
+                                    <%= proyecto[m].project[j].oci[k].otProject[n].otDetalles[o].numeroDetalle %>
                                 </small>
                             </td>
                             <td class="text-center align-middle">
                                 <small id="descripcionDetalle<%=k%>_<%=n%>_<%=o%>" class="text-dark">
-                                    <%= proyecto[m].project[j].oci[k].otProject[n].otDetalle[o].descripcionDetalle %>
+                                    <%= proyecto[m].project[j].oci[k].otProject[n].otDetalles[o].descripcionDetalle %>
                                 </small>
                             </td>
                         </tr>   

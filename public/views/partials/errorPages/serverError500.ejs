@@ -8,9 +8,11 @@
                         <div class="error-section-content">
                             <h1 class="display-3">Internal Server Error 500</h1>
                             <h5>Lo siento, hubo un error interno en el servidor.</h5>
-                            <h6>Comunique este error al administrador: <b><%= errorInfo.msgErr %></b></h6>
-                            <p>------------------------------------------------------------</p>
-                            <p>Path: <%= errorInfo.path %></p>
+                            <h6>Comunique este error al administrador:</h6>
+                            <div class="text-start">
+                                <pre><code><%= errorInfo.msgErr %></code></pre>
+                            </div>
+                            <hr>
                             <button class="btn btn-primary mt-3 me-2" onclick="goBack()">Volver <i class="icon-arrow-left"></i></button>
                             <a href="/api/auth/index" class="btn btn-danger mt-3 ms-2">Volver al Home <i class="icon-home"></i></a>
                         </div>

@@ -2937,7 +2937,7 @@ function swalFireAlert (titulo,
 var arrayBtnAddDetallesOtFormSelected = []
 for (let i=0; i<radios.length; i++) {
     var btnAddDetallesOtFormSelected = document.getElementById(`btnAddDetallesFormSelected${i}`)
-    console.log('btnAddDetallesOtFormSelected', btnAddDetallesOtFormSelected)
+    // console.log('btnAddDetallesOtFormSelected', btnAddDetallesOtFormSelected)
     if(btnAddDetallesOtFormSelected) {
         arrayBtnAddDetallesOtFormSelected.push(btnAddDetallesOtFormSelected)
     }

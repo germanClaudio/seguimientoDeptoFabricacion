@@ -22,6 +22,11 @@ class ClientService {
         return await this.clientes.getClientById(id)
     }
 
+    // returns one client by Name
+    async getClientByName(name) {
+        return await this.clientes.getClientByName(name)
+    }
+
     // returns all Projects from one client by id
     async getClientProjectsById(id) {
         return await this.clientes.getClientByProjectId(id)
@@ -41,10 +46,15 @@ class ClientService {
     async selectClientById(id) {
         return await this.clientes.selectClientById(id)
     }
+
+    // returns one client by Name or Code if exist
+    async getExistingClient(cliente) {
+        return await this.clientes.getExistingClient(cliente)
+    }
     
     // add new client
-    async addClient(client) {
-        return await this.clientes.createNewClient(client)
+    async addClient(cliente) {
+        return await this.clientes.createNewClient(cliente)
     }
     
     // update one client
