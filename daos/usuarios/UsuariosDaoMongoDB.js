@@ -3,15 +3,14 @@ const mongoose = require('mongoose')
 const Usuarios = require('../../models/usuarios.models.js')
 const Sessions = require('../../models/sessions.models.js')
 
-const now = require('../../utils/formatDate.js')
+const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000 }
 
+const now = require('../../utils/formatDate.js')
 const bCrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 const fs = require('fs')
 const util = require('util')
 const { switchFilterUsers } = require('../../utils/switchFilterUsers.js')
-
-const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000}
 
 
 class UsuariosDaoMongoDB extends ContainerMongoDB {
@@ -118,7 +117,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                     
             try {        
                 const user = await Usuarios.findOne(query);
-                
+
                 if ( user === undefined || user === null) {
                    return false
                 } else {
@@ -266,10 +265,16 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
     }
     
     async createNewUser(newUser) {
-        
+        // console.log('usuariosDaoMongoDB: ',newUser)
         if (newUser) {
             let username = newUser.username || "";
             let password = newUser.password || "";
+            
+            const users = await Usuarios.findOne({username: `${newUser.username}`})
+            
+            if (users) {
+                return false
+            }
 
             if (!username || !password ) {
                 process.exit(1)
@@ -295,7 +300,6 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                         permiso: newUser.permiso,
                         status: newUser.status,
                         admin: newUser.admin,
-                        admin: newUser.superAdmin,
                         
                         creator: newUser.creator,
                         timestamp: newUser.timestamp,
@@ -384,23 +388,24 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
 
     async getUserByEmail(email) {
         // console.log('email: ', email)
+
         if(email){
             try {
                 const user = await Usuarios.findOne( { email: `${email}` })
                 
-                if ( user === undefined || user === null) {
+                 if ( user === undefined || user === null) {
                     return false
-                } else if (user.status && user.visible) {
+                 } else if (user.status && user.visible) {
                     return user
-                } else {
+                 } else {
                     return false
-                }
+                 }
 
             } catch (error) {
                 console.error('Aca esta el error vieja: ', error)
             }
         } else {
-            return console.error('Aca esta el error(email invalid)')
+            return console.error('Aca esta el error(username invalid)')
         }
     }
 
@@ -552,6 +557,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
         }
     }
 
+
     async updateUser(id, updatedUser, userModificator) {
         
         if (updatedUser && userModificator) {
@@ -559,18 +565,12 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
             try {
                 const userMongoDB = await Usuarios.findById( { _id: id } ) //`${id}`
                             
+                updatedUser.avatar !== '' ? updatedUser.avatar : userMongoDB.avatar
                 updatedUser.name !== '' ? updatedUser.name : userMongoDB.name
                 updatedUser.lastName !== '' ? updatedUser.lastName : userMongoDB.lastName
                 updatedUser.email !== '' ? updatedUser.email : userMongoDB.email
                 updatedUser.username !== '' ? updatedUser.username : userMongoDB.username
-                updatedUser.avatar !== '' ? updatedUser.avatar : userMongoDB.avatar
-                updatedUser.legajoId !== '' ? updatedUser.legajoId : userMongoDB.legajoId
-                updatedUser.area !== '' ? updatedUser.area : userMongoDB.area
-                updatedUser.admin !== '' ? updatedUser.admin : userMongoDB.admin
-                updatedUser.superAdmin !== '' ? updatedUser.superAdmin : userMongoDB.superAdmin
-                updatedUser.status !== '' ? updatedUser.status : userMongoDB.status
-                updatedUser.permiso !== '' ? updatedUser.permiso : userMongoDB.permiso
-
+                
                 if(userMongoDB) {
                     var updatedFinalUser = await Usuarios.updateOne(
                         { _id: userMongoDB._id  },
@@ -581,10 +581,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                                 email: updatedUser.email,
                                 username: updatedUser.username,
                                 avatar: updatedUser.avatar,
-                                legajoId: updatedUser.legajoId,
-                                area: updatedUser.area,
                                 admin: updatedUser.admin,
-                                superAdmin: updatedUser.superAdmin,
                                 status: updatedUser.status,
                                 permiso: updatedUser.permiso,
                                 modificator: userModificator,

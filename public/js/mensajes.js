@@ -74,6 +74,14 @@ const addMessage = () => {
     return false
 }
 
+const botonMensaje = document.getElementById('botonMensaje')
+
+if (botonMensaje) {
+    botonMensaje.addEventListener('click', ()=> {
+        addMessage()
+    })
+}
+
 const renderMessageAdmin = async (arrMensajes) => {
 
     const htmlMsg = await arrMensajes.map((mensaje) => {

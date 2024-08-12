@@ -18,8 +18,8 @@ async function uploadToGCS(req, res, next) {
         err.dirNumber = 403
         return next(err)
     }
-    
-    if (!req.files) {
+
+    if (!req.file) {
         const err = new Error('No se agregó ningún archivo válido')
         err.dirNumber = 400
         return next(err)
@@ -45,6 +45,7 @@ async function uploadToGCS(req, res, next) {
     }
 
     let originalname = (newItemOrUpdate).match(/[^\/]+$/)[0]
+
     const blob = bucket.file(`${folderName}/${subFolderName}/${originalname}`);
 
     //**************Comprimir imagenes********************/
@@ -102,8 +103,8 @@ async function uploadToGCSingleFile(req, res, next) {
         err.dirNumber = 403
         return next(err)
     }
-    
-    if (!req.files) {
+
+    if (!req.file) {
         const err = new Error('Error en carga de Imagen o Imagenes a Google Cloud Storage')
         err.dirNumber = 400
         return next(err)
@@ -114,82 +115,53 @@ async function uploadToGCSingleFile(req, res, next) {
         projectId: process.env.PROJECT_ID_GCS,
         credentials: credentials,
     });
-    
+
     let bucket = storageToGCS.bucket(process.env.STORE_BUCKET_GCS); // Nombre bucket en Google Cloud Storage
     let folderName = 'upload';
     let subFolderName = 'projectImages';
-    let updateProjectOrOci = []
-    let originalname
-    let blob
+    let updateProjectOrOci = req.body.imageProjectFileName || req.body.imageOciFileName
+    
+    let originalname = (updateProjectOrOci).match(/[^\/]+$/)[0]
+    //console.log('164-originalname: ', originalname)
+    const blob = bucket.file(`${folderName}/${subFolderName}/${originalname}`);
 
-    if (req.body.imageProjectFileName || req.body.imageOciFileName) {
-        for (const key in req.body) {
-            if (key.startsWith('imageProjectFileName')) {
-                updateProjectOrOci.push(req.body[key])
-            } else if (key.startsWith('imageOciFileName')) {
-                updateProjectOrOci.push(req.body[key])
-            }
-        }
+//**************Comprimir imagenes********************/
+    // Detectar el formato de la imagen
+    const image = sharp(req.file.buffer);
+    const metadata = await image.metadata();
 
-        for (let f=0; f<updateProjectOrOci.length; f++) {
-            originalname = (updateProjectOrOci[f]).match(/[^\/]+$/)[0]
-            blob = bucket.file(`${folderName}/${subFolderName}/${originalname}`);
-            compressAndUpload(blob, originalname, f)
-        }
-
+    // Procesar la imagen según su formato
+    let processedImage;
+    if (metadata.format === 'jpeg' || metadata.format === 'jpg') {
+        processedImage = image
+            .resize({ width: 1024, withoutEnlargement: true }) // Redimensionar si es necesario
+            .jpeg({ quality: 80, progressive: true }); // Ajustar la calidad
+    } else if (metadata.format === 'png') {
+        processedImage = image
+            .resize({ width: 1024, withoutEnlargement: true }) // Redimensionar si es necesario
+            .png({ compressionLevel: 9 }); // Ajustar la compresión
     } else {
-        for (const key in req.body) {
-            if (key.startsWith('imageOciFileNameModal')) {
-                updateProjectOrOci.push(req.body[key])
-            }
-        }
-
-        for (let f=0; f<updateProjectOrOci.length; f++) {
-            originalname = (updateProjectOrOci[f]).match(/[^\/]+$/)[0]
-            blob = bucket.file(`${folderName}/${subFolderName}/${originalname}`);
-            compressAndUpload(blob, originalname, f)
-        }
-
-        async function compressAndUpload(blob, originalname, f) {
-            //**************Comprimir imagenes********************/
-            // Detectar el formato de la imagen
-            const image = sharp(req.files[f].buffer);
-            const metadata = await image.metadata();
-
-            // Procesar la imagen según su formato
-            let processedImage;
-            if (metadata.format === 'jpeg' || metadata.format === 'jpg') {
-                processedImage = image
-                    .resize({ width: 1024, withoutEnlargement: true }) // Redimensionar si es necesario
-                    .jpeg({ quality: 80, progressive: true }); // Ajustar la calidad
-            } else if (metadata.format === 'png') {
-                processedImage = image
-                    .resize({ width: 1024, withoutEnlargement: true }) // Redimensionar si es necesario
-                    .png({ compressionLevel: 9 }); // Ajustar la compresión
-            } else {
-                // Para otros formatos, solo redimensionar
-                processedImage = image.resize({ width: 1024, withoutEnlargement: true });
-            }
-        
-            const data = await processedImage.toBuffer();
-            //**************Fin Comprimir imagenes********************/    
-        
-            const blobStream = blob.createWriteStream({
-                resumable: false,
-            });
-        
-            blobStream.on('error', (err) => {
-                err.dirNumber = 500
-                return next(err)
-            });
-                    
-            blobStream.on('finish', () => {
-                req.files.cloudStorageObject = `${originalname}`
-                req.files.cloudStoragePublicUrl = `https://storage.googleapis.com/${bucket.name}/${folderName}/${subFolderName}/${blob.name}`;
-            });
-            blobStream.end(data);
-        }
+        // Para otros formatos, solo redimensionar
+        processedImage = image.resize({ width: 1024, withoutEnlargement: true });
     }
+
+    const data = await processedImage.toBuffer();
+//**************Fin Comprimir imagenes********************/    
+
+    const blobStream = blob.createWriteStream({
+        resumable: false,
+    });
+
+    blobStream.on('error', (err) => {
+        err.dirNumber = 500
+        return next(err)
+    });
+            
+    blobStream.on('finish', () => {
+        req.file.cloudStorageObject = `${originalname}`
+        req.file.cloudStoragePublicUrl = `https://storage.googleapis.com/${bucket.name}/${folderName}/${subFolderName}/${blob.name}`;
+    });
+    blobStream.end(data);
 };
 
 module.exports = {

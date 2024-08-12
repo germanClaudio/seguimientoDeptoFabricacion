@@ -686,7 +686,8 @@ function messageUpdateOt(
     otDescription,
     otDesign,
     otSimulation,
-    otSupplier
+    otSupplier,
+    imageOci
 ) {
     
     let numberKOci = parseInt(ociKNumber)
@@ -712,13 +713,18 @@ function messageUpdateOt(
     var html = `<form id="formUpdateOt${idProjectSelected}" action="/api/proyectos/updateOt/${idProjectSelected}" method="post">
                     <fieldset>
                         <div class="row justify-content-between mb-3 mx-1 px-1">
-                            <div class="col-4">
-                                <label for="numberOt" class="form-label d-flex justify-content-start ms-1">Número OT</label>
-                                <input type="number" name="numberOt" class="form-control"
-                                    placeholder="Número OT" value="${numberOt}" required>
+                            <div class="col-3">
+                                <label for="numberOtModal" class="form-label d-flex justify-content-start ms-1">Número OT</label>
+                                <input type="number" name="numberOt" id="numberOtModal" class="form-control"
+                                    placeholder="Número OT" value="${numberOt}" disabled required>
+                            </div>
+
+                            <div class="col-5 my-auto">
+                                <input class="form-check-input" type="checkbox" name="confirmationNumberOt" id="confirmationNumberOt" value="true">
+                                <label class="form-check-label" for="confirmationNumberOt">Confirmar Cambio N° OT</label>
                             </div>
                             
-                            <div class="col-5" style="${bgColorStatus}">
+                            <div class="col-4" style="${bgColorStatus}">
                                 <label for="statusOt" class="form-label d-flex justify-content-start ms-1">Status OT</label>
                                 <div>
                                     <p class="d-inline-block me-1">Inactiva</p>
@@ -746,42 +752,46 @@ function messageUpdateOt(
 
                         <div class="row justify-content-evenly mb-3 mx-1 px-1">
                             <div class="col-4">
-                                <label for="designOt" class="form-label d-flex justify-content-start ms-1">Diseño seguido por
-                                    <button type="button" id="searchDesignUserModal" class="btn btn-light rounded-circle ms-1">
+                                <label for="designOt" class="form-label d-flex justify-content-start ms-1">Diseño seguido por</label>                                
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" id="designOt" name="designOt" placeholder="Diseño seguido por"
+                                        aria-label="Diseño seguido por" aria-describedby="searchDesignUserModal" value="${otDesign}" required>
+                                    <button class="btn btn-primary rounded-circle ms-1" id="searchDesignUserModal">
                                         <i class="fa-solid fa-database"></i>
                                     </button>
-                                </label>
-                                <input type="text" id="designOt" name="designOt" class="form-control"
-                                    placeholder="Diseño seguido por" value="${otDesign}" required>
+                                </div>
                             </div>
                             <div class="col-4">
-                                <label for="simulationOt" class="form-label d-flex justify-content-start ms-1">Simulación seguida por
-                                    <button type="button" id="searchSimulationUserModal" class="btn btn-light rounded-circle ms-1">
+                                <label for="simulationOt" class="form-label d-flex justify-content-start ms-1">Simulación seguida por</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" id="simulationOt" name="simulationOt" placeholder="Simulacion seguida por"
+                                        aria-label="Simulacion seguida por" aria-describedby="searchDesignUserModal" value="${otSimulation}" required>
+                                    <button class="btn btn-primary rounded-circle ms-1" id="searchSimulationUserModal">
                                         <i class="fa-solid fa-database"></i>
                                     </button>
-                                </label>
-                                <input type="text" id="simulationOt" name="simulationOt" class="form-control"
-                                    placeholder="Simulacion seguida por" value="${otSimulation}" required>
+                                </div>    
                             </div>
                             <div class="col-4">
                                 <label for="supplierOt" class="form-label d-flex justify-content-start ms-1">Proveedor externo</label>
                                 <input type="text" id="supplierOt" name="supplierOt" class="form-control"
-                                    placeholder="Porveedor" value="${otSupplier}" required>
+                                    placeholder="Porveedor" value="${otSupplier}">
                             </div>                      
                         </div> 
-
                             <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden${numberKOci}" value="${numberKOci}">
                             <input type="hidden" name="otKNumberHidden" id="otKNumberHidden${numberKOt}" value="${numberKOt}">
+                            <input type="hidden" name="otNumberHidden" id="otNumberHidden${numberKOt}" value="${numberOt}">
                     </fieldset>
                 </form>`
 
     if(idProjectSelected && numberOt) {
         Swal.fire({
-            title: `Actualizar OT# ${numberOt} - ${otDescription}`,
+            title: `Actualizar OT# ${numberOt} - OP# ${numberOp} ${otDescription}`,
             position: 'center',
             html: html,
-            width: 950,
-            icon: 'info',
+            width: 850,
+            // icon: 'info',
+            imageUrl: `${imageOci}`,
+            imageWidth: `20%`,
             showCancelButton: true,
             showConfirmButton: true,
             focusConfirm: false,
@@ -853,7 +863,7 @@ function messageUpdateOt(
     //-----Btns Buscar en BBDD el Usuario Seguidor de Diseño --------------
     const searchDesignUserModal = document.getElementById('searchDesignUserModal')
     searchDesignUserModal.addEventListener('click', (event) => {
-    event.preventDefault()
+    // event.preventDefault()
 
     function cargarUsuarioDiseno() {
         fetch('../../../api/usuarios/searchUsers/simulacion')
@@ -1143,13 +1153,13 @@ function messageUpdateMasiveOt(arrayRowsSelected) {
     var html = `<form id="formUpdateMasiveOt${idProjectSelected}" action="/api/proyectos/updateMasiveOt/${idProjectSelected}" method="post">
                     <fieldset>
                         <div class="row justify-content-between mb-3 mx-1 px-1">
-                            <div class="col-4">
+                            <div class="col-5">
                                 <label for="numberOt" class="form-label d-flex justify-content-start ms-1">Número OT</label>
                                 <input type="number" name="numberOt" class="form-control"
                                     placeholder="Número OT" value="${numberOt}" required>
                             </div>
                             
-                            <div class="col-5" style="${bgColorStatus}">
+                            <div class="col-4" style="${bgColorStatus}">
                                 <label for="statusOt" class="form-label d-flex justify-content-start ms-1">Status OT</label>
                                 <div>
                                     <p class="d-inline-block me-1">Inactiva</p>
@@ -1423,7 +1433,8 @@ arrayBtnUpdateOt.forEach(function(elemento) {
             const otDesign =  document.getElementById(`otDesign${idOtOci}`).textContent
             const otSimulation =  document.getElementById(`otSimulation${idOtOci}`).textContent
             const otSupplier =  document.getElementById(`otSupplier${idOtOci}`).textContent
-            
+            const ociImage = document.getElementById(`imageOciHeader${ociKNumber}`).src
+
             messageUpdateOt(
                 idProjectSelected,
                 ociKNumber,
@@ -1434,7 +1445,8 @@ arrayBtnUpdateOt.forEach(function(elemento) {
                 cleanString(otDescription),
                 cleanString(otDesign),
                 cleanString(otSimulation),
-                cleanString(otSupplier)
+                cleanString(otSupplier),
+                ociImage
             )
         })
     }
@@ -1858,7 +1870,16 @@ btnCreateNewOt.addEventListener('click', (event) => {
         messageNewOt(ociNumberHiddenValue, otArray, ociAlias)
 
     } else {
-        console.log('Hubo un error al seleccionar la OCI!!') //Hacer sweetAlert2
+        // console.log('Hubo un error al seleccionar la OCI!!') //Hacer sweetAlert2
+        Swal.fire({
+            title: 'Error',
+            position: 'center',
+            timer: 3500,
+            text: `Hubo un error al seleccionar la OCI !`,
+            icon: 'error',
+            showCancelButton: true,
+            showConfirmButton: false,
+        })
     }
 })
 
@@ -4777,6 +4798,8 @@ function disabledBtnAceptar () {
     const allInputsRange = document.querySelectorAll('input[type="range"]')
     const allInputsCheck = document.querySelectorAll('input[type="checkbox"]')
     const allInputsRadio = document.querySelectorAll('input[type="radio"]')
+    const checkbox = document.getElementById('confirmationNumberOt')
+    const otNumberDisabled = document.getElementById('numberOtModal')
 
     allInputs.forEach(function(input) {
         if (input.value) {
@@ -4809,6 +4832,11 @@ function disabledBtnAceptar () {
                 input.classList.toggle("bg-danger")
                 btnAceptarModal[0].removeAttribute('disabled')
                 btnAceptarModal[0].style = "cursor: pointer;"
+
+                checkbox.checked ? 
+                    otNumberDisabled.removeAttribute('disabled')
+                :
+                    otNumberDisabled.setAttribute('disabled', 'true')
             })    
         }        
     })

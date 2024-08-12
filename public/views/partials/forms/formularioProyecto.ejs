@@ -1,7 +1,7 @@
 <div class="card mx-auto" style="width: 93vw;">
     <div class="card card-body d-flex justify-content-center">
         <div class="form-group col-12 mx-auto my-2 w-100 border px-5 py-1 text-white rounded" style="background-color: #868686;">
-            <form id="formNewProject" enctype="multipart/form-data" action="/api/proyectos" method="post">
+            <form action="/api/proyectos" enctype="multipart/form-data" method="post" id="formNewProject">
                 <fieldset>
                     <div class="row my-3">
                         <div class="col-3">
@@ -55,7 +55,7 @@
 
                     <div class="row justify-content-start align-items-center mt-3">
                         <div class="col">
-                            <label for="imageProject" class="d-flex justify-content-start ms-1">Seleccione una imagen para el Proyecto</label>
+                            <label for="fileInputProject" class="d-flex justify-content-start ms-1">Seleccione una imagen para el Proyecto</label>
                             <input type="text" id="fileInputTextProject" name="imageProject"
                                 style="display: none;">
                             <input type="file" id="fileInputProject" name="imageProject"
@@ -130,7 +130,7 @@
                                                     </div>    
                                                 </div>
                                                 <div class="col ms-3">
-                                                    <label for="imageNewOci" id="labelOciImage">Seleccione una imagen para la OCI</label>
+                                                    <label for="fileInputNewOci" id="labelOciImage">Seleccione una imagen para la OCI</label>
                                                     <input type="text" id="fileInputNewOciText" name="imageOciFileName"
                                                         value="" style="display: none;">
                                                     <input type="file" id="fileInputNewOci" name="imageNewOci"
@@ -183,6 +183,7 @@
                     <input type="hidden" name="idHidden" id="idHidden" value="<%= userInfo.id %>">
                     <input type="hidden" name="clientIdHidden" id="clientIdHidden" value="<%= cliente._id %>">
                     <input type="hidden" name="ociQuantity" id="ociQuantity" value="1">
+                    <input type="hidden" name="_csrf" id="_csrf" value="<%= csrfToken %>">
                     <br>
                     <div class="d-flex justify-content-center mb-3">
                         <button

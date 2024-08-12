@@ -2,9 +2,11 @@ const ContenedorMongoDB = require('../../contenedores/containerMongoDB.js')
 const mongoose = require('mongoose')
 const Clientes = require('../../models/clientes.models.js')
 
-const now = require('../../utils/formatDate.js')
+const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000 }
 
 const { switchFilterClients } = require('../../utils/switchFilterClients.js')
+
+const now = require('../../utils/formatDate.js')
 
 class ClientesDaoMongoDB extends ContenedorMongoDB {
     constructor(cnxStr) {
@@ -12,11 +14,9 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
     }
 
     async init() {
-        //  await this.connection
-         mongoose.connect(this.cnxStr, { //createConnection or connect
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        })
+        // await this.connection
+        mongoose.connect(this.cnxStr, advancedOptions)
+        console.log('Connected to MongoDB Server 1-2-3 - ClientesDaoFactory.js')
     }
     
     async getAllClients() {
@@ -90,7 +90,6 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
     }
 
     async selectClientById(id) {
-
         if(id){
             try {
                 const client = await Clientes.findById({_id: id })
@@ -102,13 +101,13 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
             }
             
         } else {
-            try {
-                const clients = await Clientes.find()
-                return clients
+            // try {
+                // const clients = await Clientes.find()
+                return false
                 
-            } catch (error) {
-                console.error("Error MongoDB selectClientById: ",error)
-            }
+            // } catch (error) {
+            //     console.error("Error MongoDB selectClientById: ",error)
+            // }
         }
     }
 

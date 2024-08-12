@@ -26,9 +26,19 @@ class ProjectService {
         return this.proyectos.selectProjectsByMainProjectId(idProject)
     }
 
+     // returns a project from a Name Project
+     async getExistingProject(project) {
+        return this.proyectos.getExistingProject(project)
+    }
+
     // returns all OCI from projects
     async getAllOciProjects() {
         return this.proyectos.getAllOciProjects()
+    }
+
+    // returns all OCI Numbers from one project
+    async getAllOciNumbers() {
+        return this.proyectos.getAllOciNumbers()
     }
 
     // add new project to a Client
@@ -157,8 +167,13 @@ class ProjectService {
 
     
     // Select OCI - Project
-    async selectOciByOciNumber(numberOci) {
-        return this.proyectos.selectOciByOciNumber(numberOci)
+    async selectOciByOciNumber(numberOci, ociKNumber) {
+        return this.proyectos.selectOciByOciNumber(numberOci, ociKNumber)
+    }
+
+    // Select OT - Project
+    async selectOtByOtNumber(numberOt, otKNumber, ociKNumber) {
+        return this.proyectos.selectOtByOtNumber(numberOt, otKNumber, ociKNumber)
     }
 
     // Update Status Project by id

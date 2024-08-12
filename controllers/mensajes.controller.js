@@ -40,7 +40,11 @@ class MessagesController {
                 userInfo,
                 expires
             })
-        } catch (error) {
+        } catch (err) {
+            const flag = {
+                dirNumber: 500
+            }
+            const error = err
             const errorInfo = {
                 errorNumber: 21,
                 status: false,
@@ -48,13 +52,9 @@ class MessagesController {
             }
             res.render('errorPages', {
                 error,
-                errorInfo
+                errorInfo,
+                flag
             })
-            // res.status(500).json({
-            //     status: false,
-            //     msg: 'controllerError - getAllMessages',
-            //     error: error
-            // })
         }
     }
 
@@ -81,7 +81,11 @@ class MessagesController {
                 userInfo,
                 expires
             })
-        } catch (error) {
+        } catch (err) {
+            const flag = {
+                dirNumber: 500
+            }
+            const error = err
             const errorInfo = {
                 errorNumber: 61,
                 status: false,
@@ -89,13 +93,9 @@ class MessagesController {
             }
             res.render('errorPages', {
                 error,
-                errorInfo
+                errorInfo,
+                flag
             })
-            // res.status(500).json({
-            //     status: false,
-            //     msg: 'controllerError - getMessageById',
-            //     error: error
-            // })
         }
     }
 
@@ -133,7 +133,11 @@ class MessagesController {
                 userInfo,
                 expires
             })
-        } catch (error) {
+        } catch (err) {
+            const flag = {
+                dirNumber: 500
+            }
+            const error = err
             const errorInfo = {
                 errorNumber: 102,
                 status: false,
@@ -141,13 +145,9 @@ class MessagesController {
             }
             res.render('errorPages', {
                 error,
-                errorInfo
+                errorInfo,
+                flag
             })
-            // res.status(500).json({
-            //     status: false,
-            //     msg: 'controllerError - createNewMessage',
-            //     error: error
-            // })
         }
     }
 
@@ -172,7 +172,11 @@ class MessagesController {
                 userInfo,
                 expires
             })
-        } catch (error) {
+        } catch (err) {
+            const flag = {
+                dirNumber: 500
+            }
+            const error = err
             const errorInfo = {
                 errorNumber: 154,
                 status: false,
@@ -180,7 +184,8 @@ class MessagesController {
             }
             res.render('errorPages', {
                 error,
-                errorInfo
+                errorInfo,
+                flag
             })
         }
     }
@@ -205,7 +210,11 @@ class MessagesController {
                 expires
             })
 
-        } catch (error) {
+        } catch (err) {
+            const flag = {
+                dirNumber: 500
+            }
+            const error = err
             const errorInfo = {
                 errorNumber: 188,
                 status: false,
@@ -213,7 +222,8 @@ class MessagesController {
             }
             res.render('errorPages', {
                 error,
-                errorInfo
+                errorInfo,
+                flag
             })   
         }
     }

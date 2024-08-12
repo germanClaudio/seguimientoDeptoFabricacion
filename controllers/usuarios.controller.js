@@ -14,6 +14,8 @@ const csrfTokens = csrf();
 
 const multer = require('multer')
 let userPictureNotFound = "../../../src/images/upload/AvatarUsersImages/incognito.jpg"
+const cookie = require('../utils/cookie.js')
+
 
 const sessionTime = parseInt(process.env.SESSION_TIME) // 12 HORAS
 
@@ -29,11 +31,7 @@ class UsersController {
     getAllUsers = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
-        
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
-        
+        const expires = cookie(req)    
         const csrfToken = csrfTokens.create(req.csrfSecret);
         
         try {
@@ -61,10 +59,7 @@ class UsersController {
         const { id } = req.params
         let username = res.locals.username
         let userInfo = res.locals.userInfo
-        
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
+        const expires = cookie(req)
         
         const csrfToken = csrfTokens.create(req.csrfSecret);
         
@@ -92,12 +87,8 @@ class UsersController {
 
     getUserByUsername = async (req, res, next) => {
         const { username } = req.params
-        
         let userInfo = res.locals.userInfo
-        
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
+        const expires = cookie(req)
         
         const csrfToken = csrfTokens.create(req.csrfSecret);
         
@@ -188,10 +179,8 @@ class UsersController {
                     username: "",
                     email: ""
                 }];
-    
-                const cookie = req.session.cookie;
-                const time = cookie.expires;
-                const expires = new Date(time);
+
+                const expires = cookie(req)
     
                 const usernameInput = req.body.username.replace(/[!@#$%^&*]/g, "");
                 const emailInput = req.body.email;
@@ -336,9 +325,7 @@ class UsersController {
                     email: userInfo.email
                 }]
 
-                const cookie = req.session.cookie
-                const time = cookie.expires
-                const expires = new Date(time)
+                const expires = cookie(req)
 
                 const csrfToken = req.body._csrf;
                 if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
@@ -727,8 +714,9 @@ class UsersController {
                             
                             setTimeout(() => {
                                 return res.render('index', {
-                                    userInfo,
+                                    usuario,
                                     username,
+                                    userInfo,
                                     visits,
                                     expires,
                                     clientes,

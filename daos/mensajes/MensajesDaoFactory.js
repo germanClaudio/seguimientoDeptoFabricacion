@@ -3,7 +3,7 @@ const MensajesDaoMongoDB = require('./MensajesDaoMongoDB.js')
 // const filePath = options.filePath.path
 const cnxStr = process.env.MONGO_URL_CONNECT_PROD
 
-const option = process.env.PERSISTENCIA || 'Mongo'
+const option = process.env.PERSISTENCIA || 'Memoria'
 
 let daoMsg
 switch (option) {

@@ -179,7 +179,7 @@
                                 </div>    
                             </div>
                         </div>
-                    <% } else if (usuario.admin) { %>
+                    <% } else if (usuario.admin && !usuario.superAdmin) { %>
                         <div class="col-2 me-2" style="background-color: #00029090;">
                             <label for="admin">Rol</label>
                             <div class="">

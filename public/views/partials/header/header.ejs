@@ -56,7 +56,7 @@
                 <div class="vr mx-1 d-none d-xl-inline" style="color: white;"></div>
 
                 <div class="container text-center m-auto" style="width: auto;">
-                    <% if (userInfo.admin && userInfo.superAdmin) { %>
+                    <% if (userInfo.superAdmin) { %>
                         <div class="mx-auto small text-center">
                             <span id="mostrarRolUser" class="badge rounded-pill bg-primary position-relative">
                                 SuperAdmin
@@ -72,7 +72,7 @@
                             <%= userInfo.name %>, <%= userInfo.lastName %>
                         </div>
                         <div class="d-none" id="userBanner_<%= userInfo._id %>"><%= userInfo._id %></div>
-                    <% } else if (userInfo.admin) { %>
+                    <% } else if (userInfo.admin && !userInfo.superAdmin) { %>
                         <div class="mx-auto small text-center">
                             <span id="mostrarRolUser" class="badge rounded-pill bg-primary">Admin</span>
                         </div>

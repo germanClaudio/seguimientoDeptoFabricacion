@@ -284,8 +284,8 @@ const renderProjectsForAdmin = (arrayProjects) => {
             return (`<tr style="border-bottom: 2px solid #dedede";>
                         <td class="text-center">${element.project[0].codeProject}</td>
                         <td class="text-center" data-column="nombre">${element.project[0].projectName}</td>
-                        <td class="text-center"><a href="/api/clientes/${element.client[0]._id}"><img class="img-fluid rounded m-2" alt="Imagen Proyecto" src='${element.project[0].imageProject}' width="100px" height="80px"></a></td>
-                        <td class="text-center" data-column="cliente"><img class="img-fluid rounded m-2" alt="Logo Cliente" src='${element.client[0].logo}' width="70px" height="55px"></td>
+                        <td class="text-center"><a href="/api/clientes/${element.client[0]._id}"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Imagen Proyecto" src='${element.project[0].imageProject}' width="90%" height="90%"></a></td>
+                        <td class="text-center" data-column="cliente"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Logo Cliente" src='${element.client[0].logo}' width="90%" height="90%"></td>
                         <td class="text-center" data-column="prio"><span class="badge rounded-pill bg-dark">${element.project[0].prioProject}</span></td>
                         <td class="text-center" data-column="nivel"><span class="badge rounded-pill bg-${colorResult} text-${colorLevel}">${text}</span></td>
                         <td class="text-center px-2">${element.project[0].projectDescription}</td>
@@ -600,8 +600,8 @@ const renderProjectsForUser = (arrayProjects) => {
             return (`<tr style="border-bottom: 2px solid #dedede";>
                         <td class="text-center">${element.project[0].codeProject}</td>
                         <td class="text-center" data-column="nombre">${element.project[0].projectName}</td>
-                        <td class="text-center"><a href="/api/clientes/${element.client[0]._id}"><img class="img-fluid rounded m-2" alt="Imagen Proyecto" src='${element.project[0].imageProject}' width="100px" height="80px"></a></td>
-                        <td class="text-center" data-column="cliente"><img class="img-fluid rounded m-2" alt="Logo Cliente" src='${element.client[0].logo}' width="70px" height="55px"></td>
+                        <td class="text-center"><a href="/api/clientes/${element.client[0]._id}"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Imagen Proyecto" src='${element.project[0].imageProject}' width="90%" height="90%"></a></td>
+                        <td class="text-center" data-column="cliente"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Logo Cliente" src='${element.client[0].logo}' width="90%" height="90%"></td>
                         <td class="text-center" data-column="prio"><span class="badge rounded-pill bg-dark">${element.project[0].prioProject}</span></td>
                         <td class="text-center" data-column="nivel"><span class="badge rounded-pill bg-${colorResult} text-${colorLevel}">${text}</span></td>
                         <td class="text-center">${element.project[0].projectDescription}</td>

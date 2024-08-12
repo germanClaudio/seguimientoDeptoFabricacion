@@ -14,7 +14,8 @@ const varLimMaxColData = 20
 const varLimMaxRevData = 99
 
 //variable limite maximo de Detalles por OT
-const varLimMaxDetallesOT = 50
+const varLimMaxDetallesOT = 99
+
 
 // Manejador de eventos de tablas General y Detalle -------------------
 const arrBtnHidde = []
@@ -684,16 +685,18 @@ function messageUpdateOt(
     ociKNumber,
     otNumber,
     otKNumber,
+    otDetalleKNumber,
     opNumber,
     statusOt,
     otDescription,
-    otDesign,
-    otSimulation
+    otDetalle,
+    otDescripcionDetalle
 ) {
     
     let numberKOci = parseInt(ociKNumber)
     let numberKOt = parseInt(otKNumber)
     let numberOt = parseInt(otNumber)
+    let numberKDetail = parseInt(otDetalleKNumber)
     let numberOp = parseInt(opNumber)
     let checked = 'checked'
     statusOt=='Activo' ? checked : checked = ''
@@ -711,13 +714,13 @@ function messageUpdateOt(
         timerProgressBar: false,
     })
 
-    var html = `<form id="formUpdateOt${idProjectSelected}" action="/api/proyectos/updateOt/${idProjectSelected}" method="post">
+    var html = `<form id="formUpdateOtDetail${idProjectSelected}" action="/api/proyectos/updateOtDetail/${idProjectSelected}" method="post">
                     <fieldset>
                         <div class="row justify-content-between mb-3 mx-1 px-1">
-                            <div class="col-4">
+                            <div class="col-3">
                                 <label for="numberOt" class="form-label d-flex justify-content-start ms-1">Número OT</label>
                                 <input type="number" name="numberOt" class="form-control"
-                                    placeholder="Número OT" value="${numberOt}" required>
+                                    placeholder="Número OT" value="${numberOt}" disabled>
                             </div>
                             
                             <div class="col-5" style="${bgColorStatus}">
@@ -726,58 +729,58 @@ function messageUpdateOt(
                                     <p class="d-inline-block me-1">Inactiva</p>
                                     <div class="form-check form-switch d-inline-block mt-2">
                                         <input id="statusOtForm" class="form-check-input" type="checkbox" role="switch"
-                                            name="statusOtForm" style="cursor: pointer;" ${checked}>
+                                            name="statusOtForm" style="cursor: pointer;" disabled ${checked}>
                                         <label class="form-check-label" for="statusOt">Activa</label>
                                     </div>    
                                 </div>
                             </div>
                         </div>    
                         
-                        <div class="row mb-3 mx-1 px-1">
-                            <div class="col-8">
+                        <div class="row justify-content-between mb-3 mx-1 px-1">
+                            <div class="col-7">
                                 <label for="descriptionOt" class="form-label d-flex justify-content-start ms-1">Descripción OT</label>
                                 <input type="text" name="descriptionOt" class="form-control"
-                                    placeholder="Descripción OT" value="${otDescription}" required>
+                                    placeholder="Descripción OT" value="${otDescription}" disabled>
                             </div>
                             <div class="col-4">
                                 <label for="numeroOp" class="form-label d-flex justify-content-start ms-1">Número OP</label>
                                 <input type="number" name="numeroOp" class="form-control"
-                                    placeholder="Numero Op" value="${numberOp}" required>
+                                    placeholder="Numero Op" value="${numberOp}" disabled>
                             </div>
                         </div>
 
                         <div class="row justify-content-evenly mb-3 mx-1 px-1">
                             <div class="col-4">
-                                <label for="designOt" class="form-label d-flex justify-content-start align-items-center ms-1 mb-2">Diseño seguido por
-                                    <button type="button" id="searchDesignUserModal" class="btn btn-light rounded-circle ms-1">
-                                        <i class="fa-solid fa-database"></i>
-                                    </button>
+                                <label for="detalleOt" class="form-label d-flex justify-content-start align-items-center ms-1 mb-2">
+                                    Detalle Numero
                                 </label>
-                                <input type="text" id="designOt" name="designOt" class="form-control"
-                                    placeholder="Diseño seguido por" value="${otDesign}" required>
+                                <input type="text" id="detalleOt" name="detalleOt" class="form-control"
+                                    placeholder="Detalle numero" value="${otDetalle}" required>
                             </div>
                             <div class="col-4">
-                                <label for="simulationOt" class="form-label d-flex justify-content-start align-items-center ms-1 mb-2">Simulación seguida por
-                                    <button type="button" id="searchSimulationUserModal" class="btn btn-light rounded-circle ms-1">
-                                        <i class="fa-solid fa-database"></i>
-                                    </button>
+                                <label for="otDescripcionDetalle" class="form-label d-flex justify-content-start align-items-center ms-1 mb-2">
+                                    Descripción Detalle
                                 </label>
-                                <input type="text" id="simulationOt" name="simulationOt" class="form-control"
-                                    placeholder="Simulacion seguida por" value="${otSimulation}" required>
+                                <input type="text" id="otDescripcionDetalle" name="otDescripcionDetalle" class="form-control"
+                                    placeholder="Descripcion Detalle" value="${otDescripcionDetalle}" required>
                             </div>                   
                         </div> 
-
                             <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden${numberKOci}" value="${numberKOci}">
                             <input type="hidden" name="otKNumberHidden" id="otKNumberHidden${numberKOt}" value="${numberKOt}">
+                            <input type="hidden" name="otDetailKNumberHidden" id="otDetailKNumberHidden${numberKDetail}" value="${numberKDetail}">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     </fieldset>
                 </form>`
 
+    const htmlTitle = `Actualizar detalle #${otDetalle} - ${otDescripcionDetalle}
+                        de OT${numberOt} - ${otDescription}`
+
     if(idProjectSelected && numberOt) {
         Swal.fire({
-            title: `Actualizar OT# ${numberOt} - ${otDescription}`,
+            title: htmlTitle,
             position: 'center',
             html: html,
-            width: 950,
+            width: 750,
             icon: 'info',
             showCancelButton: true,
             showConfirmButton: true,
@@ -792,16 +795,16 @@ function messageUpdateOt(
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById(`formUpdateOt${idProjectSelected}`).submit()
+                document.getElementById(`formUpdateOtDetail${idProjectSelected}`).submit()
                 Toast.fire({
                     icon: 'success',
-                    title: `La OT# <b>${numberOt}</b>, se modificó con éxito!`
+                    title: `El detalle #<b>${otDetalle}</b>, se modificó con éxito!`
                 })
 
             } else {
                 Swal.fire(
-                    'OT no modificada!',
-                    `La OT# <b>${numberOt}</b>, no se modificó!`,
+                    'Detalle no modificado!',
+                    `El detalle #<b>${otDetalle}</b>, no se modificó!`,
                     'warning'
                 )
                 return false
@@ -813,7 +816,7 @@ function messageUpdateOt(
             title: 'Error',
             position: 'center',
             timer: 3500,
-            text: `La OT# ${numberOt} no se actualizó correctamente!`,
+            text: `El detalle #<b>${otDetalle}</b> no se actualizó correctamente!`,
             icon: 'error',
             showCancelButton: false,
             showConfirmButton: false,
@@ -824,7 +827,7 @@ function messageUpdateOt(
 
     // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
-        input.addEventListener('keydown', function(event) {
+        input.addEventListener('input', function(event) { //keydown
             // Obtener el código de la tecla presionada
             let key = event.key;
 
@@ -845,191 +848,6 @@ function messageUpdateOt(
             }
         })
     })
-
-    // //******************** to be done ********************
-    //-----Btns Buscar en BBDD el Usuario Seguidor de Diseño --------------
-    const searchDesignUserModal = document.getElementById('searchDesignUserModal')
-    searchDesignUserModal.addEventListener('click', (event) => {
-    event.preventDefault()
-
-    function cargarUsuarioDiseno() {
-        fetch('../../../api/usuarios/searchUsers/simulacion')
-            .then(response => response.json())
-            .then(users => {
-            const arrayUsuariosDiseno = []
-            const arrayUsersAll = []
-
-            for(let i=0; i<users.usersAll.length; i++) {
-
-                if(users.usersAll[i].status && users.usersAll[i].permiso ==='diseno') {
-                    arrayUsuariosDiseno.push(`
-                                    <label>
-                                        <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-info text-dark my-2">
-                                            <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
-                                            ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                        </span>
-                                    </label>`)
-
-                } else if (users.usersAll[i].status && users.usersAll[i].permiso !=='diseno') {
-                    arrayUsersAll.push(`
-                                <label>
-                                    <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-light text-dark my-2">
-                                        <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
-                                        ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                    </span>
-                                </label>`)
-                }
-            }
-            
-            const html = `
-                    <hr>
-                        <label>Usuarios Diseño</label>
-                        <div name='container' class="container">
-                            ${arrayUsuariosDiseno.join(' ')}
-                        </div>
-                    <hr>
-                        <label>Usuarios</label>
-                        <div name='container' class="container">
-                            ${arrayUsersAll.join(' ')}
-                        </div>
-                    <hr>`
-
-                    Swal.fire({
-                        title: 'Usuarios',
-                        html: html,
-                        width: 450,
-                        background: "#eee",
-                        allowOutsideClick: false,
-                        showCloseButton: true,
-                        showCancelButton: true,
-                        focusConfirm:false,
-                        cancelButtonText: 'Volver <i class="fa-solid fa-back"></i>',
-                        confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>'    
-                    
-                    }).then((secondResult) => {
-                        const radiosToSelect = document.getElementsByName('radioUsuarios')
-
-                        for(let i=0; i<radiosToSelect.length; i++) {
-                            const radioSelected = document.getElementById(i)
-                            
-                            if (radioSelected.checked) {
-                                var usuariosSeleccionado = radioSelected.value
-                            }
-                        }
-                        
-                        if (secondResult.isConfirmed) {
-                            //const inputUserSelected = document.getElementById('designOt')
-                            //inputUserSelected.value = usuariosSeleccionado
-                            
-                        } else if (secondResult.dismiss === Swal.DismissReason.cancel) {
-                            event.preventDefault()
-                            return messageUpdateOt()
-                        }
-
-                        else {
-                            Swal.fire(
-                                'Usuario no seleccionado!',
-                                `No ha seleccionado ningún usuario!`,
-                                'warning'
-                            )
-                            return false
-                        }
-                    })
-        })
-        .catch(error => {
-        console.error('Error:', error)
-        })
-        }
-        cargarUsuarioDiseno()
-    })
-
-    //-----Btns Buscar en BBDD el Usuario Seguidor de Simulacion --------------
-    const searchSimulationUserModal = document.getElementById('searchSimulationUserModal')
-    searchSimulationUserModal.addEventListener('click', (event) => {
-    event.preventDefault()
-
-    function cargarUsuarioSimulacion() {
-        fetch('../../../api/usuarios/searchUsers/all')
-            .then(response => response.json())
-            .then(users => {
-            const arrayUsuariosSimulacion = []
-            const arrayUsersAll = []
-
-            for(let i=0; i<users.usersAll.length; i++) {
-
-                if(users.usersAll[i].status && users.usersAll[i].permiso ==='simulacion') {
-                    arrayUsuariosSimulacion.push(`
-                                    <label>
-                                        <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-warning text-dark my-2">
-                                            <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
-                                            ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                        </span>
-                                    </label>`)
-
-                } else if (users.usersAll[i].status && users.usersAll[i].permiso !=='simulacion') {
-                    arrayUsersAll.push(`
-                                <label>
-                                    <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-light text-dark my-2">
-                                        <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
-                                        ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                    </span>
-                                </label>`)
-                }
-            }
-            
-            const html = `
-                    <hr>
-                        <label>Usuarios Simulación</label>
-                        <div name='container' class="container">
-                            ${arrayUsuariosSimulacion.join(' ')}
-                        </div>
-                    <hr>
-                        <label>Usuarios</label>
-                        <div name='container' class="container">
-                            ${arrayUsersAll.join(' ')}
-                        </div>
-                    <hr>`
-
-                    Swal.fire({
-                        title: 'Usuarios',
-                        html: html,
-                        width: 450,
-                        background: "#eee",
-                        allowOutsideClick: false,
-                        showCloseButton: true,
-                        confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>'    
-                    }).then((result) => {
-                        const radiosToSelect = document.getElementsByName('radioUsuarios')
-
-                        for(let i=0; i<radiosToSelect.length; i++) {
-                            const radioSelected = document.getElementById(i)
-                            
-                            if (radioSelected.checked) {
-                                var usuariosSeleccionado = radioSelected.value
-                            }
-                        }
-                        
-                        if (result.isConfirmed) {
-                            const inputUserSelected = document.getElementById('internoSimulacion')
-                            inputUserSelected.value = usuariosSeleccionado
-                        
-                        } else {
-                            Swal.fire(
-                                'Usuario no seleccionado!',
-                                `No ha seleccionado ningún usuario!`,
-                                'warning'
-                            )
-                            return false
-                        }
-                    })
-        })
-        .catch(error => {
-        console.error('Error:', error)
-        })
-        }
-        cargarUsuarioSimulacion()
-    })
-    // ****************** End To be done *******************************
 }
 
 //---- Add Details to OT ----------------
@@ -1625,11 +1443,6 @@ var arrayBtnChangeStatusOt = [],
                 arrayBtnChangeStatusOt.push(btnChangeStatusOt)
             }
 
-            let btnUpdateOt = document.getElementById(`btnEditOt${m}_${n}`)
-            if (btnUpdateOt) {
-                arrayBtnUpdateOt.push(btnUpdateOt)
-            }
-
             let btnDeleteOt = document.getElementById(`btnDeleteOt${m}_${n}`)
             if(btnDeleteOt) {
                 arrayBtnDeleteOt.push(btnDeleteOt)
@@ -1641,11 +1454,15 @@ var arrayBtnChangeStatusOt = [],
             }
 
             for (let o=0; o<varLimMaxDetallesOT; o++) {
+                let btnUpdateOt = document.getElementById(`btnEditOt${m}_${n}_${o}`)
+                if (btnUpdateOt) {
+                    arrayBtnUpdateOt.push(btnUpdateOt)
+                }
+
                 let btnAddDetallesOt = document.getElementById(`btnAddDetallesFormSelected${m}_${n}_${o}`)
                 if (btnAddDetallesOt) {
                     arrayBtnAddDetallesOt.push(btnAddDetallesOt)
-            }
-
+                }
             }
 
         }
@@ -1810,23 +1627,25 @@ arrayBtnUpdateOt.forEach(function(elemento) {
             const idProjectSelected = document.getElementById('projectIdHidden').value
             const ociKNumber = parseInt(arrayOciOtSelected[0])
             const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent)
-            const otKNumber = parseInt(arrayOciOtSelected[1])       
+            const otKNumber = parseInt(arrayOciOtSelected[1])
+            const otDetalleKNumber = parseInt(arrayOciOtSelected[2])      
             const opNumber = parseInt(document.getElementById(`lastOpNumber${idOtOci}`).textContent)
             const statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent
             const otDescription = document.getElementById(`lastOpDescription${idOtOci}`).textContent
-            const otDesign =  document.getElementById(`otDesign${idOtOci}`).textContent
-            const otSimulation =  document.getElementById(`otSimulation${idOtOci}`).textContent
+            const otDetalle =  document.getElementById(`numeroDetalle${idOtOci}`).textContent
+            const otDetalleDescripcion =  document.getElementById(`descripcionDetalle${idOtOci}`).textContent
             
             messageUpdateOt(
                 idProjectSelected,
                 ociKNumber,
                 otNumber,
                 otKNumber,
+                otDetalleKNumber,
                 opNumber,
                 cleanString(statusOt),
                 cleanString(otDescription),
-                cleanString(otDesign),
-                cleanString(otSimulation),
+                cleanString(otDetalle),
+                cleanString(otDetalleDescripcion),
             )
         })
     }

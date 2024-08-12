@@ -22,7 +22,7 @@ class ProgramationController {
         this.programms = new ProgramasService()
     }
 
-    getAllProjectsWon = async (req, res) => {
+    getAllProjectsWon = async (req, res, next) => {
         const proyectosGanados = await this.programms.getAllProjectsWon()
 
         let username = res.locals.username

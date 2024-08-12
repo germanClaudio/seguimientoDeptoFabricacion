@@ -12,6 +12,7 @@ let imageNotFound = "../../../src/images/upload/LogoClientImages/noImageFound.pn
 const csrf = require('csrf');
 const csrfTokens = csrf();
 
+
 class ClientsController {
     constructor() {
         this.clients = new ClientsService()
@@ -19,7 +20,7 @@ class ClientsController {
         this.projects = new ProjectsService()
     }
 
-    getAllClients = async (req, res) => {
+    getAllClients = async (req, res, next) => {
 
         let username = res.locals.username
         let userInfo = res.locals.userInfo
@@ -53,7 +54,7 @@ class ClientsController {
         }
     }
 
-    getClientProjectsById = async (req, res) => {
+    getClientProjectsById = async (req, res, next) => {
         const { id } = req.params
 
         let username = res.locals.username
@@ -90,7 +91,7 @@ class ClientsController {
         }
     }
 
-    getClientById = async (req, res) => {
+    getClientById = async (req, res, next) => {
         const { id } = req.params
         
         let username = res.locals.username
@@ -127,7 +128,7 @@ class ClientsController {
         }
     }
 
-    selectClientById = async (req, res) => {
+    selectClientById = async (req, res, next) => {
         const { id } = req.params
         
         let username = res.locals.username
@@ -164,7 +165,7 @@ class ClientsController {
         }
     }
 
-    createNewClient = async (req, res) => {
+    createNewClient = async (req, res, next) => {
         //------ Storage Client Logo Image in Google Store --------
         const storage = multer.memoryStorage({
             fileFilter: (req, file, cb) => {
@@ -180,7 +181,7 @@ class ClientsController {
             storage: storage
         }).single('imageLogoClient')
         
-        uploadMulter(req, res, async (err) => {
+        uploadMulter(req, res, next, async (err) => {
             if (err) {
                 err.dirNumber = 400;
                 return next(err);
@@ -293,7 +294,7 @@ class ClientsController {
         }).single('imageLogoUpdate')
 
         
-        uploadMulter(req, res, async (err) => {
+        uploadMulter(req, res, next, async (err) => {
             if (err) {
                 err.dirNumber = 400;
                 return next(err);
@@ -410,7 +411,7 @@ class ClientsController {
         })       
     }
 
-    updateClientProjectsQty = async (req, res) => {
+    updateClientProjectsQty = async (req, res, next) => {
         const id = req.params.id
         
         let username = res.locals.username
@@ -456,7 +457,7 @@ class ClientsController {
         }
     }
 
-    reduceClientProjectQty = async (req, res) => {
+    reduceClientProjectQty = async (req, res, next) => {
         const id = req.params.id
         
         let username = res.locals.username
@@ -501,7 +502,7 @@ class ClientsController {
         }
     }
 
-    deleteClientById = async (req, res) => {
+    deleteClientById = async (req, res, next) => {
         const clientId = req.params.id
 
         let username = res.locals.username
@@ -543,7 +544,7 @@ class ClientsController {
         }
     }
 
-    deleteAllClients = async (req, res) => {
+    deleteAllClients = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
 

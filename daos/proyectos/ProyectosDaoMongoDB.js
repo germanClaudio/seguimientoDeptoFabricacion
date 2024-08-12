@@ -5,6 +5,8 @@ const Clientes = require('../../models/clientes.models.js')
 
 let now = require('../../utils/formatDate.js')
 
+const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000}
+
 class ProyectosDaoMongoDB extends ContenedorMongoDB {
     constructor(cnxStr) {
         super(cnxStr)
@@ -12,24 +14,14 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
 
     async init() {
         // await this.connection
-        mongoose.connect(this.cnxStr, { //createConnection or connect
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        })
+        mongoose.connect(this.cnxStr, advancedOptions) //createConnection or connect
     }
 
     // get all Projects form DB ----------------
     async getAllProjects() {
         try {
             const projects = await Proyectos.find()
-            // .sort(
-            //     {
-            //         //'client.name': 1, 
-            //         'project.0.prioProject': 1,
-            //         'timestamp': 1
-            //     }
-            // )
-
+            
             if (projects === undefined || projects === null) {
                 return new Error('No hay proyectos cargados en ningún cliente!')
             } else {
@@ -130,7 +122,6 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
 
     // Create a New project ----------------------
     async createNewProject(project) {
-        
         if (project) {
             try {
                 const itemMongoDB = await Proyectos.findOne({ projectName: `${project.name}` })
@@ -167,15 +158,36 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
         }
     }
 
-    // Select one OCI by Oci Number ----------------
-    async selectOciByOciNumber(numberOci) {
+    // Get all OCI from all projects -----------
+    async getAllOciNumbers() {
+        try {
+            const ocis = await Proyectos.find(
+                'project.0.oci.' 
+            )
+            console.log('ocis: ', ocis)    
+            if (ocis === undefined || ocis === null) {
+                    return new Error('No hay ocis cargadas en este proyecto!')
+            } else {
+                return ocis
+            }
+
+        } catch (error) {
+            console.error("Error MongoDB getAllOciNumbers: ", error)
+            return new Error('No hay ocis en la DB!')
+        }
+    }
+
+    // Select one OCI by Oci Number and k OCI number----------------
+    async selectOciByOciNumber(numberOci, ociKNumber) {
         const numberOciParsed = parseInt(numberOci)
+        const numberKOciParsed = parseInt(ociKNumber)
+
         if (numberOciParsed) {
             try {
                 const project = await Proyectos.find({
-                    [`project.0.oci.${numberOciParsed}.ociNumber`]: numberOciParsed
+                    [`project.0.oci.${numberKOciParsed}.ociNumber`]: numberOciParsed
                 })
-                return project
+                return project ? numberOciParsed : null
 
             } catch (error) {
                 console.error("Error MongoDB selectOciByOciNumber: ", error)
@@ -188,6 +200,55 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
             } catch (error) {
                 console.error("Error MongoDB selectOciByOciNumber: ", error)
             }
+        }
+    }
+
+    // Select one OT by OT Number and k OT number----------------
+    async selectOtByOtNumber(numberOt, otKNumber, ociKNumber) {
+        const numberKOciParsed = parseInt(ociKNumber)
+        const numberOtParsed = parseInt(numberOt)
+        const numberKOtParsed = parseInt(otKNumber)
+
+        if (numberOtParsed) {
+            try {
+                const project = await Proyectos.find({
+                    [`project.0.oci.${numberKOciParsed}.otProject.${numberKOtParsed}.otNumber`]: numberOtParsed
+                })
+                return project ? numberOtParsed : null
+
+            } catch (error) {
+                console.error("Error MongoDB selectOtByOtNumber: ", error)
+            }
+
+        } else {
+            try {
+                const projects = await Proyectos.find()
+                return projects
+            } catch (error) {
+                console.error("Error MongoDB selectOtByOtNumber: ", error)
+            }
+        }
+    }
+
+    async getExistingProject(projectInput, projectCodeInput) {
+                
+        if (projectInput && projectCodeInput) {
+            const existingProject = await Proyectos.findOne(
+                { $or: [ {projectName: `${projectInput}`},
+                         {codeProject: `${projectCodeInput}`}
+                        ]
+                }
+            );
+
+            if (existingProject) {
+                return existingProject
+                
+            } else {
+                return false
+            }
+
+        } else {
+            return new Error (`No se pudo encontrar el Proyecto!`)
         }
     }
 
@@ -380,11 +441,14 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                 
                                 // Recupero los datos originales y comparo, ya que solo el dato que se modifica cambia su Revision
                                 let otInfoR14Length = parseInt(itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoR14.length)
+                                
+                                let pathToMongoDB = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoR14[otInfoR14Length-1]
+                                
                                 if (otInfoR14Length > 0) {
-                                    var procesoR14Initial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoR14[otInfoR14Length-1].procesoR14
-                                    var revisionProcesoR14Initial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoR14[otInfoR14Length-1].revisionProcesoR14
-                                    var aprobadoR14Initial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoR14[otInfoR14Length-1].aprobadoR14
-                                    var revisionAprobadoR14Initial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoR14[otInfoR14Length-1].revisionAprobadoR14
+                                    var procesoR14Initial = pathToMongoDB.procesoR14
+                                    var revisionProcesoR14Initial = pathToMongoDB.revisionProcesoR14
+                                    var aprobadoR14Initial = pathToMongoDB.aprobadoR14
+                                    var revisionAprobadoR14Initial = pathToMongoDB.revisionAprobadoR14
                                 } else {
                                     var procesoR14Initial = 'sinDato'
                                     var revisionProcesoR14Initial = 0
@@ -552,11 +616,14 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                 
                                 // Recupero los datos originales y comparo, ya que solo el dato que se modifica cambia su Revision
                                 let otInfoProceso3dLength = parseInt(itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoProceso.length)
+                                
+                                let pathToMongoDB = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoProceso[otInfoProceso3dLength-1]
+                                
                                 if (otInfoProceso3dLength > 0) {
-                                    var proceso3dInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoProceso[otInfoProceso3dLength-1].proceso3d
-                                    var revisionProceso3dInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoProceso[otInfoProceso3dLength-1].revisionProceso3d
-                                    var horasProceso3dInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoProceso[otInfoProceso3dLength-1].horasProceso3d
-                                    var revisionHorasProceso3dInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoProceso[otInfoProceso3dLength-1].revisionHorasProceso3d
+                                    var proceso3dInitial = pathToMongoDB.proceso3d
+                                    var revisionProceso3dInitial = pathToMongoDB.revisionProceso3d
+                                    var horasProceso3dInitial = pathToMongoDB.horasProceso3d
+                                    var revisionHorasProceso3dInitial = pathToMongoDB.revisionHorasProceso3d
                                 } else {
                                     var proceso3dInitial = 'sinDato'
                                     var revisionProceso3dInitial = 0
@@ -725,18 +792,21 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                 // Recupero el creador y la fecha inicial, ya que solo se modifica
                                 let creatorInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].creator[0]
                                 let timestampInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].timestamp
-                                
+
                                 // Recupero los datos originales y comparo, ya que solo el dato que se modifica cambia su Revision
                                 let otInfoDisenoPrimeraLength = parseInt(itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoPrimera.length)
+                                
+                                let pathToMongoDB = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoPrimera[otInfoDisenoPrimeraLength-1]
+                                
                                 if (otInfoDisenoPrimeraLength > 0) {
-                                    var avDisenoInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoPrimera[otInfoDisenoPrimeraLength-1].avDiseno
-                                    var revisionAvDisenoInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoPrimera[otInfoDisenoPrimeraLength-1].revisionAvDiseno
-                                    var avDiseno50Initial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoPrimera[otInfoDisenoPrimeraLength-1].avDiseno50
-                                    var revisionAvDiseno50Initial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoPrimera[otInfoDisenoPrimeraLength-1].revisionAvDiseno50
-                                    var avDiseno80Initial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoPrimera[otInfoDisenoPrimeraLength-1].avDiseno80
-                                    var revisionAvDiseno80Initial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoPrimera[otInfoDisenoPrimeraLength-1].revisionAvDiseno80
-                                    var envioClienteInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoPrimera[otInfoDisenoPrimeraLength-1].envioCliente
-                                    var revisionEnvioClienteInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoPrimera[otInfoDisenoPrimeraLength-1].revisionEnvioCliente
+                                    var avDisenoInitial = pathToMongoDB.avDiseno
+                                    var revisionAvDisenoInitial = pathToMongoDB.revisionAvDiseno
+                                    var avDiseno50Initial = pathToMongoDB.avDiseno50
+                                    var revisionAvDiseno50Initial = pathToMongoDB.revisionAvDiseno50
+                                    var avDiseno80Initial = pathToMongoDB.avDiseno80
+                                    var revisionAvDiseno80Initial = pathToMongoDB.revisionAvDiseno80
+                                    var envioClienteInitial = pathToMongoDB.envioCliente
+                                    var revisionEnvioClienteInitial = pathToMongoDB.revisionEnvioCliente
                                 } else {
                                     var avDisenoInitial = 0
                                     var revisionAvDisenoInitial = 0
@@ -926,15 +996,18 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                 
                                 // Recupero los datos originales y comparo, ya que solo el dato que se modifica cambia su Revision
                                 let otInfoDisenoSegundaLength = parseInt(itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoSegunda.length)
+
+                                let pathToMongoDB = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoSegunda[otInfoDisenoSegundaLength-1]
+
                                 if (otInfoDisenoSegundaLength > 0) {
-                                    var av100DisenoInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoSegunda[otInfoDisenoSegundaLength-1].avDiseno100
-                                    var revisionAv100DisenoInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoSegunda[otInfoDisenoSegundaLength-1].revisionAvDiseno100
-                                    var revisionClienteInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoSegunda[otInfoDisenoSegundaLength-1].revisionCliente
-                                    var revisionRevisionClienteInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoSegunda[otInfoDisenoSegundaLength-1].revisionRevisionCliente
-                                    var ldmProvisoriaInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoSegunda[otInfoDisenoSegundaLength-1].ldmProvisoria
-                                    var revisionLdmProvisoriaInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoSegunda[otInfoDisenoSegundaLength-1].revisionLdmProvisoria
-                                    var aprobadoClienteInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoSegunda[otInfoDisenoSegundaLength-1].aprobadoCliente
-                                    var revisionAprobadoClienteInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoDisenoSegunda[otInfoDisenoSegundaLength-1].revisionAprobadoCliente
+                                    var av100DisenoInitial = pathToMongoDB.avDiseno100
+                                    var revisionAv100DisenoInitial = pathToMongoDB.revisionAvDiseno100
+                                    var revisionClienteInitial = pathToMongoDB.revisionCliente
+                                    var revisionRevisionClienteInitial = pathToMongoDB.revisionRevisionCliente
+                                    var ldmProvisoriaInitial = pathToMongoDB.ldmProvisoria
+                                    var revisionLdmProvisoriaInitial = pathToMongoDB.revisionLdmProvisoria
+                                    var aprobadoClienteInitial = pathToMongoDB.aprobadoCliente
+                                    var revisionAprobadoClienteInitial = pathToMongoDB.revisionAprobadoCliente
                                 } else {
                                     var av100DisenoInitial = 0
                                     var revisionAv100DisenoInitial = 0
@@ -1084,7 +1157,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
 
                                 // Se crea el array de datos a agregar --
                                 let updateQuery = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.OtInfoInfo80`]:
+                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.otInfoInfo80`]:
                                     {
                                         ldmAvanceCG: infoAddedToOt[i].ldmAvanceCG,
                                         revisionLdmAvanceCG: infoAddedToOt[i].revisionLdmAvanceCG+1,
@@ -1286,7 +1359,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
 
                                 // Se crea el array de datos a agregar --
                                 let updateQuery = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.OtInfoInfo100`]:
+                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.otInfoInfo100`]:
                                     {
                                         ldm100: infoAddedToOt[i].ldm100,
                                         revisionLdm100: infoAddedToOt[i].revisionLdm100+1,
@@ -1462,7 +1535,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
 
                                 // Se crea el array de datos a agregar --
                                 let updateQuery = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.OtInfoSim0`]:
+                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.otInfoSim0`]:
                                     {
                                         sim0: infoAddedToOt[i].sim0,
                                         revisionSim0: infoAddedToOt[i].revisionSim0+1,
@@ -1638,7 +1711,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
 
                                 // Se crea el array de datos a agregar --
                                 let updateQuery = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.OtInfoSim1`]:
+                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.otInfoSim1`]:
                                     {
                                         sim1: infoAddedToOt[i].sim1,
                                         revisionSim1: infoAddedToOt[i].revisionSim1+1,
@@ -1853,7 +1926,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
 
                                 // Se crea el array de datos a agregar --
                                 let updateQuery = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.OtInfoSim2_3`]:
+                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.otInfoSim2_3`]:
                                     {
                                         sim2: infoAddedToOt[i].sim2,
                                         revisionSim2: infoAddedToOt[i].revisionSim2+1,
@@ -2056,7 +2129,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
 
                                 // Se crea el array de datos a agregar --
                                 let updateQuery = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.OtInfoSim4Primera`]:
+                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.otInfoSim4Primera`]:
                                     {
                                         matEnsayo: infoAddedToOt[i].matEnsayo,
                                         revisionMatEnsayo: infoAddedToOt[i].revisionMatEnsayo+1,
@@ -2259,7 +2332,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
 
                                 // Se crea el array de datos a agregar --
                                 let updateQuery = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.OtInfoSim4Segunda`]:
+                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.otInfoSim4Segunda`]:
                                     {
                                         informeSim4: infoAddedToOt[i].informeSim4,
                                         revisionInformeSim4: infoAddedToOt[i].revisionInformeSim4+1,
@@ -2403,6 +2476,182 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
         }
     }
 
+    // ***************** Add Info Simulacion 5 to Ot's ----------------
+    async addInfoSim5ToOtProject(idProjectTarget, otQuantity, ociNumberK, infoAddedToOt) {
+
+        const ociKNumber = parseInt(ociNumberK) || 0
+        const quantityOt = parseInt(otQuantity)
+
+        // compara si el proyecto existe --------
+        if (idProjectTarget) {
+            try {
+                const itemMongoDB = await Proyectos.findById({ _id: idProjectTarget })
+                // console.log('itemMongoDB', itemMongoDB.project[0].oci[0])
+                
+                // Si encontro el proyecto en la BBDD ----- 
+                if (itemMongoDB) {
+                    let arrayQuantity = []
+                    let arrayStructureTree = []
+                    let arrayTreeCreation = []
+                    let countInfoAdded = 0
+                    let countTreeCreation = 0
+
+                    //Se verifica si la estructura del arbol existe en la BBDD -----
+                    let arrayStructureTreeExists = []
+                    for (let i = 0; i < quantityOt; i++) {
+                        const treeOtInformation = itemMongoDB.project[0].oci[`${ociKNumber}`].otProject[`${i}`].otInformation
+                        // console.log('0.1-Dao-treeOtInformation----> ',treeOtInformation, ' i=',i)
+                        treeOtInformation ? arrayStructureTreeExists.push(true) : arrayStructureTreeExists.push(false)
+                    }
+                        // console.log('0.2-Dao-arrayStructureTreeExists----> ',arrayStructureTreeExists)
+
+                        for (let i = 0; i < quantityOt; i++) {
+                            // Si no existe la extructura del arbol, se crea la estructura a agregar --
+                            if (!arrayStructureTreeExists[i]) {
+                                let estructuraACrear = {
+                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation`]:
+                                    {
+                                        otInfoSim5: []
+                                    }
+                                }
+                                // console.log('0.3-Dao-estructuraACrear: ', i,' - ', estructuraACrear)
+                                if (estructuraACrear) {
+                                    arrayStructureTree.push(estructuraACrear)
+                                }
+
+                                // console.log('1-Dao-arrayStructureTree-- ', i,' - ', arrayStructureTree[i])
+
+                                // Se agrega la estructura al arbol de MongoDB ---
+                                const treeInfoOtAddedToOt = await Proyectos.updateOne(
+                                    { _id: itemMongoDB._id },
+                                    {
+                                        $set: arrayStructureTree[i] || estructuraACrear
+                                    },
+                                    { upsert: true }
+                                )
+                                arrayTreeCreation.push(treeInfoOtAddedToOt)
+                            
+                                // console.log('2-Dao-Estructura arbol creada: ', i,' - ', arrayTreeCreation)
+
+                                // Se crea el array de datos a agregar --
+                                let updateQuery = {
+                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.otInfoSim5`]:
+                                    {
+                                        grillado: infoAddedToOt[i].grillado,
+                                        revisionGrillado: infoAddedToOt[i].revisionGrillado+1,
+                                        mpEnsayada: infoAddedToOt[i].mpEnsayada,
+                                        revisionMpEnsayada: infoAddedToOt[i].revisionMpEnsayada+1,
+                                                                                
+                                        creator: infoAddedToOt[i].creator,
+                                        timestamp: now,
+                                        modificator: infoAddedToOt[i].modificator,
+                                        modifiedOn: ''
+                                    }
+                                }
+                                    arrayQuantity.push(updateQuery)
+
+                                    // Si arrayTreeCreation.modifiedCount es = a 1 ---
+                                    if (arrayTreeCreation[i].modifiedCount===1) {
+                    
+                                        var infoSim5AddedToOt = await Proyectos.updateOne(
+                                            { _id: itemMongoDB._id },
+                                            {
+                                                $push: arrayQuantity[i]
+                                            },
+                                            { new: true }
+                                        )
+                                        countTreeCreation++
+                                    }
+                                    // console.log('3-Dao-Ot agregada: ', i,' - ', infoSim5AddedToOt)
+                            
+                            } else {
+
+                                // Recupero el creador y la fecha inicial, ya que solo se modifica
+                                let creatorInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].creator[0]
+                                let timestampInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].timestamp
+                                
+                                // Recupero los datos originales y comparo, ya que solo el dato que se modifica cambia su Revision
+                                let otInfoSim5Length = parseInt(itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoSim5.length)
+                                
+                                let pathToMongoDB = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoSim5[otInfoSim5Length-1]
+
+                                if (otInfoSim5Length > 0) {
+                                    var grilladoInitial = pathToMongoDB.grillado
+                                    var revisionGrilladoInitial = pathToMongoDB.revisionGrillado
+                                    var mpEnsayadaInitial = pathToMongoDB.mpEnsayada
+                                    var revisionMpEnsayadaInitial = pathToMongoDB.revisionMpEnsayada
+
+                                } else {
+                                    var grilladoInitial = 'sinDato'
+                                    var revisionGrilladoInitial = 0
+                                    var mpEnsayadaInitial = 'sinDato'
+                                    var revisionMpEnsayadaInitial = 0
+                                }
+
+                                infoAddedToOt[i].grillado == grilladoInitial ?                                    
+                                    infoAddedToOt[i].revisionGrillado = parseInt(revisionGrilladoInitial)
+                                :
+                                    infoAddedToOt[i].revisionGrillado = parseInt(revisionGrilladoInitial)+1
+
+                                infoAddedToOt[i].mpEnsayada == mpEnsayadaInitial ?                                    
+                                    infoAddedToOt[i].revisionMpEnsayadaInitial = parseInt(revisionMpEnsayadaInitial)
+                                :
+                                    infoAddedToOt[i].revisionMpEnsayadaInitial = parseInt(revisionMpEnsayadaInitial)+1
+
+
+                                // Si existe la extructura del arbol, se crea el array de datos a agregar --
+                                let updateQuery = {
+                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.otInfoSim5`]:
+                                    {
+                                        grillado: infoAddedToOt[i].grillado,
+                                        revisionGrillado: infoAddedToOt[i].revisionGrillado,
+                                        mpEnsayada: infoAddedToOt[i].mpEnsayada,
+                                        revisionMpEnsayada: infoAddedToOt[i].revisionMpEnsayada,
+                                        
+                                        creator: creatorInitial,
+                                        timestamp: timestampInitial,
+                                        modificator: infoAddedToOt[i].creator,
+                                        modifiedOn: now
+                                    }
+                                }
+                                    arrayQuantity.push(updateQuery)
+                                    //console.log('5-Dao-arrayQuantity-- ', i,' - ', arrayQuantity)
+                    
+                                    await Proyectos.updateOne(
+                                        { _id: itemMongoDB._id },
+                                        {
+                                            $push: arrayQuantity[i]
+                                        },
+                                        { new: true }
+                                    )
+                                    countInfoAdded++
+                            }
+                        }
+
+                        // Si el recuento de info agregada o creacion de arbol es mayor a 0
+                        if (countInfoAdded > 0 || countTreeCreation > 0 ) {
+                            
+                            const itemUpdated = await Proyectos.findById({ _id: idProjectTarget })
+                            // console.log('5.1-Dao-proyecto: ', itemUpdated.project[0].oci)
+                            return itemUpdated
+
+                        } else {
+                            return new Error(`No se agregó la info de OT en el item: ${itemMongoDB._id}`)
+                        }
+
+                } else {
+                    return new Error(`No se encontró el Proyecto id#`)
+                }
+
+            } catch (error) {
+                //console.log("Error MongoDB adding info Simulacion 5 to OT: ", error)
+                console.error("Error MongoDB adding info Simulacion 5 to OT: ", error)
+            }
+
+        } else {
+            return new Error(`No se pudo agregar la info Simulacion 4 Segunda a la OT del Proyecto!`)
+        }
+    }
 
 
     // Update Status Project by Project Id
@@ -2739,8 +2988,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                 statusOci=='on' ? booleanStatus=true : booleanStatus=false
                 ociImage ? ociImage : itemMongoDB.project[0].oci[numberOciK].ociImage
 
-                if (itemMongoDB) {
-                    
+                if (itemMongoDB) {            
                     var updatedOci = await Proyectos.updateOne(
                         { _id: itemMongoDB._id },
                         {
