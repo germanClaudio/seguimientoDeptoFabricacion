@@ -16,9 +16,25 @@ const multer = require('multer')
 let userPictureNotFound = "../../../src/images/upload/AvatarUsersImages/incognito.jpg"
 const cookie = require('../utils/cookie.js')
 
+const data = require('../utils/variablesInicializator.js')
+
+const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
 
 const sessionTime = parseInt(process.env.SESSION_TIME) // 12 HORAS
 
+const {catchError400,
+    catchError400_1,
+    catchError400_2,
+    catchError400_3,
+    catchError400_4,
+    catchError403,
+    catchError401,
+    catchError401_1,
+    catchError401_2,
+    catchError401_3,
+    catchError401_4,
+    catchError500
+} = require('../utils/catchErrors.js')
 
 class UsersController {  
     constructor(){
@@ -228,7 +244,7 @@ class UsersController {
                         lastName: req.body.lastName,
                         email: emailInput,
                         username: usernameInput,
-                        legajoId: legajoIdInput,
+                        legajoId: parseInt(legajoIdInput),
                         avatar: req.body.imageTextAvatarUser || userPictureNotFound,
                         password: req.body.password,
                         permiso: selectFieldPermiso,
@@ -253,7 +269,6 @@ class UsersController {
                     }
     
                     const csrfToken = csrfTokens.create(req.csrfSecret);
-                    
                     return res.render('addNewUser', {
                         usuario,
                         username,

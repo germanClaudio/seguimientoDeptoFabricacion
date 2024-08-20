@@ -1,7 +1,7 @@
-<div class="card mx-auto" style="width: 93vw;">
+<!-- <div class="card mx-auto" style="width: 93vw;">
     <div class="card card-body d-flex justify-content-center">
-        <div class="form-group col-12 mx-auto my-2 w-100 border px-5 py-1 text-white rounded" style="background-color: #868686;">
-            <form action="/api/proyectos" enctype="multipart/form-data" method="post" id="formNewProject">
+        <div class="form-group col-12 mx-auto my-2 w-100 border px-5 py-1 text-white rounded" style="background-color: #868686;"> -->
+            <!-- <form action="/api/proyectos/newProject" enctype="multipart/form-data" method="post" id="formNewProject">
                 <fieldset>
                     <div class="row my-3">
                         <div class="col-3">
@@ -180,17 +180,13 @@
                         </div>
                     </div>
                     <hr>
-                    <input type="hidden" name="idHidden" id="idHidden" value="<%= userInfo.id %>">
-                    <input type="hidden" name="clientIdHidden" id="clientIdHidden" value="<%= cliente._id %>">
-                    <input type="hidden" name="ociQuantity" id="ociQuantity" value="1">
-                    <input type="hidden" name="_csrf" id="_csrf" value="<%= csrfToken %>">
                     <br>
                     <div class="d-flex justify-content-center mb-3">
                         <button
                             id="btnNewProject"
                             type="button"
-                            class="btn btn-primary me-4">Guardar
-                            <i class="fa-solid fa-save"></i>
+                            class="btn btn-primary me-4">
+                            Guardar <i class="fa-solid fa-save"></i>
                         </button>
                         <button
                             type="reset"
@@ -198,11 +194,15 @@
                                 Reset <i class="fa-solid fa-rotate-left"></i>
                         </button>
                     </div>
+                    <input type="hidden" name="idHidden" id="idHidden" value="<%= userInfo.id %>">
+                    <input type="hidden" name="clientIdHidden" id="clientIdHidden" value="<%= cliente._id %>">
+                    <input type="hidden" name="ociQuantity" id="ociQuantity" value="1">
+                    <input type="hidden" name="_csrf" id="_csrf" value="<%= csrfToken %>">
                 </fieldset>
             </form>
             <div id="mensajeError" class="alert alert-warning align-items-center justify-content-center w-50 mx-auto" role="alert"
                 style="display: none; font-size: 0.85rem; height: 1.15rem;">
-            </div>
-        </div>
+            </div> -->
+        <!-- </div>
     </div>
-</div>
+</div> -->

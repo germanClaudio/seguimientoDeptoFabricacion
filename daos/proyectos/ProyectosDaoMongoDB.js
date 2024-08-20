@@ -127,7 +127,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                 const itemMongoDB = await Proyectos.findOne({ projectName: `${project.name}` })
                 if (itemMongoDB) {
                     console.error("Proyecto con Nombre existente!! ")
-                    return new Error(`Proyecto ya existe con este nombre: ${project.name}!`)
+                    return false
                 } else {
                     const newProject = new Proyectos(project)
                     await newProject.save()

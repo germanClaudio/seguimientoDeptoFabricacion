@@ -49,7 +49,7 @@ const renderUser = (arrUsers) => {
                 showArea = grey
                 optionArea = yellow
             } else if (element.area === "proyectos") {
-                showArea = dark
+                showArea = "Proyectos"
                 optionArea = yellow
             } else {
                 showArea = 'Todas'
@@ -464,6 +464,7 @@ function messageNewUser(name, lastName, username, legajoId, email) {
                         'success'
                     )
                 }, 1000)
+                
             } else {
                 Swal.fire(
                     'No registrado!',
@@ -473,6 +474,16 @@ function messageNewUser(name, lastName, username, legajoId, email) {
                 return false
             }
           })
+    } else {
+        swal.fire({
+            title: 'Error',
+            position: 'center',
+            timer: 3500,
+            text: `El usuario no se creó correctamente!`,
+            icon: 'error',
+            showCancelButton: true,
+            showConfirmButton: false,
+        })
     }
 }
 

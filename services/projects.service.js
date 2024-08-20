@@ -8,47 +8,47 @@ class ProjectService {
 
     // returns all projects
     async getAllProjects() {
-        return this.proyectos.getAllProjects()
+        return await this.proyectos.getAllProjects()
     }
 
     // returns all projects from one Client
     async getProjectsByClientId(data) {
-        return this.proyectos.getProjectsByClientId(data)
+        return await this.proyectos.getProjectsByClientId(data)
     }
 
     // returns one project from a ProjectId
     async selectProjectByProjectId(idProject) {
-        return this.proyectos.selectProjectByProjectId(idProject)
+        return await this.proyectos.selectProjectByProjectId(idProject)
     }
 
     // returns all projects from a Main ProjectId
     async selectProjectsByMainProjectId(idProject) {
-        return this.proyectos.selectProjectsByMainProjectId(idProject)
+        return await this.proyectos.selectProjectsByMainProjectId(idProject)
     }
 
      // returns a project from a Name Project
      async getExistingProject(project) {
-        return this.proyectos.getExistingProject(project)
+        return await this.proyectos.getExistingProject(project)
     }
 
     // returns all OCI from projects
     async getAllOciProjects() {
-        return this.proyectos.getAllOciProjects()
+        return await this.proyectos.getAllOciProjects()
     }
 
     // returns all OCI Numbers from one project
     async getAllOciNumbers() {
-        return this.proyectos.getAllOciNumbers()
+        return await this.proyectos.getAllOciNumbers()
     }
 
     // add new project to a Client
-    async addProjectToClient(payload) {
-        return this.proyectos.createNewProject(payload)
+    async createNewProject(project) {
+        return await this.proyectos.createNewProject(project)
     }
     
     // add new Ot to OCI - Project
     async addOtToOciProject(projectId, numberOci, ociNumberK, otAddedToOci) {
-        return this.proyectos.addOtToOciProject(
+        return await this.proyectos.addOtToOciProject(
             projectId,
             numberOci,
             ociNumberK, 
@@ -58,7 +58,7 @@ class ProjectService {
 
     // add Info R14 to Ot - Project
     async addInfoR14ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoR14ToOtProject(
+        return await this.proyectos.addInfoR14ToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
@@ -67,7 +67,7 @@ class ProjectService {
 
     // add Info Proceso 3D to Ot - Project
     async addInfoProceso3dToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoProceso3dToOtProject(
+        return await this.proyectos.addInfoProceso3dToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
@@ -76,7 +76,7 @@ class ProjectService {
 
      // add Info Avance Diseno Priemra Parte to Ot - Project
      async addInfoDisenoPrimeraToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoDisenoPrimeraToOtProject(
+        return await this.proyectos.addInfoDisenoPrimeraToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
@@ -85,7 +85,7 @@ class ProjectService {
 
     // add Info Avance Diseno Segunda Parte to Ot - Project
      async addInfoDisenoSegundaToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoDisenoSegundaToOtProject(
+        return await this.proyectos.addInfoDisenoSegundaToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
@@ -94,7 +94,7 @@ class ProjectService {
 
      // add Info 80% to Ot - Project
      async addInfo80ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfo80ToOtProject(
+        return await this.proyectos.addInfo80ToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
@@ -103,7 +103,7 @@ class ProjectService {
 
     // add Info 100% to Ot - Project
     async addInfo100ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfo100ToOtProject(
+        return await this.proyectos.addInfo100ToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
@@ -112,7 +112,7 @@ class ProjectService {
 
     // add Info Simulacion 0 to Ot - Project
     async addInfoSim0ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoSim0ToOtProject(
+        return await this.proyectos.addInfoSim0ToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
@@ -121,7 +121,7 @@ class ProjectService {
 
     // add Info Simulacion 1 to Ot - Project
     async addInfoSim1ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoSim1ToOtProject(
+        return await this.proyectos.addInfoSim1ToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
@@ -130,7 +130,7 @@ class ProjectService {
 
     // add Info Simulacion 2_3 to Ot - Project
     async addInfoSim2_3ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoSim2_3ToOtProject(
+        return await this.proyectos.addInfoSim2_3ToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
@@ -139,7 +139,7 @@ class ProjectService {
 
     // add Info Simulacion 4 Priemra to Ot - Project
     async addInfoSim4PrimeraToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoSim4PrimeraToOtProject(
+        return await this.proyectos.addInfoSim4PrimeraToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
@@ -148,7 +148,7 @@ class ProjectService {
 
     // add Info Simulacion 4 Segunda to Ot - Project
     async addInfoSim4SegundaToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoSim4SegundaToOtProject(
+        return await this.proyectos.addInfoSim4SegundaToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
@@ -157,7 +157,7 @@ class ProjectService {
 
     // add Info Simulacion 5 to Ot - Project
     async addInfoSim5ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoSim5ToOtProject(
+        return await this.proyectos.addInfoSim5ToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
@@ -168,17 +168,17 @@ class ProjectService {
     
     // Select OCI - Project
     async selectOciByOciNumber(numberOci, ociKNumber) {
-        return this.proyectos.selectOciByOciNumber(numberOci, ociKNumber)
+        return await this.proyectos.selectOciByOciNumber(numberOci, ociKNumber)
     }
 
     // Select OT - Project
     async selectOtByOtNumber(numberOt, otKNumber, ociKNumber) {
-        return this.proyectos.selectOtByOtNumber(numberOt, otKNumber, ociKNumber)
+        return await this.proyectos.selectOtByOtNumber(numberOt, otKNumber, ociKNumber)
     }
 
     // Update Status Project by id
     async updateStatusProject(id, project, statusProject, userInfo) {
-        return this.proyectos.updateStatusProject(
+        return await this.proyectos.updateStatusProject(
             id,
             project,
             statusProject,
@@ -187,7 +187,7 @@ class ProjectService {
 
     // Update Level Project by id
     async updateLevelProject(id, project, levelProject, userInfo) {
-        return this.proyectos.updateLevelProject(
+        return await this.proyectos.updateLevelProject(
             id,
             project,
             levelProject,
@@ -196,7 +196,7 @@ class ProjectService {
 
     // Update Status OCI by id Project
     async updateStatusOci(id, project, statusOci, ociKNumber, userInfo) {
-        return this.proyectos.updateStatusOci(
+        return await this.proyectos.updateStatusOci(
             id,
             project,
             statusOci,
@@ -206,7 +206,7 @@ class ProjectService {
 
     // Update Status OT by Ot Number
     async updateStatusOt(id, project, statusOt, ociKNumber, otKNumber, userInfo) {
-        return this.proyectos.updateStatusOt(
+        return await this.proyectos.updateStatusOt(
             id,
             project,
             statusOt,
@@ -217,7 +217,7 @@ class ProjectService {
 
     // add New Oci To Project
     async addNewOciToProject(id, project, ociKNumber, userInfo) {
-        return this.proyectos.addNewOciToProject(
+        return await this.proyectos.addNewOciToProject(
             id,
             project,
             ociKNumber,
@@ -238,7 +238,7 @@ class ProjectService {
             imageProject,
             userInfo
     ) {
-        return this.proyectos.updateProject(
+        return await this.proyectos.updateProject(
             id,
             project,
             statusProject,
@@ -263,7 +263,7 @@ class ProjectService {
             ociImage,
             userInfo) {
 
-        return this.proyectos.updateOci(
+        return await this.proyectos.updateOci(
             id,
             proyecto,
             statusOci,
@@ -289,7 +289,7 @@ class ProjectService {
         otSupplier,
         userInfo
     ) {
-        return this.proyectos.updateOt(
+        return await this.proyectos.updateOt(
             id,
             proyecto,
             ociKNumber,
@@ -306,7 +306,7 @@ class ProjectService {
 
     // remove one OCI from project by Id
     async deleteOci(id, project, ociKNumber, user) {
-        return this.proyectos.deleteOci(id, project, ociKNumber, user)
+        return await this.proyectos.deleteOci(id, project, ociKNumber, user)
     }
 
     // remove one OT from OCI by Id
@@ -317,7 +317,7 @@ class ProjectService {
         otKNumber, 
         userInfo
     ) {
-        return this.proyectos.deleteOt(
+        return await this.proyectos.deleteOt(
             id, 
             project, 
             ociKNumber, 
@@ -327,7 +327,7 @@ class ProjectService {
 
     // remove one project by Id
     async deleteProjectById(id, project, user) {
-        return this.proyectos.deleteProjectById(id, project, user)
+        return await this.proyectos.deleteProjectById(id, project, user)
     }
 }
 

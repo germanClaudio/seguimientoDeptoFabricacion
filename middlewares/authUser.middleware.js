@@ -2,7 +2,7 @@ const ContainerUsers = require('../daos/usuarios/UsuariosDaoFactory.js')
 const containerUser = ContainerUsers.getDaoUsers()
 
 const authUserMiddleware = async (req, res, next) => {
-    
+      
     res.locals.username = req.session.username
     res.locals.userInfo = await containerUser.getUserByUsername(req.session.username)
             

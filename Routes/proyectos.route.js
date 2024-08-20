@@ -1,8 +1,8 @@
 const { Router } = require('express')
 const routerProyectos = Router()
-// const { authMiddleware } = require('../middlewares/auth.middleware.js')
+
 const { checkAuthentication } = require('../middlewares/chekAuthentication.js')
-const { authUserMiddleware} = require('../middlewares/authUser.middleware.js')
+// const { authUserMiddleware} = require('../middlewares/authUser.middleware.js')
 
 const GetProjects = require('../controllers/proyectos.controller.js')
 const getProjects = GetProjects.ProjectsController
@@ -21,7 +21,7 @@ routerProyectos.get('/selectProject/:id', checkAuthentication, projects.selectPr
 routerProyectos.get('/oci-list/all', checkAuthentication, projects.getAllOciProjects)
 
 // -------------------  Crear Nuevo Proyecto ------------------------ 
-routerProyectos.post('/', checkAuthentication, authUserMiddleware, projects.createNewProject)
+routerProyectos.post('/newProject', checkAuthentication, projects.createNewProject) //authUserMiddleware
 
 // -------------------  Agregar informacion R14 a OT --------------------------- 
 routerProyectos.post('/otInfoR14', checkAuthentication, projects.addInfoR14ToOtProject)
@@ -65,39 +65,37 @@ routerProyectos.post('/otSimulacion5', checkAuthentication, projects.addInfoSim5
 routerProyectos.post('/oci', checkAuthentication, projects.addOtToOciProject)
 
 // -------------------  Actualizar Estado del Proyecto por Id ------------------ 
-routerProyectos.post('/updateStatusProject/:id', checkAuthentication, authUserMiddleware, projects.updateStatusProject)
+routerProyectos.post('/updateStatusProject/:id', checkAuthentication, projects.updateStatusProject)
 
 // -------------------  Actualizar Nivel del Proyecto por Id ------------------ 
-routerProyectos.post('/updateLevelProject/:id', checkAuthentication, authUserMiddleware, projects.updateLevelProject)
+routerProyectos.post('/updateLevelProject/:id', checkAuthentication, projects.updateLevelProject)
 
 // -------------------  Actualizar Estado de OCI por Id Proyecto ------------------ 
-routerProyectos.post('/updateStatusOci/:id', checkAuthentication, authUserMiddleware, projects.updateStatusOci)
+routerProyectos.post('/updateStatusOci/:id', checkAuthentication, projects.updateStatusOci)
 
 // -------------------  Actualizar Estado de OT por Id Proyecto ------------------ 
 routerProyectos.post('/updateStatusOt/:id', checkAuthentication, projects.updateStatusOt)
 
 // -------------------  Agregar Nueva OCI a Proyecto por Id Proyecto ------------------ 
-routerProyectos.post('/addNewOciToProject/:id', checkAuthentication, authUserMiddleware, projects.addNewOciToProject)
+routerProyectos.post('/addNewOciToProject/:id', checkAuthentication, projects.addNewOciToProject)
 
 // -------------------  Editar Proyecto por Id ------------------ 
-routerProyectos.post('/updateProject/:id', checkAuthentication, authUserMiddleware, projects.updateProject)
+routerProyectos.post('/updateProject/:id', checkAuthentication, projects.updateProject)
 
 // -------------------  Editar OCI por Id de Proyecto ------------------ 
 routerProyectos.post('/updateOci/:id', checkAuthentication, projects.updateOci)
 
 // -------------------  Eliminar OCI por Id de Proyecto ------------------ 
-routerProyectos.post('/deleteOci/:id', checkAuthentication, authUserMiddleware, projects.deleteOci)
+routerProyectos.post('/deleteOci/:id', checkAuthentication, projects.deleteOci)
 
 // -------------------  Editar OT por Id de Proyecto ------------------ 
 routerProyectos.post('/updateOt/:id', checkAuthentication, projects.updateOt)
 
 // -------------------  Eliminar OT por Id de Proyecto ------------------ 
-routerProyectos.post('/deleteOt/:id', checkAuthentication, authUserMiddleware, projects.deleteOt)
+routerProyectos.post('/deleteOt/:id', checkAuthentication, projects.deleteOt)
 
 // -------------------  Eliminar Proyecto por Id (Visible = false) ------------------ 
-routerProyectos.post('/deleteProject/:id', checkAuthentication, authUserMiddleware, projects.deleteProjectById)
+routerProyectos.post('/deleteProject/:id', checkAuthentication, projects.deleteProjectById)
 
-// -------------------  Eliminar todos los Proyectos (Status = Inactivo) ------------------ 
-// routerProyectos.get('/all/delete', checkAuthentication, authProductMiddleware, projects.deleteAllClients)
 
 module.exports = routerProyectos

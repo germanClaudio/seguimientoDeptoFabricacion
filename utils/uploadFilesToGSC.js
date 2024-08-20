@@ -11,15 +11,14 @@ const csrfTokens = csrf();
 
 //------Almacenar una sola imagen en GSC ---------
 async function uploadToGCS(req, res, next) {
-
-    const csrfToken = req.body._csrf;
-    if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-        const err = new Error ('Invalid CSRF token')
-        err.dirNumber = 403
-        return next(err)
-    }
+    // const csrfToken = req.body._csrf;
+    // if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
+    //     const err = new Error ('Invalid CSRF token')
+    //     err.dirNumber = 403
+    //     return next(err)
+    // }
     
-    if (!req.files) {
+    if (!req.file) {
         const err = new Error('No se agregó ningún archivo válido')
         err.dirNumber = 400
         return next(err)
@@ -42,6 +41,9 @@ async function uploadToGCS(req, res, next) {
     } else if (req.body.imageTextLogoUpdate) {
         newItemOrUpdate = req.body.imageTextLogoUpdate
         subFolderName = 'LogoClientImages';
+    } else if (req.body.imageProjectFileName) {
+        newItemOrUpdate = req.body.imageProjectFileName
+        subFolderName = 'projectImages';
     }
 
     let originalname = (newItemOrUpdate).match(/[^\/]+$/)[0]
@@ -94,15 +96,18 @@ Promise.all(uploadToGCS)
 //   next(err);
 });
 
+
+
 //------Almacenar una o varias imagenes (de una en una) en GSC ---------
 async function uploadToGCSingleFile(req, res, next) {
-    const csrfToken = req.body._csrf;
-    if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-        const err = new Error ('Invalid CSRF token')
-        err.dirNumber = 403
-        return next(err)
-    }
-    
+    // const csrfToken = req.body._csrf;
+    // if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
+    //     const err = new Error ('Invalid CSRF token')
+    //     err.dirNumber = 403
+    //     return next(err)
+    // }
+    console.log('req.file-uploadToGCSingleFile--> ', req.file)
+    console.log('req.files-uploadToGCSingleFile--> ', req.files)    
     if (!req.files) {
         const err = new Error('Error en carga de Imagen o Imagenes a Google Cloud Storage')
         err.dirNumber = 400
@@ -191,6 +196,14 @@ async function uploadToGCSingleFile(req, res, next) {
         }
     }
 };
+
+Promise.all(uploadToGCSingleFile)
+.then(() => {
+//   next();
+})
+.catch((err) => {
+//   next(err);
+});
 
 module.exports = {
     uploadToGCS,

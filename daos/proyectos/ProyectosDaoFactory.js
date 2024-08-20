@@ -22,7 +22,6 @@ switch (option) {
         // dao = new ClientesDaoMemoria()
         dao = new ProyectosDaoMongoDB(cnxStr)
         dao.init()
-
         break;
 }
 

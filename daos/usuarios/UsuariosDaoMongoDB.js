@@ -293,11 +293,12 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                         lastName: newUser.lastName,
                         email: newUser.email,
                         username: newUser.username,
-                        legajoId: newUser.userLegajoId,
+                        legajoId: newUser.legajoId,
                         avatar: newUser.avatar,
 
                         password: password,
                         permiso: newUser.permiso,
+                        area: newUser.area,
                         status: newUser.status,
                         admin: newUser.admin,
                         
@@ -584,6 +585,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                                 admin: updatedUser.admin,
                                 status: updatedUser.status,
                                 permiso: updatedUser.permiso,
+                                area: updatedUser.area,
                                 modificator: userModificator,
                                 modifiedOn: now
                             }

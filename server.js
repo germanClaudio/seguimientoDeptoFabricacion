@@ -3,7 +3,7 @@ const logger = require('morgan')
 const session = require('express-session')
 const cookieParser = require('cookie-parser');
 const csrf = require('csrf');
-const path = require('path')
+const path = require('path');
 
 require('dotenv').config({
     path: process.env.MODO === 'dev'
