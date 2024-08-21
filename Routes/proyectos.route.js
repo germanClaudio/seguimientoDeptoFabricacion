@@ -21,7 +21,7 @@ routerProyectos.get('/selectProject/:id', checkAuthentication, projects.selectPr
 routerProyectos.get('/oci-list/all', checkAuthentication, projects.getAllOciProjects)
 
 // -------------------  Crear Nuevo Proyecto ------------------------ 
-routerProyectos.post('/newProject', checkAuthentication, projects.createNewProject) //authUserMiddleware
+routerProyectos.post('/newProject/:id', checkAuthentication, projects.createNewProject) //authUserMiddleware
 
 // -------------------  Agregar informacion R14 a OT --------------------------- 
 routerProyectos.post('/otInfoR14', checkAuthentication, projects.addInfoR14ToOtProject)

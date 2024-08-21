@@ -3,6 +3,7 @@ const ClientesService = require("../services/clients.service.js")
 const UserService = require("../services/users.service.js")
 
 const { uploadToGCS, uploadToGCSingleFile } = require("../utils/uploadFilesToGSC.js")
+const { uploadMulterMultiImages, uploadMulterSingleImageProject, uploadMulterSingleImageOci } = require("../utils/uploadMulter.js")
 
 let now = require('../utils/formatDate.js')
 
@@ -30,6 +31,7 @@ const {catchError400,
        catchError401_4,
        catchError500
 } = require('../utils/catchErrors.js')
+
 
 class ProjectsController {
     constructor() {
@@ -170,89 +172,58 @@ class ProjectsController {
     }
 
     createNewProject = async (req, res, next) => {
-        //------ Storage Project and OCI Images in Google Store --------
-        const storage = multer.memoryStorage(); // Almacenamiento en memoria para cargar archivos temporalmente
-        
-        const uploadImageMulter = multer({
-            storage: storage,
-            fileFilter: (req, file, cb) => {
-                console.log('file:', file)
-                if (file.mimetype.startsWith('image/')) {
-                    cb(null, true);
-                } else {
-                    cb(new Error('Solo se permiten imágenes'));
+       
+        uploadMulterMultiImages(req, res, async (err) => {
+            try {
+                let username = res.locals.username
+                let userInfo = res.locals.userInfo
+                const expires = cookie(req)
+                
+                const userId = userInfo.id
+                const userCreator = await this.users.getUserById(userId)
+                if (!userCreator) {
+                    catchError401_3(req, res, next)
                 }
-            }
-        }).any()
+                
+                const clientId = req.params.id
+                const clienteSeleccionado = await this.clients.selectClientById(clientId)
+                if (!clienteSeleccionado) {
+                    catchError401(req, res, next)
+                }
+                
+                if (req.files && req.files.length != 0) {
+                    await uploadToGCSingleFile(req, res, next)
+                }
 
-        uploadImageMulter(req, res, next, async (err) => {
-            console.log('req:', req);
-            if (err instanceof multer.MulterError) {
-                // Errores relacionados con multer (ej. tamaño de archivo)
-                console.log('Error Multer: ', err);
-            } else if (err) {
-                // Errores generales (ej. validación fallida)
-                console.log('Error en la carga del archivo: ', err);
-            } else {
-                // Proceso exitoso
-                console.log('Archivo subido correctamente');
-                console.log('req.files:', req.files);
+                let arrayOciNumber=[],
+                    arrayOciDescription=[],
+                    arrayOciAlias=[],
+                    arrayOciStatus=[],
+                    arrayOciImages=[]
 
-                try {
-                    if (req.files && req.files.length != 0) {
-                        await uploadToGCSingleFile(req, res, next)
+                for (const key in req.body) {
+                    if (key.startsWith('ociNumber')) {
+                        arrayOciNumber.push(req.body[key])
                     }
-
-                    let username = res.locals.username
-                    let userInfo = res.locals.userInfo
-                    const expires = cookie(req)
-
-                    // const csrfToken = req.cookies.csrfSecret;
-                    // if (csrfTokens.verify(req.csrfSecret, csrfToken)) {
-                    //     catchError403(req, res, next)
-                    // }
-
-                    const userId = userInfo.id
-                    const userCreator = await this.users.getUserById(userId)
-                    if (!userCreator) {
-                        catchError401_3(req, res, next)
+                    else if (key.startsWith('ociDescription')) {
+                        arrayOciDescription.push(req.body[key])
                     }
-    
-                    const clientId = req.body.clientIdHidden
-                    const clienteSeleccionado = await this.clients.selectClientById(clientId)
-                    if (!clienteSeleccionado) {
-                        catchError401(req, res, next)
+                    else if (key.startsWith('ociAlias')) {
+                        arrayOciAlias.push(req.body[key])
                     }
-    
-                    let arrayOciNumber=[],
-                        arrayOciDescription=[],
-                        arrayOciAlias=[],
-                        arrayOciStatus=[],
-                        arrayOciImages=[]
-    
-                    for (const key in req.body) {
-                        if (key.startsWith('ociNumber')) {
-                            arrayOciNumber.push(req.body[key])
-                        }
-                        else if (key.startsWith('ociDescription')) {
-                            arrayOciDescription.push(req.body[key])
-                        }
-                        else if (key.startsWith('ociAlias')) {
-                            arrayOciAlias.push(req.body[key])
-                        }
-                        else if (key.startsWith('ociStatus')) {
-                            arrayOciStatus.push(req.body[key])
-                        }
-                        else if (key.startsWith('imageOciFileName')) {
-                            arrayOciImages.push(req.body[key])
-                        }
+                    else if (key.startsWith('ociStatus')) {
+                        arrayOciStatus.push(req.body[key])
                     }
-    
-                    const ociKNumber = 0
-                    let invalidOciNumber = true
-                    let indexArrayOciNumber = 0
-                    for (let h=0; h<arrayOciNumber.length; h++) {
-                        const ociNumberValid = await this.projects.selectOciByOciNumber(arrayOciNumber[h], ociKNumber)
+                    else if (key.startsWith('imageOciFileName')) {
+                        arrayOciImages.push(req.body[key])
+                    }
+                }
+
+                const ociKNumber = 0
+                let invalidOciNumber = true
+                let indexArrayOciNumber = 0
+                for (let h=0; h<arrayOciNumber.length; h++) {
+                    const ociNumberValid = await this.projects.selectOciByOciNumber(arrayOciNumber[h], ociKNumber)
 //                     const otherOciNumbers = proyecto[0].project[0].oci.map(oci => oci.ociNumber);
 //                     console.log('otherOciNumbers ', otherOciNumbers)
 //                     if (otherOciNumbers.includes(parseInt(ociNumberValid))) {
@@ -260,117 +231,117 @@ class ProjectsController {
 //                         indexArrayOciNumber = h
 //                         break;
 //                     }
-                    }
-                
-                    if (!invalidOciNumber) {
-                        const err = new Error (`Ya existe una OCI# ${arrayOciNumber[indexArrayOciNumber]} o Numero de OCI inválido!`)
-                        err.statusCode = 400
-                        return next(err);
-                    }
-    
-                    let arrayOciProjects = []
-                    const ociQuantity = parseInt(req.body.ociQuantity)
+                }
+            
+                if (!invalidOciNumber) {
+                    const err = new Error (`Ya existe una OCI# ${arrayOciNumber[indexArrayOciNumber]} o Numero de OCI inválido!`)
+                    err.statusCode = 400
+                    return next(err);
+                }
 
-                    if (ociQuantity <= 0) {
-                        return catchError400_1(req, res, next)
+                let arrayOciProjects = []
+                const ociQuantity = parseInt(req.body.ociQuantity)
 
-                    } else {
-                        for(let i=0; i<ociQuantity; i++) {
-                            var ociProject = {
-                                ociNumber: parseInt(arrayOciNumber[i]),
-                                ociDescription: arrayOciDescription[i],
-                                ociAlias: arrayOciAlias[i],
-                                ociStatus: arrayOciStatus[i] == 'on' ? true : false,
-                                creator: dataUserCreator(userCreator),
-                                timestamp: now,
-                                ociImage: arrayOciImages[i] || imageNotFound,
-                                modificator: dataUserModificatorEmpty(),
-                                modifiedOn: "",
-                                visible: true
-                            }
-                            arrayOciProjects.push(ociProject)
-                        }
-                    }  
-                
-                    const projectInput = req.body.projectName
-                    const projectCodeInput = req.body.codeProject
-                    const projectNameExist = await this.users.getExistingProject(projectInput, projectCodeInput);
-                    if (projectNameExist) {
-                        catchError400_2(req, res, next)
-                    }
-    
-                    const selectFieldLevel = req.body.levelProject;
-                    if (validateSelectField(selectFieldLevel)) {
-                        
-                        const project = {
-                            projectName: projectInput,
-                            statusProject: req.body.statusProject == 'on' ? true : false,
-                            levelProject: selectFieldLevel,
-                            codeProject: projectCodeInput,
-                            projectDescription: req.body.projectDescription,
-                            prioProject: parseInt(req.body.prioProject),
-                            imageProject: req.body.imageProject || imageNotFound,
-                            visible: true,
+                if (ociQuantity <= 0) {
+                    return catchError400_1(req, res, next)
+
+                } else {
+                    for(let i=0; i<ociQuantity; i++) {
+                        var ociProject = {
+                            ociNumber: parseInt(arrayOciNumber[i]),
+                            ociDescription: arrayOciDescription[i],
+                            ociAlias: arrayOciAlias[i],
+                            ociStatus: arrayOciStatus[i] == 'on' ? true : false,
                             creator: dataUserCreator(userCreator),
                             timestamp: now,
-                            modificator: dataUserModificatorEmpty(),
-                            modifiedOn: "",
-                            oci: arrayOciProjects
-                        }
-        
-                        const newProject = {
-                            creator: dataUserCreator(userCreator),
-                            client: clienteSeleccionado,
-                            project: project,
-                            timestamp: now,
+                            ociImage: arrayOciImages[i] || imageNotFound,
                             modificator: dataUserModificatorEmpty(),
                             modifiedOn: "",
                             visible: true
                         }
-        
-                        const newProjectCreated = await this.projects.createNewProject(newProject)
-                        if (!newProjectCreated) {
-                            catchError401_1(req, res, next)
-                        }
-                        const cliente = await this.clients.updateClientProjectsQty(
-                            clientId, 
-                            clienteSeleccionado, 
-                            dataUserCreator(userCreator)
-                        )
-    
-                        const proyectos = await this.projects.getProjectsByClientId(clientId)
-                        if (!proyectos) {
-                            catchError401_1(req, res, next)
-                        }
-        
-                        const csrfToken = csrfTokens.create(req.csrfSecret);
-                        setTimeout(() => {
-                            return res.render('clientProjectsDetails', {
-                                username,
-                                userInfo,
-                                expires,
-                                cliente,
-                                proyectos,
-                                data,
-                                csrfToken
-                            })
-                        }, 2000)
-    
-                    } else {
-                        catchError400_3(req, res, next)
+                        arrayOciProjects.push(ociProject)
                     }
-                
-                    function validateSelectField(value) {
-                        const validOptions = [
-                            'ganado', 'aRiesgo', 'paraCotizar'
-                        ];
-                        return validOptions.includes(value);
-                    }
-    
-                } catch (err) {
-                    catchError500(err, req, res, next)
+                }  
+            
+                const projectInput = req.body.projectName
+                const projectCodeInput = req.body.codeProject
+                const projectNameExist = await this.projects.getExistingProject(projectInput, projectCodeInput);
+                if (projectNameExist) {
+                    catchError400_2(req, res, next)
                 }
+
+                const selectFieldLevel = req.body.levelProject;
+                if (validateSelectField(selectFieldLevel)) {
+                    
+                    const project = {
+                        projectName: projectInput,
+                        statusProject: req.body.statusProject == 'on' ? true : false,
+                        levelProject: selectFieldLevel,
+                        codeProject: projectCodeInput,
+                        projectDescription: req.body.projectDescription,
+                        prioProject: parseInt(req.body.prioProject),
+                        imageProject: req.body.imageProject || imageNotFound,
+                        visible: true,
+                        creator: dataUserCreator(userCreator),
+                        timestamp: now,
+                        modificator: dataUserModificatorEmpty(),
+                        modifiedOn: "",
+                        oci: arrayOciProjects
+                    }
+    
+                    const newProject = {
+                        creator: dataUserCreator(userCreator),
+                        client: clienteSeleccionado,
+                        project: project,
+                        timestamp: now,
+                        modificator: dataUserModificatorEmpty(),
+                        modifiedOn: "",
+                        visible: true
+                    }
+    
+                    const newProjectCreated = await this.projects.createNewProject(newProject)
+                    if (!newProjectCreated) {
+                        catchError401_1(req, res, next)
+                    }
+                    const cliente = await this.clients.updateClientProjectsQty(
+                        clientId, 
+                        clienteSeleccionado, 
+                        dataUserCreator(userCreator)
+                    )
+
+                    const proyectos = await this.projects.getProjectsByClientId(clientId)
+                    if (!proyectos) {
+                        catchError401_1(req, res, next)
+                    }
+    
+                    const csrfToken = csrfTokens.create(req.csrfSecret);
+                    setTimeout(() => {
+                        return res.render('clientProjectsDetails', {
+                            username,
+                            userInfo,
+                            expires,
+                            cliente,
+                            proyectos,
+                            data,
+                            csrfToken
+                        })
+                    }, 2000)
+
+                } else {
+                    catchError400_3(req, res, next)
+                }
+            
+                function validateSelectField(value) {
+                    const validOptions = [
+                        'ganado', 'aRiesgo', 'paraCotizar'
+                    ];
+                    return validOptions.includes(value);
+                }
+
+            } catch (err) {
+                catchError500(err, req, res, next)
             }
+            
         })
     }
 
@@ -2003,6 +1974,7 @@ class ProjectsController {
         }
     }
 
+//------------------------------------------------------------------
 
     updateStatusProject = async (req, res, next) => {
         const id = req.params.id
@@ -2313,96 +2285,75 @@ class ProjectsController {
             catchError401(req, res, next)
         }
 
-        //------ Storage Image in Google Store --------
-        const storage = multer.memoryStorage(); // Almacenamiento en memoria para cargar archivos temporalmente
-        
-            var uploadMulter = multer({
-                storage: storage,
-                fileFilter: (req, file, cb) => {
-                    if (file.mimetype.startsWith('image/')) {
-                        cb(null, true);
-                    } else {
-                        cb(new Error('Solo se permiten imágenes'));
-                    }
-                },
-            }).any()
-        
-        uploadMulter(req, res, async (err) => {
-            // console.log('req.files---> ', req.files)
-            if (req.files && req.files.length != 0) {
-                uploadToGCSingleFile(req, res, next)
-            }
-
-            const ociQuantity = parseInt(req.body.ociQuantityModal)
-                        
-            let arrayOciNumber=[],
-                arrayOciDescription=[],
-                arrayOciStatus=[],
-                arrayOciImages=[],
-                arrayOciAlias=[]
-                    
-            for (const key in req.body) {
-                if (key.startsWith('ociNumber')) {
-                    arrayOciNumber.push(req.body[key])
-                }
-                else if (key.startsWith('ociDescription')) {
-                    arrayOciDescription.push(req.body[key])
-                }
-                else if (key.startsWith('ociStatus')) {
-                    arrayOciStatus.push(req.body[key] === 'on' ? true : false)
-                }
-                else if (key.startsWith('imageOciFileNameModal')) {
-                    const keyValue = req.body[key] === '' ?  imageNotFound : req.body[key]
-                    arrayOciImages.push(keyValue)
-                }
-                else if (key.startsWith('ociAlias')) {
-                    arrayOciAlias.push(req.body[key])
-                }
-            }
-
-            const ociKNumber = 0
-            let invalidOciNumber = true
-            let indexArrayOciNumber = 0
-            for (let h=0; h<arrayOciNumber.length; h++) {
-                const ociNumberValid = await this.projects.selectOciByOciNumber(arrayOciNumber[h], ociKNumber)
-                const otherOciNumbers = proyecto[0].project[0].oci.map(oci => oci.ociNumber);
-                console.log('otherOciNumbers ', otherOciNumbers)
-                if (otherOciNumbers.includes(parseInt(ociNumberValid))) {
-                    invalidOciNumber = false
-                    indexArrayOciNumber = h
-                    break;
-                }
-            }
-            
-            if (!invalidOciNumber) {
-                const err = new Error (`Ya existe una OCI# ${arrayOciNumber[indexArrayOciNumber]} o Numero de OCI inválido!`)
-                err.dirNumber = 400
-                return next(err);
-            }
-
-            let arrayOciAddedToProject = []
-            for (let i=0; i<ociQuantity; i++ ) {
-                var infoOciAddedToProject = {
-                    ociNumber: parseInt(arrayOciNumber[i]),
-                    ociDescription: arrayOciDescription[i] || "sinDatos",
-                    ociStatus: arrayOciStatus[i] || true,
-                    ociImage: arrayOciImages[i],
-                    ociAlias: arrayOciAlias[i] || "Sin Apodo",
-                    timestamp: now,
-                    creator: dataUserCreator(userCreator),
-                    modificator: dataUserModificatorEmpty(),
-                    modifiedOn: "",
-                }
-                arrayOciAddedToProject.push(infoOciAddedToProject)
-            }
-
-            if (err) {
-                const error = new Error('No se agregó ningún archivo')
-                error.httpStatusCode = 400
-                return error
-            }
-            
+        uploadMulterMultiImages(req, res, async (err) => {
             try {
+                if (req.files && req.files.length != 0) {
+                    await uploadToGCSingleFile(req, res, next)
+                }
+
+                const ociQuantity = parseInt(req.body.ociQuantityModal)
+                        
+                let arrayOciNumber=[],
+                    arrayOciDescription=[],
+                    arrayOciStatus=[],
+                    arrayOciImages=[],
+                    arrayOciAlias=[]
+                    
+                for (const key in req.body) {
+                    if (key.startsWith('ociNumber')) {
+                        arrayOciNumber.push(req.body[key])
+                    }
+                    else if (key.startsWith('ociDescription')) {
+                        arrayOciDescription.push(req.body[key])
+                    }
+                    else if (key.startsWith('ociStatus')) {
+                        arrayOciStatus.push(req.body[key] === 'on' ? true : false)
+                    }
+                    else if (key.startsWith('imageOciFileNameModal')) {
+                        const keyValue = req.body[key] === '' ?  imageNotFound : req.body[key]
+                        arrayOciImages.push(keyValue)
+                    }
+                    else if (key.startsWith('ociAlias')) {
+                        arrayOciAlias.push(req.body[key])
+                    }
+                }
+
+                const ociKNumber = 0
+                let invalidOciNumber = true
+                let indexArrayOciNumber = 0
+                for (let h=0; h<arrayOciNumber.length; h++) {
+                    const ociNumberValid = await this.projects.selectOciByOciNumber(arrayOciNumber[h], ociKNumber)
+                    const otherOciNumbers = proyecto[0].project[0].oci.map(oci => oci.ociNumber);
+    console.log('otherOciNumbers ', otherOciNumbers)
+                    if (otherOciNumbers.includes(parseInt(ociNumberValid))) {
+                        invalidOciNumber = false
+                        indexArrayOciNumber = h
+                        break;
+                    }
+                }
+            
+                if (!invalidOciNumber) {
+                    const err = new Error (`Ya existe una OCI# ${arrayOciNumber[indexArrayOciNumber]} o Numero de OCI inválido!`)
+                    err.dirNumber = 400
+                    return next(err);
+                }
+
+                let arrayOciAddedToProject = []
+                for (let i=0; i<ociQuantity; i++ ) {
+                    var infoOciAddedToProject = {
+                        ociNumber: parseInt(arrayOciNumber[i]),
+                        ociDescription: arrayOciDescription[i] || "sinDatos",
+                        ociStatus: arrayOciStatus[i] || true,
+                        ociImage: arrayOciImages[i],
+                        ociAlias: arrayOciAlias[i] || "Sin Apodo",
+                        timestamp: now,
+                        creator: dataUserCreator(userCreator),
+                        modificator: dataUserModificatorEmpty(),
+                        modifiedOn: "",
+                    }
+                    arrayOciAddedToProject.push(infoOciAddedToProject)
+                }
+            
                 await this.clients.updateClient(
                     clientId, 
                     cliente, 
@@ -2460,26 +2411,9 @@ class ProjectsController {
         }
         
         //------ Storage Project Image in Google Store --------
-        const storage = multer.memoryStorage({
-            fileFilter: (req, file, cb) => {
-                if (file.mimetype.startsWith('image/')) {
-                    cb(null, true);
-                } else {
-                    cb(new Error('Solo se permiten imágenes'));
-                }
-            },
-        }); // Almacenamiento en memoria para cargar archivos temporalmente
-console.log('storage: ', storage)
-
-        const uploadMulter = multer({
-            storage: storage
-        }).single('imageProject')
-
-console.log('uploadMulter: ', uploadMulter)
-
-        uploadMulter(req, res, async (err) => {
+        uploadMulterSingleImageProject(req, res, async (err) => {
             if (req.file) {
-                uploadToGCS(req, res, next)
+                await uploadToGCS(req, res, next)
             }
 
             const statusProject = req.body.statusProjectForm
@@ -2490,12 +2424,6 @@ console.log('uploadMulter: ', uploadMulter)
             const codeProject = req.body.codeProject
             const imageProjectText = req.body.imageProjectFileName
                         
-            if (err) {
-                const error = new Error('No se agregó ningún archivo')
-                error.httpStatusCode = 400
-                return error
-            }
-
             try{
                 await this.projects.updateProject(
                     id,
@@ -2547,7 +2475,7 @@ console.log('uploadMulter: ', uploadMulter)
         const expires = cookie(req)
 
         const proyecto = await this.projects.selectProjectByProjectId(id)
-        // console.log('proyecto: ', proyecto)
+
         if (!proyecto) {
             catchError401_1(req, res, next)
         }
@@ -2563,25 +2491,10 @@ console.log('uploadMulter: ', uploadMulter)
         if (!userCreator) {
             catchError401_3(req, res, next)
         }
-                
-        //------ Storage OCI Image in Google Store --------
-        const storage = multer.memoryStorage({
-            fileFilter: (req, file, cb) => {
-                if (file.mimetype.startsWith('image/')) {
-                    cb(null, true);
-                } else {
-                    cb(new Error('Solo se permiten imágenes'));
-                }
-            },
-        }); // Almacenamiento en memoria para cargar archivos temporalmente
-                
-        const uploadMulter = multer({
-            storage: storage
-        }).single('imageOci')
-
-        uploadMulter(req, res, async (err) => {
+           
+        uploadMulterSingleImageOci(req, res, async (err) => {
             if (req.file) {
-                uploadToGCSingleFile(req, res, next)
+                uploadToGCS(req, res, next)
             }
 
             const ociNumberInput = parseInt(req.body.numberOci)

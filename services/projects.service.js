@@ -27,8 +27,8 @@ class ProjectService {
     }
 
      // returns a project from a Name Project
-     async getExistingProject(project) {
-        return await this.proyectos.getExistingProject(project)
+     async getExistingProject(project, code) {
+        return await this.proyectos.getExistingProject(project, code)
     }
 
     // returns all OCI from projects

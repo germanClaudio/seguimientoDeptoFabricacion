@@ -8,32 +8,27 @@
 <body>
         <%- include('../partials/header/header'); %>
     <div class="container" style="padding-top: 70px;"></div>
-
-        <!-- <div class="collapse mt-5 mx-auto" id="collapseExample"> -->
-            <!-- <%- include('../partials/forms/formularioProyecto'); %> -->
-        <!-- </div> -->
-        <br>
-
+    <br>
         <%- include('../partials/btnHeaderTop/btnHeaderTop-newProject'); %>
         
-        <!-- Lista de Proyectos -->
-        <section class="mx-auto" style="width: 94%;">
-            <div class="row">
-                <div class="col-12 text-left">
-                    <hr>
-                    <h4 class="text-uppercase">Proyectos del Cliente <strong><%= cliente.name %></strong></h4>
-                    <p>Departamento de IT Prodismo</p>
-                    <hr>
-                </div>
+    <!-- Lista de Proyectos -->
+    <section class="mx-auto" style="width: 94%;">
+        <div class="row">
+            <div class="col-12 text-left">
+                <hr>
+                <h4 class="text-uppercase">Proyectos del Cliente <strong><%= cliente.name %></strong></h4>
+                <p>Departamento de IT Prodismo</p>
+                <hr>
             </div>
-        </section>
-        <div id="updateCliente">
         </div>
-        <%- include('../partials/data/dataProjectsClientCard'); %>
-            <br>
-            <footer>
-                <%- include('../partials/footer/footer'); %>
-            </footer>
+    </section>
+    <div id="updateCliente">
+    </div>
+    <%- include('../partials/data/dataProjectsClientCard'); %>
+        <br>
+        <footer>
+            <%- include('../partials/footer/footer'); %>
+        </footer>
 
             <!--    scripts     -->
             <script type="text/javascript" src="/js/projectDetails.js"></script>

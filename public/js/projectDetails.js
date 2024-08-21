@@ -32,7 +32,7 @@ function extractNumbers(str) {
     //------------- Create New Project ---------------
     function messageNewProject(imgCliente,idCliente) { 
         if (imgCliente, idCliente) {
-            let html = `<form id="formNewProject" action="/api/proyectos/newProject" enctype="multipart/form-data" method="post">
+            let html = `<form id="formNewProject" action="/api/proyectos/newProject/${idCliente}" enctype="multipart/form-data" method="post">
                     <fieldset>
                         <div class="row justify-content-between align-items-center mx-auto my-3">
                             <div class="col-3">
@@ -44,7 +44,6 @@ function extractNumbers(str) {
                             <div class="col-auto">
                                 <label for="statusProject" class="justify-content-start">Status Proyecto</label>
                                 <div class="">
-                                    <p class="d-inline-block me-1">Inactivo</p>
                                     <div class="form-check form-switch d-inline-block mt-2">
                                         <input class="form-check-input" type="checkbox" id="statusProject" aria-checked="true" name="statusProject" style="cursor: pointer;" checked>
                                         <label class="form-check-label" for="statusProject">Activo</label>
@@ -83,15 +82,14 @@ function extractNumbers(str) {
                             </div>
                             <br>
                             <div class="col">
-                                <input type="text" id="fileInputTextProject" name="imageProject"
-                                    style="display: none;">
+                                <input type="text" id="fileInputTextProject" name="imageProject" style="display: none;">
+                                <input type="file" id="fileInputProject" name="imageProject"
+                                    value="" accept="image/*" style="display: none;">
                                 <div id="drop-areaProject" class="mx-auto" style="font-size: .8em;">
                                     <label for="fileInputTextProject" class="d-flex justify-content-center">
                                         Seleccione una imagen para el Proyecto
                                     </label>
                                     <p>Haz click o arrastra y suelta una imagen aquí</p>
-                                    <input type="file" id="fileInputProject" name="imageProject"
-                                        value="" accept="image/*" style="display: none;">
                                 </div>
 
                                 <button
@@ -136,7 +134,7 @@ function extractNumbers(str) {
                                                         <strong>#1</strong>
                                                     </div>
                                                     <hr>
-                                                    <div class="col-1">
+                                                    <div class="col-2">
                                                         <label for="ociNumber" id="labelOciNumber" class="d-flex text-start">Núm. OCI</label>
                                                         <input type="number" name="ociNumber" id="ociNumber" class="form-control"
                                                         min="0" max="9999" placeholder="Número OCI" value="1" required>
@@ -151,24 +149,22 @@ function extractNumbers(str) {
                                                         <input type="text" name="ociAlias" id="ociAlias"
                                                         maxlength="50" class="form-control" placeholder="Alias OCI">
                                                     </div>
-                                                    <div class="col-2">
+                                                    <div class="col-1">
                                                         <label for="ociStatus" id="labelOciStatus" class="d-flex text-start">Status OCI</label><br>
-                                                        <div class="d-inline-block me- mt-2">Inactiva</div>
                                                         <div class="form-check form-switch d-inline-block">
                                                             <input class="form-check-input" type="checkbox" id="ociStatus"
                                                             name="ociStatus" aria-checked="true" style="cursor: pointer;" checked>
-                                                            <label class="form-check-label" for="ociStatus">Activa</label>
                                                         </div>    
+                                                            <label class="form-check-label" for="ociStatus">Activa</label>
                                                     </div>
                                                     <div class="col">
-                                                        <input type="text" id="fileInputNewOciText" name="imageOciFileName"
-                                                            value="" style="display: none;">
+                                                        <input type="text" id="fileInputNewOciText" name="imageOciFileName" value="" style="display: none;">
+                                                        <input type="file" id="fileInputNewOci" name="imageNewOci"
+                                                        value="" accept="image/*" style="display: none;">
                                                         <div id="drop-area-oci" class="mx-auto" style="font-size: .75em;">
                                                             <label for="fileInputNewOci" id="labelOciImage" class="d-flex justify-content-center">
                                                                 Seleccione una imagen para la OCI
                                                             </label>
-                                                            <input type="file" id="fileInputNewOci" name="imageNewOci"
-                                                            value="" accept="image/*" style="display: none;">
                                                             <p>Haz click o arrastra y suelta una imagen aquí</p>
                                                         </div>
 
@@ -215,7 +211,6 @@ function extractNumbers(str) {
                         <div id="mensajeError" class="alert alert-warning align-items-center justify-content-center w-50 mx-auto" role="alert"
                             style="display: none; font-size: 0.85rem; height: 1.15rem;">
                         </div>
-                        <input type="hidden" name="clientIdHidden" id="clientIdHidden" value="${idCliente}">
                         <input type="hidden" name="ociQuantity" id="ociQuantity" value="1">
                     </fieldset>
                 </form>`
@@ -283,7 +278,8 @@ console.log('isEmpty', isEmpty)
                         } else if (ociTotalQuantity === 1) {
                             const ociNumber = parseInt(document.getElementById('ociNumber').value)
                             const projectName = document.getElementById('projectName').value
-                            document.getElementById('formNewProject').submit()
+                            const formularioNewProject = document.getElementById('formNewProject')
+                            formularioNewProject.submit()
                         
                             setTimeout(() => {
                                 swal.fire({
@@ -413,7 +409,7 @@ console.log('isEmpty', isEmpty)
                             <strong>#${i+1}</strong>
                         </div>
                         <hr>
-                        <div class="col-1">
+                        <div class="col-2">
                             <label for="ociNumber${i}" id="labelOciNumber${i}" class="d-flex text-start">Núm. OCI</label>
                             <input type="number" name="ociNumber${i}" id="ociNumber${i}" class="form-control" min="0" max="9999"
                             placeholder="Número OCI" value="${ociNumberValue+i}" required>
@@ -429,24 +425,21 @@ console.log('isEmpty', isEmpty)
                             <input type="text" name="ociAlias${i}" id="ociAlias${i}"
                                 maxlength="50" class="form-control" placeholder="Alias OCI">
                         </div>
-                        <div class="col-2">
+                        <div class="col-1">
                             <label for="ociStatus${i}" id="labelOciStatus${i}">Status OCI</label><br>
-                            <div class="d-inline-block me-1">Inactiva</div>
                             <div class="form-check form-switch d-inline-block mt-2">
                                 <input class="form-check-input" type="checkbox" id="ociStatus${i}" aria-checked="true" name="ociStatus${i}" style="cursor: pointer;" checked>
-                                <label class="form-check-label" for="ociStatus${i}">Activa</label>
                             </div>
+                            <label class="form-check-label" for="ociStatus${i}">Activa</label>
                         </div>
                         <div class="col">
-                            <input type="text" id="fileInputNewOciText${i}" name="imageOciFileName${i}" 
-                            style="display: none;">
-                                                
+                            <input type="text" id="fileInputNewOciText${i}" name="imageOciFileName${i}" style="display: none;">
+                            <input type="file" id="fileInputNewOci${i}" name="imageNewOci${i}" value=""
+                                accept="image/*" style="display: none;" required> 
                             <div id="drop-area-oci${i}" class="mb-1 mx-auto" style="font-size: 0.75em;">
                                 <label for="fileInputNewOciText${i}" id="labelNewOciImage${i} class="d-flex justify-content-center">
                                     Seleccione una imagen para la OCI
                                 </label>
-                                <input type="file" id="fileInputNewOci${i}" name="imageNewOci${i}" value=""
-                                accept="image/*" style="display: none;" required>
                                     <p>Haz click o arrastra y suelta una imagen aquí</p>
                             </div>
 
@@ -1384,15 +1377,16 @@ function messageUpdateOci(
 
                         <div class="row justify-content-start align-items-center mb-1 mx-1 px-1">
                             <div class="col mb-1">
-                                <label for="imageOci" class="form-label d-flex justify-content-start ms-1">Seleccione una imagen para la OCI</label>
-                                    
                                 <input type="text" id="fileInputTextUpdate" name="imageOciFileName"
                                     value="${imageOci}" style="display: none;" required>
                                 <input type="file" id="fileInputUpdate" name="imageOci"
                                     value="" accept="image/*" style="display: none;" required>
                             
                                 <div id="drop-areaUpdate" class="mb-2 mx-auto" style="font-size: 1em; overflow-wrap:break-word;">
-                                    Haz click o arrastra y suelta una imagen aquí
+                                    <label for="imageOci" class="form-label d-flex justify-content-center">
+                                        Seleccione una imagen para la OCI
+                                    </label>
+                                    <p>Haz click o arrastra y suelta una imagen aquí</p>
                                 </div>
 
                                 <button title="Eliminar Imagen" class="btn btn-danger rounded-circle mx-auto"
@@ -1422,7 +1416,6 @@ function messageUpdateOci(
             position: 'center',
             html: html,
             width: 750,
-            // icon: 'info',
             imageUrl: `${imageOci}`,
             imageWidth: `25%`,
             showCancelButton: true,
@@ -1799,7 +1792,7 @@ arrayBtnDeleteOci.forEach(function(element) {
     
 
 // --------------- Adding New OCI to an existing Project ------------------------
-function addNewOciToProject(projectName, lastOciNumber, projectIdHidden, csrf) {
+function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
    
         var arrayBloque = []
         arrayBloque.push(`
@@ -1828,11 +1821,13 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden, csrf) {
                     </div>
                 </div>    
                 <div class="col align-self-middle">
-                    <input type="text" id="fileInputNewOciTextModal0" name="imageOciFileNameModal0" 
-                        style="display: none;">
-                    <div id="drop-area-ociModal0" class="mb-1 mx-auto">
-                        <input type="file" id="fileInputNewOciModal0" name="imageNewOciModal0" value=""
+                    <input type="text" id="fileInputNewOciTextModal0" name="imageOciFileNameModal0" style="display: none;">
+                    <input type="file" id="fileInputNewOciModal0" name="imageNewOciModal0" value=""
                         accept="image/*" style="display: none;" required>
+                    <div id="drop-area-ociModal0" class="mb-1 mx-auto">
+                        <label for="fileInputNewOciModal0" class="form-label d-flex justify-content-center">
+                            Seleccione una imagen para la OCI
+                        </label>
                         <p>Haz click o arrastra y suelta una imagen aquí</p>
                     </div>
 
@@ -1885,7 +1880,6 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden, csrf) {
                     <hr>
                         ${arrayBloque}
                     <input type="hidden" id="ociQuantityModal" name="ociQuantityModal" value="${arrayBloque.length}">
-                    <input type="hidden" name="_csrf" value="${csrf}">
                 </fieldset>
             </form>`
 
@@ -1976,7 +1970,7 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden, csrf) {
     let fileInputNewOciFileModal0 = document.getElementById(`fileInputNewOciModal0`)
     let alertSizeOciModal0 = document.getElementById('alertSizeOciModal0')
 
-    dropAreasOciFileModal0.style.width = "50%"
+    dropAreasOciFileModal0.style.width = "100%"
     dropAreasOciFileModal0.style.height = "160px"
     dropAreasOciFileModal0.style.border = "2px dashed #ccc"
     dropAreasOciFileModal0.style.margin = "0 auto 0 25px"
@@ -2126,14 +2120,15 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden, csrf) {
                         </div>
                     </div>
                     <div class="col align-self-middle">
-                        <input type="text" id="fileInputNewOciTextModal${i}" name="imageOciFileNameModal${i}" 
-                            style="display: none;">
+                        <input type="text" id="fileInputNewOciTextModal${i}" name="imageOciFileNameModal${i}" style="display: none;">
+                        <input type="file" id="fileInputNewOciModal${i}" name="imageNewOciModal${i}" value=""
+                            accept="image/*" style="display: none;" required>
                         <div id="drop-area-ociModal${i}" class="mb-1 mx-auto" style="font-size: 1em; overflowWrap: break-word;">
-                            <input type="file" id="fileInputNewOciModal${i}" name="imageNewOciModal${i}" value=""
-                                accept="image/*" style="display: none;" required>
-                                <p>Haz click o arrastra y suelta una imagen aquí</p>
+                            <label for="imageOci" class="form-label d-flex justify-content-start ms-1">
+                                Seleccione una imagen para la OCI
+                            </label>    
+                            <p>Haz click o arrastra y suelta una imagen aquí</p>
                         </div>
-                    </div>
                         <button title="Eliminar Imagen" class="btn btn-danger rounded-circle mx-auto"
                                 id="btnRemoveOciImageModal${i}" name="btnRemoveOciImageModal" style="display: none;">
                                 <i class="fa-solid fa-xmark"></i>
@@ -2174,7 +2169,7 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden, csrf) {
             }
     
             const newDiv = document.createElement('div')
-            newDiv.setAttribute('class', "row my-1 mx-1")
+            newDiv.setAttribute('class', "row m-1")
             newDiv.id = `ociItemRow${i}`
             newDiv.innerHTML = originalDiv
             parentDiv.appendChild(newDiv)
@@ -2255,7 +2250,7 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden, csrf) {
 
     
             arrayDropAreasModal.forEach(function(elemento) {
-                elemento.style.width = "50%"
+                elemento.style.width = "100%"
                 elemento.style.height = "160px"
                 elemento.style.border = "2px dashed #ccc"
                 elemento.style.margin = "0 auto 0 25px"
@@ -2417,8 +2412,7 @@ const arrayProjectList = []
                     event.preventDefault()           
                     const btnValue = extractNumbers(btn.id) //event.target.id)
                     const projectName = document.getElementById(`projectNameHidden${btnValue}_0`).value
-                    const projectIdHidden = document.getElementById(`projectIdHidden${btnValue}_0`).value //arrayProjectId[0]
-                    const csrf = document.getElementById('_csrf').value
+                    const projectIdHidden = document.getElementById(`projectIdHidden${btnValue}_0`).value
 
                     let arrayLastOciNumber=[]
                     for(let n=0; n<maxOciQuantity; n++) { 
@@ -2431,8 +2425,7 @@ const arrayProjectList = []
                     addNewOciToProject(
                         projectName, 
                         arrayLastOciNumber[lastOciIndex], 
-                        projectIdHidden,
-                        csrf
+                        projectIdHidden
                     )
                 })
             }
@@ -2539,15 +2532,14 @@ function messageUpdateProject(
                         
                         <div class="row justify-content-start align-items-center mb-1 mx-1 px-1">
                             <div class="col mb-1">
-                                <label for="fileInputText" class="form-label d-flex justify-content-start ms-1">Seleccione una imagen para el Proyecto</label>
-                                
-                                <input type="text" id="fileInputText" name="imageProjectFileName"
-                                    value="" style="display: none;" required>
-                                <input type="file" id="fileInput" name="imageProject"
-                                    value="" accept="image/*" style="display: none;" required>
                             
-                                <div id="drop-area" class="mb-2 mx-auto">
-                                    Arrastra y suelta una imagen aquí
+                            <input type="text" id="fileInputText" name="imageProjectFileName" value="" style="display: none;" required>
+                            <input type="file" id="fileInput" name="imageProject"
+                                value="" accept="image/*" style="display: none;" required>
+                            
+                            <div id="drop-area" class="mx-auto" style="font-size: .9em; overflowWrap: break-word;">
+                                <label for="fileInputText" class="form-label d-flex justify-content-center">Seleccione una imagen para el Proyecto</label>
+                                    <p>Haz click o arrastra y suelta una imagen aquí</p>
                                 </div>
                                 <button title="Eliminar Imagen" class="btn btn-danger rounded-circle mx-auto"
                                         id="removeImage" style="display: none;">
@@ -2575,7 +2567,6 @@ function messageUpdateProject(
             position: 'center',
             html: html,
             width: 700,
-            // icon: 'info',
             imageUrl: `${imgProject}`,
             imageWidth: `25%`,
             showCloseButton: true,
