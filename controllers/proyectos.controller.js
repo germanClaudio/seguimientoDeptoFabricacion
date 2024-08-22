@@ -10,7 +10,6 @@ let now = require('../utils/formatDate.js')
 const csrf = require('csrf');
 const csrfTokens = csrf();
 
-const multer = require('multer')
 let imageNotFound = "../../../src/images/upload/LogoClientImages/noImageFound.png"
 const cookie = require('../utils/cookie.js')
 
@@ -2392,7 +2391,14 @@ class ProjectsController {
 
     updateProject = async (req, res, next) => {
         const id = req.params.id
+        let username = res.locals.username
+        let userInfo = res.locals.userInfo
+        const expires = cookie(req)
+
         const proyecto = await this.projects.selectProjectByProjectId(id)
+        if (!proyecto) {
+            catchError401_1(req, res, next)
+        }
         
         const clientId = proyecto[0].client[0]._id
         const cliente = await this.clients.selectClientById(clientId)
@@ -2400,9 +2406,6 @@ class ProjectsController {
             catchError401(req, res, next)
         }
         
-        let username = res.locals.username
-        const userInfo = res.locals.userInfo
-        const expires = cookie(req)
 
         const userId = userInfo.id
         const userCreator = await this.users.getUserById(userId)
@@ -2475,7 +2478,6 @@ class ProjectsController {
         const expires = cookie(req)
 
         const proyecto = await this.projects.selectProjectByProjectId(id)
-
         if (!proyecto) {
             catchError401_1(req, res, next)
         }
@@ -2521,12 +2523,6 @@ class ProjectsController {
             const ociDescription = req.body.descriptionOci
             const ociAlias = req.body.aliasOci
             const ociImageText = req.body.imageOciFileName
-                        
-            if (err) {
-                const error = new Error('No se agregó ningún archivo')
-                error.httpStatusCode = 400
-                return error
-            }
 
             try{
                 await this.projects.updateOci(
@@ -2618,7 +2614,7 @@ class ProjectsController {
                                 
                 if (otherOtNumbers.includes(otNumberInput)) {
                     const err = new Error (`Ya existe una OT#${otNumberInput} en esta OCI o Numero de OT inválido!`)
-                    err.dirNumber = 400
+                    err.statusCode = 400
                     return next(err);
                 }
             }

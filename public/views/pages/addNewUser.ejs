@@ -23,32 +23,31 @@
             </div>
 
             <section class="mx-auto" style="width: 94%;">
-                    <div class="row">
-                        <div class="col-12 text-left">
-                            <hr>
-                            <h4 class="text-uppercase">Lista de Usuarios</h4>
-                            <p>Departamento de Ingeniería Prodismo</p>
-                            <hr>
-                        </div>
+                <div class="row">
+                    <div class="col-12 text-left">
+                        <hr>
+                        <h4 class="text-uppercase">Lista de Usuarios</h4>
+                        <p>Departamento IT Prodismo</p>
+                        <hr>
                     </div>
-                </section>
+                </div>
+            </section>
 
-                <div class="d-block mx-auto px-5 mb-5 text-center w-100">
-                    <%- include('../partials/data/dataUsersTable'); %>
-                </div>
-                
-                <div class="d-block mx-auto my-2 pb-5 text-center">
-                    <a class="btn btn-secondary my-1 mx-auto" href="#"> Ir arriba <i class="fa-solid fa-arrow-up"></i></a>
-                </div>
-                <br>
-                <footer>
-                    <%- include('../partials/footer/footer'); %>
-                </footer>
-                        <!--    scripts     -->
-                        <script type="text/javascript" src="/js/usuarios.js"></script>
-                        <script type="text/javascript" src="/js/search.js"></script>
-                        <script type="text/javascript" src="/js/clock.js"></script>
-                        <script type="text/javascript" src="/js/expiresSession.js"></script>
+            <div class="d-block mx-auto px-5 mb-5 text-center w-100">
+                <%- include('../partials/data/dataUsersTable'); %>
+            </div>
+            <br>
+            <%- include('../partials/btnFooterBottom/btnFooterBottom-goUp'); %>
+            <br>
+            <footer>
+                <%- include('../partials/footer/footer'); %>
+            </footer>
+
+            <!--    scripts     -->
+            <script type="text/javascript" src="/js/usuarios.js"></script>
+            <script type="text/javascript" src="/js/search.js"></script>
+            <script type="text/javascript" src="/js/clock.js"></script>
+            <script type="text/javascript" src="/js/expiresSession.js"></script>
                 
 </body>
 

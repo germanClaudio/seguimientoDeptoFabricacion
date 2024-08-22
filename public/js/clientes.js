@@ -338,11 +338,11 @@ const removeImageButtonLogoClient = document.getElementById('removeImageLogoClie
 const alertLogoClient = document.getElementById('alertLogoClient')
 const alertLogoClientSize = document.getElementById('alertLogoClientSize')
 
-dropAreaLogoClient.style.width = "300px"
+dropAreaLogoClient.style.width = "40%"
 dropAreaLogoClient.style.height = "200px"
 dropAreaLogoClient.style.border = "2px dashed #ccc"
 dropAreaLogoClient.style.margin = "0 auto 0 50px"
-dropAreaLogoClient.style.borderRadius = "5px"
+dropAreaLogoClient.style.borderRadius = "10px"
 dropAreaLogoClient.style.textAlign = "center"
 dropAreaLogoClient.style.lineHeight = "200px"
 dropAreaLogoClient.style.cursor = "pointer"
@@ -367,7 +367,7 @@ function alertRefresh() {
     dropAreaLogoClient.style.textAlign = "center"
     dropAreaLogoClient.style.backgroundColor = '#9c9c9c'
     dropAreaLogoClient.style.display = 'block'
-    dropAreaLogoClient.innerHTML = 'Arrastra y suelta una imagen aquí'
+    dropAreaLogoClient.innerHTML = 'Haz click o arrastra y suelta una imagen aquí'
 }
 
 function alertNotImageLogoClient() {
@@ -433,7 +433,7 @@ function handleFileUploadLogoClient(file) {
         reader.readAsDataURL(file)
         reader.onload = () => {
             dropAreaLogoClient.innerHTML = 
-                `<img class="rounded p-2 mb-5" src="${reader.result}" style="max-width: 100%; max-height: 100%;">`
+                `<img class="rounded p-2 mb-1" src="${reader.result}" style="max-width: 100%; max-height: 100%;">`
             alertLogoClient.style.display = 'none'
             alertLogoClientSize.style.display = 'none'
         }

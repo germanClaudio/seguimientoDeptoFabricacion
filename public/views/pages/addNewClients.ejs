@@ -28,7 +28,7 @@
                     <div class="col-12 text-left">
                         <hr>
                         <h4 class="text-uppercase">Lista de Clientes</h4>
-                        <p>Departamento de Ingeniería Prodismo</p>
+                        <p>Departamento IT Prodismo</p>
                         <hr>
                     </div>
                 </div>
@@ -36,17 +36,13 @@
 
             <div class="d-block mx-auto px-5 mb-3 text-center w-100">
                 <%- include('../partials/data/dataClientTable'); %>
-                    <br>
-                    <div class="d-block mx-auto my-4 pb-5 text-center">
-                        <!-- <a class="btn btn-primary my-2 me-5" href="/api/auth/index"><i class="fa-solid fa-home"
-                                aria-hidden="true"></i> Regresar al Home </a> -->
-                        <a class="btn btn-secondary my-2 mx-auto" href="#"> Ir arriba <i class="fa-solid fa-arrow-up"></i></a>
-                    </div>
-                    <br>
+            <br>
+                <%- include('../partials/btnFooterBottom/btnFooterBottom-goUp'); %>
+            <br>
             </div>
-                    <footer>
-                        <%- include('../partials/footer/footer'); %>
-                    </footer>
+            <footer>
+                <%- include('../partials/footer/footer'); %>
+            </footer>
     <!--    scripts     -->
     <script type="text/javascript" src="/js/clientes.js"></script>
     <script type="text/javascript" src="/js/search.js"></script>

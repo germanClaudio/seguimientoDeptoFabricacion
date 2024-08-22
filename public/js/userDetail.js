@@ -25,11 +25,13 @@ function message(name, lastName, username) {
   }).then((result) => {
     if (result.isConfirmed) {
         document.getElementById("formUpdateUser").submit()
-      Swal.fire(
-        `${username} modificado!`,
-        `El usuario ${name} ${lastName} ha sido modificado exitosamente.`,
-        'success'
-      )
+        setTimeout(() => {
+            Swal.fire(
+                `${username} modificado!`,
+                `El usuario ${name} ${lastName} ha sido modificado exitosamente.`,
+                'success'
+            )
+        }, 1000)
     } else {
         Swal.fire(
             `${username} no modificado!`,
@@ -61,11 +63,11 @@ const removeImageButtonAvatarUser = document.getElementById('removeImageAvatarUs
 const alertAvatarUser = document.getElementById('alertAvatarUser')
 const alertSizeAvatarUser = document.getElementById('alertSizeAvatarUser')
 
-dropAreaAvatarUser.style.width = "300px"
+dropAreaAvatarUser.style.width = "60%"
 dropAreaAvatarUser.style.height = "200px"
 dropAreaAvatarUser.style.border = "2px dashed #ccc"
 dropAreaAvatarUser.style.margin = "0 auto 0 50px"
-dropAreaAvatarUser.style.borderRadius = "5px"
+dropAreaAvatarUser.style.borderRadius = "10px"
 dropAreaAvatarUser.style.textAlign = "center"
 dropAreaAvatarUser.style.lineHeight = "200px"
 dropAreaAvatarUser.style.cursor = "pointer"
@@ -79,7 +81,7 @@ dropAreaAvatarUser.addEventListener('dragover', (e) => {
 dropAreaAvatarUser.addEventListener('dragleave', (e) => {
     e.preventDefault()
     dropAreaAvatarUser.style.border = '2px dashed #ccc'
-    dropAreaAvatarUser.style.backgroundColor = '#838383'
+    dropAreaAvatarUser.style.backgroundColor = '#7a7a7a87'
 })
 
 function alertRefresh() {
@@ -88,9 +90,9 @@ function alertRefresh() {
     fileImputTextAvatarUser.value = ''
     dropAreaAvatarUser.style.border = "2px dashed #ccc"
     dropAreaAvatarUser.style.textAlign = "center"
-    dropAreaAvatarUser.style.backgroundColor = '#838383'
+    dropAreaAvatarUser.style.backgroundColor = '#7a7a7a87'
     dropAreaAvatarUser.style.display = 'block'
-    dropAreaAvatarUser.innerHTML = 'Arrastra y suelta una imagen aquí'
+    dropAreaAvatarUser.innerHTML = 'Haz click o arrastra y suelta una imagen aquí'
 }
 
 function alertNotImageAvatarUser() {
@@ -155,7 +157,7 @@ function handleFileUploadAvatarUser(file) {
         reader.readAsDataURL(file)
         reader.onload = () => {
             dropAreaAvatarUser.innerHTML = 
-                `<img class="p-2 mb-5" src="${reader.result}" style="max-width: 100%; max-height: 100%;">`
+                `<img class="p-2 mb-1" src="${reader.result}" style="max-width: 100%; max-height: 100%;">`
             alertAvatarUser.style.display = 'none'
             alertSizeAvatarUser.style.display = 'none'
         }

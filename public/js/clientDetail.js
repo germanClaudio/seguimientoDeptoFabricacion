@@ -19,7 +19,7 @@ const removeImageButtonLogoUpdate = document.getElementById('removeImageLogoUpda
 const alertLogoUpdate = document.getElementById('alertLogoUpdate')
 const alertLogoClientSize = document.getElementById('alertLogoClientSize')
 
-dropAreaLogoUpdate.style.width = "300px"
+dropAreaLogoUpdate.style.width = "70%"
 dropAreaLogoUpdate.style.height = "200px"
 dropAreaLogoUpdate.style.border = "2px dashed #ccc"
 dropAreaLogoUpdate.style.textAlign = "center"
@@ -48,7 +48,7 @@ function alertRefresh() {
     dropAreaLogoUpdate.style.textAlign = "center"
     dropAreaLogoUpdate.style.backgroundColor = '#666666'
     dropAreaLogoUpdate.style.display = 'block'
-    dropAreaLogoUpdate.innerHTML = 'Arrastra y suelta una imagen aquí'
+    dropAreaLogoUpdate.innerHTML = 'Haz click o arrastra y suelta una imagen aquí'
 }
 
 function alertNotImageLogoUpdate() {
@@ -114,7 +114,7 @@ function handleFileUploadLogoUpdate(file) {
         reader.readAsDataURL(file)
         reader.onload = () => {
             dropAreaLogoUpdate.innerHTML = 
-                `<img class="p-2 mb-5" src="${reader.result}" style="max-width: 100%; max-height: 100%;">`
+                `<img class="p-2 mb-1" src="${reader.result}" style="max-width: 100%; max-height: 100%;">`
                 alertLogoUpdate.style.display = 'none'
                 alertLogoClientSize.style.display = 'none'
         }
@@ -144,11 +144,14 @@ function message(clientName) {
       }).then((result) => {
         if (result.isConfirmed) {
             document.getElementById("formUpdateClient").submit()
-          Swal.fire(
-            'Modificado!',
-            `El cliente ${clientName}, ha sido modificado exitosamente.`,
-            'success'
-          )
+            setTimeout(() => {
+                Swal.fire(
+                    'Modificado!',
+                    `El cliente ${clientName}, ha sido modificado exitosamente.`,
+                    'success'
+                )
+            }, 1000)
+            
         } else {
             Swal.fire(
                 'No modificado!',

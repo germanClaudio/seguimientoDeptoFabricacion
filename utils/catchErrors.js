@@ -23,7 +23,7 @@ function catchError400_3(req, res, next) {
 }
 
 function catchError400_4(req, res, next) {
-    // const err = new Error('Error al cargar imagen/es o imagen/es inválidas!')
+    const err = new Error(`Ya existe un Cliente con estos datos.`)
     err.statusCode = 400;
     return next(err);
 }

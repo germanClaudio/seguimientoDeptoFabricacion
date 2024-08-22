@@ -3,15 +3,33 @@ const UserService = require("../services/users.service.js")
 const ProjectsService = require("../services/projects.service.js")
 
 const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
-
-const multer = require('multer')
+const { uploadMulterSingleLogoClient, uploadMulterSingleLogoUpdate } = require("../utils/uploadMulter.js")
 
 let now = require('../utils/formatDate.js')
-let imageNotFound = "../../../src/images/upload/LogoClientImages/noImageFound.png"
 
 const csrf = require('csrf');
 const csrfTokens = csrf();
 
+let imageNotFound = "../../../src/images/upload/LogoClientImages/noImageFound.png"
+const cookie = require('../utils/cookie.js')
+
+const data = require('../utils/variablesInicializator.js')
+
+const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
+
+const {catchError400,
+       catchError400_1,
+       catchError400_2,
+       catchError400_3,
+       catchError400_4,
+       catchError403,
+       catchError401,
+       catchError401_1,
+       catchError401_2,
+       catchError401_3,
+       catchError401_4,
+       catchError500
+} = require('../utils/catchErrors.js')
 
 class ClientsController {
     constructor() {
@@ -21,314 +39,216 @@ class ClientsController {
     }
 
     getAllClients = async (req, res, next) => {
-
         let username = res.locals.username
         let userInfo = res.locals.userInfo
-        
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
-        
-        const csrfToken = csrfTokens.create(req.csrfSecret);
+        const expires = cookie(req)         
         
         try {
             const clientes = await this.clients.getAllClients()
-
-            if (clientes.error) {
-                const err = new Error('No existen Clientes Cargados')
-                err.dirNumber = 400
-                return next(err)
+            
+            if (!clientes) {
+                catchError401(req, res, next)
             }
             
+            const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('addNewClients', {
-                clientes,
                 username,
                 userInfo,
                 expires,
+                clientes,
+                data,
                 csrfToken
             })
 
         } catch (err) {
-            err.dirNumber = 500
-            return next(err)
+            catchError500(err, req, res, next)
         }
     }
 
     getClientProjectsById = async (req, res, next) => {
         const { id } = req.params
-
         let username = res.locals.username
         let userInfo = res.locals.userInfo
+        const expires = cookie(req)
 
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
-
-        const csrfToken = csrfTokens.create(req.csrfSecret);
-
+        
         try {
-            const proyectos = await this.projects.getProjectsByClientId(id)
             const cliente = await this.clients.getClientById(id)
+            if (!cliente) {
+                catchError401(req, res, next)
+            }
 
+            const proyectos = await this.projects.getProjectsByClientId(id)
+            
             if (!proyectos) {
-                const err = new Error('No existen Proyectos')
-                err.dirNumber = 400
-                return next(err)
+                catchError400(req, res, next)
             }
             
+            const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('clientProjectsDetails', {
                 username,
                 userInfo,
                 expires,
                 proyectos,
                 cliente,
+                data,
                 csrfToken
             })
 
         } catch (err) {
-            err.dirNumber = 400
-            return next(err)
+            catchError500(err, req, res, next)
         }
     }
 
     getClientById = async (req, res, next) => {
         const { id } = req.params
-        
         let username = res.locals.username
         let userInfo = res.locals.userInfo
-
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
-
-        const csrfToken = csrfTokens.create(req.csrfSecret);
+        const expires = cookie(req)
 
         try {
             const cliente = await this.clients.getClientById(id)
-            const proyectos = await this.projects.getProjectsByClientId(id)
-            
             if (!cliente) {
-                const err = new Error('No existe Cliente')
-                err.dirNumber = 400
-                return next(err)
+                catchError401(req, res, next)
             }
-
+            
+            const proyectos = await this.projects.getProjectsByClientId(id)
+            if (!proyectos) {
+                catchError400(req, res, next)
+            }
+            
+            const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('clientProjectsDetails', {
                 cliente,
                 username,
                 userInfo,
                 expires,
                 proyectos,
+                data,
                 csrfToken
             })
 
         } catch (err) {
-            err.dirNumber = 400
-            return next(err)
+            catchError500(err, req, res, next)
         }
     }
 
     selectClientById = async (req, res, next) => {
         const { id } = req.params
-        
         let username = res.locals.username
         let userInfo = res.locals.userInfo
+        const expires = cookie(req)
 
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
-
-        const csrfToken = csrfTokens.create(req.csrfSecret);
-
+        
         try {
             const cliente = await this.clients.getClientById(id)
-            const proyectos = await this.projects.getProjectsByClientId(id)
-            
             if (!cliente) {
-                const err = new Error('No existe Cliente')
-                err.dirNumber = 400
-                return next(err)
+                catchError401(req, res, next)
+            }
+
+            const proyectos = await this.projects.getProjectsByClientId(id)
+            if (!proyectos) {
+                catchError401_1(req, res, next)
             }
             
+            const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('clientDetails', {
                 cliente,
                 username,
                 userInfo,
                 expires,
                 proyectos,
+                data,
                 csrfToken
             })
 
         } catch (err) {
-            err.dirNumber = 400
-            return next(err)
+            catchError500(err, req, res, next)
         }
     }
 
     createNewClient = async (req, res, next) => {
-        //------ Storage Client Logo Image in Google Store --------
-        const storage = multer.memoryStorage({
-            fileFilter: (req, file, cb) => {
-                if (file.mimetype.startsWith('image/')) {
-                    cb(null, true);
-                } else {
-                    cb(new Error('Solo se permiten imágenes'));
-                }
-            },
-        }); // Almacenamiento en memoria para cargar archivos temporalmente
                 
-        const uploadMulter = multer({
-            storage: storage
-        }).single('imageLogoClient')
-        
-        uploadMulter(req, res, next, async (err) => {
-            if (err) {
-                err.dirNumber = 400;
-                return next(err);
-            }
-
+        uploadMulterSingleLogoClient(req, res, async (err) => {
             try {
+                let username = res.locals.username
+                let userInfo = res.locals.userInfo
+                const expires = cookie(req)
+
+                const userId = userInfo.id
+                const userCreator = await this.users.getUserById(userId)
+                if (!userCreator) {
+                    catchError401_3(req, res, next)
+                }
+            
+                const clientNameInput = req.body.name.replace(/[!@#$%^*]/g, "");
+                const codeInput = req.body.code
+
                 if(req.file) {
                     await uploadToGCS(req, res, next)
                 }
 
-                let username = res.locals.username
-                const userInfo = res.locals.userInfo
-                const userId = userInfo.id
-                const userCreator = await this.users.getUserById(userId)
-            
-                const user = [{
-                    name: userCreator.name,
-                    lastName: userCreator.lastName,
-                    username: userCreator.username,
-                    email: userCreator.email
-                }]
-
-                const modificator = [{
-                    name: "",
-                    lastName: "",
-                    username: "",
-                    email: ""
-                }]
-
-                const cookie = req.session.cookie
-                const time = cookie.expires
-                const expires = new Date(time)
-
-                const clientNameInput = req.body.name.replace(/[!@#$%^*]/g, "");
-                const codeInput = req.body.code
-
                 const newClientValid = {
-                    creator: user,
+                    creator: dataUserCreator(userCreator),
                     name: clientNameInput,
                     status: req.body.statusClient === 'on' ? Boolean(true) : Boolean(false) || Boolean(true),
                     code: codeInput,
                     project: 0,
                     logo: req.body.imageTextLogoClient || imageNotFound,
                     timestamp: now,
-                    modificator: modificator,
+                    modificator: dataUserModificatorEmpty(),
                     modifiedOn: '',
                     visible: true
                 }
 
                 const clientExist = await this.clients.getExistingClient(newClientValid);
-                
                 if (clientExist) {
-                    const err = new Error(`Ya existe un Cliente con estos datos.`);
-                    err.dirNumber = 400;
-                    err.data = newUserValid
-                    return next(err);
-                }
-
-                if (err) {
-                    const error = new Error('No se agregó ningún archivo')
-                    error.httpStatusCode = 400
-                    return error
-                }
-
-                const csrfToken = req.body._csrf;
-                if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-                    const err = new Error('Invalid CSRF token');
-                    err.dirNumber = 403;
-                    return next(err);
+                    catchError400_4(req, res, next)
                 }
 
                 const cliente = await this.clients.addClient(newClientValid)
-
                 if (!cliente) {
-                    const err = new Error('No se pudo guardar el Cliente!');
-                    err.dirNumber = 401;
-                    return next(err);
+                    catchError401(req, res, next)
                 }
 
-                csrfToken = csrfTokens.create(req.csrfSecret);
+                const csrfToken = csrfTokens.create(req.csrfSecret);
                 return res.render('addNewClients', {
-                    cliente,
                     username,
                     userInfo,
                     expires,
+                    cliente,
+                    data,
                     csrfToken
                 })
 
             } catch (err) {
-                err.dirNumber = 400;
-                return next(err);
+                catchError500(err, req, res, next)
             }
         })
     }
 
     updateClient = async (req, res, next) => {
-         //------ Storage Client Logo Image in Google Store --------
-         const storage = multer.memoryStorage({
-            fileFilter: (req, file, cb) => {
-                if (file.mimetype.startsWith('image/')) {
-                    cb(null, true);
-                } else {
-                    cb(new Error('Solo se permiten imágenes'));
-                }
-            },
-        });
-             
-        const uploadMulter = multer({
-            storage: storage
-        }).single('imageLogoUpdate')
-
         
-        uploadMulter(req, res, next, async (err) => {
-            if (err) {
-                err.dirNumber = 400;
-                return next(err);
+        uploadMulterSingleLogoUpdate(req, res, async (err) => {
+            const id = req.params.id
+            const clienteToModify = await this.clients.getClientById(id)
+            if (!clienteToModify) {
+                catchError401(req, res, next)
+            }
+
+            let username = res.locals.username
+            let userInfo = res.locals.userInfo
+            const expires = cookie(req)
+
+            const userId = userInfo.id
+            const userCreator = await this.users.getUserById(userId)
+            if (!userCreator) {
+                catchError401_3(req, res, next)
             }
 
             try {
                 if (req.file) {
                     await uploadToGCS(req, res, next)
-                }
-
-                const id = req.params.id
-                const clienteToModify = await this.clients.getClientById(id)
-            
-                let username = res.locals.username
-                const userInfo = res.locals.userInfo
-                const userId = userInfo.id
-                const userCreator = await this.users.getUserById(userId)
-                
-                const userModificator = [{
-                    name: userCreator.name,
-                    lastName: userCreator.lastName,
-                    username: userCreator.username,
-                    email: userCreator.email
-                }]
-
-                const cookie = req.session.cookie
-                const time = cookie.expires
-                const expires = new Date(time)
-
-                const csrfToken = req.body._csrf;
-                if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-                    const err = new Error ('Invalid CSRF token')
-                    err.dirNumber = 403
-                    return next(err)
                 }
 
                 const nameInput = req.body.name.replace(/[!@#$%^&*]/g, "")             
@@ -346,228 +266,199 @@ class ClientsController {
                 let clientesRestantes = eliminarCliente(otherClients, nameValid)
                 
                 const clientesNames = clientesRestantes.map(cliente => cliente.name)
-                
                 if (clientesNames.includes(clienteToModify.name)) {
-                    const err = new Error (`Ya existe un Cliente con este nombre ${nameInput}`)
-                    err.dirNumber = 400
-                    return next(err);
+                    catchError400_4(req, res, next)
                 }
                 
                 const codeInput = req.body.code.replace(/[!@#$%^&*]/g, "")
                 const clientesCodes = clientesRestantes.map(cliente => cliente.code)
                 
                 if (clientesCodes.includes(clienteToModify.code)) {
-                    const err = new Error (`Ya existe un Cliente con este código ${codeInput}`)
-                    err.dirNumber = 400
-                    return next(err);
+                    catchError400_4(req, res, next)
                 }
                 
                 const updatedCliente = {
                     name: req.body.name,
                     status: req.body.statusClient === 'on' ? true : false,
-                    code: req.body.code,
+                    code: codeInput,
                     logo: req.body.imageTextLogoUpdate,
-                    modificator: userModificator,
+                    modificator: dataUserModificatorNotEmpty(userCreator),
                     modifiedOn: now
                 }
-                
-                if (err) {
-                    const err = new Error('No se agregó ningún archivo')
-                    err.dirNumber = 400
-                    return next(err)
-                }
-                
+                                
                 if (clienteToModify) {
                     const clientUpdated = await this.clients.updateClient(
                         id, 
                         updatedCliente, 
-                        userModificator
+                        dataUserModificatorNotEmpty(userCreator)
                     )
+
                     if(!clientUpdated) {
-                        const err = new Error('No fue posible Actualizar el Cliente!')
-                        err.dirNumber = 400
-                        next(err);
+                        catchError401(req, res, next)
                     }
 
                     const csrfToken = csrfTokens.create(req.csrfSecret);
                     return res.render('addNewClients', {
-                        clientUpdated,
                         username,
                         userInfo,
                         expires,
+                        clientUpdated,
+                        data,
                         csrfToken
                     })
                                     
                 } else {
-                    const err = new Error('Error de cliente!')
-                    err.dirNumber = 400
-                    next(err);
+                    catchError401(req, res, next)
                 }  
     
             } catch (err) {
-                err.dirNumber = 400
-                next(err);
+                catchError500(err, req, res, next)
             }
         })       
     }
 
     updateClientProjectsQty = async (req, res, next) => {
         const id = req.params.id
-        
         let username = res.locals.username
         let userInfo = res.locals.userInfo
+        const expires = cookie(req)
 
-        const modifier = [{
-            name: userInfo.name,
-            lastName: userInfo.lastName,
-            username: userInfo.username,
-            email: userInfo.email
-        }]
-
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
-
-        const csrfToken = csrfTokens.create(req.csrfSecret);
+        const userId = userInfo.id
+        const userCreator = await this.users.getUserById(userId)
+        if (!userCreator) {
+            catchError401_3(req, res, next)
+        }
 
         try {
             const proyectos = await this.projects.getProjectsByClientId(id)
             const clientToUpdateProjectQty = await this.clients.getClientById(id)
-
-            const cliente = await this.clients.updateClientProjectsQty(id, clientToUpdateProjectQty, modifier)
-
-            if (!cliente) {
-                const err = new Error('Cantidad de proyectos de Cliente no actualizada!')
-                err.dirNumber = 400
-                return next(err)
+            if (!proyectos || !clientToUpdateProjectQty) {
+                catchError401_1(req, res, next)
             }
-                        
+
+            const cliente = await this.clients.updateClientProjectsQty(
+                id, 
+                clientToUpdateProjectQty, 
+                dataUserModificatorNotEmpty(userCreator))
+            if (!cliente) {
+                catchError401(req, res, next)
+            }
+        
+            const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('clientProjectsDetails', {
                 cliente,
                 username,
                 userInfo,
                 expires,
                 proyectos,
+                data,
                 csrfToken
             })
 
         } catch (err) {
-            err.dirNumber = 400
-            return next(err)
+            catchError500(err, req, res, next)
         }
     }
 
     reduceClientProjectQty = async (req, res, next) => {
         const id = req.params.id
-        
         let username = res.locals.username
         let userInfo = res.locals.userInfo
+        const expires = cookie(req)
 
-        const modifier = [{
-            name: userInfo.name,
-            lastName: userInfo.lastName,
-            username: userInfo.username,
-            email: userInfo.email
-        }]
-
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
-
-        const csrfToken = csrfTokens.create(req.csrfSecret);
+        const userId = userInfo.id
+        const userCreator = await this.users.getUserById(userId)
+        if (!userCreator) {
+            catchError401_3(req, res, next)
+        }
 
         try {
             const proyectos = await this.projects.getProjectsByClientId(id)
             const clientToUpdateProjectQty = await this.clients.getClientById(id)
-            const cliente = await this.clients.reduceClientProjectQty(id, clientToUpdateProjectQty, modifier)
-            
-            if (!cliente) {
-                const err = new Error('Cantidad de proyectos de Cliente no actualizada!')
-                err.dirNumber = 400
-                return next(err)
+            if (!proyectos || !clientToUpdateProjectQty) {
+                catchError401_1(req, res, next)
             }
-                
+
+            const cliente = await this.clients.reduceClientProjectQty(
+                id, 
+                clientToUpdateProjectQty, 
+                dataUserModificatorNotEmpty(userCreator))
+            if (!cliente) {
+                catchError401(req, res, next)
+            }
+            
+            const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('clientProjectsDetails', {
-                    cliente,
-                    username,
-                    userInfo,
-                    expires,
-                    proyectos,
-                    csrfToken
-                })
+                username,
+                userInfo,
+                expires,
+                cliente,
+                proyectos,
+                data,
+                csrfToken
+            })
 
         } catch (err) {
-            err.dirNumber = 400
-            return next(err)
+            catchError500(err, req, res, next)
         }
     }
 
     deleteClientById = async (req, res, next) => {
         const clientId = req.params.id
-
         let username = res.locals.username
         let userInfo = res.locals.userInfo
+        const expires = cookie(req)
 
-        const modificator = [{
-            name: userInfo.name,
-            lastName: userInfo.lastName,
-            username: userInfo.username,
-            email: userInfo.email
-        }]
-
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
-
-        const csrfToken = csrfTokens.create(req.csrfSecret);
+        const userId = userInfo.id
+        const userCreator = await this.users.getUserById(userId)
+        if (!userCreator) {
+            catchError401_3(req, res, next)
+        }
 
         try {
-            const cliente = await this.clients.deleteClientById(clientId, modificator)
-
+            const cliente = await this.clients.deleteClientById(clientId, dataUserModificatorNotEmpty(userCreator))
             if (!cliente) {
-                const err = new Error('No se pudo eliminar el Cliente!')
-                err.dirNumber = 400
-                return next(err)
+                catchError401(req, res, next)
             }
             
+            const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('addNewClients', {
-                cliente,
                 username,
                 userInfo,
                 expires,
+                cliente,
+                data,
                 csrfToken
             })
 
         } catch (err) {
-            err.dirNumber = 400
-            return next(err)
+            catchError500(err, req, res, next)
         }
     }
 
     deleteAllClients = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
-
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
-
-        const csrfToken = csrfTokens.create(req.csrfSecret);
+        const expires = cookie(req)
 
         try {
             const clientsDeleted = await this.clients.deleteAllClients()
-
+            if (!clientsDeleted) {
+                catchError401(req, res, next)
+            }
+            
+            const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('addNewClients', {
-                clientsDeleted,
                 username,
                 userInfo,
                 expires,
+                clientsDeleted,
+                data,
                 csrfToken
             })
 
         } catch (err) {
-            err.dirNumber = 400
-            return next(err)
+            catchError500(err, req, res, next)
         }
     }
 

@@ -37,9 +37,32 @@ const uploadMulterSingleImageOci = multer({
     }
 }).single('imageOci')
 
+const uploadMulterSingleLogoClient = multer({
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Solo se permiten imágenes'));
+        }
+    }
+}).single('imageLogoClient')
+
+const uploadMulterSingleLogoUpdate = multer({
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Solo se permiten imágenes'));
+        }
+    }
+}).single('imageLogoUpdate')
 
 module.exports = {
     uploadMulterMultiImages,
     uploadMulterSingleImageProject,
-    uploadMulterSingleImageOci
+    uploadMulterSingleImageOci,
+    uploadMulterSingleLogoClient,
+    uploadMulterSingleLogoUpdate
 }

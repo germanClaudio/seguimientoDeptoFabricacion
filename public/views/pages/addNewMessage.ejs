@@ -19,19 +19,18 @@
             <div class="col-12 text-left">
                 <hr>
                 <h4><strong><%= userInfo.name %></strong>, comunicate con otros miembros del equipo</h4>
-                <p>Departamento de Ingeniería Prodismo</p>
+                <p>Departamento IT Prodismo</p>
                 <hr>
             </div>
         </div>
     </section>
 
-    <%- include('../partials/data/dataMsg'); %>
-        <br>
-
-        <div class="d-block mx-auto my-5 text-center">
-                <a class="btn btn-primary mb-5" href="/api/auth/index"><i class="icon-home" aria-hidden="true"></i> Volver al Home</a>
-        </div>
-        <br>
+        <%- include('../partials/data/dataMsg'); %>
+    <br>
+        <%- include('../partials/btnFooterBottom/btnFooterBottom-goUp'); %>
+    <br>
+    <div class="container" style="padding-bottom: 70px;"></div>
+    
         <%- include('../partials/forms/formularioChat'); %>
     <br>
                

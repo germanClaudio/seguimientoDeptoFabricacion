@@ -1,7 +1,7 @@
 const socket = io.connect()
 
 function sortTable(columnName) {
-       
+console.log('columnName: ', columnName)
     const table = document.querySelector('table')
     const tbody = table.querySelector('tbody')
     const rows = Array.from(tbody.querySelectorAll('tr'))
@@ -9,6 +9,8 @@ function sortTable(columnName) {
     const order = column.getAttribute('data-order')
   
     rows.sort((a, b) => {
+        console.log('a y b: ', a, b)
+        console.log('a.querySelector: ', a.querySelector(`[data-column="${columnName}"]`))
         const aValue = a.querySelector(`[data-column="${columnName}"]`).textContent
         const bValue = b.querySelector(`[data-column="${columnName}"]`).textContent
     

@@ -104,7 +104,7 @@
                                                 dataIdCounterL++  %>
                                                 
                                                 <li id="ociConOtList<%= dataIdCounterL %>" class="dd-item" data-id="<%= dataIdCounterL %>">
-                                                    <div class="dd-handle"> <span class="drag-indicator"></span>
+                                                    <div class="dd-handle"> <span class="drag-indicator"><img src='/src/images/drag-indicator.png'></span>
                                                         <div class="mx-1"><img id="imageOci<%= dataIdCounterL %>_<%= c %>" class="img-fluid mx-2 rounded" src='<%= arrayResultOciConOt[c].ociImage %>' alt="Imagen Oci" width="50px" height="40px"></div>
                                                         <div class="me-1" > OCI# <strong><%= arrayResultOciConOt[c].ociNumber %></strong></div>
                                                         <div id="ociDescription<%= dataIdCounterL %>_<%= c %>"> <%= arrayResultOciConOt[c].ociDescription %></div>
@@ -134,7 +134,7 @@
                                                                 dataIdCounterL++  %>
 
                                                                 <li id="otList<%= dataIdCounterL %>" class="dd-item" data-id="<%= dataIdCounterL %>">
-                                                                    <div class="dd-handle ms-5"> <span class="drag-indicator"></span>
+                                                                    <div class="dd-handle ms-5"> <span class="drag-indicator mb-3"><img src='/src/images/drag-indicator2.png'></span>
                                                                         <div class="me-1" > OT# <strong><%= arrayResultOciConOt[c].otProject[s].otNumber %></strong></div>
                                                                         <div class="me-1"> - OP# <%= arrayResultOciConOt[c].otProject[s].opNumber %></div>
                                                                         <div class="me-1"> - <%= arrayResultOciConOt[c].otProject[s].opDescription %></div>
@@ -225,16 +225,8 @@
         </div>
     </div>
     
-    <div class="d-block mx-auto my-4 pb-5 text-center">
-        <a class="btn btn-primary my-1 me-5" href="/api/auth/index">
-            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
-             Regresar al Home
-        </a>
-        <a class="btn btn-secondary my-2 ms-5" href="#">
-            <i class="fa-solid fa-arrow-up"></i>
-             Ir arriba
-        </a>
-    </div>
+    <br>
+        <%- include('../partials/btnFooterBottom/btnFooterBottom-goUp'); %>
     <br>
     <footer>
         <%- include('../partials/footer/footer'); %>
