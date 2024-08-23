@@ -1,7 +1,6 @@
 const ContainerMongoDB = require('../../contenedores/containerMongoDB.js')
 const mongoose = require('mongoose')
 const Mensajes = require('../../models/mensajes.models.js')
-// const logger = require('../../utils/winston.js')
 const now = require('../../utils/formatDate.js')
 
 class MensajesDaoMongoDB extends ContainerMongoDB {
@@ -10,7 +9,6 @@ class MensajesDaoMongoDB extends ContainerMongoDB {
     }
 
     async init() {
-        // await this.connection
         mongoose.connect(this.cnxStr, { //createConnection or connect
             useNewUrlParser: true,
             useUnifiedTopology: true
@@ -22,45 +20,51 @@ class MensajesDaoMongoDB extends ContainerMongoDB {
             const messages = await Mensajes.find()
             if(messages.length > 0){
                 return messages
-            }else{
+
+            } else {
                 // logger.info('No messages found')
-                return new Error ('No hay mensajes en la DB!')
+                return false
             }
+
         } catch (error) {
-            // logger.error(error)
+            return false
         }
     }
 
     async getMessageById(id) {
-        if(id){
+        if(id) {
             try {
                 const message = await Mensajes.findById({_id: id })
                 return message
+
             } catch (error) {
-                // logger.error("Error MongoDB getOneMensaje: ",error)
+                return false
             }
+
         } else {
             try {
                 const messages = await Mensajes.find()
                 return messages
+
             } catch (error) {
-                // logger.error("Error MongoDB getOneMessage: ",error)
+               return false
             }
         }
     }
 
-    async createNewMessage(mensaje){
-                
+    async createNewMessage(mensaje){  
         if(mensaje) {
             try {
                 const newMessage = new Mensajes(mensaje)
                 await newMessage.save()
                 return newMessage
+
             } catch (error) {
-                // logger.error(error)
+                return false
             }
+
         } else {
-            return new Error (`No se pudo crear el Mensaje!`)
+            return false
         }
     }
 
@@ -77,14 +81,15 @@ class MensajesDaoMongoDB extends ContainerMongoDB {
                 const mensaje = await Mensajes.findOneAndUpdate(
                     { _id: id }, newValues , { new: true })
                     return mensaje
+
             } catch (error) {
-                // logger.error("Error MongoDB deleteMenssage: ",error)
+                return false
             }
+
         } else {
-            // logger.info('El Mensaje no existe! ', itemMongoDB)
+            return false
         }
     }
-
 
     async deleteAllMessages() {
         const itemMongoDB = await Mensajes.find()
@@ -92,11 +97,13 @@ class MensajesDaoMongoDB extends ContainerMongoDB {
             try {
                 const mensaje = await Mensajes.updateMany({}, { $set: { status: false } }, { new: true })
                 return mensaje
+                
             } catch (error) {
-                // logger.error("Error MongoDB deleteAllMenssages: ",error)
+                return false
             }
+            
         } else {
-            // logger.info('No hay Mensajes! ', itemMongoDB)
+            return false
         }
     }
 

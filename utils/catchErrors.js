@@ -28,6 +28,18 @@ function catchError400_4(req, res, next) {
     return next(err);
 }
 
+function catchError400_5(req, res, next) {
+    const err = new Error(`No existen Usuarios Cargados.`)
+    err.statusCode = 400;
+    return next(err);
+}
+
+function catchError400_6(req, res, next) {
+    const err = new Error(`Ya existe un Usuario con estos datos.`)
+    err.statusCode = 400;
+    return next(err);
+}
+
 function catchError401(req, res, next) {
     const err = new Error('Cliente no encontrado!')
     err.statusCode = 401
@@ -75,6 +87,8 @@ module.exports = {
     catchError400_2,
     catchError400_3,
     catchError400_4,
+    catchError400_5,
+    catchError400_6,
     catchError401,
     catchError401_1,
     catchError401_2,

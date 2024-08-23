@@ -11,6 +11,13 @@ function formatDate(date) {
     return DD + MM + YY + "_" + hh + mm + ss
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    // Mostrar el spinner y ocultar la tabla al cargar la página
+    document.getElementById('loading-spinner').style.display = 'block';
+    document.getElementById('userTable').style.display = 'none';
+});
+
+
 //  ----------- Users historial ----------------
 socket.on('usersAll', (arrUsers) => {
     renderUser(arrUsers)
@@ -113,6 +120,7 @@ const renderUser = (arrUsers) => {
                                 </div>
                             </td>
                         </tr>`)
+
             } else {
                 return (`<tr>
                             <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
@@ -150,6 +158,11 @@ const renderUser = (arrUsers) => {
            <caption id="capDeleteUserList">Cantidad de Usuarios Eliminados: ${parseInt(arrayUser.length - usersActiveQty.length)}</caption>`)
 
     document.getElementById('capUserList').innerHTML = htmlUserList
+
+    // Ocultar el spinner y mostrar la tabla
+    document.getElementById('loading-spinner').style.display = 'none';
+    document.getElementById('userTable').style.display = 'block';
+
 
     // ---- mensaje confirmacion eliminar Usuario -----------
     function messageDeleteUser(id, name, lastName, username) {

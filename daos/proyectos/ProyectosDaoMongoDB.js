@@ -512,7 +512,6 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                 }
 
             } catch (error) {
-                //console.log("Error MongoDB adding info R14 to OT: ", error)
                 console.error("Error MongoDB adding info R14 to OT: ", error)
             }
 

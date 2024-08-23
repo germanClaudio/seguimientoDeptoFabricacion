@@ -1,51 +1,70 @@
 const socket = io.connect()
 
 function sortTable(columnName) {
-console.log('columnName: ', columnName)
-    const table = document.querySelector('table')
-    const tbody = table.querySelector('tbody')
-    const rows = Array.from(tbody.querySelectorAll('tr'))
-    const column = tbody.querySelector(`[data-column="${columnName}"]`)
-    const order = column.getAttribute('data-order')
-  
-    rows.sort((a, b) => {
-        console.log('a y b: ', a, b)
-        console.log('a.querySelector: ', a.querySelector(`[data-column="${columnName}"]`))
-        const aValue = a.querySelector(`[data-column="${columnName}"]`).textContent
-        const bValue = b.querySelector(`[data-column="${columnName}"]`).textContent
+    const table = document.getElementById('miTabla');
+    const tbody = table.querySelector('tbody');
+
+    // Seleccionar todas las filas directas del tbody de la tabla principal (ignorando las tablas anidadas)
+    const rows = Array.from(tbody.querySelectorAll('tr')).filter(row => {
+        // Filtrar filas que NO contengan tablas anidadas
+        return row.querySelector('table');
+    });
+
+    // Obtener el botón de la columna para determinar el orden actual
+    const column = document.querySelector(`th[data-column="${columnName}"]`);
+    const order = column.getAttribute('data-order');
     
+    // Ordenar las filas
+    rows.sort((a, b) => {
+        const aElement = a.querySelector(`td[data-column="${columnName}"]`);
+        const bElement = b.querySelector(`td[data-column="${columnName}"]`);
+
+        if (!aElement || !bElement) {
+            console.error(`No se encontró <td> con data-column="${columnName}" en una de las filas.`);
+            return 0;  // No alterar el orden si falta el <td>
+        }
+
+        const aValue = aElement.textContent.trim();
+        const bValue = bElement.textContent.trim();
+
         if (order === 'asc') {
-          return aValue.localeCompare(bValue)
+            return aValue.localeCompare(bValue);
         } else {
-          return bValue.localeCompare(aValue)
+            return bValue.localeCompare(aValue);
         }
     });
-    
-      while (tbody.firstChild) {
+
+    // Limpiar el tbody antes de reordenar las filas
+    while (tbody.firstChild) {
         tbody.removeChild(tbody.firstChild);
-      }
-    
-      rows.forEach(row => tbody.appendChild(row))
-    
-      const btnClicked = document.getElementById(`${columnName}`)
-      if(columnName === 'nombre' || columnName === 'nivel') {
-          var iconDesc = (`<i class="fa-solid fa-sort-alpha-desc" aria-hidden="true"></i>`)
-          var iconAsc = (`<i class="fa-solid fa-sort-alpha-asc" aria-hidden="true"></i>`)
-      } else {
-          var iconDesc = (`<i class="fa-solid fa-sort-amount-desc" aria-hidden="true"></i>`)
-          var iconAsc = (`<i class="fa-solid fa-sort-amount-asc" aria-hidden="true"></i>`)
-      }
-      
-      if (order === 'asc') {
-        column.setAttribute('data-order', 'desc')
-        btnClicked.innerHTML = iconDesc
+    }
+
+    // Añadir las filas ordenadas de nuevo al tbody
+    rows.forEach(row => tbody.appendChild(row));
+
+    // Alternar el orden para la próxima vez
+    const newOrder = order === 'asc' ? 'desc' : 'asc';
+    column.setAttribute('data-order', newOrder);
+
+    // Actualizar el ícono de ordenación en el botón
+    const btnClicked = document.getElementById(columnName);
+    if (columnName === 'nombre' || columnName === 'nivel' || columnName === 'cliente') {
+        btnClicked.innerHTML = newOrder === 'asc' 
+            ? `<i class="fa-solid fa-sort-alpha-asc" aria-hidden="true"></i>`
+            : `<i class="fa-solid fa-sort-alpha-desc" aria-hidden="true"></i>`;
     } else {
-        column.setAttribute('data-order', 'asc')
-        btnClicked.innerHTML = iconAsc
+        btnClicked.innerHTML = newOrder === 'asc'
+            ? `<i class="fa-solid fa-sort-amount-asc" aria-hidden="true"></i>`
+            : `<i class="fa-solid fa-sort-amount-desc" aria-hidden="true"></i>`;
     }
 }
 
-//  ---------------- Projects list ----------------
+document.addEventListener('DOMContentLoaded', function() {
+    // Mostrar el spinner y ocultar la tabla al cargar la página
+    document.getElementById('loading-spinner').style.display = 'block';
+    document.getElementById('miTabla').style.display = 'none';
+});
+
 socket.on('projectsAll', (arrayProjects, arrUsers) => {
     
     const cadena = document.getElementById('mostrarUserName').innerText
@@ -242,7 +261,7 @@ const renderProjectsForAdmin = (arrayProjects) => {
             return arrOpArr.join('<hr>')
         }
 
-        // ----------- Loops de Array Descriptions ----------------
+        // ----------- Loops de Array Op Descriptions ----------------
         function loopDescription(j) {
             let DescriptionArr = []
             if (element.project[0].oci[j].otProject.length > 0 ) {
@@ -287,7 +306,7 @@ const renderProjectsForAdmin = (arrayProjects) => {
                         <td class="text-center">${element.project[0].codeProject}</td>
                         <td class="text-center" data-column="nombre">${element.project[0].projectName}</td>
                         <td class="text-center"><a href="/api/clientes/${element.client[0]._id}"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Imagen Proyecto" src='${element.project[0].imageProject}' width="90%" height="90%"></a></td>
-                        <td class="text-center" data-column="cliente"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Logo Cliente" src='${element.client[0].logo}' width="90%" height="90%"></td>
+                        <td class="text-center" data-column="cliente"><p style="display: none;">${element.client[0].name}</p><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Logo Cliente" src='${element.client[0].logo}' width="90%" height="90%"></td>
                         <td class="text-center" data-column="prio"><span class="badge rounded-pill bg-dark">${element.project[0].prioProject}</span></td>
                         <td class="text-center" data-column="nivel"><span class="badge rounded-pill bg-${colorResult} text-${colorLevel}">${text}</span></td>
                         <td class="text-center px-2">${element.project[0].projectDescription}</td>
@@ -379,6 +398,10 @@ const renderProjectsForAdmin = (arrayProjects) => {
             </caption>`)
 
         document.getElementById('capProjectsList').innerHTML = htmlProjectsList
+
+        // Ocultar el spinner y mostrar la tabla
+        document.getElementById('loading-spinner').style.display = 'none';
+        document.getElementById('miTabla').style.display = 'block';
 }
 
 //---------------  Render Project table for User -------------------------
@@ -602,7 +625,7 @@ const renderProjectsForUser = (arrayProjects) => {
             return (`<tr style="border-bottom: 2px solid #dedede";>
                         <td class="text-center">${element.project[0].codeProject}</td>
                         <td class="text-center" data-column="nombre">${element.project[0].projectName}</td>
-                        <td class="text-center"><a href="/api/clientes/${element.client[0]._id}"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Imagen Proyecto" src='${element.project[0].imageProject}' width="90%" height="90%"></a></td>
+                        <td class="text-center" data-column="cliente"><p style="display: none;"><a href="/api/clientes/${element.client[0]._id}"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Imagen Proyecto" src='${element.project[0].imageProject}' width="90%" height="90%"></a></td>
                         <td class="text-center" data-column="cliente"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Logo Cliente" src='${element.client[0].logo}' width="90%" height="90%"></td>
                         <td class="text-center" data-column="prio"><span class="badge rounded-pill bg-dark">${element.project[0].prioProject}</span></td>
                         <td class="text-center" data-column="nivel"><span class="badge rounded-pill bg-${colorResult} text-${colorLevel}">${text}</span></td>

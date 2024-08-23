@@ -10,6 +10,12 @@ function formatDate(date) {
     return DD + "-" + MM + "-" + YY + " " + hh + "." + mm + "." + ss
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    // Mostrar el spinner y ocultar la tabla al cargar la página
+    document.getElementById('loading-spinner').style.display = 'block';
+    document.getElementById('mostrarMensajes').style.display = 'none';
+});
+
 document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('messageTextLength').innerHTML = "(0/500)"
@@ -115,6 +121,10 @@ const renderMessageAdmin = async (arrMensajes) => {
     document.getElementById('mostrarMensajes').innerHTML = htmlMsg
     document.getElementById('text').value = ""
     document.getElementById('messageTextLength').innerHTML = "(0/500)"
+
+    // Ocultar el spinner y mostrar la tabla
+    document.getElementById('loading-spinner').style.display = 'none';
+    document.getElementById('mostrarMensajes').style.display = 'block';
 }
 
 const renderMessageUser = async (arrMensajes) => {

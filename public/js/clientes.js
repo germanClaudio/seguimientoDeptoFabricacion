@@ -48,6 +48,12 @@ function mostrarNombre() {
     }
 //-------------------------------------
 
+document.addEventListener('DOMContentLoaded', function() {
+    // Mostrar el spinner y ocultar la tabla al cargar la página
+    document.getElementById('loading-spinner').style.display = 'block';
+    document.getElementById('clientTable').style.display = 'none';
+});
+
 //  ---------------- Clients list ----------------
 socket.on('clientsAll', (arrClient, arrUsers) => {
     const cadena = document.getElementById('mostrarUserName').innerText
@@ -152,6 +158,10 @@ const renderClientAdmin = (arrClient) => {
            <caption id="capClientDeletedList">Cantidad de Clientes Eliminados: ${parseInt(arrayClient.length - clientsActiveQty.length)}</caption>`)
 
     document.getElementById('capClientList').innerHTML = htmlClientList
+
+    // Ocultar el spinner y mostrar la tabla
+    document.getElementById('loading-spinner').style.display = 'none';
+    document.getElementById('clientTable').style.display = 'block';
 
     // ---- mensaje confirmacion eliminar Cliente
     function messageDeleteClient(id, name, logo, ) {

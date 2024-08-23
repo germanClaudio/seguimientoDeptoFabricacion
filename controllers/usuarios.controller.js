@@ -4,6 +4,7 @@ const ClientesService = require("../services/clients.service.js")
 const MessagesService = require("../services/messages.service.js")
 
 const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
+const { uploadMulterSingleAvatarUser } = require("../utils/uploadMulter.js")
 const { generateToken } = require('../utils/generateToken')
 
 let now = require('../utils/formatDate.js')
@@ -12,7 +13,6 @@ const bCrypt = require('bcrypt')
 const csrf = require('csrf');
 const csrfTokens = csrf();
 
-const multer = require('multer')
 let userPictureNotFound = "../../../src/images/upload/AvatarUsersImages/incognito.jpg"
 const cookie = require('../utils/cookie.js')
 
@@ -22,11 +22,22 @@ const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty }
 
 const sessionTime = parseInt(process.env.SESSION_TIME) // 12 HORAS
 
+function validateSelectField(value) {
+    const validOptions = [
+        'diseno', 'simulacion', 'disenoSimulacion', 'projectManager',
+        'cadCam', 'mecanizado', 'ajuste', 'todos',
+        'ingenieria', 'fabricacion', 'proyectos', 'administracion', 'todas'
+    ]
+    return validOptions.includes(value);
+}
+
 const {catchError400,
     catchError400_1,
     catchError400_2,
     catchError400_3,
     catchError400_4,
+    catchError400_5,
+    catchError400_6,
     catchError403,
     catchError401,
     catchError401_1,
@@ -47,27 +58,25 @@ class UsersController {
     getAllUsers = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
-        const expires = cookie(req)    
-        const csrfToken = csrfTokens.create(req.csrfSecret);
+        const expires = cookie(req)
         
         try {
             const usuarios = await this.users.getAllUsers()
-            if(usuarios.error) {
-                const err = new Error('No existen Usuarios Cargados')
-                err.dirNumber = 400
-                return next(err)
+            if(!usuarios) {
+                catchError400_5(req, res, next)
             }
+            const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewUser', {
                 usuarios,
                 username,
                 userInfo,
                 expires,
+                data,
                 csrfToken
             })
 
         } catch (err) {
-            err.dirNumber = 500
-            return next(err)
+            catchError500(err, req, res, next)
         }
     }
 
@@ -77,27 +86,24 @@ class UsersController {
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
         
-        const csrfToken = csrfTokens.create(req.csrfSecret);
-        
         try {
             const usuario = await this.users.getUserById(id)
             if(!usuario) {
-                const err = new Error('No existe Usuario')
-                err.dirNumber = 400
-                return next(err)
+                catchError401_3(req, res, next)
             }
             
+            const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('userDetails', {
                 usuario,
                 username,
                 userInfo,
                 expires,
+                data,
                 csrfToken
             })
 
         } catch (err) {
-            err.dirNumber = 400
-            return next(err)
+            catchError500(err, req, res, next)
         }
     }
 
@@ -106,27 +112,24 @@ class UsersController {
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
         
-        const csrfToken = csrfTokens.create(req.csrfSecret);
-        
         try {
             const usuario = await this.users.getUserByUsername(username)
             if(!usuario) {
-                const err = new Error('No existe Usuario')
-                err.dirNumber = 400
-                return next(err)
+                catchError401_3(req, res, next)
             }
             
+            const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('userDetails', {
                 usuario,
                 username,
                 userInfo,
                 expires,
+                data,
                 csrfToken
             })
 
         } catch (err) {
-            err.dirNumber = 400
-            return next(err)
+            catchError500(err, req, res, next)
         }
     }
     
@@ -137,66 +140,32 @@ class UsersController {
         try {
             const usuario = await this.users.getUserByUsernameAndPassword(username, password)
             if(!usuario) {
-                const err = new Error('Username desconocido o password incorrecto!!')
-                err.dirNumber = 400
-                return next(err)
+                catchError400_3(req, res, next)
             }
 
         } catch (err) {
-            err.dirNumber = 500
-            return next(err)
+            catchError500(err, req, res, next)
         }
     }
 
     createNewUser = async (req, res, next) => {
+        let username = res.locals.username;
+        let userInfo = res.locals.userInfo;
+        const expires = cookie(req)
+
         //------ Storage New User Image in Google Store --------        
-        const storage = multer.memoryStorage({
-            fileFilter: (req, file, cb) => {
-                if (file.mimetype.startsWith('image/')) {
-                    cb(null, true);
-                } else {
-                    cb(new Error('Solo se permiten imágenes'));
-                }
-            },
-        }); // Almacenamiento en memoria para cargar archivos temporalmente
-    
-        const uploadMulter = multer({
-            storage: storage
-        }).single('imageAvatarUser');
-    
-        // Almacena la imagen y maneja cualquier error
-        uploadMulter(req, res, async (err) => {
-            if (err) {
-                err.dirNumber = 400;
-                return next(err);
-            }
-    
+        uploadMulterSingleAvatarUser(req, res, async (err) => {
             try {
                 if (req.file) {
                     await uploadToGCS(req, res, next);
                 }
     
-                let username = res.locals.username;
-                let userInfo = res.locals.userInfo;
                 let userManager = await this.users.getUserByUsername(username);
                 const userId = userManager._id;
                 const userCreator = await this.users.getUserById(userId);
-    
-                const user = [{
-                    name: userCreator.name,
-                    lastName: userCreator.lastName,
-                    username: userCreator.username,
-                    email: userCreator.email
-                }];
-    
-                const modificator = [{
-                    name: "",
-                    lastName: "",
-                    username: "",
-                    email: ""
-                }];
-
-                const expires = cookie(req)
+                if (!userCreator) {
+                    catchError401_3(req, res, next)
+                }
     
                 const usernameInput = req.body.username.replace(/[!@#$%^&*]/g, "");
                 const emailInput = req.body.email;
@@ -209,25 +178,12 @@ class UsersController {
                 };
     
                 const userExist = await this.users.getExistingUser(newUserValid);
-    
                 if (userExist) {
-                    const err = new Error(`Ya existe un Usuario con estos datos.`);
-                    err.dirNumber = 400;
-                    err.data = newUserValid
-                    return next(err);
+                    catchError400_6(req, res, next)
                 }
     
                 if (req.body.password !== req.body.confirmPassword) {
-                    const err = new Error('Los password no coinciden, no se agregó el usuario');
-                    err.dirNumber = 400;
-                    return next(err);
-                }
-    
-                const csrfToken = req.body._csrf;
-                if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-                    const err = new Error('Invalid CSRF token');
-                    err.dirNumber = 403;
-                    return next(err);
+                    catchError400_3(req, res, next)
                 }
     
                 const selectFieldPermiso = req.body.permiso;
@@ -252,20 +208,21 @@ class UsersController {
                         status: req.body.status === 'on' ? Boolean(true) : Boolean(false) || Boolean(true),
                         admin: req.body.admin === 'on' ? Boolean(true) : Boolean(false),
                         superAdmin: req.body.superAdmin === 'on' ? Boolean(true) : Boolean(false),
-                        creator: user,
+                        creator: dataUserCreator,
                         timestamp: new Date(),
-                        modificator: modificator,
+                        modificator: dataUserModificatorEmpty,
                         modifiedOn: '',
                         visible: true
                     };
     
                     const usuario = await this.users.addNewUser(newUser);
+                    if (!usuario) {
+                        catchError400_6(req, res, next)
+                    }
+
                     const usuarioLog = await this.users.getUserByUsername(username);
-    
                     if (!usuarioLog) {
-                        const err = new Error('Usuario desconocido!!');
-                        err.dirNumber = 401;
-                        return next(err);
+                        catchError401_3(req, res, next)
                     }
     
                     const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -274,79 +231,40 @@ class UsersController {
                         username,
                         userInfo,
                         expires,
+                        data,
                         csrfToken
                     });
     
                 } else {
-                    const err = new Error('Datos inválidos');
-                    err.dirNumber = 400;
-                    return next(err);
+                    catchError400_3(req, res, next)
                 }
             
-                function validateSelectField(value) {
-                    const validOptions = [
-                        'diseno', 'simulacion', 'disenoSimulacion', 'projectManager',
-                        'cadCam', 'mecanizado', 'ajuste', 'todos',
-                        'ingenieria', 'fabricacion', 'proyectos', 'administracion', 'todas'
-                    ];
-                    return validOptions.includes(value);
-                }
+                validateSelectField(value)
     
             } catch (err) {
-                err.dirNumber = 400;
-                return next(err);
+                catchError500(err, req, res, next)
             }
         })
     }
     
     updateUser = async (req, res, next) => {
-         //------ Storage User Image in Google Store --------
-         const storage = multer.memoryStorage({
-            fileFilter: (req, file, cb) => {
-                if (file.mimetype.startsWith('image/')) {
-                    cb(null, true);
-                } else {
-                    cb(new Error('Solo se permiten imágenes'));
-                }
-            },
-        });
-
-        const upload = multer({
-            storage: storage
-        }).single('imageAvatarUser')
-
-        upload(req, res, async (err) => {
-            if (err) {
-                err.dirNumber = 400;
-                return next(err);
-            }
+         
+        uploadMulterSingleAvatarUser(req, res, async (err) => {
+            const id = req.params.id
+            let username = res.locals.username
+            let userInfo = res.locals.userInfo
+            const expires = cookie(req)
 
             try {
                 if(req.file) {
                     await uploadToGCS(req, res, next)
                 }
-
-                const id = req.params.id
-                let username = res.locals.username
-                let userInfo = res.locals.userInfo
+                
                 const userId = userInfo.id
                 const userToModify = await this.users.getUserById(id)
                 const userLogged = await this.users.getUserById(userId)
-
-                const userModificator = [{
-                    name: userInfo.name,
-                    lastName: userInfo.lastName,
-                    username: userInfo.username,
-                    email: userInfo.email
-                }]
-
-                const expires = cookie(req)
-
-                const csrfToken = req.body._csrf;
-                if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-                    const err = new Error ('Invalid CSRF token')
-                    err.dirNumber = 403
-                    return next(err);
+                if (!userLogged || !userToModify) {
+                    catchError401_3(req, res, next)
                 }
 
                 const usernameInput = req.body.username.replace(/[!@#$%^&* ]/g, "")
@@ -365,10 +283,9 @@ class UsersController {
                 let usuariosRestantes = eliminarUsuario(otherUsers, usernameValid)
 
                 const usernames = usuariosRestantes.map(usuario => usuario.username)
-                
                 if (usernames.includes(userToModify.username)) {
                     const err = new Error (`Ya existe un Usuario con este Username ${usernameInput} o Username inválido!!`)
-                    err.dirNumber = 400
+                    err.statusCode = 400
                     return next(err);
                 }
 
@@ -377,7 +294,7 @@ class UsersController {
 
                 if (emails.includes(userToModify.email)) {
                     const err = new Error (`Ya existe un Usuario con este Em@il ${emailInput} o Em@il inválido!!`)
-                    err.dirNumber = 400
+                    err.statusCode = 400
                     return next(err);
                 }
 
@@ -386,7 +303,7 @@ class UsersController {
            
                 if (legajosId.includes(userToModify.legajoId)) {
                     const err = new Error (`Ya existe un Usuario con este Legajo #${legajoIdInput} o # Legajo inválido!!`)
-                    err.dirNumber = 400
+                    err.statusCode = 400
                     return next(err);
                 }
 
@@ -414,7 +331,7 @@ class UsersController {
                             superAdmin: req.body.superAdmin === 'on' ? Boolean(true) : Boolean(false),
                             status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
                             permiso: selectFieldPermiso,
-                            modificator: userModificator,
+                            modificator: dataUserModificatorNotEmpty(userLogged),
                             modifiedOn: now
                         }
 
@@ -427,16 +344,14 @@ class UsersController {
                             area: selectFieldArea,
                             status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
                             permiso: selectFieldPermiso,
-                            modificator: userModificator,
+                            modificator: dataUserModificatorNotEmpty(),
                             modifiedOn: now
                         }
                     }
-                        const usuario = await this.users.updateUser(id, updatedUser, userModificator)
-                    
+
+                        const usuario = await this.users.updateUser(id, updatedUser, dataUserModificatorNotEmpty(userLogged))
                         if(!usuario) {
-                            const err = new Error('No fue posible Actualizar el Usuario!')
-                            err.dirNumber = 400
-                            next(err);
+                            catchError400_3(req, res, next)
                         }
                                 
                         const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -445,88 +360,47 @@ class UsersController {
                             username,
                             userInfo,
                             expires,
+                            data,
                             csrfToken
                         })
 
                 } else {
-                    const err = new Error('Error en permiso o área seleccionada')
-                    err.dirNumber = 400
-                    next(err);
+                    catchError400_3(req, res, next)
                 }
 
             } catch (err) {
-                err.dirNumber = 400
-                next(err);
+                catchError500(err, req, res, next)
             }
              
-            function validateSelectField(value) {
-                const validOptions = [
-                    'diseno', 'simulacion', 'disenoSimulacion', 'projectManager',
-                    'cadCam', 'mecanizado', 'ajuste', 'todos',
-                    'ingenieria', 'fabricacion', 'proyectos', 'administracion', 'todas'
-                ]
-                return validOptions.includes(value);
-            }
+            validateSelectField(value)
         })
     }
 
     updateUserPreferences = async (req, res, next) => {
             //------ Storage User Image in Google Store --------
-            const storage = multer.memoryStorage({
-                fileFilter: (req, file, cb) => {
-                    if (file.mimetype.startsWith('image/')) {
-                        cb(null, true);
-                    } else {
-                        cb(new Error('Solo se permiten imágenes'));
-                    }
-                },
-            });
-                    
-            const uploadMulter = multer({
-                storage: storage
-            }).single('imageAvatarUser')
-
-            uploadMulter(req, res, async (err) => {
-                if (err) {
-                    err.dirNumber = 400;
-                    return next(err);
-                }
+            uploadMulterSingleAvatarUser(req, res, async (err) => {
+                const id = req.params.id
+                let username = res.locals.username
+                let userInfo = res.locals.userInfo
+                const expires = cookie(req)
 
                 try {
                     if(req.file){
-                        await uploadToGCS(req)
+                        await uploadToGCS(req, res, next)
                     }
 
-                    const id = req.params.id
-                    let username = res.locals.username
-                    let userInfo = res.locals.userInfo
                     const userId = userInfo.id
                     const userToModify = await this.users.getUserById(id)
                     const userLogged = await this.users.getUserById(userId)
-            
-                    const userModificator = [{
-                        name: userInfo.name,
-                        lastName: userInfo.lastName,
-                        username: userInfo.username,
-                        email: userInfo.email
-                    }]
-            
-                    const cookie = req.session.cookie
-                    const time = cookie.expires
-                    const expires = new Date(time)
-            
-                    const csrfToken = req.body._csrf;
-                    if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-                        const err = new Error ('Invalid CSRF token')
-                        err.dirNumber = 403
-                        return next(err);
+                    if (!userLogged || !userToModify) {
+                        catchError401_3(req, res, next)
                     }
-
+            
                     const emailInput = req.body.email
                     const emailValid = await this.users.getUserByEmail(emailInput)
                     if (emailValid) {
                         const err = new Error (`Ya existe un Usuario con este Em@il ${emailInput} o Em@il inválido!!`)
-                        err.dirNumber = 400
+                        err.statusCode = 400
                         return next(err);
                     }
 
@@ -536,16 +410,13 @@ class UsersController {
                             lastName: req.body.lastName,
                             email: emailInput,
                             avatar: req.body.imageTextAvatarUser,
-                            modificator: userModificator,
+                            modificator: dataUserModificatorNotEmpty(userLogged),
                             modifiedOn: now
                         }
                     
-                        const usuario = await this.users.updateUserPreferences(id, updatedUser, userModificator)
-
+                        const usuario = await this.users.updateUserPreferences(id, updatedUser, dataUserModificatorNotEmpty(userLogged))
                         if(!usuario) {
-                            const err = new Error('No fue posible Actualizar el Usuario!')
-                            err.dirNumber = 400
-                            next(err);
+                            catchError401_3(req, res, next)
                         }
                         
                         const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -554,38 +425,37 @@ class UsersController {
                             username,
                             userInfo,
                             expires,
+                            data,
                             csrfToken
                         })
 
                     } else {
-                        const err = new Error('userToModify || userLogged error')
-                        err.dirNumber = 400
-                        next(err);
+                        catchError401_3(req, res, next)
                     }
 
                 } catch (err) {
-                    err.dirNumber = 400
-                    next(err);
+                    catchError500(err, req, res, next)
                 }
             })
     }
 
     getUserSettings = async (req, res, next) => {
         const id = req.params.id
-
         let username = res.locals.username
         let userInfo = res.locals.userInfo
-        const userId = userInfo.id
-        const usuario = await this.users.getUserById(userId)
+        const expires = cookie(req)
 
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
-        
+        const csrfToken = req.body._csrf;
+        if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
+            catchError403(req, res, next)
+        }
+
         try {
+            const userId = userInfo.id
+            const usuario = await this.users.getUserById(userId)
             if (!usuario) {
                 const err = new Error(`No fue posible encontrar el Usuario con el id#: ${id}!`)
-                err.dirNumber = 404
+                err.statusCode = 404
                 next(err);
             }
 
@@ -595,28 +465,24 @@ class UsersController {
                 username,
                 userInfo,
                 expires,
+                data,
                 csrfToken
             })
 
         } catch (err) {
-            err.dirNumber = 400
-            next(err);
+            catchError500(err, req, res, next)
         }
     }
 
     searchUsers = async (req, res, next) => {
         try {
-        const users = await this.users.getAllUsers()
-        
-            if(users.error) {
-                const err = new Error(`No hoy Usuarios cargados!`)
-                err.dirNumber = 404
-                next(err);
+            const users = await this.users.getAllUsers()
+            if(!users) {
+                catchError400_5(req, res, next)
             }
 
         } catch (err) {
-            err.dirNumber = 400
-            next(err);
+            catchError500(err, req, res, next)
         }
     }
 
@@ -624,32 +490,23 @@ class UsersController {
         const { id } = req.params
         let username = res.locals.username
         let userInfo = res.locals.userInfo
-
-        const userModificator = [{
-            name: userInfo.name,
-            lastName: userInfo.lastName,
-            username: userInfo.username,
-            email: userInfo.email
-        }]
-
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
-
-        const csrfToken = req.body._csrf;
-        if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-            const err = new Error ('Invalid CSRF token')
-            err.dirNumber = 403
-            return next(err);
-        }
+        const expires = cookie(req)
 
         try {
-            const usuario = await this.users.deleteUserById(id, userModificator)
+            const userToDelete = await this.users.getUserById(id)
+            if (userToDelete) {
+                catchError401_3(req, res, next)
+            }
 
+            const userId = userInfo.id
+            const userLogged = await this.users.getUserById(userId)
+            if (!userLogged) {
+                catchError401_3(req, res, next)
+            }
+
+            const usuario = await this.users.deleteUserById(id, dataUserModificatorNotEmpty(userLogged))
             if(!usuario) {
-                const err = new Error('No fue posible Eliminar el Usuario!')
-                err.dirNumber = 400
-                next(err);
+                catchError401_3(req, res, next)
             }
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -658,12 +515,12 @@ class UsersController {
                 username,
                 userInfo,
                 expires,
+                data,
                 csrfToken
             })
 
         } catch (err) {
-            err.dirNumber = 400
-            next(err);
+            catchError500(err, req, res, next)
         }
     }
 
@@ -677,9 +534,7 @@ class UsersController {
 
         const csrfToken = req.body._csrf;
         if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-            const err = new Error ('Invalid CSRF token')
-            err.dirNumber = 403
-            return next(err);
+            catchError403(req, res, next)
         }
         
         try {
@@ -701,88 +556,85 @@ class UsersController {
             }
 
             boolean = isValidPassword(user, password)
-                if (boolean) {
-                    const usuario = await this.users.getUserByUsernameAndPassword(user.username, user.password)
-                    const userInfo = await this.users.getUserByUsername(user.username)
+            if (boolean) {
+                const usuario = await this.users.getUserByUsernameAndPassword(user.username, user.password)
+                const userInfo = await this.users.getUserByUsername(user.username)
 
-                    const clientes = await this.clients.getAllClients()
-                    const usuarios = await this.users.getAllUsers()
-                    const proyectos = await this.projects.getAllProjects()
-                    const mensajes = await this.messages.getAllMessages()
-                    const sessionLogin = await this.users.getAllSessions()
-                    
-                    const sessions = parseInt(sessionLogin.length+1)
-
-                        if (!usuario) {
-                            const csrfToken = csrfTokens.create(req.csrfSecret);
-                            return res.render('login', {
-                                flag: false,
-                                fail: false,
-                                csrfToken
-                            })
-
-                        } else if (usuario && userInfo.status ) {
-                            const access_token = generateToken(usuario)
-                            
-                            req.session.admin = userInfo.admin
-                            req.session.username = userInfo.username
-                            
-                            setTimeout(() => {
-                                return res.render('index', {
-                                    usuario,
-                                    username,
-                                    userInfo,
-                                    visits,
-                                    expires,
-                                    clientes,
-                                    usuarios,
-                                    proyectos,
-                                    mensajes,
-                                    sessions
-                                })
-                            }, 350)
-
-                        } else {
-                            setTimeout(() => {
-                                return res.render('notAuthorizated', {
-                                    userInfo,
-                                    username,
-                                    visits,
-                                    expires
-                                })
-                            }, 1000)
-                        }
+                const clientes = await this.clients.getAllClients()
+                const usuarios = await this.users.getAllUsers()
+                const proyectos = await this.projects.getAllProjects()
+                const mensajes = await this.messages.getAllMessages()
+                const sessionLogin = await this.users.getAllSessions()
                 
-                } else {
-                    const flag = true
-                    const fail = true
-                    const csrfToken = csrfTokens.create(req.csrfSecret);
-                    setTimeout(() => {
+                const sessions = parseInt(sessionLogin.length+1)
+
+                    if (!usuario) {
+                        const csrfToken = csrfTokens.create(req.csrfSecret);
                         return res.render('login', {
-                            flag,
-                            fail,
+                            flag: false,
+                            fail: false,
                             csrfToken
                         })
-                    }, 600)
-                }
+
+                    } else if (usuario && userInfo.status ) {
+                        const access_token = generateToken(usuario)
+                        
+                        req.session.admin = userInfo.admin
+                        req.session.username = userInfo.username
+                        
+                        setTimeout(() => {
+                            return res.render('index', {
+                                usuario,
+                                username,
+                                userInfo,
+                                visits,
+                                expires,
+                                clientes,
+                                usuarios,
+                                proyectos,
+                                mensajes,
+                                data,
+                                sessions
+                            })
+                        }, 350)
+
+                    } else {
+                        setTimeout(() => {
+                            return res.render('notAuthorizated', {
+                                userInfo,
+                                username,
+                                visits,
+                                expires
+                            })
+                        }, 1000)
+                    }
+            
+            } else {
+                const flag = true
+                const fail = true
+                const csrfToken = csrfTokens.create(req.csrfSecret);
+                setTimeout(() => {
+                    return res.render('login', {
+                        flag,
+                        fail,
+                        csrfToken
+                    })
+                }, 600)
+            }
 
         } catch (err) {
-            err.dirNumber = 400
-            next(err);
+            catchError500(err, req, res, next)
         }
     }
 
     resetUserPassword = async (req, res, next) => {
         try {
-            const existeUsuario = await this.users.getUserByEmail(req.body.email)
-
             const csrfToken = req.body._csrf;
             if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-                const err = new Error ('Invalid CSRF token')
-                err.dirNumber = 403
-                return next(err);
+                catchError403(req, res, next)
             }
             
+            const existeUsuario = await this.users.getUserByEmail(req.body.email)
             if (!existeUsuario) {
                 setTimeout(() => {
                     return res.render('notAllowedEmail', {
@@ -791,7 +643,6 @@ class UsersController {
 
             } else {
                 const sendEmailToUser = await this.users.resetUserPassword(existeUsuario)
-
                 if (sendEmailToUser) {
                     setTimeout(() => {
                         return res.render('emailSent', {
@@ -806,8 +657,7 @@ class UsersController {
             }
        
         } catch (err) {
-            err.dirNumber = 400
-            next(err);
+            catchError500(err, req, res, next)
         }
     }
 
@@ -815,38 +665,36 @@ class UsersController {
         const id = req.params.id
         const newPassword = req.body.password
         const confirmNewPassword = req.body.confirmPassword
+        let userInfo = res.locals.userInfo
+
 
         const csrfToken = req.body._csrf;
         if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-            const err = new Error ('Invalid CSRF token')
-            err.dirNumber = 403
-            return next(err);
+            catchError403(req, res, next)
         }
         
         if (newPassword === confirmNewPassword) {
             const userToModify = await this.users.getUserById(id)
+
+            const userId = userInfo.id
+            const userLogged = await this.users.getUserById(userId)
+            if (!userLogged) {
+                catchError401_3(req, res, next)
+            }
         
             if(userToModify.visible && userToModify.status) {
 
-                const userModificator = [{
-                    name: userToModify.name,
-                    lastName: userToModify.lastName,
-                    username: userToModify.username,
-                    email: userToModify.email
-                }]
-                
                 const updatedUserPassword = {
                     password: newPassword || confirmNewPassword,
-                    modificator: userModificator,
+                    modificator: dataUserModificatorNotEmpty(userLogged),
                     modifiedOn: now
                 }
-                                
-                try {
-                    const usuario = await this.users.updatePasswordByUser(id, updatedUserPassword, userModificator)
 
+                try {
+                    const usuario = await this.users.updatePasswordByUser(id, updatedUserPassword, dataUserModificatorNotEmpty(userLogged))
                     if(!usuario) {
                         const err = new Error('No fue posible Actualizar el Password!')
-                        err.dirNumber = 400
+                        err.statusCode = 400
                         next(err);
                     }
                     
@@ -856,44 +704,34 @@ class UsersController {
                     }, 3000)
 
                 } catch (err) {
-                    err.dirNumber = 400
-                    next(err);
+                    catchError500(err, req, res, next)
                 }
     
             } else {
-                const err = new Error('Usuario no existe!')
-                err.dirNumber = 400
-                next(err);
+                catchError401_3(req, res, next)
             }
 
         } else {
             const err = new Error('Password no coinciden!')
-            err.dirNumber = 400
-            next(err);
+            err.statusCode = 400
+            return next(err);
         }
     }
 
     userLogout = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
-
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        let expires = new Date(time)
+        const expires = cookie(req)
         
         try {
             const usuario = await this.users.userLogout(userInfo._id, username)
-            
             if(!usuario) {
-                const err = new Error('Usuario no deslogueado')
-                err.dirNumber = 400
-                next(err);
+                catchError401_3(req, res, next)
             }
             
             req.session.destroy(err => {
                 if (err) {
-                    err.dirNumber = 400;
-                    return next(err);
+                    catchError400_3(req, res, next)
                 }
 
                 try {
@@ -905,27 +743,26 @@ class UsersController {
                     })
 
                 } catch (err) {
-                    err.dirNumber = 400
-                    next(err);
+                    catchError500(err, req, res, next)
                 }
             })
 
         } catch (err) {
-            err.dirNumber = 400
-            next(err);
+            catchError500(err, req, res, next)
         }   
     }
 
     authBloq = async (req, res, next) => {
         let username = req.query.username || ""
-        const password = req.query.password || ""
+        let password = req.query.password || ""
     
         username = username.replace(/[!@#$%^&*]/g, "")
     
         try {
             const usuario = await this.users.userLogout(password, username)
-            
-            if(!usuario) return res.status(404).json({ Msg: 'Usuario no deslogueado' })
+            if(!usuario) {
+                catchError400_3(req, res, next)
+            }
 
             if (!username || !password || !users[username]) {
                 process.exit(1)
@@ -940,8 +777,8 @@ class UsersController {
                 process.exit(1)
             }
             
-        } catch (error) {
-            catchError(error, res)
+        } catch (err) {
+            catchError500(err, req, res, next)
         }
     }
 
@@ -953,8 +790,9 @@ class UsersController {
     
         try {
             const usuario = await this.users.userLogout(password, username)
-            
-            if(!usuario) return res.status(404).json({ Msg: 'Usuario no deslogueado' })
+            if(!usuario) {
+                catchError400_3(req, res, next)
+            }
 
             if (!username || !password || !users[username]) {
                 process.exit(1)
@@ -968,33 +806,29 @@ class UsersController {
                 }
             })
             
-        } catch (error) {
-            catchError(error, res)
+        } catch (err) {
+            catchError500(err, req, res, next)
         }
 
     }
 
     index = async (req, res, next) => {
-   
         let username = res.locals.username
         let userInfo = res.locals.userInfo
-    
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
+        const expires = cookie(req)
         
         try {
             const visits = req.session.visits
-            const user = await this.users.getUserByUsername(username)
-
             const clientes = await this.clients.getAllClients()
             const usuarios = await this.users.getAllUsers()
             const proyectos = await this.projects.getAllProjects()
             const mensajes = await this.messages.getAllMessages()
             const sessionsIndex = await this.users.getAllSessions()
             const sessions = sessionsIndex.length
+
             const { flag, fail } = true
     
+            const user = await this.users.getUserByUsername(username)
             if (!user) {
                 const csrfToken = csrfTokens.create(req.csrfSecret);
                 return res.render('login', {
@@ -1007,8 +841,7 @@ class UsersController {
                 const access_token = generateToken(user)
                 const fail = false
                 
-                req.session.admin = user.admin
-                //req.session.admin = true
+                req.session.admin = user.admin //req.session.admin = true
                 req.session.username = userInfo.username
                 
                 return res.render('index', {
@@ -1022,6 +855,7 @@ class UsersController {
                     usuarios,
                     proyectos,
                     mensajes,
+                    data,
                     sessions
                 })
                 
@@ -1036,37 +870,26 @@ class UsersController {
             }
              
         } catch (err) {
-            err.dirNumber = 400
-            next(err);
+            catchError500(err, req, res, next)
         }
     }
 
     clientes = async (req, res, next) => {
-    
         let username = res.locals.username
         let userInfo = res.locals.userInfo
-    
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
+        const expires = cookie(req)
+        const visits = req.session.visits
+        const { flag, fail } = true
 
         const csrfToken = req.body._csrf;
         if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-            const err = new Error ('Invalid CSRF token')
-            err.dirNumber = 403
-            return next(err);
+            catchError403(req, res, next)
         }
         
-        try {
-            const visits = req.session.visits
+        try {            
             const user = await this.users.getUserByUsername(username)
-            
-            const { flag, fail } = true
-            
             if (!user) {
-                const err = new Error('No fue posible encontrarar el Usuario!')
-                err.dirNumber = 400
-                next(err);
+                catchError401_3(req, res, next);
 
             } else if ( user && user.status ) {
                 const access_token = generateToken(user)
@@ -1077,6 +900,7 @@ class UsersController {
                     userInfo,
                     username,
                     expires,
+                    data,
                     csrfToken
                 })
 
@@ -1090,8 +914,7 @@ class UsersController {
             }
             
         } catch (err) {
-            err.dirNumber = 400
-            next(err);
+            catchError500(err, req, res, next)
         }
     }
 }

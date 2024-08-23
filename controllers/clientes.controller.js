@@ -170,11 +170,11 @@ class ClientsController {
     createNewClient = async (req, res, next) => {
                 
         uploadMulterSingleLogoClient(req, res, async (err) => {
+            let username = res.locals.username
+            let userInfo = res.locals.userInfo
+            const expires = cookie(req)
+            
             try {
-                let username = res.locals.username
-                let userInfo = res.locals.userInfo
-                const expires = cookie(req)
-
                 const userId = userInfo.id
                 const userCreator = await this.users.getUserById(userId)
                 if (!userCreator) {
