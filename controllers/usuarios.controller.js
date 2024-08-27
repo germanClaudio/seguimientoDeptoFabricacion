@@ -32,19 +32,19 @@ function validateSelectField(value) {
 }
 
 const {catchError400,
-    catchError400_1,
-    catchError400_2,
-    catchError400_3,
-    catchError400_4,
-    catchError400_5,
-    catchError400_6,
-    catchError403,
-    catchError401,
-    catchError401_1,
-    catchError401_2,
-    catchError401_3,
-    catchError401_4,
-    catchError500
+        catchError400_1,
+        catchError400_2,
+        catchError400_3,
+        catchError400_4,
+        catchError400_5,
+        catchError400_6,
+        catchError403,
+        catchError401,
+        catchError401_1,
+        catchError401_2,
+        catchError401_3,
+        catchError401_4,
+        catchError500
 } = require('../utils/catchErrors.js')
 
 class UsersController {  
@@ -248,13 +248,12 @@ class UsersController {
     }
     
     updateUser = async (req, res, next) => {
+        const { id } = req.params
+        let username = res.locals.username
+        let userInfo = res.locals.userInfo
+        const expires = cookie(req)
          
         uploadMulterSingleAvatarUser(req, res, async (err) => {
-            const id = req.params.id
-            let username = res.locals.username
-            let userInfo = res.locals.userInfo
-            const expires = cookie(req)
-
             try {
                 if(req.file) {
                     await uploadToGCS(req, res, next)
@@ -377,13 +376,12 @@ class UsersController {
     }
 
     updateUserPreferences = async (req, res, next) => {
+        const id = req.params.id
+        let username = res.locals.username
+        let userInfo = res.locals.userInfo
+        const expires = cookie(req)
             //------ Storage User Image in Google Store --------
             uploadMulterSingleAvatarUser(req, res, async (err) => {
-                const id = req.params.id
-                let username = res.locals.username
-                let userInfo = res.locals.userInfo
-                const expires = cookie(req)
-
                 try {
                     if(req.file){
                         await uploadToGCS(req, res, next)
@@ -568,46 +566,46 @@ class UsersController {
                 
                 const sessions = parseInt(sessionLogin.length+1)
 
-                    if (!usuario) {
-                        const csrfToken = csrfTokens.create(req.csrfSecret);
-                        return res.render('login', {
-                            flag: false,
-                            fail: false,
-                            csrfToken
+                if (!usuario) {
+                    const csrfToken = csrfTokens.create(req.csrfSecret);
+                    return res.render('login', {
+                        flag: false,
+                        fail: false,
+                        csrfToken
+                    })
+
+                } else if (usuario && userInfo.status ) {
+                    const access_token = generateToken(usuario)
+                    
+                    req.session.admin = userInfo.admin
+                    req.session.username = userInfo.username
+                    
+                    setTimeout(() => {
+                        return res.render('index', {
+                            usuario,
+                            username,
+                            userInfo,
+                            visits,
+                            expires,
+                            clientes,
+                            usuarios,
+                            proyectos,
+                            mensajes,
+                            data,
+                            sessions
                         })
+                    }, 350)
 
-                    } else if (usuario && userInfo.status ) {
-                        const access_token = generateToken(usuario)
-                        
-                        req.session.admin = userInfo.admin
-                        req.session.username = userInfo.username
-                        
-                        setTimeout(() => {
-                            return res.render('index', {
-                                usuario,
-                                username,
-                                userInfo,
-                                visits,
-                                expires,
-                                clientes,
-                                usuarios,
-                                proyectos,
-                                mensajes,
-                                data,
-                                sessions
-                            })
-                        }, 350)
-
-                    } else {
-                        setTimeout(() => {
-                            return res.render('notAuthorizated', {
-                                userInfo,
-                                username,
-                                visits,
-                                expires
-                            })
-                        }, 1000)
-                    }
+                } else {
+                    setTimeout(() => {
+                        return res.render('notAuthorizated', {
+                            userInfo,
+                            username,
+                            visits,
+                            expires
+                        })
+                    }, 1000)
+                }
             
             } else {
                 const flag = true
@@ -628,18 +626,19 @@ class UsersController {
     }
 
     resetUserPassword = async (req, res, next) => {
+        const csrfToken = req.body._csrf;
+        if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
+            catchError403(req, res, next)
+        }
+
         try {
-            const csrfToken = req.body._csrf;
-            if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-                catchError403(req, res, next)
-            }
             
             const existeUsuario = await this.users.getUserByEmail(req.body.email)
             if (!existeUsuario) {
                 setTimeout(() => {
                     return res.render('notAllowedEmail', {
                     })
-                }, 3000)
+                }, 2000)
 
             } else {
                 const sendEmailToUser = await this.users.resetUserPassword(existeUsuario)
@@ -647,12 +646,13 @@ class UsersController {
                     setTimeout(() => {
                         return res.render('emailSent', {
                         })
-                    }, 3000) 
+                    }, 2000)
+
                 } else {
                     setTimeout(() => {
                         return res.render('notAllowedEmail', {
                         })
-                    }, 3000)   
+                    }, 2000)
                 }
             }
        
@@ -666,7 +666,6 @@ class UsersController {
         const newPassword = req.body.password
         const confirmNewPassword = req.body.confirmPassword
         let userInfo = res.locals.userInfo
-
 
         const csrfToken = req.body._csrf;
         if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
@@ -683,7 +682,6 @@ class UsersController {
             }
         
             if(userToModify.visible && userToModify.status) {
-
                 const updatedUserPassword = {
                     password: newPassword || confirmNewPassword,
                     modificator: dataUserModificatorNotEmpty(userLogged),
@@ -691,17 +689,20 @@ class UsersController {
                 }
 
                 try {
-                    const usuario = await this.users.updatePasswordByUser(id, updatedUserPassword, dataUserModificatorNotEmpty(userLogged))
+                    const usuario = await this.users.updatePasswordByUser(id,
+                        updatedUserPassword,
+                        dataUserModificatorNotEmpty(userLogged)
+                    )
                     if(!usuario) {
                         const err = new Error('No fue posible Actualizar el Password!')
                         err.statusCode = 400
                         next(err);
                     }
                     
-                    setTimeout(() => {                            
+                    setTimeout(() => {
                         res.render('200-PasswordResetSuccess', {
                         })
-                    }, 3000)
+                    }, 500)
 
                 } catch (err) {
                     catchError500(err, req, res, next)
@@ -733,19 +734,16 @@ class UsersController {
                 if (err) {
                     catchError400_3(req, res, next)
                 }
-
-                try {
-                    return res.render('logout', {
-                        usuario,
-                        username,
-                        userInfo,
-                        expires
-                    })
-
-                } catch (err) {
-                    catchError500(err, req, res, next)
-                }
             })
+
+            setTimeout(() => {
+                return res.render('logout', {
+                    usuario,
+                    username,
+                    userInfo,
+                    expires
+                })
+            }, 1000)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -755,7 +753,6 @@ class UsersController {
     authBloq = async (req, res, next) => {
         let username = req.query.username || ""
         let password = req.query.password || ""
-    
         username = username.replace(/[!@#$%^&*]/g, "")
     
         try {
@@ -785,7 +782,6 @@ class UsersController {
     authNoBloq = async (req, res, next) => {
         let username = req.query.username || ""
         const password = req.query.password || ""
-    
         username = username.replace(/[!@#$%^&*]/g, "")
     
         try {
@@ -831,11 +827,13 @@ class UsersController {
             const user = await this.users.getUserByUsername(username)
             if (!user) {
                 const csrfToken = csrfTokens.create(req.csrfSecret);
-                return res.render('login', {
-                    flag,
-                    fail,
-                    csrfToken
-                })
+                setTimeout(() => {
+                    return res.render('login', {
+                        flag,
+                        fail,
+                        csrfToken
+                    })
+                }, 500)
 
             } else if ( user.status ) {
                 const access_token = generateToken(user)
@@ -844,29 +842,33 @@ class UsersController {
                 req.session.admin = user.admin //req.session.admin = true
                 req.session.username = userInfo.username
                 
-                return res.render('index', {
-                    userInfo,
-                    username,
-                    visits,
-                    flag,
-                    fail,
-                    expires,
-                    clientes,
-                    usuarios,
-                    proyectos,
-                    mensajes,
-                    data,
-                    sessions
-                })
+                setTimeout(() => {
+                    return res.render('index', {
+                        userInfo,
+                        username,
+                        visits,
+                        flag,
+                        fail,
+                        expires,
+                        clientes,
+                        usuarios,
+                        proyectos,
+                        mensajes,
+                        data,
+                        sessions
+                    })
+                }, 350)
                 
             } else {
-                return res.render('notAuthorizated', {
-                    userInfo,
-                    username,
-                    visits,
-                    flag,
-                    expires
-                })
+                setTimeout(() => {
+                    return res.render('notAuthorizated', {
+                        userInfo,
+                        username,
+                        visits,
+                        flag,
+                        expires
+                    })
+                }, 500)
             }
              
         } catch (err) {
@@ -895,6 +897,7 @@ class UsersController {
                 const access_token = generateToken(user)
                 req.session.admin = true
                 req.session.username = userInfo.username
+
                 const csrfToken = csrfTokens.create(req.csrfSecret);
                 return res.render('clientes', {
                     userInfo,
@@ -905,12 +908,14 @@ class UsersController {
                 })
 
             } else {
-                return res.render('notAuthorizated', {
-                    userInfo,
-                    username,
-                    visits,
-                    flag
-                })
+                setTimeout(() => {
+                    return res.render('notAuthorizated', {
+                        userInfo,
+                        username,
+                        visits,
+                        flag
+                    })
+                }, 500)
             }
             
         } catch (err) {

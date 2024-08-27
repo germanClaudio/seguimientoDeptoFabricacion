@@ -1,51 +1,73 @@
 const socket = io.connect()
 
 function sortTable(columnName) {
-       
-    const table = document.querySelector('table')
-    const tbody = table.querySelector('tbody')
-    const rows = Array.from(tbody.querySelectorAll('tr'))
-    const column = tbody.querySelector(`[data-column="${columnName}"]`)
-    const order = column.getAttribute('data-order')
-  
-    rows.sort((a, b) => {
-        const aValue = a.querySelector(`[data-column="${columnName}"]`).textContent
-        const bValue = b.querySelector(`[data-column="${columnName}"]`).textContent
+    const table = document.getElementById('miTablaWon');
+    const tbody = table.querySelector('tbody');
+
+    // Seleccionar todas las filas directas del tbody de la tabla principal (ignorando las tablas anidadas)
+    const rows = Array.from(tbody.querySelectorAll('tr')).filter(row => {
+        // Filtrar filas que NO contengan tablas anidadas
+        return row.querySelector('table');
+    });
+
+    // Obtener el botón de la columna para determinar el orden actual
+    const column = document.querySelector(`th[data-column="${columnName}"]`);
+    const order = column.getAttribute('data-order');
     
+    // Ordenar las filas
+    rows.sort((a, b) => {
+        const aElement = a.querySelector(`td[data-column="${columnName}"]`);
+        const bElement = b.querySelector(`td[data-column="${columnName}"]`);
+
+        if (!aElement || !bElement) {
+            console.error(`No se encontró <td> con data-column="${columnName}" en una de las filas.`);
+            return 0;  // No alterar el orden si falta el <td>
+        }
+
+        const aValue = aElement.textContent.trim();
+        const bValue = bElement.textContent.trim();
+
         if (order === 'asc') {
-          return aValue.localeCompare(bValue)
+            return aValue.localeCompare(bValue);
         } else {
-          return bValue.localeCompare(aValue)
+            return bValue.localeCompare(aValue);
         }
     });
-    
-      while (tbody.firstChild) {
+
+    // Limpiar el tbody antes de reordenar las filas
+    while (tbody.firstChild) {
         tbody.removeChild(tbody.firstChild);
-      }
-    
-      rows.forEach(row => tbody.appendChild(row))
-    
-      const btnClicked = document.getElementById(`${columnName}`)
-      if(columnName === 'nombre' || columnName === 'nivel') {
-          var iconDesc = (`<i class="fa-solid fa-sort-alpha-desc" aria-hidden="true"></i>`)
-          var iconAsc = (`<i class="fa-solid fa-sort-alpha-asc" aria-hidden="true"></i>`)
-      } else {
-          var iconDesc = (`<i class="fa-solid fa-sort-amount-desc" aria-hidden="true"></i>`)
-          var iconAsc = (`<i class="fa-solid fa-sort-amount-asc" aria-hidden="true"></i>`)
-      }
-      
-      if (order === 'asc') {
-        column.setAttribute('data-order', 'desc')
-        btnClicked.innerHTML = iconDesc
+    }
+
+    // Añadir las filas ordenadas de nuevo al tbody
+    rows.forEach(row => tbody.appendChild(row));
+
+    // Alternar el orden para la próxima vez
+    const newOrder = order === 'asc' ? 'desc' : 'asc';
+    column.setAttribute('data-order', newOrder);
+
+    // Actualizar el ícono de ordenación en el botón
+    const btnClicked = document.getElementById(columnName);
+    if (columnName === 'nombre' || columnName === 'nivel' || columnName === 'cliente') {
+        btnClicked.innerHTML = newOrder === 'asc' 
+            ? `<i class="fa-solid fa-sort-alpha-asc" aria-hidden="true"></i>`
+            : `<i class="fa-solid fa-sort-alpha-desc" aria-hidden="true"></i>`;
     } else {
-        column.setAttribute('data-order', 'asc')
-        btnClicked.innerHTML = iconAsc
+        btnClicked.innerHTML = newOrder === 'asc'
+            ? `<i class="fa-solid fa-sort-amount-asc" aria-hidden="true"></i>`
+            : `<i class="fa-solid fa-sort-amount-desc" aria-hidden="true"></i>`;
     }
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    // Mostrar el spinner y ocultar la tabla al cargar la página
+    document.getElementById('loading-spinner').style.display = 'block';
+    document.getElementById('miTablaWon').style.display = 'none';
+});
+
 //  ---------------- Projects list ----------------
 socket.on('projectsAllWon', (arrayProjects, arrUsers) => {
-    
+
     const cadena = document.getElementById('mostrarUserName').innerText
     let indice = cadena.indexOf(",");
     const name = cadena.substring(0,indice)
@@ -54,16 +76,15 @@ socket.on('projectsAllWon', (arrayProjects, arrUsers) => {
         if(index !== -1) {
             let user = arrUsers[index].admin
             let userId = arrUsers[index]._id
-            user ? renderProjectsForAdmin(arrayProjects, userId) : renderProjectsForUser(arrayProjects)
+            user ? renderProjectsWonForAdmin(arrayProjects, userId) : renderProjectsWonForUser(arrayProjects)
         }   
 })
 
 // --------------- Render Project table for AdminS -----------------------------------
-const renderProjectsForAdmin = (arrayProjects) => {
+const renderProjectsWonForAdmin = (arrayProjects) => {
     let arrayProyectos = arrayProjects
         
     const html = arrayProyectos.map((element) => {
-
         let green = 'success'
         let red = 'danger'
         let text = "Cotizado"
@@ -87,11 +108,11 @@ const renderProjectsForAdmin = (arrayProjects) => {
                 if (otVisibleLength % 2 === 0) {
                     for (let i=0; i < otVisibleLength; i++) {
                         if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-1) {
-                            if (element.project[0].oci[j].ociStatus) {
+                            element.project[0].oci[j].ociStatus ?
                                 ociArr.push(element.project[0].oci[j].ociNumber)
-                            } else {
+                            :
                                 ociArr.push(element.project[0].oci[j].ociNumber + ' ' + '<i class="fa-solid fa-circle-info" title="OCI Inactiva" style="color: #ff0000;"></i><br>')
-                            }
+                            
                         } else {
                             ociArr.push('&#8203;')
                         }
@@ -100,11 +121,11 @@ const renderProjectsForAdmin = (arrayProjects) => {
                 } else {
                     for (let i=0; i < otVisibleLength; i++) {
                         if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-0.5) {
-                            if (element.project[0].oci[j].ociStatus) {
+                            element.project[0].oci[j].ociStatus ?
                                 ociArr.push(element.project[0].oci[j].ociNumber)
-                            } else {
+                            :
                                 ociArr.push(element.project[0].oci[j].ociNumber + ' ' + '<i class="fa-solid fa-circle-info" title="OCI Inactiva" style="color: #ff0000;"></i><br>')
-                            }
+                            
                         } else {
                             ociArr.push('&#8203;')
                         }
@@ -127,7 +148,6 @@ const renderProjectsForAdmin = (arrayProjects) => {
             return arrOciArr.join('<hr>')
         }
 
-
         //************* Loop  Alias de Oci *******************
         function loopAliasOci(j) {
             let ociAliasArr = []
@@ -142,11 +162,11 @@ const renderProjectsForAdmin = (arrayProjects) => {
                 if (otVisibleLength % 2 === 0) {
                     for (let i=0; i < otVisibleLength; i++) {
                         if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-1) {
-                            if (element.project[0].oci[j].ociStatus) {
+                            element.project[0].oci[j].ociStatus ?
                                 ociAliasArr.push(`<span class="badge bg-primary text-light my-auto">${element.project[0].oci[j].ociAlias}</span>`)
-                            } else {
+                            :
                                 ociAliasArr.push(`<span class="badge bg-danger text-light my-auto">${element.project[0].oci[j].ociAlias}</span><br>`)
-                            }
+                            
                         } else {
                             ociAliasArr.push('&#8203;')
                         }
@@ -155,11 +175,11 @@ const renderProjectsForAdmin = (arrayProjects) => {
                 } else {
                     for (let i=0; i < otVisibleLength; i++) {
                         if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-0.5) {
-                            if (element.project[0].oci[j].ociStatus) {
+                            element.project[0].oci[j].ociStatus ?
                                 ociAliasArr.push(`<span class="badge bg-primary text-light my-auto">${element.project[0].oci[j].ociAlias}</span>`)
-                            } else {
+                            :
                                 ociAliasArr.push(`<span class="badge bg-danger text-light my-auto">${element.project[0].oci[j].ociAlias}</span><br>`)
-                            }
+                            
                         } else {
                             ociAliasArr.push('&#8203;')
                         }
@@ -190,11 +210,10 @@ const renderProjectsForAdmin = (arrayProjects) => {
 
                 for (let i=0; i < element.project[0].oci[j].otProject.length; i++) {
                     if (element.project[0].oci[j].otProject[i].visible) {
-                        if (element.project[0].oci[j].otProject[i].otStatus) {
+                        element.project[0].oci[j].otProject[i].otStatus ?
                             otArr.push(element.project[0].oci[j].otProject[i].otNumber)
-                        } else {
+                        :
                             otArr.push(element.project[0].oci[j].otProject[i].otNumber + ' ' + '<i class="fa-solid fa-circle-info" title="OT Inactiva" style="color: #ff0000;"></i>')
-                        }
                     }
                 }
                 return otArr.join('<br>')
@@ -271,7 +290,7 @@ const renderProjectsForAdmin = (arrayProjects) => {
             text = "Ganado"
         } 
 
-        if(element.project[0].visible) {
+        if (element.project[0].visible) {
             return (`<tr style="border-bottom: 2px solid #dedede";>
                         <td class="text-center">${element.project[0].codeProject}</td>
                         <td class="text-center" data-column="nombre">${element.project[0].projectName}</td>
@@ -360,17 +379,21 @@ const renderProjectsForAdmin = (arrayProjects) => {
                                 textProyectosEliminados = `(${projectosEliminados}) Proyecto, fue eliminado`                  
         
         const htmlProjectsList = 
-            ( `<caption id="capProjectsList">
+            ( `<caption id="capProjectsWonList">
                 ${textTotalProyectos}
                 <br>
                 ${textProyectosEliminados}
             </caption>`)
 
-        document.getElementById('capProjectsList').innerHTML = htmlProjectsList
+        document.getElementById('capProjectsWonList').innerHTML = htmlProjectsList
+
+        // Ocultar el spinner y mostrar la tabla
+        document.getElementById('loading-spinner').style.display = 'none';
+        document.getElementById('miTablaWon').style.display = 'block';
 }
 
 //---------------  Render Project table for User -------------------------
-const renderProjectsForUser = (arrayProjects) => {
+const renderProjectsWonForUser = (arrayProjects) => {
     let arrayProyectos = arrayProjects
         
     const html = arrayProyectos.map((element) => {
@@ -397,11 +420,11 @@ const renderProjectsForUser = (arrayProjects) => {
                 if (otVisibleLength % 2 === 0) {
                     for (let i=0; i < otVisibleLength; i++) {
                         if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-1) {
-                            if (element.project[0].oci[j].ociStatus) {
+                            element.project[0].oci[j].ociStatus ?
                                 ociArr.push(element.project[0].oci[j].ociNumber)
-                            } else {
+                            :
                                 ociArr.push(element.project[0].oci[j].ociNumber + ' ' + '<i class="fa-solid fa-circle-info" title="OCI Inactiva" style="color: #ff0000;"></i><br>')
-                            }
+                            
                         } else {
                             ociArr.push('&#8203;')
                         }
@@ -410,11 +433,11 @@ const renderProjectsForUser = (arrayProjects) => {
                 } else {
                     for (let i=0; i < otVisibleLength; i++) {
                         if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-0.5) {
-                            if (element.project[0].oci[j].ociStatus) {
+                            element.project[0].oci[j].ociStatus ?
                                 ociArr.push(element.project[0].oci[j].ociNumber)
-                            } else {
+                            :
                                 ociArr.push(element.project[0].oci[j].ociNumber + ' ' + '<i class="fa-solid fa-circle-info" title="OCI Inactiva" style="color: #ff0000;"></i><br>')
-                            }
+                    
                         } else {
                             ociArr.push('&#8203;')
                         }
@@ -451,11 +474,11 @@ const renderProjectsForUser = (arrayProjects) => {
                 if (otVisibleLength % 2 === 0) {
                     for (let i=0; i < otVisibleLength; i++) {
                         if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-1) {
-                            if (element.project[0].oci[j].ociStatus) {
+                            element.project[0].oci[j].ociStatus ?
                                 ociAliasArr.push(`<span class="badge bg-primary text-light my-auto">${element.project[0].oci[j].ociAlias}</span>`)
-                            } else {
+                            :
                                 ociAliasArr.push(`<span class="badge bg-danger text-light my-auto">${element.project[0].oci[j].ociAlias}</span><br>`)
-                            }
+                            
                         } else {
                             ociAliasArr.push('&#8203;')
                         }
@@ -464,11 +487,11 @@ const renderProjectsForUser = (arrayProjects) => {
                 } else {
                     for (let i=0; i < otVisibleLength; i++) {
                         if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-0.5) {
-                            if (element.project[0].oci[j].ociStatus) {
+                            element.project[0].oci[j].ociStatus ?
                                 ociAliasArr.push(`<span class="badge bg-primary text-light my-auto">${element.project[0].oci[j].ociAlias}</span>`)
-                            } else {
+                            :
                                 ociAliasArr.push(`<span class="badge bg-danger text-light my-auto">${element.project[0].oci[j].ociAlias}</span><br>`)
-                            }
+                            
                         } else {
                             ociAliasArr.push('&#8203;')
                         }
@@ -498,14 +521,14 @@ const renderProjectsForUser = (arrayProjects) => {
 
                 for (let i=0; i < element.project[0].oci[j].otProject.length; i++) {
                     if (element.project[0].oci[j].otProject[i].visible) {
-                        if (element.project[0].oci[j].otProject[i].otStatus) {
+                        element.project[0].oci[j].otProject[i].otStatus ?
                             otArr.push(element.project[0].oci[j].otProject[i].otNumber)
-                        } else {
+                        :
                             otArr.push(element.project[0].oci[j].otProject[i].otNumber + ' ' + '<i class="fa-solid fa-circle-info" title="OT Inactiva" style="color: #ff0000;"></i>')
-                        }
                     }
                 }
                 return otArr.join('<br>')
+                
             } else {
                 return ('<span class="badge rounded-pill bg-secondary text-light my-auto">S/D</span>')
             }
@@ -670,4 +693,8 @@ const renderProjectsForUser = (arrayProjects) => {
             </caption>`)
 
         document.getElementById('capProjectsList').innerHTML = htmlProjectsList
+
+        // Ocultar el spinner y mostrar la tabla
+        document.getElementById('loading-spinner').style.display = 'none';
+        document.getElementById('miTablaWon').style.display = 'block';
 }

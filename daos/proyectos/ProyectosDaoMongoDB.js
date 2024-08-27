@@ -164,7 +164,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
             const ocis = await Proyectos.find(
                 'project.0.oci.' 
             )
-            console.log('ocis: ', ocis)    
+            //console.log('ocis: ', ocis)    
             if (ocis === undefined || ocis === null) {
                     return new Error('No hay ocis cargadas en este proyecto!')
             } else {

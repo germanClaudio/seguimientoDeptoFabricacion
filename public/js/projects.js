@@ -203,8 +203,6 @@ const renderProjectsForAdmin = (arrayProjects) => {
             return arrOciAliasArr.join('<hr>')
         }
 
-
-
         // ----------- Loops de Array OTs ----------------
         function loopOt(j) {
             let otArr = []
@@ -225,7 +223,6 @@ const renderProjectsForAdmin = (arrayProjects) => {
             }
         }
         
-
         let arrOtArr = []
         function loopArrayOt() {
             for (let j=0; j < element.project[0].oci.length; j++) {
@@ -720,4 +717,8 @@ const renderProjectsForUser = (arrayProjects) => {
             </caption>`)
 
         document.getElementById('capProjectsList').innerHTML = htmlProjectsList
+
+        // Ocultar el spinner y mostrar la tabla
+        document.getElementById('loading-spinner').style.display = 'none';
+        document.getElementById('miTabla').style.display = 'block';
 }

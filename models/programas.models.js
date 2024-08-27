@@ -59,11 +59,11 @@ let otDistribucionSchema = new Schema({
         type: Number,
         default: 0,
     },
-    mecanizado3d: {
+    mecanizado3dFinal: {
         type: String,
         default: 'sinDato',
     },
-    revisionMecanizado3d: {
+    revisionMecanizado3dFinal: {
         type: Number,
         default: 0,
     },

@@ -139,7 +139,6 @@ class ClientsController {
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
 
-        
         try {
             const cliente = await this.clients.getClientById(id)
             if (!cliente) {
@@ -228,25 +227,24 @@ class ClientsController {
     }
 
     updateClient = async (req, res, next) => {
+        const { id } = req.params
+        let username = res.locals.username
+        let userInfo = res.locals.userInfo
+        const expires = cookie(req)
         
         uploadMulterSingleLogoUpdate(req, res, async (err) => {
-            const id = req.params.id
-            const clienteToModify = await this.clients.getClientById(id)
-            if (!clienteToModify) {
-                catchError401(req, res, next)
-            }
-
-            let username = res.locals.username
-            let userInfo = res.locals.userInfo
-            const expires = cookie(req)
-
-            const userId = userInfo.id
-            const userCreator = await this.users.getUserById(userId)
-            if (!userCreator) {
-                catchError401_3(req, res, next)
-            }
-
             try {
+                const clienteToModify = await this.clients.getClientById(id)
+                if (!clienteToModify) {
+                    catchError401(req, res, next)
+                }
+
+                const userId = userInfo.id
+                const userCreator = await this.users.getUserById(userId)
+                if (!userCreator) {
+                    catchError401_3(req, res, next)
+                }
+
                 if (req.file) {
                     await uploadToGCS(req, res, next)
                 }
@@ -318,7 +316,7 @@ class ClientsController {
     }
 
     updateClientProjectsQty = async (req, res, next) => {
-        const id = req.params.id
+        const { id } = req.params
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
@@ -361,18 +359,18 @@ class ClientsController {
     }
 
     reduceClientProjectQty = async (req, res, next) => {
-        const id = req.params.id
+        const { id } = req.params
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
 
-        const userId = userInfo.id
-        const userCreator = await this.users.getUserById(userId)
-        if (!userCreator) {
-            catchError401_3(req, res, next)
-        }
-
         try {
+            const userId = userInfo.id
+            const userCreator = await this.users.getUserById(userId)
+            if (!userCreator) {
+                catchError401_3(req, res, next)
+            }
+
             const proyectos = await this.projects.getProjectsByClientId(id)
             const clientToUpdateProjectQty = await this.clients.getClientById(id)
             if (!proyectos || !clientToUpdateProjectQty) {
@@ -409,13 +407,13 @@ class ClientsController {
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
 
-        const userId = userInfo.id
-        const userCreator = await this.users.getUserById(userId)
-        if (!userCreator) {
-            catchError401_3(req, res, next)
-        }
-
         try {
+            const userId = userInfo.id
+            const userCreator = await this.users.getUserById(userId)
+            if (!userCreator) {
+                catchError401_3(req, res, next)
+            }
+
             const cliente = await this.clients.deleteClientById(clientId, dataUserModificatorNotEmpty(userCreator))
             if (!cliente) {
                 catchError401(req, res, next)
