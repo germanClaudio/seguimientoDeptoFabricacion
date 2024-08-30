@@ -168,7 +168,7 @@ class ProjectsController {
                     data,
                     csrfToken
                 })
-            }, 50)
+            }, 100)
 
         } catch (err) {
             catchError500(err, req, res, next)

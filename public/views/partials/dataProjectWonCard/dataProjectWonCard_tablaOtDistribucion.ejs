@@ -1,0 +1,954 @@
+<!-- tabla OT Distribucion -->
+<table id="tablaOtDistribucion<%=k%>"
+    class="table-responsive align-middle col-5 border-end border-dark"
+    style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #aac">
+        <tr>
+            <th colspan="4" class="text-center">
+                DISTRIBUCIÓN
+                <button
+                    id="posBtnAddDataOtDistribucion<%=k%>"
+                    type="button"
+                    name="btnOtDistribucion"
+                    class="btn btn-small btn-success m-1"
+                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
+                    title="Agregar/Modificar Datos"
+                    value="<%=k%>">
+                    <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>                                                    
+                </button>
+            </th>
+        </tr>
+        <tr>
+            <th id="colData0" style="width:25vw" scope="col-1"
+                class="text-center pb-1"> Mec. 2d Completo | Rev.
+            </th>
+            <th id="colData1" style="width:25vw" scope="col-1"
+                class="text-center pb-1"> Mec. 3d Prefinal | Rev.
+            </th>
+            <th id="colData3" style="width:25vw" scope="col-1"
+                class="text-center pb-1"> Mec. 3d Final | Rev.
+            </th>
+            <th id="colData4" style="width:25vw" scope="col-1"
+                class="text-center pb-1"> Banco-Armado | Rev.
+            </th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        <% let arrResMecanizado2dCompleto = [];
+        let valueArrayResMecanizado2dCompleto = 0;
+        let arrResRevisionMecanizado2dCompleto = [];
+        let arrResCreadorMecanizado2dCompleto = [];
+        let arrResModificadorMecanizado2dCompleto = [];
+        let arrResFechaMecanizado2dCompleto = [];
+        let arrResFechaModMecanizado2dCompleto = [];
+
+        let arrResMecanizado3dPrefinal = [];
+        let valueArrayResMecanizado3dPrefinal = 0;
+        let arrResRevisionMecanizado3dPrefinal = [];
+        let arrResCreadorMecanizado3dPrefinal = [];
+        let arrResModificadorMecanizado3dPrefinal = [];
+        let arrResFechaMecanizado3dPrefinal = [];
+        let arrResFechaModMecanizado3dPrefinal = [];
+
+        let arrResMecanizado3dFinal = [];
+        let valueArrayResMecanizado3dFinal = 0;
+        let arrResRevisionMecanizado3dFinal = [];
+        let arrResCreadorMecanizado3dFinal = [];
+        let arrResModificadorMecanizado3dFinal = [];
+        let arrResFechaMecanizado3dFinal = [];
+        let arrResFechaModMecanizado3dFinal = [];
+
+        let arrResBancoArmado = [];
+        let valueArrayResBancoArmado = 0;
+        let arrResRevisionBancoArmado = [];
+        let arrResCreadorBancoArmado = [];
+        let arrResModificadorBancoArmado = [];
+        let arrResFechaBancoArmado = [];
+        let arrResFechaModBancoArmado = [];
+
+        let anteriorDisabled = "disabled";
+        let siguienteDisabled = "disabled";
+        let resMecanizado2dCompleto = 'S/D';
+        let resRevisionMecanizado2dCompleto = 0;
+        let resMecanizado3dPrefinal = 'S/D';
+        let resRevisionMecanizado3dPrefinal = 0;
+        let resMecanizado3dFinal = 'S/D';
+        let resRevisionMecanizado3dFinal = 0;
+        let resBancoArmado = 'S/D';
+        let resRevisionBancoArmado = 0;
+
+        let largoArrayOtProject = proyecto[m].project[j].oci[k].otProject.length;
+
+        for ( let n=0; largoArrayOtProject > n; n++) {
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject[n]
+            let largoArrayOtDetalles = pathMongoOtProject.otDetalles.length
+
+            for ( let o=0; largoArrayOtDetalles> o; o++) {
+                let otDistribucion = proyecto[m].project[j].oci[k].otProject[n].otDetalles[o].otDistribucion || [];
+                let largoArrayDistribucion = otDistribucion.length;
+
+                if (pathMongoOtProject.visible) {
+                    if (pathMongoOtProject.otStatus) { %>
+                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh;">
+                            <% for (let q = 0; totalColDataOtDistribucion > q; q++) {
+                                if (q==0) { %>
+                                    <!-- Mecanizado 2d Completo data Activo--> 
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtDetalles > 0 && largoArrayDistribucion > 0) {
+                                            
+                                            for (let i = 0; largoArrayDistribucion > i; i++) {
+                                                let pathToMongoDBOtDistribucion = otDistribucion[i]
+
+                                                if (otDistribucion) {
+                                                    let largoArray = parseInt(largoArrayDistribucion)
+                                                    resMecanizado2dCompleto = otDistribucion[largoArray-1].mecanizado2dCompleto
+                                                    resRevisionMecanizado2dCompleto = otDistribucion[largoArray-1].revisionMecanizado2dCompleto
+                                                    
+                                                    if (i == 0) {
+                                                        arrResMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.mecanizado2dCompleto)
+                                                        arrResRevisionMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.revisionMecanizado2dCompleto)
+                                                    }
+                                                    else if (i >= 1 && pathToMongoDBOtDistribucion.revisionMecanizado2dCompleto != otDistribucion[i-1].revisionMecanizado2dCompleto) {
+                                                        arrResMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.mecanizado2dCompleto)
+                                                        arrResRevisionMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.revisionMecanizado2dCompleto)
+                                                    }
+                                                        arrResCreadorMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.creator[0].username)
+                                                        arrResModificadorMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.modificator[0].username)
+                                                        arrResFechaOtMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.timestamp)
+                                                        arrResFechaModMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.modifiedOn)
+                                                        valueArrayResMecanizado2dCompleto = parseInt(arrResOtDistribucion.length-1)
+                                                                                                
+                                                } else {
+                                                    resMecanizado2dCompleto = 'prodismo'
+                                                    resRevisionMecanizado2dCompleto = 0
+                                                }
+                                            }
+                                            
+                                            if (arrResMecanizado2dCompleto.length == 1 ) {
+                                                anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
+                                            } else if (arrResMecanizado2dCompleto.length == arrResRevisionMecanizado2dCompleto.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                                    
+                                        } else {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                            resMecanizado2dCompleto = "prodismo"
+                                            resRevisionMecanizado2dCompleto = 0
+                                            arrResMecanizado2dCompleto.push(resMecanizado2dCompleto)
+                                            arrResRevisionMecanizado2dCompleto.push(resRevisionMecanizado2dCompleto)
+                                            valueArrayResMecanizado2dCompleto = 0
+                                        } %>
+                                        
+                                        <div id="btnAnteriorSiguienteMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>">
+                                            <button id="btnAnteriorMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>"
+                                                name="btnAnteriorMecanizado2dCompleto"
+                                                value="<%=k%>_<%=n%>_<%=o%>"
+                                                class="btn btn-light btn-sm me-2"
+                                                title="Ver anterior"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResMecanizado2dCompleto %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>" value="<%= valueArrayResMecanizado2dCompleto %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResRevisionMecanizado2dCompleto %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResCreadorMecanizado2dCompleto %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResModificadorMecanizado2dCompleto %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResFechaMecanizado2dCompleto %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResFechaModMecanizado2dCompleto %>">
+            
+                                            <% switch (resMecanizado2dCompleto) { 
+                                                case "prodismo": { %>
+                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
+                                                        <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado2dCompleto"
+                                                            class="badge text-dark my-2" style="cursor: help;">
+                                                            <%= resRevisionMecanizado2dCompleto %>
+                                                        </span>
+                                                <% break; }        
+                                                case "terceros": { %>
+                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
+                                                        <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado2dCompleto"
+                                                            class="badge text-dark my-2" style="cursor: help;">
+                                                            <%= resRevisionMecanizado2dCompleto %>
+                                                        </span>
+                                                <% break; }        
+                                                case "china": { %>
+                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
+                                                        <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado2dCompleto"
+                                                            class="badge text-dark my-2" style="cursor: help;">
+                                                            <%= resRevisionMecanizado2dCompleto %>
+                                                        </span>
+                                                <% break; }
+                                                case "noAplica": { %>
+                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
+                                                        <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado2dCompleto"
+                                                            class="badge text-dark my-2" style="cursor: help;">
+                                                            <%= resRevisionMecanizado2dCompleto %>
+                                                        </span>
+                                                <% break; }
+                                                default: { %>
+                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                        <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado2dCompleto"
+                                                            class="badge text-dark my-2" style="cursor: help;">
+                                                            <%= resRevisionMecanizado2dCompleto %>
+                                                        </span>
+                                                <% break; }
+                                            } %>
+            
+                                            <button id="btnSiguienteMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>"
+                                                name="btnSiguienteMecanizado2dCompleto"
+                                                value="<%=k%>_<%=n%>_<%=o%>"
+                                                class="btn btn-light btn-sm ms-2"
+                                                title="Ver siguiente"
+                                                type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                >
+                                                    <i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                <% } else if (q==1) { %>
+                                    <!-- Mecanizado 3d Prefinal data Activo-->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtDetalles > 0 && largoArrayDistribucion > 0) {
+                                                    for (let i = 0; largoArrayDistribucion > i; i++) {
+                                                        let pathToMongoDBOtDistribucion = otDistribucion[i]
+                                                        
+                                                        if (otDistribucion) {
+                                                            let largoArray = parseInt(largoArrayDistribucion)
+                                                            resMecanizado3dPrefinal = otDistribucion[largoArray-1].mecanizado3dPrefinal
+                                                            resRevisionMecanizado3dPrefinal = otDistribucion[largoArray-1].revisionMecanizado3dPrefinal
+                                                            
+                                                            if (i == 0) {
+                                                                arrResMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.mecanizado3dPrefinal)
+                                                                arrResRevisionMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.revisionMecanizado3dPrefinal)
+                                                            }
+                                                            else if (i >= 1 && pathToMongoDBOtDistribucion.revisionMecanizado3dPrefinal != otDistribucion[i-1].revisionMecanizado3dPrefinal) {
+                                                                arrResMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.mecanizado3dPrefinal)
+                                                                arrResRevisionMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.revisionMecanizado3dPrefinal)
+                                                            }
+                                                                arrResCreadorMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.creator[0].username)
+                                                                arrResModificadorMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.modificator[0].username)
+                                                                arrResFechaMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.timestamp)
+                                                                arrResFechaModMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.modifiedOn)
+                                                                valueArrayResMecanizado3dPrefinal = parseInt(arrResMecanizado3dPrefinal.length-1)
+                                                                                                        
+                                                        } else {
+                                                            resMecanizado3dPrefinal = 'prodismo'
+                                                            resRevisionMecanizado3dPrefinal = 0
+                                                        }
+                                                    }
+                                                    
+                                                    if (arrResMecanizado3dPrefinal.length == 1 ) {
+                                                        siguienteDisabled = "disabled"
+                                                        anteriorDisabled = "disabled"
+                                                    } else if (arrResMecanizado3dPrefinal.length == arrResRevisionMecanizado3dPrefinal.length) {
+                                                        anteriorDisabled = ""
+                                                        siguienteDisabled = "disabled"
+                                                    } else {
+                                                        anteriorDisabled = ""
+                                                        siguienteDisabled = "disabled"
+                                                    }
+                                                    
+                                                } else {
+                                                    anteriorDisabled = "disabled"
+                                                    siguienteDisabled = "disabled"
+                                                    resMecanizado3dPrefinal = "prodismo"
+                                                    resRevisionMecanizado3dPrefinal = 0
+                                                    arrResMecanizado3dPrefinal.push(resMecanizado3dPrefinal)
+                                                    arrResRevisionMecanizado3dPrefinal.push(resRevisionMecanizado3dPrefinal)
+                                                    valueArrayResMecanizado3dPrefinal = 0
+                                            } %>
+                                        
+                                            <div id="btnAnteriorSiguienteMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>">
+                                                <button id="btnAnteriorMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>"
+                                                    name="btnAnteriorMecanizado3dPrefinal"
+                                                    value="<%=k%>_<%=n%>_<%=o%>"
+                                                    class="btn btn-light btn-sm me-2"
+                                                    title="Ver anterior"
+                                                    type="button"
+                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                    <%= anteriorDisabled %>
+                                                    >
+                                                        <i class="fa-solid fa-arrow-left"></i>
+                                                </button>
+                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResMecanizado3dPrefinal %>">
+                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>" value="<%= valueArrayResMecanizado3dPrefinal %>">
+                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResRevisionMecanizado3dPrefinal %>">
+                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResCreadorMecanizado3dPrefinal %>">
+                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResModificadorMecanizado3dPrefinal %>">
+                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResFechaMecanizado3dPrefinal %>">
+                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResFechaModMecanizado3dPrefinal %>">
+                
+                                                <% switch (resMecanizado3dPrefinal) { 
+                                                    case "prodismo": { %>
+                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
+                                                            <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dPrefinal"
+                                                                class="badge text-dark my-2" style="cursor: help;">
+                                                                <%= resRevisionMecanizado3dPrefinal %>
+                                                            </span>
+                                                    <% break; }
+                                                    case "terceros": { %>
+                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
+                                                            <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dPrefinal"
+                                                                class="badge text-dark my-2" style="cursor: help;">
+                                                                <%= resRevisionMecanizado3dPrefinal %>
+                                                            </span>
+                                                    <% break; }        
+                                                    case "china": { %>
+                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
+                                                            <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dPrefinal"
+                                                                class="badge text-dark my-2" style="cursor: help;">
+                                                                <%= resRevisionMecanizado3dPrefinal %>
+                                                            </span>
+                                                    <% break; }
+                                                    case "noAplica": { %>
+                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
+                                                            <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dPrefinal"
+                                                                class="badge text-dark my-2" style="cursor: help;">
+                                                                <%= resRevisionMecanizado3dPrefinal %>
+                                                            </span>
+                                                    <% break; }
+                                                    default: { %>
+                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                            <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dPrefinal"
+                                                                class="badge text-dark my-2" style="cursor: help;">
+                                                                <%= resRevisionMecanizado3dPrefinal %>
+                                                            </span>
+                                                    <% break; }
+                                                } %>
+                
+                                                <button id="btnSiguienteMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>"
+                                                    name="btnSiguienteMecanizado3dPrefinal"
+                                                    value="<%=k%>_<%=n%>_<%=o%>"
+                                                    class="btn btn-light btn-sm ms-2"
+                                                    title="Ver siguiente"
+                                                    type="button"
+                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                    <%= siguienteDisabled %>
+                                                    >
+                                                        <i class="fa-solid fa-arrow-right"></i>
+                                                </button>
+                                            </div>
+                                    </td>
+                                <% } else if (q==2) { %>
+                                    <!-- Mecanizado 3d Final data Activo-->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtDetalles > 0 && largoArrayDistribucion > 0) {
+                                                    for (let i = 0; largoArrayDistribucion > i; i++) {
+                                                        let pathToMongoDBOtDistribucion = otDistribucion[i]
+                                                        
+                                                        if (otDistribucion) {
+                                                            let largoArray = parseInt(largoArrayDistribucion)
+                                                            resMecanizado3dFinal = otDistribucion[largoArray-1].mecanizado3dFinal
+                                                            resRevisionMecanizado3dFinal = otDistribucion[largoArray-1].revisionMecanizado3dFinal
+                                                            
+                                                            if (i == 0) {
+                                                                arrResMecanizado3dFinal.push(pathToMongoDBOtDistribucion.mecanizado3dFinal)
+                                                                arrResRevisionMecanizado3dFinal.push(pathToMongoDBOtDistribucion.revisionMecanizado3dFinal)
+                                                            }
+                                                            else if (i >= 1 && pathToMongoDBOtDistribucion.revisionMecanizado3dFinal != otDistribucion[i-1].revisionMecanizado3dFinal) {
+                                                                arrResMecanizado3dFinal.push(pathToMongoDBOtDistribucion.mecanizado3dFinal)
+                                                                arrResRevisionMecanizado3dFinal.push(pathToMongoDBOtDistribucion.revisionMecanizado3dFinal)
+                                                            }
+                                                                arrResCreadorMecanizado3dFinal.push(pathToMongoDBOtDistribucion.creator[0].username)
+                                                                arrResModificadorMecanizado3dFinal.push(pathToMongoDBOtDistribucion.modificator[0].username)
+                                                                arrResFechaMecanizado3dFinal.push(pathToMongoDBOtDistribucion.timestamp)
+                                                                arrResFechaModMecanizado3dFinal.push(pathToMongoDBOtDistribucion.modifiedOn)
+                                                                valueArrayResMecanizado3dFinal = parseInt(arrResMecanizado3dFinal.length-1)
+                                                                                                        
+                                                        } else {
+                                                            resMecanizado3dFinal = 'prodismo'
+                                                            resRevisionMecanizado3dFinal = 0
+                                                        }
+                                                    }
+                                                    
+                                                    if (arrResMecanizado3dFinal.length == 1 ) {
+                                                        siguienteDisabled = "disabled"
+                                                        anteriorDisabled = "disabled"
+                                                    } else if (arrResMecanizado3dFinal.length == arrResRevisionMecanizado3dFinal.length) {
+                                                        anteriorDisabled = ""
+                                                        siguienteDisabled = "disabled"
+                                                    } else {
+                                                        anteriorDisabled = ""
+                                                        siguienteDisabled = "disabled"
+                                                    }
+                                                    
+                                                } else {
+                                                    anteriorDisabled = "disabled"
+                                                    siguienteDisabled = "disabled"
+                                                    resMecanizado3dFinal = "prodismo"
+                                                    resRevisionMecanizado3dFinal = 0
+                                                    arrResMecanizado3dFinal.push(resMecanizado3dFinal)
+                                                    arrResRevisionMecanizado3dFinal.push(resRevisionMecanizado3dFinal)
+                                                    valueArrayResMecanizado3dFinal = 0
+                                            } %>
+                                        
+                                            <div id="btnAnteriorSiguienteMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>">
+                                                <button id="btnAnteriorMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>"
+                                                    name="btnAnteriorMecanizado3dFinal"
+                                                    value="<%=k%>_<%=n%>_<%=o%>"
+                                                    class="btn btn-light btn-sm me-2"
+                                                    title="Ver anterior"
+                                                    type="button"
+                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                    <%= anteriorDisabled %>
+                                                    >
+                                                        <i class="fa-solid fa-arrow-left"></i>
+                                                </button>
+                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResMecanizado3dFinal %>">
+                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>" value="<%= valueArrayResMecanizado3dFinal %>">
+                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResRevisionMecanizado3dFinal %>">
+                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResCreadorMecanizado3dFinal %>">
+                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResModificadorMecanizado3dFinal %>">
+                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResFechaMecanizado3dFinal %>">
+                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResFechaModMecanizado3dFinal %>">
+                
+                                                <% switch (resMecanizado3dFinal) { 
+                                                    case "prodismo": { %>
+                                                            <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
+                                                            <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dFinal"
+                                                                class="badge text-dark my-2" style="cursor: help;">
+                                                                <%= resRevisionMecanizado3dFinal %>
+                                                            </span>
+                                                    <% break; }
+                                                    case "terceros": { %>
+                                                            <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
+                                                            <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dFinal"
+                                                                class="badge text-dark my-2" style="cursor: help;">
+                                                                <%= resRevisionMecanizado3dFinal %>
+                                                            </span>
+                                                    <% break; }        
+                                                    case "china": { %>
+                                                            <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
+                                                            <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dFinal"
+                                                                class="badge text-dark my-2" style="cursor: help;">
+                                                                <%= resRevisionMecanizado3dFinal %>
+                                                            </span>
+                                                    <% break; }
+                                                    case "noAplica": { %>
+                                                            <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
+                                                            <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dFinal"
+                                                                class="badge text-dark my-2" style="cursor: help;">
+                                                                <%= resRevisionMecanizado3dFinal %>
+                                                            </span>
+                                                    <% break; }
+                                                    default: { %>
+                                                            <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                            <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dFinal"
+                                                                class="badge text-dark my-2" style="cursor: help;">
+                                                                <%= resRevisionMecanizado3dFinal %>
+                                                            </span>
+                                                    <% break; }
+                                                } %>
+                
+                                                <button id="btnSiguienteMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>"
+                                                    name="btnSiguienteMecanizado3dFinal"
+                                                    value="<%=k%>_<%=n%>_<%=o%>"
+                                                    class="btn btn-light btn-sm ms-2"
+                                                    title="Ver siguiente"
+                                                    type="button"
+                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                    <%= siguienteDisabled %>
+                                                    >
+                                                        <i class="fa-solid fa-arrow-right"></i>
+                                                </button>
+                                            </div>
+                                    </td>
+                                <% } else { %>
+                                    <!-- Banco Armado data Activo-->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtDetalles > 0 && largoArrayDistribucion > 0) {
+                                            for (let i = 0; largoArrayDistribucion > i; i++) {
+                                                let pathToMongoDBOtDistribucion = otDistribucion[i]
+                                                
+                                                if (otDistribucion) {
+                                                    let largoArray = parseInt(largoArrayDistribucion)
+                                                    resBancoArmado = otDistribucion[largoArray-1].bancoArmado
+                                                    resRevisionBancoArmado = otDistribucion[largoArray-1].revisionBancoArmado
+                                                    
+                                                    if (i == 0) {
+                                                        arrResBancoArmado.push(pathToMongoDBOtDistribucion.bancoArmado)
+                                                        arrResRevisionBancoArmado.push(pathToMongoDBOtDistribucion.revisionBancoArmado)
+                                                    }
+                                                    else if (i >= 1 && pathToMongoDBOtDistribucion.revisionBancoArmado != otDistribucion[i-1].revisionBancoArmado) {
+                                                        arrResBancoArmado.push(pathToMongoDBOtDistribucion.bancoArmado)
+                                                        arrResRevisionBancoArmado.push(pathToMongoDBOtDistribucion.revisionBancoArmado)
+                                                    }
+                                                        arrResCreadorBancoArmado.push(pathToMongoDBOtDistribucion.creator[0].username)
+                                                        arrResModificadorBancoArmado.push(pathToMongoDBOtDistribucion.modificator[0].username)
+                                                        arrResFechaBancoArmado.push(pathToMongoDBOtDistribucion.timestamp)
+                                                        arrResFechaModBancoArmado.push(pathToMongoDBOtDistribucion.modifiedOn)
+                                                        valueArrayResBancoArmado = parseInt(arrResBancoArmado.length-1)
+                                                                                                
+                                                } else {
+                                                    resBancoArmado = 'prodismo'
+                                                    resRevisionBancoArmado = 0
+                                                }
+                                            }
+                                                    
+                                            if (arrResBancoArmado.length == 1 ) {
+                                                siguienteDisabled = "disabled"
+                                                anteriorDisabled = "disabled"
+                                            } else if (arrResBancoArmado.length == arrResRevisionBancoArmado.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                                    
+                                        } else {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                            resBancoArmado = "prodismo"
+                                            resRevisionBancoArmado = 0
+                                            arrResBancoArmado.push(resBancoArmado)
+                                            arrResRevisionBancoArmado.push(resRevisionBancoArmado)
+                                            valueArrayResBancoArmado = 0
+                                        } %>
+                                        
+                                            <div id="btnAnteriorSiguienteBancoArmado<%=k%>_<%=n%>_<%=o%>">
+                                                <button id="btnAnteriorBancoArmado<%=k%>_<%=n%>_<%=o%>"
+                                                    name="btnAnteriorBancoArmado"
+                                                    value="<%=k%>_<%=n%>_<%=o%>"
+                                                    class="btn btn-light btn-sm me-2"
+                                                    title="Ver anterior"
+                                                    type="button"
+                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                    <%= anteriorDisabled %>
+                                                    >
+                                                        <i class="fa-solid fa-arrow-left"></i>
+                                                </button>
+                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResBancoArmado %>">
+                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>" value="<%= valueArrayResBancoArmado %>">
+                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResRevisionBancoArmado %>">
+                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResCreadorBancoArmado %>">
+                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResModificadorBancoArmado %>">
+                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResFechaBancoArmado %>">
+                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResFechaModBancoArmado %>">
+                
+                                                <% switch (resBancoArmado) { 
+                                                    case "prodismo": { %>
+                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
+                                                            <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" name="resRevisionBancoArmado"
+                                                                class="badge text-dark my-2" style="cursor: help;">
+                                                                <%= resRevisionBancoArmado %>
+                                                            </span>
+                                                    <% break; }
+                                                    case "terceros": { %>
+                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
+                                                            <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" name="resRevisionBancoArmado"
+                                                                class="badge text-dark my-2" style="cursor: help;">
+                                                                <%= resRevisionBancoArmado %>
+                                                            </span>
+                                                    <% break; }        
+                                                    case "china": { %>
+                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
+                                                            <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" name="resRevisionBancoArmado"
+                                                                class="badge text-dark my-2" style="cursor: help;">
+                                                                <%= resRevisionBancoArmado %>
+                                                            </span>
+                                                    <% break; }
+                                                    case "noAplica": { %>
+                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
+                                                            <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" name="resRevisionBancoArmado"
+                                                                class="badge text-dark my-2" style="cursor: help;">
+                                                                <%= resRevisionBancoArmado %>
+                                                            </span>
+                                                    <% break; }
+                                                    default: { %>
+                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                            <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" name="resRevisionBancoArmado"
+                                                                class="badge text-dark my-2" style="cursor: help;">
+                                                                <%= resRevisionBancoArmado %>
+                                                            </span>
+                                                    <% break; }
+                                                } %>
+                
+                                                <button id="btnSiguienteBancoArmado<%=k%>_<%=n%>_<%=o%>"
+                                                    name="btnSiguienteBancoArmado"
+                                                    value="<%=k%>_<%=n%>_<%=o%>"
+                                                    class="btn btn-light btn-sm ms-2"
+                                                    title="Ver siguiente"
+                                                    type="button"
+                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                    <%= siguienteDisabled %>
+                                                    >
+                                                        <i class="fa-solid fa-arrow-right"></i>
+                                                </button>
+                                            </div>
+                                    </td>
+                                <% }
+                            } %>
+                        </tr>
+                    <% } else { %>
+                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="pe-none border-bottom" style="height: 5vh; background-color: #dedede;">
+                            <% for (let q = 0; totalColDataOtDistribucion > q; q++) {
+                                if (q==0) { %>
+                                    <!-- Mecanizado 2d Completo data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtDetalles > 0 && largoArrayDistribucion > 0) {
+                                                for (let i = 0; largoArrayDistribucion > i; i++) {
+
+                                                    if (otDistribucion) {
+                                                        let largoArray = parseInt(largoArrayDistribucion)
+                                                        resMecanizado2dCompleto = otDistribucion[largoArray-1].mecanizado2dCompleto
+                                                        resRevisionMecanizado2dCompleto = otDistribucion[largoArray-1].revisionMecanizado2dCompleto
+                                                        
+                                                        if (i == 0) {
+                                                            arrResMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.mecanizado2dCompleto)
+                                                            arrResRevisionMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.revisionMecanizado2dCompleto)
+                                                        }
+                                                        else if (i >= 1 && pathToMongoDBOtDistribucion.revisionMecanizado2dCompleto != otDistribucion[i-1].revisionMecanizado2dCompleto) {
+                                                            arrResMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.mecanizado2dCompleto)
+                                                            arrResRevisionMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.revisionMecanizado2dCompleto)
+                                                        }
+                                                        valueArrayResMecanizado2dCompleto = parseInt(arrResMecanizado2dCompleto.length-1)
+                                                                                                    
+                                                    } else {
+                                                        resMecanizado2dCompleto = ''
+                                                        resRevisionMecanizado2dCompleto = 0
+                                                    }
+                                                }
+                                                resMecanizado2dCompleto = otDistribucion[0].mecanizado2dCompleto
+                                        } else {
+                                            resMecanizado2dCompleto = ""
+                                            resRevisionMecanizado2dCompleto = 0
+                                            arrResMecanizado2dCompleto.push(0)
+                                            arrResRevisionMecanizado2dCompleto.push(0)
+                                        } %>
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResMecanizado2dCompleto %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>" value="<%= valueArrayResMecanizado2dCompleto %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResRevisionMecanizado2dCompleto %>">
+                                        
+                                        <% switch (resMecanizado2dCompleto) { 
+                                            case "prodismo": { %>
+                                                    <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                        PRODISMO
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>"class="badge text-dark my-2" >
+                                                        <%= resRevisionMecanizado2dCompleto %>
+                                                    </span>
+                                            <% break; }        
+                                            case "terceros": { %>
+                                                    <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                        TERCEROS
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                        <%= resRevisionMecanizado2dCompleto %>
+                                                    </span>
+                                            <% break; }        
+                                            case "china": { %>
+                                                    <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                        CHINA
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                        <%= resRevisionMecanizado2dCompleto %>
+                                                    </span>
+                                            <% break; }
+                                            case "noAplica": { %>
+                                                    <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                        N/A
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                        <%= resRevisionMecanizado2dCompleto %>
+                                                    </span>
+                                            <% break; }
+                                            default: { %>
+                                                    <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                        S/D
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                        <%= resRevisionMecanizado2dCompleto %>
+                                                    </span>
+                                            <% break; }
+                                        } %>
+                                    </td>
+                                <% } else if (q==1) { %>
+                                    <!-- Mecanizado 3d Prefinal data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtDetalles > 0 && largoArrayDistribucion > 0) {
+                                                for (let i = 0; largoArrayDistribucion > i; i++) {
+                                                    
+                                                    if (otDistribucion) {
+                                                        let largoArray = parseInt(largoArrayDistribucion)
+                                                        resMecanizado3dPrefinal = otDistribucion[largoArray-1].mecanizado3dPrefinal
+                                                        resRevisionMecanizado3dPrefinal = otDistribucion[largoArray-1].revisionMecanizado3dPrefinal
+                                                        
+                                                        if (i == 0) {
+                                                            arrResMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.mecanizado3dPrefinal)
+                                                            arrResRevisionMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.revisionMecanizado3dPrefinal)
+                                                        }
+                                                        else if (i >= 1 && pathToMongoDBOtDistribucion.revisionMecanizado3dPrefinal != otDistribucion[i-1].revisionMecanizado3dPrefinal) {
+                                                            arrResMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.mecanizado3dPrefinal)
+                                                            arrResRevisionMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.revisionMecanizado3dPrefinal)
+                                                        }
+                                                        valueArrayResMecanizado3dPrefinal = parseInt(arrResMecanizado3dPrefinal.length-1)
+                                                                                                    
+                                                    } else {
+                                                        resMecanizado3dPrefinal = ''
+                                                        resRevisionMecanizado3dPrefinal = 0
+                                                    }
+                                                }
+
+                                                resMecanizado3dPrefinal = otDistribucion[0].mecanizado3dPrefinal
+                                        
+                                        } else {
+                                            resMecanizado3dPrefinal = ""
+                                            resRevisionMecanizado3dPrefinal = 0
+                                            arrResMecanizado3dPrefinal.push(resMecanizado3dPrefinal)
+                                            arrResRevisionMecanizado3dPrefinal.push(0)
+                                        } %>
+
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResMecanizado3dPrefinal %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>" value="<%= valueArrayResMecanizado3dPrefinal %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResRevisionMecanizado3dPrefinal %>">
+
+                                        <% switch (resMecanizado3dPrefinal) { 
+                                            case "prodismo": { %>
+                                                <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2">
+                                                    PRODISMO
+                                                </span>
+                                                |
+                                                <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionMecanizado3dPrefinal %>
+                                                </span>
+                                            <% break; }        
+                                            case "terceros": { %>
+                                                    <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                        TERCEROS
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                        <%= resRevisionMecanizado3dPrefinal %>
+                                                    </span>
+                                            <% break; }        
+                                            case "china": { %>
+                                                    <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                        CHINA
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                        <%= resRevisionMecanizado3dPrefinal %>
+                                                    </span>
+                                            <% break; }
+                                            case "noAplica": { %>
+                                                    <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                        N/A
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                        <%= resRevisionMecanizado3dPrefinal %>
+                                                    </span>
+                                            <% break; }
+                                            default: { %>
+                                                    <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                        S/D
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                        <%= resRevisionMecanizado3dPrefinal %>
+                                                    </span>
+                                            <% break; }
+                                        } %>
+                                    </td>
+                                <% } else if (q==2) { %>
+                                    <!-- Mecanizado 3d Final data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtDetalles > 0 && largoArrayDistribucion > 0) {
+                                                for (let i = 0; largoArrayDistribucion > i; i++) {
+                                                    
+                                                    if (otDistribucion) {
+                                                        let largoArray = parseInt(largoArrayDistribucion)
+                                                        resMecanizado3dFinal = otDistribucion[largoArray-1].mecanizado3dFinal
+                                                        resRevisionMecanizado3dFinal = otDistribucion[largoArray-1].revisionMecanizado3dFinal
+                                                        
+                                                        if (i == 0) {
+                                                            arrResMecanizado3dFinal.push(pathToMongoDBOtDistribucion.mecanizado3dFinal)
+                                                            arrResRevisionMecanizado3dFinal.push(pathToMongoDBOtDistribucion.revisionMecanizado3dFinal)
+                                                        }
+                                                        else if (i >= 1 && pathToMongoDBOtDistribucion.revisionMecanizado3dFinal != otDistribucion[i-1].revisionMecanizado3dFinal) {
+                                                            arrResMecanizado3dFinal.push(pathToMongoDBOtDistribucion.mecanizado3dFinal)
+                                                            arrResRevisionMecanizado3dFinal.push(pathToMongoDBOtDistribucion.revisionMecanizado3dFinal)
+                                                        }
+                                                        valueArrayResMecanizado3dFinal = parseInt(arrResMecanizado3dFinal.length-1)
+                                                                                                    
+                                                    } else {
+                                                        resMecanizado3dFinal = ''
+                                                        resRevisionMecanizado3dFinal = 0
+                                                    }
+                                                }
+
+                                                resMecanizado3dFinal = otDistribucion[0].bancoArmado
+                                        
+                                        } else {
+                                            resMecanizado3dFinal = ""
+                                            resRevisionMecanizado3dFinal = 0
+                                            arrResMecanizado3dFinal.push(resMecanizado3dFinal)
+                                            arrResRevisionMecanizado3dFinal.push(0)
+                                        } %>
+
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResMecanizado3dFinal %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>" value="<%= valueArrayResMecanizado3dFinal %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResRevisionMecanizado3dFinal %>">
+
+                                        <% switch (resMecanizado3dFinal) { 
+                                            case "prodismo": { %>
+                                                <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2">
+                                                    PRODISMO
+                                                </span>
+                                                |
+                                                <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionMecanizado3dFinal %>
+                                                </span>
+                                            <% break; }        
+                                            case "terceros": { %>
+                                                    <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                        TERCEROS
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                        <%= resRevisionMecanizado3dFinal %>
+                                                    </span>
+                                            <% break; }        
+                                            case "china": { %>
+                                                    <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                        CHINA
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                        <%= resRevisionMecanizado3dFinal %>
+                                                    </span>
+                                            <% break; }
+                                            case "noAplica": { %>
+                                                    <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                        N/A
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                        <%= resRevisionMecanizado3dFinal %>
+                                                    </span>
+                                            <% break; }
+                                            default: { %>
+                                                    <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                        S/D
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                        <%= resRevisionMecanizado3dFinal %>
+                                                    </span>
+                                            <% break; }
+                                        } %>
+                                    </td>
+                                <% } else { %>
+                                    <!-- Banco Armado data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtDetalles > 0 && largoArrayDistribucion > 0) {
+                                                for (let i = 0; largoArrayDistribucion > i; i++) {
+                                                    
+                                                    if (otDistribucion) {
+                                                        let largoArray = parseInt(largoArrayDistribucion)
+                                                        resBancoArmado = otDistribucion[largoArray-1].bancoArmado
+                                                        resRevisionBancoArmado = otDistribucion[largoArray-1].revisionBancoArmado
+                                                        
+                                                        if (i == 0) {
+                                                            arrResBancoArmado.push(pathToMongoDBOtDistribucion.bancoArmado)
+                                                            arrResRevisionBancoArmado.push(pathToMongoDBOtDistribucion.revisionBancoArmado)
+                                                        }
+                                                        else if (i >= 1 && pathToMongoDBOtDistribucion.revisionBancoArmado != otDistribucion[i-1].revisionBancoArmado) {
+                                                            arrResBancoArmado.push(pathToMongoDBOtDistribucion.bancoArmado)
+                                                            arrResRevisionBancoArmado.push(pathToMongoDBOtDistribucion.revisionBancoArmado)
+                                                        }
+                                                        valueArrayResBancoArmado = parseInt(arrResBancoArmado.length-1)
+                                                                                                    
+                                                    } else {
+                                                        resBancoArmado = ''
+                                                        resRevisionBancoArmado = 0
+                                                    }
+                                                }
+
+                                                resBancoArmado = otDistribucion[0].bancoArmado
+                                        
+                                        } else {
+                                            resBancoArmado = ""
+                                            resRevisionBancoArmado = 0
+                                            arrResBancoArmado.push(resBancoArmado)
+                                            arrResRevisionBancoArmado.push(0)
+                                        } %>
+
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResBancoArmado %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>" value="<%= valueArrayResBancoArmado %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResRevisionBancoArmado %>">
+
+                                        <% switch (resBancoArmado) { 
+                                            case "prodismo": { %>
+                                                <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2">
+                                                    PRODISMO
+                                                </span>
+                                                |
+                                                <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                    <%= resRevisionBancoArmado %>
+                                                </span>
+                                            <% break; }        
+                                            case "terceros": { %>
+                                                    <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                        TERCEROS
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                        <%= resRevisionBancoArmado %>
+                                                    </span>
+                                            <% break; }        
+                                            case "china": { %>
+                                                    <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                        CHINA
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                        <%= resRevisionBancoArmado %>
+                                                    </span>
+                                            <% break; }
+                                            case "noAplica": { %>
+                                                    <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                        N/A
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                        <%= resRevisionBancoArmado %>
+                                                    </span>
+                                            <% break; }
+                                            default: { %>
+                                                    <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                        S/D
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
+                                                        <%= resRevisionBancoArmado %>
+                                                    </span>
+                                            <% break; }
+                                        } %>
+                                    </td>
+                                <% }
+                            } %>
+                        </tr>
+                    <% }
+                }
+            }
+        } %>
+    </tbody>
+</table>

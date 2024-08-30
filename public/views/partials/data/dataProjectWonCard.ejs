@@ -8,12 +8,11 @@
         <%- include('../../partials/dataProjectCard/dataProjectCard_contStatusProy'); %>
 
             <div class="card-body px-1">
-                <% let j=0;
-                    if (proyecto.length > 0) { 
+                <% if (proyecto.length > 0) { 
                         for ( let m=0; proyecto.length> m; m++) { %>                           
                             <div class="accordion" id="accordionPanelsStayOpenExample">                 
-                                <% var countVisibleOci=0
-                                    var arrayVisibleOci = [] 
+                                <% let countVisibleOci=0
+                                    let arrayVisibleOci = [] 
                                     for ( let x=0; proyecto[m].project[j].oci.length> x; x++) {
                                         if (proyecto[m].project[j].oci[x].visible) { 
                                             arrayVisibleOci.push(proyecto[m].project[j].oci[x])
@@ -25,12 +24,13 @@
                                             for (let k=0; arrayVisibleOci.length > k; k++) { %>
                                         
                                                 <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="panelsStayOpen-headingOneCard<%=k%>">
+
                                                     <!-- ------ boton accordion OCI's ------ -->
-                                                    <h2 class="accordion-header" id="panelsStayOpen-headingOneCard">
-                                                        <%- include('../../partials/dataProjectCard/dataProjectWonCard_btnAccord', { k, m, j, arrayVisibleOci }); %>
+                                                        <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_btnAccord', { k, m, j, arrayVisibleOci }); %>
                                                     </h2>
 
-                                                    <div id="panelsStayOpen-collapseOneCard<%=k %>" class="accordion-collapse show" aria-labelledby="panelsStayOpen-headingOne">
+                                                    <div id="panelsStayOpen-collapseOneCard<%=k%>" class="accordion-collapse show" aria-labelledby="panelsStayOpen-headingOne">
 
                                                         <% if (arrayVisibleOci[k].ociStatus) { %>
                                                             <div class="accordion-body px-1 mw-100">
@@ -42,38 +42,40 @@
                                                                     <% if (arrayVisibleOci[k].otProject.length> 0) { %>
 
                                                                         <!-- cabecera botonera principal de OCI -->
-                                                                        <%- include('../../partials/dataProjectCard/dataProjectWonCard_btnOci', { k, m, j, arrayVisibleOci }); %>                    
+                                                                        <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_btnOci', { k, m, j, arrayVisibleOci }); %>                    
                                                                     
                                                                         <div class="d-flex flex-row my-3">
                                                                             <!-- ----- tabla general ----- -->
-                                                                            <%- include('../../partials/dataProjectCard/dataProjectWonCard_tablaGral', { k, m, j }); %>
+                                                                            <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_tablaGral', { k, m, j }); %>
                                                                                                                                             
                                                                             <!-- ----- tabla detalles ----- -->
-                                                                            <%- include('../../partials/dataProjectCard/dataProjectWonCard_tablaDetalle', { k, m, j }); %>
+                                                                            <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_tablaDetalle', { k, m, j }); %>
 
                                                                             <!-- Carousel de Tablas ----- -->
                                                                             <div id="carouselExampleControls<%=k%>" class="carousel slide" data-bs-ride="carousel">
 
                                                                                 <!-- ----- mostrar botones de acuerdo a cantidad de slides ----- -->
-                                                                                <%- include('../../partials/dataProjectCard/dataProjectCard_btnSlides_Won', { k, m, j }); %>
+                                                                                <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_btnSlides', { k, m, j }); %>
                                                                                                                                                 
-                                                                                <% const totalColDataOtDistribucion = 4;
-                                                                                    const totalColDataProgramacion = 10;
-                                                                                    const totalColDataMecanizado = 17; %>
-                                                                                <div class="carousel-inner">
-                                                                                    <!-- --------- tabla otDistribucion ----------- -->
-                                                                                    <div id="slideOtDistribucion" class="carousel-item" data-bs-interval="600000">
-                                                                                        <%- include('../../partials/dataProjectCard/dataProjectCard_tablaOtDistribucion', { k, m, j, totalColDataOtDistribucion }); %>
+                                                                                <% if (proyecto[0].project[0].levelProject == 'ganado') { 
+                                                                                    let totalColDataOtDistribucion = 4;
+                                                                                    let totalColDataProgramacion = 10;
+                                                                                    let totalColDataMecanizado = 17; %>
+                                                                                    <div class="carousel-inner">
+                                                                                        <div id="slideOtDistribucion" class="carousel-item" data-bs-interval="600000"> <!-- active -->
+                                                                                            <!-- --------- tabla otDistribucion ----------- -->
+                                                                                            <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_tablaOtDistribucion', { k, m, j, totalColDataOtDistribucion }); %>
+                                                                                        </div>
+                                                                                        <div id="slideProgramacion" class="carousel-item" data-bs-interval="600000">
+                                                                                            <!-- --------- tabla Programacion ----------- -->
+                                                                                            <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_tablaProgramacion', { k, m, j, totalColDataProgramacion }); %>
+                                                                                        </div>
+                                                                                        <!-- --------- tabla Mecanizado ----------- -->
+                                                                                        <div id="slideMecanizado" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_tablaMecanizado', { k, m, j, totalColDataMecanizado }); %>
+                                                                                        </div>
                                                                                     </div>
-                                                                                    <!-- --------- tabla Programacion ----------- -->
-                                                                                    <div id="slideProgramacion" class="carousel-item" data-bs-interval="600000">
-                                                                                        <%- include('../../partials/dataProjectCard/dataProjectCard_tablaProgramacion', { k, m, j, totalColDataProgramacion }); %>
-                                                                                    </div>
-                                                                                    <!-- --------- tabla Mecanizado ----------- -->
-                                                                                    <div id="slideMecanizado" class="carousel-item" data-bs-interval="600000">
-                                                                                        <%- include('../../partials/dataProjectCard/dataProjectCard_tablaMecanizado', { k, m, j, totalColDataMecanizado }); %>
-                                                                                    </div>
-                                                                                </div>                
+                                                                                <% } %>
                                                                                 <!-- --------- botonera carrusel < > ----------- -->
                                                                                 <%- include('../../partials/dataProjectCard/dataProjectCard_btnCarrousel', { k, m, j }); %>
                                                                                 <input id="slideHidden" type="hidden" value="<%= slide %>">                                                                

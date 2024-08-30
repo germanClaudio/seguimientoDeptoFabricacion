@@ -113,25 +113,29 @@ let otProgramacionSchema = new Schema({
         type: Number,
         default: 0,
     },
-    programa3dF2: {
+    programa3d2F: {
         type: String,
         default: 'sinDato',
     },
-    revisionPrograma3dF2: { 
+    revisionPrograma3d2F: { 
         type: Number,
         default: 0,
     },
-    programa3dF4: {
+    programa3d4F: {
         type: String,
         default: 'sinDato',
     },
-    revisionPrograma3dF4: { 
+    revisionPrograma3d4F: { 
         type: Number,
         default: 0,
     },
     observacionesProgramacion: {
         type: String,
         default: '',
+    },
+    revisionObservacionesProgramacion: {
+        type: Number,
+        default: 0,
     },
     creator: [creatorSchema],
     timestamp: {
@@ -147,6 +151,14 @@ let otProgramacionSchema = new Schema({
 
 // ------- OT Distribucion Schema ---------
 let otMecanizadoSchema = new Schema({
+    fCero: { 
+        type: String,
+        default: 'sinDato',
+    },
+    revisionFCero: { 
+        type: Number,
+        default: 0,
+    },
     fUno: { 
         type: String,
         default: 'sinDato',

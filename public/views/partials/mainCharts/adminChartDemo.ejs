@@ -127,9 +127,9 @@
                   <div class="media d-flex mx-2">
                     <div class="media-body text-left">
                       <% let arrayActiveProject = []
-                        for (let i=0; clientes.length>i; i++ ) {
-                          if (clientes[i].project>0) {
-                            arrayActiveProject.push(clientes[i].project)
+                        for (let i=0; proyectos.length>i; i++ ) {
+                          if (proyectos[i].project[0].levelProject === 'ganado') {
+                            arrayActiveProject.push(proyectos[i].project)
                           }
                         } %>
                       <h3><%= arrayActiveProject.length %></h3>

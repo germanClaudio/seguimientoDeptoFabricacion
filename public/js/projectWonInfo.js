@@ -181,9 +181,9 @@ function dividirArrayEnSubarrays(array, tamanoSubarray) {
 const arrayOriginal = Array.from(slidesCarousel)
 const arrayOriginalBtn = Array.from(btnInferiorCarousel)
 
-// Dividir el array en subarrays de 12 elementos cada uno
-const subarrays = dividirArrayEnSubarrays(arrayOriginal, 12);
-const subarrayBtns = dividirArrayEnSubarrays(arrayOriginalBtn, 12);
+// Dividir el array en subarrays de 3 elementos cada uno
+const subarrays = dividirArrayEnSubarrays(arrayOriginal, 3); // cant. maxima de slides
+const subarrayBtns = dividirArrayEnSubarrays(arrayOriginalBtn, 3); // cant. maxima de slides
 
 subarrays.forEach((subarray) => {
         if (subarray.length > 0) {
@@ -2005,27 +2005,57 @@ btnCreateNewOt.addEventListener('click', (event) => {
     }
 })
 
-//---------- Obtiene la lista de OT ------------
+//---------- Obtiene la lista de OT y Detalles ------------
 function getOtList(i) {
     const parentDiv = document.getElementById(`tablaGeneral${i}`)
     let tableBody = parentDiv.lastElementChild
     const lastChild = parseInt(tableBody.childElementCount)
-
     let k = i
-    let arrayOtNumber = [], arrayOpNumber = [], arrayOtStatus = []
-    for (let n=0; n < lastChild; n++) {
-        const otNumber = document.getElementById(`lastOtNumber${k}_${n}`).innerText
-        const opNumber = document.getElementById(`lastOpNumber${k}_${n}`).innerText
-        const otStatus = document.getElementById(`lastOtStatus${k}_${n}`).innerText
-        arrayOtNumber.push(otNumber)
-        arrayOpNumber.push(opNumber)
-        arrayOtStatus.push(otStatus)
+
+    // Función auxiliar para obtener el texto de un elemento si existe
+    function getElementText(id) {
+        const element = document.getElementById(id);
+        return element ? element.innerText : null;
     }
-    //console.log('arrayOtNumber', arrayOtNumber,)
+
+    // Arrays para almacenar los datos
+    let arrayOtNumber = [], arrayOpNumber = [], arrayOtStatus = [], arrayOtDetalle = [], arrayDescripcionDetalle = [], arrayOnumber = [];
+
+    // Configuración de mapeo de IDs a arrays
+    const mappings = [
+        { prefix: 'lastOtNumber', array: arrayOtNumber },
+        { prefix: 'lastOpNumber', array: arrayOpNumber },
+        { prefix: 'lastOtStatus', array: arrayOtStatus },
+        { prefix: 'numeroDetalle', array: arrayOtDetalle, isDetalle: true },
+        { prefix: 'descripcionDetalle', array: arrayDescripcionDetalle }
+    ];
+
+    for (let n = 0; n < lastChild; n++) {
+        for (let o = 0; o < lastChild; o++) {
+            mappings.forEach(mapping => {
+                const id = `${mapping.prefix}${k}_${n}_${o}`;
+                const text = getElementText(id);
+                
+                if (text !== null) {
+                    mapping.array.push(text);
+
+                    // Si es un detalle, agregar también a arrayOnumber
+                    if (mapping.isDetalle) {
+                        arrayOnumber.push(o);
+                    }
+                }
+            });
+        }
+    }
+    // console.log('arrayOtNumber:', arrayOtNumber, 'arrayOtDetalle:', arrayOtDetalle,
+    //             'arrayDescripcionDetalle:', arrayDescripcionDetalle, 'arrayOnumber:', arrayOnumber)
     return {
         arrayOtNumber,
         arrayOpNumber,
         arrayOtStatus,
+        arrayOtDetalle,
+        arrayDescripcionDetalle,
+        arrayOnumber,
         lastChild
     }
 }
@@ -2038,120 +2068,90 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
 
     const qInicialX = parseInt(qInicial);
     const qFinalX = parseInt(qFinal);
-    
     let k = i;
     
     const arrays = {
-        arrayProcesoR14: [],
-        arrayRevisionProcesoR14: [],
-        arrayAprobadoR14: [],
-        arrayRevisionAprobadoR14: [],
-        arrayProceso3d: [],
-        arrayRevisionProceso3d: [],
-        arrayHorasProceso3d: [],
-        arrayRevisionHorasProceso3d: [],
-        arrayAvDiseno: [],
-        arrayRevisionAvDiseno: [],
-        arrayAv50Diseno: [],
-        arrayRevisionAv50Diseno: [],
-        arrayAv80Diseno: [],
-        arrayRevisionAv80Diseno: [],
-        arrayEnvioCliente: [],
-        arrayRevisionEnvioCliente: [],
-        arrayRevisionCliente: [],
-        arrayRevisionRevisionCliente: [],
-        arrayLdmProvisoria: [],
-        arrayRevisionLdmProvisoria: [],
-        arrayAv100Diseno: [],
-        arrayRevisionAv100Diseno: [],
-        arrayAprobadoCliente: [],
-        arrayRevisionAprobadoCliente: [],
-        arrayLdmAvanceCG: [],
-        arrayRevisionLdmAvanceCG: [],
-        arrayLdmAvanceTD2: [],
-        arrayRevisionLdmAvanceTD2: [],
-        arrayLdm80: [],
-        arrayRevisionLdm80: [],
-        arrayInfoModelo: [],
-        arrayRevisionInfoModelo: [],
-        arrayLdm100: [],
-        arrayRevisionLdm100: [],
-        arrayInfo100: [],
-        arrayRevisionInfo100: []
+        arrayMecanizado2dCompleto: [], arrayRevisionMecanizado2dCompleto: [],
+        arrayMecanizado3dPrefinal: [], arrayRevisionMecanizado3dPrefinal: [],
+        arrayMecanizado3dFinal: [], arrayRevisionMecanizado3dFinal: [],
+        arrayBancoArmado: [], arrayRevisionBancoArmado: [],
+        arrayRt: [], arrayRevisionRt: [],
+        arrayPreparacionGeo: [], arrayRevisionPreparacionGeo: [],
+        arrayPrograma2d: [], arrayRevisionPrograma2d: [],
+        arrayPrograma3d2F: [], arrayRevisionPrograma3d2F: [],
+        arrayPrograma3d4F: [], arrayRevisionPrograma3d4F: [],
+        arrayObservacionesProgramacion: [], arrayRevisionObservacionesProgramacion: [],
+        arrayFCero: [], arrayRevisionFCero: [],
+        arrayFUno: [], arrayRevisionFUno: [],
+        arrayFDos: [], arrayRevisionFDos: [],
+        arrayFTres: [], arrayRevisionFTres: [],
+        arrayFCuatro: [], arrayRevisionFCuatro: [],
+        arrayFCinco: [], arrayRevisionFCinco: [],
+        arrayObservacionesMecanizado: [], arrayRevisionObservacionesMecanizado: [],
     };
     
     const mapping = {
-        0: ['arrayProcesoR14', 'arrayRevisionProcesoR14'],
-        1: ['arrayAprobadoR14', 'arrayRevisionAprobadoR14'],
-        2: ['arrayProceso3d', 'arrayRevisionProceso3d'],
-        3: ['arrayHorasProceso3d', 'arrayRevisionHorasProceso3d'],
-        4: ['arrayAvDiseno', 'arrayRevisionAvDiseno'],
-        5: ['arrayAv50Diseno', 'arrayRevisionAv50Diseno'],
-        6: ['arrayAv80Diseno', 'arrayRevisionAv80Diseno'],
-        7: ['arrayEnvioCliente', 'arrayRevisionEnvioCliente'],
-        8: ['arrayRevisionCliente', 'arrayRevisionRevisionCliente'],
-        9: ['arrayLdmProvisoria', 'arrayRevisionLdmProvisoria'],
-        10: ['arrayAv100Diseno', 'arrayRevisionAv100Diseno'],
-        11: ['arrayAprobadoCliente', 'arrayRevisionAprobadoCliente'],
-        12: ['arrayLdmAvanceCG', 'arrayRevisionLdmAvanceCG'],
-        13: ['arrayLdmAvanceTD2', 'arrayRevisionLdmAvanceTD2'],
-        14: ['arrayLdm80', 'arrayRevisionLdm80'],
-        15: ['arrayInfoModelo', 'arrayRevisionInfoModelo'],
-        16: ['arrayLdm100', 'arrayRevisionLdm100'],
-        17: ['arrayInfo100', 'arrayRevisionInfo100']
+        0: ['arrayMecanizado2dCompleto', 'arrayRevisionMecanizado2dCompleto'],
+        1: ['arrayMecanizado3dPrefinal', 'arrayRevisionMecanizado3dPrefinal'],
+        2: ['arrayMecanizado3dFinal' , 'arrayRevisionMecanizado3dFinal'],
+        3: ['arrayBancoArmado', 'arrayRevisionBancoArmado'],
+        4: ['arrayRt', 'arrayRevisionRt'],
+        5: ['arrayPreparacionGeo', 'arrayRevisionPreparacionGeo'],
+        6: ['arrayPrograma2d', 'arrayRevisionPrograma2d'],
+        7: ['arrayPrograma3d2F', 'arrayRevisionPrograma3d2F'],
+        8: ['arrayPrograma3d4F', 'arrayRevisionPrograma3d4F'],
+        9: ['arrayObservacionesProgramacion', 'arrayRevisionObservacionesProgramacion'],
+        10: ['arrayFCero', 'arrayRevisionFCero'],
+        11: ['arrayFUno', 'arrayRevisionFUno'],
+        12: ['arrayFDos', 'arrayRevisionFDos'],
+        13: ['arrayFTres', 'arrayRevisionFTres'],
+        14: ['arrayFCuatro', 'arrayRevisionFCuatro'],
+        15: ['arrayFCinco', 'arrayRevisionFCinco'],
+        16: ['arrayObservacionesMecanizado', 'arrayRevisionObservacionesMecanizado']
     };
 
     for (let n = 0; n < lastChild; n++) {
         for (let q = qInicialX; q < qFinalX; q++) {
-            const otHidden = document.getElementById(`resHidden${k}_${n}_${q}`).value;
-            const otInfo = changeValueFromArray(otHidden.split(",")).pop();
-
-            const otRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${q}`).value;
-            const otRevision = otRevisionHidden.split(",").pop();
-
-            const [infoKey, revisionKey] = mapping[q] || [];
-            if (infoKey && revisionKey) {
-                arrays[infoKey].push(otInfo);
-                arrays[revisionKey].push(otRevision);
+            if (document.getElementById(`resHidden${k}_${n}_${q}`)) {
+                const otHidden = document.getElementById(`resHidden${k}_${n}_${q}`).value;
+                const otRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${q}`).value;
+                
+                var otRevision = otRevisionHidden.split(",").pop();
+                var otInfo = changeValueFromArray(otHidden.split(",")).pop();
             }
+                const [infoKey, revisionKey] = mapping[q] || [];
+                if (infoKey && revisionKey) {
+                    arrays[infoKey].push(otInfo);
+                    arrays[revisionKey].push(otRevision);
+                }
         }
     }
 
     const resultMap = {
-        2: ['arrayProcesoR14', 'arrayRevisionProcesoR14', 'arrayAprobadoR14', 'arrayRevisionAprobadoR14'],
-        4: ['arrayProceso3d', 'arrayRevisionProceso3d', 'arrayHorasProceso3d', 'arrayRevisionHorasProceso3d'],
-        8: ['arrayAvDiseno', 'arrayRevisionAvDiseno', 'arrayAv50Diseno', 'arrayRevisionAv50Diseno', 'arrayAv80Diseno', 'arrayRevisionAv80Diseno', 'arrayEnvioCliente', 'arrayRevisionEnvioCliente'],
-        12: ['arrayRevisionCliente', 'arrayRevisionRevisionCliente', 'arrayLdmProvisoria', 'arrayRevisionLdmProvisoria', 'arrayAv100Diseno', 'arrayRevisionAv100Diseno', 'arrayAprobadoCliente', 'arrayRevisionAprobadoCliente'],
-        16: ['arrayLdmAvanceCG', 'arrayRevisionLdmAvanceCG', 'arrayLdmAvanceTD2', 'arrayRevisionLdmAvanceTD2', 'arrayLdm80', 'arrayRevisionLdm80', 'arrayInfoModelo', 'arrayRevisionInfoModelo'],
-        18: ['arrayLdm100', 'arrayRevisionLdm100', 'arrayInfo100', 'arrayRevisionInfo100']
+        4: ['arrayMecanizado2dCompleto', 'arrayRevisionMecanizado2dCompleto', 'arrayMecanizado3dPrefinal', 'arrayRevisionMecanizado3dPrefinal', 'arrayMecanizado3dFinal', 'arrayRevisionMecanizado3dFinal', 'arrayBancoArmado', 'arrayRevisionBancoArmado'],
+        10: ['arrayRt', 'arrayRevisionRt','arrayPreparacionGeo', 'arrayRevisionPreparacionGeo', 'arrayPrograma2d', 'arrayRevisionPrograma2d', 'arrayPrograma3d2F', 'arrayRevisionPrograma3d2F', 'arrayPrograma3d4F', 'arrayRevisionPrograma3d4F', 'arrayObservacionesProgramacion', 'arrayRevisionObservacionesProgramacion'],
+        17: ['arrayFCero', 'arrayRevisionFCero', 'arrayFUno', 'arrayRevisionFUno', 'arrayFDos', 'arrayRevisionFDos', 'arrayFTres', 'arrayRevisionFTres', 'arrayFCuatro', 'arrayRevisionFCuatro', 'arrayFCinco', 'arrayRevisionFCinco', 'arrayObservacionesMecanizado', 'arrayRevisionObservacionesMecanizado']
     };
 
     const keysToReturn = resultMap[qFinalX] || [];
     const result = {};
     keysToReturn.forEach(key => result[key] = arrays[key]);
-
+console.log('result: ', result)
     return result;
 }
 
 function changeValueFromArray(arrayFromValues) {
-    for (let i = 0; i < arrayFromValues.length; i++) {
-        // Modificar valores
-        if (arrayFromValues[i] == 'sinDato') {
-            arrayFromValues[i] = 'S/D';
-        } else if (arrayFromValues[i] == '') {
-            arrayFromValues[i] = 'S/D';
-        } else if (arrayFromValues[i] == 'noAplica') {
-            arrayFromValues[i] = 'N/A';
-        } else if (arrayFromValues[i] == 'ok') {
-            arrayFromValues[i] = 'OK';
-        } else if (arrayFromValues[i] == 'noOk') {
-            arrayFromValues[i] = 'No OK';
-        } else if (arrayFromValues[i] == 'pendiente') {
-            arrayFromValues[i] = 'Pendiente';
-        }
-    }
-    return arrayFromValues
+    const valueMap = {
+        '': 'S/D',
+        'sinDato': 'S/D',
+        'noAplica': 'N/A',
+        'prodismo': 'PRODISMO',
+        'terceros': 'TERCEROS',
+        'china': 'CHINA'
+    };
+    return arrayFromValues.map(value => valueMap[value] || value);
 }
+
 
 function colorStatusOt(valorStatusOt) {
     let disabled = 'required'
@@ -2166,30 +2166,30 @@ function colorStatusOt(valorStatusOt) {
 
 function optionSelect(option) {
     const options = {
-        ok: `
-            <option value="noOk">No OK</option>
-            <option value="pendiente">Pendiente</option>
+        prodismo: `
+            <option value="terceros">terceros</option>
+            <option value="china">CHINA</option>
             <option value="noAplica">N/A</option>
         `,
-        noOk: `
-            <option value="ok">OK</option>
-            <option value="pendiente">Pendiente</option>
+        china: `
+            <option value="prodismo">PRODISMO</option>
+            <option value="terceros">terceros</option>
             <option value="noAplica">N/A</option>
         `,
-        pendiente: `
-            <option value="ok">OK</option>
-            <option value="noOk">No OK</option>
+        terceros: `
+            <option value="prodismo">PRODISMO</option>
+            <option value="china">CHINA</option>
             <option value="noAplica">N/A</option>
         `,
         noAplica: `
-            <option value="ok">OK</option>
-            <option value="noOk">No OK</option>
-            <option value="pendiente">Pendiente</option>
+            <option value="prodismo">PRODISMO</option>
+            <option value="terceros">terceros</option>
+            <option value="china">CHINA</option>
         `,
         default: `
-            <option value="ok">OK</option>
-            <option value="noOk">No OK</option>
-            <option value="pendiente">Pendiente</option>
+            <option value="prodismo">PRODISMO</option>
+            <option value="terceros">terceros</option>
+            <option value="china">CHINA</option>
             <option value="noAplica">N/A</option>
         `
     };
@@ -2199,9 +2199,9 @@ function optionSelect(option) {
 
 function switchOptionSelected(switchValue) {
     const optionsMap = {
-        "OK": { variableValue: 'ok', optionKey: 'optionOk', getValueArrayDato: 'OK' },
-        "No OK": { variableValue: 'noOk', optionKey: 'optionNoOk', getValueArrayDato: 'No OK' },
-        "Pendiente": { variableValue: 'pendiente', optionKey: 'optionPendiente', getValueArrayDato: 'Pendiente' },
+        "PRODISMO": { variableValue: 'prodismo', optionKey: 'optionProdismo', getValueArrayDato: 'PRODISMO' },
+        "TERCEROS": { variableValue: 'terceros', optionKey: 'optionTerceros', getValueArrayDato: 'TERCEROS' },
+        "CHINA": { variableValue: 'china', optionKey: 'optionChina', getValueArrayDato: 'CHINA' },
         "N/A": { variableValue: 'noAplica', optionKey: 'optionNoAplica', getValueArrayDato: 'N/A' },
         "S/D": { variableValue: 'sinDato', optionKey: 'optionDefault', getValueArrayDato: 'S/D', getValueArrayRevision: 0 },
         "": { variableValue: 'sinDato', optionKey: 'optionDefault', getValueArrayDato: 'S/D', getValueArrayRevision: 0 }
@@ -2224,41 +2224,61 @@ function switchOptionSelected(switchValue) {
     };
 }
 
-const cabeceraFormulario = `<div class="col-2 my-auto align-self-middle" style="width: 5rem;">
+const cabeceraFormulario = `<div class="col flex-grow-1 my-auto align-self-center" style="width: 5rem;">
                                 <label for="otStatus"><strong>OT Status</strong></label>
                             </div>
-                            <div class="col-1 my-auto align-self-middle">
+                            <div class="col flex-grow-1 my-auto align-self-center">
                                 <label for="otNumber"><strong>OT#</strong></label>
                             </div>
-                            <div class="col-1 my-auto align-self-middle">
+                            <div class="col flex-grow-1 my-auto align-self-center">
                                 <label for="opNumber"><strong>OP#</strong></label>
+                            </div>
+                            <div class="col flex-grow-1 my-auto align-self-center">
+                                <label for="detalleNumber"><strong># Detalle</strong></label>
+                            </div>
+                            <div class="col flex-grow-1 my-auto align-self-center">
+                                <label for="descripcionDetalle"><strong>Descripción</strong></label>
                             </div>`
 
 function datosCabeceraFormulario (
             arrayOtStatus, 
             y, 
             arrayOtNumber, 
-            arrayOpNumber
+            arrayOpNumber,
+            arrayOtDetalle,
+            arrayDescripcionDetalle,
+            arrayOnumber
         ) {
 
     const datosCabecera = 
-        `<div class="col-2 my-auto align-self-middle" style="width: 5rem;">
+        `<div class="col flex-grow-1 my-auto align-self-center" style="width: 5rem;">
             <span id="${arrayOtStatus}"
                 class="badge rounded-pill bg-${(colorStatusOt(arrayOtStatus).color)}
                         text-white">${arrayOtStatus}
             </span>
             <input type="hidden" name="otStatusHidden${y}" value="${arrayOtStatus}">
         </div>
-        <div class="col-1 my-auto align-self-middle">
+        <div class="col flex-grow-1 my-auto align-self-center">
             <span id="${arrayOtNumber}"
                 class="badge rounded-pill bg-dark text-white">
                     ${arrayOtNumber}
             </span>
             <input type="hidden" name="otNumberHidden${y}" value="${arrayOtNumber}">
         </div>
-        <div class="col-1 my-auto align-self-middle">
+        <div class="col flex-grow-1 my-auto align-self-center">
             <span class="badge rounded-pill bg-secondary text-white">
                 ${arrayOpNumber}
+            </span>
+        </div>
+        <div class="col flex-grow-1 my-auto align-self-center">
+            <span class="badge rounded-pill bg-primary text-white">
+                ${arrayOtDetalle}
+            </span>
+            <input type="hidden" name="detalleNumberHidden${arrayOnumber}" value="${arrayOtNumber}_${arrayOtDetalle[arrayOnumber]}">
+        </div>
+        <div class="col flex-grow-1 my-auto align-self-center justify-content-start">
+            <span class="badge bg-light text-dark">
+                ${arrayDescripcionDetalle}
             </span>
         </div>`
 
@@ -2321,12 +2341,12 @@ function swalFireAlert (titulo,
             formValues.submit()
             Toast.fire({
                 icon: 'success',
-                title: `Información de OT/s #${arrayDeOtNumber.join(" - #")} agregada con éxito!`
+                title: `Información de Detalles de OT/s #${arrayDeOtNumber.join(" - #")} agregada con éxito!`
             })
         } else {
             Swal.fire(
                 `Info <strong>${titulo}</strong>, no agregada!`,
-                `La información ${titulo}, no fue agregada a las OT/s #${arrayDeOtNumber.join(" - #")} !`,
+                `La información ${titulo}, no fue agregada a los detalles de las OT/s #${arrayDeOtNumber.join(" - #")} !`,
                 'warning'
             )
             return false
@@ -2335,9 +2355,9 @@ function swalFireAlert (titulo,
 }
 
 //********* Agregar detalles a OT seleccionada *********** */
-var arrayBtnAddDetallesOtFormSelected = []
+let arrayBtnAddDetallesOtFormSelected = []
 for (let i=0; i<radios.length; i++) {
-    var btnAddDetallesOtFormSelected = document.getElementById(`btnAddDetallesFormSelected${i}`)
+    let btnAddDetallesOtFormSelected = document.getElementById(`btnAddDetallesFormSelected${i}`)
     // console.log('btnAddDetallesOtFormSelected', btnAddDetallesOtFormSelected)
     if(btnAddDetallesOtFormSelected) {
         arrayBtnAddDetallesOtFormSelected.push(btnAddDetallesOtFormSelected)
@@ -2442,99 +2462,164 @@ btnCreateAddDetallesToOt.addEventListener('click', (event) => {
     }
 })
 
-//***** addDatoToR14 ******
-function addDatoToR14(i, idTabla, qInicial, qFinal) {
+//***** addDatoToDistribucion ******
+function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-        // console.log('getValues:', getValues)
-        var arrayBloque = []
+    // console.log('getValues:', getValues)
+        let arrayBloque = []
         for (let y=0; y < res.lastChild; y++) {
-                                                    
             const dataEnArrayBloque = `
-                    <div class="col my-auto">
-                        <select id="procesoR14${res.arrayOtNumber[y]}" name="procesoR14${y}"
+                    <div class="col flex-grow-1 my-auto">
+                        <select id="mecanizado2dCompleto${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="mecanizado2dCompleto${y}"
                             oninput="updateInputsSelect()"
                             class="form-select" ${(colorStatusOt(res.arrayOtStatus[y]).disabled)}>
-                            <option selected value="${(switchOptionSelected(getValues.arrayProcesoR14[y])).variableValue}" disabled>
-                                ${(switchOptionSelected(getValues.arrayProcesoR14[y])).getValueArrayDato}
+                            <option selected value="${(switchOptionSelected(getValues.arrayMecanizado2dCompleto[y])).variableValue}" disabled>
+                                ${(switchOptionSelected(getValues.arrayMecanizado2dCompleto[y])).getValueArrayDato}
                             </option>
-                            ${(switchOptionSelected(getValues.arrayProcesoR14[y])).optionDefined}
+                            ${(switchOptionSelected(getValues.arrayMecanizado2dCompleto[y])).optionDefined}
                         </select>
-                        <input type="hidden" id="procesoR14Hidden${res.arrayOtNumber[y]}"
-                        name="procesoR14Hidden${[y]}"
-                        value="${(switchOptionSelected(getValues.arrayProcesoR14[y])).variableValue}">
+                        <input type="hidden" id="mecanizado2dCompletoHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="mecanizado2dCompletoHidden${[y]}"
+                        value="${(switchOptionSelected(getValues.arrayMecanizado2dCompleto[y])).variableValue}">
                     </div>
-                    <div class="col-1 my-auto">    
+                    <div class="col flex-grow-1 my-auto">    
                         <input type="text"
-                            value="${getValues.arrayRevisionProcesoR14[y]}"
+                            value="${getValues.arrayRevisionMecanizado2dCompleto[y]}"
+                            name="revisionMecanizado2dCompleto${y}"
                             class="form-control"
                             style="text-align: center;"
                             disabled readonly">
                         <input type="hidden"
-                            id="revisionProcesoR14${res.arrayOtNumber[y]}"
-                            name="revisionProcesoR14${y}"
-                            value="${getValues.arrayRevisionProcesoR14[y]}">
+                            id="revisionMecanizado2dCompleto${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                            name="revisionMecanizado2dCompleto${y}"
+                            value="${getValues.arrayRevisionMecanizado2dCompleto[y]}">
                     </div>
 
-                    <div class="col my-auto">
-                        <select id="aprobadoR14${res.arrayOtNumber[y]}" name="aprobadoR14${y}"
+                    <div class="col flex-grow-1 my-auto">
+                        <select id="mecanizado3dPrefinal${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="mecanizado3dPrefinal${y}"
                             oninput="updateInputsSelect()" 
                             class="form-select" ${(colorStatusOt(res.arrayOtStatus[y]).disabled)}>
-                            <option selected value="${(switchOptionSelected(getValues.arrayAprobadoR14[y])).variableValue}" disabled>
-                            ${(switchOptionSelected(getValues.arrayAprobadoR14[y])).getValueArrayDato}
+                            <option selected value="${(switchOptionSelected(getValues.arrayMecanizado3dPrefinal[y])).variableValue}" disabled>
+                            ${(switchOptionSelected(getValues.arrayMecanizado3dPrefinal[y])).getValueArrayDato}
                             </option>
-                            ${(switchOptionSelected(getValues.arrayAprobadoR14[y])).optionDefined}
+                            ${(switchOptionSelected(getValues.arrayMecanizado3dPrefinal[y])).optionDefined}
                         </select>
-                        <input type="hidden" id="aprobadoR14Hidden${res.arrayOtNumber[y]}"
-                        name="aprobadoR14Hidden${[y]}"
-                        value="${(switchOptionSelected(getValues.arrayAprobadoR14[y])).variableValue}">
+                        <input type="hidden" id="mecanizado3dPrefinalHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="mecanizado3dPrefinalHidden${[y]}"
+                        value="${(switchOptionSelected(getValues.arrayMecanizado3dPrefinal[y])).variableValue}">
                     </div>    
-                    <div class="col-1 my-auto">  
+                    <div class="col flex-grow-1 my-auto">  
                         <input type="text"
-                            value="${getValues.arrayRevisionAprobadoR14[y]}"
+                            value="${getValues.arrayRevisionMecanizado3dPrefinal[y]}"
+                            name="revisionMecanizado3dPrefinal${y}"
                             class="form-control"
                             style="text-align: center;"
                             disabled readonly">
                         <input type="hidden"
-                            id="revisionAprobadoR14${res.arrayOtNumber[y]}"
-                            name="revisionAprobadoR14${y}"
-                            value="${getValues.arrayRevisionAprobadoR14[y]}">    
+                            id="revisionMecanizado3dPrefinal${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                            name="revisionMecanizado3dPrefinal${y}"
+                            value="${getValues.arrayRevisionMecanizado3dPrefinal[y]}">    
+                    </div>
+                    
+                    <div class="col flex-grow-1 my-auto">
+                        <select id="mecanizado3dFinal${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="mecanizado3dFinal${y}"
+                            oninput="updateInputsSelect()" 
+                            class="form-select" ${(colorStatusOt(res.arrayOtStatus[y]).disabled)}>
+                            <option selected value="${(switchOptionSelected(getValues.arrayMecanizado3dFinal[y])).variableValue}" disabled>
+                            ${(switchOptionSelected(getValues.arrayMecanizado3dFinal[y])).getValueArrayDato}
+                            </option>
+                            ${(switchOptionSelected(getValues.arrayMecanizado3dFinal[y])).optionDefined}
+                        </select>
+                        <input type="hidden" id="mecanizado3dFinalHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="mecanizado3dFinalHidden${[y]}"
+                        value="${(switchOptionSelected(getValues.arrayMecanizado3dFinal[y])).variableValue}">
+                    </div>    
+                    <div class="col flex-grow-1 my-auto">  
+                        <input type="text"
+                            value="${getValues.arrayRevisionMecanizado3dFinal[y]}"
+                            name="revisionMecanizado3dFinal${y}"
+                            class="form-control"
+                            style="text-align: center;"
+                            disabled readonly">
+                        <input type="hidden"
+                            id="revisionMecanizado3dFinal${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                            name="revisionMecanizado3dFinal${y}"
+                            value="${getValues.arrayRevisionMecanizado3dFinal[y]}">    
+                    </div>
+
+                    <div class="col flex-grow-1 my-auto">
+                        <select id="bancoArmado${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="bancoArmado${y}"
+                            oninput="updateInputsSelect()" 
+                            class="form-select" ${(colorStatusOt(res.arrayOtStatus[y]).disabled)}>
+                            <option selected value="${(switchOptionSelected(getValues.arrayBancoArmado[y])).variableValue}" disabled>
+                            ${(switchOptionSelected(getValues.arrayBancoArmado[y])).getValueArrayDato}
+                            </option>
+                            ${(switchOptionSelected(getValues.arrayBancoArmado[y])).optionDefined}
+                        </select>
+                        <input type="hidden" id="bancoArmadoHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="bancoArmadoHidden${[y]}"
+                        value="${(switchOptionSelected(getValues.arrayBancoArmado[y])).variableValue}">
+                    </div>    
+                    <div class="col flex-grow-1 my-auto">  
+                        <input type="text"
+                            value="${getValues.arrayRevisionBancoArmado[y]}"
+                            name="revisionBancoArmado${y}"
+                            class="form-control"
+                            style="text-align: center;"
+                            disabled readonly">
+                        <input type="hidden"
+                            id="revisionBancoArmado${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                            name="revisionBancoArmado${y}"
+                            value="${getValues.arrayRevisionBancoArmado[y]}">    
                     </div>`
 
             if (res.arrayOtStatus[y]==='Inactivo') {
                 arrayBloque.push(`
-                    <div class="row py-1 mx-auto pe-none" contenteditable="false" style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5">
-                        ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
+                    <div class="row d-flex py-1 mx-auto pe-none" contenteditable="false" style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5">
+                        ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], res.arrayOtDetalle[y], res.arrayDescripcionDetalle[y], res.arrayOnumber[y])}
                         
                         ${dataEnArrayBloque}
                     </div>`)
 
             } else {
                 arrayBloque.push(`
-                <div class="row my-1 mx-auto">
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
-                    
-                    ${dataEnArrayBloque}
-                </div>`)
+                    <div class="row d-flex my-1 mx-auto">
+                        ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], res.arrayOtDetalle[y], res.arrayDescripcionDetalle[y], res.arrayOnumber[y])}
+                        
+                        ${dataEnArrayBloque}
+                    </div>`)
             }
         }
 
-        const html = `<form id="formR14Values" action="/api/proyectos/otInfoR14" method="post" style="font-size: 10pt">
+        const html = `<form id="formDistribucionValues" action="/api/programas/otDistribucion" method="post" style="font-size: 10pt">
                         <fieldset>
-                            <div class="row mx-auto">
+                            <div class="row d-flex mx-auto">
                                 ${cabeceraFormulario}
-                                <div class="col my-auto">
-                                    <label for="procesoR14"><strong>Proceso</strong></label>
+                                <div class="col flex-grow-2 my-auto">
+                                    <label for="mecanizado2dCompleto"><strong>Mec. 2d Completo</strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
-                                    <label for="revisionProcesoR14"><strong>Rev</strong></label>
+                                <div class="col flex-grow-1 my-auto align-self-start">
+                                    <label for="revisionMecanizado2dCompleto"><strong>Rev</strong></label>
                                 </div>
-                                <div class="col my-auto">
-                                    <label for="aprobado"><strong>Aprobado PM</strong></label>
+                                <div class="col flex-grow-2 my-auto">
+                                    <label for="mecanizado3dPrefinal"><strong>Mec. 3d Prefinal</strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
-                                    <label for="revisionAprobadoR14"><strong>Rev</strong></label>
+                                <div class="col flex-grow-1 my-auto align-self-start">
+                                    <label for="revisionMecanizado3dPrefinal"><strong>Rev</strong></label>
+                                </div>
+                                <div class="col flex-grow-2 my-auto">
+                                    <label for="mecanizado3dFinal"><strong>Mec. 3d Final</strong></label>
+                                </div>
+                                <div class="col flex-grow-1 my-auto align-self-start">
+                                    <label for="revisionMecanizado3dFinal"><strong>Rev</strong></label>
+                                </div>
+                                <div class="col flex-grow-2 my-auto">
+                                    <label for="bancoArmado"><strong>Banco-Armado</strong></label>
+                                </div>
+                                <div class="col flex-grow-1 my-auto align-self-start">
+                                    <label for="revisionBancoArmado"><strong>Rev</strong></label>
                                 </div>
                             </div>
                             <hr>
@@ -2544,10 +2629,10 @@ function addDatoToR14(i, idTabla, qInicial, qFinal) {
                         </fieldset>
                     </form>`
 
-        const titulo = "R14"
-        const ancho = 870
+        const titulo = "Distribución"
+        const ancho = 1550
         const background = '#ffffff'
-        const formulario = 'formR14Values'
+        const formulario = 'formDistribucionValues'
         const arrayDeOtNumber = res.arrayOtNumber
 
         swalFireAlert (
@@ -2561,10 +2646,9 @@ function addDatoToR14(i, idTabla, qInicial, qFinal) {
         disabledBtnAceptar()
     }
 }
-//***** End addDatoToR14 ******
 
-//***** addDatoToProceso3d ******
-function addDatoToProceso3d(i, idTabla, qInicial, qFinal) {
+//***** addDatoToOtProgramacion ******
+function addDatoToOtProgramacion(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
@@ -2572,7 +2656,6 @@ function addDatoToProceso3d(i, idTabla, qInicial, qFinal) {
         var arrayBloqueProceso3d = []
         
         for (let y=0; y < res.lastChild; y++) {
-                                                                    //${getValues.arrayProceso3d[y]}
             const dataEnArrayBloque = `
                         <div class="col my-auto">
                             <select id="proceso3d${res.arrayOtNumber[y]}" name="proceso3d${y}"
@@ -2640,7 +2723,7 @@ function addDatoToProceso3d(i, idTabla, qInicial, qFinal) {
             let totalHorasProceso3dActual = document.getElementById(`resHsTotalProceso3d${i}`).innerText
             var inputTotalHorasProceso3d = 
                 `<div class="row justify-content-end my-1 mx-auto">
-                    <div class="col-4 my-auto align-self-middle">
+                    <div class="col-4 my-auto align-self-center">
                         <span class="badge bg-dark text-white">Total horas Proceso 3D</span>
                     </div>
                     <div class="col-4 pe-5 me-4 my-auto">
@@ -2699,31 +2782,8 @@ function addDatoToProceso3d(i, idTabla, qInicial, qFinal) {
     }
 }
 
-// Función para actualizar el valor del campo total
-function updateTotal(i) {
-    if (i) {
-        let res = getOtList(i)
-        var arrayTotalHorasProceso3d = []
-    
-        for (let y=0; y < res.arrayOtNumber.length; y++) {    
-            var input1 = document.getElementById(`hsProceso${res.arrayOtNumber[y]}`).value
-            if (input1) {
-                arrayTotalHorasProceso3d.push(input1)
-            }
-        }
-            // Usamos el método map para convertir los strings a números enteros
-            const arrayDeNumeros = arrayTotalHorasProceso3d.map(str => parseInt(str, 10));
-            var total = arrayDeNumeros.reduce(function(acumulador, valorActual) {
-                return acumulador + valorActual;
-            }, 0);
-            document.getElementById("totalHsProceso3d").value = isNaN(total) ? '' : total;
-    }
-}
-// ------------------------------------------------  
-//***** End addDatoToProceso3d ******
-
-//***** addDatoToDisenoPrimera ******
-function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
+//***** addDatoToMecanizado ******
+function addDatoToMecanizado(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
@@ -2923,613 +2983,6 @@ function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
             disabledBtnAceptar()
     }
 }
-//***** End addDatoToDisenoPrimera ******
-
-//***** addDatoToDisenoSegunda ******
-function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
-    if (i, idTabla, qInicial, qFinal) {
-        let res = getOtList(i)
-        let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-    
-        var arrayBloqueDisenoSegunda = []
-    
-        for (let y=0; y < res.lastChild; y++) {
-    
-            const dataEnArrayBloque = `
-                <div class="col my-auto">
-                    <select id="revisionCliente${res.arrayOtNumber[y]}" name="revisionCliente${[y]}"
-                        oninput="updateInputsSelect()"
-                        class="form-select" ${colorStatusOt(res.arrayOtStatus[y]).disabled}>
-                        <option selected value="${(switchOptionSelected(getValues.arrayRevisionCliente[y])).variableValue}">
-                            ${(switchOptionSelected(getValues.arrayRevisionCliente[y])).getValueArrayDato}
-                        </option>
-                            ${(switchOptionSelected(getValues.arrayRevisionCliente[y])).optionDefined}
-                    </select>
-                    <input type="hidden" id="revisionClienteHidden${res.arrayOtNumber[y]}"
-                        name="revisionClienteHidden${[y]}"
-                        value="${(switchOptionSelected(getValues.arrayRevisionCliente[y])).variableValue}">
-                </div>
-                <div class="col-1 my-auto">
-                    <input type="text"
-                        value="${getValues.arrayRevisionRevisionCliente[y]}"
-                        class="form-control mx-auto"
-                        style="text-align: center; width: 3.5rem;"
-                        disabled readonly>
-                    <input type="hidden"
-                        id="revisionRevisionCliente${res.arrayOtNumber[y]}"
-                        name="revisionRevisionCliente${[y]}"
-                        value="${getValues.arrayRevisionRevisionCliente[y]}">
-                </div>
-    
-                <div class="col my-auto">
-                    <select id="ldmProvisoria${res.arrayOtNumber[y]}" name="ldmProvisoria${[y]}"
-                    oninput="updateInputsSelect()"    
-                    class="form-select" ${colorStatusOt(res.arrayOtStatus[y]).disabled}>
-                        <option selected value="${(switchOptionSelected(getValues.arrayLdmProvisoria[y])).variableValue}" disabled>
-                        ${(switchOptionSelected(getValues.arrayLdmProvisoria[y])).getValueArrayDato}
-                        </option>
-                            ${(switchOptionSelected(getValues.arrayLdmProvisoria[y])).optionDefined}
-                    </select>
-                    <input type="hidden" id="ldmProvisoriaHidden${res.arrayOtNumber[y]}"
-                        name="ldmProvisoriaHidden${[y]}"
-                        value="${(switchOptionSelected(getValues.arrayLdmProvisoria[y])).variableValue}">
-                </div>
-                <div class="col-1 my-auto">
-                    <input type="text"
-                        value="${getValues.arrayRevisionLdmProvisoria[y]}"
-                        class="form-control mx-auto"
-                        style="text-align: center; width: 3.5rem;"
-                        disabled readonly>
-                    <input type="hidden"
-                        id="revisionLdmProvisoria${res.arrayOtNumber[y]}"
-                        name="revisionLdmProvisoria${[y]}"
-                        value="${getValues.arrayRevisionLdmProvisoria[y]}">
-                </div>
-    
-                <div class="col m-auto">
-                    <div class="row justify-content-center">
-                        <div class="col-7 my-auto">
-                            <input type="text" class="form-control"
-                                min="0" max="100" step="5"
-                                id="av100DisenoDisabled${res.arrayOtNumber[y]}"
-                                name="av100DisenoDisabled"
-                                value="${getValues.arrayAv100Diseno[y]}"
-                                style="text-align: center; width: 4.25rem;"
-                                disabled>
-                        </div>
-                        <div class="col my-auto">
-                            <strong>%</strong>
-                        </div>
-                    </div>
-                    <div class="row justify-content-center">
-                        <div class="col my-auto">
-                            <input type="range" class="form-range"
-                                min="0" max="100" step="5"
-                                id="av100Diseno${res.arrayOtNumber[y]}"
-                                name="av100DisenoRange"
-                                value="${getValues.arrayAv100Diseno[y]}"
-                                oninput="updateInputsText();">
-                            <input type="hidden" class="form-control"
-                                id="av100DisenoHidden${res.arrayOtNumber[y]}"
-                                name="av100DisenoHidden${[y]}"
-                                value="${getValues.arrayAv100Diseno[y]}">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-1 my-auto">    
-                    <input type="text"
-                        value="${getValues.arrayRevisionAv100Diseno[y]}"
-                        class="form-control mx-auto"
-                        style="text-align: center; width: 3.5rem;"
-                        disabled readonly>
-                    <input type="hidden"
-                        id="revisionAv100Diseno${res.arrayOtNumber[y]}"
-                        name="revisionAv100Diseno${[y]}"
-                        value="${getValues.arrayRevisionAv100Diseno[y]}">
-                </div>
-    
-                <div class="col my-auto">
-                    <select id="aprobadoCliente${res.arrayOtNumber[y]}" name="aprobadoCliente${[y]}"
-                    oninput="updateInputsSelect()"    
-                    class="form-select" ${colorStatusOt(res.arrayOtStatus[y]).disabled}>
-                        <option selected value="${(switchOptionSelected(getValues.arrayAprobadoCliente[y])).variableValue}" disabled>
-                            ${(switchOptionSelected(getValues.arrayAprobadoCliente[y])).getValueArrayDato}
-                        </option>
-                            ${(switchOptionSelected(getValues.arrayAprobadoCliente[y])).optionDefined}
-                    </select>
-                    <input type="hidden" id="aprobadoClienteHidden${res.arrayOtNumber[y]}"
-                        name="aprobadoClienteHidden${[y]}"
-                        value="${(switchOptionSelected(getValues.arrayAprobadoCliente[y])).variableValue}">
-                </div>
-                <div class="col-1 my-auto">    
-                    <input type="text"
-                        value="${getValues.arrayRevisionAprobadoCliente[y]}"
-                        class="form-control mx-auto"
-                        style="text-align: center; width: 3.5rem;"
-                        disabled readonly>
-                    <input type="hidden"
-                        id="revisionAprobadoCliente${res.arrayOtNumber[y]}"
-                        name="revisionAprobadoCliente${[y]}"
-                        value="${getValues.arrayRevisionAprobadoCliente[y]}">
-                </div>`
-    
-            if (res.arrayOtStatus[y]==='Inactivo') {
-                arrayBloqueDisenoSegunda.push(`
-                <div class="row py-1 mx-auto pe-none" contenteditable="false" style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5">
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
-    
-                    ${dataEnArrayBloque}
-                </div>     
-            `)
-            
-            } else {
-    
-                arrayBloqueDisenoSegunda.push(`
-                <div class="row my-1 mx-auto justify-content-center">
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
-                
-                    ${dataEnArrayBloque}
-                </div>`)
-            }
-        }
-    
-        const html = `
-                <form id="formDisenoSegundaValues" action="/api/proyectos/otInfoAvDisenoSegunda" method="post" style="font-size: 10pt">
-                    <fieldset>
-                        <div class="row mx-auto justify-content-center">
-                            ${cabeceraFormulario}
-    
-                            <div class="col my-auto">
-                                <label for="revisionCliente"><strong>Rev. Cliente</strong></label>
-                            </div>
-                            <div class="col-1 my-auto align-self-start">
-                                <label for="revisionRevisionCliente"><strong>Rev</strong></label>
-                            </div>
-                            <div class="col my-auto">
-                                <label for="ldmProvisoria"><strong>LDM Provisoria</strong></label>
-                            </div>
-                            <div class="col-1 my-auto align-self-start">
-                                <label for="revisionLdmProvisoria"><strong>Rev</strong></label>
-                            </div>
-                            <div class="col my-auto">
-                                <label for="av100Diseno"><strong>Av. Diseño 100%</strong></label>
-                            </div>
-                            <div class="col-1 my-auto align-self-start">
-                                <label for="revisionAv100Diseno"><strong>Rev</strong></label>
-                            </div>
-                            <div class="col my-auto">
-                                <label for="aprobadoCliente"><strong>Aprob. Cliente</strong></label>
-                            </div>
-                            <div class="col-1 my-auto align-self-start">
-                                <label for="revisionAprobadoCliente"><strong>Rev</strong></label>
-                            </div>
-                        </div>
-                        <hr>
-                            ${arrayBloqueDisenoSegunda}
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueDisenoSegunda.length)}    
-                    </fieldset>
-                </form>`  
-    
-            const titulo = "Diseño Segunda Parte"
-            const ancho = 1350
-            const background = '#dedede'
-            const formulario = 'formDisenoSegundaValues'
-            const arrayDeOtNumber = res.arrayOtNumber
-    
-            swalFireAlert (
-                titulo,
-                html,
-                ancho,
-                background,
-                formulario,
-                arrayDeOtNumber
-            )
-            disabledBtnAceptar()
-    }
-}
-//***** End addDatoToDisenoSegunda ******
-
-//***** addDatoToInfo80 ******
-function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
-    if (i, idTabla, qInicial, qFinal) {
-        let res = getOtList(i)
-        let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-    
-        var arrayBloqueInfo80 = []
-    
-        for (let y=0; y < res.lastChild; y++) {
-    
-            const dataEnArrayBloque = `
-                <div class="col my-auto">
-                    <select id="ldmAvanceCG${res.arrayOtNumber[y]}" name="ldmAvanceCG${[y]}"
-                        oninput="updateInputsSelect()"
-                        class="form-select" ${colorStatusOt(res.arrayOtStatus[y]).disabled}>
-                        <option selected value="${(switchOptionSelected(getValues.arrayLdmAvanceCG[y])).variableValue}">
-                            ${(switchOptionSelected(getValues.arrayLdmAvanceCG[y])).getValueArrayDato}
-                        </option>
-                            ${(switchOptionSelected(getValues.arrayLdmAvanceCG[y])).optionDefined}
-                    </select>
-                    <input type="hidden" id="ldmAvanceCGHidden${res.arrayOtNumber[y]}"
-                        name="ldmAvanceCGHidden${[y]}"
-                        value="${(switchOptionSelected(getValues.arrayLdmAvanceCG[y])).variableValue}">
-                </div>
-                <div class="col-1 my-auto">
-                    <input type="text"
-                        value="${getValues.arrayRevisionLdmAvanceCG[y]}"
-                        class="form-control mx-auto"
-                        style="text-align: center; width: 3.5rem;"
-                        disabled readonly>
-                    <input type="hidden"
-                        id="revisionLdmAvanceCG${res.arrayOtNumber[y]}"
-                        name="revisionLdmAvanceCG${[y]}"
-                        value="${getValues.arrayRevisionLdmAvanceCG[y]}">
-                </div>
-    
-                <div class="col my-auto">
-                    <select id="ldmAvanceTD2${res.arrayOtNumber[y]}" name="ldmAvanceTD2${[y]}"
-                    oninput="updateInputsSelect()"    
-                    class="form-select" ${colorStatusOt(res.arrayOtStatus[y]).disabled}>
-                        <option selected value="${(switchOptionSelected(getValues.arrayLdmAvanceTD2[y])).variableValue}" disabled>
-                        ${(switchOptionSelected(getValues.arrayLdmAvanceTD2[y])).getValueArrayDato}
-                        </option>
-                            ${(switchOptionSelected(getValues.arrayLdmAvanceTD2[y])).optionDefined}
-                    </select>
-                    <input type="hidden" id="ldmAvanceTD2Hidden${res.arrayOtNumber[y]}"
-                        name="ldmAvanceTD2Hidden${[y]}"
-                        value="${(switchOptionSelected(getValues.arrayLdmAvanceTD2[y])).variableValue}">
-                </div>
-                <div class="col-1 my-auto">
-                    <input type="text"
-                        value="${getValues.arrayRevisionLdmAvanceTD2[y]}"
-                        class="form-control mx-auto"
-                        style="text-align: center; width: 3.5rem;"
-                        disabled readonly>
-                    <input type="hidden"
-                        id="revisionLdmAvanceTD2${res.arrayOtNumber[y]}"
-                        name="revisionLdmAvanceTD2${[y]}"
-                        value="${getValues.arrayRevisionLdmAvanceTD2[y]}">
-                </div>
-    
-                <div class="col m-auto">
-                    <div class="row justify-content-center">
-                        <div class="col-7 my-auto">
-                            <input type="text" class="form-control"
-                                min="0" max="100" step="5"
-                                id="ldm80Disabled${res.arrayOtNumber[y]}"
-                                name="ldm80Disabled"
-                                value="${getValues.arrayLdm80[y]}"
-                                style="text-align: center; width: 4.25rem;"
-                                disabled>
-                        </div>
-                        <div class="col my-auto">
-                            <strong>%</strong>
-                        </div>
-                    </div>
-                    <div class="row justify-content-center">
-                        <div class="col my-auto">
-                            <input type="range" class="form-range"
-                                min="0" max="100" step="5"
-                                id="ldm80${res.arrayOtNumber[y]}"
-                                name="ldm80Range"
-                                value="${getValues.arrayLdm80[y]}"
-                                oninput="updateInputsText()">
-                            <input type="hidden" class="form-control"
-                                id="ldm80Hidden${res.arrayOtNumber[y]}"
-                                name="ldm80Hidden${[y]}"
-                                value="${getValues.arrayLdm80[y]}">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-1 my-auto">    
-                    <input type="text"
-                        value="${getValues.arrayRevisionLdm80[y]}"
-                        class="form-control mx-auto"
-                        style="text-align: center; width: 3.5rem;"
-                        disabled readonly>
-                    <input type="hidden"
-                        id="revisionLdm80${res.arrayOtNumber[y]}"
-                        name="revisionLdm80${[y]}"
-                        value="${getValues.arrayRevisionLdm80[y]}">
-                </div>
-    
-                <div class="col m-auto">
-                    <div class="row justify-content-center">
-                        <div class="col-7 my-auto">
-                            <input type="text" class="form-control"
-                                min="0" max="100" step="5"
-                                id="infoModeloDisabled${res.arrayOtNumber[y]}"
-                                name="infoModeloDisabled"
-                                value="${getValues.arrayInfoModelo[y]}"
-                                style="text-align: center; width: 4.25rem;"
-                                disabled>
-                        </div>
-                        <div class="col my-auto">
-                            <strong>%</strong>
-                        </div>
-                    </div>
-                    <div class="row justify-content-center">
-                        <div class="col my-auto">
-                            <input type="range" class="form-range"
-                                min="0" max="100" step="5"
-                                id="infoModelo${res.arrayOtNumber[y]}"
-                                name="infoModelo"
-                                value="${getValues.arrayInfoModelo[y]}"
-                                oninput="updateInputsText()">
-                            <input type="hidden" class="form-control"
-                                id="infoModeloHidden${res.arrayOtNumber[y]}"
-                                name="infoModeloHidden${[y]}"
-                                value="${getValues.arrayLdm80[y]}">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-1 my-auto">    
-                    <input type="text"
-                        value="${getValues.arrayRevisionInfoModelo[y]}"
-                        class="form-control mx-auto"
-                        style="text-align: center; width: 3.5rem;"
-                        disabled readonly>
-                    <input type="hidden"
-                        id="revisionInfoModelo${res.arrayOtNumber[y]}"
-                        name="revisionInfoModelo${[y]}"
-                        value="${getValues.arrayRevisionInfoModelo[y]}">
-                </div>`
-    
-            if (res.arrayOtStatus[y]==='Inactivo') {
-                arrayBloqueInfo80.push(`
-                <div class="row py-1 mx-auto pe-none" contenteditable="false" style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5">
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
-    
-                    ${dataEnArrayBloque}
-                </div>     
-            `)
-            
-            } else {
-    
-                arrayBloqueInfo80.push(`
-                <div class="row my-1 mx-auto justify-content-center">
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
-                
-                    ${dataEnArrayBloque}
-                </div>`)
-            }
-        }
-    
-        const html = `
-                <form id="formInfo80Values" action="/api/proyectos/otInfo80" method="post" style="font-size: 10pt">
-                    <fieldset>
-                        <div class="row mx-auto justify-content-center">
-                            ${cabeceraFormulario}
-    
-                            <div class="col my-auto">
-                                <label for="ldmAvanceCG"><strong>LDM Avan. (Cilindros/Guias)</strong></label>
-                            </div>
-                            <div class="col-1 my-auto align-self-start">
-                                <label for="revisionLdmAvanceCG"><strong>Rev</strong></label>
-                            </div>
-                            <div class="col my-auto">
-                                <label for="ldmAvanceTD2"><strong>LDM Avan. (Tacos D2)</strong></label>
-                            </div>
-                            <div class="col-1 my-auto align-self-start">
-                                <label for="revisionLdmAvanceTD2"><strong>Rev</strong></label>
-                            </div>
-                            <div class="col my-auto">
-                                <label for="ldm80"><strong>LDM 80%</strong></label>
-                            </div>
-                            <div class="col-1 my-auto align-self-start">
-                                <label for="revisionLdm80"><strong>Rev</strong></label>
-                            </div>
-                            <div class="col my-auto">
-                                <label for="infoModelo"><strong>Info Modelo</strong></label>
-                            </div>
-                            <div class="col-1 my-auto align-self-start">
-                                <label for="revisionInfoModelo"><strong>Rev</strong></label>
-                            </div>
-                        </div>
-                        <hr>
-                            ${arrayBloqueInfo80}
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfo80.length)}    
-                    </fieldset>
-                </form>`  
-    
-            const titulo = "Info 80%"
-            const ancho = 1350
-            const background = '#cedede'
-            const formulario = 'formInfo80Values'
-            const arrayDeOtNumber = res.arrayOtNumber
-    
-            swalFireAlert (
-                titulo,
-                html,
-                ancho,
-                background,
-                formulario,
-                arrayDeOtNumber
-            )
-            disabledBtnAceptar()
-    }
-}
-//***** End addDatoToInfo80 ******
-
-//***** addDatoToInfo100 ******
-function addDatoToInfo100(i, idTabla, qInicial, qFinal) {
-    if (i, idTabla, qInicial, qFinal) {
-        let res = getOtList(i)
-        let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-    
-        var arrayBloqueInfo100 = []
-    
-        for (let y=0; y < res.lastChild; y++) {
-    
-            const dataEnArrayBloque = `
-                <div class="col m-auto">
-                    <div class="row justify-content-center">
-                        <div class="col-7 my-auto ms-5">
-                            <input type="text" class="form-control"
-                                min="0" max="100" step="5"
-                                id="ldm100Disabled${res.arrayOtNumber[y]}"
-                                name="ldm100Disabled"
-                                value="${getValues.arrayLdm100[y]}"
-                                style="text-align: center; width: 4.25rem;"
-                                disabled>
-                        </div>
-                        <div class="col my-auto">
-                            <strong>%</strong>
-                        </div>
-                    </div>
-                    <div class="row justify-content-center">
-                        <div class="col my-auto">
-                            <input type="range" class="form-range"
-                                min="0" max="100" step="5"
-                                id="ldm100${res.arrayOtNumber[y]}"
-                                name="ldm100Range"
-                                value="${getValues.arrayLdm100[y]}"
-                                oninput="updateInputsText()">
-                            <input type="hidden" class="form-control"
-                                id="ldm100Hidden${res.arrayOtNumber[y]}"
-                                name="ldm100Hidden${[y]}"
-                                value="${getValues.arrayLdm100[y]}">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-1 my-auto">    
-                    <input type="text"
-                        value="${getValues.arrayRevisionLdm100[y]}"
-                        class="form-control mx-auto"
-                        style="text-align: center; width: 3.5rem;"
-                        disabled readonly>
-                    <input type="hidden"
-                        id="revisionLdm100${res.arrayOtNumber[y]}"
-                        name="revisionLdm100${[y]}"
-                        value="${getValues.arrayRevisionLdm100[y]}">
-                </div>
-    
-                <div class="col m-auto">
-                    <div class="row justify-content-center">
-                        <div class="col-7 my-auto ms-5">
-                            <input type="text" class="form-control"
-                                min="0" max="100" step="5"
-                                id="info100Disabled${res.arrayOtNumber[y]}"
-                                name="info100Disabled"
-                                value="${getValues.arrayInfo100[y]}"
-                                style="text-align: center; width: 4.25rem;"
-                                disabled>
-                        </div>
-                        <div class="col my-auto">
-                            <strong>%</strong>
-                        </div>
-                    </div>
-                    <div class="row justify-content-center">
-                        <div class="col my-auto">
-                            <input type="range" class="form-range"
-                                min="0" max="100" step="5"
-                                id="info100${res.arrayOtNumber[y]}"
-                                name="info100"
-                                value="${getValues.arrayInfo100[y]}"
-                                oninput="updateInputsText()">
-                            <input type="hidden" class="form-control"
-                                id="info100Hidden${res.arrayOtNumber[y]}"
-                                name="info100Hidden${[y]}"
-                                value="${getValues.arrayLdm100[y]}">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-1 my-auto">    
-                    <input type="text"
-                        value="${getValues.arrayRevisionInfo100[y]}"
-                        class="form-control mx-auto"
-                        style="text-align: center; width: 3.5rem;"
-                        disabled readonly>
-                    <input type="hidden"
-                        id="revisionInfo100${res.arrayOtNumber[y]}"
-                        name="revisionInfo100${[y]}"
-                        value="${getValues.arrayRevisionInfo100[y]}">
-                </div>`
-    
-            if (res.arrayOtStatus[y]==='Inactivo') {
-                arrayBloqueInfo100.push(`
-                <div class="row py-1 mx-auto pe-none" contenteditable="false" style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5">
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
-    
-                    ${dataEnArrayBloque}
-                </div>     
-            `)
-            
-            } else {
-    
-                arrayBloqueInfo100.push(`
-                <div class="row my-1 mx-auto justify-content-center">
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
-                
-                    ${dataEnArrayBloque}
-                </div>`)
-            }
-        }
-    
-        const html = `
-                <form id="formInfo100Values" action="/api/proyectos/otInfo100" method="post" style="font-size: 10pt">
-                    <fieldset>
-                        <div class="row mx-auto justify-content-center">
-                            ${cabeceraFormulario}
-    
-                            <div class="col my-auto">
-                                <label for="ldm100"><strong>LDM 100%</strong></label>
-                            </div>
-                            <div class="col-1 my-auto align-self-start">
-                                <label for="revisionLdm100"><strong>Rev</strong></label>
-                            </div>
-                            <div class="col my-auto">
-                                <label for="info100"><strong>Info 100%</strong></label>
-                            </div>
-                            <div class="col-1 my-auto align-self-start">
-                                <label for="revisionInfo100"><strong>Rev</strong></label>
-                            </div>
-                        </div>
-                        <hr>
-                            ${arrayBloqueInfo100}
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfo100.length)}    
-                    </fieldset>
-                </form>`  
-    
-            const titulo = "Info 100%"
-            const ancho = 875
-            const background = '#fefefe'
-            const formulario = 'formInfo100Values'
-            const arrayDeOtNumber = res.arrayOtNumber
-    
-            swalFireAlert (
-                titulo,
-                html,
-                ancho,
-                background,
-                formulario,
-                arrayDeOtNumber
-            )
-            disabledBtnAceptar()
-    }
-}
-//***** End addDatoToInfo100 ******
-
-// Función para actualizar el valor del campo total
-function updateHsSimTotal(i) {
-    if (i) {
-        let res = getOtList(i)
-        var arrayTotalHorasSim = []
-    
-        for (let y=0; y < res.arrayOtNumber.length; y++) {    
-            var input1 = document.getElementById(`horasSim${res.arrayOtNumber[y]}`).value
-            if (input1) {
-                arrayTotalHorasSim.push(input1)
-            }
-        }
-            // Usamos el método map para convertir los strings a números enteros
-            const arrayDeNumeros = arrayTotalHorasSim.map(str => parseInt(str, 10));
-            var total = arrayDeNumeros.reduce(function(acumulador, valorActual) {
-                return acumulador + valorActual;
-            }, 0);
-            document.getElementById("totalHsSim").value = isNaN(total) ? '' : total;
-    }
-}
-//***** End addDatoToInfoSim4 Segunda ******
 
 // Función para actualizar el valor del campo Text
 function updateInputsText() {
@@ -3654,57 +3107,33 @@ for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de p
 
 if(arrTables !=[]) {
     let allButtonsFromTables = document.querySelectorAll(`
-        button[name="btnR14"],
-        button[name="btnProceso3d"],
-        button[name="btnDisenoPrimera"],
-        button[name="btnDisenoSegunda"],
-        button[name="btnInfo80"],
-        button[name="btnInfo100"]
+        button[name="btnOtDistribucion"],
+        button[name="btnOtProgramacion"],
+        button[name="btnMecanizado"]
     `);
 
     let arrayTituloTabla =
     [
         {
-            nombreTabla: "tablaR14",
-            btnName: "btnR14",
-            functionName: addDatoToR14,
+            nombreTabla: "tablaOtDistribucion",
+            btnName: "btnOtDistribucion",
+            functionName: addDatoToOtDistribucion,
             qInicial: 0,
-            qFinal: 2
-        },
-        {
-            nombreTabla: "tablaProceso3D",
-            btnName: "btnProceso3d",
-            functionName: addDatoToProceso3d,
-            qInicial: 2,
             qFinal: 4
         },
         {
-            nombreTabla: "tablaDisenoPrimera",
-            btnName: "btnDisenoPrimera",
-            functionName: addDatoToDisenoPrimera,
+            nombreTabla: "tablaOtProgramacion",
+            btnName: "btnOtProgramacion",
+            functionName: addDatoToOtProgramacion,
             qInicial: 4,
-            qFinal: 8
+            qFinal: 10
         },
         {
-            nombreTabla: "tablaDisenoSegunda",
-            btnName: "btnDisenoSegunda",
-            functionName: addDatoToDisenoSegunda,
-            qInicial: 8,
-            qFinal: 12
-        },
-        {
-            nombreTabla: "tablaInfo80",
-            btnName: "btnInfo80",
-            functionName: addDatoToInfo80,
-            qInicial: 12,
-            qFinal: 16
-        },
-        {
-            nombreTabla: "tablaInfo100",
-            btnName: "btnInfo100",
-            functionName: addDatoToInfo100,
-            qInicial: 16,
-            qFinal: 18
+            nombreTabla: "tablaMecanizado",
+            btnName: "btnMecanziado",
+            functionName: addDatoToMecanizado,
+            qInicial: 10,
+            qFinal: 17
         }
     ]
 
@@ -3725,8 +3154,7 @@ if(arrTables !=[]) {
     })
 }
 
-var inputsDeTexto = document.querySelectorAll('input[type="text"]')
-
+let inputsDeTexto = document.querySelectorAll('input[type="text"]')
     // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
         input.addEventListener('keydown', function(event) {

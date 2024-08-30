@@ -1571,7 +1571,6 @@ arrayBtnCheckSelectionAll.forEach(function(element) {
 
 //-----Btns Buscar en BBDD el Usuario Seguidor de Diseño --------------
 const searchDesignUser = document.getElementById('searchDesignUser')
-
 searchDesignUser.addEventListener('click', (event) => {
     event.preventDefault()
     function cargarUsuarioDiseno() {
@@ -1909,435 +1908,559 @@ function getOtList(i) {
 }
 
 //---------- Obtiene los valores de la lista de OT ------------
-function getOtListValues(i, idTabla, qInicial, qFinal) {
-    const parentDiv = document.getElementById(`${idTabla}`)
-    let tableBody = parentDiv.lastElementChild
-    const lastChild = parseInt(tableBody.childElementCount)
+// function getOtListValues(i, idTabla, qInicial, qFinal) {
+//     const parentDiv = document.getElementById(`${idTabla}`)
+//     let tableBody = parentDiv.lastElementChild
+//     const lastChild = parseInt(tableBody.childElementCount)
 
-    const qInicialX = parseInt(qInicial)
-    const qFinalX = parseInt(qFinal)
+//     const qInicialX = parseInt(qInicial)
+//     const qFinalX = parseInt(qFinal)
 
-    let k = i
+//     let k = i
 
-    var arrayProcesoR14 = [],
-        arrayRevisionProcesoR14 = [],
-        arrayAprobadoR14 = [],
-        arrayRevisionAprobadoR14 = []
+//     var arrayProcesoR14 = [],
+//         arrayRevisionProcesoR14 = [],
+//         arrayAprobadoR14 = [],
+//         arrayRevisionAprobadoR14 = []
         
-    var arrayProceso3d = [],
-        arrayRevisionProceso3d = [],
-        arrayHorasProceso3d = [],
-        arrayRevisionHorasProceso3d = []
+//     var arrayProceso3d = [],
+//         arrayRevisionProceso3d = [],
+//         arrayHorasProceso3d = [],
+//         arrayRevisionHorasProceso3d = []
 
-    var arrayAvDiseno = [],
-        arrayRevisionAvDiseno = [],
-        arrayAv50Diseno = [],
-        arrayRevisionAv50Diseno = [],
-        arrayAv80Diseno = [],
-        arrayRevisionAv80Diseno = [],
-        arrayEnvioCliente = [],
-        arrayRevisionEnvioCliente = []
+//     var arrayAvDiseno = [],
+//         arrayRevisionAvDiseno = [],
+//         arrayAv50Diseno = [],
+//         arrayRevisionAv50Diseno = [],
+//         arrayAv80Diseno = [],
+//         arrayRevisionAv80Diseno = [],
+//         arrayEnvioCliente = [],
+//         arrayRevisionEnvioCliente = []
 
-    var arrayRevisionCliente = [],
-        arrayRevisionRevisionCliente = [],
-        arrayLdmProvisoria = [],
-        arrayRevisionLdmProvisoria = [],
-        arrayAv100Diseno = [],
-        arrayRevisionAv100Diseno = [],
-        arrayAprobadoCliente = [],
-        arrayRevisionAprobadoCliente = []
+//     var arrayRevisionCliente = [],
+//         arrayRevisionRevisionCliente = [],
+//         arrayLdmProvisoria = [],
+//         arrayRevisionLdmProvisoria = [],
+//         arrayAv100Diseno = [],
+//         arrayRevisionAv100Diseno = [],
+//         arrayAprobadoCliente = [],
+//         arrayRevisionAprobadoCliente = []
 
-    var arrayLdmAvanceCG = [],
-        arrayRevisionLdmAvanceCG = [],
-        arrayLdmAvanceTD2 = [],
-        arrayRevisionLdmAvanceTD2 = [],
-        arrayLdm80 = [],
-        arrayRevisionLdm80 = [],
-        arrayInfoModelo = [],
-        arrayRevisionInfoModelo = []
+//     var arrayLdmAvanceCG = [],
+//         arrayRevisionLdmAvanceCG = [],
+//         arrayLdmAvanceTD2 = [],
+//         arrayRevisionLdmAvanceTD2 = [],
+//         arrayLdm80 = [],
+//         arrayRevisionLdm80 = [],
+//         arrayInfoModelo = [],
+//         arrayRevisionInfoModelo = []
 
-    var arrayLdm100 = [],
-        arrayRevisionLdm100 = [],
-        arrayInfo100 = [],
-        arrayRevisionInfo100 = []
+//     var arrayLdm100 = [],
+//         arrayRevisionLdm100 = [],
+//         arrayInfo100 = [],
+//         arrayRevisionInfo100 = []
 
-    var arraySim0 = [],
-        arrayRevisionSim0 = [],
-        arrayDocuSim0 = [],
-        arrayRevisionDocuSim0 = []
+//     var arraySim0 = [],
+//         arrayRevisionSim0 = [],
+//         arrayDocuSim0 = [],
+//         arrayRevisionDocuSim0 = []
 
-    var arraySim1 = [],
-        arrayRevisionSim1 = [],
-        arrayVideo = [],
-        arrayRevisionVideo = [],
-        arrayInforme = [],
-        arrayRevisionInforme = [],
-        arrayPpt = [],
-        arrayRevisionPpt = [],
-        arrayS1pOp20 = [],
-        arrayRevisionS1pOp20 = []
+//     var arraySim1 = [],
+//         arrayRevisionSim1 = [],
+//         arrayVideo = [],
+//         arrayRevisionVideo = [],
+//         arrayInforme = [],
+//         arrayRevisionInforme = [],
+//         arrayPpt = [],
+//         arrayRevisionPpt = [],
+//         arrayS1pOp20 = [],
+//         arrayRevisionS1pOp20 = []
 
-    var arraySim2 = [],
-        arrayRevisionSim2 = [],
-        arrayReporte = [],
-        arrayRevisionReporte = [],
-        arrayDfnProdismo = [],
-        arrayRevisionDfnProdismo = [],
-        arraySim3 = [],
-        arrayRevisionSim3 = []
+//     var arraySim2 = [],
+//         arrayRevisionSim2 = [],
+//         arrayReporte = [],
+//         arrayRevisionReporte = [],
+//         arrayDfnProdismo = [],
+//         arrayRevisionDfnProdismo = [],
+//         arraySim3 = [],
+//         arrayRevisionSim3 = []
 
-    var arrayMatEnsayo = [],
-        arrayRevisionMatEnsayo = [],
-        arrayMasMenos10 = [],
-        arrayRevisionMasMenos10 = [],
-        arrayMpAlternativo = [],
-        arrayRevisionMpAlternativo = [],
-        arrayReunionSim = [],
-        arrayRevisionReunionSim = []
+//     var arrayMatEnsayo = [],
+//         arrayRevisionMatEnsayo = [],
+//         arrayMasMenos10 = [],
+//         arrayRevisionMasMenos10 = [],
+//         arrayMpAlternativo = [],
+//         arrayRevisionMpAlternativo = [],
+//         arrayReunionSim = [],
+//         arrayRevisionReunionSim = []
 
-    var arrayInformeSim4 = [],
-        arrayRevisionInformeSim4 = [],
-        arrayGeoCopiado1 = [],
-        arrayRevisionGeoCopiado1 = [],
-        arrayGeoCopiado2 = [],
-        arrayRevisionGeoCopiado2 = [],
-        arrayHorasSim = [],
-        arrayRevisionHorasSim = []
+//     var arrayInformeSim4 = [],
+//         arrayRevisionInformeSim4 = [],
+//         arrayGeoCopiado1 = [],
+//         arrayRevisionGeoCopiado1 = [],
+//         arrayGeoCopiado2 = [],
+//         arrayRevisionGeoCopiado2 = [],
+//         arrayHorasSim = [],
+//         arrayRevisionHorasSim = []
 
-    var arrayGrillado = [],
-        arrayRevisionGrillado = [],
-        arrayMpEnsayada = [],
-        arrayRevisionMpEnsayada = []
+//     var arrayGrillado = [],
+//         arrayRevisionGrillado = [],
+//         arrayMpEnsayada = [],
+//         arrayRevisionMpEnsayada = []
 
-    for (let n=0; n < lastChild; n++) {
-        // console.log('k1:',k,'n1:',n)
-            for (let q=qInicialX ; q < qFinalX; q++) {
-                // console.log('k2:',k,'n2:',n,'q:',q)
-                // console.log('resHidden:',document.getElementById(`resHidden${k}_${n}_${q}`))
-                const otHidden = document.getElementById(`resHidden${k}_${n}_${q}`).value
-                const arrayFromOtHidden = changeValueFromArray(otHidden.split(","))
-                const largoDeArrayOt = parseInt(arrayFromOtHidden.length)
-                const otInfo = arrayFromOtHidden[largoDeArrayOt-1]
+//     for (let n=0; n < lastChild; n++) {
+//         // console.log('k1:',k,'n1:',n)
+//             for (let q=qInicialX ; q < qFinalX; q++) {
+//                 // console.log('k2:',k,'n2:',n,'q:',q)
+//                 // console.log('resHidden:',document.getElementById(`resHidden${k}_${n}_${q}`))
+//                 const otHidden = document.getElementById(`resHidden${k}_${n}_${q}`).value
+//                 const arrayFromOtHidden = changeValueFromArray(otHidden.split(","))
+//                 const largoDeArrayOt = parseInt(arrayFromOtHidden.length)
+//                 const otInfo = arrayFromOtHidden[largoDeArrayOt-1]
                 
-                const otRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${q}`).value
-                const arrayFromOtRevisionHidden = otRevisionHidden.split(",")
-                const largoDeArrayRevision = parseInt(arrayFromOtRevisionHidden.length)
-                const otRevision = arrayFromOtRevisionHidden[largoDeArrayRevision-1]
+//                 const otRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${q}`).value
+//                 const arrayFromOtRevisionHidden = otRevisionHidden.split(",")
+//                 const largoDeArrayRevision = parseInt(arrayFromOtRevisionHidden.length)
+//                 const otRevision = arrayFromOtRevisionHidden[largoDeArrayRevision-1]
 
-                switch (q) {
-                     //-----------------R14-----------------------
-                    case 0: 
-                        arrayProcesoR14.push(otInfo)
-                        arrayRevisionProcesoR14.push(otRevision)
-                    break;
-                    case 1: 
-                        arrayAprobadoR14.push(otInfo)
-                        arrayRevisionAprobadoR14.push(otRevision)
-                    break;
-                    //----------------Proceso 3D------------------
-                    case 2: 
-                        arrayProceso3d.push(otInfo)
-                        arrayRevisionProceso3d.push(otRevision)
-                    break;
-                    case 3:
-                        arrayHorasProceso3d.push(otInfo)
-                        arrayRevisionHorasProceso3d.push(otRevision)
-                    break;
-                     //-------------Diseño 1° Parte-------------
-                    case 4:
-                        arrayAvDiseno.push(otInfo)
-                        arrayRevisionAvDiseno.push(otRevision)
-                    break;
-                    case 5:
-                        arrayAv50Diseno.push(otInfo)
-                        arrayRevisionAv50Diseno.push(otRevision)
-                    break;
-                    case 6:
-                        arrayAv80Diseno.push(otInfo)
-                        arrayRevisionAv80Diseno.push(otRevision)
-                    break;
-                    case 7:
-                        arrayEnvioCliente.push(otInfo)
-                        arrayRevisionEnvioCliente.push(otRevision)
-                    break;
-                     //-------------Diseño 2° Parte-------------
-                    case 8:
-                        arrayRevisionCliente.push(otInfo)
-                        arrayRevisionRevisionCliente.push(otRevision)
-                    break;
-                    case 9:
-                        arrayLdmProvisoria.push(otInfo)
-                        arrayRevisionLdmProvisoria.push(otRevision)
-                    break;
-                    case 10:
-                        arrayAv100Diseno.push(otInfo)
-                        arrayRevisionAv100Diseno.push(otRevision)
-                    break;
-                    case 11:
-                        arrayAprobadoCliente.push(otInfo)
-                        arrayRevisionAprobadoCliente.push(otRevision)
-                    break;
-                     //----------------Info 80%-----------------
-                    case 12:
-                        arrayLdmAvanceCG.push(otInfo)
-                        arrayRevisionLdmAvanceCG.push(otRevision)
-                    break;
-                    case 13:
-                        arrayLdmAvanceTD2.push(otInfo)
-                        arrayRevisionLdmAvanceTD2.push(otRevision)
-                    break;
-                    case 14:
-                        arrayLdm80.push(otInfo)
-                        arrayRevisionLdm80.push(otRevision)
-                    break;
-                    case 15:
-                        arrayInfoModelo.push(otInfo)
-                        arrayRevisionInfoModelo.push(otRevision)
-                    break;
-                    //----------------Info 100%-----------------
-                    case 16:
-                        arrayLdm100.push(otInfo)
-                        arrayRevisionLdm100.push(otRevision)
-                    break;
-                    case 17:
-                        arrayInfo100.push(otInfo)
-                        arrayRevisionInfo100.push(otRevision)
-                    break;
-                    //----------------Info Sim0----------------
-                    case 18:
-                        arraySim0.push(otInfo)
-                        arrayRevisionSim0.push(otRevision)
-                    break;
-                    case 19:
-                        arrayDocuSim0.push(otInfo)
-                        arrayRevisionDocuSim0.push(otRevision)
-                    break;
-                    //----------------Info Sim1----------------
-                    case 20:
-                        arraySim1.push(otInfo)
-                        arrayRevisionSim1.push(otRevision)
-                    break;
-                    case 21:
-                        arrayVideo.push(otInfo)
-                        arrayRevisionVideo.push(otRevision)
-                    break;
-                    case 22:
-                        arrayInforme.push(otInfo)
-                        arrayRevisionInforme.push(otRevision)
-                    break;
-                    case 23:
-                        arrayPpt.push(otInfo)
-                        arrayRevisionPpt.push(otRevision)
-                    break;
-                    case 24:
-                        arrayS1pOp20.push(otInfo)
-                        arrayRevisionS1pOp20.push(otRevision)
-                    break;
-                    //----------------Info Sim2-3----------------
-                    case 25:
-                        arraySim2.push(otInfo)
-                        arrayRevisionSim2.push(otRevision)
-                    break;
-                    case 26:
-                        arrayReporte.push(otInfo)
-                        arrayRevisionReporte.push(otRevision)
-                    break;
-                    case 27:
-                        arrayDfnProdismo.push(otInfo)
-                        arrayRevisionDfnProdismo.push(otRevision)
-                    break;
-                    case 28:
-                        arraySim3.push(otInfo)
-                        arrayRevisionSim3.push(otRevision)
-                    break;
-                    //----------------Info Sim4 Primera----------
-                    case 29:
-                        arrayMatEnsayo.push(otInfo)
-                        arrayRevisionMatEnsayo.push(otRevision)
-                    break;
-                    case 30:
-                        arrayMasMenos10.push(otInfo)
-                        arrayRevisionMasMenos10.push(otRevision)
-                    break;
-                    case 31:
-                        arrayMpAlternativo.push(otInfo)
-                        arrayRevisionMpAlternativo.push(otRevision)
-                    break;
-                    case 32:
-                        arrayReunionSim.push(otInfo)
-                        arrayRevisionReunionSim.push(otRevision)
-                    break;
-                    //----------------Info Sim4 Segunda-----------
-                    case 33:
-                        arrayInformeSim4.push(otInfo)
-                        arrayRevisionInformeSim4.push(otRevision)
-                    break;
-                    case 34:
-                        arrayGeoCopiado1.push(otInfo)
-                        arrayRevisionGeoCopiado1.push(otRevision)
-                    break;
-                    case 35:
-                        arrayGeoCopiado2.push(otInfo)
-                        arrayRevisionGeoCopiado2.push(otRevision)
-                    break;
-                    case 36:
-                        arrayHorasSim.push(otInfo)
-                        arrayRevisionHorasSim.push(otRevision)
-                    break;
-                    //----------------Info Sim5------------------
-                    case 37:
-                        arrayGrillado.push(otInfo)
-                        arrayRevisionGrillado.push(otRevision)
-                    break;
-                    case 38:
-                        arrayMpEnsayada.push(otInfo)
-                        arrayRevisionMpEnsayada.push(otRevision)        
-                    default:
-                        null
-                        break;
-                }
+//                 switch (q) {
+//                      //-----------------R14-----------------------
+//                     case 0: 
+//                         arrayProcesoR14.push(otInfo)
+//                         arrayRevisionProcesoR14.push(otRevision)
+//                     break;
+//                     case 1: 
+//                         arrayAprobadoR14.push(otInfo)
+//                         arrayRevisionAprobadoR14.push(otRevision)
+//                     break;
+//                     //----------------Proceso 3D------------------
+//                     case 2: 
+//                         arrayProceso3d.push(otInfo)
+//                         arrayRevisionProceso3d.push(otRevision)
+//                     break;
+//                     case 3:
+//                         arrayHorasProceso3d.push(otInfo)
+//                         arrayRevisionHorasProceso3d.push(otRevision)
+//                     break;
+//                      //-------------Diseño 1° Parte-------------
+//                     case 4:
+//                         arrayAvDiseno.push(otInfo)
+//                         arrayRevisionAvDiseno.push(otRevision)
+//                     break;
+//                     case 5:
+//                         arrayAv50Diseno.push(otInfo)
+//                         arrayRevisionAv50Diseno.push(otRevision)
+//                     break;
+//                     case 6:
+//                         arrayAv80Diseno.push(otInfo)
+//                         arrayRevisionAv80Diseno.push(otRevision)
+//                     break;
+//                     case 7:
+//                         arrayEnvioCliente.push(otInfo)
+//                         arrayRevisionEnvioCliente.push(otRevision)
+//                     break;
+//                      //-------------Diseño 2° Parte-------------
+//                     case 8:
+//                         arrayRevisionCliente.push(otInfo)
+//                         arrayRevisionRevisionCliente.push(otRevision)
+//                     break;
+//                     case 9:
+//                         arrayLdmProvisoria.push(otInfo)
+//                         arrayRevisionLdmProvisoria.push(otRevision)
+//                     break;
+//                     case 10:
+//                         arrayAv100Diseno.push(otInfo)
+//                         arrayRevisionAv100Diseno.push(otRevision)
+//                     break;
+//                     case 11:
+//                         arrayAprobadoCliente.push(otInfo)
+//                         arrayRevisionAprobadoCliente.push(otRevision)
+//                     break;
+//                      //----------------Info 80%-----------------
+//                     case 12:
+//                         arrayLdmAvanceCG.push(otInfo)
+//                         arrayRevisionLdmAvanceCG.push(otRevision)
+//                     break;
+//                     case 13:
+//                         arrayLdmAvanceTD2.push(otInfo)
+//                         arrayRevisionLdmAvanceTD2.push(otRevision)
+//                     break;
+//                     case 14:
+//                         arrayLdm80.push(otInfo)
+//                         arrayRevisionLdm80.push(otRevision)
+//                     break;
+//                     case 15:
+//                         arrayInfoModelo.push(otInfo)
+//                         arrayRevisionInfoModelo.push(otRevision)
+//                     break;
+//                     //----------------Info 100%-----------------
+//                     case 16:
+//                         arrayLdm100.push(otInfo)
+//                         arrayRevisionLdm100.push(otRevision)
+//                     break;
+//                     case 17:
+//                         arrayInfo100.push(otInfo)
+//                         arrayRevisionInfo100.push(otRevision)
+//                     break;
+//                     //----------------Info Sim0----------------
+//                     case 18:
+//                         arraySim0.push(otInfo)
+//                         arrayRevisionSim0.push(otRevision)
+//                     break;
+//                     case 19:
+//                         arrayDocuSim0.push(otInfo)
+//                         arrayRevisionDocuSim0.push(otRevision)
+//                     break;
+//                     //----------------Info Sim1----------------
+//                     case 20:
+//                         arraySim1.push(otInfo)
+//                         arrayRevisionSim1.push(otRevision)
+//                     break;
+//                     case 21:
+//                         arrayVideo.push(otInfo)
+//                         arrayRevisionVideo.push(otRevision)
+//                     break;
+//                     case 22:
+//                         arrayInforme.push(otInfo)
+//                         arrayRevisionInforme.push(otRevision)
+//                     break;
+//                     case 23:
+//                         arrayPpt.push(otInfo)
+//                         arrayRevisionPpt.push(otRevision)
+//                     break;
+//                     case 24:
+//                         arrayS1pOp20.push(otInfo)
+//                         arrayRevisionS1pOp20.push(otRevision)
+//                     break;
+//                     //----------------Info Sim2-3----------------
+//                     case 25:
+//                         arraySim2.push(otInfo)
+//                         arrayRevisionSim2.push(otRevision)
+//                     break;
+//                     case 26:
+//                         arrayReporte.push(otInfo)
+//                         arrayRevisionReporte.push(otRevision)
+//                     break;
+//                     case 27:
+//                         arrayDfnProdismo.push(otInfo)
+//                         arrayRevisionDfnProdismo.push(otRevision)
+//                     break;
+//                     case 28:
+//                         arraySim3.push(otInfo)
+//                         arrayRevisionSim3.push(otRevision)
+//                     break;
+//                     //----------------Info Sim4 Primera----------
+//                     case 29:
+//                         arrayMatEnsayo.push(otInfo)
+//                         arrayRevisionMatEnsayo.push(otRevision)
+//                     break;
+//                     case 30:
+//                         arrayMasMenos10.push(otInfo)
+//                         arrayRevisionMasMenos10.push(otRevision)
+//                     break;
+//                     case 31:
+//                         arrayMpAlternativo.push(otInfo)
+//                         arrayRevisionMpAlternativo.push(otRevision)
+//                     break;
+//                     case 32:
+//                         arrayReunionSim.push(otInfo)
+//                         arrayRevisionReunionSim.push(otRevision)
+//                     break;
+//                     //----------------Info Sim4 Segunda-----------
+//                     case 33:
+//                         arrayInformeSim4.push(otInfo)
+//                         arrayRevisionInformeSim4.push(otRevision)
+//                     break;
+//                     case 34:
+//                         arrayGeoCopiado1.push(otInfo)
+//                         arrayRevisionGeoCopiado1.push(otRevision)
+//                     break;
+//                     case 35:
+//                         arrayGeoCopiado2.push(otInfo)
+//                         arrayRevisionGeoCopiado2.push(otRevision)
+//                     break;
+//                     case 36:
+//                         arrayHorasSim.push(otInfo)
+//                         arrayRevisionHorasSim.push(otRevision)
+//                     break;
+//                     //----------------Info Sim5------------------
+//                     case 37:
+//                         arrayGrillado.push(otInfo)
+//                         arrayRevisionGrillado.push(otRevision)
+//                     break;
+//                     case 38:
+//                         arrayMpEnsayada.push(otInfo)
+//                         arrayRevisionMpEnsayada.push(otRevision)        
+//                     default:
+//                         null
+//                         break;
+//                 }
+//             }
+//     }
+
+//     switch (qFinalX) {
+//         case 2: //------------R14-----------------------
+//             return {
+//                 arrayProcesoR14,
+//                 arrayRevisionProcesoR14,
+//                 arrayAprobadoR14,
+//                 arrayRevisionAprobadoR14
+//             }
+//         case 4: //-----Proceso 3d----------------
+//             return {
+//                 arrayProceso3d,
+//                 arrayRevisionProceso3d,
+//                 arrayHorasProceso3d,
+//                 arrayRevisionHorasProceso3d
+//             }
+//         case 8: //-----Diseno Primera Parte------
+//             return {
+//                 arrayAvDiseno,
+//                 arrayRevisionAvDiseno,
+//                 arrayAv50Diseno,
+//                 arrayRevisionAv50Diseno,
+//                 arrayAv80Diseno,
+//                 arrayRevisionAv80Diseno,
+//                 arrayEnvioCliente,
+//                 arrayRevisionEnvioCliente
+//             }
+//         case 12: //----Diseno Segunda Parte------
+//             return {
+//                 arrayRevisionCliente,
+//                 arrayRevisionRevisionCliente,
+//                 arrayLdmProvisoria,
+//                 arrayRevisionLdmProvisoria,
+//                 arrayAv100Diseno,
+//                 arrayRevisionAv100Diseno,
+//                 arrayAprobadoCliente,
+//                 arrayRevisionAprobadoCliente
+//             }
+//         case 16: //----Info 80%------------------
+//             return {
+//                 arrayLdmAvanceCG,
+//                 arrayRevisionLdmAvanceCG,
+//                 arrayLdmAvanceTD2,
+//                 arrayRevisionLdmAvanceTD2,
+//                 arrayLdm80,
+//                 arrayRevisionLdm80,
+//                 arrayInfoModelo,
+//                 arrayRevisionInfoModelo
+//             }
+//         case 18: //----Info 100%------------------
+//             return {
+//                 arrayLdm100,
+//                 arrayRevisionLdm100,
+//                 arrayInfo100,
+//                 arrayRevisionInfo100
+//             }
+//         case 20: //----Sim 0------------------
+//             return {
+//                 arraySim0,
+//                 arrayRevisionSim0,
+//                 arrayDocuSim0,
+//                 arrayRevisionDocuSim0
+//             }
+//         case 25: //----Sim 1------------------
+//             return {
+//                 arraySim1,
+//                 arrayRevisionSim1,
+//                 arrayVideo,
+//                 arrayRevisionVideo,
+//                 arrayInforme,
+//                 arrayRevisionInforme,
+//                 arrayPpt,
+//                 arrayRevisionPpt,
+//                 arrayS1pOp20,
+//                 arrayRevisionS1pOp20
+//             }
+//         case 29: //----Sim 2_3------------------
+//         return {
+//             arraySim2,
+//             arrayRevisionSim2,
+//             arrayReporte,
+//             arrayRevisionReporte,
+//             arrayDfnProdismo,
+//             arrayRevisionDfnProdismo,
+//             arraySim3,
+//             arrayRevisionSim3
+//             }
+//         case 33: //----Sim 4 Primera-------------
+//         return {
+//             arrayMatEnsayo,
+//             arrayRevisionMatEnsayo,
+//             arrayMasMenos10,
+//             arrayRevisionMasMenos10,
+//             arrayMpAlternativo,
+//             arrayRevisionMpAlternativo,
+//             arrayReunionSim,
+//             arrayRevisionReunionSim
+//             }
+//         case 37: //----Sim 4 Segunda-------------
+//         return {
+//             arrayInformeSim4,
+//             arrayRevisionInformeSim4,
+//             arrayGeoCopiado1,
+//             arrayRevisionGeoCopiado1,
+//             arrayGeoCopiado2,
+//             arrayRevisionGeoCopiado2,
+//             arrayHorasSim,
+//             arrayRevisionHorasSim
+//         }
+//         case 39: //----Sim 5-------------
+//         return {
+//             arrayGrillado,
+//             arrayRevisionGrillado,
+//             arrayMpEnsayada,
+//             arrayRevisionMpEnsayada
+//         }
+//         default:
+//             break;
+//     }
+// }
+function getOtListValues(i, idTabla, qInicial, qFinal) {
+    const parentDiv = document.getElementById(idTabla);
+    const tableBody = parentDiv.lastElementChild;
+    const lastChild = parseInt(tableBody.childElementCount);
+
+    const qInicialX = parseInt(qInicial);
+    const qFinalX = parseInt(qFinal);
+    
+    let k = i;
+    
+    const arrays = {
+        arrayProcesoR14: [], arrayRevisionProcesoR14: [],
+        arrayAprobadoR14: [], arrayRevisionAprobadoR14: [],
+        arrayProceso3d: [], arrayRevisionProceso3d: [],
+        arrayHorasProceso3d: [], arrayRevisionHorasProceso3d: [],
+        arrayAvDiseno: [], arrayRevisionAvDiseno: [],
+        arrayAv50Diseno: [], arrayRevisionAv50Diseno: [],
+        arrayAv80Diseno: [], arrayRevisionAv80Diseno: [],
+        arrayEnvioCliente: [], arrayRevisionEnvioCliente: [],
+        arrayRevisionCliente: [], arrayRevisionRevisionCliente: [],
+        arrayLdmProvisoria: [], arrayRevisionLdmProvisoria: [],
+        arrayAv100Diseno: [], arrayRevisionAv100Diseno: [],
+        arrayAprobadoCliente: [], arrayRevisionAprobadoCliente: [],
+        arrayLdmAvanceCG: [], arrayRevisionLdmAvanceCG: [],
+        arrayLdmAvanceTD2: [], arrayRevisionLdmAvanceTD2: [],
+        arrayLdm80: [], arrayRevisionLdm80: [],
+        arrayInfoModelo: [], arrayRevisionInfoModelo: [],
+        arrayLdm100: [], arrayRevisionLdm100: [],
+        arrayInfo100: [], arrayRevisionInfo100: [],
+        arraySim0: [], arrayRevisionSim0: [],
+        arrayDocuSim0: [], arrayRevisionDocuSim0: [],
+        arraySim1: [], arrayRevisionSim1: [],
+        arrayVideo: [], arrayRevisionVideo: [],
+        arrayInforme: [], arrayRevisionInforme: [],
+        arrayPpt: [], arrayRevisionPpt: [],
+        arrayS1pOp20: [], arrayRevisionS1pOp20: [],
+        arraySim2: [], arrayRevisionSim2: [],
+        arrayReporte: [], arrayRevisionReporte: [],
+        arrayDfnProdismo: [], arrayRevisionDfnProdismo: [],
+        arraySim3: [], arrayRevisionSim3: [],
+        arrayMatEnsayo: [], arrayRevisionMatEnsayo: [],
+        arrayMasMenos10: [], arrayRevisionMasMenos10: [],
+        arrayMpAlternativo: [], arrayRevisionMpAlternativo: [],
+        arrayReunionSim: [], arrayRevisionReunionSim: [],
+        arrayInformeSim4: [], arrayRevisionInformeSim4: [],
+        arrayGeoCopiado1: [], arrayRevisionGeoCopiado1: [],
+        arrayGeoCopiado2: [], arrayRevisionGeoCopiado2: [],
+        arrayHorasSim: [], arrayRevisionHorasSim: [],
+        arrayGrillado: [], arrayRevisionGrillado: [],
+        arrayMpEnsayada: [], arrayRevisionMpEnsayada: []
+    };
+    
+    const mapping = {
+        0: ['arrayProcesoR14', 'arrayRevisionProcesoR14'],
+        1: ['arrayAprobadoR14', 'arrayRevisionAprobadoR14'],
+        2: ['arrayProceso3d', 'arrayRevisionProceso3d'],
+        3: ['arrayHorasProceso3d', 'arrayRevisionHorasProceso3d'],
+        4: ['arrayAvDiseno', 'arrayRevisionAvDiseno'],
+        5: ['arrayAv50Diseno', 'arrayRevisionAv50Diseno'],
+        6: ['arrayAv80Diseno', 'arrayRevisionAv80Diseno'],
+        7: ['arrayEnvioCliente', 'arrayRevisionEnvioCliente'],
+        8: ['arrayRevisionCliente', 'arrayRevisionRevisionCliente'],
+        9: ['arrayLdmProvisoria', 'arrayRevisionLdmProvisoria'],
+        10: ['arrayAv100Diseno', 'arrayRevisionAv100Diseno'],
+        11: ['arrayAprobadoCliente', 'arrayRevisionAprobadoCliente'],
+        12: ['arrayLdmAvanceCG', 'arrayRevisionLdmAvanceCG'],
+        13: ['arrayLdmAvanceTD2', 'arrayRevisionLdmAvanceTD2'],
+        14: ['arrayLdm80', 'arrayRevisionLdm80'],
+        15: ['arrayInfoModelo', 'arrayRevisionInfoModelo'],
+        16: ['arrayLdm100', 'arrayRevisionLdm100'],
+        17: ['arrayInfo100', 'arrayRevisionInfo100'],
+        18: ['arraySim0', 'arrayRevisionSim0'],
+        19: ['arrayDocuSim0', 'arrayRevisionDocuSim0'],
+        20: ['arraySim1', 'arrayRevisionSim1'],
+        21: ['arrayVideo', 'arrayRevisionVideo'],
+        22: ['arrayInforme', 'arrayRevisionInforme'],
+        23: ['arrayPpt', 'arrayRevisionPpt'],
+        24: ['arrayS1pOp20', 'arrayRevisionS1pOp20'],
+        25: ['arraySim2', 'arrayRevisionSim2'],
+        26: ['arrayReporte', 'arrayRevisionReporte'],
+        27: ['arrayDfnProdismo', 'arrayRevisionDfnProdismo'],
+        28: ['arraySim3', 'arrayRevisionSim3'],
+        29: ['arrayMatEnsayo', 'arrayRevisionMatEnsayo'],
+        30: ['arrayMasMenos10', 'arrayRevisionMasMenos10'],
+        31: ['arrayMpAlternativo', 'arrayRevisionMpAlternativo'],
+        32: ['arrayReunionSim', 'arrayRevisionReunionSim'],
+        33: ['arrayInformeSim4', 'arrayRevisionInformeSim4'],
+        34: ['arrayGeoCopiado1', 'arrayRevisionGeoCopiado1'],
+        35: ['arrayGeoCopiado2', 'arrayRevisionGeoCopiado2'],
+        36: ['arrayHorasSim', 'arrayRevisionHorasSim'],
+        37: ['arrayGrillado', 'arrayRevisionGrillado'],
+        38: ['arrayMpEnsayada', 'arrayRevisionMpEnsayada']
+    };
+
+    for (let n = 0; n < lastChild; n++) {
+        for (let q = qInicialX; q < qFinalX; q++) {
+            const otHidden = document.getElementById(`resHidden${k}_${n}_${q}`).value;
+            const otInfo = changeValueFromArray(otHidden.split(",")).pop();
+
+            const otRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${q}`).value;
+            const otRevision = otRevisionHidden.split(",").pop();
+
+            const [infoKey, revisionKey] = mapping[q] || [];
+            if (infoKey && revisionKey) {
+                arrays[infoKey].push(otInfo);
+                arrays[revisionKey].push(otRevision);
             }
+        }
     }
 
-    switch (qFinalX) {
-        case 2: //------------R14-----------------------
-            return {
-                arrayProcesoR14,
-                arrayRevisionProcesoR14,
-                arrayAprobadoR14,
-                arrayRevisionAprobadoR14
-            }
-        case 4: //-----Proceso 3d----------------
-            return {
-                arrayProceso3d,
-                arrayRevisionProceso3d,
-                arrayHorasProceso3d,
-                arrayRevisionHorasProceso3d
-            }
-        case 8: //-----Diseno Primera Parte------
-            return {
-                arrayAvDiseno,
-                arrayRevisionAvDiseno,
-                arrayAv50Diseno,
-                arrayRevisionAv50Diseno,
-                arrayAv80Diseno,
-                arrayRevisionAv80Diseno,
-                arrayEnvioCliente,
-                arrayRevisionEnvioCliente
-            }
-        case 12: //----Diseno Segunda Parte------
-            return {
-                arrayRevisionCliente,
-                arrayRevisionRevisionCliente,
-                arrayLdmProvisoria,
-                arrayRevisionLdmProvisoria,
-                arrayAv100Diseno,
-                arrayRevisionAv100Diseno,
-                arrayAprobadoCliente,
-                arrayRevisionAprobadoCliente
-            }
-        case 16: //----Info 80%------------------
-            return {
-                arrayLdmAvanceCG,
-                arrayRevisionLdmAvanceCG,
-                arrayLdmAvanceTD2,
-                arrayRevisionLdmAvanceTD2,
-                arrayLdm80,
-                arrayRevisionLdm80,
-                arrayInfoModelo,
-                arrayRevisionInfoModelo
-            }
-        case 18: //----Info 100%------------------
-            return {
-                arrayLdm100,
-                arrayRevisionLdm100,
-                arrayInfo100,
-                arrayRevisionInfo100
-            }
-        case 20: //----Sim 0------------------
-            return {
-                arraySim0,
-                arrayRevisionSim0,
-                arrayDocuSim0,
-                arrayRevisionDocuSim0
-            }
-        case 25: //----Sim 1------------------
-            return {
-                arraySim1,
-                arrayRevisionSim1,
-                arrayVideo,
-                arrayRevisionVideo,
-                arrayInforme,
-                arrayRevisionInforme,
-                arrayPpt,
-                arrayRevisionPpt,
-                arrayS1pOp20,
-                arrayRevisionS1pOp20
-            }
-        case 29: //----Sim 2_3------------------
-        return {
-            arraySim2,
-            arrayRevisionSim2,
-            arrayReporte,
-            arrayRevisionReporte,
-            arrayDfnProdismo,
-            arrayRevisionDfnProdismo,
-            arraySim3,
-            arrayRevisionSim3
-            }
-        case 33: //----Sim 4 Primera-------------
-        return {
-            arrayMatEnsayo,
-            arrayRevisionMatEnsayo,
-            arrayMasMenos10,
-            arrayRevisionMasMenos10,
-            arrayMpAlternativo,
-            arrayRevisionMpAlternativo,
-            arrayReunionSim,
-            arrayRevisionReunionSim
-            }
-        case 37: //----Sim 4 Segunda-------------
-        return {
-            arrayInformeSim4,
-            arrayRevisionInformeSim4,
-            arrayGeoCopiado1,
-            arrayRevisionGeoCopiado1,
-            arrayGeoCopiado2,
-            arrayRevisionGeoCopiado2,
-            arrayHorasSim,
-            arrayRevisionHorasSim
-        }
-        case 39: //----Sim 5-------------
-        return {
-            arrayGrillado,
-            arrayRevisionGrillado,
-            arrayMpEnsayada,
-            arrayRevisionMpEnsayada
-        }
-        default:
-            break;
-    }
+    const resultMap = {
+        2: ['arrayProcesoR14', 'arrayRevisionProcesoR14', 'arrayAprobadoR14', 'arrayRevisionAprobadoR14'],
+        4: ['arrayProceso3d', 'arrayRevisionProceso3d', 'arrayHorasProceso3d', 'arrayRevisionHorasProceso3d'],
+        8: ['arrayAvDiseno', 'arrayRevisionAvDiseno', 'arrayAv50Diseno', 'arrayRevisionAv50Diseno', 'arrayAv80Diseno', 'arrayRevisionAv80Diseno', 'arrayEnvioCliente', 'arrayRevisionEnvioCliente'],
+        12: ['arrayRevisionCliente', 'arrayRevisionRevisionCliente', 'arrayLdmProvisoria', 'arrayRevisionLdmProvisoria', 'arrayAv100Diseno', 'arrayRevisionAv100Diseno', 'arrayAprobadoCliente', 'arrayRevisionAprobadoCliente'],
+        16: ['arrayLdmAvanceCG', 'arrayRevisionLdmAvanceCG', 'arrayLdmAvanceTD2', 'arrayRevisionLdmAvanceTD2', 'arrayLdm80', 'arrayRevisionLdm80', 'arrayInfoModelo', 'arrayRevisionInfoModelo'],
+        18: ['arrayLdm100', 'arrayRevisionLdm100', 'arrayInfo100', 'arrayRevisionInfo100'],
+        20: ['arraySim0', 'arrayRevisionSim0', 'arrayDocuSim0', 'arrayRevisionDocuSim0'],
+        25: ['arraySim1', 'arrayRevisionSim1', 'arrayVideo', 'arrayRevisionVideo', 'arrayInforme', 'arrayRevisionInforme', 'arrayPpt', 'arrayRevisionPpt', 'arrayS1pOp20', 'arrayRevisionS1pOp20'],
+        28: ['arraySim2', 'arrayRevisionSim2', 'arrayReporte', 'arrayRevisionReporte', 'arrayDfnProdismo', 'arrayRevisionDfnProdismo'],
+        30: ['arraySim3', 'arrayRevisionSim3', 'arrayMatEnsayo', 'arrayRevisionMatEnsayo', 'arrayMasMenos10', 'arrayRevisionMasMenos10'],
+        34: ['arrayMpAlternativo', 'arrayRevisionMpAlternativo', 'arrayReunionSim', 'arrayRevisionReunionSim', 'arrayInformeSim4', 'arrayRevisionInformeSim4', 'arrayGeoCopiado1', 'arrayRevisionGeoCopiado1', 'arrayGeoCopiado2', 'arrayRevisionGeoCopiado2'],
+        36: ['arrayHorasSim', 'arrayRevisionHorasSim', 'arrayGrillado', 'arrayRevisionGrillado'],
+        38: ['arrayMpEnsayada', 'arrayRevisionMpEnsayada']
+    };
+
+    const keysToReturn = resultMap[qFinalX] || [];
+    const result = {};
+    keysToReturn.forEach(key => result[key] = arrays[key]);
+
+    return result;
 }
 
 function changeValueFromArray(arrayFromValues) {
-    
-    for (let i = 0; i < arrayFromValues.length; i++) {
-        // Modificar valores
-        if (arrayFromValues[i] == 'sinDato') {
-            arrayFromValues[i] = 'S/D';
-        } else if (arrayFromValues[i] == '') {
-            arrayFromValues[i] = 'S/D';
-        } else if (arrayFromValues[i] == 'noAplica') {
-            arrayFromValues[i] = 'N/A';
-        } else if (arrayFromValues[i] == 'ok') {
-            arrayFromValues[i] = 'OK';
-        } else if (arrayFromValues[i] == 'noOk') {
-            arrayFromValues[i] = 'No OK';
-        } else if (arrayFromValues[i] == 'pendiente') {
-            arrayFromValues[i] = 'Pendiente';
-        }
-    }
-    return arrayFromValues
+    const valueMap = {
+        'sinDato': 'S/D',
+        '': 'S/D',
+        'noAplica': 'N/A',
+        'ok': 'OK',
+        'noOk': 'No OK',
+        'pendiente': 'Pendiente'
+    };
+
+    return arrayFromValues.map(value => valueMap[value] || value);
 }
 
 function colorStatusOt(valorStatusOt) {
@@ -2356,103 +2479,58 @@ function colorStatusOt(valorStatusOt) {
 }
 
 function optionSelect(option) {
-    let optionOk = (`
-        <option value="noOk">No OK</option>
-        <option value="pendiente">Pendiente</option>
-        <option value="noAplica">N/A</option>
-    `);
+    const options = {
+        optionOk: `
+            <option value="noOk">No OK</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="noAplica">N/A</option>
+        `,
+        optionNoOk: `
+            <option value="ok">OK</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="noAplica">N/A</option>
+        `,
+        optionPendiente: `
+            <option value="ok">OK</option>
+            <option value="noOk">No OK</option>
+            <option value="noAplica">N/A</option>
+        `,
+        noAplica: `
+            <option value="ok">OK</option>
+            <option value="noOk">No OK</option>
+            <option value="pendiente">Pendiente</option>
+        `,
+        default: `
+            <option value="ok">OK</option>
+            <option value="noOk">No OK</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="noAplica">N/A</option>
+        `
+    };
 
-    let optionNoOk = (`
-        <option value="ok">OK</option>
-        <option value="pendiente">Pendiente</option>
-        <option value="noAplica">N/A</option>
-    `);
-
-    let optionPendiente = (`
-        <option value="ok">OK</option>
-        <option value="noOk">No OK</option>
-        <option value="noAplica">N/A</option>
-    `);
-
-    let optionNoAplica = (`
-        <option value="ok">OK</option>
-        <option value="noOk">No OK</option>
-        <option value="pendiente">Pendiente</option>
-    `);
-
-    let optionDefault = (`
-        <option value="ok">OK</option>
-        <option value="noOk">No OK</option>
-        <option value="pendiente">Pendiente</option>
-        <option value="noAplica">N/A</option>
-    `);
-
-    if (option == "ok") {
-        return {
-            optionOk
-        }
-    } else if (option == "noOk") {
-        return {
-            optionNoOk
-        }
-    } else if (option == "pendiente") {
-        return {
-            optionPendiente
-        }
-    } else if (option == "noAplica") {
-        return {
-            optionNoAplica
-        }
-    } else if (option == "sinDato" || option == "") {
-        return {
-            optionDefault
-        }
-    } else {
-        return {
-            optionDefault
-        }
-    }
+    return options[option] || options.default;
 }
 
-function switchOptionSelected (switchValue) {
-    let variableValue
-    let optionDefined
-    var getValueArrayDato = ''
-    var getValueArrayRevision
+function switchOptionSelected(switchValue) {
+    const options = {
+        "OK": { variableValue: 'ok', optionKey: 'optionOk' },
+        "No OK": { variableValue: 'noOk', optionKey: 'optionNoOk' },
+        "Pendiente": { variableValue: 'pendiente', optionKey: 'optionPendiente' },
+        "N/A": { variableValue: 'noAplica', optionKey: 'optionNoAplica' },
+        "S/D": { variableValue: 'sinDato', optionKey: 'optionDefault', getValueArrayRevision: 0 },
+        "": { variableValue: 'sinDato', optionKey: 'optionDefault', getValueArrayRevision: 0 }
+    };
     
-    if (switchValue == "OK") {
-        variableValue = 'ok'
-        optionDefined = (optionSelect(variableValue)).optionOk
-        getValueArrayDato = switchValue
-
-    } else if (switchValue == 'No OK') {
-        variableValue = 'noOk'
-        optionDefined = (optionSelect(variableValue)).optionNoOk
-        getValueArrayDato = switchValue
-
-    } else if (switchValue == 'Pendiente') {
-        variableValue = 'pendiente'
-        optionDefined = (optionSelect(variableValue)).optionPendiente
-        getValueArrayDato = switchValue
-
-    } else if (switchValue == 'N/A') {
-        variableValue = 'noAplica'
-        optionDefined = (optionSelect(variableValue)).optionNoAplica
-        getValueArrayDato = switchValue
-
-    } else if (switchValue == 'S/D' || switchValue == "") {
-        variableValue = 'sinDato'
-        optionDefined = (optionSelect(variableValue)).optionDefault
-        getValueArrayDato = 'S/D'
-        getValueArrayRevision = 0
-    }
-
+    const { variableValue = '', optionKey = '', getValueArrayRevision } = options[switchValue] || {};
+    const optionDefined = optionSelect(variableValue)[optionKey];
+    const getValueArrayDato = switchValue || 'S/D';
+    
     return {
         variableValue,
         optionDefined,
         getValueArrayDato,
         getValueArrayRevision
-    }
+    };
 }
 
 const cabeceraFormulario = `<div class="col-2 my-auto align-self-middle" style="width: 5rem;">

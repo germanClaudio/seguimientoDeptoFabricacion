@@ -1,0 +1,1939 @@
+<!-- tabla Mecanizado -->
+<table id="tablaMecanizado<%=k%>"
+    class="table-responsive align-middle col-5 border-end border-dark"
+    style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #aac">
+        <tr>
+            <th colspan="7" class="text-center">
+                MECANIZADO
+                <button
+                    id="posBtnAddDataMecanizado<%=k%>"
+                    type="button"
+                    name="btnMecanizado"
+                    class="btn btn-small btn-success m-1"
+                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
+                    title="Agregar/Modificar Datos"
+                    value="<%=k%>">
+                    <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>                                                    
+                </button>
+            </th>
+        </tr>
+        <tr>
+            <th id="colData0" style="width:14vw" scope="col-1"
+                class="text-center pb-1"> F0 | Rev.
+            </th>
+            <th id="colData1" style="width:14vw" scope="col-1"
+                class="text-center pb-1"> F1 | Rev.
+            </th>
+            <th id="colData3" style="width:14vw" scope="col-1"
+                class="text-center pb-1"> F2 | Rev.
+            </th>
+            <th id="colData4" style="width:14vw" scope="col-1"
+                class="text-center pb-1"> F3 | Rev.
+            </th>
+            <th id="colData5" style="width:14vw" scope="col-1"
+                class="text-center pb-1"> F4 | Rev.
+            </th>
+            <th id="colData6" style="width:14vw" scope="col-1"
+                class="text-center pb-1"> F5 | Rev.
+            </th>
+            <th id="colData7" style="width:16vw" scope="col-1"
+                class="text-center pb-1"> Notas | Rev.
+            </th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        
+        <%
+        let arrResFCero = [];
+        let valueArrayResFCero = 0;
+        let arrResRevisionFCero = [];
+        let arrResCreadorFCero = [];
+        let arrResModificadorFCero = [];
+        let arrResFechaFCero = [];
+        let arrResFechaModFCero = [];
+
+        let arrResFUno = [];
+        let valueArrayResFUno = 0;
+        let arrResRevisionFUno = [];
+        let arrResCreadorFUno = [];
+        let arrResModificadorFUno = [];
+        let arrResFechaFUno = [];
+        let arrResFechaModFUno = [];
+
+        let arrResFDos = [];
+        let valueArrayResFDos = 0;
+        let arrResRevisionFDos = [];
+        let arrResCreadorFDos = [];
+        let arrResModificadorFDos = [];
+        let arrResFechaFDos = [];
+        let arrResFechaModFDos = [];
+
+        let arrResFTres = [];
+        let valueArrayResFTres = 0;
+        let arrResRevisionFTres = [];
+        let arrResCreadorFTres = [];
+        let arrResModificadorFTres = [];
+        let arrResFechaFTres = [];
+        let arrResFechaModFTres = [];
+
+        let arrResFCuatro = [];
+        let valueArrayResFCuatro = 0;
+        let arrResRevisionFCuatro = [];
+        let arrResCreadorFCuatro = [];
+        let arrResModificadorFCuatro = [];
+        let arrResFechaFCuatro = [];
+        let arrResFechaModFCuatro = [];
+
+        let arrResFCinco = [];
+        let valueArrayResFCinco = 0;
+        let arrResRevisionFCinco = [];
+        let arrResCreadorFCinco = [];
+        let arrResModificadorFCinco = [];
+        let arrResFechaFCinco = [];
+        let arrResFechaModFCinco = [];
+
+        let arrResObservacionesMecanizado = [];
+        let valueArrayResObservacionesMecanizado = 0;
+        let arrResRevisionObservacionesMecanizado = [];
+        let arrResCreadorObservacionesMecanizado = [];
+        let arrResModificadorObservacionesMecanizado = [];
+        let arrResFechaObservacionesMecanizado = [];
+        let arrResFechaModObservacionesMecanizado = [];
+
+        let anteriorDisabled = "disabled";
+        let siguienteDisabled = "disabled";
+        let resFCero = 'S/D'
+        let resRevisionFCero = 0
+        let resFUno = 'S/D'
+        let resRevisionFUno = 0
+        let resFDos = 'S/D'
+        let resRevisionFDos = 0
+        let resFTres = 'S/D'
+        let resRevisionFTres = 0
+        let resFCuatro = 'S/D'
+        let resRevisionFCuatro = 0
+        let resFCinco = 'S/D'
+        let resRevisionFCinco = 0
+        let resObservacionesMecanizado = 'S/D'
+        let resRevisionObservacionesMecanizado = 0
+
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
+            if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
+                <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
+                    <% let otMecanizado = proyecto[m].project[j].oci[k].otProject[n].otDetalles[0]?.otMecanizado || [];
+                        let largoArrayMecanizado = otMecanizado.length;
+                        let largoArrayOtDetalles = proyecto[m].project[j].oci[k].otProject[n].otDetalles.length;
+
+                    for (let q = 10; totalColDataMecanizado > q; q++) {
+                        if (q==10) { %>
+                            <!-- F0 data Activo--> 
+                            <td class="text-center align-middle">
+                                <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
+                                            for (let i = 0; largoArrayMecanizado > i; i++) {
+                                                let pathToMongoDBMecanizado = otMecanizado[i]
+
+                                                if (otMecanizado) {
+                                                    let largoArray = parseInt(largoArrayMecanizado)
+                                                    resFCero = otMecanizado[largoArray-1].fCero
+                                                    resRevisionFCero = otMecanizado[largoArray-1].revisionFCero
+                                                    
+                                                    if (i == 0) {
+                                                        arrResFCero.push(pathToMongoDBMecanizado.fCero)
+                                                        arrResRevisionFCero.push(pathToMongoDBMecanizado.revisionFCero)
+                                                    }
+                                                    else if (i >= 1 && pathToMongoDBMecanizado.revisionFCero != otMecanizado[i-1].revisionFCero) {
+                                                        arrResFCero.push(pathToMongoDBMecanizado.fCero)
+                                                        arrResRevisionFCero.push(pathToMongoDBMecanizado.revisionFCero)
+                                                    }
+                                                        arrResCreadorFCero.push(pathToMongoDBMecanizado.creator[0].username)
+                                                        arrResModificadorFCero.push(pathToMongoDBMecanizado.modificator[0].username)
+                                                        arrResFechaOtFCero.push(pathToMongoDBMecanizado.timestamp)
+                                                        arrResFechaModFCero.push(pathToMongoDBMecanizado.modifiedOn)
+                                                        valueArrayResFCero = parseInt(arrResMecanizado.length-1)
+                                                                                                
+                                                } else {
+                                                    resFCero = 'S/D'
+                                                    resRevisionFCero = 0
+                                                }
+                                            }
+                                            
+                                            if (arrResFCero.length == 1 ) {
+                                                anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
+                                            } else if (arrResFCero.length == arrResRevisionFCero.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                            
+                                    } else {
+                                        anteriorDisabled = "disabled"
+                                        siguienteDisabled = "disabled"
+                                        resFCero = "S/D"
+                                        resRevisionFCero = 0
+                                        arrResFCero.push(resFCero)
+                                        arrResRevisionFCero.push(resRevisionFCero)
+                                        valueArrayResFCero = 0
+                                    } %>
+                                
+                                    <div id="btnAnteriorSiguienteFCero<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorFCero<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorFCero"
+                                            value="<%=k%>_<%=n%>_<%=q%>"
+                                            class="btn btn-light btn-sm me-2"
+                                            title="Ver anterior"
+                                            type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            >
+                                                <i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFCero %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResFCero %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionFCero %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorFCero %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorFCero %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaFCero %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModFCero %>">
+        
+                                        <% switch (resFCero) { 
+                                            case "prodismo": { %>
+                                                    <span id="resFCero<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                        PRODISMO
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFCero<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFCero"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueRevision=""
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFCero %>
+                                                    </span>
+                                            <% break; }        
+                                            case "terceros": { %>
+                                                    <span id="resFCero<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                        TERCEROS
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFCero<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFCero"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFCero %>
+                                                    </span>
+                                            <% break; }        
+                                            case "china": { %>
+                                                    <span id="resFCero<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                        CHINA
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFCero<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFCero"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFCero %>
+                                                    </span>
+                                            <% break; }
+                                            case "noAplica": { %>
+                                                    <span id="resFCero<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                        N/A
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFCero<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFCero"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFCero %>
+                                                    </span>
+                                            <% break; }
+                                            default: { %>
+                                                    <span id="resFCero<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                        S/D
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFCero<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFCero"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFCero %>
+                                                    </span>
+                                            <% break; }
+                                        } %>
+        
+                                        <button id="btnSiguienteFCero<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteFCero"
+                                            value="<%=k%>_<%=n%>_<%=q%>"
+                                            class="btn btn-light btn-sm ms-2"
+                                            title="Ver siguiente"
+                                            type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            >
+                                                <i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                            </td>
+                        <%} else if (q==11) { %>
+                            <!-- F1 data Activo--> 
+                            <td class="text-center align-middle">
+                                <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
+                                            for (let i = 0; largoArrayMecanizado > i; i++) {
+                                                let pathToMongoDBMecanizado = otMecanizado[i]
+
+                                                if (otMecanizado) {
+                                                    let largoArray = parseInt(largoArrayMecanizado)
+                                                    resFUno = otMecanizado[largoArray-1].fUno
+                                                    resRevisionFUno = otMecanizado[largoArray-1].revisionFUno
+                                                    
+                                                    if (i == 0) {
+                                                        arrResFUno.push(pathToMongoDBMecanizado.fUno)
+                                                        arrResRevisionFUno.push(pathToMongoDBMecanizado.revisionFUno)
+                                                    }
+                                                    else if (i >= 1 && pathToMongoDBMecanizado.revisionFUno != otMecanizado[i-1].revisionFUno) {
+                                                        arrResFUno.push(pathToMongoDBMecanizado.fUno)
+                                                        arrResRevisionFUno.push(pathToMongoDBMecanizado.revisionFUno)
+                                                    }
+                                                        arrResCreadorFUno.push(pathToMongoDBMecanizado.creator[0].username)
+                                                        arrResModificadorFUno.push(pathToMongoDBMecanizado.modificator[0].username)
+                                                        arrResFechaOtFUno.push(pathToMongoDBMecanizado.timestamp)
+                                                        arrResFechaModFUno.push(pathToMongoDBMecanizado.modifiedOn)
+                                                        valueArrayResFUno = parseInt(arrResMecanizado.length-1)
+                                                                                                
+                                                } else {
+                                                    resFUno = 'S/D'
+                                                    resRevisionFUno = 0
+                                                }
+                                            }
+                                            
+                                            if (arrResFUno.length == 1 ) {
+                                                anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
+                                            } else if (arrResFUno.length == arrResRevisionFUno.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                            
+                                    } else {
+                                        anteriorDisabled = "disabled"
+                                        siguienteDisabled = "disabled"
+                                        resFUno = "S/D"
+                                        resRevisionFUno = 0
+                                        arrResFUno.push(resFUno)
+                                        arrResRevisionFUno.push(resRevisionFUno)
+                                        valueArrayResFUno = 0
+                                    } %>
+                                
+                                    <div id="btnAnteriorSiguienteFUno<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorFUno<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorFUno"
+                                            value="<%=k%>_<%=n%>_<%=q%>"
+                                            class="btn btn-light btn-sm me-2"
+                                            title="Ver anterior"
+                                            type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            >
+                                                <i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFUno %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResFUno %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionFUno %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorFUno %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorFUno %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaFUno %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModFUno %>">
+        
+                                        <% switch (resFUno) { 
+                                            case "prodismo": { %>
+                                                    <span id="resFUno<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                        PRODISMO
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFUno<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFUno"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueRevision=""
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFUno %>
+                                                    </span>
+                                            <% break; }        
+                                            case "terceros": { %>
+                                                    <span id="resFUno<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                        TERCEROS
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFUno<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFUno"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFUno %>
+                                                    </span>
+                                            <% break; }        
+                                            case "china": { %>
+                                                    <span id="resFUno<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                        CHINA
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFUno<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFUno"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFUno %>
+                                                    </span>
+                                            <% break; }
+                                            case "noAplica": { %>
+                                                    <span id="resFUno<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                        N/A
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFUno<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFUno"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFUno %>
+                                                    </span>
+                                            <% break; }
+                                            default: { %>
+                                                    <span id="resFUno<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                        S/D
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFUno<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFUno"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFUno %>
+                                                    </span>
+                                            <% break; }
+                                        } %>
+        
+                                        <button id="btnSiguienteFUno<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteFUno"
+                                            value="<%=k%>_<%=n%>_<%=q%>"
+                                            class="btn btn-light btn-sm ms-2"
+                                            title="Ver siguiente"
+                                            type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            >
+                                                <i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                            </td>
+                        <% } else if (q==12) { %>
+                            <!-- F2 data Activo-->
+                            <td class="text-center align-middle">
+                                <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
+                                            for (let i = 0; largoArrayMecanizado > i; i++) {
+                                                let pathToMongoDBMecanizado = otMecanizado[i]
+                                                
+                                                if (otMecanizado) {                
+                                                    let largoArray = parseInt(largoArrayMecanizado)
+                                                    resFDos = otMecanizado[largoArray-1].fDos
+                                                    resRevisionFDos = otMecanizado[largoArray-1].revisionFDos
+                                                    
+                                                    if (i == 0) {
+                                                        arrResFDos.push(pathToMongoDBMecanizado.fDos)
+                                                        arrResRevisionFDos.push(pathToMongoDBMecanizado.revisionFDos)
+                                                    }
+                                                    else if (i >= 1 && pathToMongoDBMecanizado.revisionFDos != otMecanizado[i-1].revisionFDos) {
+                                                        arrResFDos.push(pathToMongoDBMecanizado.fDos)
+                                                        arrResRevisionFDos.push(pathToMongoDBMecanizado.revisionFDos)
+                                                    }
+                                                        arrResCreadorFDos.push(pathToMongoDBMecanizado.creator[0].username)
+                                                        arrResModificadorFDos.push(pathToMongoDBMecanizado.modificator[0].username)
+                                                        arrResFechaFDos.push(pathToMongoDBMecanizado.timestamp)
+                                                        arrResFechaModFDos.push(pathToMongoDBMecanizado.modifiedOn)
+                                                        valueArrayResFDos = parseInt(arrResFDos.length-1)
+                                                                                                
+                                                } else {
+                                                    resFDos = 'S/D'
+                                                    resRevisionFDos = 0
+                                                }
+                                            }
+                                            
+                                            if (arrResFDos.length == 1 ) {
+                                                siguienteDisabled = "disabled"
+                                                anteriorDisabled = "disabled"
+                                            } else if (arrResFDos.length == arrResRevisionFDos.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                            
+                                        } else {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                            resFDos = "S/D"
+                                            resRevisionFDos = 0
+                                            arrResFDos.push(resFDos)
+                                            arrResRevisionFDos.push(resRevisionFDos)
+                                            valueArrayResFDos = 0
+                                    } %>
+                                
+                                    <div id="btnAnteriorSiguienteFDos<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorFDos<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorFDos"
+                                            value="<%=k%>_<%=n%>_<%=q%>"
+                                            class="btn btn-light btn-sm me-2"
+                                            title="Ver anterior"
+                                            type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            >
+                                                <i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFDos %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResFDos %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionFDos %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorFDos %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorFDos %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaFDos %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModFDos %>">
+        
+                                        <% switch (resFDos) { 
+                                            case "prodismo": { %>
+                                                    <span id="resFDos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                        PRODISMO
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFDos<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFDos"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueRevision=""
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFDos %>
+                                                    </span>
+                                            <% break; }
+                                            case "terceros": { %>
+                                                    <span id="resFDos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                        TERCEROS
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFDos<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFDos"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFDos %>
+                                                    </span>
+                                            <% break; }        
+                                            case "china": { %>
+                                                    <span id="resFDos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                        CHINA
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFDos<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFDos"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFDos %>
+                                                    </span>
+                                            <% break; }
+                                            case "noAplica": { %>
+                                                    <span id="resFDos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                        N/A
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFDos<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFDos"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFDos %>
+                                                    </span>
+                                            <% break; }
+                                            default: { %>
+                                                    <span id="resFDos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                        S/D
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFDos<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFDos"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFDos %>
+                                                    </span>
+                                            <% break; }
+                                        } %>
+        
+                                        <button id="btnSiguienteFDos<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteFDos"
+                                            value="<%=k%>_<%=n%>_<%=q%>"
+                                            class="btn btn-light btn-sm ms-2"
+                                            title="Ver siguiente"
+                                            type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            >
+                                                <i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                            </td>
+                        <% } else if (q==13) { %>
+                            <!-- F3 data Activo-->
+                            <td class="text-center align-middle">
+                                <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
+                                            for (let i = 0; largoArrayMecanizado > i; i++) {
+                                                let pathToMongoDBMecanizado = otMecanizado[i]
+                                                
+                                                if (otMecanizado) {
+                                                    let largoArray = parseInt(largoArrayMecanizado)
+                                                    resFTres = otMecanizado[largoArray-1].fTres
+                                                    resRevisionFTres = otMecanizado[largoArray-1].revisionFTres
+                                                    
+                                                    if (i == 0) {
+                                                        arrResFTres.push(pathToMongoDBMecanizado.fTres)
+                                                        arrResRevisionFTres.push(pathToMongoDBMecanizado.revisionFTres)
+                                                    }
+                                                    else if (i >= 1 && pathToMongoDBMecanizado.revisionFTres != otMecanizado[i-1].revisionFTres) {
+                                                        arrResFTres.push(pathToMongoDBMecanizado.fTres)
+                                                        arrResRevisionFTres.push(pathToMongoDBMecanizado.revisionFTres)
+                                                    }
+                                                        arrResCreadorFTres.push(pathToMongoDBMecanizado.creator[0].username)
+                                                        arrResModificadorFTres.push(pathToMongoDBMecanizado.modificator[0].username)
+                                                        arrResFechaFTres.push(pathToMongoDBMecanizado.timestamp)
+                                                        arrResFechaModFTres.push(pathToMongoDBMecanizado.modifiedOn)
+                                                        valueArrayResFTres = parseInt(arrResFTres.length-1)
+                                                                                                
+                                                } else {
+                                                    resFTres = 'S/D'
+                                                    resRevisionFTres = 0
+                                                }
+                                            }
+                                            
+                                            if (arrResFTres.length == 1 ) {
+                                                siguienteDisabled = "disabled"
+                                                anteriorDisabled = "disabled"
+                                            } else if (arrResFTres.length == arrResRevisionFTres.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                            
+                                        } else {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                            resFTres = "S/D"
+                                            resRevisionFTres = 0
+                                            arrResFTres.push(resFTres)
+                                            arrResRevisionFTres.push(resRevisionFTres)
+                                            valueArrayResFTres = 0
+                                    } %>
+                                
+                                    <div id="btnAnteriorSiguienteFTres<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorFTres<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorFTres"
+                                            value="<%=k%>_<%=n%>_<%=q%>"
+                                            class="btn btn-light btn-sm me-2"
+                                            title="Ver anterior"
+                                            type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            >
+                                                <i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFTres %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResFTres %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionFTres %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorFTres %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorFTres %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaFTres %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModFTres %>">
+        
+                                        <% switch (resFTres) { 
+                                            case "prodismo": { %>
+                                                    <span id="resFTres<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                        PRODISMO
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFTres<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFTres"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueRevision=""
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFTres %>
+                                                    </span>
+                                            <% break; }
+                                            case "terceros": { %>
+                                                    <span id="resFTres<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                        TERCEROS
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFTres<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFTres"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFTres %>
+                                                    </span>
+                                            <% break; }        
+                                            case "china": { %>
+                                                    <span id="resFTres<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                        CHINA
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFTres<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFTres"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFTres %>
+                                                    </span>
+                                            <% break; }
+                                            case "noAplica": { %>
+                                                    <span id="resFTres<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                        N/A
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFTres<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFTres"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFTres %>
+                                                    </span>
+                                            <% break; }
+                                            default: { %>
+                                                    <span id="resFTres<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                        S/D
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFTres<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFTres"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFTres %>
+                                                    </span>
+                                            <% break; }
+                                        } %>
+        
+                                        <button id="btnSiguienteFTres<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteFTres"
+                                            value="<%=k%>_<%=n%>_<%=q%>"
+                                            class="btn btn-light btn-sm ms-2"
+                                            title="Ver siguiente"
+                                            type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            >
+                                                <i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                            </td>
+                        <% } else if (q==14) { %>
+                            <!-- F4 Activo-->
+                            <td class="text-center align-middle">
+                                <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
+                                            for (let i = 0; largoArrayMecanizado > i; i++) {
+                                                let pathToMongoDBMecanizado = otMecanizado[i]
+                                                
+                                                if (otMecanizado) {                
+                                                    let largoArray = parseInt(largoArrayMecanizado)
+                                                    resFCuatro = otMecanizado[largoArray-1].fCuatro
+                                                    resRevisionFCuatro = otMecanizado[largoArray-1].revisionFCuatro
+                                                    
+                                                    if (i == 0) {
+                                                        arrResFCuatro.push(pathToMongoDBMecanizado.fCuatro)
+                                                        arrResRevisionFCuatro.push(pathToMongoDBMecanizado.revisionFCuatro)
+                                                    }
+                                                    else if (i >= 1 && pathToMongoDBMecanizado.revisionFCuatro != otMecanizado[i-1].revisionFCuatro) {
+                                                        arrResFCuatro.push(pathToMongoDBMecanizado.fCuatro)
+                                                        arrResRevisionFCuatro.push(pathToMongoDBMecanizado.revisionFCuatro)
+                                                    }
+                                                        arrResCreadorFCuatro.push(pathToMongoDBMecanizado.creator[0].username)
+                                                        arrResModificadorFCuatro.push(pathToMongoDBMecanizado.modificator[0].username)
+                                                        arrResFechaFCuatro.push(pathToMongoDBMecanizado.timestamp)
+                                                        arrResFechaModFCuatro.push(pathToMongoDBMecanizado.modifiedOn)
+                                                        valueArrayResFCuatro = parseInt(arrResFCuatro.length-1)
+                                                                                                
+                                                } else {
+                                                    resFCuatro = 'S/D'
+                                                    resRevisionFCuatro = 0
+                                                }
+                                            }
+                                            
+                                            if (arrResFCuatro.length == 1 ) {
+                                                siguienteDisabled = "disabled"
+                                                anteriorDisabled = "disabled"
+                                            } else if (arrResFCuatro.length == arrResRevisionFCuatro.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                            
+                                        } else {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                            resFCuatro = "S/D"
+                                            resRevisionFCuatro = 0
+                                            arrResFCuatro.push(resFCuatro)
+                                            arrResRevisionFCuatro.push(resRevisionFCuatro)
+                                            valueArrayResFCuatro = 0
+                                    } %>
+                                
+                                    <div id="btnAnteriorSiguienteFCuatro<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorFCuatro<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorFCuatro"
+                                            value="<%=k%>_<%=n%>_<%=q%>"
+                                            class="btn btn-light btn-sm me-2"
+                                            title="Ver anterior"
+                                            type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            >
+                                                <i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFCuatro %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResFCuatro %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionFCuatro %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorFCuatro %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorFCuatro %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaFCuatro %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModFCuatro %>">
+        
+                                        <% switch (resFCuatro) { 
+                                            case "prodismo": { %>
+                                                    <span id="resFCuatro<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                        PRODISMO
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFCuatro<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFCuatro"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueRevision=""
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFCuatro %>
+                                                    </span>
+                                            <% break; }
+                                            case "terceros": { %>
+                                                    <span id="resFCuatro<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                        TERCEROS
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFCuatro<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFCuatro"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFCuatro %>
+                                                    </span>
+                                            <% break; }        
+                                            case "china": { %>
+                                                    <span id="resFCuatro<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                        CHINA
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFCuatro<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFCuatro"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFCuatro %>
+                                                    </span>
+                                            <% break; }
+                                            case "noAplica": { %>
+                                                    <span id="resFCuatro<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                        N/A
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFCuatro<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFCuatro"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFCuatro %>
+                                                    </span>
+                                            <% break; }
+                                            default: { %>
+                                                    <span id="resFCuatro<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                        S/D
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFCuatro<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFCuatro"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFCuatro %>
+                                                    </span>
+                                            <% break; }
+                                        } %>
+        
+                                        <button id="btnSiguienteFCuatro<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteFCuatro"
+                                            value="<%=k%>_<%=n%>_<%=q%>"
+                                            class="btn btn-light btn-sm ms-2"
+                                            title="Ver siguiente"
+                                            type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            >
+                                                <i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                            </td>
+                        <% } else if (q==15) { %>
+                            <!-- F5 Activo-->
+                            <td class="text-center align-middle">
+                                <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
+                                            for (let i = 0; largoArrayMecanizado > i; i++) {
+                                                let pathToMongoDBMecanizado = otMecanizado[i]
+                                                
+                                                if (otMecanizado) {
+                                                    let largoArray = parseInt(largoArrayMecanizado)
+                                                    resFCinco = otMecanizado[largoArray-1].fCinco
+                                                    resRevisionFCinco = otMecanizado[largoArray-1].revisionFCinco
+                                                    
+                                                    if (i == 0) {
+                                                        arrResFCinco.push(pathToMongoDBMecanizado.fCinco)
+                                                        arrResRevisionFCinco.push(pathToMongoDBMecanizado.revisionFCinco)
+                                                    }
+                                                    else if (i >= 1 && pathToMongoDBMecanizado.revisionFCinco != otMecanizado[i-1].revisionFCinco) {
+                                                        arrResFCinco.push(pathToMongoDBMecanizado.fCinco)
+                                                        arrResRevisionFCinco.push(pathToMongoDBMecanizado.revisionFCinco)
+                                                    }
+                                                        arrResCreadorFCinco.push(pathToMongoDBMecanizado.creator[0].username)
+                                                        arrResModificadorFCinco.push(pathToMongoDBMecanizado.modificator[0].username)
+                                                        arrResFechaFCinco.push(pathToMongoDBMecanizado.timestamp)
+                                                        arrResFechaModFCinco.push(pathToMongoDBMecanizado.modifiedOn)
+                                                        valueArrayResFCinco = parseInt(arrResFCinco.length-1)
+                                                                                                
+                                                } else {
+                                                    resFCinco = 'S/D'
+                                                    resRevisionFCinco = 0
+                                                }
+                                            }
+                                            
+                                            if (arrResFCinco.length == 1 ) {
+                                                siguienteDisabled = "disabled"
+                                                anteriorDisabled = "disabled"
+                                            } else if (arrResFCinco.length == arrResRevisionFCinco.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                            
+                                        } else {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                            resFCinco = "S/D"
+                                            resRevisionFCinco = 0
+                                            arrResFCinco.push(resFCinco)
+                                            arrResRevisionFCinco.push(resRevisionFCinco)
+                                            valueArrayResFCinco = 0
+                                    } %>
+                                
+                                    <div id="btnAnteriorSiguienteFCinco<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorFCinco<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorFCinco"
+                                            value="<%=k%>_<%=n%>_<%=q%>"
+                                            class="btn btn-light btn-sm me-2"
+                                            title="Ver anterior"
+                                            type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            >
+                                                <i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFCinco %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResFCinco %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionFCinco %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorFCinco %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorFCinco %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaFCinco %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModFCinco %>">
+        
+                                        <% switch (resFCinco) { 
+                                            case "prodismo": { %>
+                                                    <span id="resFCinco<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                        PRODISMO
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFCinco<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFCinco"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueRevision=""
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFCinco %>
+                                                    </span>
+                                            <% break; }
+                                            case "terceros": { %>
+                                                    <span id="resFCinco<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                        TERCEROS
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFCinco<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFCinco"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFCinco %>
+                                                    </span>
+                                            <% break; }        
+                                            case "china": { %>
+                                                    <span id="resFCinco<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                        CHINA
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFCinco<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFCinco"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFCinco %>
+                                                    </span>
+                                            <% break; }
+                                            case "noAplica": { %>
+                                                    <span id="resFCinco<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                        N/A
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFCinco<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFCinco"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFCinco %>
+                                                    </span>
+                                            <% break; }
+                                            default: { %>
+                                                    <span id="resFCinco<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                        S/D
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionFCinco<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionFCinco"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionFCinco %>
+                                                    </span>
+                                            <% break; }
+                                        } %>
+        
+                                        <button id="btnSiguienteFCinco<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteFCinco"
+                                            value="<%=k%>_<%=n%>_<%=q%>"
+                                            class="btn btn-light btn-sm ms-2"
+                                            title="Ver siguiente"
+                                            type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            >
+                                                <i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                            </td>
+                        <% } else { %>
+                            <!-- Observaciones Mecanizado Activo-->
+                            <td class="text-center align-middle">
+                                <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
+                                            for (let i = 0; largoArrayMecanizado > i; i++) {
+                                                let pathToMongoDBMecanizado = otMecanizado[i]
+                                                
+                                                if (otMecanizado) {
+                                                    let largoArray = parseInt(largoArrayMecanizado)
+                                                    resObservacionesMecanizado = otMecanizado[largoArray-1].observacionesMecanizado
+                                                    resRevisionObservacionesMecanizado = otMecanizado[largoArray-1].revisionObservacionesMecanizado
+                                                    
+                                                    if (i == 0) {
+                                                        arrResObservacionesMecanizado.push(pathToMongoDBMecanizado.observacionesMecanizado)
+                                                        arrResRevisionObservacionesMecanizado.push(pathToMongoDBMecanizado.revisionObservacionesMecanizado)
+                                                    }
+                                                    else if (i >= 1 && pathToMongoDBMecanizado.revisionObservacionesMecanizado != otMecanizado[i-1].revisionObservacionesMecanizado) {
+                                                        arrResObservacionesMecanizado.push(pathToMongoDBMecanizado.observacionesMecanizado)
+                                                        arrResRevisionObservacionesMecanizado.push(pathToMongoDBMecanizado.revisionObservacionesMecanizado)
+                                                    }
+                                                        arrResCreadorObservacionesMecanizado.push(pathToMongoDBMecanizado.creator[0].username)
+                                                        arrResModificadorObservacionesMecanizado.push(pathToMongoDBMecanizado.modificator[0].username)
+                                                        arrResFechaObservacionesMecanizado.push(pathToMongoDBMecanizado.timestamp)
+                                                        arrResFechaModObservacionesMecanizado.push(pathToMongoDBMecanizado.modifiedOn)
+                                                        valueArrayResObservacionesMecanizado = parseInt(arrResObservacionesMecanizado.length-1)
+                                                                                                
+                                                } else {
+                                                    resObservacionesMecanizado = 'S/D'
+                                                    resRevisionObservacionesMecanizado = 0
+                                                }
+                                            }
+                                            
+                                            if (arrResObservacionesMecanizado.length == 1 ) {
+                                                siguienteDisabled = "disabled"
+                                                anteriorDisabled = "disabled"
+                                            } else if (arrResObservacionesMecanizado.length == arrResRevisionObservacionesMecanizado.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                            
+                                        } else {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                            resObservacionesMecanizado = "S/D"
+                                            resRevisionObservacionesMecanizado = 0
+                                            arrResObservacionesMecanizado.push(resObservacionesMecanizado)
+                                            arrResRevisionObservacionesMecanizado.push(resRevisionObservacionesMecanizado)
+                                            valueArrayResObservacionesMecanizado = 0
+                                    } %>
+                                
+                                    <div id="btnAnteriorSiguienteObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorObservacionesMecanizado"
+                                            value="<%=k%>_<%=n%>_<%=q%>"
+                                            class="btn btn-light btn-sm me-2"
+                                            title="Ver anterior"
+                                            type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            >
+                                                <i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResObservacionesMecanizado %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResObservacionesMecanizado %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionObservacionesMecanizado %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorObservacionesMecanizado %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorObservacionesMecanizado %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaObservacionesMecanizado %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModObservacionesMecanizado %>">
+        
+                                        <% switch (resObservacionesMecanizado) { 
+                                            case "prodismo": { %>
+                                                    <span id="resObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                        PRODISMO
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionObservacionesMecanizado"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueRevision=""
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionObservacionesMecanizado %>
+                                                    </span>
+                                            <% break; }
+                                            case "terceros": { %>
+                                                    <span id="resObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                        TERCEROS
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionObservacionesMecanizado"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionObservacionesMecanizado %>
+                                                    </span>
+                                            <% break; }        
+                                            case "china": { %>
+                                                    <span id="resObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                        CHINA
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionObservacionesMecanizado"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionObservacionesMecanizado %>
+                                                    </span>
+                                            <% break; }
+                                            case "noAplica": { %>
+                                                    <span id="resObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                        N/A
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionObservacionesMecanizado"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionObservacionesMecanizado %>
+                                                    </span>
+                                            <% break; }
+                                            default: { %>
+                                                    <span id="resObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                        S/D
+                                                    </span>
+                                                    |
+                                                    <span id="resRevisionObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>"
+                                                        name="resRevisionObservacionesMecanizado"
+                                                        class="badge text-dark my-2"
+                                                        style="cursor: help;"
+                                                        valueCreador=""
+                                                        valueFecha=""
+                                                        valueModificador=""
+                                                        valueFechaMod="">
+                                                        <%= resRevisionObservacionesMecanizado %>
+                                                    </span>
+                                            <% break; }
+                                        } %>
+        
+                                        <button id="btnSiguienteObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteObservacionesMecanizado"
+                                            value="<%=k%>_<%=n%>_<%=q%>"
+                                            class="btn btn-light btn-sm ms-2"
+                                            title="Ver siguiente"
+                                            type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            >
+                                                <i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                            </td>
+                        <% }
+                    } %>
+                </tr>
+            <% } else { %>
+                <tr class="pe-none" name="rowSelected<%=k%>_<%=n%>" style="height: 7vh; background-color: #dedede;">
+                    <% for (let q = 10; totalColDataMecanizado > q; q++) {
+                        if (q==10) { %>
+                            <!-- F0 data Inactivo -->
+                            <td class="text-center align-middle">
+                                <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
+                                    for (let i = 0; largoArrayMecanizado > i; i++) {
+                                        if (otMecanizado) {
+                                            let largoArray = parseInt(largoArrayMecanizado)
+                                            resFCero = otMecanizado[largoArray-1].fCero
+                                            resRevisionFCero = otMecanizado[largoArray-1].revisionFCero
+                                            
+                                            if (i == 0) {
+                                                arrResFCero.push(pathToMongoDBMecanizado.fCero)
+                                                arrResRevisionFCero.push(pathToMongoDBMecanizado.revisionFCero)
+                                            }
+                                            else if (i >= 1 && pathToMongoDBMecanizado.revisionFCero != otMecanizado[i-1].revisionFCero) {
+                                                arrResFCero.push(pathToMongoDBMecanizado.fCero)
+                                                arrResRevisionFCero.push(pathToMongoDBMecanizado.revisionFCero)
+                                            }
+                                            valueArrayResFCero = parseInt(arrResFCero.length-1)
+                                                                                        
+                                        } else {
+                                            resFCero = ''
+                                            resRevisionFCero = 0
+                                        }
+                                    }
+                                    resFCero = otMecanizado[0].fCero
+                                } else {
+                                    resFCero = ""
+                                    resRevisionFCero = 0
+                                    arrResFCero.push(0)
+                                    arrResRevisionFCero.push(0)
+                                } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFCero %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResFCero %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionFCero %>">
+                                
+                                <% switch (resFCero) { 
+                                    case "prodismo": { %>
+                                            <span id="resFCero<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                PRODISMO
+                                            </span>
+                                            |
+                                            <span id="resRevisionFCero<%=k%>_<%=n%>_<%=q%>"class="badge text-dark my-2" >
+                                                <%= resRevisionFCero %>
+                                            </span>
+                                    <% break; }        
+                                    case "terceros": { %>
+                                            <span id="resFCero<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                TERCEROS
+                                            </span>
+                                            |
+                                            <span id="resRevisionFCero<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFCero %>
+                                            </span>
+                                    <% break; }        
+                                    case "china": { %>
+                                            <span id="resFCero<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                CHINA
+                                            </span>
+                                            |
+                                            <span id="resRevisionFCero<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFCero %>
+                                            </span>
+                                    <% break; }
+                                    case "noAplica": { %>
+                                            <span id="resFCero<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                N/A
+                                            </span>
+                                            |
+                                            <span id="resRevisionFCero<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFCero %>
+                                            </span>
+                                    <% break; }
+                                    default: { %>
+                                            <span id="resFCero<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                S/D
+                                            </span>
+                                            |
+                                            <span id="resRevisionFCero<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFCero %>
+                                            </span>
+                                    <% break; }
+                                } %>
+                            </td>
+                        <% } else if (q==11) { %>
+                            <!-- F1 data Inactivo -->
+                            <td class="text-center align-middle">
+                                <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
+                                    for (let i = 0; largoArrayMecanizado > i; i++) {
+                                        if (otMecanizado) {
+                                            let largoArray = parseInt(largoArrayMecanizado)
+                                            resFUno = otMecanizado[largoArray-1].fUno
+                                            resRevisionFUno = otMecanizado[largoArray-1].revisionFUno
+                                            
+                                            if (i == 0) {
+                                                arrResFUno.push(pathToMongoDBMecanizado.fUno)
+                                                arrResRevisionFUno.push(pathToMongoDBMecanizado.revisionFUno)
+                                            }
+                                            else if (i >= 1 && pathToMongoDBMecanizado.revisionFUno != otMecanizado[i-1].revisionFUno) {
+                                                arrResFUno.push(pathToMongoDBMecanizado.fUno)
+                                                arrResRevisionFUno.push(pathToMongoDBMecanizado.revisionFUno)
+                                            }
+                                            valueArrayResFUno = parseInt(arrResFUno.length-1)
+                                                                                        
+                                        } else {
+                                            resFUno = ''
+                                            resRevisionFUno = 0
+                                        }
+                                    }
+                                    resFUno = otMecanizado[0].fUno
+                                } else {
+                                    resFUno = ""
+                                    resRevisionFUno = 0
+                                    arrResFUno.push(0)
+                                    arrResRevisionFUno.push(0)
+                                } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFUno %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResFUno %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionFUno %>">
+                                
+                                <% switch (resFUno) { 
+                                    case "prodismo": { %>
+                                            <span id="resFUno<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
+                                                PRODISMO
+                                            </span>
+                                            |
+                                            <span id="resRevisionFUno<%=k%>_<%=n%>_<%=q%>"class="badge text-dark my-2" >
+                                                <%= resRevisionFUno %>
+                                            </span>
+                                    <% break; }        
+                                    case "terceros": { %>
+                                            <span id="resFUno<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                TERCEROS
+                                            </span>
+                                            |
+                                            <span id="resRevisionFUno<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFUno %>
+                                            </span>
+                                    <% break; }        
+                                    case "china": { %>
+                                            <span id="resFUno<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                CHINA
+                                            </span>
+                                            |
+                                            <span id="resRevisionFUno<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFUno %>
+                                            </span>
+                                    <% break; }
+                                    case "noAplica": { %>
+                                            <span id="resFUno<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                N/A
+                                            </span>
+                                            |
+                                            <span id="resRevisionFUno<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFUno %>
+                                            </span>
+                                    <% break; }
+                                    default: { %>
+                                            <span id="resFUno<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                S/D
+                                            </span>
+                                            |
+                                            <span id="resRevisionFUno<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFUno %>
+                                            </span>
+                                    <% break; }
+                                } %>
+                            </td>
+                        <% } else if (q==12) { %>
+                            <!-- F2 data Inactivo -->
+                            <td class="text-center align-middle">
+                                <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
+                                    for (let i = 0; largoArrayMecanizado > i; i++) {
+                                        
+                                        if (otMecanizado) {
+                                            let largoArray = parseInt(largoArrayMecanizado)
+                                            resFDos = otMecanizado[largoArray-1].fDos
+                                            resRevisionFDos = otMecanizado[largoArray-1].revisionFDos
+                                            
+                                            if (i == 0) {
+                                                arrResFDos.push(pathToMongoDBMecanizado.fDos)
+                                                arrResRevisionFDos.push(pathToMongoDBMecanizado.revisionFDos)
+                                            }
+                                            else if (i >= 1 && pathToMongoDBMecanizado.revisionFDos != otMecanizado[i-1].revisionFDos) {
+                                                arrResFDos.push(pathToMongoDBMecanizado.fDos)
+                                                arrResRevisionFDos.push(pathToMongoDBMecanizado.revisionFDos)
+                                            }
+                                            valueArrayResFDos = parseInt(arrResFDos.length-1)
+                                                                                        
+                                        } else {
+                                            resFDos = ''
+                                            resRevisionFDos = 0
+                                        }
+                                    }
+
+                                    resFDos = otMecanizado[0].fDos
+                                
+                                } else {
+                                    resFDos = ""
+                                    resRevisionFDos = 0
+                                    arrResFDos.push(resFDos)
+                                    arrResRevisionFDos.push(0)
+                                } %>
+
+                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFDos %>">
+                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResFDos %>">
+                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionFDos %>">
+
+                                <% switch (resFDos) { 
+                                    case "prodismo": { %>
+                                        <span id="resFDos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">
+                                            PRODISMO
+                                        </span>
+                                        |
+                                        <span id="resRevisionFDos<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                            <%= resRevisionFDos %>
+                                        </span>
+                                    <% break; }        
+                                    case "terceros": { %>
+                                            <span id="resFDos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                TERCEROS
+                                            </span>
+                                            |
+                                            <span id="resRevisionFDos<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFDos %>
+                                            </span>
+                                    <% break; }        
+                                    case "china": { %>
+                                            <span id="resFDos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                CHINA
+                                            </span>
+                                            |
+                                            <span id="resRevisionFDos<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFDos %>
+                                            </span>
+                                    <% break; }
+                                    case "noAplica": { %>
+                                            <span id="resFDos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                N/A
+                                            </span>
+                                            |
+                                            <span id="resRevisionFDos<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFDos %>
+                                            </span>
+                                    <% break; }
+                                    default: { %>
+                                            <span id="resFDos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                S/D
+                                            </span>
+                                            |
+                                            <span id="resRevisionFDos<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFDos %>
+                                            </span>
+                                    <% break; }
+                                } %>
+                            </td>
+                        <% } else if (q==13) { %>
+                            <!-- F3 data Inactivo -->
+                            <td class="text-center align-middle">
+                                <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
+                                        for (let i = 0; largoArrayMecanizado > i; i++) {
+                                            
+                                            if (otMecanizado) {
+                                                let largoArray = parseInt(largoArrayMecanizado)
+                                                resFTres = otMecanizado[largoArray-1].fTres
+                                                resRevisionFTres = otMecanizado[largoArray-1].revisionFTres
+                                                
+                                                if (i == 0) {
+                                                    arrResFTres.push(pathToMongoDBMecanizado.fTres)
+                                                    arrResRevisionFTres.push(pathToMongoDBMecanizado.revisionFTres)
+                                                }
+                                                else if (i >= 1 && pathToMongoDBMecanizado.revisionFTres != otMecanizado[i-1].revisionFTres) {
+                                                    arrResFTres.push(pathToMongoDBMecanizado.fTres)
+                                                    arrResRevisionFTres.push(pathToMongoDBMecanizado.revisionFTres)
+                                                }
+                                                valueArrayResFTres = parseInt(arrResFTres.length-1)
+                                                                                            
+                                            } else {
+                                                resFTres = ''
+                                                resRevisionFTres = 0
+                                            }
+                                        }
+
+                                        resFTres = otMecanizado[0].fCuatro
+                                
+                                } else {
+                                    resFTres = ""
+                                    resRevisionFTres = 0
+                                    arrResFTres.push(resFTres)
+                                    arrResRevisionFTres.push(0)
+                                } %>
+
+                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFTres %>">
+                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResFTres %>">
+                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionFTres %>">
+
+                                <% switch (resFTres) { 
+                                    case "prodismo": { %>
+                                        <span id="resFTres<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">
+                                            PRODISMO
+                                        </span>
+                                        |
+                                        <span id="resRevisionFTres<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                            <%= resRevisionFTres %>
+                                        </span>
+                                    <% break; }        
+                                    case "terceros": { %>
+                                            <span id="resFTres<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                TERCEROS
+                                            </span>
+                                            |
+                                            <span id="resRevisionFTres<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFTres %>
+                                            </span>
+                                    <% break; }        
+                                    case "china": { %>
+                                            <span id="resFTres<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                CHINA
+                                            </span>
+                                            |
+                                            <span id="resRevisionFTres<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFTres %>
+                                            </span>
+                                    <% break; }
+                                    case "noAplica": { %>
+                                            <span id="resFTres<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                N/A
+                                            </span>
+                                            |
+                                            <span id="resRevisionFTres<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFTres %>
+                                            </span>
+                                    <% break; }
+                                    default: { %>
+                                            <span id="resFTres<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                S/D
+                                            </span>
+                                            |
+                                            <span id="resRevisionFTres<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFTres %>
+                                            </span>
+                                    <% break; }
+                                } %>
+                            </td>
+                        <% } else if (q==14) { %>
+                            <!-- F4 data Inactivo -->
+                            <td class="text-center align-middle">
+                                <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
+                                        for (let i = 0; largoArrayMecanizado > i; i++) {
+                                            
+                                            if (otMecanizado) {
+                                                let largoArray = parseInt(largoArrayMecanizado)
+                                                resFCuatro = otMecanizado[largoArray-1].fCuatro
+                                                resRevisionFCuatro = otMecanizado[largoArray-1].revisionFCuatro
+                                                
+                                                if (i == 0) {
+                                                    arrResFCuatro.push(pathToMongoDBMecanizado.fCuatro)
+                                                    arrResRevisionFCuatro.push(pathToMongoDBMecanizado.revisionFCuatro)
+                                                }
+                                                else if (i >= 1 && pathToMongoDBMecanizado.revisionFCuatro != otMecanizado[i-1].revisionFCuatro) {
+                                                    arrResFCuatro.push(pathToMongoDBMecanizado.fCuatro)
+                                                    arrResRevisionFCuatro.push(pathToMongoDBMecanizado.revisionFCuatro)
+                                                }
+                                                valueArrayResFCuatro = parseInt(arrResFCuatro.length-1)
+                                                                                            
+                                            } else {
+                                                resFCuatro = ''
+                                                resRevisionFCuatro = 0
+                                            }
+                                        }
+
+                                        resFCuatro = otMecanizado[0].fCuatro
+                                
+                                } else {
+                                    resFCuatro = ""
+                                    resRevisionFCuatro = 0
+                                    arrResFCuatro.push(resFCuatro)
+                                    arrResRevisionFCuatro.push(0)
+                                } %>
+
+                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFCuatro %>">
+                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResFCuatro %>">
+                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionFCuatro %>">
+
+                                <% switch (resFCuatro) { 
+                                    case "prodismo": { %>
+                                        <span id="resFCuatro<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">
+                                            PRODISMO
+                                        </span>
+                                        |
+                                        <span id="resRevisionFCuatro<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                            <%= resRevisionFCuatro %>
+                                        </span>
+                                    <% break; }        
+                                    case "terceros": { %>
+                                            <span id="resFCuatro<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                TERCEROS
+                                            </span>
+                                            |
+                                            <span id="resRevisionFCuatro<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFCuatro %>
+                                            </span>
+                                    <% break; }        
+                                    case "china": { %>
+                                            <span id="resFCuatro<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                CHINA
+                                            </span>
+                                            |
+                                            <span id="resRevisionFCuatro<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFCuatro %>
+                                            </span>
+                                    <% break; }
+                                    case "noAplica": { %>
+                                            <span id="resFCuatro<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                N/A
+                                            </span>
+                                            |
+                                            <span id="resRevisionFCuatro<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFCuatro %>
+                                            </span>
+                                    <% break; }
+                                    default: { %>
+                                            <span id="resFCuatro<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                S/D
+                                            </span>
+                                            |
+                                            <span id="resRevisionFCuatro<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFCuatro %>
+                                            </span>
+                                    <% break; }
+                                } %>
+                            </td>
+                        <% } else if (q==15) { %>
+                            <!-- F5 data Inactivo -->
+                            <td class="text-center align-middle">
+                                <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
+                                        for (let i = 0; largoArrayMecanizado > i; i++) {
+                                            
+                                            if (otMecanizado) {
+                                                let largoArray = parseInt(largoArrayMecanizado)
+                                                resFCinco = otMecanizado[largoArray-1].fCinco
+                                                resRevisionFCinco = otMecanizado[largoArray-1].revisionFCinco
+                                                
+                                                if (i == 0) {
+                                                    arrResFCinco.push(pathToMongoDBMecanizado.fCinco)
+                                                    arrResRevisionFCinco.push(pathToMongoDBMecanizado.revisionFCinco)
+                                                }
+                                                else if (i >= 1 && pathToMongoDBMecanizado.revisionFCinco != otMecanizado[i-1].revisionFCinco) {
+                                                    arrResFCinco.push(pathToMongoDBMecanizado.fCinco)
+                                                    arrResRevisionFCinco.push(pathToMongoDBMecanizado.revisionFCinco)
+                                                }
+                                                valueArrayResFCinco = parseInt(arrResFCinco.length-1)
+                                                                                            
+                                            } else {
+                                                resFCinco = ''
+                                                resRevisionFCinco = 0
+                                            }
+                                        }
+
+                                        resFCinco = otMecanizado[0].fCinco
+                                
+                                } else {
+                                    resFCinco = ""
+                                    resRevisionFCinco = 0
+                                    arrResFCinco.push(resFCinco)
+                                    arrResRevisionFCinco.push(0)
+                                } %>
+
+                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFCinco %>">
+                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResFCinco %>">
+                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionFCinco %>">
+
+                                <% switch (resFCinco) { 
+                                    case "prodismo": { %>
+                                        <span id="resFCinco<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">
+                                            PRODISMO
+                                        </span>
+                                        |
+                                        <span id="resRevisionFCinco<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                            <%= resRevisionFCinco %>
+                                        </span>
+                                    <% break; }        
+                                    case "terceros": { %>
+                                            <span id="resFCinco<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                TERCEROS
+                                            </span>
+                                            |
+                                            <span id="resRevisionFCinco<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFCinco %>
+                                            </span>
+                                    <% break; }        
+                                    case "china": { %>
+                                            <span id="resFCinco<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                CHINA
+                                            </span>
+                                            |
+                                            <span id="resRevisionFCinco<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFCinco %>
+                                            </span>
+                                    <% break; }
+                                    case "noAplica": { %>
+                                            <span id="resFCinco<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                N/A
+                                            </span>
+                                            |
+                                            <span id="resRevisionFCinco<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFCinco %>
+                                            </span>
+                                    <% break; }
+                                    default: { %>
+                                            <span id="resFCinco<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                S/D
+                                            </span>
+                                            |
+                                            <span id="resRevisionFCinco<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionFCinco %>
+                                            </span>
+                                    <% break; }
+                                } %>
+                            </td>
+                        <% } else { %>
+                            <!-- Observaciones Mecanizado data Inactivo -->
+                            <td class="text-center align-middle">
+                                <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
+                                        for (let i = 0; largoArrayMecanizado > i; i++) {
+                                            
+                                            if (otMecanizado) {
+                                                let largoArray = parseInt(largoArrayMecanizado)
+                                                resObservacionesMecanizado = otMecanizado[largoArray-1].observacionesMecanizado
+                                                resRevisionObservacionesMecanizado = otMecanizado[largoArray-1].revisionObservacionesMecanizado
+                                                
+                                                if (i == 0) {
+                                                    arrResObservacionesMecanizado.push(pathToMongoDBMecanizado.observacionesMecanizado)
+                                                    arrResRevisionObservacionesMecanizado.push(pathToMongoDBMecanizado.revisionObservacionesMecanizado)
+                                                }
+                                                else if (i >= 1 && pathToMongoDBMecanizado.revisionObservacionesMecanizado != otMecanizado[i-1].revisionObservacionesMecanizado) {
+                                                    arrResObservacionesMecanizado.push(pathToMongoDBMecanizado.observacionesMecanizado)
+                                                    arrResRevisionObservacionesMecanizado.push(pathToMongoDBMecanizado.revisionObservacionesMecanizado)
+                                                }
+                                                valueArrayResObservacionesMecanizado = parseInt(arrResObservacionesMecanizado.length-1)
+                                                                                            
+                                            } else {
+                                                resObservacionesMecanizado = ''
+                                                resRevisionObservacionesMecanizado = 0
+                                            }
+                                        }
+
+                                        resObservacionesMecanizado = otMecanizado[0].observacionesMecanizado
+                                
+                                } else {
+                                    resObservacionesMecanizado = ""
+                                    resRevisionObservacionesMecanizado = 0
+                                    arrResObservacionesMecanizado.push(resObservacionesMecanizado)
+                                    arrResRevisionObservacionesMecanizado.push(0)
+                                } %>
+
+                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResObservacionesMecanizado %>">
+                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResObservacionesMecanizado %>">
+                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionObservacionesMecanizado %>">
+
+                                <% switch (resObservacionesMecanizado) { 
+                                    case "prodismo": { %>
+                                        <span id="resObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">
+                                            PRODISMO
+                                        </span>
+                                        |
+                                        <span id="resRevisionObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                            <%= resRevisionObservacionesMecanizado %>
+                                        </span>
+                                    <% break; }        
+                                    case "terceros": { %>
+                                            <span id="resObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
+                                                TERCEROS
+                                            </span>
+                                            |
+                                            <span id="resRevisionObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionObservacionesMecanizado %>
+                                            </span>
+                                    <% break; }        
+                                    case "china": { %>
+                                            <span id="resObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
+                                                CHINA
+                                            </span>
+                                            |
+                                            <span id="resRevisionObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionObservacionesMecanizado %>
+                                            </span>
+                                    <% break; }
+                                    case "noAplica": { %>
+                                            <span id="resObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
+                                                N/A
+                                            </span>
+                                            |
+                                            <span id="resRevisionObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionObservacionesMecanizado %>
+                                            </span>
+                                    <% break; }
+                                    default: { %>
+                                            <span id="resObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
+                                                S/D
+                                            </span>
+                                            |
+                                            <span id="resRevisionObservacionesMecanizado<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
+                                                <%= resRevisionObservacionesMecanizado %>
+                                            </span>
+                                    <% break; }
+                                } %>
+                            </td>
+                        <% }
+                    } %>
+                </tr>
+            <% }
+        }) %>
+    </tbody>
+</table>
