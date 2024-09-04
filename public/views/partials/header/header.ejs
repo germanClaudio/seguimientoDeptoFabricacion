@@ -72,6 +72,7 @@
                             <%= userInfo.name %>, <%= userInfo.lastName %>
                         </div>
                         <div class="d-none" id="userBanner_<%= userInfo._id %>"><%= userInfo._id %></div>
+                        <div class="d-none" id="userNameBanner"><%= userInfo.username %></div>
                     <% } else if (userInfo.admin && !userInfo.superAdmin) { %>
                         <div class="mx-auto small text-center">
                             <span id="mostrarRolUser" class="badge rounded-pill bg-primary">Admin</span>

@@ -32,19 +32,19 @@ function validateSelectField(value) {
 }
 
 const {catchError400,
-        catchError400_1,
-        catchError400_2,
-        catchError400_3,
-        catchError400_4,
-        catchError400_5,
-        catchError400_6,
-        catchError403,
-        catchError401,
-        catchError401_1,
-        catchError401_2,
-        catchError401_3,
-        catchError401_4,
-        catchError500
+    catchError400_1,
+    catchError400_2,
+    catchError400_3,
+    catchError400_4,
+    catchError400_5,
+    catchError400_6,
+    catchError403,
+    catchError401,
+    catchError401_1,
+    catchError401_2,
+    catchError401_3,
+    catchError401_4,
+    catchError500
 } = require('../utils/catchErrors.js')
 
 class UsersController {  
@@ -54,7 +54,7 @@ class UsersController {
         this.users = new UserService()
         this.messages = new MessagesService()
     }
-       
+
     getAllUsers = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
@@ -132,11 +132,11 @@ class UsersController {
             catchError500(err, req, res, next)
         }
     }
-    
+
     getUserByUsernameAndPassword = async (req, res, next) => {
         const { username } = req.params
         const { password } = req.body
-        
+
         try {
             const usuario = await this.users.getUserByUsernameAndPassword(username, password)
             if(!usuario) {
@@ -159,42 +159,42 @@ class UsersController {
                 if (req.file) {
                     await uploadToGCS(req, res, next);
                 }
-    
+
                 let userManager = await this.users.getUserByUsername(username);
                 const userId = userManager._id;
                 const userCreator = await this.users.getUserById(userId);
                 if (!userCreator) {
                     catchError401_3(req, res, next)
                 }
-    
+
                 const usernameInput = req.body.username.replace(/[!@#$%^&*]/g, "");
                 const emailInput = req.body.email;
                 const legajoIdInput = req.body.userLegajoId;
-    
+
                 const newUserValid = {
                     username: usernameInput,
                     legajoId: parseInt(legajoIdInput),
                     email: emailInput
                 };
-    
+
                 const userExist = await this.users.getExistingUser(newUserValid);
                 if (userExist) {
                     catchError400_6(req, res, next)
                 }
-    
+
                 if (req.body.password !== req.body.confirmPassword) {
                     catchError400_3(req, res, next)
                 }
-    
+
                 const selectFieldPermiso = req.body.permiso;
                 const selectFieldArea = req.body.area;
-    
+
                 if (validateSelectField(selectFieldPermiso) && validateSelectField(selectFieldArea)) {
                     if (userInfo.admin && !userInfo.superAdmin) {
                         req.body.superAdmin = 'off';
                         req.body.admin = 'off';
                     }
-    
+
                     const newUser = {
                         name: req.body.name,
                         lastName: req.body.lastName,
@@ -209,12 +209,12 @@ class UsersController {
                         admin: req.body.admin === 'on' ? Boolean(true) : Boolean(false),
                         superAdmin: req.body.superAdmin === 'on' ? Boolean(true) : Boolean(false),
                         creator: dataUserCreator,
-                        timestamp: new Date(),
+                        timestamp: now,
                         modificator: dataUserModificatorEmpty,
                         modifiedOn: '',
                         visible: true
                     };
-    
+
                     const usuario = await this.users.addNewUser(newUser);
                     if (!usuario) {
                         catchError400_6(req, res, next)
@@ -224,7 +224,7 @@ class UsersController {
                     if (!usuarioLog) {
                         catchError401_3(req, res, next)
                     }
-    
+
                     const csrfToken = csrfTokens.create(req.csrfSecret);
                     return res.render('addNewUser', {
                         usuario,
@@ -234,13 +234,13 @@ class UsersController {
                         data,
                         csrfToken
                     });
-    
+
                 } else {
                     catchError400_3(req, res, next)
                 }
             
                 validateSelectField(value)
-    
+
             } catch (err) {
                 catchError500(err, req, res, next)
             }
@@ -252,7 +252,7 @@ class UsersController {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
-         
+
         uploadMulterSingleAvatarUser(req, res, async (err) => {
             try {
                 if(req.file) {
@@ -393,7 +393,7 @@ class UsersController {
                     if (!userLogged || !userToModify) {
                         catchError401_3(req, res, next)
                     }
-            
+
                     const emailInput = req.body.email
                     const emailValid = await this.users.getUserByEmail(emailInput)
                     if (emailValid) {
@@ -478,6 +478,7 @@ class UsersController {
             if(!users) {
                 catchError400_5(req, res, next)
             }
+            res.send(users)
 
         } catch (err) {
             catchError500(err, req, res, next)

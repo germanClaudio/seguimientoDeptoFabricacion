@@ -94,7 +94,7 @@ const initSocket = (io) => {
         )
 
         socket.on("newMensaje", async (message) => {
-            console.log('message: ', message)
+            //console.log('message: ', message)
             await containerMsg.createNewMessage(message)
             io.sockets.emit("mensajesAll",
                 await listarMensajesNormalizados(),
@@ -109,9 +109,13 @@ const initSocket = (io) => {
             io.sockets.emit('usersAll', await containerUser.getAllUsers())
         })
 
-        socket.on('disconnect', () => {
-            console.log(`User desconectado`)
-        })
+        // socket.on('disconnect', () => {
+        //     console.log(`User desconectado`)
+        // })
+    });
+
+    io.on('disconnect', () => {
+        console.log(`User desconectado`)
     })
 }
 

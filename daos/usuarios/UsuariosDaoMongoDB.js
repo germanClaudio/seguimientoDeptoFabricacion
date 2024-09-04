@@ -25,15 +25,15 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
     }
 
     async getAllUsers() {
-       try {
-           const users = await Usuarios.find()
-           if (!users) {
+        try {
+            const users = await Usuarios.find()
+            if (!users) {
                 return new Error ('No hay usuarios en la DB!')
-           } else {
+            } else {
                 return users    
-           }
+            }
         } catch (error) {
-            console.error("Error MongoDB getUsers: ",error)
+            console.error("Error MongoDB getUsers: ", error)
             return new Error ('No hay usuarios en la DB!')
         }
     }
@@ -43,14 +43,14 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
             const sessions = await Sessions.find()
             
             if (!sessions) {
-                 return new Error ('No hay sessions en la DB!')
+                return new Error ('No hay sessions en la DB!')
             } else {
-                 return sessions
+                return sessions
             }
-         } catch (error) {
-             console.error("Error MongoDB getSessions: ",error)
-             return new Error ('No hay sessions en la DB!')
-         }
+        } catch (error) {
+            console.error("Error MongoDB getSessions: ",error)
+            return new Error ('No hay sessions en la DB!')
+        }
     }
 
     async getUserById(id) {
@@ -71,7 +71,6 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
     }
 
     async getUserByLegajoId(legajoId) {
-
         if(legajoId){
             try {
                 const user = await Usuarios.findOne( {legajoId: `${legajoId}`} )
@@ -119,9 +118,9 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                 const user = await Usuarios.findOne(query);
 
                 if ( user === undefined || user === null) {
-                   return false
+                    return false
                 } else {
-                   return user
+                    return user
                 }
             } catch (error) {
                 console.error('Aca esta el error vieja: ', error)

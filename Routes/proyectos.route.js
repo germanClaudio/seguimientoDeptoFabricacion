@@ -2,7 +2,7 @@ const { Router } = require('express')
 const routerProyectos = Router()
 
 const { checkAuthentication } = require('../middlewares/chekAuthentication.js')
-// const { authUserMiddleware} = require('../middlewares/authUser.middleware.js')
+const { authUserMiddleware } = require('../middlewares/authUser.middleware.js')
 
 const GetProjects = require('../controllers/proyectos.controller.js')
 const getProjects = GetProjects.ProjectsController
@@ -15,7 +15,7 @@ routerProyectos.get('/', checkAuthentication, projects.getAllProjects)
 routerProyectos.get('/:id', checkAuthentication, projects.getProjectsByClientId)
 
 // -------------------  Ver detalles del Proyecto por Id del proyecto ------------------ 
-routerProyectos.get('/selectProject/:id', checkAuthentication, projects.selectProjectById)
+routerProyectos.get('/selectProject/:id', checkAuthentication, authUserMiddleware, projects.selectProjectById)
 
 // -------------------  Ver listado de OCI completo ------------------ 
 routerProyectos.get('/oci-list/all', checkAuthentication, projects.getAllOciProjects)

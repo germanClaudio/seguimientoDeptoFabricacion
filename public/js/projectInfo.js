@@ -859,7 +859,7 @@ function messageUpdateOt(
         })
     })
 
-    // //******************** to be done ********************
+    //FIXME:************ to be done ********************
     //-----Btns Buscar en BBDD el Usuario Seguidor de Diseño --------------
     const searchDesignUserModal = document.getElementById('searchDesignUserModal')
     searchDesignUserModal.addEventListener('click', (event) => {
@@ -1310,8 +1310,9 @@ function cleanString(cadena) {
     // Eliminar espacios en blanco al principio y al final
     let cadenaSinEspaciosEnd = cadenaSinEtiquetas.trim()
     return cadenaSinEspaciosEnd
-  }
+}
 
+//TODO: Hacer
 function updateBtnCheckSelecMasive(idOci) {     
     let btnMasive = document.getElementById(`btnCheckSelecMasive${idOci}`)
     let btnSelectAll = document.getElementById(`btnCheckSelectionAll${idOci}`)
@@ -1344,7 +1345,7 @@ function updateBtnCheckSelecMasive(idOci) {
         btnMasive.disabled = true
     }
 }  
-
+//TOOD: Hacer
 arrayBtnCheckSelecMasive.forEach(function(elemento) {
     if (elemento.id) {
         elemento.addEventListener('click', (event) => {
@@ -1568,229 +1569,364 @@ arrayBtnCheckSelectionAll.forEach(function(element) {
     }    
 })
 
-
+//FIXME:
 //-----Btns Buscar en BBDD el Usuario Seguidor de Diseño --------------
 const searchDesignUser = document.getElementById('searchDesignUser')
-searchDesignUser.addEventListener('click', (event) => {
-    event.preventDefault()
-    function cargarUsuarioDiseno() {
+const userNameBanner = document.getElementById('userNameBanner').innerText
 
+// searchDesignUser.addEventListener('click', (event) => {
+//     event.preventDefault()
+//     function cargarUsuarioDiseno() {
+//         const myHeaders = new Headers();
+//         myHeaders.append("Content-Type", "application/json");
+        
+//         let encabezado = {
+//             method: 'GET',
+//             headers: myHeaders,
+//             mode: 'cors',
+//             cache: 'default'
+//         }
+//         let request = new Request(`../../../api/usuarios/searchUsers/${userNameBanner}`)
+        
+//         fetch(request, encabezado)
+//         .then(function(respuesta) {
+//             //TODO: Hacer sweet alert 
+//             if (!respuesta.ok) {
+//                 Swal.fire(
+//                     'Error!',
+//                     `HUbo un error en los datos de usuarios!`,
+//                     'warning'
+//                 )
+//                 return false
+//             }
+//             return respuesta.json();
+//         })
+//         .then((users) => {
+//             console.log('Datos de usuarios:', users); // Muestra los datos recibidos
+
+//             if (users && users.length > 0) {
+//                 const arrayUsuariosDiseno = []
+//                 const arrayUsersAll = []
+
+//                 for(let i=0; i<users.length; i++) {
+//                     if(users[i].status && users[i].permiso ==='diseno') {
+//                         arrayUsuariosDiseno.push(`
+//                             <label>
+//                                 <span id="${users[i]._id}" class="badge rounded-pill bg-info text-dark my-2">
+//                                     <input id="${i}" class="form-check-input mb-1" type="radio" name="radioUsuarios"
+//                                         value="${users[i].name}, ${users[i].lastName}">
+//                                         ${users[i].name} ${users[i].lastName}
+//                                 </span>
+//                             </label>`)
+
+//                     } else if (users[i].status && users[i].permiso !=='diseno') {
+//                         arrayUsersAll.push(`
+//                             <label>
+//                                 <span id="${users[i]._id}" class="badge rounded-pill bg-light text-dark my-2">
+//                                     <input id="${i}" class="form-check-input mb-1" type="radio" name="radioUsuarios"
+//                                         value="${users[i].name}, ${users[i].lastName}">
+//                                         ${users[i].name} ${users[i].lastName}
+//                                 </span>
+//                             </label>`)
+//                     }
+//                 }
+
+//                 const html = `
+//                     <hr>
+//                         <label>Usuarios Diseño</label>
+//                         <div name='container' class="container">
+//                             ${arrayUsuariosDiseno.join(' ')}
+//                         </div>
+//                     <hr>
+//                         <label>Usuarios</label>
+//                         <div name='container' class="container">
+//                             ${arrayUsersAll.join(' ')}
+//                         </div>
+//                     <hr>`
+
+//                     Swal.fire({
+//                         title: 'Seguimiento Diseño',
+//                         html: html,
+//                         width: 450,
+//                         background: "#eee",
+//                         allowOutsideClick: false,
+//                         showCloseButton: true,
+//                         focusConfirm: false,
+//                         confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>',
+//                         didOpen: ()=> {
+//                             let btnAceptar = document.getElementsByClassName('swal2-confirm');
+//                             btnAceptar[0].setAttribute('id','btnAceptarModal')
+//                             btnAceptar[0].style = "cursor: not-allowed;"
+//                             btnAceptar[0].disabled = true
+//                         }
+//                     }).then((result) => {
+//                         const radiosToSelect = document.getElementsByName('radioUsuarios')
+//                         let usuariosSeleccionado
+
+//                         for(let i=0; i<radiosToSelect.length; i++) {
+//                             const radioSelected = document.getElementById(i)
+
+//                             radioSelected.checked ? usuariosSeleccionado = radioSelected.value : null
+//                         }
+
+//                         if (result.isConfirmed) {
+//                             const inputUserSelected = document.getElementById('internoDiseno')
+//                             inputUserSelected.value = usuariosSeleccionado
+
+//                         } else {
+//                             Swal.fire(
+//                                 'Usuario no seleccionado!',
+//                                 `No ha seleccionado ningún usuario!`,
+//                                 'warning'
+//                             )
+//                             return false
+//                         }
+//                     })
+//                     disabledBtnAceptar()
+//             } else {
+//                 //TODO: Hacer sweet alert 
+//                 console.log('Error, no se econtró ningún users')
+//             }
+
+//         })
+//         .catch(error => {
+//             throw new Error("Something went wrong on api server!");
+//         })
+//     }
+//     cargarUsuarioDiseno()
+// })
+
+async function cargarUsuarioDiseno() {
+    try {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        
-        const resquest = new Request("../../../api/usuarios/searchUsers/all", {
+
+        const response = await fetch(`../../../api/usuarios/searchUsers/${userNameBanner}`, {
             method: "GET",
-            headers: myHeaders
-          })
+            headers: myHeaders,
+            mode: 'cors',
+            cache: 'default',
+        });
+        
+        if (!response.ok) {
+            Swal.fire(
+                'Error en la solicitud',
+                'No se encontró ningún usuario!',
+                'error'
+            );
+            return false
+        }
 
-            // console.log('resquest: ', resquest)
-          
-        fetch(resquest)
-        .then(response => response.json())
-        .then((users) => {
+        const users = await response.json();
+        const arrayUsuariosDiseno = [];
+        const arrayUsersAll = [];
 
-            // console.log('users: ', JSON.stringify(users))
+        if (users && users.length > 0) {
+            users.forEach((user, i) => {
+                const userHTML = `
+                    <label>
+                        <span id="${user._id}" class="badge rounded-pill ${user.permiso === 'diseno' ? 'bg-info' : 'bg-light'} text-dark my-2">
+                            <input
+                                class="form-check-input mb-1"
+                                type="radio"
+                                name="radioUsuarios"
+                                value="${user.name}, ${user.lastName}"
+                                id="${i}">
+                            ${user.name} ${user.lastName}
+                        </span>
+                    </label>`;
 
-            const arrayUsuariosDiseno = []
-            const arrayUsersAll = []
+                if (user.status) {
+                    user.permiso === 'diseno' ? arrayUsuariosDiseno.push(userHTML) : arrayUsersAll.push(userHTML); 
+                }    
+            });
 
-            if (users != {} ) {
-
-                JSON.stringify(users)
-                for(let i=0; i<users.usersAll.length; i++) {
-
-                    if(users.usersAll[i].status && users.usersAll[i].permiso ==='diseno') {
-                        arrayUsuariosDiseno.push(`
-                                        <label>
-                                            <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-info text-dark my-2">
-                                                <input
-                                                    class="form-check-input mb-1"
-                                                    type="radio"
-                                                    name="radioUsuarios"
-                                                    value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}"
-                                                    id="${i}">
-                                                    ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                            </span>
-                                        </label>`)
-
-                    } else if (users.usersAll[i].status && users.usersAll[i].permiso !=='diseno') {
-                        arrayUsersAll.push(`
-                                    <label>
-                                        <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-light text-dark my-2">
-                                            <input
-                                                class="form-check-input mb-1"
-                                                type="radio"
-                                                name="radioUsuarios"
-                                                value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}"
-                                                id="${i}">
-                                                ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                        </span>
-                                    </label>`)
-                    }
-                }
-            
-                const html = `
-                    <hr>
-                        <label>Usuarios Diseño</label>
-                        <div name='container' class="container">
-                            ${arrayUsuariosDiseno.join(' ')}
-                        </div>
-                    <hr>
-                        <label>Usuarios</label>
-                        <div name='container' class="container">
-                            ${arrayUsersAll.join(' ')}
-                        </div>
-                    <hr>`
-
-                    Swal.fire({
-                        title: 'Usuarios',
-                        html: html,
-                        width: 450,
-                        background: "#eee",
-                        allowOutsideClick: false,
-                        showCloseButton: true,
-                        focusConfirm: false,
-                        confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>',
-                        didOpen: ()=> {
-                            let btnAceptar = document.getElementsByClassName('swal2-confirm');
-                            btnAceptar[0].setAttribute('id','btnAceptarModal')
-                            btnAceptar[0].style = "cursor: not-allowed;"
-                            btnAceptar[0].disabled = true
-                        }
-                    }).then((result) => {
-                        const radiosToSelect = document.getElementsByName('radioUsuarios')
-
-                        for(let i=0; i<radiosToSelect.length; i++) {
-                            const radioSelected = document.getElementById(i)
-                            
-                            if (radioSelected.checked) {
-                                var usuariosSeleccionado = radioSelected.value
-                            }
-                        }
-                        
-                        if (result.isConfirmed) {
-                            const inputUserSelected = document.getElementById('internoDiseno')
-                            inputUserSelected.value = usuariosSeleccionado
-                        
-                        } else {
-                            Swal.fire(
-                                'Usuario no seleccionado!',
-                                `No ha seleccionado ningún usuario!`,
-                                'warning'
-                            )
-                            return false
-                        }
-                    })
-                    disabledBtnAceptar()
-            } else {
-                console.log('Error, no se econtró ningún users')
-            }
-
-        })
-        .catch(error => {
-            throw new Error("Something went wrong on api server!");
-        })
-    }
-    cargarUsuarioDiseno()
-})
-
-//-----Btns Buscar en BBDD el Usuario Seguidor de Simulacion --------------
-const searchSimulationUser = document.getElementById('searchSimulationUser')
-searchSimulationUser.addEventListener('click', (event) => {
-    event.preventDefault()
-
-    function cargarUsuarioSimulacion() {
-        fetch('../../../api/usuarios/searchUsers/all')
-          .then(response => response.json())
-          .then(users => {
-            const arrayUsuariosSimulacion = []
-            const arrayUsersAll = []
-
-            for(let i=0; i<users.usersAll.length; i++) {
-
-                if(users.usersAll[i].status && users.usersAll[i].permiso ==='simulacion') {
-                    arrayUsuariosSimulacion.push(`
-                                    <label>
-                                        <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-warning text-dark my-2">
-                                            <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
-                                            ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                        </span>
-                                    </label>`)
-
-                } else if (users.usersAll[i].status && users.usersAll[i].permiso !=='simulacion') {
-                    arrayUsersAll.push(`
-                                <label>
-                                    <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-light text-dark my-2">
-                                        <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
-                                        ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                    </span>
-                                </label>`)
-                }
-            }
-            
             const html = `
-                    <hr>
-                        <label>Usuarios Simulación</label>
-                        <div name='container' class="container">
-                            ${arrayUsuariosSimulacion.join(' ')}
-                        </div>
-                    <hr>
-                        <label>Usuarios</label>
-                        <div name='container' class="container">
-                            ${arrayUsersAll.join(' ')}
-                        </div>
-                    <hr>`
+                <hr>
+                <label>Seguimiento Diseño</label>
+                <div name='container' class="container">
+                    ${arrayUsuariosDiseno.join(' ')}
+                </div>
+                <hr>
+                <label>Usuarios</label>
+                <div name='container' class="container">
+                    ${arrayUsersAll.join(' ')}
+                </div>
+                <hr>`;
 
-                    Swal.fire({
-                        title: 'Usuarios',
-                        html: html,
-                        width: 450,
-                        background: "#eee",
-                        allowOutsideClick: false,
-                        showCloseButton: true,
-                        focusConfirm: false,
-                        confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>',
-                        didOpen: ()=> {
-                            let btnAceptar = document.getElementsByClassName('swal2-confirm');
-                            btnAceptar[0].setAttribute('id','btnAceptarModal')
-                            btnAceptar[0].style = "cursor: not-allowed;"
-                            btnAceptar[0].disabled = true
-                        }
-                    }).then((result) => {
-                        const radiosToSelect = document.getElementsByName('radioUsuarios')
+            Swal.fire({
+                title: 'Usuarios Diseño',
+                html: html,
+                width: 450,
+                background: "#eee",
+                allowOutsideClick: false,
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>',
+                didOpen: () => {
+                    const btnAceptar = document.querySelector('.swal2-confirm');
+                    btnAceptar.setAttribute('id', 'btnAceptarModal');
+                    btnAceptar.style.cursor = "not-allowed";
+                    btnAceptar.disabled = true;
 
-                        for(let i=0; i<radiosToSelect.length; i++) {
-                            const radioSelected = document.getElementById(i)
+                    const radios = document.getElementsByName('radioUsuarios');
+                    radios.forEach((radio) => {
+                        radio.addEventListener('change', () => {
+                            btnAceptar.style.cursor = "pointer";
+                            btnAceptar.disabled = false;
+                        });
+                    });
+                }
+            }).then((result) => {
+                const radioSelected = document.querySelector('input[name="radioUsuarios"]:checked');
+                if (result.isConfirmed && radioSelected) {
+                    const inputUserSelected = document.getElementById('internoDiseno');
+                    inputUserSelected.value = radioSelected.value;
+
+                } else {
+                    Swal.fire(
+                        'Usuario no seleccionado!',
+                        'No ha seleccionado ningún usuario!',
+                        'warning'
+                    );
+                    return false
+                }
+            });
+
+        } else {
+            Swal.fire(
+                'Sin Usuarios',
+                'No se encontró ningún usuario!',
+                'error'
+            );
+            return false
+        }
+
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+        Swal.fire(
+            'Error en la solicitud',
+            'No se encontró ningún usuario!',
+            'error'
+        );
+        return false
+    }
+    disabledBtnAceptar()
+}
+
+searchDesignUser.addEventListener('click', async (event) => {
+    event.preventDefault();
+    try {
+        await cargarUsuarioDiseno();
+    } catch (error) {
+        Swal.fire(
+            'Error al cargar los usuarios',
+            'No se encontró ningún usuario!',
+            'error'
+        );
+        return false
+    }
+});
+
+
+//FIXME:
+//-----Btns Buscar en BBDD el Usuario Seguidor de Simulacion --------------
+// const searchSimulationUser = document.getElementById('searchSimulationUser')
+// searchSimulationUser.addEventListener('click', (event) => {
+//     event.preventDefault()
+
+//     function cargarUsuarioSimulacion() {
+//         fetch('../../../api/usuarios/searchUsers/all')
+//         .then(response => response.json())
+//         .then(users => {
+//             const arrayUsuariosSimulacion = []
+//             const arrayUsersAll = []
+
+//             for(let i=0; i<users.length; i++) {
+
+//                 if(users[i].status && users[i].permiso ==='simulacion') {
+//                     arrayUsuariosSimulacion.push(`
+//                                     <label>
+//                                         <span id="${users[i]._id}" class="badge rounded-pill bg-warning text-dark my-2">
+//                                             <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users[i].name}, ${users[i].lastName}" id="${i}">
+//                                             ${users[i].name} ${users[i].lastName}
+//                                         </span>
+//                                     </label>`)
+
+//                 } else if (users[i].status && users[i].permiso !=='simulacion') {
+//                     arrayUsersAll.push(`
+//                                 <label>
+//                                     <span id="${users[i]._id}" class="badge rounded-pill bg-light text-dark my-2">
+//                                         <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users[i].name}, ${users[i].lastName}" id="${i}">
+//                                         ${users[i].name} ${users[i].lastName}
+//                                     </span>
+//                                 </label>`)
+//                 }
+//             }
+
+//             const html = `
+//                     <hr>
+//                         <label>Usuarios Simulación</label>
+//                         <div name='container' class="container">
+//                             ${arrayUsuariosSimulacion.join(' ')}
+//                         </div>
+//                     <hr>
+//                         <label>Usuarios</label>
+//                         <div name='container' class="container">
+//                             ${arrayUsersAll.join(' ')}
+//                         </div>
+//                     <hr>`
+
+//                     Swal.fire({
+//                         title: 'Usuarios',
+//                         html: html,
+//                         width: 450,
+//                         background: "#eee",
+//                         allowOutsideClick: false,
+//                         showCloseButton: true,
+//                         focusConfirm: false,
+//                         confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>',
+//                         didOpen: ()=> {
+//                             let btnAceptar = document.getElementsByClassName('swal2-confirm');
+//                             btnAceptar[0].setAttribute('id','btnAceptarModal')
+//                             btnAceptar[0].style = "cursor: not-allowed;"
+//                             btnAceptar[0].disabled = true
+//                         }
+//                     }).then((result) => {
+//                         const radiosToSelect = document.getElementsByName('radioUsuarios')
+
+//                         for(let i=0; i<radiosToSelect.length; i++) {
+//                             const radioSelected = document.getElementById(i)
                             
-                            if (radioSelected.checked) {
-                                var usuariosSeleccionado = radioSelected.value
-                            }
-                        }
-                        
-                        if (result.isConfirmed) {
-                            const inputUserSelected = document.getElementById('internoSimulacion')
-                            inputUserSelected.value = usuariosSeleccionado
-                        
-                        } else {
-                            Swal.fire(
-                                'Usuario no seleccionado!',
-                                `No ha seleccionado ningún usuario!`,
-                                'warning'
-                            )
-                            return false
-                        }
-                    })
-                    disabledBtnAceptar()
-        })
-        .catch(error => {
-        console.error('Error:', error)
-        })
-      }
-      cargarUsuarioSimulacion()
-})
+//                             if (radioSelected.checked) {
+//                                 var usuariosSeleccionado = radioSelected.value
+//                             }
+//                         }
+
+//                         if (result.isConfirmed) {
+//                             const inputUserSelected = document.getElementById('internoSimulacion')
+//                             inputUserSelected.value = usuariosSeleccionado
+
+//                         } else {
+//                             Swal.fire(
+//                                 'Usuario no seleccionado!',
+//                                 `No ha seleccionado ningún usuario!`,
+//                                 'warning'
+//                             )
+//                             return false
+//                         }
+//                     })
+//                     disabledBtnAceptar()
+//         })
+//         .catch(error => {
+//         console.error('Error:', error)
+//         })
+//     }
+//     cargarUsuarioSimulacion()
+// })
+
 
 function messageNewOt(ociNumber, otArray, ociAlias) {
-
     const Toast = Swal.mixin({
         toast: true,
         position: 'bottom',
@@ -1908,415 +2044,6 @@ function getOtList(i) {
 }
 
 //---------- Obtiene los valores de la lista de OT ------------
-// function getOtListValues(i, idTabla, qInicial, qFinal) {
-//     const parentDiv = document.getElementById(`${idTabla}`)
-//     let tableBody = parentDiv.lastElementChild
-//     const lastChild = parseInt(tableBody.childElementCount)
-
-//     const qInicialX = parseInt(qInicial)
-//     const qFinalX = parseInt(qFinal)
-
-//     let k = i
-
-//     var arrayProcesoR14 = [],
-//         arrayRevisionProcesoR14 = [],
-//         arrayAprobadoR14 = [],
-//         arrayRevisionAprobadoR14 = []
-        
-//     var arrayProceso3d = [],
-//         arrayRevisionProceso3d = [],
-//         arrayHorasProceso3d = [],
-//         arrayRevisionHorasProceso3d = []
-
-//     var arrayAvDiseno = [],
-//         arrayRevisionAvDiseno = [],
-//         arrayAv50Diseno = [],
-//         arrayRevisionAv50Diseno = [],
-//         arrayAv80Diseno = [],
-//         arrayRevisionAv80Diseno = [],
-//         arrayEnvioCliente = [],
-//         arrayRevisionEnvioCliente = []
-
-//     var arrayRevisionCliente = [],
-//         arrayRevisionRevisionCliente = [],
-//         arrayLdmProvisoria = [],
-//         arrayRevisionLdmProvisoria = [],
-//         arrayAv100Diseno = [],
-//         arrayRevisionAv100Diseno = [],
-//         arrayAprobadoCliente = [],
-//         arrayRevisionAprobadoCliente = []
-
-//     var arrayLdmAvanceCG = [],
-//         arrayRevisionLdmAvanceCG = [],
-//         arrayLdmAvanceTD2 = [],
-//         arrayRevisionLdmAvanceTD2 = [],
-//         arrayLdm80 = [],
-//         arrayRevisionLdm80 = [],
-//         arrayInfoModelo = [],
-//         arrayRevisionInfoModelo = []
-
-//     var arrayLdm100 = [],
-//         arrayRevisionLdm100 = [],
-//         arrayInfo100 = [],
-//         arrayRevisionInfo100 = []
-
-//     var arraySim0 = [],
-//         arrayRevisionSim0 = [],
-//         arrayDocuSim0 = [],
-//         arrayRevisionDocuSim0 = []
-
-//     var arraySim1 = [],
-//         arrayRevisionSim1 = [],
-//         arrayVideo = [],
-//         arrayRevisionVideo = [],
-//         arrayInforme = [],
-//         arrayRevisionInforme = [],
-//         arrayPpt = [],
-//         arrayRevisionPpt = [],
-//         arrayS1pOp20 = [],
-//         arrayRevisionS1pOp20 = []
-
-//     var arraySim2 = [],
-//         arrayRevisionSim2 = [],
-//         arrayReporte = [],
-//         arrayRevisionReporte = [],
-//         arrayDfnProdismo = [],
-//         arrayRevisionDfnProdismo = [],
-//         arraySim3 = [],
-//         arrayRevisionSim3 = []
-
-//     var arrayMatEnsayo = [],
-//         arrayRevisionMatEnsayo = [],
-//         arrayMasMenos10 = [],
-//         arrayRevisionMasMenos10 = [],
-//         arrayMpAlternativo = [],
-//         arrayRevisionMpAlternativo = [],
-//         arrayReunionSim = [],
-//         arrayRevisionReunionSim = []
-
-//     var arrayInformeSim4 = [],
-//         arrayRevisionInformeSim4 = [],
-//         arrayGeoCopiado1 = [],
-//         arrayRevisionGeoCopiado1 = [],
-//         arrayGeoCopiado2 = [],
-//         arrayRevisionGeoCopiado2 = [],
-//         arrayHorasSim = [],
-//         arrayRevisionHorasSim = []
-
-//     var arrayGrillado = [],
-//         arrayRevisionGrillado = [],
-//         arrayMpEnsayada = [],
-//         arrayRevisionMpEnsayada = []
-
-//     for (let n=0; n < lastChild; n++) {
-//         // console.log('k1:',k,'n1:',n)
-//             for (let q=qInicialX ; q < qFinalX; q++) {
-//                 // console.log('k2:',k,'n2:',n,'q:',q)
-//                 // console.log('resHidden:',document.getElementById(`resHidden${k}_${n}_${q}`))
-//                 const otHidden = document.getElementById(`resHidden${k}_${n}_${q}`).value
-//                 const arrayFromOtHidden = changeValueFromArray(otHidden.split(","))
-//                 const largoDeArrayOt = parseInt(arrayFromOtHidden.length)
-//                 const otInfo = arrayFromOtHidden[largoDeArrayOt-1]
-                
-//                 const otRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${q}`).value
-//                 const arrayFromOtRevisionHidden = otRevisionHidden.split(",")
-//                 const largoDeArrayRevision = parseInt(arrayFromOtRevisionHidden.length)
-//                 const otRevision = arrayFromOtRevisionHidden[largoDeArrayRevision-1]
-
-//                 switch (q) {
-//                      //-----------------R14-----------------------
-//                     case 0: 
-//                         arrayProcesoR14.push(otInfo)
-//                         arrayRevisionProcesoR14.push(otRevision)
-//                     break;
-//                     case 1: 
-//                         arrayAprobadoR14.push(otInfo)
-//                         arrayRevisionAprobadoR14.push(otRevision)
-//                     break;
-//                     //----------------Proceso 3D------------------
-//                     case 2: 
-//                         arrayProceso3d.push(otInfo)
-//                         arrayRevisionProceso3d.push(otRevision)
-//                     break;
-//                     case 3:
-//                         arrayHorasProceso3d.push(otInfo)
-//                         arrayRevisionHorasProceso3d.push(otRevision)
-//                     break;
-//                      //-------------Diseño 1° Parte-------------
-//                     case 4:
-//                         arrayAvDiseno.push(otInfo)
-//                         arrayRevisionAvDiseno.push(otRevision)
-//                     break;
-//                     case 5:
-//                         arrayAv50Diseno.push(otInfo)
-//                         arrayRevisionAv50Diseno.push(otRevision)
-//                     break;
-//                     case 6:
-//                         arrayAv80Diseno.push(otInfo)
-//                         arrayRevisionAv80Diseno.push(otRevision)
-//                     break;
-//                     case 7:
-//                         arrayEnvioCliente.push(otInfo)
-//                         arrayRevisionEnvioCliente.push(otRevision)
-//                     break;
-//                      //-------------Diseño 2° Parte-------------
-//                     case 8:
-//                         arrayRevisionCliente.push(otInfo)
-//                         arrayRevisionRevisionCliente.push(otRevision)
-//                     break;
-//                     case 9:
-//                         arrayLdmProvisoria.push(otInfo)
-//                         arrayRevisionLdmProvisoria.push(otRevision)
-//                     break;
-//                     case 10:
-//                         arrayAv100Diseno.push(otInfo)
-//                         arrayRevisionAv100Diseno.push(otRevision)
-//                     break;
-//                     case 11:
-//                         arrayAprobadoCliente.push(otInfo)
-//                         arrayRevisionAprobadoCliente.push(otRevision)
-//                     break;
-//                      //----------------Info 80%-----------------
-//                     case 12:
-//                         arrayLdmAvanceCG.push(otInfo)
-//                         arrayRevisionLdmAvanceCG.push(otRevision)
-//                     break;
-//                     case 13:
-//                         arrayLdmAvanceTD2.push(otInfo)
-//                         arrayRevisionLdmAvanceTD2.push(otRevision)
-//                     break;
-//                     case 14:
-//                         arrayLdm80.push(otInfo)
-//                         arrayRevisionLdm80.push(otRevision)
-//                     break;
-//                     case 15:
-//                         arrayInfoModelo.push(otInfo)
-//                         arrayRevisionInfoModelo.push(otRevision)
-//                     break;
-//                     //----------------Info 100%-----------------
-//                     case 16:
-//                         arrayLdm100.push(otInfo)
-//                         arrayRevisionLdm100.push(otRevision)
-//                     break;
-//                     case 17:
-//                         arrayInfo100.push(otInfo)
-//                         arrayRevisionInfo100.push(otRevision)
-//                     break;
-//                     //----------------Info Sim0----------------
-//                     case 18:
-//                         arraySim0.push(otInfo)
-//                         arrayRevisionSim0.push(otRevision)
-//                     break;
-//                     case 19:
-//                         arrayDocuSim0.push(otInfo)
-//                         arrayRevisionDocuSim0.push(otRevision)
-//                     break;
-//                     //----------------Info Sim1----------------
-//                     case 20:
-//                         arraySim1.push(otInfo)
-//                         arrayRevisionSim1.push(otRevision)
-//                     break;
-//                     case 21:
-//                         arrayVideo.push(otInfo)
-//                         arrayRevisionVideo.push(otRevision)
-//                     break;
-//                     case 22:
-//                         arrayInforme.push(otInfo)
-//                         arrayRevisionInforme.push(otRevision)
-//                     break;
-//                     case 23:
-//                         arrayPpt.push(otInfo)
-//                         arrayRevisionPpt.push(otRevision)
-//                     break;
-//                     case 24:
-//                         arrayS1pOp20.push(otInfo)
-//                         arrayRevisionS1pOp20.push(otRevision)
-//                     break;
-//                     //----------------Info Sim2-3----------------
-//                     case 25:
-//                         arraySim2.push(otInfo)
-//                         arrayRevisionSim2.push(otRevision)
-//                     break;
-//                     case 26:
-//                         arrayReporte.push(otInfo)
-//                         arrayRevisionReporte.push(otRevision)
-//                     break;
-//                     case 27:
-//                         arrayDfnProdismo.push(otInfo)
-//                         arrayRevisionDfnProdismo.push(otRevision)
-//                     break;
-//                     case 28:
-//                         arraySim3.push(otInfo)
-//                         arrayRevisionSim3.push(otRevision)
-//                     break;
-//                     //----------------Info Sim4 Primera----------
-//                     case 29:
-//                         arrayMatEnsayo.push(otInfo)
-//                         arrayRevisionMatEnsayo.push(otRevision)
-//                     break;
-//                     case 30:
-//                         arrayMasMenos10.push(otInfo)
-//                         arrayRevisionMasMenos10.push(otRevision)
-//                     break;
-//                     case 31:
-//                         arrayMpAlternativo.push(otInfo)
-//                         arrayRevisionMpAlternativo.push(otRevision)
-//                     break;
-//                     case 32:
-//                         arrayReunionSim.push(otInfo)
-//                         arrayRevisionReunionSim.push(otRevision)
-//                     break;
-//                     //----------------Info Sim4 Segunda-----------
-//                     case 33:
-//                         arrayInformeSim4.push(otInfo)
-//                         arrayRevisionInformeSim4.push(otRevision)
-//                     break;
-//                     case 34:
-//                         arrayGeoCopiado1.push(otInfo)
-//                         arrayRevisionGeoCopiado1.push(otRevision)
-//                     break;
-//                     case 35:
-//                         arrayGeoCopiado2.push(otInfo)
-//                         arrayRevisionGeoCopiado2.push(otRevision)
-//                     break;
-//                     case 36:
-//                         arrayHorasSim.push(otInfo)
-//                         arrayRevisionHorasSim.push(otRevision)
-//                     break;
-//                     //----------------Info Sim5------------------
-//                     case 37:
-//                         arrayGrillado.push(otInfo)
-//                         arrayRevisionGrillado.push(otRevision)
-//                     break;
-//                     case 38:
-//                         arrayMpEnsayada.push(otInfo)
-//                         arrayRevisionMpEnsayada.push(otRevision)        
-//                     default:
-//                         null
-//                         break;
-//                 }
-//             }
-//     }
-
-//     switch (qFinalX) {
-//         case 2: //------------R14-----------------------
-//             return {
-//                 arrayProcesoR14,
-//                 arrayRevisionProcesoR14,
-//                 arrayAprobadoR14,
-//                 arrayRevisionAprobadoR14
-//             }
-//         case 4: //-----Proceso 3d----------------
-//             return {
-//                 arrayProceso3d,
-//                 arrayRevisionProceso3d,
-//                 arrayHorasProceso3d,
-//                 arrayRevisionHorasProceso3d
-//             }
-//         case 8: //-----Diseno Primera Parte------
-//             return {
-//                 arrayAvDiseno,
-//                 arrayRevisionAvDiseno,
-//                 arrayAv50Diseno,
-//                 arrayRevisionAv50Diseno,
-//                 arrayAv80Diseno,
-//                 arrayRevisionAv80Diseno,
-//                 arrayEnvioCliente,
-//                 arrayRevisionEnvioCliente
-//             }
-//         case 12: //----Diseno Segunda Parte------
-//             return {
-//                 arrayRevisionCliente,
-//                 arrayRevisionRevisionCliente,
-//                 arrayLdmProvisoria,
-//                 arrayRevisionLdmProvisoria,
-//                 arrayAv100Diseno,
-//                 arrayRevisionAv100Diseno,
-//                 arrayAprobadoCliente,
-//                 arrayRevisionAprobadoCliente
-//             }
-//         case 16: //----Info 80%------------------
-//             return {
-//                 arrayLdmAvanceCG,
-//                 arrayRevisionLdmAvanceCG,
-//                 arrayLdmAvanceTD2,
-//                 arrayRevisionLdmAvanceTD2,
-//                 arrayLdm80,
-//                 arrayRevisionLdm80,
-//                 arrayInfoModelo,
-//                 arrayRevisionInfoModelo
-//             }
-//         case 18: //----Info 100%------------------
-//             return {
-//                 arrayLdm100,
-//                 arrayRevisionLdm100,
-//                 arrayInfo100,
-//                 arrayRevisionInfo100
-//             }
-//         case 20: //----Sim 0------------------
-//             return {
-//                 arraySim0,
-//                 arrayRevisionSim0,
-//                 arrayDocuSim0,
-//                 arrayRevisionDocuSim0
-//             }
-//         case 25: //----Sim 1------------------
-//             return {
-//                 arraySim1,
-//                 arrayRevisionSim1,
-//                 arrayVideo,
-//                 arrayRevisionVideo,
-//                 arrayInforme,
-//                 arrayRevisionInforme,
-//                 arrayPpt,
-//                 arrayRevisionPpt,
-//                 arrayS1pOp20,
-//                 arrayRevisionS1pOp20
-//             }
-//         case 29: //----Sim 2_3------------------
-//         return {
-//             arraySim2,
-//             arrayRevisionSim2,
-//             arrayReporte,
-//             arrayRevisionReporte,
-//             arrayDfnProdismo,
-//             arrayRevisionDfnProdismo,
-//             arraySim3,
-//             arrayRevisionSim3
-//             }
-//         case 33: //----Sim 4 Primera-------------
-//         return {
-//             arrayMatEnsayo,
-//             arrayRevisionMatEnsayo,
-//             arrayMasMenos10,
-//             arrayRevisionMasMenos10,
-//             arrayMpAlternativo,
-//             arrayRevisionMpAlternativo,
-//             arrayReunionSim,
-//             arrayRevisionReunionSim
-//             }
-//         case 37: //----Sim 4 Segunda-------------
-//         return {
-//             arrayInformeSim4,
-//             arrayRevisionInformeSim4,
-//             arrayGeoCopiado1,
-//             arrayRevisionGeoCopiado1,
-//             arrayGeoCopiado2,
-//             arrayRevisionGeoCopiado2,
-//             arrayHorasSim,
-//             arrayRevisionHorasSim
-//         }
-//         case 39: //----Sim 5-------------
-//         return {
-//             arrayGrillado,
-//             arrayRevisionGrillado,
-//             arrayMpEnsayada,
-//             arrayRevisionMpEnsayada
-//         }
-//         default:
-//             break;
-//     }
-// }
 function getOtListValues(i, idTabla, qInicial, qFinal) {
     const parentDiv = document.getElementById(idTabla);
     const tableBody = parentDiv.lastElementChild;
@@ -2597,13 +2324,13 @@ const Toast = Swal.mixin({
         timerProgressBar: false,
     })
 
-function swalFireAlert (titulo,
-                        html,
-                        ancho,
-                        background,
-                        formulario,
-                        arrayDeOtNumber)
-{
+function swalFireAlert(
+    titulo,
+    html,
+    ancho,
+    background,
+    formulario,
+    arrayDeOtNumber) {
 
     Swal.fire({
         title: titulo,
@@ -4024,7 +3751,7 @@ function addDatoToInfoSim1(i, idTabla, qInicial, qFinal) {
                             <hr>
                             ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloque.length)}
                         </fieldset>
-                      </form>`
+                    </form>`
     
         const titulo = "Simulación 1"
         const ancho = 1650

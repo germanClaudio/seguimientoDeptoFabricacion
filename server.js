@@ -44,8 +44,8 @@ const initServer = () => {
     // const io = new IOServer(httpServer)
     const io = new IOServer(httpServer, {
         cors: {
-          origin: "*", // Permitir todas las solicitudes de origen cruzado (modificar según sea necesario)
-          methods: ["GET", "POST"]
+            origin: "*", // Permitir todas las solicitudes de origen cruzado (modificar según sea necesario)
+            methods: ["GET", "POST"]
         }
     })
 

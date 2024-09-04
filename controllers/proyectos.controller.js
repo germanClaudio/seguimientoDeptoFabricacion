@@ -18,17 +18,17 @@ let data = require('../utils/variablesInicializator.js')
 const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
 
 const {catchError400,
-       catchError400_1,
-       catchError400_2,
-       catchError400_3,
-       catchError400_4,
-       catchError403,
-       catchError401,
-       catchError401_1,
-       catchError401_2,
-       catchError401_3,
-       catchError401_4,
-       catchError500
+    catchError400_1,
+    catchError400_2,
+    catchError400_3,
+    catchError400_4,
+    catchError403,
+    catchError401,
+    catchError401_1,
+    catchError401_2,
+    catchError401_3,
+    catchError401_4,
+    catchError500
 } = require('../utils/catchErrors.js')
 
 class ProjectsController {
@@ -1045,7 +1045,7 @@ class ProjectsController {
         if (!userCreator) {
             catchError401_3(req, res, next)
         }
-           
+
         uploadMulterSingleImageOci(req, res, async (err) => {
             if (req.file) {
                 uploadToGCS(req, res, next)

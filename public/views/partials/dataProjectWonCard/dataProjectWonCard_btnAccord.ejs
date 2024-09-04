@@ -6,31 +6,23 @@
             # <strong class="mx-2"><%= k+1 %></strong>
         </li>
         <li class="list-group-item list-group-item-secondary my-1">
-            OCI#: <strong class="mx-2">
-                <%= arrayVisibleOci[k].ociNumber %>
-            </strong>
+            OCI#: <strong class="mx-2"><%= arrayVisibleOci[k].ociNumber %></strong>
         </li>
         <li class="list-group-item list-group-item-secondary my-1">
             Descripcion: <%= arrayVisibleOci[k].ociDescription %>
         </li>
         <li class="list-group-item list-group-item-secondary my-1">
-            Alias: <span class="badge bg-info text-dark mx-1">
-                        <%= arrayVisibleOci[k].ociAlias %>
-                   </span>
+            Alias: <span class="badge bg-info text-dark mx-1"><%= arrayVisibleOci[k].ociAlias %></span>
         </li>
         <li class="list-group-item list-group-item-secondary my-1">
             <% if (arrayVisibleOci[k].ociStatus) {
                 const ociStatus="Activa" %>
                 Status OCI:
-                    <span class="badge rounded-pill bg-primary text-white mx-1">
-                        <%= ociStatus %>
-                    </span>
+                    <span class="badge rounded-pill bg-primary text-white mx-1"><%= ociStatus %></span>
             <% } else {
                 const ociStatus="Inactiva" %>
                 Status OCI:
-                    <span class="badge rounded-pill bg-danger text-white mx-1">
-                        <%= ociStatus %>
-                    </span>
+                    <span class="badge rounded-pill bg-danger text-white mx-1"><%= ociStatus %></span>
             <% } %>
         </li>
     </ul>

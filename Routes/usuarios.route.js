@@ -27,7 +27,7 @@ routerUsers.post('/resetNewUserPassword/:id', users.updatePasswordByUser)
 routerUsers.get('/delete/:id', checkAuthentication, authUserMiddleware, users.deleteUserById)
 
 //---------------- Search a User sort by permission -----------------------
-routerUsers.get('/searchUsers/:all', checkAuthentication, authUserMiddleware, users.searchUsers)
+routerUsers.get('/searchUsers/:userName', checkAuthentication, authUserMiddleware, users.searchUsers)
 
 //---------------- Get User Preferences Page -----------------------
 routerUsers.get('/getUserSettings/:id', checkAuthentication, users.getUserSettings)
@@ -40,12 +40,5 @@ routerUsers.get("/auth-bloq", checkAuthentication, users.authBloq)
 
 //---------------- Authorizate session --------------
 routerUsers.get("/auth-nobloq", checkAuthentication, users.authNoBloq)
-
-
-// routerUsers.get('/test-error', checkAuthentication, authUserMiddleware, (req, res, next) => {
-//     const err = new Error('Error de prueba');
-//     err.dirNumber
-//     next(err);
-// });
 
 module.exports = routerUsers
