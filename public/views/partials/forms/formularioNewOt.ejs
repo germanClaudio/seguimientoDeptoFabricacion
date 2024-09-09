@@ -45,22 +45,10 @@
                                                 <div class="form-check form-check-inline">
                                                     <% if ( arrayOciVisibles[k].ociStatus ) { %>
                                                         <label class="form-check-label" for="radioSelectedValue<%=k %>">OCI # <%= arrayOciVisibles[k].ociNumber %> - Alias: "<%= arrayOciVisibles[k].ociAlias %>"</label>
-                                                        <input class="form-check-input" 
-                                                            type="radio" 
-                                                            name="ociNumber" 
-                                                            id="radioSelectedValue<%= k %>"
-                                                            value="<%= arrayOciVisibles[k].ociNumber %>" 
-                                                            value2="<%= arrayOciVisibles[k].ociAlias %>"
-                                                            required>
+                                                        <input class="form-check-input" type="radio" name="ociNumber" id="radioSelectedValue<%= k %>" value="<%= arrayOciVisibles[k].ociNumber %>" value2="<%= arrayOciVisibles[k].ociAlias %>" required>
                                                     <% } else { %>
                                                         <label class="form-check-label text-secondary" for="radioSelectedValue<%=k %>">OCI # <%= arrayOciVisibles[k].ociNumber %> - Alias: "<%= arrayOciVisibles[k].ociAlias %>"</label>
-                                                        <input class="form-check-input"
-                                                            type="radio"
-                                                            name="ociNumber"
-                                                            id="radioSelectedValue<%= k %>"
-                                                            value="<%= arrayOciVisibles[k].ociNumber %>"
-                                                            value2="<%= arrayOciVisibles[k].ociAlias %>"
-                                                            disabled>
+                                                        <input class="form-check-input" type="radio" name="ociNumber" id="radioSelectedValue<%= k %>" value="<%= arrayOciVisibles[k].ociNumber %>" value2="<%= arrayOciVisibles[k].ociAlias %>" disabled>
                                                     <% } %>
                                                 </div>
 
@@ -70,25 +58,14 @@
                                                 <input class="form-input" type="hidden" name="ociAlias" id="ociAliasHidden" value="<%= arrayOciVisibles[k].ociAlias %>">
                                         <% } else { %>
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label"
-                                                        for="radioSelectedValue0">OCI #<%= arrayOciVisibles[0].ociNumber %> - Alias: "<%= arrayOciVisibles[0].ociAlias %>"</label>
+                                                    <label class="form-check-label" for="radioSelectedValue0">OCI #<%= arrayOciVisibles[0].ociNumber %> - Alias: "<%= arrayOciVisibles[0].ociAlias %>"</label>
 
-                                                    <input class="form-check-input" 
-                                                        type="radio" 
-                                                        name="ociNumber"
-                                                        id="radioSelectedValue0"
-                                                        value="<%= arrayOciVisibles[0].ociNumber %>"
-                                                        value2="<%= arrayOciVisibles[0].ociAlias %>"
-                                                        checked>
+                                                    <input class="form-check-input" type="radio" name="ociNumber" id="radioSelectedValue0" value="<%= arrayOciVisibles[0].ociNumber %>" value2="<%= arrayOciVisibles[0].ociAlias %>" checked>
 
-                                                    <input class="form-input" type="hidden" name="ociNumberId"
-                                                        id="ociNumberId0" value="<%=proyecto[m].project[j].oci[0]._id %>">
-                                                    <input class="form-input" type="hidden" name="ociNumberK" id="ociNumberK"
-                                                        value="0">
-                                                    <input class="form-input" type="hidden" name="ociNumberHidden" id="ociNumberHidden"
-                                                        value="<%= arrayOciVisibles[0].ociNumber %>">
-                                                    <input class="form-input" type="hidden" name="ociAlias" id="ociAliasHidden"
-                                                    value="<%= arrayOciVisibles[0].ociAlias %>">    
+                                                    <input class="form-input" type="hidden" name="ociNumberId" id="ociNumberId0" value="<%=proyecto[m].project[j].oci[0]._id %>">
+                                                    <input class="form-input" type="hidden" name="ociNumberK" id="ociNumberK" value="0">
+                                                    <input class="form-input" type="hidden" name="ociNumberHidden" id="ociNumberHidden" value="<%= arrayOciVisibles[0].ociNumber %>">
+                                                    <input class="form-input" type="hidden" name="ociAlias" id="ociAliasHidden" value="<%= arrayOciVisibles[0].ociAlias %>">    
                                                 </div>
                                         <% } 
                                     }
@@ -116,74 +93,56 @@
                                             
                                         </button>
                                     </h2>
-                                    <div id="panelsStayOpen-collapseOneForm" class="accordion-collapse collapse"
-                                        aria-labelledby="panelsStayOpen-headingOne">
+                                    <div id="panelsStayOpen-collapseOneForm" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
                                         <div class="accordion-body" id="div_body">
                                             <div class="row my-2" id="otItemRow">
                                                 <div class="row">
                                                     <strong>#1</strong>
                                                 </div>
                                                 <div class="col-1">
-                                                    <label for="otNumber" id="labelOtNumber">
-                                                        OT#                                                        
-                                                    </label>
-                                                    <input type="number" name="otNumber" id="otNumber"
-                                                        class="form-control mt-3" min="0" max="9999" placeholder="Número OT">
+                                                    <label for="otNumber" id="labelOtNumber">OT#</label>
+                                                    <input type="number" name="otNumber" id="otNumber" class="form-control mt-3" min="0" max="9999" placeholder="Número OT">
                                                 </div>
                                                 <div class="col-1">
-                                                    <label for="opNumber" id="labelOpNumber">
-                                                        OP#
-                                                    </label>
-                                                    <input type="number" name="opNumber" id="opNumber"
-                                                        class="form-control mt-3" min="0" max="9999" placeholder="Número OP">
+                                                    <label for="opNumber" id="labelOpNumber">OP#</label>
+                                                    <input type="number" name="opNumber" id="opNumber" class="form-control mt-3" min="0" max="9999" placeholder="Número OP">
                                                 </div>
                                                 <div class="col-2">
-                                                    <label for="opDescription" id="labelOpDescription">
-                                                        Descripción OP
-                                                    </label>
-                                                    <input type="text" name="opDescription" id="opDescription"
-                                                        class="form-control mt-3" placeholder="Descripcion OP">
+                                                    <label for="opDescription" id="labelOpDescription">Descripción OP</label>
+                                                    <input type="text" name="opDescription" id="opDescription" class="form-control mt-3" placeholder="Descripcion OP">
                                                 </div>
                                                 <div class="col-1">
-                                                    <label for="otStatus" id="labelOtStatus">
-                                                        Status OT
-                                                    </label>
+                                                    <label for="otStatus" id="labelOtStatus">Status OT</label>
                                                     <br>
                                                     <div class="form-check form-switch d-inline-block mt-2">
-                                                        <input class="form-check-input mt-3" type="checkbox" id="otStatus"
-                                                            name="otStatus" aria-checked="true" style="cursor: pointer;"
-                                                            checked>
-                                                        <label class="form-check-label mt-2" for="otStatus">
-                                                            Activa
-                                                        </label>
+                                                        <input class="form-check-input mt-3" type="checkbox" id="otStatus" name="otStatus" aria-checked="true" style="cursor: pointer;" checked>
+                                                        <label class="form-check-label mt-2" for="otStatus">Activa</label>
                                                     </div>
                                                 </div>
                                                 <div class="col-2">
-                                                    <label for="internoDiseno" id="labelInternoDiseno">
-                                                        Diseño seguido por
-                                                        <button type="button" title="Buscar Diseñador" id="searchDesignUser" class="btn btn-light rounded-circle ms-1">
+                                                    <label for="internoDiseno" id="labelInternoDiseno" class="form-label d-flex justify-content-start ms-1">Diseño seguido por</label>
+                                                    <div class="input-group mb-3">
+                                                        <input type="text" name="internoDiseno" id="internoDiseno" class="form-control mt-3" placeholder="Diseño seguido por">
+                                                            <button type="button" title="Buscar Diseñador" id="searchDesignUser" class="btn btn-primary rounded-circle ms-1 mt-3 border shadow">
+                                                                <i class="fa-solid fa-database"></i>
+                                                            </button>
+                                                    </div>
+                                                    
+                                                </div>
+
+                                                <div class="col-2">
+                                                    <label for="internoSimulacion" id="labelInternoSimulacion" class="form-label d-flex justify-content-start ms-1">Simulación seguida por</label>
+                                                    <div class="input-group mb-3">
+                                                        <input type="text" name="internoSimulacion" id="internoSimulacion" class="form-control mt-3" placeholder="Simulación seguida por">
+                                                        <button type="button" title="Buscar Simulador" id="searchSimulationUser" class="btn btn-primary rounded-circle ms-1 mt-3 border shadow">
                                                             <i class="fa-solid fa-database"></i>
                                                         </button>
-                                                    </label>
-                                                    <input type="text" name="internoDiseno" id="internoDiseno"
-                                                        class="form-control" placeholder="Diseño">
+                                                    </div>
                                                 </div>
+
                                                 <div class="col-2">
-                                                    <label for="internoSimulacion" id="labelInternoSimulacion">
-                                                        Simulación seguida por
-                                                        <button type="button" title="Buscar Simulador" id="searchSimulationUser" class="btn btn-light rounded-circle ms-1">
-                                                            <i class="fa-solid fa-database"></i>
-                                                        </button>
-                                                    </label>
-                                                    <input type="text" name="internoSimulacion" id="internoSimulacion"
-                                                        class="form-control" placeholder="Simulación">
-                                                </div>
-                                                <div class="col-2">
-                                                    <label for="externoDiseno" id="labelExternoDiseno">
-                                                        Proveedor externo
-                                                    </label>
-                                                    <input type="text" name="externoDiseno" id="externoDiseno"
-                                                        class="form-control mt-3" placeholder="Proveedor">
+                                                    <label for="externoDiseno" id="labelExternoDiseno">Proveedor externo</label>
+                                                    <input type="text" name="externoDiseno" id="externoDiseno"  class="form-control mt-3" placeholder="Proveedor">
                                                 </div>
                                                 <div class="col-1">
                                                 </div>
@@ -195,13 +154,8 @@
                         </div>
                         <div class="col-1">
                             <div class="d-flex justify-content-center align-items-center">
-                                <button 
-                                    type="button"
-                                    title="Agregar nueva OT"
-                                    id="btnAddNewRow"
-                                    class="btn btn-primary rounded-circle me-2 my-2"
-                                    disabled>
-                                        <i class="fa-solid fa-plus-circle"></i>
+                                <button type="button" title="Agregar nueva OT" id="btnAddNewRow" class="btn btn-primary rounded-circle me-2 my-2 border border-1 border-secondary shadow" disabled>
+                                    <i class="fa-solid fa-plus-circle"></i>
                                 </button>
                             </div>
                         </div>

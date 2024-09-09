@@ -36,35 +36,35 @@
                                 <% if ( userInfo.admin && userInfo.superAdmin ) { %>
                                     <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
                                         <input id="checkSelect<%=k%>_<%=n%>_<%=o%>"
-                                            title="Checkbox  OT#<%= pathMongoOtProject.otNumber %>.<%= pathMongoOtProject.otDetalles[o].numeroDetalle %>"
+                                            title="Checkbox detalle OT#<%= pathMongoOtProject.otNumber %>.<%= pathMongoOtProject.otDetalles[o].numeroDetalle %>"
                                             class="form-check-input my-auto me-2"
                                             type="checkbox"
                                             value=""
                                             name="checkSelect">
-                                        <button id="btnEditOt<%=k%>_<%=n%>_<%=o%>"
+                                        <button id="btnEditOtDetalle<%=k%>_<%=n%>_<%=o%>"
                                             type="button"
-                                            class="btn btn-sm btn-light"
+                                            class="btn btn-sm btn-light shadow"
                                             value="edit"
-                                            name="btnEditOt"
-                                            title="Editar OT#<%= pathMongoOtProject.otNumber %>.<%= pathMongoOtProject.otDetalles[o].numeroDetalle %>"
+                                            name="btnEditOtDetalle"
+                                            title="Editar detalle OT#<%= pathMongoOtProject.otNumber %>.<%= pathMongoOtProject.otDetalles[o].numeroDetalle %>"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
-                                        <button id="btnStatusOt<%=k%>_<%=n%>_<%=o%>"
+                                        <button id="btnStatusOtDetalle<%=k%>_<%=n%>_<%=o%>"
                                             type="button"
-                                            class="btn btn-sm btn-light"
+                                            class="btn btn-sm btn-light shadow"
                                             value="changeStatus"
-                                            name="btnStatusOt"
-                                            title="Cambiar status OT#<%= pathMongoOtProject.otNumber %>.<%= pathMongoOtProject.otDetalles[o].numeroDetalle %>"
+                                            name="btnStatusOtDetalle"
+                                            title="Cambiar status detalle OT#<%= pathMongoOtProject.otNumber %>.<%= pathMongoOtProject.otDetalles[o].numeroDetalle %>"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
                                             <i class="fa-solid fa-power-off"></i>
                                         </button>
-                                        <button id="btnDeleteOt<%=k%>_<%=n%>_<%=o%>"
+                                        <button id="btnDeleteOtDetalle<%=k%>_<%=n%>_<%=o%>"
                                             type="button"
-                                            class="btn btn-sm btn-light"
+                                            class="btn btn-sm btn-light shadow"
                                             value="delete"
-                                            name="btnDeleteOt"
-                                            title="Eliminar OT#<%= pathMongoOtProject.otNumber %>.<%= pathMongoOtProject.otDetalles[o].numeroDetalle%>"
+                                            name="btnDeleteOtDetalle"
+                                            title="Eliminar detalle OT#<%= pathMongoOtProject.otNumber %>.<%= pathMongoOtProject.otDetalles[o].numeroDetalle%>"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
@@ -109,12 +109,12 @@
                             <!-- status OT -->
                             <td class="text-center align-middle">
                                 <% if (pathMongoOtProject.otStatus) { %>
-                                    <span id="lastOtStatus<%=k%>_<%=n%>_<%=o%>"
+                                    <span id="lastOtDetalleStatus<%=k%>_<%=n%>_<%=o%>"
                                         class="badge rounded-pill bg-success text-white my-2">
                                         Activo
                                     </span>
                                 <% } else { %>
-                                    <span id="lastOtStatus<%=k%>_<%=n%>_<%=o%>"
+                                    <span id="lastOtDetalleStatus<%=k%>_<%=n%>_<%=o%>"
                                         class="badge rounded-pill bg-danger text-white my-2">
                                         Inactivo
                                     </span>

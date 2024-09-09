@@ -217,6 +217,10 @@ let otMecanizadoSchema = new Schema({
 
 // ------- OT Detalles ---------
 let ProgramacionSchema = new Schema({
+    detalleId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Detalles'
+    },
     numeroDetalle: { 
         type: String,
         default: '',
@@ -237,6 +241,13 @@ let ProgramacionSchema = new Schema({
     modifiedOn: {
         type: String,
         default: ""
+    },
+    visible:{
+        type: Boolean,
+        default: true,
+    },
+    statusDetalle: {
+        type: Boolean, default: true
     },
 })
 

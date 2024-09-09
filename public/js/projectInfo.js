@@ -16,9 +16,7 @@ const varLimMaxRevData = 99
 // Manejador de eventos de tablas General y Seguimiento -------------------
 const arrBtnHidde = []
 for (let i = 0; i<varLimMaxOciProyecto; i++) { //25
-    if (document.getElementById(`tablaGeneral${i}`)) {
-        arrBtnHidde.push(i)
-    }
+    document.getElementById(`tablaGeneral${i}`) ? arrBtnHidde.push(i) : null
 }
 
 function hiddeTableGeneral(k) {
@@ -87,29 +85,29 @@ function extractNumbers(str) {
     return null; // Return null if no valid numbers are found
 }
 
-
-if(arrBtnHidde !=[]) {
+// Ocultar tablas cabeceras
+if (arrBtnHidde !=[]) {
     let allButtonsHiddeTableGeneral = document.querySelectorAll('button[name="btnHiddeTableGeneral"]')
     let allButtonsHiddeTableSeguimiento = document.querySelectorAll('button[name="btnHiddeTableSeguimiento"]')
     
     allButtonsHiddeTableGeneral.forEach(function(btn){
-        if (btn.id) {
+        btn.id ?
             btn.addEventListener("click", (event) => {
                 event.preventDefault()
                 let kValue = btn.id//event.target.id
                 hiddeTableGeneral(extractNumbers(kValue))
             })
-        }
+        : null
     })
 
     allButtonsHiddeTableSeguimiento.forEach(function(btn){
-        if (btn.id) {
+        btn.id ?
             btn.addEventListener("click", (event) => {
                 event.preventDefault()
                 let kValue = btn.id//event.target.id
                 hiddeTableSeguimiento(extractNumbers(kValue))
             })
-        }    
+        : null
     })
 }
 
@@ -123,24 +121,21 @@ document.addEventListener('DOMContentLoaded', function () {
 // ---- Manejador de eventos para Carouseles --------------------
 document.addEventListener('DOMContentLoaded', function (event) {
     let initIndex = event.eventPhase
-
     const arrayCarousel = []
     for (let i = 0; i<varLimMaxOciProyecto; i++) {
-        if (document.getElementById(`carouselExampleControls${i}`)) {
-            arrayCarousel.push(i)
-        }
+        document.getElementById(`carouselExampleControls${i}`) ? arrayCarousel.push(i) : null
     }
+
     if(arrayCarousel !=[]) {
         for (let i=0; i<arrayCarousel.length; i++) {
             let myCarousel = document.getElementById(`carouselExampleControls${arrayCarousel[i]}`)
             
-            if (myCarousel) {
-                if (initIndex === 2) {
+            myCarousel ?
+                initIndex === 2 ?
                     myCarousel.querySelector('[data-bs-slide="prev"]').setAttribute('disabled', 'disabled')
-                } else {
+                :
                     myCarousel.querySelector('[data-bs-slide="prev"]').removeAttribute('disabled')
-                }
-            }
+            : null
 
             // Detectar cuando el slide cambia
             myCarousel.addEventListener('slid.bs.carousel', function (event) {
@@ -148,17 +143,16 @@ document.addEventListener('DOMContentLoaded', function (event) {
                 let currentIndex = event.to
 
                 // Si el slide actual es el último, deshabilita el botón "Next"
-                if (currentIndex === slideCount - 1) {
+                currentIndex === slideCount - 1 ? 
                     myCarousel.querySelector('[data-bs-slide="next"]').setAttribute('disabled', 'disabled')
-                } else {
+                :
                     myCarousel.querySelector('[data-bs-slide="next"]').removeAttribute('disabled')
-                }
+                
                 // Si el slide actual es el primero, deshabilita el botón "Prev"
-                if (currentIndex === 0) {
+                currentIndex === 0 ?
                     myCarousel.querySelector('[data-bs-slide="prev"]').setAttribute('disabled', 'disabled')
-                } else {
+                :
                     myCarousel.querySelector('[data-bs-slide="prev"]').removeAttribute('disabled')
-                }
             })
         }
     }
@@ -183,96 +177,22 @@ const arrayOriginalBtn = Array.from(btnInferiorCarousel)
 const subarrays = dividirArrayEnSubarrays(arrayOriginal, 12);
 const subarrayBtns = dividirArrayEnSubarrays(arrayOriginalBtn, 12);
 
-subarrays.forEach((subarray) => {    
-        if (subarray.length > 0) {
-                switch (parseInt(slideHidden.value)) {
-                    case 0:
-                        subarray[0].classList.add('active')
-                        break;
-                    case 1:
-                        subarray[1].classList.add('active')
-                        break;
-                    case 2:
-                        subarray[2].classList.add('active')
-                        break;
-                    case 3:
-                        subarray[3].classList.add('active')
-                        break;
-                    case 4:
-                        subarray[4].classList.add('active')
-                        break;
-                    case 5:
-                        subarray[5].classList.add('active')
-                        break;
-                    case 6:
-                        subarray[6].classList.add('active')
-                        break;
-                    case 7:
-                        subarray[7].classList.add('active')
-                        break;
-                    case 8:
-                        subarray[8].classList.add('active')
-                        break;
-                    case 9:
-                        subarray[9].classList.add('active')
-                        break;
-                    case 10:
-                        subarray[10].classList.add('active')
-                        break;
-                    case 11:
-                        subarray[11].classList.add('active')
-                        break;
-                    default:
-                        subarray[0].classList.add('active')
-                        break;
-                }
-        }
-});
+function activarElemento(subarray, index) {
+    if (subarray.length > 0) {
+        // Si el índice está dentro del rango, activamos el elemento correspondiente
+        const safeIndex = (index >= 0 && index < subarray.length) ? index : 0;
+        subarray[safeIndex].classList.add('active');
+    }
+}
 
-subarrayBtns.forEach((subarray) => {
-        if (subarray.length > 0) {
-                switch (parseInt(slideHidden.value)) {
-                    case 0:
-                        subarray[0].classList.add('active')
-                        break;
-                    case 1:
-                        subarray[1].classList.add('active')
-                        break;
-                    case 2:
-                        subarray[2].classList.add('active')
-                        break;
-                    case 3:
-                        subarray[3].classList.add('active')
-                        break;
-                    case 4:
-                        subarray[4].classList.add('active')
-                        break;
-                    case 5:
-                        subarray[5].classList.add('active')
-                        break;
-                    case 6:
-                        subarray[6].classList.add('active')
-                        break;
-                    case 7:
-                        subarray[7].classList.add('active')
-                        break;
-                    case 8:
-                        subarray[8].classList.add('active')
-                        break;
-                    case 9:
-                        subarray[9].classList.add('active')
-                        break;
-                    case 10:
-                        subarray[10].classList.add('active')
-                        break;
-                    case 11:
-                        subarray[11].classList.add('active')
-                        break;
-                    default:
-                        subarray[0].classList.add('active')
-                        break;
-                }
-        }
+// Convertimos el valor de slideHidden a entero una vez
+const slideIndex = parseInt(slideHidden.value);
+
+// Activamos los elementos en ambos conjuntos de subarrays
+[subarrays, subarrayBtns].forEach(array => {
+    array.forEach(subarray => {
+        activarElemento(subarray, slideIndex);
+    });
 });
 
 // ---------------- Event Add New Ot Row to OCI --------------------
@@ -292,7 +212,7 @@ buttonOne.addEventListener('click', () => {
 //*********** */
 tippy(btnAddNewRow, {
     content: `<strong>Límite máximo de OT 10</strong><br>
-               Puedes agregar 9 OT's mas`,
+                Puedes agregar 9 OT's mas`,
     allowHTML: true,
     maxWidth: 350,
     inlinePositioning: true,
@@ -308,12 +228,12 @@ tippy(btnAddNewRow, {
 btnAddNewRow.addEventListener('click', () => {
 
     const parentDiv = document.getElementById('div_body')
-    let i = parentDiv.childElementCount
+    let i = parseInt(parentDiv.childElementCount)
     const lastChild = parentDiv.children[i - 1]
     const lastChildId = lastChild.id
 
     if (lastChildId < i || i == 1) {
-        i = parentDiv.childElementCount
+        i = parseInt(parentDiv.childElementCount)
     } else {
         const numberId1 = parseInt(lastChildId.slice(-1))
         const numberId2 = parseInt(lastChildId.slice(-2))
@@ -321,7 +241,7 @@ btnAddNewRow.addEventListener('click', () => {
 
         numberId1 >= 0 && numberId2 ? numberIdLastChild = numberId2 : numberIdLastChild = numberId1;
 
-        i = numberIdLastChild + 1
+        i = parseInt(numberIdLastChild + 1)
     }
 
     let otNumberValue = parseInt(document.getElementById('otNumber').value)
@@ -373,42 +293,41 @@ btnAddNewRow.addEventListener('click', () => {
             </div>
             <div class="col-1 my-auto">
                 <div class="d-flex">
-                    <button 
-                        name="btnRemoveRow"
-                        type="button"
-                        id="btnRemoveRow${i}"
-                        value="${i}"
-                        class="btn btn-danger rounded-circle m-2 boton">
-                            <i class="fa-solid fa-trash"></i>
+                    <button title="Eliminar fila" name="btnRemoveRow" type="button" id="btnRemoveRow${i}" value="${i}" class="btn btn-danger rounded-circle m-2 border border-2 shadow">
+                        <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>    
             </div>`
     )
 
+    // Función para ocultar el botón de remover
+    function hideRemoveButton(index) {
+        const btnRemoveItem = document.getElementById(`btnRemoveRow${index}`);
+        if (btnRemoveItem) {
+            btnRemoveItem.style.display = 'none';
+        }
+    }
+
+    // Lógica principal
+    if (i !== 1) {
+        hideRemoveButton(i - 1);
+    }
+
+    if (i >= 10) {
+        btnAddNewRow.disabled = true;
+    }
+
+    const newDiv = document.createElement('div');
+    newDiv.setAttribute('class', 'row my-2');
+    newDiv.id = `otItemRow${i}`;
+
+    // Configurar el contenido del nuevo div según el valor de i
     if (i === 1) {
-        originalDiv
-
-    } else if (i !== 1 && i < 9) { //cantidad maxima de OT en conjunto a agregar 10
-        originalDiv
-        btnRemoveItem = document.getElementById(`btnRemoveRow${i - 1}`)
-        btnRemoveItem.style.display = 'none'
+        newDiv.innerHTML = `<hr class="my-2"> ${originalDiv} <hr class="my-2">`;
     } else {
-        btnRemoveItem = document.getElementById(`btnRemoveRow${i - 1}`)
-        btnRemoveItem.style.display = 'none'
-        btnAddNewRow.disabled = true
+        newDiv.innerHTML = i === 10 ? originalDiv : originalDiv + `<hr class="my-2">`;
     }
 
-    const newDiv = document.createElement('div')
-    newDiv.setAttribute('class', "row my-2")
-    newDiv.id = `otItemRow${i}`
-
-    if(i === 1) {
-        newDiv.innerHTML = `<hr class="my-2">` + originalDiv + `<hr class="my-2">`
-    } else if(i === 10) {
-        newDiv.innerHTML = originalDiv
-    } else {
-        newDiv.innerHTML = originalDiv + `<hr class="my-2">`
-    }
     parentDiv.appendChild(newDiv)
     const otQty = document.getElementById("otQuantity")
     otQty.value = i+1
@@ -418,30 +337,24 @@ btnAddNewRow.addEventListener('click', () => {
     
         if (lastRemoveButton) {
             lastRemoveButton.addEventListener("click", (event) => {
-               event.preventDefault()
-               let idBtnRemoveRow = lastRemoveButton.id
-               removeRow(idBtnRemoveRow)
+                event.preventDefault()
+                let idBtnRemoveRow = lastRemoveButton.id
+                removeRow(idBtnRemoveRow)
             })
         }
-   
     //*************** ToolTip cantidad de OT a agregar *************** */
-    if (i == 1 || i < 8) {
-        tippy(btnAddNewRow, {
-            content: `<strong>Límite máximo de OT (10)</strong><br>
-                        Puedes agregar ${9-i} OT's mas`,
-            allowHTML: true,
-            maxWidth: 350,
-            inlinePositioning: true,
-            arrow: true,
-            animation: 'shift-away',
-            theme: 'material',
-            interactive: false,
-            hideOnClick: true, // Oculta el tooltip al hacer clic en cualquier lugar fuera de él
-        })
+    let contentMessage;
+    if (i < 8) {
+        contentMessage = `<strong>Límite máximo de OT (10)</strong><br> 
+                        Puedes agregar ${9 - i} OT's más`;
     } else if (i == 8) {
+        contentMessage = `<strong>Límite máximo de OT (10)</strong><br> 
+                        Puedes agregar 1 OT más`;
+    }
+
+    if (i <= 8) {
         tippy(btnAddNewRow, {
-            content: `<strong>Límite máximo de OT (10)</strong><br>
-                        Puedes agregar 1 OT mas`,
+            content: contentMessage,
             allowHTML: true,
             maxWidth: 350,
             inlinePositioning: true,
@@ -449,18 +362,17 @@ btnAddNewRow.addEventListener('click', () => {
             animation: 'shift-away',
             theme: 'material',
             interactive: false,
-            hideOnClick: true, // Oculta el tooltip al hacer clic en cualquier lugar fuera de él
-        })
+            hideOnClick: true
+        });
     }
     //*************************************** */
 })
 
 //-------------------------- Remove OT Row ----------------------------------
 function removeRow(e) {
-    //console.log('e:', e)
     const parentDiv = document.getElementById('div_body')
     let i = parentDiv.childElementCount
-    //console.log('i(resta):', i)
+    
     if (extractNumbers(e) && i > 1) {
         let btnRemoveRow = e
         const numberId1 = parseInt(btnRemoveRow.slice(-1))
@@ -475,9 +387,8 @@ function removeRow(e) {
 
         if (checkString(numberIdToDelete)) {
             const rowToDelete = document.getElementById(`otItemRow${numberIdToDelete}`)
-            if (rowToDelete) {
-                rowToDelete.remove()
-            }
+            rowToDelete ? rowToDelete.remove() : null
+
             const otQty = document.getElementById("otQuantity")
             otQty.setAttribute('value', (i - 1))
 
@@ -496,10 +407,13 @@ function removeRow(e) {
             }
         }
     }
-    if (i > 1 && i <= 9) {
+
+    function tippyLabel(i, tippyFormula) {
+        let tippyContent = `<strong>Límite máximo de OT (10)</strong><br>
+                            Puedes agregar ${tippyFormula} OT's mas`
+        
         tippy(btnAddNewRow, {
-            content: `<strong>Límite máximo de OT (10)</strong><br>
-                        Puedes agregar ${(10-i)+1} OT's mas`,
+            content: tippyContent,
             allowHTML: true,
             maxWidth: 350,
             inlinePositioning: true,
@@ -507,21 +421,18 @@ function removeRow(e) {
             animation: 'shift-away',
             theme: 'material',
             interactive: false,
-            hideOnClick: true, // Oculta el tooltip al hacer clic en cualquier lugar fuera de él
+            hideOnClick: true
         })
+    }
+
+
+    if (i > 1 && i <= 9) {
+        let tippyFormula = (10-i)+1
+        tippyLabel(i, tippyFormula)
+
     } else if (i == 1) {
-        tippy(btnAddNewRow, {
-            content: `<strong>Límite máximo de OT (10)</strong><br>
-                        Puedes agregar ${10-i} OT's mas`,
-            allowHTML: true,
-            maxWidth: 350,
-            inlinePositioning: true,
-            arrow: true,
-            animation: 'shift-away', //'scale',
-            theme: 'material',
-            interactive: false,
-            hideOnClick: true, // Oculta el tooltip al hacer clic en cualquier lugar fuera de él
-        })
+        let tippyFormula = 10-i
+        tippyLabel(i, tippyFormula)
     }
 }
 
@@ -583,13 +494,10 @@ function radioSelected(radioSelectedValue, elementoId) {
     return (ociNumberHidden.value)
 }
 
-var arrayBtnAddOtFormSelected = []
+let arrayBtnAddOtFormSelected = []
 for (let i=0; i<radios.length; i++) {
-    var btnAddOtFormSelected = document.getElementById(`btnAddOtFormSelected${i}`)
-    //console.log('btnAddOtFormSelected', btnAddOtFormSelected)
-    if(btnAddOtFormSelected) {
-        arrayBtnAddOtFormSelected.push(btnAddOtFormSelected)
-    }
+    let btnAddOtFormSelected = document.getElementById(`btnAddOtFormSelected${i}`)
+    btnAddOtFormSelected ? arrayBtnAddOtFormSelected.push(btnAddOtFormSelected) : null
 }
 
 arrayBtnAddOtFormSelected.forEach(function(elemento) {
@@ -597,7 +505,6 @@ arrayBtnAddOtFormSelected.forEach(function(elemento) {
         elemento.addEventListener('click', (event) => {
             event.preventDefault()
             const radioSelectedValue = elemento.id
-            //radioSelected(radioSelectedValue, elemento.value)
             ociNumberHidden.value = radioSelected(radioSelectedValue, elemento.value)
             lastOtNumberFn(elemento.id)
             formulario.scrollIntoView({ behavior: 'smooth', top:0 }) //scrollTo({ behavior: 'smooth', block: 'start' })
@@ -605,7 +512,7 @@ arrayBtnAddOtFormSelected.forEach(function(elemento) {
     }
 })
 
-for (let i = 0; i < radios.length; i++) {
+for (let i=0; i<radios.length; i++) {
     radios[i].addEventListener("change", (event) => {
         event.preventDefault()
         let ociSeleccionada = event.target.value
@@ -698,9 +605,7 @@ function messageUpdateOt(
     statusOt=='Activo' ? checked : checked = ''
 
     let bgColorStatus
-    statusOt=='Activo' ? bgColorStatus='background-color: #55dd5560;'
-                        : 
-                        bgColorStatus='background-color: #dd555560;'
+    statusOt=='Activo' ? bgColorStatus='background-color: #55dd5560;' : bgColorStatus='background-color: #dd555560;'
 
     const Toast = Swal.mixin({
         toast: true,
@@ -710,7 +615,7 @@ function messageUpdateOt(
         timerProgressBar: false,
     })
 
-    var html = `<form id="formUpdateOt${idProjectSelected}" action="/api/proyectos/updateOt/${idProjectSelected}" method="post">
+    let html = `<form id="formUpdateOt${idProjectSelected}" action="/api/proyectos/updateOt/${idProjectSelected}" method="post">
                     <fieldset>
                         <div class="row justify-content-between mb-3 mx-1 px-1">
                             <div class="col-3">
@@ -725,13 +630,13 @@ function messageUpdateOt(
                             </div>
                             
                             <div class="col-4" style="${bgColorStatus}">
-                                <label for="statusOt" class="form-label d-flex justify-content-start ms-1">Status OT</label>
+                                <label for="statusOtForm" class="form-label d-flex justify-content-start ms-1">Status OT</label>
                                 <div>
                                     <p class="d-inline-block me-1">Inactiva</p>
                                     <div class="form-check form-switch d-inline-block mt-2">
                                         <input id="statusOtForm" class="form-check-input" type="checkbox" role="switch"
                                             name="statusOtForm" style="cursor: pointer;" ${checked}>
-                                        <label class="form-check-label" for="statusOt">Activa</label>
+                                        <label class="form-check-label" for="statusOtForm">Activa</label>
                                     </div>    
                                 </div>
                             </div>
@@ -740,12 +645,12 @@ function messageUpdateOt(
                         <div class="row mb-3 mx-1 px-1">
                             <div class="col-8">
                                 <label for="descriptionOt" class="form-label d-flex justify-content-start ms-1">Descripción OT</label>
-                                <input type="text" name="descriptionOt" class="form-control"
+                                <input type="text" name="descriptionOt" id="descriptionOt" class="form-control"
                                     placeholder="Descripción OT" value="${otDescription}" required>
                             </div>
                             <div class="col-4">
                                 <label for="numeroOp" class="form-label d-flex justify-content-start ms-1">Número OP</label>
-                                <input type="number" name="numeroOp" class="form-control"
+                                <input type="number" name="numeroOp" id="numeroOp" class="form-control"
                                     placeholder="Numero Op" value="${numberOp}" required>
                             </div>
                         </div>
@@ -789,9 +694,9 @@ function messageUpdateOt(
             position: 'center',
             html: html,
             width: 850,
-            // icon: 'info',
             imageUrl: `${imageOci}`,
             imageWidth: `20%`,
+            showCloseButton: true,
             showCancelButton: true,
             showConfirmButton: true,
             focusConfirm: false,
@@ -802,16 +707,184 @@ function messageUpdateOt(
                 btnAceptar[0].setAttribute('id','btnAceptarModal')
                 btnAceptar[0].style = "cursor: not-allowed;"
                 btnAceptar[0].disabled = true
+
+                //-----Btns Buscar en BBDD el Usuario Seguidor de Diseño/Simulación --------------
+                const searchDesignUserModal = document.getElementById('searchDesignUserModal')
+                const searchSimulationUserModal = document.getElementById('searchSimulationUserModal')
+
+                async function cargarUsuarioModal(idPermiso) {
+                    const permisos = {
+                        'searchDesignUserModal': {
+                            permisoUsuario: 'diseno',
+                            tituloSeguimiento: 'Seguimiento Diseño',
+                            inputTarget: 'internoDiseno'
+                        },
+                        'searchSimulationUserModal': {
+                            permisoUsuario: 'simulacion',
+                            tituloSeguimiento: 'Seguimiento Simulación',
+                            inputTarget: 'internoSimulacion'
+                        }
+                    };
+                    
+                    const { permisoUsuario, tituloSeguimiento, inputTarget } = permisos[idPermiso] || {};
+                
+                    if (!permisoUsuario || !tituloSeguimiento || !inputTarget) {
+                        throw new Error(`Permiso no encontrado para id:', ${idPermiso}`)
+                    }
+                
+                    try {
+                        const myHeaders = new Headers();
+                        myHeaders.append("Content-Type", "application/json");
+                        const url = `../../../api/usuarios/searchUsers/${userNameBanner}`
+                        const response = await fetch(url, {
+                            method: "GET",
+                            headers: myHeaders,
+                            mode: 'cors',
+                            cache: 'default',
+                        });
+                        
+                        if(!response.ok ){
+                            throw new Error(`Error en la solicitud`);
+                        }
+                
+                        const users = await response.json();
+                        const arrayUsuariosEspecificos = [];
+                        const arrayUsersAll = [];
+                
+                        if (users && users.length > 0) {
+                            users.forEach((user, i) => {
+                                const userHTML = `
+                                    <label>
+                                        <span id="${user._id}" class="badge rounded-pill ${user.permiso === `${permisoUsuario}` ? 'bg-info' : 'bg-light'} text-dark my-2">
+                                            <input id="${i}" class="form-check-input mb-1" type="radio"
+                                                name="radioUsuarios" value="${user.name}, ${user.lastName}">
+                                            ${user.name} ${user.lastName}
+                                        </span>
+                                    </label>`;
+                
+                                if (user.status) {
+                                    user.permiso === `${permisoUsuario}` ? arrayUsuariosEspecificos.push(userHTML) : arrayUsersAll.push(userHTML);
+                                }    
+                            });
+                
+                            const html = `
+                                <hr>
+                                <label>${tituloSeguimiento}</label>
+                                <div name='container' class="container">
+                                    ${arrayUsuariosEspecificos.join(' ')}
+                                </div>
+                                <hr>
+                                <label>Usuarios</label>
+                                <div name='container' class="container">
+                                    ${arrayUsersAll.join(' ')}
+                                </div>
+                                <hr>`;
+                
+                            Swal.fire({
+                                title: tituloSeguimiento,
+                                html: html,
+                                width: 450,
+                                background: "#eee",
+                                allowOutsideClick: false,
+                                showCloseButton: true,
+                                focusConfirm: false,
+                                confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>',
+                                didOpen: () => {
+                                    const btnAceptar = document.querySelector('.swal2-confirm');
+                                    btnAceptar.setAttribute('id', 'btnAceptarModal');
+                                    btnAceptar.style.cursor = "not-allowed";
+                                    btnAceptar.disabled = true;
+                
+                                    const radios = document.getElementsByName('radioUsuarios');
+                                    radios.forEach((radio) => {
+                                        radio.addEventListener('change', () => {
+                                            btnAceptar.style.cursor = "pointer";
+                                            btnAceptar.disabled = false;
+                                        });
+                                    });
+                                }
+                                
+                            }).then((result) => {
+                                const radioSelected = document.querySelector('input[name="radioUsuarios"]:checked') 
+                                if (result.isConfirmed && radioSelected) {
+                                    const inputUserSelected = document.getElementById(`${inputTarget}`);
+                                    inputUserSelected.value = radioSelected.value;
+                                    idPermiso==='searchDesignUserModal' ? otDesign = radioSelected.value : otSimulation = radioSelected.value
+                                    // Al cerrar el segundo modal, reabrir el primer modal
+                                    messageUpdateOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDesign, otSimulation, otSupplier, imageOci);
+                                    
+                                } else {
+                                    const titulo = 'Usuario no seleccionado'
+                                    const message = 'No ha seleccionado ningún usuario!'
+                                    const icon = 'warning'
+                                    messageAlertUser(titulo, message, icon)
+                                    // Al cerrar el segundo modal, reabrir el primer modal
+                                    setTimeout(() => {
+                                        messageUpdateOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDesign, otSimulation, otSupplier, imageOci);
+                                    }, 2000)
+                                }
+                            });
+                            
+                        } else {
+                            throw new Error(`No hay usuarios que seleccionar`);
+                        }
+                
+                    } catch (error) {
+                        const titulo = 'Error'
+                        const message = `${error}`
+                        const icon = 'error'
+                        messageAlertUser(titulo, message, icon)
+                    }
+                }
+
+                searchDesignUserModal.addEventListener('click', async (event) => {
+                    // Ocultar temporalmente el primer modal
+                    Swal.close();
+
+                    let idPermiso = searchDesignUserModal.id
+                    event.preventDefault();
+                    try {
+                        await cargarUsuarioModal(idPermiso);
+                    } catch (error) {
+                        const titulo = 'Error al cargar los usuarios'
+                        const message = error
+                        const icon = 'error'
+                        messageAlertUser(titulo, message, icon)
+                    }
+                });
+
+                searchSimulationUserModal.addEventListener('click', async (event) => {
+                    // Ocultar temporalmente el primer modal
+                    Swal.close();
+
+                    let idPermiso = searchSimulationUserModal.id
+                    event.preventDefault();
+                    try {
+                        await cargarUsuarioModal(idPermiso);
+                    } catch (error) {
+                        const titulo = 'Error al cargar los usuarios'
+                        const message = error
+                        const icon = 'error'
+                        messageAlertUser(titulo, message, icon)
+                    }
+                });
+
+                btnAceptarPrimerModal = document.getElementById('btnAceptarModal');
+                btnAceptarPrimerModal.style.cursor = "pointer";
+                btnAceptarPrimerModal.disabled = false;
+
             }
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById(`formUpdateOt${idProjectSelected}`).submit()
-                Toast.fire({
-                    icon: 'success',
-                    title: `La OT# <b>${numberOt}</b>, se modificó con éxito!`
-                })
+                setTimeout(() => {
+                    Toast.fire({
+                        icon: 'success',
+                        title: `La OT# <b>${numberOt}</b>, se modificó con éxito!`
+                    })
+                }, 2000)
 
-            } else {
+            } else if (result.dismiss === 'cancel') {
                 Swal.fire(
                     'OT no modificada!',
                     `La OT# <b>${numberOt}</b>, no se modificó!`,
@@ -821,6 +894,7 @@ function messageUpdateOt(
             }
         })
         disabledBtnAceptar()
+
     } else {
         Swal.fire({
             title: 'Error',
@@ -833,8 +907,7 @@ function messageUpdateOt(
         })
     }
 
-    var inputsDeTexto = document.querySelectorAll('input[type="text"]')
-
+    let inputsDeTexto = document.querySelectorAll('input[type="text"]')
     // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
         input.addEventListener('keydown', function(event) {
@@ -858,191 +931,6 @@ function messageUpdateOt(
             }
         })
     })
-
-    //FIXME:************ to be done ********************
-    //-----Btns Buscar en BBDD el Usuario Seguidor de Diseño --------------
-    const searchDesignUserModal = document.getElementById('searchDesignUserModal')
-    searchDesignUserModal.addEventListener('click', (event) => {
-    // event.preventDefault()
-
-    function cargarUsuarioDiseno() {
-        fetch('../../../api/usuarios/searchUsers/simulacion')
-            .then(response => response.json())
-            .then(users => {
-            const arrayUsuariosDiseno = []
-            const arrayUsersAll = []
-
-            for(let i=0; i<users.usersAll.length; i++) {
-
-                if(users.usersAll[i].status && users.usersAll[i].permiso ==='diseno') {
-                    arrayUsuariosDiseno.push(`
-                                    <label>
-                                        <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-info text-dark my-2">
-                                            <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
-                                            ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                        </span>
-                                    </label>`)
-
-                } else if (users.usersAll[i].status && users.usersAll[i].permiso !=='diseno') {
-                    arrayUsersAll.push(`
-                                <label>
-                                    <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-light text-dark my-2">
-                                        <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
-                                        ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                    </span>
-                                </label>`)
-                }
-            }
-            
-            const html = `
-                    <hr>
-                        <label>Usuarios Diseño</label>
-                        <div name='container' class="container">
-                            ${arrayUsuariosDiseno.join(' ')}
-                        </div>
-                    <hr>
-                        <label>Usuarios</label>
-                        <div name='container' class="container">
-                            ${arrayUsersAll.join(' ')}
-                        </div>
-                    <hr>`
-
-                    Swal.fire({
-                        title: 'Usuarios',
-                        html: html,
-                        width: 450,
-                        background: "#eee",
-                        allowOutsideClick: false,
-                        showCloseButton: true,
-                        showCancelButton: true,
-                        focusConfirm:false,
-                        cancelButtonText: 'Volver <i class="fa-solid fa-back"></i>',
-                        confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>'    
-                    
-                    }).then((secondResult) => {
-                        const radiosToSelect = document.getElementsByName('radioUsuarios')
-
-                        for(let i=0; i<radiosToSelect.length; i++) {
-                            const radioSelected = document.getElementById(i)
-                            
-                            if (radioSelected.checked) {
-                                var usuariosSeleccionado = radioSelected.value
-                            }
-                        }
-                        
-                        if (secondResult.isConfirmed) {
-                            //const inputUserSelected = document.getElementById('designOt')
-                            //inputUserSelected.value = usuariosSeleccionado
-                            
-                        } else if (secondResult.dismiss === Swal.DismissReason.cancel) {
-                            event.preventDefault()
-                            return messageUpdateOt()
-                        }
-
-                        else {
-                            Swal.fire(
-                                'Usuario no seleccionado!',
-                                `No ha seleccionado ningún usuario!`,
-                                'warning'
-                            )
-                            return false
-                        }
-                    })
-        })
-        .catch(error => {
-        console.error('Error:', error)
-        })
-        }
-        cargarUsuarioDiseno()
-    })
-
-    //-----Btns Buscar en BBDD el Usuario Seguidor de Simulacion --------------
-    const searchSimulationUserModal = document.getElementById('searchSimulationUserModal')
-    searchSimulationUserModal.addEventListener('click', (event) => {
-    event.preventDefault()
-
-    function cargarUsuarioSimulacion() {
-        fetch('../../../api/usuarios/searchUsers/all')
-            .then(response => response.json())
-            .then(users => {
-            const arrayUsuariosSimulacion = []
-            const arrayUsersAll = []
-
-            for(let i=0; i<users.usersAll.length; i++) {
-
-                if(users.usersAll[i].status && users.usersAll[i].permiso ==='simulacion') {
-                    arrayUsuariosSimulacion.push(`
-                                    <label>
-                                        <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-warning text-dark my-2">
-                                            <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
-                                            ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                        </span>
-                                    </label>`)
-
-                } else if (users.usersAll[i].status && users.usersAll[i].permiso !=='simulacion') {
-                    arrayUsersAll.push(`
-                                <label>
-                                    <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-light text-dark my-2">
-                                        <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
-                                        ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                    </span>
-                                </label>`)
-                }
-            }
-            
-            const html = `
-                    <hr>
-                        <label>Usuarios Simulación</label>
-                        <div name='container' class="container">
-                            ${arrayUsuariosSimulacion.join(' ')}
-                        </div>
-                    <hr>
-                        <label>Usuarios</label>
-                        <div name='container' class="container">
-                            ${arrayUsersAll.join(' ')}
-                        </div>
-                    <hr>`
-
-                    Swal.fire({
-                        title: 'Usuarios',
-                        html: html,
-                        width: 450,
-                        background: "#eee",
-                        allowOutsideClick: false,
-                        showCloseButton: true,
-                        confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>'    
-                    }).then((result) => {
-                        const radiosToSelect = document.getElementsByName('radioUsuarios')
-
-                        for(let i=0; i<radiosToSelect.length; i++) {
-                            const radioSelected = document.getElementById(i)
-                            
-                            if (radioSelected.checked) {
-                                var usuariosSeleccionado = radioSelected.value
-                            }
-                        }
-                        
-                        if (result.isConfirmed) {
-                            const inputUserSelected = document.getElementById('internoSimulacion')
-                            inputUserSelected.value = usuariosSeleccionado
-                        
-                        } else {
-                            Swal.fire(
-                                'Usuario no seleccionado!',
-                                `No ha seleccionado ningún usuario!`,
-                                'warning'
-                            )
-                            return false
-                        }
-                    })
-        })
-        .catch(error => {
-        console.error('Error:', error)
-        })
-        }
-        cargarUsuarioSimulacion()
-    })
-    // ****************** End To be done *******************************
 }
 
 //---- Delete OT ----------------
@@ -1258,7 +1146,7 @@ let maxOtQuantity
 checkSelect ? maxOtQuantity = parseInt(checkSelect.length) : maxOtQuantity=0
 let ociTotalQty = parseInt(document.getElementById('ociTotalQty').innerText)
 
-var arrayBtnChangeStatusOt = [],
+let arrayBtnChangeStatusOt = [],
     arrayBtnUpdateOt = [],
     arrayBtnDeleteOt = [],
     arrayCheckBoxSelect = [],
@@ -1267,10 +1155,7 @@ var arrayBtnChangeStatusOt = [],
 
     for (let m=0; m<ociTotalQty; m++) {
         let btnCheckSelectionAll = document.getElementById(`btnCheckSelectionAll${m}`)
-        if (btnCheckSelectionAll) {
-
-            arrayBtnCheckSelectionAll.push(btnCheckSelectionAll)
-        }
+        btnCheckSelectionAll ? arrayBtnCheckSelectionAll.push(btnCheckSelectionAll) : null
 
         let btnCheckSelecMasive = document.getElementById(`btnCheckSelecMasive${m}`)
         if (btnCheckSelecMasive) {
@@ -1280,24 +1165,16 @@ var arrayBtnChangeStatusOt = [],
 
         for (let n=0; n<maxOtQuantity; n++) {
             let btnChangeStatusOt = document.getElementById(`btnStatusOt${m}_${n}`)
-            if (btnChangeStatusOt) {
-                arrayBtnChangeStatusOt.push(btnChangeStatusOt)
-            }
+            btnChangeStatusOt ? arrayBtnChangeStatusOt.push(btnChangeStatusOt) : null
 
             let btnUpdateOt = document.getElementById(`btnEditOt${m}_${n}`)
-            if (btnUpdateOt) {
-                arrayBtnUpdateOt.push(btnUpdateOt)
-            }
+            btnUpdateOt ? arrayBtnUpdateOt.push(btnUpdateOt) : null
 
             let btnDeleteOt = document.getElementById(`btnDeleteOt${m}_${n}`)
-            if(btnDeleteOt) {
-                arrayBtnDeleteOt.push(btnDeleteOt)
-            }
+            btnDeleteOt ? arrayBtnDeleteOt.push(btnDeleteOt) : null
 
             let checkBoxSelect = document.getElementById(`checkSelect${m}_${n}`)
-            if (checkBoxSelect) {
-                arrayCheckBoxSelect.push(checkBoxSelect)
-            }
+            checkBoxSelect ? arrayCheckBoxSelect.push(checkBoxSelect) : null
         }
         
     }
@@ -1345,13 +1222,13 @@ function updateBtnCheckSelecMasive(idOci) {
         btnMasive.disabled = true
     }
 }  
-//TOOD: Hacer
+//TODO: Hacer
 arrayBtnCheckSelecMasive.forEach(function(elemento) {
     if (elemento.id) {
         elemento.addEventListener('click', (event) => {
             event.preventDefault()
             const idOci = elemento.id.slice(19)
-            var arrayRowsSelected = []
+            let arrayRowsSelected = []
             for (let z=0; varLimMaxOtProyecto > z; z++) {
                 let selected = document.getElementById(`checkSelect${idOci}_${z}`)
     
@@ -1376,9 +1253,7 @@ arrayBtnCheckSelecMasive.forEach(function(elemento) {
                     })
                 }
             }
-                    
             messageUpdateMasiveOt(arrayRowsSelected)
-            
         })
     }
 })
@@ -1391,7 +1266,7 @@ arrayBtnChangeStatusOt.forEach(function(elemento) {
             let regex = /^btnStatusOt/;
 
             // Eliminar el texto inicial de la cadena
-            var idOtOci = elementoId.replace(regex, '')
+            let idOtOci = elementoId.replace(regex, '')
             const arrayOciOtSelected = idOtOci.split('_')
             
             const statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent
@@ -1421,7 +1296,7 @@ arrayBtnUpdateOt.forEach(function(elemento) {
             let regex = /^btnEditOt/;
 
             // Eliminar el texto inicial de la cadena
-            var idOtOci = elementoId.replace(regex, '')
+            let idOtOci = elementoId.replace(regex, '')
             const arrayOciOtSelected = idOtOci.split('_')
 
             const idProjectSelected = document.getElementById('projectIdHidden').value
@@ -1461,7 +1336,7 @@ arrayBtnDeleteOt.forEach(function(elemento) {
             let regex = /^btnDeleteOt/;
 
             // Eliminar el texto inicial de la cadena
-            var idOtOci = elementoId.replace(regex, '')
+            let idOtOci = elementoId.replace(regex, '')
             const arrayOciOtSelected = idOtOci.split('_')
             
             const statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent
@@ -1488,22 +1363,18 @@ arrayCheckBoxSelect.forEach(function(element) {
     element.addEventListener('change', (event) => {
         event.preventDefault()
         const idOtOci = (event.target.id).slice(11)
-        if (document.getElementsByName(`rowSelected${idOtOci}`)) {
-            var rowSelectCheck = Array.from(document.getElementsByName(`rowSelected${idOtOci}`))
-        }
+        let rowSelectCheck = []
+        document.getElementsByName(`rowSelected${idOtOci}`) ? rowSelectCheck = Array.from(document.getElementsByName(`rowSelected${idOtOci}`)) : null
 
         let idOci = extractNumbers(element.id)[0]
         //let idOt = extractNumbers(element.id)[1]
-        
         updateBtnCheckSelecMasive(idOci)
 
         for (let q=0; q<rowSelectCheck.length; q++) { //12
-            if (rowSelectCheck[q] && rowSelectCheck[q].style.cssText == "height: 7vh;") {
+            (rowSelectCheck[q] && rowSelectCheck[q].style.cssText == "height: 7vh;") ? 
                 rowSelectCheck[q].setAttribute('style', "height: 7vh; background-color: #c4f0fd;")
-                
-            } else {
+            :
                 rowSelectCheck[q].setAttribute('style', "height: 7vh;")
-            }
         }
     })
 })
@@ -1517,12 +1388,10 @@ arrayBtnCheckSelectionAll.forEach(function(element) {
             const idOci = parseInt((element.id).slice(20))
             let checkboxes = Array.from(document.querySelectorAll(`#tablaGeneral${idOci} tbody input[type="checkbox"]`))
             
-            var arrQueryRows=[]
+            let arrQueryRows=[]
             for(let q=0; q<varLimMaxOtProyecto; q++) {
                 let rowsSelectCheck = document.getElementsByName(`rowSelected${idOci}_${q}`)
-                if(rowsSelectCheck.length > 0) {
-                    arrQueryRows.push(rowsSelectCheck)
-                }
+                rowsSelectCheck.length > 0 ? arrQueryRows.push(rowsSelectCheck) : null
             }
 
             // funcion selecciona todas las filas
@@ -1530,7 +1399,7 @@ arrayBtnCheckSelectionAll.forEach(function(element) {
                 arrQueryRows.forEach(nodeList => {
                     Array.from(nodeList).forEach(element => {
                         !seleccionarFilas ? element.style = "height: 7vh; background-color: rgb(196, 240, 253);" : element.style = "height: 7vh;"                    
-                })
+                    })
                 })
                 seleccionarFilas = !seleccionarFilas
             }
@@ -1569,183 +1438,84 @@ arrayBtnCheckSelectionAll.forEach(function(element) {
     }    
 })
 
-//FIXME:
-//-----Btns Buscar en BBDD el Usuario Seguidor de Diseño --------------
+//-----Btns Buscar en BBDD el Usuario Seguidor de Diseño/Simulación --------------
 const searchDesignUser = document.getElementById('searchDesignUser')
+const searchSimulationUser = document.getElementById('searchSimulationUser')
 const userNameBanner = document.getElementById('userNameBanner').innerText
 
-// searchDesignUser.addEventListener('click', (event) => {
-//     event.preventDefault()
-//     function cargarUsuarioDiseno() {
-//         const myHeaders = new Headers();
-//         myHeaders.append("Content-Type", "application/json");
-        
-//         let encabezado = {
-//             method: 'GET',
-//             headers: myHeaders,
-//             mode: 'cors',
-//             cache: 'default'
-//         }
-//         let request = new Request(`../../../api/usuarios/searchUsers/${userNameBanner}`)
-        
-//         fetch(request, encabezado)
-//         .then(function(respuesta) {
-//             //TODO: Hacer sweet alert 
-//             if (!respuesta.ok) {
-//                 Swal.fire(
-//                     'Error!',
-//                     `HUbo un error en los datos de usuarios!`,
-//                     'warning'
-//                 )
-//                 return false
-//             }
-//             return respuesta.json();
-//         })
-//         .then((users) => {
-//             console.log('Datos de usuarios:', users); // Muestra los datos recibidos
+function messageAlertUser(titulo, message, icon){
+    Swal.fire(
+        titulo, 
+        message, 
+        icon);
+    return false
+}
 
-//             if (users && users.length > 0) {
-//                 const arrayUsuariosDiseno = []
-//                 const arrayUsersAll = []
+async function cargarUsuario(idPermiso) {
+    const permisos = {
+        'searchDesignUser': {
+            permisoUsuario: 'diseno',
+            tituloSeguimiento: 'Seguimiento Diseño',
+            inputTarget: 'internoDiseno'
+        },
+        'searchDesignUserModal': {
+            permisoUsuario: 'diseno',
+            tituloSeguimiento: 'Seguimiento Diseño',
+            inputTarget: 'internoDiseno'
+        },
+        'searchSimulationUser': {
+            permisoUsuario: 'simulacion',
+            tituloSeguimiento: 'Seguimiento Simulación',
+            inputTarget: 'internoSimulacion'
+        }
+    };
+    
+    const { permisoUsuario, tituloSeguimiento, inputTarget } = permisos[idPermiso] || {};
 
-//                 for(let i=0; i<users.length; i++) {
-//                     if(users[i].status && users[i].permiso ==='diseno') {
-//                         arrayUsuariosDiseno.push(`
-//                             <label>
-//                                 <span id="${users[i]._id}" class="badge rounded-pill bg-info text-dark my-2">
-//                                     <input id="${i}" class="form-check-input mb-1" type="radio" name="radioUsuarios"
-//                                         value="${users[i].name}, ${users[i].lastName}">
-//                                         ${users[i].name} ${users[i].lastName}
-//                                 </span>
-//                             </label>`)
+    if (!permisoUsuario || !tituloSeguimiento || !inputTarget) {
+        throw new Error(`Permiso no encontrado para id:', ${idPermiso}`)
+    }
 
-//                     } else if (users[i].status && users[i].permiso !=='diseno') {
-//                         arrayUsersAll.push(`
-//                             <label>
-//                                 <span id="${users[i]._id}" class="badge rounded-pill bg-light text-dark my-2">
-//                                     <input id="${i}" class="form-check-input mb-1" type="radio" name="radioUsuarios"
-//                                         value="${users[i].name}, ${users[i].lastName}">
-//                                         ${users[i].name} ${users[i].lastName}
-//                                 </span>
-//                             </label>`)
-//                     }
-//                 }
-
-//                 const html = `
-//                     <hr>
-//                         <label>Usuarios Diseño</label>
-//                         <div name='container' class="container">
-//                             ${arrayUsuariosDiseno.join(' ')}
-//                         </div>
-//                     <hr>
-//                         <label>Usuarios</label>
-//                         <div name='container' class="container">
-//                             ${arrayUsersAll.join(' ')}
-//                         </div>
-//                     <hr>`
-
-//                     Swal.fire({
-//                         title: 'Seguimiento Diseño',
-//                         html: html,
-//                         width: 450,
-//                         background: "#eee",
-//                         allowOutsideClick: false,
-//                         showCloseButton: true,
-//                         focusConfirm: false,
-//                         confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>',
-//                         didOpen: ()=> {
-//                             let btnAceptar = document.getElementsByClassName('swal2-confirm');
-//                             btnAceptar[0].setAttribute('id','btnAceptarModal')
-//                             btnAceptar[0].style = "cursor: not-allowed;"
-//                             btnAceptar[0].disabled = true
-//                         }
-//                     }).then((result) => {
-//                         const radiosToSelect = document.getElementsByName('radioUsuarios')
-//                         let usuariosSeleccionado
-
-//                         for(let i=0; i<radiosToSelect.length; i++) {
-//                             const radioSelected = document.getElementById(i)
-
-//                             radioSelected.checked ? usuariosSeleccionado = radioSelected.value : null
-//                         }
-
-//                         if (result.isConfirmed) {
-//                             const inputUserSelected = document.getElementById('internoDiseno')
-//                             inputUserSelected.value = usuariosSeleccionado
-
-//                         } else {
-//                             Swal.fire(
-//                                 'Usuario no seleccionado!',
-//                                 `No ha seleccionado ningún usuario!`,
-//                                 'warning'
-//                             )
-//                             return false
-//                         }
-//                     })
-//                     disabledBtnAceptar()
-//             } else {
-//                 //TODO: Hacer sweet alert 
-//                 console.log('Error, no se econtró ningún users')
-//             }
-
-//         })
-//         .catch(error => {
-//             throw new Error("Something went wrong on api server!");
-//         })
-//     }
-//     cargarUsuarioDiseno()
-// })
-
-async function cargarUsuarioDiseno() {
     try {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-
-        const response = await fetch(`../../../api/usuarios/searchUsers/${userNameBanner}`, {
+        const url = `../../../api/usuarios/searchUsers/${userNameBanner}`
+        const response = await fetch(url, {
             method: "GET",
             headers: myHeaders,
             mode: 'cors',
             cache: 'default',
         });
         
-        if (!response.ok) {
-            Swal.fire(
-                'Error en la solicitud',
-                'No se encontró ningún usuario!',
-                'error'
-            );
-            return false
+        if(!response.ok ){
+            throw new Error(`Error en la solicitud`);
         }
 
         const users = await response.json();
-        const arrayUsuariosDiseno = [];
+        const arrayUsuariosEspecificos = [];
         const arrayUsersAll = [];
 
         if (users && users.length > 0) {
             users.forEach((user, i) => {
                 const userHTML = `
                     <label>
-                        <span id="${user._id}" class="badge rounded-pill ${user.permiso === 'diseno' ? 'bg-info' : 'bg-light'} text-dark my-2">
-                            <input
-                                class="form-check-input mb-1"
-                                type="radio"
-                                name="radioUsuarios"
-                                value="${user.name}, ${user.lastName}"
-                                id="${i}">
+                        <span id="${user._id}" class="badge rounded-pill ${user.permiso === `${permisoUsuario}` ? 'bg-info' : 'bg-light'} text-dark my-2">
+                            <input id="${i}" class="form-check-input mb-1" type="radio"
+                                name="radioUsuarios" value="${user.name}, ${user.lastName}">
                             ${user.name} ${user.lastName}
                         </span>
                     </label>`;
 
                 if (user.status) {
-                    user.permiso === 'diseno' ? arrayUsuariosDiseno.push(userHTML) : arrayUsersAll.push(userHTML); 
+                    user.permiso === `${permisoUsuario}` ? arrayUsuariosEspecificos.push(userHTML) : arrayUsersAll.push(userHTML);
                 }    
             });
 
             const html = `
                 <hr>
-                <label>Seguimiento Diseño</label>
+                <label>${tituloSeguimiento}</label>
                 <div name='container' class="container">
-                    ${arrayUsuariosDiseno.join(' ')}
+                    ${arrayUsuariosEspecificos.join(' ')}
                 </div>
                 <hr>
                 <label>Usuarios</label>
@@ -1755,7 +1525,7 @@ async function cargarUsuarioDiseno() {
                 <hr>`;
 
             Swal.fire({
-                title: 'Usuarios Diseño',
+                title: tituloSeguimiento,
                 html: html,
                 width: 450,
                 background: "#eee",
@@ -1780,150 +1550,55 @@ async function cargarUsuarioDiseno() {
             }).then((result) => {
                 const radioSelected = document.querySelector('input[name="radioUsuarios"]:checked');
                 if (result.isConfirmed && radioSelected) {
-                    const inputUserSelected = document.getElementById('internoDiseno');
+                    const inputUserSelected = document.getElementById(`${inputTarget}`);
                     inputUserSelected.value = radioSelected.value;
 
                 } else {
-                    Swal.fire(
-                        'Usuario no seleccionado!',
-                        'No ha seleccionado ningún usuario!',
-                        'warning'
-                    );
-                    return false
+                    const titulo = 'Usuario no seleccionado'
+                    const message = 'No ha seleccionado ningún usuario!'
+                    const icon = 'warning'
+                    messageAlertUser(titulo, message, icon)
                 }
             });
 
         } else {
-            Swal.fire(
-                'Sin Usuarios',
-                'No se encontró ningún usuario!',
-                'error'
-            );
-            return false
+            throw new Error(`No hay usuarios que seleccionar`);
         }
 
     } catch (error) {
-        console.error('Error en la solicitud:', error);
-        Swal.fire(
-            'Error en la solicitud',
-            'No se encontró ningún usuario!',
-            'error'
-        );
-        return false
+        const titulo = 'Error'
+        const message = `${error}`
+        const icon = 'error'
+        messageAlertUser(titulo, message, icon)
     }
     disabledBtnAceptar()
 }
 
 searchDesignUser.addEventListener('click', async (event) => {
+    let idPermiso = searchDesignUser.id
     event.preventDefault();
     try {
-        await cargarUsuarioDiseno();
+        await cargarUsuario(idPermiso);
     } catch (error) {
-        Swal.fire(
-            'Error al cargar los usuarios',
-            'No se encontró ningún usuario!',
-            'error'
-        );
-        return false
+        const titulo = 'Error al cargar los usuarios'
+        const message = error
+        const icon = 'error'
+        messageAlertUser(titulo, message, icon)
     }
 });
 
-
-//FIXME:
-//-----Btns Buscar en BBDD el Usuario Seguidor de Simulacion --------------
-// const searchSimulationUser = document.getElementById('searchSimulationUser')
-// searchSimulationUser.addEventListener('click', (event) => {
-//     event.preventDefault()
-
-//     function cargarUsuarioSimulacion() {
-//         fetch('../../../api/usuarios/searchUsers/all')
-//         .then(response => response.json())
-//         .then(users => {
-//             const arrayUsuariosSimulacion = []
-//             const arrayUsersAll = []
-
-//             for(let i=0; i<users.length; i++) {
-
-//                 if(users[i].status && users[i].permiso ==='simulacion') {
-//                     arrayUsuariosSimulacion.push(`
-//                                     <label>
-//                                         <span id="${users[i]._id}" class="badge rounded-pill bg-warning text-dark my-2">
-//                                             <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users[i].name}, ${users[i].lastName}" id="${i}">
-//                                             ${users[i].name} ${users[i].lastName}
-//                                         </span>
-//                                     </label>`)
-
-//                 } else if (users[i].status && users[i].permiso !=='simulacion') {
-//                     arrayUsersAll.push(`
-//                                 <label>
-//                                     <span id="${users[i]._id}" class="badge rounded-pill bg-light text-dark my-2">
-//                                         <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users[i].name}, ${users[i].lastName}" id="${i}">
-//                                         ${users[i].name} ${users[i].lastName}
-//                                     </span>
-//                                 </label>`)
-//                 }
-//             }
-
-//             const html = `
-//                     <hr>
-//                         <label>Usuarios Simulación</label>
-//                         <div name='container' class="container">
-//                             ${arrayUsuariosSimulacion.join(' ')}
-//                         </div>
-//                     <hr>
-//                         <label>Usuarios</label>
-//                         <div name='container' class="container">
-//                             ${arrayUsersAll.join(' ')}
-//                         </div>
-//                     <hr>`
-
-//                     Swal.fire({
-//                         title: 'Usuarios',
-//                         html: html,
-//                         width: 450,
-//                         background: "#eee",
-//                         allowOutsideClick: false,
-//                         showCloseButton: true,
-//                         focusConfirm: false,
-//                         confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>',
-//                         didOpen: ()=> {
-//                             let btnAceptar = document.getElementsByClassName('swal2-confirm');
-//                             btnAceptar[0].setAttribute('id','btnAceptarModal')
-//                             btnAceptar[0].style = "cursor: not-allowed;"
-//                             btnAceptar[0].disabled = true
-//                         }
-//                     }).then((result) => {
-//                         const radiosToSelect = document.getElementsByName('radioUsuarios')
-
-//                         for(let i=0; i<radiosToSelect.length; i++) {
-//                             const radioSelected = document.getElementById(i)
-                            
-//                             if (radioSelected.checked) {
-//                                 var usuariosSeleccionado = radioSelected.value
-//                             }
-//                         }
-
-//                         if (result.isConfirmed) {
-//                             const inputUserSelected = document.getElementById('internoSimulacion')
-//                             inputUserSelected.value = usuariosSeleccionado
-
-//                         } else {
-//                             Swal.fire(
-//                                 'Usuario no seleccionado!',
-//                                 `No ha seleccionado ningún usuario!`,
-//                                 'warning'
-//                             )
-//                             return false
-//                         }
-//                     })
-//                     disabledBtnAceptar()
-//         })
-//         .catch(error => {
-//         console.error('Error:', error)
-//         })
-//     }
-//     cargarUsuarioSimulacion()
-// })
+searchSimulationUser.addEventListener('click', async (event) => {
+    let idPermiso = searchSimulationUser.id
+    event.preventDefault();
+    try {
+        await cargarUsuario(idPermiso);
+    } catch (error) {
+        const titulo = 'Error al cargar los usuarios'
+        const message = error
+        const icon = 'error'
+        messageAlertUser(titulo, message, icon)
+    }
+});
 
 
 function messageNewOt(ociNumber, otArray, ociAlias) {
@@ -1933,58 +1608,35 @@ function messageNewOt(ociNumber, otArray, ociAlias) {
         showConfirmButton: false,
         timer: 4000,
         timerProgressBar: false,
-    })
+    });
 
-    if (otArray.length > 1) {
-        Swal.fire({
-            title: 'Ingreso de datos!',
-            position: 'center',
-            text: `Se agregarán las OT's ${otArray.join(" - ")}, a la OCI# ${ociNumber} - Alias: ${ociAlias}` ,
-            icon: 'info',
-            showCancelButton: true,
-            showConfirmButton: true,
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('formNewOt').submit()
-                Toast.fire({
-                    icon: 'success',
-                    title: `OT's ${otArray.join(" - ")}, agregadas con éxito!`
-                })
-            } else {
-                Swal.fire(
-                    'OTs no agregadas!',
-                    `Las OT's ${otArray.join(" - ")}, no fueron agregadas a la OCI# ${ociNumber}`,
-                    'warning'
-                )
-                return false
-            }
-        })
+    const otText = otArray.length > 1 ? `OT's ${otArray.join(" - ")}` : `OT ${otArray[0]}`;
+    const confirmMessage = `Se agregará${otArray.length > 1 ? 'n' : ''} ${otText} a la OCI# ${ociNumber} - Alias: ${ociAlias}`;
+    const successMessage = `${otText}, agregada${otArray.length > 1 ? 's' : ''} con éxito!`;
+    const errorMessage = `${otText}, no fue${otArray.length > 1 ? 'ron' : ''} agregada${otArray.length > 1 ? 's' : ''} a la OCI# ${ociNumber}`;
 
-    } else {
-        Swal.fire({
-            title: 'Ingreso de datos!',
-            position: 'center',
-            text: `Se agregará la OT ${otArray}, a la OCI# ${ociNumber} - Alias: ${ociAlias}`,
-            icon: 'info',
-            showCancelButton: true,
-            showConfirmButton: true,
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('formNewOt').submit()
-                Toast.fire({
-                    icon: 'success',
-                    title: `OT ${otArray.join(" - ")}, agregada con éxito!`
-                })
-            } else {
-                Swal.fire(
-                    'OT no agregada!',
-                    `La OT ${otArray}, no fue agregada a la OCI# ${ociNumber} - Alias: ${ociAlias}`,
-                    'warning'
-                )
-                return false
-            }
-        })
-    }
+    Swal.fire({
+        title: 'Ingreso de datos!',
+        position: 'center',
+        text: confirmMessage,
+        icon: 'info',
+        showCancelButton: true,
+        showConfirmButton: true,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('formNewOt').submit();
+            Toast.fire({
+                icon: 'success',
+                title: successMessage
+            });
+        } else {
+            Swal.fire(
+                'OT no agregada!',
+                errorMessage,
+                'warning'
+            );
+        }
+    });
 }
 
 const btnCreateNewOt = document.getElementById('btnNewOt')
@@ -2005,7 +1657,6 @@ btnCreateNewOt.addEventListener('click', (event) => {
         messageNewOt(ociNumberHiddenValue, otArray, ociAlias)
 
     } else {
-        // console.log('Hubo un error al seleccionar la OCI!!') //Hacer sweetAlert2
         Swal.fire({
             title: 'Error',
             position: 'center',
@@ -2141,10 +1792,10 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
     for (let n = 0; n < lastChild; n++) {
         for (let q = qInicialX; q < qFinalX; q++) {
             const otHidden = document.getElementById(`resHidden${k}_${n}_${q}`).value;
-            const otInfo = changeValueFromArray(otHidden.split(",")).pop();
-
             const otRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${q}`).value;
+            
             const otRevision = otRevisionHidden.split(",").pop();
+            const otInfo = changeValueFromArray(otHidden.split(",")).pop();
 
             const [infoKey, revisionKey] = mapping[q] || [];
             if (infoKey && revisionKey) {
@@ -2179,8 +1830,8 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
 
 function changeValueFromArray(arrayFromValues) {
     const valueMap = {
-        'sinDato': 'S/D',
         '': 'S/D',
+        'sinDato': 'S/D',
         'noAplica': 'N/A',
         'ok': 'OK',
         'noOk': 'No OK',
@@ -2207,17 +1858,17 @@ function colorStatusOt(valorStatusOt) {
 
 function optionSelect(option) {
     const options = {
-        optionOk: `
+        ok: `
             <option value="noOk">No OK</option>
             <option value="pendiente">Pendiente</option>
             <option value="noAplica">N/A</option>
         `,
-        optionNoOk: `
+        noOk: `
             <option value="ok">OK</option>
             <option value="pendiente">Pendiente</option>
             <option value="noAplica">N/A</option>
         `,
-        optionPendiente: `
+        pendiente: `
             <option value="ok">OK</option>
             <option value="noOk">No OK</option>
             <option value="noAplica">N/A</option>
@@ -2239,24 +1890,29 @@ function optionSelect(option) {
 }
 
 function switchOptionSelected(switchValue) {
-    const options = {
-        "OK": { variableValue: 'ok', optionKey: 'optionOk' },
-        "No OK": { variableValue: 'noOk', optionKey: 'optionNoOk' },
-        "Pendiente": { variableValue: 'pendiente', optionKey: 'optionPendiente' },
-        "N/A": { variableValue: 'noAplica', optionKey: 'optionNoAplica' },
-        "S/D": { variableValue: 'sinDato', optionKey: 'optionDefault', getValueArrayRevision: 0 },
-        "": { variableValue: 'sinDato', optionKey: 'optionDefault', getValueArrayRevision: 0 }
+    const optionsMap = {
+        "OK": { variableValue: 'ok', optionKey: 'optionOk', getValueArrayDato: 'OK' },
+        "No OK": { variableValue: 'noOk', optionKey: 'optionNoOk', getValueArrayDato: 'No OK' },
+        "Pendiente": { variableValue: 'pendiente', optionKey: 'optionPendiente', getValueArrayDato: 'Pendiente' },
+        "N/A": { variableValue: 'noAplica', optionKey: 'optionNoAplica', getValueArrayDato: 'N/A' },
+        "S/D": { variableValue: 'sinDato', optionKey: 'optionDefault', getValueArrayDato: 'S/D', getValueArrayRevision: 0 },
+        "": { variableValue: 'sinDato', optionKey: 'optionDefault', getValueArrayDato: 'S/D', getValueArrayRevision: 0 }
     };
     
-    const { variableValue = '', optionKey = '', getValueArrayRevision } = options[switchValue] || {};
-    const optionDefined = optionSelect(variableValue)[optionKey];
-    const getValueArrayDato = switchValue || 'S/D';
+    // Configuración predeterminada si switchValue no coincide con ninguna clave
+    const defaultOption = { variableValue: '', optionKey: '', getValueArrayDato: '', getValueArrayRevision: undefined };
+
+    // Selecciona la opción adecuada o la opción predeterminada
+    const selectedOption = optionsMap[switchValue] || defaultOption;
+
+    // Obtiene la opción definida llamando a optionSelect  
+    const optionDefined = optionSelect(selectedOption.variableValue);
     
     return {
-        variableValue,
+        variableValue: selectedOption.variableValue,
         optionDefined,
-        getValueArrayDato,
-        getValueArrayRevision
+        getValueArrayDato: selectedOption.getValueArrayDato,
+        getValueArrayRevision: selectedOption.getValueArrayRevision
     };
 }
 
@@ -2277,26 +1933,26 @@ function datosCabeceraFormulario (
             arrayOpNumber
         ) {
 
-    const datosCabecera = `
-                        <div class="col-2 my-auto align-self-middle" style="width: 5rem;">
-                            <span id="${arrayOtStatus}"
-                                class="badge rounded-pill bg-${(colorStatusOt(arrayOtStatus).color)}
-                                        text-white">${arrayOtStatus}
-                            </span>
-                            <input type="hidden" name="otStatusHidden${y}" value="${arrayOtStatus}">
-                        </div>
-                        <div class="col-1 my-auto align-self-middle">
-                            <span id="${arrayOtNumber}"
-                                class="badge rounded-pill bg-dark text-white">
-                                    ${arrayOtNumber}
-                            </span>
-                            <input type="hidden" name="otNumberHidden${y}" value="${arrayOtNumber}">
-                        </div>
-                        <div class="col-1 my-auto align-self-middle">
-                            <span class="badge rounded-pill bg-secondary text-white">
-                                ${arrayOpNumber}
-                            </span>
-                        </div>`
+    const datosCabecera = 
+        `<div class="col-2 my-auto align-self-middle" style="width: 5rem;">
+            <span id="${arrayOtStatus}"
+                class="badge rounded-pill bg-${(colorStatusOt(arrayOtStatus).color)}
+                        text-white">${arrayOtStatus}
+            </span>
+            <input type="hidden" name="otStatusHidden${y}" value="${arrayOtStatus}">
+        </div>
+        <div class="col-1 my-auto align-self-middle">
+            <span id="${arrayOtNumber}"
+                class="badge rounded-pill bg-dark text-white">
+                    ${arrayOtNumber}
+            </span>
+            <input type="hidden" name="otNumberHidden${y}" value="${arrayOtNumber}">
+        </div>
+        <div class="col-1 my-auto align-self-middle">
+            <span class="badge rounded-pill bg-secondary text-white">
+                ${arrayOpNumber}
+            </span>
+        </div>`
 
     return datosCabecera                    
 }
@@ -2341,7 +1997,6 @@ function swalFireAlert(
         showCloseButton: true,
         showCancelButton: true,
         showConfirmButton: true,
-        // showLoaderOnConfirm: true,
         focusConfirm: false,
         confirmButtonText: 'Guardar <i class="fa-solid fa-save"></i>',
         cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>',
@@ -2376,9 +2031,8 @@ function addDatoToR14(i, idTabla, qInicial, qFinal) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
         // console.log('getValues:', getValues)
-        var arrayBloque = []
-        for (let y=0; y < res.lastChild; y++) {
-                                                    
+        let arrayBloque = []
+        for (let y=0; y < res.lastChild; y++) {                                         
             const dataEnArrayBloque = `
                     <div class="col my-auto">
                         <select id="procesoR14${res.arrayOtNumber[y]}" name="procesoR14${y}"
@@ -2394,7 +2048,7 @@ function addDatoToR14(i, idTabla, qInicial, qFinal) {
                         value="${(switchOptionSelected(getValues.arrayProcesoR14[y])).variableValue}">
                     </div>
                     <div class="col-1 my-auto">    
-                        <input type="text"
+                        <input type="text" id="revisionProcesoR14${res.arrayOtNumber[y]}_readOnly"
                             value="${getValues.arrayRevisionProcesoR14[y]}"
                             class="form-control"
                             style="text-align: center;"
@@ -2419,7 +2073,7 @@ function addDatoToR14(i, idTabla, qInicial, qFinal) {
                         value="${(switchOptionSelected(getValues.arrayAprobadoR14[y])).variableValue}">
                     </div>    
                     <div class="col-1 my-auto">  
-                        <input type="text"
+                        <input type="text" id="revisionAprobadoR14${res.arrayOtNumber[y]}_readOnly"
                             value="${getValues.arrayRevisionAprobadoR14[y]}"
                             class="form-control"
                             style="text-align: center;"
@@ -2440,11 +2094,11 @@ function addDatoToR14(i, idTabla, qInicial, qFinal) {
 
             } else {
                 arrayBloque.push(`
-                <div class="row my-1 mx-auto">
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
-                    
-                    ${dataEnArrayBloque}
-                </div>`)
+                    <div class="row my-1 mx-auto">
+                        ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
+                        
+                        ${dataEnArrayBloque}
+                    </div>`)
             }
         }
 
@@ -2453,16 +2107,16 @@ function addDatoToR14(i, idTabla, qInicial, qFinal) {
                             <div class="row mx-auto">
                                 ${cabeceraFormulario}
                                 <div class="col my-auto">
-                                    <label for="procesoR14"><strong>Proceso</strong></label>
+                                    <label for="procesoR14${res.arrayOtNumber[0]}"><strong>Proceso</strong></label>
                                 </div>
                                 <div class="col-1 my-auto align-self-start">
-                                    <label for="revisionProcesoR14"><strong>Rev</strong></label>
+                                    <label for="revisionProcesoR14${res.arrayOtNumber[0]}_readOnly"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
-                                    <label for="aprobado"><strong>Aprobado PM</strong></label>
+                                    <label for="aprobadoR14${res.arrayOtNumber[0]}"><strong>Aprobado PM</strong></label>
                                 </div>
                                 <div class="col-1 my-auto align-self-start">
-                                    <label for="revisionAprobadoR14"><strong>Rev</strong></label>
+                                    <label for="revisionAprobadoR14${res.arrayOtNumber[0]}_readOnly"><strong>Rev</strong></label>
                                 </div>
                             </div>
                             <hr>
@@ -4315,7 +3969,7 @@ function addDatoToInfoSim4Segunda(i, idTabla, qInicial, qFinal) {
                             <hr>
                             ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloque.length)}
                         </fieldset>
-                      </form>`
+                    </form>`
     
         const titulo = "Simulación 4 (2° Parte)"
         const ancho = 1400
@@ -4570,30 +4224,23 @@ function updateInputsText() {
 // }
 
 // Función para actualizar el valor del campo Text hidden con los Select's
+
 function updateInputsSelect () {
     let arrayInputSelectHidden = []
+    let allInputsSelect = []
 
     for (let i = 0; i<varLimMaxOtProyecto; i++) { //variable limite maximo de OT por proyecto
-        if (document.getElementById(`tablaGeneral${i}`)) {
-            arrayInputSelectHidden.push(i)
-        }
+        document.getElementById(`tablaGeneral${i}`) ? arrayInputSelectHidden.push(i) : null
     }
     
-    if (arrayInputSelectHidden !=[]) {
-        var allInputsSelect = document.querySelectorAll('select')
-    }
-//console.log('allInputsSelect:', allInputsSelect)
+    arrayInputSelectHidden !=[] ? allInputsSelect = document.querySelectorAll('select') : null
+
     let largoArrayInputsSelect = parseInt((allInputsSelect.length)-1)
     for (let y=0; y < largoArrayInputsSelect; y++) {
         const idInputSelectHidden = allInputsSelect[y].id.substring(0, allInputsSelect[y].id.length - 4) + 'Hidden' + allInputsSelect[y].id.substring(allInputsSelect[y].id.length - 4)
-        // console.log('id:', idInputSelectHidden)
-        var inputSelectHidden = document.getElementById(`${idInputSelectHidden}`)
-        // console.log('inputSelectHidden:', inputSelectHidden)
-        if (inputSelectHidden) {
-            var valorSelect = document.getElementById(`${allInputsSelect[y].id}`).value
-            inputSelectHidden.value = valorSelect
-            // console.log('inputSelectHidden.value', inputSelectHidden.value)
-        }
+        let inputSelectHidden = document.getElementById(`${idInputSelectHidden}`)
+
+        inputSelectHidden ? inputSelectHidden.value = document.getElementById(`${allInputsSelect[y].id}`).value : null
     }
 }
 
@@ -4607,7 +4254,7 @@ function disabledBtnAceptar () {
     const otNumberDisabled = document.getElementById('numberOtModal')
 
     allInputs.forEach(function(input) {
-        if (input.value) {
+        input.value ?
             input.addEventListener('change', (event) => {
                 event.preventDefault()
                 input.classList.add("border-primary")
@@ -4616,22 +4263,22 @@ function disabledBtnAceptar () {
                 btnAceptarModal[0].removeAttribute('disabled')
                 btnAceptarModal[0].style = "cursor: pointer;"
             })    
-        }        
+        : null       
     })
 
     allInputsRange.forEach(function(input) {
-        if (input.value) {
+        input.value ?
             input.addEventListener('change', (event) => {
                 event.preventDefault()
                 input.classList.add("drag__bar")
                 btnAceptarModal[0].removeAttribute('disabled')
                 btnAceptarModal[0].style = "cursor: pointer;"
             })    
-        }        
+        : null
     })
 
     allInputsCheck.forEach(function(input) {
-        if (input.value) {
+        input.value ?
             input.addEventListener('change', (event) => {
                 event.preventDefault()
                 input.classList.toggle("bg-danger")
@@ -4643,11 +4290,11 @@ function disabledBtnAceptar () {
                 :
                     otNumberDisabled.setAttribute('disabled', 'true')
             })    
-        }        
+        : null
     })
 
     allInputsRadio.forEach(function(input) {
-        if (input.value) {
+        input.value ?
             input.addEventListener('input', (event) => {
                 event.preventDefault()
                 if (btnAceptarModal) {
@@ -4655,15 +4302,13 @@ function disabledBtnAceptar () {
                     btnAceptarModal[0].style = "cursor: pointer;"
                 }
             })    
-        }        
+        : null
     })
 }
 
 const arrTables = []
 for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de proyectos por Cliente
-    if (document.getElementById(`tablaGeneral${i}`)) {
-        arrTables.push(i)
-    }
+    document.getElementById(`tablaGeneral${i}`) ? arrTables.push(i) : null
 }
 
 if(arrTables !=[]) {
@@ -4682,8 +4327,7 @@ if(arrTables !=[]) {
         button[name="btn5Sim"]
     `);
 
-    let arrayTituloTabla =
-    [
+    let arrayTituloTabla = [
         {
             nombreTabla: "tablaR14",
             btnName: "btnR14",
@@ -4787,8 +4431,7 @@ if(arrTables !=[]) {
     })
 }
 
-var inputsDeTexto = document.querySelectorAll('input[type="text"]')
-
+let inputsDeTexto = document.querySelectorAll('input[type="text"]')
     // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
         input.addEventListener('keydown', function(event) {
@@ -4800,8 +4443,7 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
 
             // Verificar si la tecla presionada es un carácter especial
             if (forbiddenChars.test(key)) {
-                // Cancelar el evento para evitar que se ingrese el carácter
-                event.preventDefault()
+                event.preventDefault() // Cancelar el evento para evitar que se ingrese el carácter
                 input.classList.toggle("border")
                 input.classList.toggle("border-danger")
                 input.classList.toggle("border-2")

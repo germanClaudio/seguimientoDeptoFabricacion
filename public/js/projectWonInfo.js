@@ -20,9 +20,7 @@ const varLimMaxDetallesOT = 99
 // Manejador de eventos de tablas General y Detalle -------------------
 const arrBtnHidde = []
 for (let i = 0; i<varLimMaxOciProyecto; i++) { //25
-    if (document.getElementById(`tablaGeneral${i}`)) {
-        arrBtnHidde.push(i)
-    }
+    document.getElementById(`tablaGeneral${i}`) ? arrBtnHidde.push(i) : null
 }
 
 function hiddeTableGeneral(k) {
@@ -62,13 +60,13 @@ function hiddeTableDetalles(k) {
         btnHiddeTableDetalle.innerHTML = '<i class="fa-solid fa-eye-slash"></i>'
         posBtnHiddeTableDetalle.classList.remove("col-1")
         posBtnHiddeTableDetalle.classList.add("col-2")
-        btnHiddeTableDetalle.title = 'Ocultar Detalles'
+        btnHiddeTableDetalle.title = 'Ocultar Items'
     } else {
         tablaDetalle.style.display = 'none'
         btnHiddeTableDetalle.innerHTML = '<i class="fa-solid fa-eye"></i>'
         posBtnHiddeTableDetalle.classList.remove("col-2")
         posBtnHiddeTableDetalle.classList.add("col-1")
-        btnHiddeTableDetalle.title = 'Mostrar Detalles'
+        btnHiddeTableDetalle.title = 'Mostrar Items'
     }
 }
 
@@ -91,6 +89,7 @@ function extractNumbers(str) {
     return null; // Return null if no valid numbers are found
 }
 
+// Ocultar tablas cabeceras
 if (arrBtnHidde !=[]) {
     let allButtonsHiddeTableGeneral = document.querySelectorAll('button[name="btnHiddeTableGeneral"]')
     let allButtonsHiddeTableDetalle = document.querySelectorAll('button[name="btnHiddeTableDetalle"]')
@@ -128,21 +127,18 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
     const arrayCarousel = []
     for (let i = 0; i<varLimMaxOciProyecto; i++) {
-        if (document.getElementById(`carouselExampleControls${i}`)) {
-            arrayCarousel.push(i)
-        }
+        document.getElementById(`carouselExampleControls${i}`) ? arrayCarousel.push(i) : null
     }
     if(arrayCarousel !=[]) {
         for (let i=0; i<arrayCarousel.length; i++) {
             let myCarousel = document.getElementById(`carouselExampleControls${arrayCarousel[i]}`)
             
-            if (myCarousel) {
-                if (initIndex === 2) {
+            myCarousel ?
+                initIndex === 2 ?
                     myCarousel.querySelector('[data-bs-slide="prev"]').setAttribute('disabled', 'disabled')
-                } else {
+                :
                     myCarousel.querySelector('[data-bs-slide="prev"]').removeAttribute('disabled')
-                }
-            }
+            : null
 
             // Detectar cuando el slide cambia
             myCarousel.addEventListener('slid.bs.carousel', function (event) {
@@ -150,17 +146,16 @@ document.addEventListener('DOMContentLoaded', function (event) {
                 let currentIndex = event.to
 
                 // Si el slide actual es el último, deshabilita el botón "Next"
-                if (currentIndex === slideCount - 1) {
+                currentIndex === slideCount - 1 ?
                     myCarousel.querySelector('[data-bs-slide="next"]').setAttribute('disabled', 'disabled')
-                } else {
+                :
                     myCarousel.querySelector('[data-bs-slide="next"]').removeAttribute('disabled')
-                }
+                
                 // Si el slide actual es el primero, deshabilita el botón "Prev"
-                if (currentIndex === 0) {
+                currentIndex === 0 ?
                     myCarousel.querySelector('[data-bs-slide="prev"]').setAttribute('disabled', 'disabled')
-                } else {
+                :
                     myCarousel.querySelector('[data-bs-slide="prev"]').removeAttribute('disabled')
-                }
             })
         }
     }
@@ -185,24 +180,22 @@ const arrayOriginalBtn = Array.from(btnInferiorCarousel)
 const subarrays = dividirArrayEnSubarrays(arrayOriginal, 3); // cant. maxima de slides
 const subarrayBtns = dividirArrayEnSubarrays(arrayOriginalBtn, 3); // cant. maxima de slides
 
-subarrays.forEach((subarray) => {
-        if (subarray.length > 0) {
-            const index = parseInt(slideHidden.value) || 0; // Usa 0 como valor predeterminado si el valor no es un número
-            index >= 0 && index < subarray.length ?
-                subarray[index].classList.add('active')
-            :
-                subarray[0].classList.add('active')
-        }
-});
+function activarElemento(subarray, index) {
+    if (subarray.length > 0) {
+        // Si el índice está dentro del rango, activamos el elemento correspondiente
+        const safeIndex = (index >= 0 && index < subarray.length) ? index : 0;
+        subarray[safeIndex].classList.add('active');
+    }
+}
 
-subarrayBtns.forEach((subarray) => {
-        if (subarray.length > 0) {
-            const index = parseInt(slideHidden.value) || 0; // Usa 0 como valor predeterminado si el valor no es un número
-            index >= 0 && index < subarray.length ?
-                subarray[index].classList.add('active')
-            :
-                subarray[0].classList.add('active')
-        }
+// Convertimos el valor de slideHidden a entero una vez
+const slideIndex = parseInt(slideHidden.value);
+
+// Activamos los elementos en ambos conjuntos de subarrays
+[subarrays, subarrayBtns].forEach(array => {
+    array.forEach(subarray => {
+        activarElemento(subarray, slideIndex);
+    });
 });
 
 // ---------------- Event Add New Ot Row to OCI --------------------
@@ -222,7 +215,7 @@ buttonOne.addEventListener('click', () => {
 //*********** */
 tippy(btnAddNewRow, {
     content: `<strong>Límite máximo de OT 10</strong><br>
-               Puedes agregar 9 OT's mas`,
+                Puedes agregar 9 OT's mas`,
     allowHTML: true,
     maxWidth: 350,
     inlinePositioning: true,
@@ -238,12 +231,12 @@ tippy(btnAddNewRow, {
 btnAddNewRow.addEventListener('click', () => {
 
     const parentDiv = document.getElementById('div_body')
-    let i = parentDiv.childElementCount
+    let i = parseInt(parentDiv.childElementCount)
     const lastChild = parentDiv.children[i - 1]
     const lastChildId = lastChild.id
 
     if (lastChildId < i || i == 1) {
-        i = parentDiv.childElementCount
+        i = parseInt(parentDiv.childElementCount)
     } else {
         const numberId1 = parseInt(lastChildId.slice(-1))
         const numberId2 = parseInt(lastChildId.slice(-2))
@@ -251,7 +244,7 @@ btnAddNewRow.addEventListener('click', () => {
 
         numberId1 >= 0 && numberId2 ? numberIdLastChild = numberId2 : numberIdLastChild = numberId1;
 
-        i = numberIdLastChild + 1
+        i = parseInt(numberIdLastChild + 1)
     }
 
     let otNumberValue = parseInt(document.getElementById('otNumber').value)
@@ -303,42 +296,41 @@ btnAddNewRow.addEventListener('click', () => {
             </div>
             <div class="col-1 my-auto">
                 <div class="d-flex">
-                    <button 
-                        name="btnRemoveRow"
-                        type="button"
-                        id="btnRemoveRow${i}"
-                        value="${i}"
-                        class="btn btn-danger rounded-circle m-2 boton">
-                            <i class="fa-solid fa-trash"></i>
+                    <button name="btnRemoveRow" type="button" id="btnRemoveRow${i}" value="${i}" class="btn btn-danger rounded-circle m-2 border border-2 shadow">
+                        <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>    
             </div>`
     )
 
+    // Función para ocultar el botón de remover
+    function hideRemoveButton(index) {
+        const btnRemoveItem = document.getElementById(`btnRemoveRow${index}`);
+        if (btnRemoveItem) {
+            btnRemoveItem.style.display = 'none';
+        }
+    }
+
+    // Lógica principal
+    if (i !== 1) {
+        hideRemoveButton(i - 1);
+    }
+
+    if (i >= 10) {
+        btnAddNewRow.disabled = true;
+    }
+
+    const newDiv = document.createElement('div');
+    newDiv.setAttribute('class', 'row my-2');
+    newDiv.id = `otItemRow${i}`;
+
+    // Configurar el contenido del nuevo div según el valor de i
     if (i === 1) {
-        originalDiv
-
-    } else if (i !== 1 && i < 9) { //cantidad maxima de OT en conjunto a agregar 10
-        originalDiv
-        btnRemoveItem = document.getElementById(`btnRemoveRow${i - 1}`)
-        btnRemoveItem.style.display = 'none'
+        newDiv.innerHTML = `<hr class="my-2"> ${originalDiv} <hr class="my-2">`;
     } else {
-        btnRemoveItem = document.getElementById(`btnRemoveRow${i - 1}`)
-        btnRemoveItem.style.display = 'none'
-        btnAddNewRow.disabled = true
+        newDiv.innerHTML = i === 10 ? originalDiv : originalDiv + `<hr class="my-2">`;
     }
 
-    const newDiv = document.createElement('div')
-    newDiv.setAttribute('class', "row my-2")
-    newDiv.id = `otItemRow${i}`
-
-    if(i === 1) {
-        newDiv.innerHTML = `<hr class="my-2">` + originalDiv + `<hr class="my-2">`
-    } else if(i === 10) {
-        newDiv.innerHTML = originalDiv
-    } else {
-        newDiv.innerHTML = originalDiv + `<hr class="my-2">`
-    }
     parentDiv.appendChild(newDiv)
     const otQty = document.getElementById("otQuantity")
     otQty.value = i+1
@@ -348,31 +340,25 @@ btnAddNewRow.addEventListener('click', () => {
     
         if (lastRemoveButton) {
             lastRemoveButton.addEventListener("click", (event) => {
-               event.preventDefault()
-               let idBtnRemoveRow = lastRemoveButton.id
-               removeRow(idBtnRemoveRow)
+                event.preventDefault()
+                let idBtnRemoveRow = lastRemoveButton.id
+                removeRow(idBtnRemoveRow)
             })
         }
-   
-    //*************** ToolTip cantidad de OT a agregar *************** */
-    if (i == 1 || i < 8) {
-        tippy(btnAddNewRow, {
-            content: `<strong>Límite máximo de OT (10)</strong><br>
-                        Puedes agregar ${9-i} OT's mas`,
-            allowHTML: true,
-            maxWidth: 350,
-            inlinePositioning: true,
-            arrow: true,
-            animation: 'shift-away',
-            theme: 'material',
-            interactive: false,
-            hideOnClick: true, // Oculta el tooltip al hacer clic en cualquier lugar fuera de él
-        })
 
+    //*************** ToolTip cantidad de OT a agregar *************** */
+    let contentMessage;
+    if (i < 8) {
+        contentMessage = `<strong>Límite máximo de OT (10)</strong><br> 
+                        Puedes agregar ${9 - i} OT's más`;
     } else if (i == 8) {
+        contentMessage = `<strong>Límite máximo de OT (10)</strong><br> 
+                        Puedes agregar 1 OT más`;
+    }
+
+    if (i <= 8) {
         tippy(btnAddNewRow, {
-            content: `<strong>Límite máximo de OT (10)</strong><br>
-                        Puedes agregar 1 OT mas`,
+            content: contentMessage,
             allowHTML: true,
             maxWidth: 350,
             inlinePositioning: true,
@@ -381,17 +367,16 @@ btnAddNewRow.addEventListener('click', () => {
             theme: 'material',
             interactive: false,
             hideOnClick: true, // Oculta el tooltip al hacer clic en cualquier lugar fuera de él
-        })
+        });
     }
     //*************************************** */
 })
 
 //-------------------------- Remove OT Row ----------------------------------
 function removeRow(e) {
-    //console.log('e:', e)
     const parentDiv = document.getElementById('div_body')
     let i = parentDiv.childElementCount
-    //console.log('i(resta):', i)
+    
     if (extractNumbers(e) && i > 1) {
         let btnRemoveRow = e
         const numberId1 = parseInt(btnRemoveRow.slice(-1))
@@ -406,9 +391,8 @@ function removeRow(e) {
 
         if (checkString(numberIdToDelete)) {
             const rowToDelete = document.getElementById(`otItemRow${numberIdToDelete}`)
-            if (rowToDelete) {
-                rowToDelete.remove()
-            }
+            rowToDelete ? rowToDelete.remove() : null
+
             const otQty = document.getElementById("otQuantity")
             otQty.setAttribute('value', (i - 1))
 
@@ -428,10 +412,12 @@ function removeRow(e) {
         }
     }
 
-    if (i > 1 && i <= 9) {
+    function tippyLabel(i, tippyFormula) {
+        let tippyContent = `<strong>Límite máximo de OT (10)</strong><br>
+                            Puedes agregar ${tippyFormula} OT's mas`
+        
         tippy(btnAddNewRow, {
-            content: `<strong>Límite máximo de OT (10)</strong><br>
-                        Puedes agregar ${(10-i)+1} OT's mas`,
+            content: tippyContent,
             allowHTML: true,
             maxWidth: 350,
             inlinePositioning: true,
@@ -439,27 +425,23 @@ function removeRow(e) {
             animation: 'shift-away',
             theme: 'material',
             interactive: false,
-            hideOnClick: true, // Oculta el tooltip al hacer clic en cualquier lugar fuera de él
+            hideOnClick: true
         })
+    }
+
+
+    if (i > 1 && i <= 9) {
+        let tippyFormula = (10-i)+1
+        tippyLabel(i, tippyFormula)
 
     } else if (i == 1) {
-        tippy(btnAddNewRow, {
-            content: `<strong>Límite máximo de OT (10)</strong><br>
-                        Puedes agregar ${10-i} OT's mas`,
-            allowHTML: true,
-            maxWidth: 350,
-            inlinePositioning: true,
-            arrow: true,
-            animation: 'shift-away', //'scale',
-            theme: 'material',
-            interactive: false,
-            hideOnClick: true, // Oculta el tooltip al hacer clic en cualquier lugar fuera de él
-        })
+        let tippyFormula = 10-i
+        tippyLabel(i, tippyFormula)
     }
 }
 
 const formulario = document.getElementById("formNewOt")
-const radios = document.querySelectorAll('[name="ociNumber"]') //formulario.elements["ociNumber"]
+const radios = document.querySelectorAll('[name="ociNumber"]')
 const tituloForm = document.getElementById('tituloForm')
 const projectNameHidden = document.getElementById('projectNameHidden').value
 const projectNumberId = document.getElementById(`projectIdHidden`).value
@@ -516,13 +498,10 @@ function radioSelected(radioSelectedValue, elementoId) {
     return (ociNumberHidden.value)
 }
 
-var arrayBtnAddOtFormSelected = []
+let arrayBtnAddOtFormSelected = []
 for (let i=0; i<radios.length; i++) {
-    var btnAddOtFormSelected = document.getElementById(`btnAddOtFormSelected${i}`)
-    //console.log('btnAddOtFormSelected', btnAddOtFormSelected)
-    if(btnAddOtFormSelected) {
-        arrayBtnAddOtFormSelected.push(btnAddOtFormSelected)
-    }
+    let btnAddOtFormSelected = document.getElementById(`btnAddOtFormSelected${i}`)
+    btnAddOtFormSelected ? arrayBtnAddOtFormSelected.push(btnAddOtFormSelected) : null
 }
 
 arrayBtnAddOtFormSelected.forEach(function(elemento) {
@@ -530,7 +509,6 @@ arrayBtnAddOtFormSelected.forEach(function(elemento) {
         elemento.addEventListener('click', (event) => {
             event.preventDefault()
             const radioSelectedValue = elemento.id
-            //radioSelected(radioSelectedValue, elemento.value)
             ociNumberHidden.value = radioSelected(radioSelectedValue, elemento.value)
             lastOtNumberFn(elemento.id)
             formulario.scrollIntoView({ behavior: 'smooth', top:0 }) //scrollTo({ behavior: 'smooth', block: 'start' })
@@ -538,7 +516,7 @@ arrayBtnAddOtFormSelected.forEach(function(elemento) {
     }
 })
 
-for (let i = 0; i < radios.length; i++) {
+for (let i=0; i<radios.length; i++) {
     radios[i].addEventListener("change", (event) => {
         event.preventDefault()
         let ociSeleccionada = event.target.value
@@ -551,14 +529,18 @@ for (let i = 0; i < radios.length; i++) {
     })
 }
 
-//------- Change OT status ----------------
-function messageChangeOtStatus(
-    statusOt, 
+//------- Change ítem OT status ----------------
+function messageChangeOtDetalleStatus(
+    statusOtDetalle, 
     otNumber, 
     idProjectSelected, 
     ociKNumber, 
     otKNumber,
-    otDescription
+    // otDescription,
+    // idDetalle,
+    otDetalleKNumber,
+    otDetalle,
+    otDetalleDescripcion
 ) {
     
     const Toast = Swal.mixin({
@@ -568,19 +550,21 @@ function messageChangeOtStatus(
         timer: 4000,
         timerProgressBar: false,
     })
-    
+
         Swal.fire({
-            title: `Cambio status de OT#${otNumber} ${otDescription}`,
+            title: `Cambio status de ítem OT#${otNumber}.${otDetalle.trim()}-${otDetalleDescripcion.trim()}`,
             position: 'center',
-            html: `El status de la OT#<strong>${otNumber}</strong> se modificará a
-                    <span class="badge rounded-pill bg-${ statusOt==='Activo' ? 'danger' : 'primary' } text-white">
-                    ${ statusOt==='Activo' ? 'Inactivo' : 'Activo' }
-                    </span> y ${ statusOt==='Activo' ? 'no' : '' } podrá ingresar o modificar datos en esta OT.
-                    <form id="formChangeStatusOt${idProjectSelected}" action="/api/proyectos/updateStatusOt/${idProjectSelected}" method="post" style="display: none;">
+            html: `El status del ítem OT#<strong>${otNumber}.${otDetalle.trim()}</strong> se modificará a
+                    <span class="badge rounded-pill bg-${ statusOtDetalle==='Activo' ? 'danger' : 'primary' } text-white">
+                    ${ statusOtDetalle==='Activo' ? 'Inactivo' : 'Activo' }
+                    </span> y ${ statusOtDetalle==='Activo' ? 'no' : '' } podrá ingresar o modificar datos en este Item.<br>
+                    ¿Desea continuar?
+                    <form id="formChangeStatusOtDetalle${idProjectSelected}" action="/api/proyectos/updateStatusOtDetalle/${idProjectSelected}" method="post" style="display: none;">
                         <fieldset>
                             <input type="hidden" name="ociKNumberHidden" value="${ociKNumber}">
                             <input type="hidden" name="otKNumberHidden" value="${otKNumber}">
-                            <input type="hidden" name="statusOtHidden" value="${statusOt}">
+                            <input type="hidden" name="otDetalleKNumberHidden" value="${otDetalleKNumber}">
+                            <input type="hidden" name="statusOtDetalleHidden" value="${statusOtDetalle}">
                         </fieldset>
                     </form>
                     `,
@@ -593,16 +577,18 @@ function messageChangeOtStatus(
 
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById(`formChangeStatusOt${idProjectSelected}`).submit()
-                Toast.fire({
-                    icon: 'success',
-                    title: `El status de la OT#<strong>${otNumber}</strong>, se modificó con éxito!`
-                })
+                document.getElementById(`formChangeStatusOtDetalle${idProjectSelected}`).submit()
+                setTimeout(() => {
+                    Toast.fire({
+                        icon: 'success',
+                        title: `El status del ítem OT#<strong>${otNumber}.${otDetalle.trim()}</strong>, se modificó con éxito!`
+                    })
+                }, 2000)
 
             } else {
                 Swal.fire(
-                    `Status de OT#${otNumber} no modificado!`,
-                    `El status de la OT#<strong>${otNumber}</strong>, no se modificó!`,
+                    `Status del ítem OT#<strong>${otNumber}.${otDetalle.trim()}</strong> no modificado!`,
+                    `El status del ítem OT#${otNumber}.${otDetalle.trim()}, no se modificó!`,
                     'warning'
                 )
                 return false
@@ -610,16 +596,17 @@ function messageChangeOtStatus(
         })
 }
 
-//---- Update OT Data ----------------
-function messageUpdateOt(
+//---- Update Detalle OT Data ----------------
+function messageUpdateOtDetalle(
+    statusOtDetalle,
+    otNumber,
     idProjectSelected,
     ociKNumber,
-    otNumber,
     otKNumber,
+    otDescription,
+    idDetalle,
     otDetalleKNumber,
     opNumber,
-    statusOt,
-    otDescription,
     otDetalle,
     otDescripcionDetalle
 ) {
@@ -630,12 +617,10 @@ function messageUpdateOt(
     let numberKDetail = parseInt(otDetalleKNumber)
     let numberOp = parseInt(opNumber)
     let checked = 'checked'
-    statusOt=='Activo' ? checked : checked = ''
+    statusOtDetalle=='Activo' ? checked : checked = ''
 
     let bgColorStatus
-    statusOt=='Activo' ? bgColorStatus='background-color: #55dd5560;'
-                        : 
-                        bgColorStatus='background-color: #dd555560;'
+    statusOtDetalle=='Activo' ? bgColorStatus='background-color: #55dd5560;' : bgColorStatus='background-color: #dd555560;'
 
     const Toast = Swal.mixin({
         toast: true,
@@ -645,7 +630,7 @@ function messageUpdateOt(
         timerProgressBar: false,
     })
 
-    var html = `<form id="formUpdateOtDetail${idProjectSelected}" action="/api/proyectos/updateOtDetail/${idProjectSelected}" method="post">
+    let html = `<form id="formUpdateOtDetail${idProjectSelected}" action="/api/proyectos/updateOtDetail/${idProjectSelected}" method="post">
                     <fieldset>
                         <div class="row justify-content-between mb-3 mx-1 px-1">
                             <div class="col-3">
@@ -655,13 +640,13 @@ function messageUpdateOt(
                             </div>
                             
                             <div class="col-5" style="${bgColorStatus}">
-                                <label for="statusOt" class="form-label d-flex justify-content-start ms-1">Status OT</label>
+                                <label for="statusOt" class="form-label d-flex justify-content-start ms-1">Status Item</label>
                                 <div>
-                                    <p class="d-inline-block me-1">Inactiva</p>
+                                    <p class="d-inline-block me-1">Inactivo</p>
                                     <div class="form-check form-switch d-inline-block mt-2">
-                                        <input id="statusOtForm" class="form-check-input" type="checkbox" role="switch"
-                                            name="statusOtForm" style="cursor: pointer;" disabled ${checked}>
-                                        <label class="form-check-label" for="statusOt">Activa</label>
+                                        <input id="statusOtDetalleForm" class="form-check-input" type="checkbox" role="switch"
+                                            name="statusOtDetalleForm" style="cursor: pointer;" disabled ${checked}>
+                                        <label class="form-check-label" for="statusOtDetalle">Activo</label>
                                     </div>    
                                 </div>
                             </div>
@@ -679,31 +664,32 @@ function messageUpdateOt(
                                     placeholder="Numero Op" value="${numberOp}" disabled>
                             </div>
                         </div>
-
+                        <hr>
                         <div class="row justify-content-evenly mb-3 mx-1 px-1">
                             <div class="col-4">
                                 <label for="detalleOt" class="form-label d-flex justify-content-start align-items-center ms-1 mb-2">
-                                    Detalle Numero
+                                    Ítem Numero
                                 </label>
                                 <input type="text" id="detalleOt" name="detalleOt" class="form-control"
-                                    placeholder="Detalle numero" value="${otDetalle}" required>
+                                    placeholder="Ítem numero" value="${otDetalle.trim()}" required>
                             </div>
-                            <div class="col-4">
+                            <div class="col-7">
                                 <label for="otDescripcionDetalle" class="form-label d-flex justify-content-start align-items-center ms-1 mb-2">
-                                    Descripción Detalle
+                                    Descripción ítem
                                 </label>
                                 <input type="text" id="otDescripcionDetalle" name="otDescripcionDetalle" class="form-control"
-                                    placeholder="Descripcion Detalle" value="${otDescripcionDetalle}" required>
+                                    placeholder="Descripcion ítem" value="${otDescripcionDetalle}" required>
                             </div>                   
                         </div> 
                             <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden${numberKOci}" value="${numberKOci}">
                             <input type="hidden" name="otKNumberHidden" id="otKNumberHidden${numberKOt}" value="${numberKOt}">
                             <input type="hidden" name="otDetailKNumberHidden" id="otDetailKNumberHidden${numberKDetail}" value="${numberKDetail}">
+                            <input type="hidden" name="otDetailIdHidden" id="otDetailIdHidden${idDetalle}" value="${idDetalle}">
                             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     </fieldset>
                 </form>`
 
-    const htmlTitle = `Actualizar detalle #${otDetalle} - ${otDescripcionDetalle}
+    const htmlTitle = `Actualizar ítem #${otDetalle.trim()} - ${otDescripcionDetalle}
                         de OT${numberOt} - ${otDescription}`
 
     if(idProjectSelected && numberOt) {
@@ -729,13 +715,13 @@ function messageUpdateOt(
                 document.getElementById(`formUpdateOtDetail${idProjectSelected}`).submit()
                 Toast.fire({
                     icon: 'success',
-                    title: `El detalle #<b>${otDetalle}</b>, se modificó con éxito!`
+                    title: `El ítem #<b>${otDetalle.trim()}</b>, se modificó con éxito!`
                 })
 
             } else {
                 Swal.fire(
-                    'Detalle no modificado!',
-                    `El detalle #<b>${otDetalle}</b>, no se modificó!`,
+                    'Ítem no modificado!',
+                    `El ítem #<b>${otDetalle.trim()}</b>, no se modificó!`,
                     'warning'
                 )
                 return false
@@ -748,7 +734,7 @@ function messageUpdateOt(
             title: 'Error',
             position: 'center',
             timer: 3500,
-            text: `El detalle #<b>${otDetalle}</b> no se actualizó correctamente!`,
+            text: `El ítem #<b>${otDetalle.trim()}</b> no se actualizó correctamente!`,
             icon: 'error',
             showCancelButton: false,
             showConfirmButton: false,
@@ -782,7 +768,7 @@ function messageUpdateOt(
     })
 }
 
-//---- Add Details to OT ----------------
+//TODO://---- Add Details to OT ----------------
 function messageAddDetalleOt(
     idProjectSelected,
     ociKNumber,
@@ -792,7 +778,8 @@ function messageAddDetalleOt(
     statusOt,
     otDescription,
     otDesign,
-    otSimulation
+    otSimulation,
+    detalleIdSelected
 ) {
     
     let numberKOci = parseInt(ociKNumber)
@@ -873,10 +860,11 @@ function messageAddDetalleOt(
 
                             <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden${numberKOci}" value="${numberKOci}">
                             <input type="hidden" name="otKNumberHidden" id="otKNumberHidden${numberKOt}" value="${numberKOt}">
+                            <input type="hidden" name="detalleIdHidden" id="detalleIdHidden${numberKOt}" value="${detalleIdSelected}">
                     </fieldset>
                 </form>`
 
-    if (idProjectSelected && numberOt) {
+    if (idProjectSelected && numberOt && detalleIdSelected) {
         Swal.fire({
             title: `Actualizar OT# ${numberOt} - ${otDescription}`,
             position: 'center',
@@ -897,10 +885,12 @@ function messageAddDetalleOt(
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById(`formUpdateOt${idProjectSelected}`).submit()
-                Toast.fire({
-                    icon: 'success',
-                    title: `La OT# <b>${numberOt}</b>, se modificó con éxito!`
-                })
+                setTimeout(() => {
+                    Toast.fire({
+                        icon: 'success',
+                        title: `La OT# <b>${numberOt}</b>, se modificó con éxito!`
+                    })
+                }, 2000)
 
             } else {
                 Swal.fire(
@@ -1137,17 +1127,19 @@ function messageAddDetalleOt(
     // ****************** End To be done *******************************
 }
 
-//---- Delete OT ----------------
-function messageDeleteOt(
-    statusOt,
+//TODO://---- Delete Detalle de OT ----------------
+function messageDeleteOtDetalle(
+    statusOtDetalle,
     otNumber,
     idProjectSelected,
     ociKNumber,
     otKNumber,
-    otDescription
+    otDetalleKNumber,
+    // otDescription,
+    idDetalleSelected,
+    otDetalle,
+    otDetalleDescripcion,
     ) {
-        
-    const descriptionOt = otDescription.slice(13)
 
     const Toast = Swal.mixin({
         toast: true,
@@ -1159,18 +1151,20 @@ function messageDeleteOt(
 
     const htmlForm = `
         <div class="container m-auto">
-            La OT#<strong>${otNumber}</strong>, Descripcion: "${descriptionOt}",
-            Status: <span class="badge rounded-pill bg-${ statusOt==='Activo' ? 'primary' : 'danger' } text-white">
-                        ${ statusOt==='Activo' ? 'Activo' : 'Inactivo' }
+            El ítem #<strong>${otNumber}.${otDetalle.trim()}</strong>, Descripcion: "${otDetalleDescripcion.trim()}",
+            Status: <span class="badge rounded-pill bg-${ statusOtDetalle==='Activo' ? 'primary' : 'danger' } text-white">
+                        ${ statusOtDetalle==='Activo' ? 'Activo' : 'Inactivo' }
                     </span>
             y su toda su información interna se eliminará completamente.
             <br>
             <hr>
-            Está seguro que desea continuar?
-            <form id="formDeleteOt${idProjectSelected}" action="/api/proyectos/deleteOt/${idProjectSelected}" method="post">
+            ¿Está seguro que desea continuar?
+            <form id="formDeleteOtDetalle${idProjectSelected}" action="/api/proyectos/deleteOtDetalle/${idProjectSelected}" method="post">
                 <fieldset>
                     <input type="hidden" name="ociKNumberHidden" value="${ociKNumber}">
                     <input type="hidden" name="otKNumberHidden" value="${otKNumber}">
+                    <input type="hidden" name="otDetalleKNumber" value="${otDetalleKNumber}">
+                    <input type="hidden" name="detalleIdNumber" value="${idDetalleSelected}">
                 </fieldset>
             </form>
         </div>    
@@ -1178,7 +1172,7 @@ function messageDeleteOt(
     
     if(idProjectSelected && otNumber) {
         Swal.fire({
-            title: `Eliminar OT# ${otNumber} - ${descriptionOt}`,
+            title: `Eliminar ítem #${otNumber}.${otDetalle.trim()} - ${otDetalleDescripcion.trim()}`,
             position: 'center',
             html: htmlForm,
             icon: 'question',
@@ -1193,14 +1187,16 @@ function messageDeleteOt(
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById(`formDeleteOt${idProjectSelected}`).submit()
-                Toast.fire({
-                    icon: 'success',
-                    title: `La OT#<strong>${otNumber}</strong>, se eliminó correctamente!`
-                })
+                setTimeout(() => {
+                    Toast.fire({
+                        icon: 'success',
+                        title: `El ítem #<strong>${otNumber}.${otDetalle.trim()}</strong>, se eliminó correctamente!`
+                    })
+                }, 2000)
             } else {
                 Swal.fire(
-                    `OT# ${otNumber}`,
-                    `La OT#<b>${otNumber}</b>, no se eliminó!`,
+                    `Ítem #${otNumber}.${otDetalle.trim()}`,
+                    `El ítem #<b>${otNumber}.${otDetalle.trim()}</b>, no se eliminó!`,
                     'warning'
                 )
                 return false
@@ -1212,7 +1208,7 @@ function messageDeleteOt(
             title: 'Error',
             position: 'center',
             timer: 3500,
-            text: `La OT#<strong>${otNumber}</strong>, no se eliminó correctamente!`,
+            text: `El ítem #<strong>${otNumber}.${otDetalle.trim()}</strong>, no se eliminó correctamente!`,
             icon: 'error',
             showCancelButton: false,
             showConfirmButton: false,
@@ -1231,9 +1227,7 @@ function messageUpdateMasiveOt(arrayRowsSelected) {
     statusOt=='Activo' ? checked : checked = ''
 
     let bgColorStatus
-    statusOt=='Activo' ? bgColorStatus='background-color: #55dd5560;'
-                        : 
-                         bgColorStatus='background-color: #dd555560;'
+    statusOt=='Activo' ? bgColorStatus='background-color: #55dd5560;' : bgColorStatus='background-color: #dd555560;'
 
     const Toast = Swal.mixin({
         toast: true,
@@ -1243,7 +1237,7 @@ function messageUpdateMasiveOt(arrayRowsSelected) {
         timerProgressBar: false,
     })
 
-    var html = `<form id="formUpdateMasiveOt${idProjectSelected}" action="/api/proyectos/updateMasiveOt/${idProjectSelected}" method="post">
+    let html = `<form id="formUpdateMasiveOt${idProjectSelected}" action="/api/proyectos/updateMasiveOt/${idProjectSelected}" method="post">
                     <fieldset>
                         <div class="row justify-content-between mb-3 mx-1 px-1">
                             <div class="col-4">
@@ -1351,9 +1345,9 @@ let maxOtQuantity
 checkSelect ? maxOtQuantity = parseInt(checkSelect.length) : maxOtQuantity=0
 let ociTotalQty = parseInt(document.getElementById('ociTotalQty').innerText)
 
-var arrayBtnChangeStatusOt = [],
-    arrayBtnUpdateOt = [],
-    arrayBtnDeleteOt = [],
+let arrayBtnChangeStatusOtDetalle = [],
+    arrayBtnUpdateOtDetalle = [],
+    arrayBtnDeleteOtDetalle = [],
     arrayCheckBoxSelect = [],
     arrayBtnCheckSelectionAll = [],
     arrayBtnCheckSelecMasive = [],
@@ -1370,18 +1364,18 @@ var arrayBtnChangeStatusOt = [],
         }
 
         for (let n=0; n<maxOtQuantity; n++) {
-            let btnChangeStatusOt = document.getElementById(`btnStatusOt${m}_${n}`)
-            btnChangeStatusOt ? arrayBtnChangeStatusOt.push(btnChangeStatusOt) : null
-
-            let btnDeleteOt = document.getElementById(`btnDeleteOt${m}_${n}`)
-            btnDeleteOt ? arrayBtnDeleteOt.push(btnDeleteOt) : null
-
-            let checkBoxSelect = document.getElementById(`checkSelect${m}_${n}`)
-            checkBoxSelect ? arrayCheckBoxSelect.push(checkBoxSelect) : null
-
             for (let o=0; o<varLimMaxDetallesOT; o++) {
-                let btnUpdateOt = document.getElementById(`btnEditOt${m}_${n}_${o}`)
-                btnUpdateOt ? arrayBtnUpdateOt.push(btnUpdateOt) : null
+                let btnChangeStatusOtDetalle = document.getElementById(`btnStatusOtDetalle${m}_${n}_${o}`)
+                btnChangeStatusOtDetalle ? arrayBtnChangeStatusOtDetalle.push(btnChangeStatusOtDetalle) : null
+
+                let btnDeleteOtDetalle = document.getElementById(`btnDeleteOtDetalle${m}_${n}_${o}`)
+                btnDeleteOtDetalle ? arrayBtnDeleteOtDetalle.push(btnDeleteOtDetalle) : null
+
+                let checkBoxSelect = document.getElementById(`checkSelect${m}_${n}_${o}`)
+                checkBoxSelect ? arrayCheckBoxSelect.push(checkBoxSelect) : null
+
+                let btnUpdateOtDetalle = document.getElementById(`btnEditOtDetalle${m}_${n}_${o}`)
+                btnUpdateOtDetalle ? arrayBtnUpdateOtDetalle.push(btnUpdateOtDetalle) : null
 
                 let btnAddDetallesOt = document.getElementById(`btnAddDetallesFormSelected${m}_${n}_${o}`)
                 btnAddDetallesOt ? arrayBtnAddDetallesOt.push(btnAddDetallesOt) : null
@@ -1476,18 +1470,19 @@ arrayBtnAddDetallesOt.forEach(function(elemento) {
             let regex = /^btnAddDetallesFormSelected/;
 
             // Eliminar el texto inicial de la cadena
-            var idOtOci = elementoId.replace(regex, '')
-            const arrayOciOtSelected = idOtOci.split('_')
+            var idOtOciDet = elementoId.replace(regex, '')
+            const arrayOciOtSelected = idOtOciDet.split('_')
 
             const idProjectSelected = document.getElementById('projectIdHidden').value
             const ociKNumber = parseInt(arrayOciOtSelected[0])
-            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent)
+            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOciDet}`).textContent)
             const otKNumber = parseInt(arrayOciOtSelected[1])       
-            const opNumber = parseInt(document.getElementById(`lastOpNumber${idOtOci}`).textContent)
-            const statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent
-            const otDescription = document.getElementById(`lastOpDescription${idOtOci}`).textContent
-            const otDetail =  document.getElementById(`otDesign${idOtOci}`).textContent
-            const detailDescription =  document.getElementById(`otSimulation${idOtOci}`).textContent
+            const opNumber = parseInt(document.getElementById(`lastOpNumber${idOtOciDet}`).textContent)
+            const statusOt = document.getElementById(`lastOtStatus${idOtOciDet}`).textContent
+            const otDescription = document.getElementById(`lastOpDescription${idOtOciDet}`).textContent
+            const otDetail =  document.getElementById(`otDesign${idOtOciDet}`).textContent
+            const detailDescription =  document.getElementById(`otSimulation${idOtOciDet}`).textContent
+            const detailIdSelected = document.getElementById(`detalleIdHidden${idOtOciDet}`).textContent
             
             messageAddDetalleOt(
                 idProjectSelected,
@@ -1498,73 +1493,82 @@ arrayBtnAddDetallesOt.forEach(function(elemento) {
                 cleanString(statusOt),
                 cleanString(otDescription),
                 cleanString(otDetail),
-                cleanString(detailDescription)
+                cleanString(detailDescription),
+                detailIdSelected
             )
         })
     }
 })
 
-arrayBtnChangeStatusOt.forEach(function(elemento) {
+arrayBtnChangeStatusOtDetalle.forEach(function(elemento) {
     if (elemento.id) {
         elemento.addEventListener('click', (event) => {
             event.preventDefault()
             const elementoId = elemento.id
-            let regex = /^btnStatusOt/;
+            let regex = /^btnStatusOtDetalle/;
 
             // Eliminar el texto inicial de la cadena
-            var idOtOci = elementoId.replace(regex, '')
-            const arrayOciOtSelected = idOtOci.split('_')
-            
-            const statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent
-            const otDescription = document.getElementById(`lastOpDescription${idOtOci}`).textContent
-            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent)
+            let idOtOciDet = elementoId.replace(regex, '')
+            const arrayOciOtSelected = idOtOciDet.split('_')
+
+            const statusOtDetalle = document.getElementById(`lastOtDetalleStatus${idOtOciDet}`).textContent
+            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOciDet}`).textContent)
             const idProjectSelected = document.getElementById('projectIdHidden').value
+            const idDetalleSelected = document.getElementById(`detalleIdHidden${idOtOciDet}`).value
             const ociKNumber = parseInt(arrayOciOtSelected[0])
             const otKNumber = parseInt(arrayOciOtSelected[1])
+            const otDetalleKNumber = parseInt(arrayOciOtSelected[2])
+            const otDetalle =  document.getElementById(`numeroDetalle${idOtOciDet}`).textContent
+            const otDetalleDescripcion =  document.getElementById(`descripcionDetalle${idOtOciDet}`).textContent
             
-            messageChangeOtStatus(
-                cleanString(statusOt),
+            messageChangeOtDetalleStatus(
+                cleanString(statusOtDetalle),
                 otNumber,
                 idProjectSelected,
                 ociKNumber,
                 otKNumber,
-                otDescription
+                idDetalleSelected,
+                otDetalleKNumber,
+                cleanString(otDetalle),
+                cleanString(otDetalleDescripcion)
             )
         })
     }
 })
 
-arrayBtnUpdateOt.forEach(function(elemento) {
+arrayBtnUpdateOtDetalle.forEach(function(elemento) {
     if (elemento.id) {
         elemento.addEventListener('click', (event) => {
             event.preventDefault()
             const elementoId = elemento.id
-            let regex = /^btnEditOt/;
+            let regex = /^btnEditOtDetalle/;
 
             // Eliminar el texto inicial de la cadena
-            var idOtOci = elementoId.replace(regex, '')
-            const arrayOciOtSelected = idOtOci.split('_')
+            var idOtOciDet = elementoId.replace(regex, '')
+            const arrayOciOtSelected = idOtOciDet.split('_')
 
             const idProjectSelected = document.getElementById('projectIdHidden').value
+            const idDetalleSelected = document.getElementById(`detalleIdHidden${idOtOciDet}`).value
             const ociKNumber = parseInt(arrayOciOtSelected[0])
-            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent)
+            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOciDet}`).textContent)
             const otKNumber = parseInt(arrayOciOtSelected[1])
-            const otDetalleKNumber = parseInt(arrayOciOtSelected[2])      
-            const opNumber = parseInt(document.getElementById(`lastOpNumber${idOtOci}`).textContent)
-            const statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent
-            const otDescription = document.getElementById(`lastOpDescription${idOtOci}`).textContent
-            const otDetalle =  document.getElementById(`numeroDetalle${idOtOci}`).textContent
-            const otDetalleDescripcion =  document.getElementById(`descripcionDetalle${idOtOci}`).textContent
+            const otDetalleKNumber = parseInt(arrayOciOtSelected[2])
+            const opNumber = parseInt(document.getElementById(`lastOpNumber${idOtOciDet}`).textContent)
+            const statusOtDetalle = document.getElementById(`lastOtDetalleStatus${idOtOciDet}`).textContent
+            const otDescription = document.getElementById(`lastOpDescription${idOtOciDet}`).textContent
+            const otDetalle =  document.getElementById(`numeroDetalle${idOtOciDet}`).textContent
+            const otDetalleDescripcion =  document.getElementById(`descripcionDetalle${idOtOciDet}`).textContent
             
-            messageUpdateOt(
+            messageUpdateOtDetalle(
+                cleanString(statusOtDetalle),
+                otNumber,
                 idProjectSelected,
                 ociKNumber,
-                otNumber,
                 otKNumber,
+                cleanString(otDescription),
+                idDetalleSelected,
                 otDetalleKNumber,
                 opNumber,
-                cleanString(statusOt),
-                cleanString(otDescription),
                 cleanString(otDetalle),
                 cleanString(otDetalleDescripcion),
             )
@@ -1572,31 +1576,39 @@ arrayBtnUpdateOt.forEach(function(elemento) {
     }
 })
 
-arrayBtnDeleteOt.forEach(function(elemento) {
+arrayBtnDeleteOtDetalle.forEach(function(elemento) {
     if (elemento.id) {
         elemento.addEventListener('click', (event) => {
             event.preventDefault()
             const elementoId = elemento.id
-            let regex = /^btnDeleteOt/;
+            let regex = /^btnDeleteOtDetalle/;
 
             // Eliminar el texto inicial de la cadena
-            var idOtOci = elementoId.replace(regex, '')
-            const arrayOciOtSelected = idOtOci.split('_')
+            var idOtOciDet = elementoId.replace(regex, '')
+            const arrayOciOtSelected = idOtOciDet.split('_')
             
-            const statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent
-            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent)
+            const statusOtDetalle = document.getElementById(`lastOtDetalleStatus${idOtOciDet}`).textContent
+            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOciDet}`).textContent)
             const idProjectSelected = document.getElementById('projectIdHidden').value
+            const idDetalleSelected = document.getElementById(`detalleIdHidden${idOtOciDet}`).value
             const ociKNumber = parseInt(arrayOciOtSelected[0])
-            const otKNumber = parseInt(arrayOciOtSelected[1])       
-            const otDescription = document.getElementById(`lastOpDescription${idOtOci}`).textContent
-            
-            messageDeleteOt(
-                cleanString(statusOt),
+            const otKNumber = parseInt(arrayOciOtSelected[1])   
+            const otDetalleKNumber = parseInt(arrayOciOtSelected[2])    
+            const otDescription = document.getElementById(`lastOpDescription${idOtOciDet}`).textContent
+            const otDetalle =  document.getElementById(`numeroDetalle${idOtOciDet}`).textContent
+            const otDetalleDescripcion =  document.getElementById(`descripcionDetalle${idOtOciDet}`).textContent
+
+            messageDeleteOtDetalle(
+                cleanString(statusOtDetalle),
                 otNumber,
                 idProjectSelected,
                 ociKNumber,
                 otKNumber,
-                otDescription
+                otDetalleKNumber,
+                cleanString(otDescription),
+                idDetalleSelected,
+                cleanString(otDetalle),
+                cleanString(otDetalleDescripcion),
             )
         })
     }
@@ -1606,20 +1618,20 @@ arrayCheckBoxSelect.forEach(function(element) {
     element.checked = ''
     element.addEventListener('change', (event) => {
         event.preventDefault()
-        const idOtOci = (event.target.id).slice(11)
-        if (document.getElementsByName(`rowSelected${idOtOci}`)) {
-            var rowSelectCheck = Array.from(document.getElementsByName(`rowSelected${idOtOci}`))
+        const idOtOciDet = (event.target.id).slice(11)
+        if (document.getElementsByName(`rowSelected${idOtOciDet}`)) {
+            var rowSelectCheck = Array.from(document.getElementsByName(`rowSelected${idOtOciDet}`))
         }
 
         let idOci = extractNumbers(element.id)[0]
-        //let idOt = extractNumbers(element.id)[1]
+        // let idOt = extractNumbers(element.id)[1]
+        // let idDet = extractNumbers(element.id)[2]
         
         updateBtnCheckSelecMasive(idOci)
 
         for (let q=0; q<rowSelectCheck.length; q++) { //12
             if (rowSelectCheck[q] && rowSelectCheck[q].style.cssText == "height: 7vh;") {
                 rowSelectCheck[q].setAttribute('style', "height: 7vh; background-color: #c4f0fd;")
-                
             } else {
                 rowSelectCheck[q].setAttribute('style', "height: 7vh;")
             }
@@ -1686,227 +1698,168 @@ arrayBtnCheckSelectionAll.forEach(function(element) {
     }    
 })
 
-
-//-----Btns Buscar en BBDD el Usuario Seguidor de Diseño --------------
-//FIXME: Arreglar esta funcion
+//-----Btns Buscar en BBDD el Usuario Seguidor de Diseño/Simulación --------------
 const searchDesignUser = document.getElementById('searchDesignUser')
-searchDesignUser.addEventListener('click', (event) => {
-    event.preventDefault()
-    function cargarUsuarioDiseno() {
+const searchSimulationUser = document.getElementById('searchSimulationUser')
+const userNameBanner = document.getElementById('userNameBanner').innerText
 
+function messageAlertUser(titulo, message, icon){
+    Swal.fire(
+        titulo, 
+        message, 
+        icon);
+    return false
+}
+
+async function cargarUsuario(idPermiso) {
+    const permisos = {
+        'searchDesignUser': {
+            permisoUsuario: 'diseno',
+            tituloSeguimiento: 'Seguimiento Diseño',
+            inputTarget: 'internoDiseno'
+        },
+        'searchDesignUserModal': {
+            permisoUsuario: 'diseno',
+            tituloSeguimiento: 'Seguimiento Diseño',
+            inputTarget: 'internoDiseno'
+        },
+        'searchSimulationUser': {
+            permisoUsuario: 'simulacion',
+            tituloSeguimiento: 'Seguimiento Simulación',
+            inputTarget: 'internoSimulacion'
+        }
+    };
+    
+    const { permisoUsuario, tituloSeguimiento, inputTarget } = permisos[idPermiso] || {};
+
+    if (!permisoUsuario || !tituloSeguimiento || !inputTarget) {
+        throw new Error(`Permiso no encontrado para id:', ${idPermiso}`)
+    }
+
+    try {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        
-        const resquest = new Request("../../../api/usuarios/searchUsers/all", {
+        const url = `../../../api/usuarios/searchUsers/${userNameBanner}`
+        const response = await fetch(url, {
             method: "GET",
-            headers: myHeaders
-          })
+            headers: myHeaders,
+            mode: 'cors',
+            cache: 'default',
+        });
+        
+        if(!response.ok ){
+            throw new Error(`Error en la solicitud`);
+        }
 
-            // console.log('resquest: ', resquest)
-          
-        fetch(resquest)
-        .then(response => response.json())
-        .then((users) => {
+        const users = await response.json();
+        const arrayUsuariosEspecificos = [];
+        const arrayUsersAll = [];
 
-            // console.log('users: ', JSON.stringify(users))
+        if (users && users.length > 0) {
+            users.forEach((user, i) => {
+                const userHTML = `
+                    <label>
+                        <span id="${user._id}" class="badge rounded-pill ${user.permiso === `${permisoUsuario}` ? 'bg-info' : 'bg-light'} text-dark my-2">
+                            <input id="${i}" class="form-check-input mb-1" type="radio"
+                                name="radioUsuarios" value="${user.name}, ${user.lastName}">
+                            ${user.name} ${user.lastName}
+                        </span>
+                    </label>`;
 
-            const arrayUsuariosDiseno = []
-            const arrayUsersAll = []
+                if (user.status) {
+                    user.permiso === `${permisoUsuario}` ? arrayUsuariosEspecificos.push(userHTML) : arrayUsersAll.push(userHTML);
+                }    
+            });
 
-            if (users != {} ) {
-
-                JSON.stringify(users)
-                for(let i=0; i<users.usersAll.length; i++) {
-
-                    if(users.usersAll[i].status && users.usersAll[i].permiso ==='diseno') {
-                        arrayUsuariosDiseno.push(`
-                                        <label>
-                                            <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-info text-dark my-2">
-                                                <input
-                                                    class="form-check-input mb-1"
-                                                    type="radio"
-                                                    name="radioUsuarios"
-                                                    value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}"
-                                                    id="${i}">
-                                                    ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                            </span>
-                                        </label>`)
-
-                    } else if (users.usersAll[i].status && users.usersAll[i].permiso !=='diseno') {
-                        arrayUsersAll.push(`
-                                    <label>
-                                        <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-light text-dark my-2">
-                                            <input
-                                                class="form-check-input mb-1"
-                                                type="radio"
-                                                name="radioUsuarios"
-                                                value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}"
-                                                id="${i}">
-                                                ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                        </span>
-                                    </label>`)
-                    }
-                }
-            
-                const html = `
-                    <hr>
-                        <label>Usuarios Diseño</label>
-                        <div name='container' class="container">
-                            ${arrayUsuariosDiseno.join(' ')}
-                        </div>
-                    <hr>
-                        <label>Usuarios</label>
-                        <div name='container' class="container">
-                            ${arrayUsersAll.join(' ')}
-                        </div>
-                    <hr>`
-
-                    Swal.fire({
-                        title: 'Usuarios',
-                        html: html,
-                        width: 450,
-                        background: "#eee",
-                        allowOutsideClick: false,
-                        showCloseButton: true,
-                        focusConfirm: false,
-                        confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>',
-                        didOpen: ()=> {
-                            let btnAceptar = document.getElementsByClassName('swal2-confirm');
-                            btnAceptar[0].setAttribute('id','btnAceptarModal')
-                            btnAceptar[0].style = "cursor: not-allowed;"
-                            btnAceptar[0].disabled = true
-                        }
-                    }).then((result) => {
-                        const radiosToSelect = document.getElementsByName('radioUsuarios')
-
-                        for(let i=0; i<radiosToSelect.length; i++) {
-                            const radioSelected = document.getElementById(i)
-                            
-                            if (radioSelected.checked) {
-                                var usuariosSeleccionado = radioSelected.value
-                            }
-                        }
-                        
-                        if (result.isConfirmed) {
-                            const inputUserSelected = document.getElementById('internoDiseno')
-                            inputUserSelected.value = usuariosSeleccionado
-                        
-                        } else {
-                            Swal.fire(
-                                'Usuario no seleccionado!',
-                                `No ha seleccionado ningún usuario!`,
-                                'warning'
-                            )
-                            return false
-                        }
-                    })
-                    disabledBtnAceptar()
-            } else {
-                console.log('Error, no se econtró ningún users')
-            }
-
-        })
-        .catch(error => {
-            throw new Error("Something went wrong on api server!");
-        })
-    }
-    cargarUsuarioDiseno()
-})
-//FIXME: Arreglar esta funcion
-//-----Btns Buscar en BBDD el Usuario Seguidor de Simulacion --------------
-const searchSimulationUser = document.getElementById('searchSimulationUser')
-searchSimulationUser.addEventListener('click', (event) => {
-    event.preventDefault()
-
-    function cargarUsuarioSimulacion() {
-        fetch('../../../api/usuarios/searchUsers/all')
-          .then(response => response.json())
-          .then(users => {
-            const arrayUsuariosSimulacion = []
-            const arrayUsersAll = []
-
-            for(let i=0; i<users.usersAll.length; i++) {
-
-                if(users.usersAll[i].status && users.usersAll[i].permiso ==='simulacion') {
-                    arrayUsuariosSimulacion.push(`
-                                    <label>
-                                        <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-warning text-dark my-2">
-                                            <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
-                                            ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                        </span>
-                                    </label>`)
-
-                } else if (users.usersAll[i].status && users.usersAll[i].permiso !=='simulacion') {
-                    arrayUsersAll.push(`
-                                <label>
-                                    <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-light text-dark my-2">
-                                        <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
-                                        ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                    </span>
-                                </label>`)
-                }
-            }
-            
             const html = `
-                    <hr>
-                        <label>Usuarios Simulación</label>
-                        <div name='container' class="container">
-                            ${arrayUsuariosSimulacion.join(' ')}
-                        </div>
-                    <hr>
-                        <label>Usuarios</label>
-                        <div name='container' class="container">
-                            ${arrayUsersAll.join(' ')}
-                        </div>
-                    <hr>`
+                <hr>
+                <label>${tituloSeguimiento}</label>
+                <div name='container' class="container">
+                    ${arrayUsuariosEspecificos.join(' ')}
+                </div>
+                <hr>
+                <label>Usuarios</label>
+                <div name='container' class="container">
+                    ${arrayUsersAll.join(' ')}
+                </div>
+                <hr>`;
 
-                    Swal.fire({
-                        title: 'Usuarios',
-                        html: html,
-                        width: 450,
-                        background: "#eee",
-                        allowOutsideClick: false,
-                        showCloseButton: true,
-                        focusConfirm: false,
-                        confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>',
-                        didOpen: ()=> {
-                            let btnAceptar = document.getElementsByClassName('swal2-confirm');
-                            btnAceptar[0].setAttribute('id','btnAceptarModal')
-                            btnAceptar[0].style = "cursor: not-allowed;"
-                            btnAceptar[0].disabled = true
-                        }
-                    }).then((result) => {
-                        const radiosToSelect = document.getElementsByName('radioUsuarios')
+            Swal.fire({
+                title: tituloSeguimiento,
+                html: html,
+                width: 450,
+                background: "#eee",
+                allowOutsideClick: false,
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>',
+                didOpen: () => {
+                    const btnAceptar = document.querySelector('.swal2-confirm');
+                    btnAceptar.setAttribute('id', 'btnAceptarModal');
+                    btnAceptar.style.cursor = "not-allowed";
+                    btnAceptar.disabled = true;
 
-                        for(let i=0; i<radiosToSelect.length; i++) {
-                            const radioSelected = document.getElementById(i)
-                            
-                            if (radioSelected.checked) {
-                                var usuariosSeleccionado = radioSelected.value
-                            }
-                        }
-                        
-                        if (result.isConfirmed) {
-                            const inputUserSelected = document.getElementById('internoSimulacion')
-                            inputUserSelected.value = usuariosSeleccionado
-                        
-                        } else {
-                            Swal.fire(
-                                'Usuario no seleccionado!',
-                                `No ha seleccionado ningún usuario!`,
-                                'warning'
-                            )
-                            return false
-                        }
-                    })
-                    disabledBtnAceptar()
-        })
-        .catch(error => {
-        console.error('Error:', error)
-        })
-      }
-      cargarUsuarioSimulacion()
-})
+                    const radios = document.getElementsByName('radioUsuarios');
+                    radios.forEach((radio) => {
+                        radio.addEventListener('change', () => {
+                            btnAceptar.style.cursor = "pointer";
+                            btnAceptar.disabled = false;
+                        });
+                    });
+                }
+            }).then((result) => {
+                const radioSelected = document.querySelector('input[name="radioUsuarios"]:checked');
+                if (result.isConfirmed && radioSelected) {
+                    const inputUserSelected = document.getElementById(`${inputTarget}`);
+                    inputUserSelected.value = radioSelected.value;
+
+                } else {
+                    const titulo = 'Usuario no seleccionado'
+                    const message = 'No ha seleccionado ningún usuario!'
+                    const icon = 'warning'
+                    messageAlertUser(titulo, message, icon)
+                }
+            });
+
+        } else {
+            throw new Error(`No hay usuarios que seleccionar`);
+        }
+
+    } catch (error) {
+        const titulo = 'Error'
+        const message = `${error}`
+        const icon = 'error'
+        messageAlertUser(titulo, message, icon)
+    }
+    disabledBtnAceptar()
+}
+
+searchDesignUser.addEventListener('click', async (event) => {
+    let idPermiso = searchDesignUser.id
+    event.preventDefault();
+    try {
+        await cargarUsuario(idPermiso);
+    } catch (error) {
+        const titulo = 'Error al cargar los usuarios'
+        const message = error
+        const icon = 'error'
+        messageAlertUser(titulo, message, icon)
+    }
+});
+
+searchSimulationUser.addEventListener('click', async (event) => {
+    let idPermiso = searchSimulationUser.id
+    event.preventDefault();
+    try {
+        await cargarUsuario(idPermiso);
+    } catch (error) {
+        const titulo = 'Error al cargar los usuarios'
+        const message = error
+        const icon = 'error'
+        messageAlertUser(titulo, message, icon)
+    }
+});
+
 
 function messageNewOt(ociNumber, otArray, ociAlias) {
 
@@ -1988,11 +1941,12 @@ btnCreateNewOt.addEventListener('click', (event) => {
         messageNewOt(ociNumberHiddenValue, otArray, ociAlias)
 
     } else {
-        console.log('Hubo un error al seleccionar la OCI!!') //Hacer sweetAlert2
+        //TODO: Hacer sweetAlert2
+        console.log('Hubo un error al seleccionar la OCI!!')
     }
 })
 
-//---------- Obtiene la lista de OT y Detalles ------------
+//---------- Obtiene la lista de OT e Items ------------
 function getOtList(i) {
     const parentDiv = document.getElementById(`tablaGeneral${i}`)
     let tableBody = parentDiv.lastElementChild
@@ -2006,15 +1960,16 @@ function getOtList(i) {
     }
 
     // Arrays para almacenar los datos
-    let arrayOtNumber = [], arrayOpNumber = [], arrayOtStatus = [], arrayOtDetalle = [], arrayDescripcionDetalle = [], arrayOnumber = [];
+    let arrayOtNumber = [], arrayOpNumber = [], arrayOtDetalleStatus = [], arrayOtDetalle = [], arrayDescripcionDetalle = [], arrayOnumber = [], arrayDetalleId = [];
 
     // Configuración de mapeo de IDs a arrays
     const mappings = [
         { prefix: 'lastOtNumber', array: arrayOtNumber },
         { prefix: 'lastOpNumber', array: arrayOpNumber },
-        { prefix: 'lastOtStatus', array: arrayOtStatus },
+        { prefix: 'lastOtDetalleStatus', array: arrayOtDetalleStatus },
         { prefix: 'numeroDetalle', array: arrayOtDetalle, isDetalle: true },
-        { prefix: 'descripcionDetalle', array: arrayDescripcionDetalle }
+        { prefix: 'descripcionDetalle', array: arrayDescripcionDetalle },
+        { prefix: 'detalleIdHidden', array: arrayDetalleId }
     ];
 
     for (let n = 0; n < lastChild; n++) {
@@ -2028,21 +1983,22 @@ function getOtList(i) {
 
                     // Si es un detalle, agregar también a arrayOnumber
                     if (mapping.isDetalle) {
-                        arrayOnumber.push(o);
+                        arrayOnumber.push(`${k}_${n}_${o}`);
                     }
                 }
             });
         }
     }
     // console.log('arrayOtNumber:', arrayOtNumber, 'arrayOtDetalle:', arrayOtDetalle,
-    //             'arrayDescripcionDetalle:', arrayDescripcionDetalle, 'arrayOnumber:', arrayOnumber)
+    //             'arrayDescripcionDetalle:', arrayDescripcionDetalle, 'arrayOnumber:', arrayOnumber, 'arrayDetalleId', arrayDetalleId)
     return {
         arrayOtNumber,
         arrayOpNumber,
-        arrayOtStatus,
+        arrayOtDetalleStatus,
         arrayOtDetalle,
         arrayDescripcionDetalle,
         arrayOnumber,
+        arrayDetalleId,
         lastChild
     }
 }
@@ -2139,7 +2095,6 @@ function changeValueFromArray(arrayFromValues) {
     return arrayFromValues.map(value => valueMap[value] || value);
 }
 
-
 function colorStatusOt(valorStatusOt) {
     let disabled = 'required'
     let color = ''
@@ -2154,13 +2109,13 @@ function colorStatusOt(valorStatusOt) {
 function optionSelect(option) {
     const options = {
         prodismo: `
-            <option value="terceros">terceros</option>
+            <option value="terceros">Terceros</option>
             <option value="china">CHINA</option>
             <option value="noAplica">N/A</option>
         `,
         china: `
             <option value="prodismo">PRODISMO</option>
-            <option value="terceros">terceros</option>
+            <option value="terceros">Terceros</option>
             <option value="noAplica">N/A</option>
         `,
         terceros: `
@@ -2170,12 +2125,12 @@ function optionSelect(option) {
         `,
         noAplica: `
             <option value="prodismo">PRODISMO</option>
-            <option value="terceros">terceros</option>
+            <option value="terceros">Terceros</option>
             <option value="china">CHINA</option>
         `,
         default: `
             <option value="prodismo">PRODISMO</option>
-            <option value="terceros">terceros</option>
+            <option value="terceros">Terceros</option>
             <option value="china">CHINA</option>
             <option value="noAplica">N/A</option>
         `
@@ -2185,7 +2140,6 @@ function optionSelect(option) {
 }
 
 function switchOptionSelected(switchValue) {
-
     const optionsMap = {
         "PRODISMO": { variableValue: 'prodismo', optionKey: 'optionProdismo', getValueArrayDato: 'PRODISMO' },
         "TERCEROS": { variableValue: 'terceros', optionKey: 'optionTerceros', getValueArrayDato: 'TERCEROS' },
@@ -2212,62 +2166,53 @@ function switchOptionSelected(switchValue) {
     };
 }
 
-const cabeceraFormulario = `<div class="col-1 my-auto align-self-center" style="width: 5vw;">
-                                <span><strong>OT Status</strong></span>
-                            </div>
-                            <div class="col-1 my-auto align-self-center" style="width: 4vw;">
-                                <span><strong>OT#</strong></span>
-                            </div>
-                            <div class="col-1 my-auto align-self-center" style="width: 4vw;">
-                                <span><strong>OP#</strong></span>
-                            </div>
-                            <div class="col-1 my-auto align-self-center" style="width: 5vw;">
-                                <span><strong># Detalle</strong></span>
-                            </div>
-                            <div class="col-1 my-auto align-self-center" style="width: 10vw;">
-                                <span><strong>Descripción</strong></span>
-                            </div>`
+const cabeceraFormulario = `
+    <div class="col-1 my-auto align-self-center" style="width: 4vw;">
+    <span><strong>OT#</strong></span>
+    </div>
+    <div class="col-1 my-auto align-self-center" style="width: 4vw;">
+    <span><strong>OP#</strong></span>
+    </div>
+    <div class="col-1 my-auto align-self-center" style="width: 5vw;">
+        <span><strong>Item Status</strong></span>
+    </div>
+    <div class="col-1 my-auto align-self-center" style="width: 5vw;">
+        <span><strong># Item</strong></span>
+    </div>
+    <div class="col-1 my-auto align-self-center" style="width: 10vw;">
+        <span><strong>Descripción</strong></span>
+    </div>`
 
 function datosCabeceraFormulario (
-            arrayOtStatus, 
+            arrayOtDetalleStatus, 
             y, 
             arrayOtNumber, 
             arrayOpNumber,
             arrayOtDetalle,
             arrayDescripcionDetalle,
-            arrayOnumber
-        ) {
+            arrayOnumber,
+            arrayDetalleId
+    ) {
 
     const datosCabecera = 
-        `<div class="col-1 my-auto align-self-center" style="width: 5vw;">
-            <span id="${arrayOtStatus}"
-                class="badge rounded-pill bg-${(colorStatusOt(arrayOtStatus).color)}
-                        text-white">${arrayOtStatus}
-            </span>
-            <input type="hidden" name="otStatusHidden${y}" value="${arrayOtStatus}">
-        </div>
-        <div class="col-1 my-auto align-self-center" style="width: 4vw;">
-            <span id="${arrayOtNumber}"
-                class="badge rounded-pill bg-dark text-white">
-                    ${arrayOtNumber}
-            </span>
+        `<div class="col-1 my-auto align-self-center" style="width: 4vw;">
+            <span id="${arrayOtNumber}" class="badge rounded-pill bg-dark text-white">${arrayOtNumber}</span>
             <input type="hidden" name="otNumberHidden${y}" value="${arrayOtNumber}">
         </div>
         <div class="col-1 my-auto align-self-center" style="width: 4vw;">
-            <span class="badge rounded-pill bg-secondary text-white">
-                ${arrayOpNumber}
-            </span>
+            <span class="badge rounded-pill bg-secondary text-white">${arrayOpNumber}</span>
         </div>
         <div class="col-1 my-auto align-self-center" style="width: 5vw;">
-            <span class="badge rounded-pill bg-primary text-white">
-                ${arrayOtDetalle}
-            </span>
-            <input type="hidden" name="detalleNumberHidden${arrayOnumber}" value="${arrayOtNumber}_${arrayOtDetalle[arrayOnumber]}">
+            <span id="${arrayOtDetalleStatus}" class="badge rounded-pill bg-${(colorStatusOt(arrayOtDetalleStatus).color)} text-white">${arrayOtDetalleStatus}</span>
+            <input type="hidden" name="otStatusHidden${y}" value="${arrayOtDetalleStatus}">
+        </div>
+        <div class="col-1 my-auto align-self-center" style="width: 5vw;">
+            <span class="badge rounded-pill bg-primary text-white">${arrayOtDetalle}</span>
+            <input type="hidden" name="detalleNumberHidden${arrayOnumber}" value="${arrayOtNumber}_${arrayOtDetalle}">
         </div>
         <div class="col-1 my-auto align-self-center justify-content-start" style="width: 10vw;">
-            <span class="badge bg-light text-dark">
-                ${arrayDescripcionDetalle}
-            </span>
+            <span class="badge bg-light text-dark">${arrayDescripcionDetalle}</span>
+            <input type="hidden" name="detalleIdHidden${arrayOnumber}" value="${arrayDetalleId}">
         </div>`
 
     return datosCabecera                    
@@ -2322,12 +2267,12 @@ function swalFireAlert (titulo,
             formValues.submit()
             Toast.fire({
                 icon: 'success',
-                title: `Información de Detalles de OT/s #${arrayDeOtNumber.join(" - #")} agregada con éxito!`
+                title: `Información de ítems de OT/s #${arrayDeOtNumber.join(" - #")} agregada con éxito!`
             })
         } else {
             Swal.fire(
                 `Info <strong>${titulo}</strong>, no agregada!`,
-                `La información ${titulo}, no fue agregada a los detalles de las OT/s #${arrayDeOtNumber.join(" - #")} !`,
+                `La información ${titulo}, no fue agregada a los ítems de las OT/s #${arrayDeOtNumber.join(" - #")} !`,
                 'warning'
             )
             return false
@@ -2335,7 +2280,7 @@ function swalFireAlert (titulo,
     })
 }
 
-//********* Agregar detalles a OT seleccionada *********** */
+//********* Agregar ítems a OT seleccionada *********** */
 let arrayBtnAddDetallesOtFormSelected = []
 for (let i=0; i<radios.length; i++) {
     let btnAddDetallesOtFormSelected = document.getElementById(`btnAddDetallesFormSelected${i}`)
@@ -2420,7 +2365,7 @@ function messageAddDetallesToOt(ociNumber, otArray, ociAlias) {
 }
 
 //TODO: Rediseñar esta function 
-//******Agregar detalles a OT *********/
+//******Agregar ítems a OT *********/
 const btnCreateAddDetallesToOt = document.getElementById('idAddDetalles')
 btnCreateAddDetallesToOt.addEventListener('click', (event) => {
     event.preventDefault()
@@ -2440,7 +2385,8 @@ btnCreateAddDetallesToOt.addEventListener('click', (event) => {
         messageAddDetallesToOt(ociNumberHiddenValue, otArray, ociAlias)
 
     } else {
-        console.log('Hubo un error al seleccionar la OCI!!') //Hacer sweetAlert2
+        //TODO: Hacer sweetAlert2
+        console.log('Hubo un error al seleccionar la OCI!!')
     }
 })
 
@@ -2449,14 +2395,14 @@ function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-// console.log('getValues:', getValues)
-        let arrayBloque = []
+        let arrayBloqueDistribucion = []
+
         for (let y=0; y < res.lastChild; y++) {
             const dataEnArrayBloque = `
                     <div class="col my-auto">
                         <select id="mecanizado2dCompleto${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="mecanizado2dCompleto${y}"
                             oninput="updateInputsSelect()"
-                            class="form-select" ${(colorStatusOt(res.arrayOtStatus[y]).disabled)}>
+                            class="form-select" ${(colorStatusOt(res.arrayOtDetalleStatus[y]).disabled)}>
                             <option selected value="${(switchOptionSelected(getValues.arrayMecanizado2dCompleto[y])).variableValue}" disabled>
                                 ${(switchOptionSelected(getValues.arrayMecanizado2dCompleto[y])).getValueArrayDato}
                             </option>
@@ -2482,7 +2428,7 @@ function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
                     <div class="col my-auto">
                         <select id="mecanizado3dPrefinal${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="mecanizado3dPrefinal${y}"
                             oninput="updateInputsSelect()" 
-                            class="form-select" ${(colorStatusOt(res.arrayOtStatus[y]).disabled)}>
+                            class="form-select" ${(colorStatusOt(res.arrayOtDetalleStatus[y]).disabled)}>
                             <option selected value="${(switchOptionSelected(getValues.arrayMecanizado3dPrefinal[y])).variableValue}" disabled>
                             ${(switchOptionSelected(getValues.arrayMecanizado3dPrefinal[y])).getValueArrayDato}
                             </option>
@@ -2508,7 +2454,7 @@ function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
                     <div class="col my-auto">
                         <select id="mecanizado3dFinal${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="mecanizado3dFinal${y}"
                             oninput="updateInputsSelect()" 
-                            class="form-select" ${(colorStatusOt(res.arrayOtStatus[y]).disabled)}>
+                            class="form-select" ${(colorStatusOt(res.arrayOtDetalleStatus[y]).disabled)}>
                             <option selected value="${(switchOptionSelected(getValues.arrayMecanizado3dFinal[y])).variableValue}" disabled>
                             ${(switchOptionSelected(getValues.arrayMecanizado3dFinal[y])).getValueArrayDato}
                             </option>
@@ -2517,7 +2463,7 @@ function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
                         <input type="hidden" id="mecanizado3dFinalHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
                         name="mecanizado3dFinalHidden${[y]}"
                         value="${(switchOptionSelected(getValues.arrayMecanizado3dFinal[y])).variableValue}">
-                    </div>    
+                    </div>
                     <div class="col-1 my-auto" style="width: 6vw;">  
                         <input type="text"
                             value="${getValues.arrayRevisionMecanizado3dFinal[y]}"
@@ -2534,7 +2480,7 @@ function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
                     <div class="col my-auto">
                         <select id="bancoArmado${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="bancoArmado${y}"
                             oninput="updateInputsSelect()" 
-                            class="form-select" ${(colorStatusOt(res.arrayOtStatus[y]).disabled)}>
+                            class="form-select" ${(colorStatusOt(res.arrayOtDetalleStatus[y]).disabled)}>
                             <option selected value="${(switchOptionSelected(getValues.arrayBancoArmado[y])).variableValue}" disabled>
                             ${(switchOptionSelected(getValues.arrayBancoArmado[y])).getValueArrayDato}
                             </option>
@@ -2557,22 +2503,17 @@ function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
                             value="${getValues.arrayRevisionBancoArmado[y]}">    
                     </div>`
 
-            if (res.arrayOtStatus[y]==='Inactivo') {
-                arrayBloque.push(`
-                    <div class="row d-flex py-1 mx-auto pe-none" contenteditable="false" style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5">
-                        ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], res.arrayOtDetalle[y], res.arrayDescripcionDetalle[y], res.arrayOnumber[y])}
-                        
-                        ${dataEnArrayBloque}
-                    </div>`)
-
-            } else {
-                arrayBloque.push(`
-                    <div class="row d-flex my-1 mx-auto">
-                        ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], res.arrayOtDetalle[y], res.arrayDescripcionDetalle[y], res.arrayOnumber[y])}
-                        
-                        ${dataEnArrayBloque}
-                    </div>`)
-            }
+                    const isInactive = res.arrayOtDetalleStatus[y] === 'Inactivo';
+                    const divStyle = isInactive ? 'style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5"' : '';
+                    const divClass = isInactive ? 'pe-none contenteditable="false"' : '';
+                    
+                    arrayBloqueDistribucion.push(`
+                        <div class="row mx-auto ${divClass}" ${divStyle}>
+                            ${datosCabeceraFormulario(res.arrayOtDetalleStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], res.arrayOtDetalle[y], res.arrayDescripcionDetalle[y], res.arrayOnumber[y], res.arrayDetalleId[y])}
+                            ${dataEnArrayBloque}
+                        </div>`);
+                    
+                    res.arrayOtNumber[y] !== res.arrayOtNumber[y+1] ? arrayBloqueDistribucion.push(`<hr class="my-1">`) : null 
         }
 
         const html = `<form id="formDistribucionValues" action="/api/programas/otDistribucion" method="post" style="font-size: 10pt">
@@ -2605,9 +2546,8 @@ function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
                                 </div>
                             </div>
                             <hr>
-                                ${arrayBloque.join("<br>")}
-                            <hr>
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloque.length)}
+                                ${arrayBloqueDistribucion.join(`<br>`)}
+                                ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueDistribucion.length)}
                         </fieldset>
                     </form>`
 
@@ -2631,92 +2571,110 @@ function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
 
 //TODO: function
 //***** addDatoToOtProgramacion ******
+// async function cargarUsuarioPcpCad() {
+//     try {
+//         const url = `../../../api/usuarios/searchUsers/${userNameBanner}`
+//         const response = await fetch(url, {
+//             method: "GET",
+//             mode: 'cors',
+//             cache: 'default',
+//         });
+        
+//         if(!response.ok ){
+//             throw new Error(`Error en la solicitud`);
+//         }
+
+//         const users = await response.json();
+//         const arrayUsuariosEspecificos = [];
+//         const arrayUsersAll = [];
+
+//         // if (users && users.length > 0) {
+//         //     users.forEach((usuario)=> {
+//         //         usuario.permiso === `${permisos.pcpUser}` || usuario.permiso === `${permisos.cadCamUser}`
+//         //         ? arrayUsuariosEspecificos.push(usuario)
+//         //         : arrayUsersAll.push(usuario)
+//         //     })
+//         // }
+//         console.log('users: ', users)
+
+//     } catch (error) {
+//         const titulo = 'Error'
+//         const message = `${error}`
+//         const icon = 'error'
+//         messageAlertUser(titulo, message, icon)
+//     }
+// }
+function cargarUsuarioPcpCad(res) {
+    // Paso 1: Realizar el fetch
+    fetch(`../../../api/usuarios/searchUsers/${userNameBanner}`)
+        .then(response => response.json())  // Convierte la respuesta en JSON
+        .then(data => {
+            // Paso 2: Cargar los datos en el select
+            cargarOpcionesEnSelect(data, res);
+        })
+        .catch(error => console.error('Error:', error));
+
+    // Función para cargar las opciones en el select
+    function cargarOpcionesEnSelect(datos, res) {
+        const selectElement = document.getElementById(`rt${res}`); // Selecciona tu elemento select por su ID
+
+        // Itera sobre el array de datos
+        datos.forEach(dato => {
+            // Crea un nuevo elemento <option>
+            const option = document.createElement('option');
+            option.value = dato.id;  // Asigna el valor de la opción (puede ser un ID u otro identificador)
+            option.textContent = `${dato.name}, ${dato.lastName}`;  // Asigna el texto visible en la opción (puede ser el nombre u otro dato)
+
+            // Agrega la opción al select
+            selectElement.appendChild(option);
+        });
+    }
+}
+
 function addDatoToOtProgramacion(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-        
-        var arrayBloqueProgramacion = []
+
         for (let y=0; y < res.lastChild; y++) {
+            var getUsersNames = cargarUsuarioPcpCad(res.arrayOtNumber[y]+'_'+res.arrayOtDetalle[y])
+        }
+        
+        let arrayBloqueProgramacion = []
+        for (let y=0; y < res.lastChild; y++) {
+            console.log('getValues.arrayRt[y]:', getValues.arrayRt[y])
             const dataEnArrayBloque = `
                         <div class="col my-auto">
-                            <select id="proceso3d${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="proceso3d${y}"
-                                oninput="updateInputsSelect()"
-                                class="form-select" ${colorStatusOt(res.arrayOtStatus[y]).disabled}>
-                                <option selected value="${(switchOptionSelected(getValues.arrayProgramacion[y])).variableValue}" disabled>
-                                    ${(switchOptionSelected(getValues.arrayProgramacion[y])).getValueArrayDato}
+                            <select id="rt${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="rt${y}" oninput=""
+                                class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
+                                <option selected value="${getValues.arrayRt[y]}" disabled>
+                                    ${getValues.arrayRt[y]}
                                 </option>
-                                ${(switchOptionSelected(getValues.arrayProgramacion[y])).optionDefined}
+                                    ${getUsersNames}
                             </select>
-                            <input type="hidden" id="proceso3dHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
-                                name="proceso3dHidden${[y]}"
-                        value="${(switchOptionSelected(getValues.arrayProgramacion[y])).variableValue}">
+                            <input type="hidden" id="rtHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                                name="rtHidden${[y]}" value="${(switchOptionSelected(getValues.arrayRt[y])).variableValue}">
                         </div>
-                        <div class="col-1 my-auto">    
-                            <input type="text"
-                                value="${getValues.arrayRevisionProgramacion[y]}"
-                                class="form-control"
-                                style="text-align: center;"
-                                disabled readonly">
-                            <input type="hidden"
-                                id="revisionProgramacion${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
-                                name="revisionProceso3d${y}"
-                                value="${getValues.arrayRevisionProceso3d[y]}">
+                        <div class="col-1 my-auto" style="width: 5vw;">
+                            <input type="text" value="${getValues.arrayRevisionRt[y]}"
+                                class="form-control" style="text-align: center;" disabled readonly">
+                            <input type="hidden" id="revisionRt${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                                name="revisionRt${y}" value="${getValues.arrayRevisionRt[y]}">
                         </div>
-    
-                        <div class="col my-auto">
-                            <input value="${parseInt(getValues.arrayHorasProceso3d[y])}" type="number"
-                                id="hsProceso${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="horasProceso3d${y}"
-                                class="form-control" min="0" max="9999"
-                                style="text-align: center;" ${colorStatusOt(res.arrayOtStatus[y]).disabled}
-                                oninput="updateTotal(${i})">
-                        </div>
-                        <div class="col-1 my-auto">    
-                            <input type="text"
-                                value="${getValues.arrayRevisionHorasProceso3d[y]}"
-                                class="form-control"
-                                style="text-align: center;"
-                                disabled readonly">
-                            <input type="hidden"
-                                id="revisionHorasProceso3d${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
-                                name="revisionHorasProceso3d${y}"
-                                value="${getValues.arrayRevisionHorasProceso3d[y]}">
-                        </div>`
-    
-            if (res.arrayOtStatus[y]==='Inactivo') {
-                arrayBloqueProgramacion.push(`
-                    <div class="row py-1 mx-auto pe-none" contenteditable="false" style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5">
-                        ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], res.arrayDescripcionDetalle[y], res.arrayOnumber[y])}
-    
-                        ${dataEnArrayBloque}
-                    </div>     
-                `)
-    
-            } else {
-    
-                arrayBloqueProgramacion.push(`
-                    <div class="row my-1 mx-auto">
-                        ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], res.arrayDescripcionDetalle[y], res.arrayOnumber[y])}
-    
-                        ${dataEnArrayBloque}
-                    </div>`)
-            }
-    
-            let totalHorasProgramacionActual = document.getElementById(`resHsTotalProgramacion${i}`).innerText
-            var inputTotalHorasProgramacion = 
-                `<div class="row justify-content-end my-1 mx-auto">
-                    <div class="col-4 my-auto align-self-center">
-                        <span class="badge bg-dark text-white">Total horas Proceso 3D</span>
-                    </div>
-                    <div class="col-4 pe-5 me-4 my-auto">
-                        <input value="${totalHorasProgramacionActual}"
-                        type="number"
-                        id="totalHsProgramacion"
-                        class="form-control"
-                        style="text-align: center;"
-                        disabled>
-                    </div> 
-                </div>`
+                        `
+
+            const isInactive = res.arrayOtDetalleStatus[y] === 'Inactivo';
+            const divStyle = isInactive ? 'style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5"' : '';
+            const divClass = isInactive ? 'pe-none contenteditable="false"' : '';
+            
+            arrayBloqueProgramacion.push(`
+                <div class="row mx-auto ${divClass}" ${divStyle}>
+                    ${datosCabeceraFormulario(res.arrayOtDetalleStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], res.arrayOtDetalle[y], res.arrayDescripcionDetalle[y], res.arrayOnumber[y], res.arrayDetalleId[y])}
+                    ${dataEnArrayBloque}
+                </div>`);
+            
+            res.arrayOtNumber[y] !== res.arrayOtNumber[y+1] ? arrayBloqueProgramacion.push(`<hr class="my-1">`) : null 
+        
         }
     
         const html = `
@@ -2727,47 +2685,44 @@ function addDatoToOtProgramacion(i, idTabla, qInicial, qFinal) {
                             <div class="col my-auto">
                                 <span><strong>Req. Tec.</strong></span>
                             </div>
-                            <div class="col-1 my-auto align-self-start" style="width: 5vw;">
+                            <div class="col-1 my-auto align-self-start" style="width: 4vw;">
                                 <span"><strong>Rev</strong></span>
                             </div>
                             <div class="col my-auto">
                                 <spano><strong>Prep. GEO</strong></span>
                             </div>
-                            <div class="col-1 my-auto align-self-start" style="width: 5vw;">
+                            <div class="col-1 my-auto align-self-start" style="width: 4vw;">
                                 <span"><strong>Rev</strong></span>
                             </div>
                             <div class="col my-auto">
                                 <spano><strong>Programas 2D</strong></span>
                             </div>
-                            <div class="col-1 my-auto align-self-start" style="width: 5vw;">
+                            <div class="col-1 my-auto align-self-start" style="width: 4vw;">
                                 <span"><strong>Rev</strong></span>
                             </div>
                             <div class="col my-auto">
                                 <spano><strong>Prog. 3D Prefinal</strong></span>
                             </div>
-                            <div class="col-1 my-auto align-self-start" style="width: 5vw;">
+                            <div class="col-1 my-auto align-self-start" style="width: 4vw;">
                                 <span"><strong>Rev</strong></span>
                             </div>
                             <div class="col my-auto">
                                 <spano><strong>Prog. 3D Final</strong></span>
                             </div>
-                            <div class="col-1 my-auto align-self-start" style="width: 5vw;">
+                            <div class="col-1 my-auto align-self-start" style="width: 4vw;">
                                 <span"><strong>Rev</strong></span>
                             </div>
                         </div>
                         <hr>
                             ${arrayBloqueProgramacion.join("<br>")}
-                        <hr>
-                            ${inputTotalHorasProgramacion}
-                        <hr>
-                        ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueProgramacion.length)}
+                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueProgramacion.length)}
                     </fieldset>
                 </form>`
     
         const titulo = "Programación"
         const formulario = 'formProgramacionValues'
         const ancho = 1600
-        const background = '#efefff'
+        const background = '#efefef'
         const arrayDeOtNumber = res.arrayOtNumber
     
         swalFireAlert (
@@ -2839,7 +2794,7 @@ function addDatoToMecanizado(i, idTabla, qInicial, qFinal) {
                 <div class="col my-auto">
                     <select id="av50Diseno${res.arrayOtNumber[y]}" name="av50Diseno${[y]}"
                         oninput="updateInputsSelect()"
-                        class="form-select" ${colorStatusOt(res.arrayOtStatus[y]).disabled}>
+                        class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
                         <option selected value="${(switchOptionSelected(getValues.arrayAv50Diseno[y])).variableValue}">
                             ${(switchOptionSelected(getValues.arrayAv50Diseno[y])).getValueArrayDato}
                         </option>
@@ -2864,7 +2819,7 @@ function addDatoToMecanizado(i, idTabla, qInicial, qFinal) {
                 <div class="col my-auto">
                     <select id="av80Diseno${res.arrayOtNumber[y]}" name="av80Diseno${[y]}"
                     oninput="updateInputsSelect()"    
-                    class="form-select" ${colorStatusOt(res.arrayOtStatus[y]).disabled}>
+                    class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
                         <option selected value="${(switchOptionSelected(getValues.arrayAv80Diseno[y])).variableValue}" disabled>
                         ${(switchOptionSelected(getValues.arrayAv80Diseno[y])).getValueArrayDato}
                         </option>
@@ -2888,7 +2843,7 @@ function addDatoToMecanizado(i, idTabla, qInicial, qFinal) {
                 <div class="col my-auto">
                     <select id="envioCliente${res.arrayOtNumber[y]}" name="envioCliente${[y]}"
                     oninput="updateInputsSelect()"    
-                    class="form-select" ${colorStatusOt(res.arrayOtStatus[y]).disabled}>
+                    class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
                         <option selected value="${(switchOptionSelected(getValues.arrayEnvioCliente[y])).variableValue}" disabled>
                             ${(switchOptionSelected(getValues.arrayEnvioCliente[y])).getValueArrayDato}
                         </option>
@@ -2910,10 +2865,10 @@ function addDatoToMecanizado(i, idTabla, qInicial, qFinal) {
                         value="${getValues.arrayRevisionEnvioCliente[y]}">
                 </div>`
     
-            if (res.arrayOtStatus[y]==='Inactivo') {
+            if (res.arrayOtDetalleStatus[y]==='Inactivo') {
                 arrayBloqueDisenoPrimera.push(`
                 <div class="row py-1 mx-auto pe-none" contenteditable="false" style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5">
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
+                    ${datosCabeceraFormulario (res.arrayOtDetalleStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
     
                     ${dataEnArrayBloque}
                 </div>     
@@ -2923,7 +2878,7 @@ function addDatoToMecanizado(i, idTabla, qInicial, qFinal) {
     
                 arrayBloqueDisenoPrimera.push(`
                 <div class="row my-1 mx-auto justify-content-center">
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
+                    ${datosCabeceraFormulario (res.arrayOtDetalleStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
                 
                     ${dataEnArrayBloque}
                 </div>`)
@@ -3031,7 +2986,7 @@ function updateInputsSelect() {
         let inputSelectHidden = document.getElementById(`${idInputSelectHidden}`)
         // console.log('inputSelectHidden:', inputSelectHidden)
         inputSelectHidden ? inputSelectHidden.value = document.getElementById(`${allInputsSelect[y].id}`).value : null
-            // console.log('inputSelectHidden.value', inputSelectHidden.value)
+        // console.log('inputSelectHidden.value', inputSelectHidden.value)
     }
 }
 

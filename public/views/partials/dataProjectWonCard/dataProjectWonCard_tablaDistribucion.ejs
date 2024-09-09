@@ -77,9 +77,7 @@
         let resBancoArmado = 'S/D';
         let resRevisionBancoArmado = 0;
 
-        let largoArrayOtProject = proyecto[m].project[j].oci[k].otProject.length;
-
-        for ( let n=0; largoArrayOtProject > n; n++) {
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject[n]
             let largoArrayOtDetalles = pathMongoOtProject.otDetalles.length
 
@@ -95,7 +93,6 @@
                                     <!-- Mecanizado 2d Completo data Activo--> 
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayDistribucion > 0) {
-                                            
                                             for (let i = 0; largoArrayDistribucion > i; i++) {
                                                 let pathToMongoDBOtDistribucion = otDistribucion[i]
 
@@ -949,6 +946,6 @@
                     <% }
                 }
             }
-        } %>
+        }) %>
     </tbody>
 </table>
