@@ -19,17 +19,8 @@
         <%- include('../partials/btnHeaderTop/btnHeaderTop-ociAll'); %>
     
     <!-- ------------ Lista de OCI ------------ -->
-    <section class="mx-auto align-items-start" style="width: 94%;">
-        <div class="row">
-            <div class="col-12 mb-1">
-                <hr>
-                <h4 class="text-uppercase">Listado de OCI</h4>
-                <p>Departamento de IT Prodismo</p>
-                <hr>
-            </div>
-        </div>
-    </section>
-    
+    <%- include('../partials/sections/sectionOciList'); %>
+        
     <div class="dashboard-main-wrapper">
         
         <!-- ========================= wrapper ============================== -->
@@ -37,7 +28,7 @@
         <div class="dashboard mx-auto" style="width: 96%;">
             <div class="container-fluid dashboard-content">
                     
-                 <% var arrayOci = []
+                <% var arrayOci = []
                     for (let i=0; proyectos.length>i; i++ ) {
                         if ( proyectos[i].visible ) {
                             arrayOci.push(proyectos[i].project[0])

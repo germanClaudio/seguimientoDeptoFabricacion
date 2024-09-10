@@ -15,7 +15,7 @@ const searchClient = () => {
         if (proyectosRadio[i].checked) {
             var proyectos = proyectosRadio[i].value
         }
-      }
+    }
 
     socket.emit('searchClienteAll', {
         query,
@@ -220,7 +220,7 @@ const searchClientNew = () => {
         if (proyectosRadio[i].checked) {
             var proyectos = proyectosRadio[i].value
         }
-      }
+    }
 
     socket.emit('searchClienteNew', {
         query,
@@ -231,7 +231,6 @@ const searchClientNew = () => {
 }
 
 const renderSearchedNewClients = (arrClientNewSearch) => {
-    
     if(arrClientNewSearch.length === 0) {
         const htmlSearchClientNewNull = (
             `<div class="col mx-auto">
@@ -259,7 +258,7 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
             </div>`
         )
         document.getElementById('showClientSearch').innerHTML = htmlSearchClientNewNull
-    
+
     } else if (arrClientNewSearch.length === 1 && arrClientNewSearch[0] === 'vacio') {    
         const htmlSearchClientNewNull = (
             `<div class="col mx-auto">
@@ -290,7 +289,6 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
 
     } else {
         const htmlSearchNewClient = arrClientNewSearch.map((element) => {
-
             // Definir los valores por defecto
             let disabled = 'disabled';
             let green = 'success';
@@ -352,7 +350,7 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
                                                         <i class="fa-regular fa-pen-to-square"></i>
                                                 </a>
                                             </div>
-    
+
                                             <div class="col m-auto">
                                                 <a class="btn text-light small ${disabled}" type="submit" href="/api/clientes/projects/${element._id}"
                                                     style="background-color: #0d6efd; font-size: .85rem; width: 4em;" title="Ver proyectos cliente ${element.name}">
@@ -462,7 +460,6 @@ const searchUsers = () => {
 }
 
 const renderSearchedUsers = (arrUsersSearch) => {
-
     if(arrUsersSearch.length === 0) {
         const htmlSearchUserNull = (
             `<div class="col mx-auto">
@@ -575,9 +572,7 @@ const renderSearchedUsers = (arrUsersSearch) => {
                 ? '<i class="fa-solid fa-crown fa-rotate-by fa-xl" title="SuperAdmin" style="color: #a89c0d; --fa-rotate-angle: 20deg;"></i>' 
                 : null;
 
-            if (element.visible && !element.superAdmin) {
-                disabled = '';
-            }
+            element.visible && !element.superAdmin ? disabled = '' : null
 
             return (`
                 <div class="col mx-auto">

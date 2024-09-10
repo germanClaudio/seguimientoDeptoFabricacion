@@ -40,7 +40,7 @@ let modificatorSchema = new Schema({
         type: String,
     }
 })
- 
+
 // ------- OT Distribucion Schema ---------
 let otDistribucionSchema = new Schema({
     mecanizado2dCompleto: { 
@@ -87,19 +87,27 @@ let otDistribucionSchema = new Schema({
     },
 })
 
-// ------- OT Programacion Schema ---------
-let otProgramacionSchema = new Schema({
+// ------- OT Programacion Primera Schema ---------
+let otProgramacionPrimeraSchema = new Schema({
     rt: { 
         type: String,
         default: 'sinDato',
+    },
+    estadoRt: { 
+        type: String,
+        default: 'enProceso',
     },
     revisionRt: { 
         type: Number,
         default: 0,
     },
     preparacionGeo: { 
-        type: Number,
-        default: 0,
+        type: String,
+        default: 'sinDato',
+    },
+    estadoPreparacionGeo: { 
+        type: String,
+        default: 'enProceso',
     },
     revisionPreparacionGeo: { 
         type: Number,
@@ -109,13 +117,35 @@ let otProgramacionSchema = new Schema({
         type: String,
         default: 'sinDato',
     },
+    estadoPrograma2d: { 
+        type: String,
+        default: 'enProceso',
+    },
     revisionPrograma2d: { 
         type: Number,
         default: 0,
     },
+    creator: [creatorSchema],
+    timestamp: {
+        type: String,
+        default: now,
+    },
+    modificator: [modificatorSchema],
+    modifiedOn: {
+        type: String,
+        default: ""
+    },
+})
+
+// ------- OT Programacion Primera Schema ---------
+let otProgramacionSegundaSchema = new Schema({
     programa3d2F: {
         type: String,
         default: 'sinDato',
+    },
+    estadoPrograma3d2F: { 
+        type: String,
+        default: 'enProceso',
     },
     revisionPrograma3d2F: { 
         type: Number,
@@ -125,11 +155,15 @@ let otProgramacionSchema = new Schema({
         type: String,
         default: 'sinDato',
     },
+    estadoPrograma3d4F: { 
+        type: String,
+        default: 'enProceso',
+    },
     revisionPrograma3d4F: { 
         type: Number,
         default: 0,
     },
-    observacionesProgramacion: {
+    notasProgramacion: {
         type: String,
         default: '',
     },
@@ -230,7 +264,8 @@ let ProgramacionSchema = new Schema({
         default: "",
     },
     otDistribucion: [otDistribucionSchema],
-    otProgramacion: [otProgramacionSchema],
+    otProgramacionPrimera: [otProgramacionPrimeraSchema],
+    otProgramacionSegunda: [otProgramacionSegundaSchema],
     otMecanizado: [otMecanizadoSchema],
     creator: [creatorSchema],
     timestamp: {

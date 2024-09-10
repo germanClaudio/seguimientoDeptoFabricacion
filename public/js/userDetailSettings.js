@@ -22,23 +22,23 @@ function message(name, lastName, username) {
     confirmButtonText: 'Si, modificalo! <i class="fa-solid fa-user-pen"></i>',
     cancelButtonText: 'Cancelar <i class="fa-solid fa-user-shield"></i>'
 
-  }).then((result) => {
-    if (result.isConfirmed) {
-        document.getElementById("formUpdateUserSettings").submit()
-      Swal.fire(
-        `${username} modificado!`,
-        `El usuario ${name} ${lastName}, ha sido modificado exitosamente.`,
-        'success'
-      )
-    } else {
-        Swal.fire(
-            `${username} no modificado!`,
-            `El usuario ${name} ${lastName}, no ha sido modificado.`,
-            'info'
-          )
-        return false
-    }
-  })
+    }).then((result) => {
+        if (result.isConfirmed) {
+                document.getElementById("formUpdateUserSettings").submit()
+            Swal.fire(
+                `${username} modificado!`,
+                `El usuario ${name} ${lastName}, ha sido modificado exitosamente.`,
+                'success'
+            )
+        } else {
+            Swal.fire(
+                `${username} no modificado!`,
+                `El usuario ${name} ${lastName}, no ha sido modificado.`,
+                'info'
+            )
+            return false
+        }
+    })
 }
 
 const btnUpdateUserSettings = document.getElementById('btnUpdateUserSettings')

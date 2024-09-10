@@ -233,7 +233,7 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
         }
     })
 
-    var inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
+    let inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
 
     inpuntDeNumeros.forEach(function(input) {
         input.addEventListener('input', function(event) {

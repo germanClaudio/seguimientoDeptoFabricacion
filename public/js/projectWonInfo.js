@@ -177,8 +177,8 @@ const arrayOriginal = Array.from(slidesCarousel)
 const arrayOriginalBtn = Array.from(btnInferiorCarousel)
 
 // Dividir el array en subarrays de 3 elementos cada uno
-const subarrays = dividirArrayEnSubarrays(arrayOriginal, 3); // cant. maxima de slides
-const subarrayBtns = dividirArrayEnSubarrays(arrayOriginalBtn, 3); // cant. maxima de slides
+const subarrays = dividirArrayEnSubarrays(arrayOriginal, 4); // cant. maxima de slides
+const subarrayBtns = dividirArrayEnSubarrays(arrayOriginalBtn, 4); // cant. maxima de slides
 
 function activarElemento(subarray, index) {
     if (subarray.length > 0) {
@@ -609,7 +609,7 @@ function messageUpdateOtDetalle(
     opNumber,
     otDetalle,
     otDescripcionDetalle
-) {
+    ) {
     
     let numberKOci = parseInt(ociKNumber)
     let numberKOt = parseInt(otKNumber)
@@ -2018,11 +2018,11 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
         arrayMecanizado3dPrefinal: [], arrayRevisionMecanizado3dPrefinal: [],
         arrayMecanizado3dFinal: [], arrayRevisionMecanizado3dFinal: [],
         arrayBancoArmado: [], arrayRevisionBancoArmado: [],
-        arrayRt: [], arrayRevisionRt: [],
-        arrayPreparacionGeo: [], arrayRevisionPreparacionGeo: [],
-        arrayPrograma2d: [], arrayRevisionPrograma2d: [],
-        arrayPrograma3d2F: [], arrayRevisionPrograma3d2F: [],
-        arrayPrograma3d4F: [], arrayRevisionPrograma3d4F: [],
+        arrayRt: [], arrayEstadoRt: [], arrayRevisionRt: [],
+        arrayPreparacionGeo: [], arrayEstadoPreparacionGeo: [], arrayRevisionPreparacionGeo: [],
+        arrayPrograma2d: [], arrayEstadoPrograma2d: [], arrayRevisionPrograma2d: [],
+        arrayPrograma3d2F: [], arrayEstadoPrograma3d2F: [], arrayRevisionPrograma3d2F: [],
+        arrayPrograma3d4F: [], arrayEstadoPrograma3d4F: [], arrayRevisionPrograma3d4F: [],
         arrayObservacionesProgramacion: [], arrayRevisionObservacionesProgramacion: [],
         arrayFCero: [], arrayRevisionFCero: [],
         arrayFUno: [], arrayRevisionFUno: [],
@@ -2038,11 +2038,11 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
         1: ['arrayMecanizado3dPrefinal', 'arrayRevisionMecanizado3dPrefinal'],
         2: ['arrayMecanizado3dFinal' , 'arrayRevisionMecanizado3dFinal'],
         3: ['arrayBancoArmado', 'arrayRevisionBancoArmado'],
-        4: ['arrayRt', 'arrayRevisionRt'],
-        5: ['arrayPreparacionGeo', 'arrayRevisionPreparacionGeo'],
-        6: ['arrayPrograma2d', 'arrayRevisionPrograma2d'],
-        7: ['arrayPrograma3d2F', 'arrayRevisionPrograma3d2F'],
-        8: ['arrayPrograma3d4F', 'arrayRevisionPrograma3d4F'],
+        4: ['arrayRt', 'arrayEstadoRt','arrayRevisionRt'],
+        5: ['arrayPreparacionGeo', 'arrayEstadoPreparacionGeo','arrayRevisionPreparacionGeo'],
+        6: ['arrayPrograma2d', 'arrayEstadoPrograma2d','arrayRevisionPrograma2d'],
+        7: ['arrayPrograma3d2F', 'arrayEstadoPrograma3d2F','arrayRevisionPrograma3d2F'],
+        8: ['arrayPrograma3d4F', 'arrayEstadoPrograma3d4F','arrayRevisionPrograma3d4F'],
         9: ['arrayObservacionesProgramacion', 'arrayRevisionObservacionesProgramacion'],
         10: ['arrayFCero', 'arrayRevisionFCero'],
         11: ['arrayFUno', 'arrayRevisionFUno'],
@@ -2072,14 +2072,15 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
 
     const resultMap = {
         4: ['arrayMecanizado2dCompleto', 'arrayRevisionMecanizado2dCompleto', 'arrayMecanizado3dPrefinal', 'arrayRevisionMecanizado3dPrefinal', 'arrayMecanizado3dFinal', 'arrayRevisionMecanizado3dFinal', 'arrayBancoArmado', 'arrayRevisionBancoArmado'],
-        10: ['arrayRt', 'arrayRevisionRt','arrayPreparacionGeo', 'arrayRevisionPreparacionGeo', 'arrayPrograma2d', 'arrayRevisionPrograma2d', 'arrayPrograma3d2F', 'arrayRevisionPrograma3d2F', 'arrayPrograma3d4F', 'arrayRevisionPrograma3d4F', 'arrayObservacionesProgramacion', 'arrayRevisionObservacionesProgramacion'],
+        7: ['arrayRt', 'arrayEstadoRt', 'arrayRevisionRt','arrayPreparacionGeo', 'arrayEstadoPreparacionGeo', 'arrayRevisionPreparacionGeo', 'arrayPrograma2d', 'arrayEstadoPrograma2d', 'arrayRevisionPrograma2d'],
+        10: ['arrayPrograma3d2F', 'arrayEstadoPrograma3d2F', 'arrayRevisionPrograma3d2F', 'arrayPrograma3d4F', 'arrayRevisionPrograma3d4F', 'arrayEstadoPrograma3d4F', 'arrayObservacionesProgramacion', 'arrayRevisionObservacionesProgramacion'],
         17: ['arrayFCero', 'arrayRevisionFCero', 'arrayFUno', 'arrayRevisionFUno', 'arrayFDos', 'arrayRevisionFDos', 'arrayFTres', 'arrayRevisionFTres', 'arrayFCuatro', 'arrayRevisionFCuatro', 'arrayFCinco', 'arrayRevisionFCinco', 'arrayObservacionesMecanizado', 'arrayRevisionObservacionesMecanizado']
     };
 
     const keysToReturn = resultMap[qFinalX] || [];
     const result = {};
     keysToReturn.forEach(key => result[key] = arrays[key]);
-    // console.log('result: ', result)
+    console.log('result: ', result)
     return result;
 }
 
@@ -2095,6 +2096,18 @@ function changeValueFromArray(arrayFromValues) {
     return arrayFromValues.map(value => valueMap[value] || value);
 }
 
+function changeValueEstadoFromArray(arrayFromEstadoValues) {
+    const valueEstadoMap = {
+        '': 'S/D',
+        'sinDato': 'S/D',
+        'noAplica': '<i class="fa-solid fa-ban"></i>',
+        'terminado': '<i class="fa-solid fa-circle-check" style="color: #00bf30;"></i>',
+        'enProceso': '<i class="fa-solid fa-arrows-spin" style="color: #FFD43B;"></i>',
+        'suspendido': '<i class="fa-solid fa-circle-xmark" style="color: #c40000;"></i>'
+    };
+    return arrayFromEstadoValues.map(value => valueEstadoMap[value] || value);
+}
+
 function colorStatusOt(valorStatusOt) {
     let disabled = 'required'
     let color = ''
@@ -2106,6 +2119,68 @@ function colorStatusOt(valorStatusOt) {
     }
 }
 
+// ------------- Estado selected -------------------
+function estadoSelect(option) {
+    const options = {
+        enProceso: `
+            <option value="terminado"><i class="fa-solid fa-circle-check" style="color: #00bf30;"></i></option>
+            <option value="suspendido"><i class="fa-solid fa-circle-xmark" style="color: #c40000;"></i></option>
+            <option value="noAplica"><i class="fa-solid fa-ban"></i></option>
+        `,
+        terminado: `
+            <option value="enProceso"><i class="fa-solid fa-arrows-spin" style="color: #FFD43B;"></i></option>
+            <option value="suspendido"><i class="fa-solid fa-circle-xmark" style="color: #c40000;"></i></option>
+            <option value="noAplica"><i class="fa-solid fa-ban"></i></option>
+        `,
+        suspendido: `
+            <option value="terminado"><i class="fa-solid fa-circle-check" style="color: #00bf30;"></i></option>
+            <option value="enProceso"><i class="fa-solid fa-arrows-spin" style="color: #FFD43B;"></i></option>
+            <option value="noAplica"><i class="fa-solid fa-ban"></i></option>
+        `,
+        noAplica: `
+            <option value="terminado"><i class="fa-solid fa-circle-check" style="color: #00bf30;"></i></option>
+            <option value="enProceso"><i class="fa-solid fa-arrows-spin" style="color: #FFD43B;"></i></option>
+            <option value="suspendido"><i class="fa-solid fa-circle-xmark" style="color: #c40000;"></i></option>
+        `,
+        default: `
+            <option value="terminado"><i class="fa-solid fa-circle-check" style="color: #00bf30;"></i></option>
+            <option value="enProceso"><i class="fa-solid fa-arrows-spin" style="color: #FFD43B;"></i></option>
+            <option value="suspendido"><i class="fa-solid fa-circle-xmark" style="color: #c40000;"></i></option>
+            <option value="noAplica"><i class="fa-solid fa-ban"></i></option>
+        `
+    };
+
+    return options[option] || options.default;
+}
+
+function switchEstadoSelected(switchValue) {
+    const optionsMap = {
+        '<i class="fa-solid fa-arrows-spin" style="color: #FFD43B;"></i>': { variableValue: 'enProceso', optionKey: 'optionEnProceso', getValueArrayDato: '<i class="fa-solid fa-arrows-spin" style="color: #FFD43B;"></i>'},
+        '<i class="fa-solid fa-circle-check" style="color: #00bf30;"></i>': { variableValue: 'terminado', optionKey: 'optionTerminado', getValueArrayDato: '<i class="fa-solid fa-circle-check" style="color: #00bf30;"></i>'},
+        '<i class="fa-solid fa-circle-xmark" style="color: #c40000;"></i>': { variableValue: 'suspendido', optionKey: 'optionSuspendido', getValueArrayDato: '<i class="fa-solid fa-circle-xmark" style="color: #c40000;"></i>'},
+        '<i class="fa-solid fa-ban"></i>': { variableValue: 'noAplica', optionKey: 'optionNoAplica', getValueArrayDato: '<i class="fa-solid fa-ban"></i>' },
+        "S/D": { variableValue: 'sinDato', optionKey: 'optionDefault', getValueArrayDato: 'S/D', getValueArrayRevision: 0 },
+        "": { variableValue: 'sinDato', optionKey: 'optionDefault', getValueArrayDato: 'S/D', getValueArrayRevision: 0 }
+    };
+
+    // Configuración predeterminada si switchValue no coincide con ninguna clave
+    const defaultOption = { variableValue: '', optionKey: '', getValueArrayDato: '', getValueArrayRevision: undefined };
+
+    // Selecciona la opción adecuada o la opción predeterminada
+    const selectedOption = optionsMap[switchValue] || defaultOption;
+
+    // Obtiene la opción definida llamando a optionSelect  
+    const optionDefined = optionSelect(selectedOption.variableValue);
+
+    return {
+        variableValue: selectedOption.variableValue,
+        optionDefined,
+        getValueArrayDato: selectedOption.getValueArrayDato,
+        getValueArrayRevision: selectedOption.getValueArrayRevision
+    };
+}
+
+// ------------- Option selected -------------------
 function optionSelect(option) {
     const options = {
         prodismo: `
@@ -2570,49 +2645,23 @@ function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
 }
 
 //TODO: function
-//***** addDatoToOtProgramacion ******
-// async function cargarUsuarioPcpCad() {
-//     try {
-//         const url = `../../../api/usuarios/searchUsers/${userNameBanner}`
-//         const response = await fetch(url, {
-//             method: "GET",
-//             mode: 'cors',
-//             cache: 'default',
-//         });
-        
-//         if(!response.ok ){
-//             throw new Error(`Error en la solicitud`);
-//         }
+//***** addDatoToOtProgramacionPrimera ******
+async function cargarUsuarioPcpCad(res) {
+    try {
+        const url = `../../../api/usuarios/searchUsers/${userNameBanner}`
+        await fetch(url, {method: "GET", mode: 'cors', cache: 'default'})
+            .then(response => response.json())
+            .then(data => {
+                cargarOpcionesEnSelect(data, res);
+            })
+            .catch(error => new Error(`Error en la solicitud: ${error}`));
 
-//         const users = await response.json();
-//         const arrayUsuariosEspecificos = [];
-//         const arrayUsersAll = [];
-
-//         // if (users && users.length > 0) {
-//         //     users.forEach((usuario)=> {
-//         //         usuario.permiso === `${permisos.pcpUser}` || usuario.permiso === `${permisos.cadCamUser}`
-//         //         ? arrayUsuariosEspecificos.push(usuario)
-//         //         : arrayUsersAll.push(usuario)
-//         //     })
-//         // }
-//         console.log('users: ', users)
-
-//     } catch (error) {
-//         const titulo = 'Error'
-//         const message = `${error}`
-//         const icon = 'error'
-//         messageAlertUser(titulo, message, icon)
-//     }
-// }
-function cargarUsuarioPcpCad(res) {
-    // Paso 1: Realizar el fetch
-    fetch(`../../../api/usuarios/searchUsers/${userNameBanner}`)
-        .then(response => response.json())  // Convierte la respuesta en JSON
-        .then(data => {
-            // Paso 2: Cargar los datos en el select
-            cargarOpcionesEnSelect(data, res);
-        })
-        .catch(error => console.error('Error:', error));
+    } catch (error) {
+        const titulo = 'Error'
+        const message = `${error}`
+        const icon = 'error'
+        messageAlertUser(titulo, message, icon)
+    }
 
     // Función para cargar las opciones en el select
     function cargarOpcionesEnSelect(datos, res) {
@@ -2620,18 +2669,17 @@ function cargarUsuarioPcpCad(res) {
 
         // Itera sobre el array de datos
         datos.forEach(dato => {
-            // Crea un nuevo elemento <option>
             const option = document.createElement('option');
-            option.value = dato.id;  // Asigna el valor de la opción (puede ser un ID u otro identificador)
+            option.value = dato._id;  // Asigna el valor de la opción (puede ser un ID u otro identificador)
             option.textContent = `${dato.name}, ${dato.lastName}`;  // Asigna el texto visible en la opción (puede ser el nombre u otro dato)
 
-            // Agrega la opción al select
-            selectElement.appendChild(option);
+            (dato.permiso === 'cadCam' || dato.permiso === 'mecanizado' || dato.permiso === 'todos') ? selectElement.appendChild(option) : null
+
         });
     }
 }
 
-function addDatoToOtProgramacion(i, idTabla, qInicial, qFinal) {
+function addDatoToOtProgramacionPrimera(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
@@ -2640,12 +2688,12 @@ function addDatoToOtProgramacion(i, idTabla, qInicial, qFinal) {
             var getUsersNames = cargarUsuarioPcpCad(res.arrayOtNumber[y]+'_'+res.arrayOtDetalle[y])
         }
         
-        let arrayBloqueProgramacion = []
+        let arrayBloqueProgramacionPrimera = []
         for (let y=0; y < res.lastChild; y++) {
-            console.log('getValues.arrayRt[y]:', getValues.arrayRt[y])
+            
             const dataEnArrayBloque = `
                         <div class="col my-auto">
-                            <select id="rt${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="rt${y}" oninput=""
+                            <select id="rt${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="rt${y}"
                                 class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
                                 <option selected value="${getValues.arrayRt[y]}" disabled>
                                     ${getValues.arrayRt[y]}
@@ -2655,6 +2703,21 @@ function addDatoToOtProgramacion(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="rtHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
                                 name="rtHidden${[y]}" value="${(switchOptionSelected(getValues.arrayRt[y])).variableValue}">
                         </div>
+
+                        <div class="col my-auto">
+                            <select id="estadoRt${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="estadoRt${y}"
+                                oninput="updateInputsSelect()"
+                                class="form-select" ${(colorStatusOt(res.arrayOtDetalleStatus[y]).disabled)}>
+                                <option selected value="${(switchEstadoSelected(getValues.arrayEstadoRt[y])).variableValue}" disabled>
+                                    ${(switchEstadoSelected(getValues.arrayEstadoRt[y])).getValueArrayDato}
+                                </option>
+                                ${(switchEstadoSelected(getValues.arrayEstadoRt[y])).optionDefined}
+                            </select>
+                            <input type="hidden" id="estadoRtHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                            name="estadoRtHidden${[y]}"
+                            value="${(switchEstadoSelected(getValues.arrayEstadoRt[y])).variableValue}">
+                        </div>
+                        
                         <div class="col-1 my-auto" style="width: 5vw;">
                             <input type="text" value="${getValues.arrayRevisionRt[y]}"
                                 class="form-control" style="text-align: center;" disabled readonly">
@@ -2667,18 +2730,18 @@ function addDatoToOtProgramacion(i, idTabla, qInicial, qFinal) {
             const divStyle = isInactive ? 'style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5"' : '';
             const divClass = isInactive ? 'pe-none contenteditable="false"' : '';
             
-            arrayBloqueProgramacion.push(`
+            arrayBloqueProgramacionPrimera.push(`
                 <div class="row mx-auto ${divClass}" ${divStyle}>
                     ${datosCabeceraFormulario(res.arrayOtDetalleStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], res.arrayOtDetalle[y], res.arrayDescripcionDetalle[y], res.arrayOnumber[y], res.arrayDetalleId[y])}
                     ${dataEnArrayBloque}
                 </div>`);
             
-            res.arrayOtNumber[y] !== res.arrayOtNumber[y+1] ? arrayBloqueProgramacion.push(`<hr class="my-1">`) : null 
+            res.arrayOtNumber[y] !== res.arrayOtNumber[y+1] ? arrayBloqueProgramacionPrimera.push(`<hr class="my-1">`) : null 
         
         }
     
         const html = `
-                <form id="formProgramacionValues" action="/api/proyectos/otInfoProgramacion" method="post" style="font-size: 10pt">
+                <form id="formProgramacionPrimeraValues" action="/api/proyectos/otInfoProgramacionPrimera" method="post" style="font-size: 10pt">
                     <fieldset>
                         <div class="row mx-auto">
                             ${cabeceraFormulario}
@@ -2700,6 +2763,84 @@ function addDatoToOtProgramacion(i, idTabla, qInicial, qFinal) {
                             <div class="col-1 my-auto align-self-start" style="width: 4vw;">
                                 <span"><strong>Rev</strong></span>
                             </div>
+                        </div>
+                        <hr>
+                            ${arrayBloqueProgramacionPrimera.join("<br>")}
+                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueProgramacionPrimera.length)}
+                    </fieldset>
+                </form>`
+    
+        const titulo = "Programación (1° Parte)"
+        const formulario = 'formProgramacionPrimeraValues'
+        const ancho = 1600
+        const background = '#efefef'
+        const arrayDeOtNumber = res.arrayOtNumber
+    
+        swalFireAlert (
+            titulo,
+            html,
+            ancho,
+            background,
+            formulario,
+            arrayDeOtNumber
+        )
+        disabledBtnAceptar()
+    }
+}
+
+//***** addDatoToOtProgramacionSegunda ******
+//TODO:
+function addDatoToOtProgramacionSegunda(i, idTabla, qInicial, qFinal) {
+    if (i, idTabla, qInicial, qFinal) {
+        let res = getOtList(i)
+        let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
+
+        for (let y=0; y < res.lastChild; y++) {
+            var getUsersNames = cargarUsuarioPcpCad(res.arrayOtNumber[y]+'_'+res.arrayOtDetalle[y])
+        }
+        
+        let arrayBloqueProgramacionSegunda = []
+        for (let y=0; y < res.lastChild; y++) {
+            
+            const dataEnArrayBloque = `
+                        <div class="col my-auto">
+                            <select id="rt${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="rt${y}"
+                                class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
+                                <option selected value="${getValues.arrayRt[y]}" disabled>
+                                    ${getValues.arrayRt[y]}
+                                </option>
+                                    ${getUsersNames}
+                            </select>
+                            <input type="hidden" id="rtHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                                name="rtHidden${[y]}" value="${(switchOptionSelected(getValues.arrayRt[y])).variableValue}">
+                        </div>
+                        <div class="col-1 my-auto" style="width: 5vw;">
+                            <input type="text" value="${getValues.arrayRevisionRt[y]}"
+                                class="form-control" style="text-align: center;" disabled readonly">
+                            <input type="hidden" id="revisionRt${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                                name="revisionRt${y}" value="${getValues.arrayRevisionRt[y]}">
+                        </div>
+                        `
+
+            const isInactive = res.arrayOtDetalleStatus[y] === 'Inactivo';
+            const divStyle = isInactive ? 'style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5"' : '';
+            const divClass = isInactive ? 'pe-none contenteditable="false"' : '';
+            
+            arrayBloqueProgramacionSegunda.push(`
+                <div class="row mx-auto ${divClass}" ${divStyle}>
+                    ${datosCabeceraFormulario(res.arrayOtDetalleStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], res.arrayOtDetalle[y], res.arrayDescripcionDetalle[y], res.arrayOnumber[y], res.arrayDetalleId[y])}
+                    ${dataEnArrayBloque}
+                </div>`);
+            
+            res.arrayOtNumber[y] !== res.arrayOtNumber[y+1] ? arrayBloqueProgramacionSegunda.push(`<hr class="my-1">`) : null 
+        
+        }
+    
+        const html = `
+                <form id="formProgramacionSegundaValues" action="/api/proyectos/otInfoProgramacionSegunda" method="post" style="font-size: 10pt">
+                    <fieldset>
+                        <div class="row mx-auto">
+                            ${cabeceraFormulario}
                             <div class="col my-auto">
                                 <spano><strong>Prog. 3D Prefinal</strong></span>
                             </div>
@@ -2712,15 +2853,21 @@ function addDatoToOtProgramacion(i, idTabla, qInicial, qFinal) {
                             <div class="col-1 my-auto align-self-start" style="width: 4vw;">
                                 <span"><strong>Rev</strong></span>
                             </div>
+                            <div class="col my-auto">
+                                <spano><strong>Notas</strong></span>
+                            </div>
+                            <div class="col-1 my-auto align-self-start" style="width: 4vw;">
+                                <span"><strong>Rev</strong></span>
+                            </div>
                         </div>
                         <hr>
-                            ${arrayBloqueProgramacion.join("<br>")}
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueProgramacion.length)}
+                            ${arrayBloqueProgramacionSegunda.join("<br>")}
+                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueProgramacionSegunda.length)}
                     </fieldset>
                 </form>`
     
-        const titulo = "Programación"
-        const formulario = 'formProgramacionValues'
+        const titulo = "Programación (2° Parte)"
+        const formulario = 'formProgramacionSegundaValues'
         const ancho = 1600
         const background = '#efefef'
         const arrayDeOtNumber = res.arrayOtNumber
@@ -3053,7 +3200,8 @@ for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de p
 if (arrTables !=[]) {
     let allButtonsFromTables = document.querySelectorAll(`
         button[name="btnOtDistribucion"],
-        button[name="btnOtProgramacion"],
+        button[name="btnOtProgramacionPrimera"],
+        button[name="btnOtProgramacionSegunda"],
         button[name="btnMecanizado"]
     `);
 
@@ -3067,10 +3215,17 @@ if (arrTables !=[]) {
             qFinal: 4
         },
         {
-            nombreTabla: "tablaOtProgramacion",
-            btnName: "btnOtProgramacion",
-            functionName: addDatoToOtProgramacion,
+            nombreTabla: "tablaOtProgramacionPrimera",
+            btnName: "btnOtProgramacionPrimera",
+            functionName: addDatoToOtProgramacionPrimera,
             qInicial: 4,
+            qFinal: 7
+        },
+        {
+            nombreTabla: "tablaOtProgramacionSegunda",
+            btnName: "btnOtProgramacionSegunda",
+            functionName: addDatoToOtProgramacionSegunda,
+            qInicial: 7,
             qFinal: 10
         },
         {

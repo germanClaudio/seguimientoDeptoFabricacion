@@ -1,0 +1,658 @@
+<!-- tabla Programacion Primera -->
+<table id="tablaOtProgramacionPrimera<%=k%>" class="table-responsive align-middle col-5 border-end border-dark"
+    style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #d8d8eb">
+        <tr>
+            <th colspan="3" class="text-center">
+                PROGRAMACIÓN (1° Parte)
+                <button id="posBtnAddDataOtProgramacionPrimera<%=k%>" type="button" name="btnOtProgramacionPrimera" class="btn btn-small btn-success m-1 me-5" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                    <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>                                                    
+                </button>
+                <i class="fa-solid fa-arrows-spin fa-lg" style="color: #b09b12;"></i> En Proceso -
+                <i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i> Terminado -
+                <i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i> Suspendido -
+                <i class="fa-solid fa-ban fa-lg"></i> No Aplica
+            </th>
+        </tr>
+        <tr>
+            <th id="colData0" style="width:33vw" scope="col-1"
+                class="text-center pb-1">RT | Estado | Rev.
+            </th>
+            <th id="colData1" style="width:33vw" scope="col-1"
+                class="text-center pb-1">Preparación GEO | Estado | Rev.
+            </th>
+            <th id="colData3" style="width:33vw" scope="col-1"
+                class="text-center pb-1">Programas 2d | Estado | Rev.
+            </th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        
+        <%
+        let arrResDatoRt = [];
+        let arrResRt = [];
+        let valueArrayResRt = 0;
+        let arrResRevisionRt = [];
+        let arrResCreadorRt = [];
+        let arrResModificadorRt = [];
+        let arrResFechaRt = [];
+        let arrResFechaModRt = [];
+
+        let arrResDatoPreparacionGeo = [];
+        let arrResPreparacionGeo = [];
+        let valueArrayResPreparacionGeo = 0;
+        let arrResRevisionPreparacionGeo = [];
+        let arrResCreadorPreparacionGeo = [];
+        let arrResModificadorPreparacionGeo = [];
+        let arrResFechaPreparacionGeo = [];
+        let arrResFechaModPreparacionGeo = [];
+
+        let arrResDatoPrograma2d = [];
+        let arrResPrograma2d = [];
+        let valueArrayResPrograma2d = 0;
+        let arrResRevisionPrograma2d = [];
+        let arrResCreadorPrograma2d = [];
+        let arrResModificadorPrograma2d = [];
+        let arrResFechaPrograma2d = [];
+        let arrResFechaModPrograma2d = [];
+
+        let anteriorDisabled = "disabled";
+        let siguienteDisabled = "disabled";
+        let resDatoRt = 'S/D';
+        let resEstadoRt = 'S/D';
+        let resRevisionRt = 0;
+        let resDatoPreparacionGeo = 'S/D';
+        let resEstadoPreparacionGeo = 'S/D';
+        let resRevisionPreparacionGeo = 0;
+        let resDatoPrograma2d = 'S/D';
+        let resEstadoPrograma2d = 'S/D';
+        let resRevisionPrograma2d = 0;
+
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject[n]
+            let largoArrayOtDetalles = pathMongoOtProject.otDetalles.length
+
+            for ( let o=0; largoArrayOtDetalles> o; o++) {
+                let otProgramacionPrimera = proyecto[m].project[j].oci[k].otProject[n].otDetalles[o].otProgramacionPrimera || [];
+                let largoArrayProgramacion = otProgramacionPrimera.length;
+
+                if (pathMongoOtProject.visible) {
+                    if (pathMongoOtProject.otStatus) { %>
+                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh;">
+                            <% for (let q = 4; totalColDataProgramacionPrimera > q; q++) {
+                                if (q==4) { %>
+                                    <!-- Req. tecnicos data Activo--> 
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtDetalles > 0 && largoArrayProgramacion > 0) {
+                                                    for (let i = 0; largoArrayProgramacion > i; i++) {
+                                                        let pathToMongoDBOtProgramacion = otProgramacionPrimera[i]
+
+                                                        if (otProgramacionPrimera) {
+                                                            let largoArray = parseInt(largoArrayProgramacion)
+                                                            resDatoRt = otProgramacionPrimera[largoArray-1].rt
+                                                            resEstadoRt = otProgramacionPrimera[largoArray-1].estadoRt
+                                                            resRevisionRt = otProgramacionPrimera[largoArray-1].revisionRt
+                                                            
+                                                            if (i == 0) {
+                                                                arrResDatoRt.push(pathToMongoDBOtProgramacion.rt)
+                                                                arrResRt.push(pathToMongoDBOtProgramacion.estadoRt)
+                                                                arrResRevisionRt.push(pathToMongoDBOtProgramacion.revisionRt)
+                                                            }
+                                                            else if (i >= 1 && pathToMongoDBOtProgramacion.revisionRt != otProgramacionPrimera[i-1].revisionRt) {
+                                                                arrResDatoRt.push(pathToMongoDBOtProgramacion.rt)
+                                                                arrResRt.push(pathToMongoDBOtProgramacion.estadoRt)
+                                                                arrResRevisionRt.push(pathToMongoDBOtProgramacion.revisionRt)
+                                                            }
+                                                                arrResCreadorRt.push(pathToMongoDBOtProgramacion.creator[0].username)
+                                                                arrResModificadorRt.push(pathToMongoDBOtProgramacion.modificator[0].username)
+                                                                arrResFechaOtRt.push(pathToMongoDBOtProgramacion.timestamp)
+                                                                arrResFechaModRt.push(pathToMongoDBOtProgramacion.modifiedOn)
+                                                                valueArrayResRt = parseInt(arrResOtProgramacion.length-1)
+
+                                                        } else {
+                                                            resDatoRt = 'S/D'
+                                                            resEstadoRt = 'S/D'
+                                                            resRevisionRt = 0
+                                                        }
+                                                    }
+
+                                                    if (arrResDatoRt.length == 1 ) {
+                                                        anteriorDisabled = "disabled"
+                                                        siguienteDisabled = "disabled"
+                                                    } else if (arrResDatoRt.length == arrResRevisionRt.length) {
+                                                        anteriorDisabled = ""
+                                                        siguienteDisabled = "disabled"
+                                                    } else {
+                                                        anteriorDisabled = ""
+                                                        siguienteDisabled = "disabled"
+                                                    }
+                                                    
+                                        } else {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                            resDatoRt = 'S/D'
+                                            resEstadoRt = "S/D"
+                                            resRevisionRt = 0
+                                            arrResDatoRt.push(resDatoRt)
+                                            arrResRt.push(resEstadoRt)
+                                            arrResRevisionRt.push(resRevisionRt)
+                                            valueArrayResRt = 0
+                                        } %>
+                                        
+                                            <div id="btnAnteriorSiguienteRt<%=k%>_<%=n%>_<%=q%>">
+                                                <button id="btnAnteriorRt<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorRt" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                    <%= anteriorDisabled %>
+                                                    ><i class="fa-solid fa-arrow-left"></i>
+                                                </button>
+                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoRt %>">
+                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRt %>">
+                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResRt %>">
+                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionRt %>">
+                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorRt %>">
+                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorRt %>">
+                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaRt %>">
+                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModRt %>">
+
+                                                <span id="resDatoRt<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoRt %></span> |
+
+                                                <% let icon; let iconColor;
+                                                switch (resEstadoRt) { 
+                                                    case "enProceso": {
+                                                        icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                    break; }
+                                                    case "terminado": {
+                                                        icon = "fa-circle-check"; iconColor = "#008f30";
+                                                    break; }        
+                                                    case "suspendido": {
+                                                        icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                    break; }
+                                                    case "noAplica": {
+                                                        icon = "fa-ban"; iconColor = "";
+                                                    break; }
+                                                    default: {
+                                                        icon = ""; iconColor = ""; %>
+                                                        <span id="resEstadoRt<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                    <% break; }
+                                                }
+
+                                                if (icon) { %>
+                                                    <span id="resEstadoRt<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoRt%>">
+                                                        <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                    </span> |
+                                                <% } %>
+
+                                                <span id="resRevisionRt<%=k%>_<%=n%>_<%=q%>" name="resRevisionRt" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionRt %></span>
+
+                                                <button id="btnSiguienteRt<%=k%>_<%=n%>_<%=q%>" name="btnSiguienteRt" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
+                                                    ><i class="fa-solid fa-arrow-right"></i>
+                                                </button>
+                                            </div>
+                                    </td>
+                                <% } else if (q==5) { %>
+                                    <!-- Preparacion GEO data Activo-->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtDetalles > 0 && largoArrayProgramacion > 0) {
+                                                    for (let i = 0; largoArrayProgramacion > i; i++) {
+                                                        let pathToMongoDBOtProgramacion = otProgramacionPrimera[i]
+                                                        
+                                                        if (otProgramacionPrimera) {
+                                                            let largoArray = parseInt(largoArrayProgramacion)
+                                                            resDatoPreparacionGeo = otProgramacionPrimera[largoArray-1].preparacionGeo
+                                                            resEstadoPreparacionGeo = otProgramacionPrimera[largoArray-1].estadoPreparacionGeo
+                                                            resRevisionPreparacionGeo = otProgramacionPrimera[largoArray-1].revisionPreparacionGeo
+                                                            
+                                                            if (i == 0) {
+                                                                arrResDatoPreparacionGeo.push(pathToMongoDBOtProgramacion.preparacionGeo)
+                                                                arrResPreparacionGeo.push(pathToMongoDBOtProgramacion.estadoPreparacionGeo)
+                                                                arrResRevisionPreparacionGeo.push(pathToMongoDBOtProgramacion.revisionPreparacionGeo)
+                                                            }
+                                                            else if (i >= 1 && pathToMongoDBOtProgramacion.revisionPreparacionGeo != otProgramacionPrimera[i-1].revisionPreparacionGeo) {
+                                                                arrResDatoPreparacionGeo.push(pathToMongoDBOtProgramacion.preparacionGeo)
+                                                                arrResPreparacionGeo.push(pathToMongoDBOtProgramacion.estadoPreparacionGeo)
+                                                                arrResRevisionPreparacionGeo.push(pathToMongoDBOtProgramacion.revisionPreparacionGeo)
+                                                            }
+                                                                arrResCreadorPreparacionGeo.push(pathToMongoDBOtProgramacion.creator[0].username)
+                                                                arrResModificadorPreparacionGeo.push(pathToMongoDBOtProgramacion.modificator[0].username)
+                                                                arrResFechaPreparacionGeo.push(pathToMongoDBOtProgramacion.timestamp)
+                                                                arrResFechaModPreparacionGeo.push(pathToMongoDBOtProgramacion.modifiedOn)
+                                                                valueArrayResPreparacionGeo = parseInt(arrResPreparacionGeo.length-1)
+                                                                                                        
+                                                        } else {
+                                                            resDatoPreparacionGeo = 'S/D'
+                                                            resEstadoPreparacionGeo = 'S/D'
+                                                            resRevisionPreparacionGeo = 0
+                                                        }
+                                                    }
+                                                    
+                                                    if (arrResDatoPreparacionGeo.length == 1 ) {
+                                                        anteriorDisabled = "disabled"
+                                                        siguienteDisabled = "disabled"
+                                                    } else if (arrResDatoPreparacionGeo.length == arrResRevisionPreparacionGeo.length) {
+                                                        anteriorDisabled = ""
+                                                        siguienteDisabled = "disabled"
+                                                    } else {
+                                                        anteriorDisabled = ""
+                                                        siguienteDisabled = "disabled"
+                                                    }
+                                                    
+                                                } else {
+                                                    anteriorDisabled = "disabled"
+                                                    siguienteDisabled = "disabled"
+                                                    resDatoPreparacionGeo = "S/D"
+                                                    resEstadoPreparacionGeo = "S/D"
+                                                    resRevisionPreparacionGeo = 0
+                                                    arrResDatoPreparacionGeo.push(resDatoPreparacionGeo)
+                                                    arrResPreparacionGeo.push(resEstadoPreparacionGeo)
+                                                    arrResRevisionPreparacionGeo.push(resRevisionPreparacionGeo)
+                                                    valueArrayResPreparacionGeo = 0
+                                            } %>
+                                        
+                                            <div id="btnAnteriorSiguientePreparacionGeo<%=k%>_<%=n%>_<%=q%>">
+                                                <button id="btnAnteriorPreparacionGeo<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorPreparacionGeo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                    <%= anteriorDisabled %>
+                                                    ><i class="fa-solid fa-arrow-left"></i>
+                                                </button>
+                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoPreparacionGeo %>">
+                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPreparacionGeo %>">
+                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPreparacionGeo %>">
+                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPreparacionGeo %>">
+                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorPreparacionGeo %>">
+                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorPreparacionGeo %>">
+                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaPreparacionGeo %>">
+                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModPreparacionGeo %>">
+
+                                                <span id="resDatoPreparacionGeo<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoPreparacionGeo %></span> |
+
+                                                <% let icon; let iconColor;
+                                                switch (resEstadoPreparacionGeo) { 
+                                                    case "enProceso": {
+                                                        icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                    break; }
+                                                    case "terminado": {
+                                                        icon = "fa-circle-check"; iconColor = "#008f30";
+                                                    break; }        
+                                                    case "suspendido": {
+                                                        icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                    break; }
+                                                    case "noAplica": {
+                                                        icon = "fa-ban"; iconColor = "";
+                                                    break; }
+                                                    default: {
+                                                        icon = ""; iconColor = ""; %>
+                                                        <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                    <% break; }
+                                                }
+
+                                                if (icon) { %>
+                                                    <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoPreparacionGeo%>">
+                                                        <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                    </span> |
+                                                <% } %>
+
+                                                <span id="resRevisionPreparacionGeo<%=k%>_<%=n%>_<%=q%>" name="resRevisionPreparacionGeo" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionPreparacionGeo %></span>
+
+                                                <button id="btnSiguientePreparacionGeo<%=k%>_<%=n%>_<%=q%>" name="btnSiguientePreparacionGeo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                    <%= siguienteDisabled %>
+                                                    ><i class="fa-solid fa-arrow-right"></i>
+                                                </button>
+                                            </div>
+                                    </td>
+                                <% } else { %>
+                                    <!-- Programa2d data Activo-->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtDetalles > 0 && largoArrayProgramacion > 0) {
+                                                    for (let i = 0; largoArrayProgramacion > i; i++) {
+                                                        let pathToMongoDBOtProgramacion = otProgramacionPrimera[i]
+                                                        
+                                                        if (otProgramacionPrimera) {
+                                                            let largoArray = parseInt(largoArrayProgramacion)
+                                                            resDatoPrograma2d = otProgramacionPrimera[largoArray-1].programa2d
+                                                            resEstadoPrograma2d = otProgramacionPrimera[largoArray-1].estadoPrograma2d
+                                                            resRevisionPrograma2d = otProgramacionPrimera[largoArray-1].revisionPrograma2d
+                                                            
+                                                            if (i == 0) {
+                                                                arrResDatoPrograma2d.push(pathToMongoDBOtProgramacion.programa2d)
+                                                                arrResPrograma2d.push(pathToMongoDBOtProgramacion.estadoPrograma2d)
+                                                                arrResRevisionPrograma2d.push(pathToMongoDBOtProgramacion.revisionPrograma2d)
+                                                            }
+                                                            else if (i >= 1 && pathToMongoDBOtProgramacion.revisionPrograma2d != otProgramacionPrimera[i-1].revisionPrograma2d) {
+                                                                arrResDatoPrograma2d.push(pathToMongoDBOtProgramacion.programa2d)
+                                                                arrResPrograma2d.push(pathToMongoDBOtProgramacion.estadoPrograma2d)
+                                                                arrResRevisionPrograma2d.push(pathToMongoDBOtProgramacion.revisionPrograma2d)
+                                                            }
+                                                                arrResCreadorPrograma2d.push(pathToMongoDBOtProgramacion.creator[0].username)
+                                                                arrResModificadorPrograma2d.push(pathToMongoDBOtProgramacion.modificator[0].username)
+                                                                arrResFechaPrograma2d.push(pathToMongoDBOtProgramacion.timestamp)
+                                                                arrResFechaModPrograma2d.push(pathToMongoDBOtProgramacion.modifiedOn)
+                                                                valueArrayResPrograma2d = parseInt(arrResPrograma2d.length-1)
+
+                                                        } else {
+                                                            resDatoPrograma2d = 'S/D'
+                                                            resEstadoPrograma2d = 'S/D'
+                                                            resRevisionPrograma2d = 0
+                                                        }
+                                                    }
+                                                    
+                                                    if (arrResDatoPrograma2d.length == 1 ) {
+                                                        siguienteDisabled = "disabled"
+                                                        anteriorDisabled = "disabled"
+                                                    } else if (arrResDatoPrograma2d.length == arrResRevisionPrograma2d.length) {
+                                                        anteriorDisabled = ""
+                                                        siguienteDisabled = "disabled"
+                                                    } else {
+                                                        anteriorDisabled = ""
+                                                        siguienteDisabled = "disabled"
+                                                    }
+                                                    
+                                                } else {
+                                                    anteriorDisabled = "disabled"
+                                                    siguienteDisabled = "disabled"
+                                                    resDatoPrograma2d = "S/D"
+                                                    resEstadoPrograma2d = "S/D"
+                                                    resRevisionPrograma2d = 0
+                                                    arrResDatoPrograma2d.push(resDatoPrograma2d)
+                                                    arrResPrograma2d.push(resEstadoPrograma2d)
+                                                    arrResRevisionPrograma2d.push(resRevisionPrograma2d)
+                                                    valueArrayResPrograma2d = 0
+                                            } %>
+
+                                            <div id="btnAnteriorSiguientePrograma2d<%=k%>_<%=n%>_<%=q%>">
+                                                <button id="btnAnteriorPrograma2d<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorPrograma2d" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                    <%= anteriorDisabled %>
+                                                    ><i class="fa-solid fa-arrow-left"></i>
+                                                </button>
+                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoPrograma2d %>">
+                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPrograma2d %>">
+                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPrograma2d %>">
+                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPrograma2d %>">
+                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorPrograma2d %>">
+                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorPrograma2d %>">
+                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaPrograma2d %>">
+                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModPrograma2d %>">
+
+                                                <span id="resDatoPrograma2d<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoPrograma2d %></span> |
+
+                                                <% let icon; let iconColor;
+                                                switch (resEstadoPrograma2d) { 
+                                                    case "enProceso": {
+                                                        icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                    break; }
+                                                    case "terminado": {
+                                                        icon = "fa-circle-check"; iconColor = "#008f30";
+                                                    break; }        
+                                                    case "suspendido": {
+                                                        icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                    break; }
+                                                    case "noAplica": {
+                                                        icon = "fa-ban"; iconColor = "";
+                                                    break; }
+                                                    default: {
+                                                        icon = ""; iconColor = ""; %>
+                                                        <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                    <% break; }
+                                                }
+
+                                                if (icon) { %>
+                                                    <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoPrograma2d%>">
+                                                        <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                    </span> |
+                                                <% } %>
+
+                                                <span id="resRevisionPrograma2d<%=k%>_<%=n%>_<%=q%>" name="resRevisionPrograma2d" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionPrograma2d %></span>
+
+                                                <button id="btnSiguientePrograma2d<%=k%>_<%=n%>_<%=q%>" name="btnSiguientePrograma2d" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                    <%= siguienteDisabled %>
+                                                    ><i class="fa-solid fa-arrow-right"></i>
+                                                </button>
+                                            </div>
+                                    </td>
+                                <% }
+                            } %>
+                        </tr>
+                    <% } else { %>
+                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="pe-none border-bottom" style="height: 5vh; background-color: #dedede;">
+                            <% for (let q = 4; totalColDataOtProgramacionPrimera > q; q++) {
+                                if (q==4) { %>
+                                    <!-- Requerimientos Tecnicos data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtDetalles > 0 && largoArrayProgramacion > 0) {
+                                        
+                                                for (let i = 0; largoArrayProgramacion > i; i++) {
+                                                    if (otProgramacionPrimera) {
+                                                        let largoArray = parseInt(largoArrayProgramacion)
+                                                        resDatoRt = otProgramacionPrimera[largoArray-1].rt
+                                                        resEstadoRt = otProgramacionPrimera[largoArray-1].estadoRt
+                                                        resRevisionRt = otProgramacionPrimera[largoArray-1].revisionRt
+                                                        
+                                                        if (i == 0) {
+                                                            arrResDatoRt.push(pathToMongoDBOtProgramacion.rt)
+                                                            arrResRt.push(pathToMongoDBOtProgramacion.Rt)
+                                                            arrResRevisionRt.push(pathToMongoDBOtProgramacion.revisionRt)
+                                                        }
+                                                        else if (i >= 1 && pathToMongoDBOtProgramacion.revisionRt != otProgramacionPrimera[i-1].revisionRt) {
+                                                            arrResDatoRt.push(pathToMongoDBOtProgramacion.rt)
+                                                            arrResRt.push(pathToMongoDBOtProgramacion.estadoRt)
+                                                            arrResRevisionRt.push(pathToMongoDBOtProgramacion.revisionRt)
+                                                        }
+                                                        valueArrayResRt = parseInt(arrResRt.length-1)
+                                                                                                    
+                                                    } else {
+                                                        resDatoRt = ''
+                                                        resEstadoRt = ''
+                                                        resRevisionRt = 0
+                                                    }
+                                                }
+                                                resDatoRt = otProgramacionPrimera[0].Rt
+                                                resEstadoRt = otProgramacionPrimera[0].estadoRt
+
+                                        } else {
+                                            resDatoRt = ''
+                                            resEstadoRt = ''
+                                            resRevisionRt = 0
+                                            arrResDatoRt.push(resDatoRt)
+                                            arrResEstado.push(resEstadoRt)
+                                            arrResRevisionRt.push(0)
+                                        } %>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoRt %>">
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRt %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResRt %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionRt %>">
+                                        
+                                            <span id="resDatoRt<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoRt %></span> |
+
+                                            <% let icon; let iconColor;
+                                            switch (resEstadoRt) { 
+                                                case "enProceso": {
+                                                    icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                break; }
+                                                case "terminado": {
+                                                    icon = "fa-circle-check"; iconColor = "#008f30";
+                                                break; }        
+                                                case "suspendido": {
+                                                    icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                break; }
+                                                case "noAplica": {
+                                                    icon = "fa-ban"; iconColor = "";
+                                                break; }
+                                                default: {
+                                                    icon = ""; iconColor = ""; %>
+                                                    <span id="resEstadoRt<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                <% break; }
+                                            }
+
+                                            if (icon) { %>
+                                                <span id="resEstadoRt<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoRt%>">
+                                                    <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                </span> |
+                                            <% } %>
+
+                                            <span id="resRevisionRt<%=k%>_<%=n%>_<%=q%>" name="resRevisionRt" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionRt %></span>
+                                    </td>
+                                <% } else if (q==5) { %>
+                                    <!-- Preparacion GEO data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtDetalles > 0 && largoArrayProgramacion > 0) {
+                                                for (let i = 0; largoArrayProgramacion > i; i++) {
+                                                    
+                                                    if (otProgramacionPrimera) {
+                                                        let largoArray = parseInt(largoArrayProgramacion)
+                                                        resDatoPreparacionGeo = otProgramacionPrimera[largoArray-1].preparacionGeo
+                                                        resEstadoPreparacionGeo = otProgramacionPrimera[largoArray-1].preparacionGeo
+                                                        resRevisionPreparacionGeo = otProgramacionPrimera[largoArray-1].revisionPreparacionGeo
+                                                        
+                                                        if (i == 0) {
+                                                            arrResDatoPreparacionGeo.push(pathToMongoDBOtProgramacion.preparacionGeo)
+                                                            arrResPreparacionGeo.push(pathToMongoDBOtProgramacion.preparacionGeo)
+                                                            arrResRevisionPreparacionGeo.push(pathToMongoDBOtProgramacion.revisionPreparacionGeo)
+                                                        }
+                                                        else if (i >= 1 && pathToMongoDBOtProgramacion.revisionPreparacionGeo != otProgramacionPrimera[i-1].revisionPreparacionGeo) {
+                                                            arrResDatoPreparacionGeo.push(pathToMongoDBOtProgramacion.preparacionGeo)
+                                                            arrResPreparacionGeo.push(pathToMongoDBOtProgramacion.preparacionGeo)
+                                                            arrResRevisionPreparacionGeo.push(pathToMongoDBOtProgramacion.revisionPreparacionGeo)
+                                                        }
+                                                        valueArrayResPreparacionGeo = parseInt(arrResPreparacionGeo.length-1)
+
+                                                    } else {
+                                                        resDatoPreparacionGeo = ''
+                                                        resEstadoPreparacionGeo = ''
+                                                        resRevisionPreparacionGeo = 0
+                                                    }
+                                                }
+                                                resDatoPreparacionGeo = otProgramacionPrimera[0].preparacionGeo
+                                                resEstadoPreparacionGeo = otProgramacionPrimera[0].estadoPreparacionGeo
+                                        
+                                        } else {
+                                            resDatoPreparacionGeo = ""
+                                            resEstadoPreparacionGeo = ""
+                                            resRevisionPreparacionGeo = 0
+                                            arrResDatoPreparacionGeo.push(resDatoPreparacionGeo)
+                                            arrResPreparacionGeo.push(resEstadoPreparacionGeo)
+                                            arrResRevisionPreparacionGeo.push(0)
+                                        } %>
+
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoPreparacionGeo %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPreparacionGeo %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPreparacionGeo %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPreparacionGeo %>">
+
+                                        <span id="resDatoPreparacionGeo<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoPreparacionGeo %></span> |
+                                        
+                                        <% let icon; let iconColor;
+                                                switch (resEstadoPreparacionGeo) { 
+                                                    case "enProceso": {
+                                                        icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                    break; }
+                                                    case "terminado": {
+                                                        icon = "fa-circle-check"; iconColor = "#008f30";
+                                                    break; }        
+                                                    case "suspendido": {
+                                                        icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                    break; }
+                                                    case "noAplica": {
+                                                        icon = "fa-ban"; iconColor = "";
+                                                    break; }
+                                                    default: {
+                                                        icon = ""; iconColor = ""; %>
+                                                        <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                    <% break; }
+                                                }
+
+                                                if (icon) { %>
+                                                    <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoPreparacionGeo%>">
+                                                        <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                    </span> |
+                                                <% } %>
+
+                                                <span id="resRevisionPreparacionGeo<%=k%>_<%=n%>_<%=q%>" name="resRevisionPreparacionGeo" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionPreparacionGeo %></span>
+                                    </td>
+                                <% } else { %>
+                                    <!-- Programa2d data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtDetalles > 0 && largoArrayProgramacion > 0) {
+                                                for (let i = 0; largoArrayProgramacion > i; i++) {
+                                                    
+                                                    if (otProgramacionPrimera) {
+                                                        let largoArray = parseInt(largoArrayProgramacion)
+                                                        resDatoPrograma2d = otProgramacionPrimera[largoArray-1].programa2d
+                                                        resEstadoPrograma2d = otProgramacionPrimera[largoArray-1].estadoPrograma2d
+                                                        resRevisionPrograma2d = otProgramacionPrimera[largoArray-1].revisionPrograma2d
+                                                        
+                                                        if (i == 0) {
+                                                            arrResDatoPrograma2d.push(pathToMongoDBOtProgramacion.programa2d)
+                                                            arrResPrograma2d.push(pathToMongoDBOtProgramacion.estadoPrograma2d)
+                                                            arrResRevisionPrograma2d.push(pathToMongoDBOtProgramacion.revisionPrograma2d)
+                                                        }
+                                                        else if (i >= 1 && pathToMongoDBOtProgramacion.revisionPrograma2d != otProgramacionPrimera[i-1].revisionPrograma2d) {
+                                                            arrResDatoPrograma2d.push(pathToMongoDBOtProgramacion.programa2d)
+                                                            arrResPrograma2d.push(pathToMongoDBOtProgramacion.estadoPrograma2d)
+                                                            arrResRevisionPrograma2d.push(pathToMongoDBOtProgramacion.revisionPrograma2d)
+                                                        }
+                                                        valueArrayResPrograma2d = parseInt(arrResPrograma2d.length-1)
+                                                                                                    
+                                                    } else {
+                                                        resDatoPrograma2d = ''
+                                                        resEstadoPrograma2d = ''
+                                                        resRevisionPrograma2d = 0
+                                                    }
+                                                }
+                                                resDatoPrograma2d = otProgramacionPrimera[0].programa2d
+                                                resEstadoPrograma2d = otProgramacionPrimera[0].estadoPrograma2d
+                                        
+                                        } else {
+                                            resDatoPrograma2d = ''
+                                            resEstadoPrograma2d = ''
+                                            resRevisionPrograma2d = 0
+                                            arrResDatoPrograma2d.push(resDatoPrograma2d)
+                                            arrResPrograma2d.push(resEstadoPrograma2d)
+                                            arrResRevisionPrograma2d.push(0)
+                                        } %>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoPrograma2d %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPrograma2d %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPrograma2d %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPrograma2d %>">
+
+                                        <span id="resDatoPrograma2d<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoPrograma2d %></span> |
+                                        
+                                        <% let icon; let iconColor;
+                                                switch (resEstadoPrograma2d) { 
+                                                    case "enProceso": {
+                                                        icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                    break; }
+                                                    case "terminado": {
+                                                        icon = "fa-circle-check"; iconColor = "#008f30";
+                                                    break; }        
+                                                    case "suspendido": {
+                                                        icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                    break; }
+                                                    case "noAplica": {
+                                                        icon = "fa-ban"; iconColor = "";
+                                                    break; }
+                                                    default: {
+                                                        icon = ""; iconColor = ""; %>
+                                                        <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                    <% break; }
+                                                }
+
+                                                if (icon) { %>
+                                                    <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoPrograma2d%>">
+                                                        <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                    </span> |
+                                                <% } %>
+
+                                                <span id="resRevisionPrograma2d<%=k%>_<%=n%>_<%=q%>" name="resRevisionPrograma2d" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionPrograma2d %></span>
+                                    </td>
+                                <% }
+                            } %>
+                        </tr>
+                    <% }
+                }
+            }
+        }) %>
+    </tbody>
+</table>

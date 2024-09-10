@@ -1,4 +1,4 @@
-<div class="card mt-2 mb-5 mx-auto text-center" style="max-width: 99vw;">
+<div class="card mb-5 mx-auto text-center" style="max-width: 99vw;">
     <div class="row align-items-center mx-1" style="background-color: #aef1b599;">
 
         <!-- columna #1 datos de proyecto -->
@@ -25,7 +25,6 @@
                                         
                                                 <div class="accordion-item">
                                                     <h2 class="accordion-header" id="panelsStayOpen-headingOneCard<%=k%>">
-
                                                     <!-- ------ boton accordion OCI's ------ -->
                                                         <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_btnAccord', { k, m, j, arrayVisibleOci }); %>
                                                     </h2>
@@ -59,16 +58,22 @@
                                                                                                                                                 
                                                                                 <% if (proyecto[0].project[0].levelProject == 'ganado') { 
                                                                                     let totalColDataOtDistribucion = 4;
-                                                                                    let totalColDataProgramacion = 10;
+                                                                                    let totalColDataProgramacionPrimera = 7;
+                                                                                    let totalColDataProgramacionSegunda = 10;
                                                                                     let totalColDataMecanizado = 17; %>
+
                                                                                     <div class="carousel-inner">
+                                                                                        <!-- --------- tabla otDistribucion ----------- -->
                                                                                         <div id="slideOtDistribucion" class="carousel-item" data-bs-interval="600000"> <!-- active -->
-                                                                                            <!-- --------- tabla otDistribucion ----------- -->
                                                                                             <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_tablaDistribucion', { k, m, j, totalColDataOtDistribucion }); %>
                                                                                         </div>
-                                                                                        <div id="slideProgramacion" class="carousel-item" data-bs-interval="600000">
-                                                                                            <!-- --------- tabla Programacion ----------- -->
-                                                                                            <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_tablaProgramacion', { k, m, j, totalColDataProgramacion }); %>
+                                                                                        <!-- --------- tabla Programacion Primera ----------- -->
+                                                                                        <div id="slideProgramacionPrimera" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_tablaProgramacionPrimera', { k, m, j, totalColDataProgramacionPrimera }); %>
+                                                                                        </div>
+                                                                                        <!-- --------- tabla Programacion Segunda ----------- -->
+                                                                                        <div id="slideProgramacionSegunda" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_tablaProgramacionSegunda', { k, m, j, totalColDataProgramacionSegunda }); %>
                                                                                         </div>
                                                                                         <!-- --------- tabla Mecanizado ----------- -->
                                                                                         <div id="slideMecanizado" class="carousel-item" data-bs-interval="600000">

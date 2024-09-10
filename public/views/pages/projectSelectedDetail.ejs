@@ -19,16 +19,8 @@
                 <%- include('../partials/btnHeaderTop/btnProjectSelectedDetail'); %>
             </div>
 
-            <section class="mx-auto align-items-start" style="width: 95%;">
-                <div class="row">
-                    <div class="col-12">
-                        <hr>
-                        <h4 id="projectNameTitle" class="text-uppercase"></h4>
-                        <p>Departamento de IT Prodismo</p>
-                        <hr>
-                    </div>
-                </div>
-            </section>
+            <%- include('../partials/sections/sectionProjectNameTitle'); %>
+            
             <div id="updateCliente">
             </div>
             <%- include('../partials/data/dataProjectCard', { k: data.k, m: data.m, j: data.j, slide: data.slide}); %>
