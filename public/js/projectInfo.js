@@ -186,14 +186,18 @@ function activarElemento(subarray, index) {
 }
 
 // Convertimos el valor de slideHidden a entero una vez
-const slideIndex = parseInt(slideHidden.value);
+const slideHidden = document.getElementById('slideHidden')
+let slideIndex
+slideHidden ? slideIndex = parseInt(slideHidden.value) : null
 
 // Activamos los elementos en ambos conjuntos de subarrays
-[subarrays, subarrayBtns].forEach(array => {
-    array.forEach(subarray => {
-        activarElemento(subarray, slideIndex);
+if(subarrays, subarrayBtns) {
+    [subarrays, subarrayBtns].forEach(array => {
+        array.forEach(subarray => {
+            activarElemento(subarray, slideIndex);
+        });
     });
-});
+}
 
 // ---------------- Event Add New Ot Row to OCI --------------------
 const btnAddNewRow = document.getElementById("btnAddNewRow")
@@ -1026,9 +1030,7 @@ function messageUpdateMasiveOt(arrayRowsSelected) {
     statusOt=='Activo' ? checked : checked = ''
 
     let bgColorStatus
-    statusOt=='Activo' ? bgColorStatus='background-color: #55dd5560;'
-                        : 
-                         bgColorStatus='background-color: #dd555560;'
+    statusOt=='Activo' ? bgColorStatus='background-color: #55dd5560;' : bgColorStatus='background-color: #dd555560;'
 
     const Toast = Swal.mixin({
         toast: true,
@@ -1791,11 +1793,13 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
 
     for (let n = 0; n < lastChild; n++) {
         for (let q = qInicialX; q < qFinalX; q++) {
-            const otHidden = document.getElementById(`resHidden${k}_${n}_${q}`).value;
-            const otRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${q}`).value;
-            
-            const otRevision = otRevisionHidden.split(",").pop();
-            const otInfo = changeValueFromArray(otHidden.split(",")).pop();
+            if(document.getElementById(`resHidden${k}_${n}_${q}`)) {
+                const otHidden = document.getElementById(`resHidden${k}_${n}_${q}`).value;
+                const otRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${q}`).value;
+                
+                var otRevision = otRevisionHidden.split(",").pop();
+                var otInfo = changeValueFromArray(otHidden.split(",")).pop();
+            }
 
             const [infoKey, revisionKey] = mapping[q] || [];
             if (infoKey && revisionKey) {

@@ -1,0 +1,23 @@
+<div class="row">
+    <div class="col-8 mt-3 mb-5 mx-auto">
+        <a href="/api/auth/login" style="text-decoration: none;">
+            <div class="card rounded-3 card_dashboard">
+                <div class="card-content">
+                    <div class="card-body">
+                        <div class="media d-flex mx-1">
+                            <div class="media-body text-center m-3">
+                                <h3 class="danger mb-3">Eyyy!!...<strong><%= username %></strong>, te has desloggeado!</h3>
+                                <h3 class="danger mb-3">Te extrañaremos <%= userInfo.name %></h3>
+                                <i class="fa-solid fa-computer-mouse"></i>
+                                <span>Haz clic aquí para regresar al Login</span>
+                            </div>
+                            <div class="align-self-center mx-auto">
+                                <i class="fa-regular fa-frown-o fa-4x" style="color: #24285b;" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>                
+</div>

@@ -6,26 +6,17 @@
 </head>
 
 <body>
-        <%- include('../partials/header/header'); %>
+    <%- include('../partials/header/header'); %>
 
-        <div class="container" style="padding-top: 70px;"></div>
+    <div class="container" style="padding-top: 70px;"></div>
     <br>
 
     <%- include('../partials/btnHeaderTop/btnHeaderTop-newMessage'); %>
 
     <!-- ------------ Mensaje ------------ -->
-    <section class="mx-auto align-items-start" style="width: 94%;">
-        <div class="row">
-            <div class="col-12 text-left">
-                <hr>
-                <h4><strong><%= userInfo.name %></strong>, comunicate con otros miembros del equipo</h4>
-                <p>Departamento IT Prodismo</p>
-                <hr>
-            </div>
-        </div>
-    </section>
-
-        <%- include('../partials/data/dataMsg'); %>
+    <%- include('../partials/sections/sectionNewMessage'); %>
+    
+    <%- include('../partials/data/dataMsg'); %>
     <br>
         <%- include('../partials/btnFooterBottom/btnFooterBottom-goUp'); %>
     <br>
@@ -33,16 +24,13 @@
     
         <%- include('../partials/forms/formularioChat'); %>
     <br>
-               
+
     <footer>
         <%- include('../partials/footer/footer'); %>
     </footer>
 
-<!--    scripts     -->
-<script type="text/javascript" src="/js/mensajes.js"></script>
-<script type="text/javascript" src="/js/clock.js"></script>
-<script type="text/javascript" src="/js/expiresSession.js"></script>
+    <!--    scripts     -->
+    <script type="text/javascript" src="/js/mensajes.js"></script>
 
 </body>
-
 </html>

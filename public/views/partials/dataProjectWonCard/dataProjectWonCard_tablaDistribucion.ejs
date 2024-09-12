@@ -1,81 +1,39 @@
 <!-- tabla OT Distribucion -->
-<table id="tablaOtDistribucion<%=k%>"
-    class="table-responsive align-middle col-5 border-end border-dark"
-    style="font-size: 10pt; width: 100%">
+<table id="tablaOtDistribucion<%=k%>" class="table-responsive align-middle col-5 border-end border-dark" style="font-size: 10pt; width: 100%">
     <thead class="align-middle" style="background-color: #aac">
         <tr>
-            <th colspan="4" class="text-center">
-                DISTRIBUCIÓN
-                <button
-                    id="posBtnAddDataOtDistribucion<%=k%>"
-                    type="button"
-                    name="btnOtDistribucion"
-                    class="btn btn-small btn-success m-1"
-                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
-                    title="Agregar/Modificar Datos"
-                    value="<%=k%>">
+            <th colspan="4" class="text-center">DISTRIBUCIÓN
+                <button id="posBtnAddDataOtDistribucion<%=k%>" type="button" name="btnOtDistribucion" class="btn btn-small btn-success m-1"
+                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
                     <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>                                                    
                 </button>
             </th>
         </tr>
         <tr>
-            <th id="colData0" style="width:25vw" scope="col-1"
-                class="text-center pb-1"> Mec. 2d Completo | Rev.
-            </th>
-            <th id="colData1" style="width:25vw" scope="col-1"
-                class="text-center pb-1"> Mec. 3d Prefinal | Rev.
-            </th>
-            <th id="colData3" style="width:25vw" scope="col-1"
-                class="text-center pb-1"> Mec. 3d Final | Rev.
-            </th>
-            <th id="colData4" style="width:25vw" scope="col-1"
-                class="text-center pb-1"> Banco-Armado | Rev.
-            </th>
+            <th id="colData0" style="width:25vw" scope="col-1" class="text-center pb-1">Mec. 2d Completo | Rev.</th>
+            <th id="colData1" style="width:25vw" scope="col-1" class="text-center pb-1">Mec. 3d Prefinal | Rev.</th>
+            <th id="colData3" style="width:25vw" scope="col-1" class="text-center pb-1">Mec. 3d Final | Rev.</th>
+            <th id="colData4" style="width:25vw" scope="col-1" class="text-center pb-1">Banco-Armado | Rev.</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
-        <% let arrResMecanizado2dCompleto = [];
-        let valueArrayResMecanizado2dCompleto = 0;
-        let arrResRevisionMecanizado2dCompleto = [];
-        let arrResCreadorMecanizado2dCompleto = [];
-        let arrResModificadorMecanizado2dCompleto = [];
-        let arrResFechaMecanizado2dCompleto = [];
-        let arrResFechaModMecanizado2dCompleto = [];
+        <% let arrResMecanizado2dCompleto = []; let valueArrayResMecanizado2dCompleto = 0; let arrResRevisionMecanizado2dCompleto = [];
+        let arrResCreadorMecanizado2dCompleto = []; let arrResModificadorMecanizado2dCompleto = []; let arrResFechaMecanizado2dCompleto = []; let arrResFechaModMecanizado2dCompleto = [];
 
-        let arrResMecanizado3dPrefinal = [];
-        let valueArrayResMecanizado3dPrefinal = 0;
-        let arrResRevisionMecanizado3dPrefinal = [];
-        let arrResCreadorMecanizado3dPrefinal = [];
-        let arrResModificadorMecanizado3dPrefinal = [];
-        let arrResFechaMecanizado3dPrefinal = [];
-        let arrResFechaModMecanizado3dPrefinal = [];
+        let arrResMecanizado3dPrefinal = []; let valueArrayResMecanizado3dPrefinal = 0; let arrResRevisionMecanizado3dPrefinal = [];
+        let arrResCreadorMecanizado3dPrefinal = []; let arrResModificadorMecanizado3dPrefinal = []; let arrResFechaMecanizado3dPrefinal = []; let arrResFechaModMecanizado3dPrefinal = [];
 
-        let arrResMecanizado3dFinal = [];
-        let valueArrayResMecanizado3dFinal = 0;
-        let arrResRevisionMecanizado3dFinal = [];
-        let arrResCreadorMecanizado3dFinal = [];
-        let arrResModificadorMecanizado3dFinal = [];
-        let arrResFechaMecanizado3dFinal = [];
-        let arrResFechaModMecanizado3dFinal = [];
+        let arrResMecanizado3dFinal = []; let valueArrayResMecanizado3dFinal = 0; let arrResRevisionMecanizado3dFinal = [];
+        let arrResCreadorMecanizado3dFinal = []; let arrResModificadorMecanizado3dFinal = []; let arrResFechaMecanizado3dFinal = []; let arrResFechaModMecanizado3dFinal = [];
 
-        let arrResBancoArmado = [];
-        let valueArrayResBancoArmado = 0;
-        let arrResRevisionBancoArmado = [];
-        let arrResCreadorBancoArmado = [];
-        let arrResModificadorBancoArmado = [];
-        let arrResFechaBancoArmado = [];
-        let arrResFechaModBancoArmado = [];
+        let arrResBancoArmado = []; let valueArrayResBancoArmado = 0; let arrResRevisionBancoArmado = [];
+        let arrResCreadorBancoArmado = []; let arrResModificadorBancoArmado = []; let arrResFechaBancoArmado = []; let arrResFechaModBancoArmado = [];
 
-        let anteriorDisabled = "disabled";
-        let siguienteDisabled = "disabled";
-        let resMecanizado2dCompleto = 'S/D';
-        let resRevisionMecanizado2dCompleto = 0;
-        let resMecanizado3dPrefinal = 'S/D';
-        let resRevisionMecanizado3dPrefinal = 0;
-        let resMecanizado3dFinal = 'S/D';
-        let resRevisionMecanizado3dFinal = 0;
-        let resBancoArmado = 'S/D';
-        let resRevisionBancoArmado = 0;
+        let anteriorDisabled = "disabled"; let siguienteDisabled = "disabled";
+        let resMecanizado2dCompleto = 'S/D'; let resRevisionMecanizado2dCompleto = 0;
+        let resMecanizado3dPrefinal = 'S/D'; let resRevisionMecanizado3dPrefinal = 0;
+        let resMecanizado3dFinal = 'S/D'; let resRevisionMecanizado3dFinal = 0;
+        let resBancoArmado = 'S/D'; let resRevisionBancoArmado = 0;
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject[n]
@@ -142,74 +100,46 @@
                                             valueArrayResMecanizado2dCompleto = 0
                                         } %>
                                         
-                                        <div id="btnAnteriorSiguienteMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>">
-                                            <button id="btnAnteriorMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>"
-                                                name="btnAnteriorMecanizado2dCompleto"
-                                                value="<%=k%>_<%=n%>_<%=o%>"
-                                                class="btn btn-light btn-sm me-2"
-                                                title="Ver anterior"
-                                                type="button"
+                                        <div id="btnAnteriorSiguienteMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>"
+                                                name="btnAnteriorMecanizado2dCompleto" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
                                                 style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                                 <%= anteriorDisabled %>
-                                                >
-                                                    <i class="fa-solid fa-arrow-left"></i>
+                                                ><i class="fa-solid fa-arrow-left"></i>
                                             </button>
-                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResMecanizado2dCompleto %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>" value="<%= valueArrayResMecanizado2dCompleto %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResRevisionMecanizado2dCompleto %>">
-                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResCreadorMecanizado2dCompleto %>">
-                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResModificadorMecanizado2dCompleto %>">
-                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResFechaMecanizado2dCompleto %>">
-                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResFechaModMecanizado2dCompleto %>">
-            
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResMecanizado2dCompleto %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResMecanizado2dCompleto %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionMecanizado2dCompleto %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorMecanizado2dCompleto %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorMecanizado2dCompleto %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaMecanizado2dCompleto %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModMecanizado2dCompleto %>">
+
                                             <% switch (resMecanizado2dCompleto) { 
                                                 case "prodismo": { %>
-                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
-                                                        <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado2dCompleto"
-                                                            class="badge text-dark my-2" style="cursor: help;">
-                                                            <%= resRevisionMecanizado2dCompleto %>
-                                                        </span>
+                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
                                                 <% break; }        
                                                 case "terceros": { %>
-                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
-                                                        <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado2dCompleto"
-                                                            class="badge text-dark my-2" style="cursor: help;">
-                                                            <%= resRevisionMecanizado2dCompleto %>
-                                                        </span>
+                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
                                                 <% break; }        
                                                 case "china": { %>
-                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
-                                                        <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado2dCompleto"
-                                                            class="badge text-dark my-2" style="cursor: help;">
-                                                            <%= resRevisionMecanizado2dCompleto %>
-                                                        </span>
+                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
                                                 <% break; }
                                                 case "noAplica": { %>
-                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
-                                                        <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado2dCompleto"
-                                                            class="badge text-dark my-2" style="cursor: help;">
-                                                            <%= resRevisionMecanizado2dCompleto %>
-                                                        </span>
+                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
                                                 <% break; }
                                                 default: { %>
-                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                        <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado2dCompleto"
-                                                            class="badge text-dark my-2" style="cursor: help;">
-                                                            <%= resRevisionMecanizado2dCompleto %>
-                                                        </span>
+                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                                 <% break; }
-                                            } %>
-            
-                                            <button id="btnSiguienteMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>"
-                                                name="btnSiguienteMecanizado2dCompleto"
-                                                value="<%=k%>_<%=n%>_<%=o%>"
-                                                class="btn btn-light btn-sm ms-2"
-                                                title="Ver siguiente"
-                                                type="button"
+                                                } %>
+                                                
+                                                <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionMecanizado2dCompleto" class="badge text-dark my-2" style="cursor: help;"><%= resRevisionMecanizado2dCompleto %></span>
+
+                                            <button id="btnSiguienteMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>"
+                                                name="btnSiguienteMecanizado2dCompleto" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
                                                 style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                                 <%= siguienteDisabled %>
-                                                >
-                                                    <i class="fa-solid fa-arrow-right"></i>
+                                                ><i class="fa-solid fa-arrow-right"></i>
                                             </button>
                                         </div>
                                     </td>
@@ -266,70 +196,43 @@
                                                     valueArrayResMecanizado3dPrefinal = 0
                                             } %>
                                         
-                                            <div id="btnAnteriorSiguienteMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>">
-                                                <button id="btnAnteriorMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>"
-                                                    name="btnAnteriorMecanizado3dPrefinal"
-                                                    value="<%=k%>_<%=n%>_<%=o%>"
-                                                    class="btn btn-light btn-sm me-2"
-                                                    title="Ver anterior"
-                                                    type="button"
+                                            <div id="btnAnteriorSiguienteMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                                <button id="btnAnteriorMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>"
+                                                    name="btnAnteriorMecanizado3dPrefinal" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                                     <%= anteriorDisabled %>
                                                     >
                                                         <i class="fa-solid fa-arrow-left"></i>
                                                 </button>
-                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResMecanizado3dPrefinal %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>" value="<%= valueArrayResMecanizado3dPrefinal %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResRevisionMecanizado3dPrefinal %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResCreadorMecanizado3dPrefinal %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResModificadorMecanizado3dPrefinal %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResFechaMecanizado3dPrefinal %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResFechaModMecanizado3dPrefinal %>">
-                
+                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResMecanizado3dPrefinal %>">
+                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResMecanizado3dPrefinal %>">
+                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionMecanizado3dPrefinal %>">
+                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorMecanizado3dPrefinal %>">
+                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorMecanizado3dPrefinal %>">
+                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaMecanizado3dPrefinal %>">
+                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModMecanizado3dPrefinal %>">
+
                                                 <% switch (resMecanizado3dPrefinal) { 
                                                     case "prodismo": { %>
-                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
-                                                            <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dPrefinal"
-                                                                class="badge text-dark my-2" style="cursor: help;">
-                                                                <%= resRevisionMecanizado3dPrefinal %>
-                                                            </span>
+                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
                                                     <% break; }
                                                     case "terceros": { %>
-                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
-                                                            <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dPrefinal"
-                                                                class="badge text-dark my-2" style="cursor: help;">
-                                                                <%= resRevisionMecanizado3dPrefinal %>
-                                                            </span>
+                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
                                                     <% break; }        
                                                     case "china": { %>
-                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
-                                                            <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dPrefinal"
-                                                                class="badge text-dark my-2" style="cursor: help;">
-                                                                <%= resRevisionMecanizado3dPrefinal %>
-                                                            </span>
+                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
                                                     <% break; }
                                                     case "noAplica": { %>
-                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
-                                                            <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dPrefinal"
-                                                                class="badge text-dark my-2" style="cursor: help;">
-                                                                <%= resRevisionMecanizado3dPrefinal %>
-                                                            </span>
+                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
                                                     <% break; }
                                                     default: { %>
-                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                            <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dPrefinal"
-                                                                class="badge text-dark my-2" style="cursor: help;">
-                                                                <%= resRevisionMecanizado3dPrefinal %>
-                                                            </span>
+                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                                     <% break; }
                                                 } %>
-                
-                                                <button id="btnSiguienteMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>"
-                                                    name="btnSiguienteMecanizado3dPrefinal"
-                                                    value="<%=k%>_<%=n%>_<%=o%>"
-                                                    class="btn btn-light btn-sm ms-2"
-                                                    title="Ver siguiente"
-                                                    type="button"
+                                                <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionMecanizado3dPrefinal" class="badge text-dark my-2" style="cursor: help;"><%= resRevisionMecanizado3dPrefinal %></span>
+                                                
+                                                <button id="btnSiguienteMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>"
+                                                    name="btnSiguienteMecanizado3dPrefinal" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                                     <%= siguienteDisabled %>
                                                     >
@@ -390,74 +293,45 @@
                                                     valueArrayResMecanizado3dFinal = 0
                                             } %>
                                         
-                                            <div id="btnAnteriorSiguienteMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>">
-                                                <button id="btnAnteriorMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>"
-                                                    name="btnAnteriorMecanizado3dFinal"
-                                                    value="<%=k%>_<%=n%>_<%=o%>"
-                                                    class="btn btn-light btn-sm me-2"
-                                                    title="Ver anterior"
-                                                    type="button"
+                                            <div id="btnAnteriorSiguienteMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                                <button id="btnAnteriorMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>"
+                                                    name="btnAnteriorMecanizado3dFinal" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                                     <%= anteriorDisabled %>
-                                                    >
-                                                        <i class="fa-solid fa-arrow-left"></i>
+                                                    ><i class="fa-solid fa-arrow-left"></i>
                                                 </button>
-                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResMecanizado3dFinal %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>" value="<%= valueArrayResMecanizado3dFinal %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResRevisionMecanizado3dFinal %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResCreadorMecanizado3dFinal %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResModificadorMecanizado3dFinal %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResFechaMecanizado3dFinal %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResFechaModMecanizado3dFinal %>">
-                
+                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResMecanizado3dFinal %>">
+                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResMecanizado3dFinal %>">
+                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionMecanizado3dFinal %>">
+                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorMecanizado3dFinal %>">
+                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorMecanizado3dFinal %>">
+                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaMecanizado3dFinal %>">
+                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModMecanizado3dFinal %>">
+
                                                 <% switch (resMecanizado3dFinal) { 
                                                     case "prodismo": { %>
-                                                            <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
-                                                            <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dFinal"
-                                                                class="badge text-dark my-2" style="cursor: help;">
-                                                                <%= resRevisionMecanizado3dFinal %>
-                                                            </span>
+                                                        <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
                                                     <% break; }
                                                     case "terceros": { %>
-                                                            <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
-                                                            <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dFinal"
-                                                                class="badge text-dark my-2" style="cursor: help;">
-                                                                <%= resRevisionMecanizado3dFinal %>
-                                                            </span>
+                                                        <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
                                                     <% break; }        
                                                     case "china": { %>
-                                                            <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
-                                                            <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dFinal"
-                                                                class="badge text-dark my-2" style="cursor: help;">
-                                                                <%= resRevisionMecanizado3dFinal %>
-                                                            </span>
+                                                        <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
                                                     <% break; }
                                                     case "noAplica": { %>
-                                                            <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
-                                                            <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dFinal"
-                                                                class="badge text-dark my-2" style="cursor: help;">
-                                                                <%= resRevisionMecanizado3dFinal %>
-                                                            </span>
+                                                        <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
                                                     <% break; }
                                                     default: { %>
-                                                            <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                            <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" name="resRevisionMecanizado3dFinal"
-                                                                class="badge text-dark my-2" style="cursor: help;">
-                                                                <%= resRevisionMecanizado3dFinal %>
-                                                            </span>
+                                                            <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                                     <% break; }
                                                 } %>
-                
-                                                <button id="btnSiguienteMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>"
-                                                    name="btnSiguienteMecanizado3dFinal"
-                                                    value="<%=k%>_<%=n%>_<%=o%>"
-                                                    class="btn btn-light btn-sm ms-2"
-                                                    title="Ver siguiente"
-                                                    type="button"
+                                                <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionMecanizado3dFinal" class="badge text-dark my-2" style="cursor: help;"><%= resRevisionMecanizado3dFinal %></span>
+
+                                                <button id="btnSiguienteMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>"
+                                                    name="btnSiguienteMecanizado3dFinal" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                                     <%= siguienteDisabled %>
-                                                    >
-                                                        <i class="fa-solid fa-arrow-right"></i>
+                                                    ><i class="fa-solid fa-arrow-right"></i>
                                                 </button>
                                             </div>
                                     </td>
@@ -514,74 +388,46 @@
                                             valueArrayResBancoArmado = 0
                                         } %>
                                         
-                                            <div id="btnAnteriorSiguienteBancoArmado<%=k%>_<%=n%>_<%=o%>">
-                                                <button id="btnAnteriorBancoArmado<%=k%>_<%=n%>_<%=o%>"
-                                                    name="btnAnteriorBancoArmado"
-                                                    value="<%=k%>_<%=n%>_<%=o%>"
-                                                    class="btn btn-light btn-sm me-2"
-                                                    title="Ver anterior"
-                                                    type="button"
+                                            <div id="btnAnteriorSiguienteBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                                <button id="btnAnteriorBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>"
+                                                    name="btnAnteriorBancoArmado" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                                     <%= anteriorDisabled %>
-                                                    >
-                                                        <i class="fa-solid fa-arrow-left"></i>
+                                                    ><i class="fa-solid fa-arrow-left"></i>
                                                 </button>
-                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResBancoArmado %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>" value="<%= valueArrayResBancoArmado %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResRevisionBancoArmado %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResCreadorBancoArmado %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResModificadorBancoArmado %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResFechaBancoArmado %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResFechaModBancoArmado %>">
-                
+                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResBancoArmado %>">
+                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResBancoArmado %>">
+                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionBancoArmado %>">
+                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorBancoArmado %>">
+                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorBancoArmado %>">
+                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaBancoArmado %>">
+                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModBancoArmado %>">
+
                                                 <% switch (resBancoArmado) { 
                                                     case "prodismo": { %>
-                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
-                                                            <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" name="resRevisionBancoArmado"
-                                                                class="badge text-dark my-2" style="cursor: help;">
-                                                                <%= resRevisionBancoArmado %>
-                                                            </span>
+                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
                                                     <% break; }
                                                     case "terceros": { %>
-                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
-                                                            <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" name="resRevisionBancoArmado"
-                                                                class="badge text-dark my-2" style="cursor: help;">
-                                                                <%= resRevisionBancoArmado %>
-                                                            </span>
+                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
                                                     <% break; }        
                                                     case "china": { %>
-                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
-                                                            <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" name="resRevisionBancoArmado"
-                                                                class="badge text-dark my-2" style="cursor: help;">
-                                                                <%= resRevisionBancoArmado %>
-                                                            </span>
+                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
                                                     <% break; }
                                                     case "noAplica": { %>
-                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
-                                                            <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" name="resRevisionBancoArmado"
-                                                                class="badge text-dark my-2" style="cursor: help;">
-                                                                <%= resRevisionBancoArmado %>
-                                                            </span>
+                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
                                                     <% break; }
                                                     default: { %>
-                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                            <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" name="resRevisionBancoArmado"
-                                                                class="badge text-dark my-2" style="cursor: help;">
-                                                                <%= resRevisionBancoArmado %>
-                                                            </span>
+                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                            
                                                     <% break; }
                                                 } %>
-                
-                                                <button id="btnSiguienteBancoArmado<%=k%>_<%=n%>_<%=o%>"
-                                                    name="btnSiguienteBancoArmado"
-                                                    value="<%=k%>_<%=n%>_<%=o%>"
-                                                    class="btn btn-light btn-sm ms-2"
-                                                    title="Ver siguiente"
-                                                    type="button"
+                                                <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionBancoArmado" class="badge text-dark my-2" style="cursor: help;"><%= resRevisionBancoArmado %></span>
+
+                                                <button id="btnSiguienteBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>"
+                                                    name="btnSiguienteBancoArmado" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                                     <%= siguienteDisabled %>
-                                                    >
-                                                        <i class="fa-solid fa-arrow-right"></i>
+                                                    ><i class="fa-solid fa-arrow-right"></i>
                                                 </button>
                                             </div>
                                     </td>
@@ -624,57 +470,28 @@
                                             arrResMecanizado2dCompleto.push(0)
                                             arrResRevisionMecanizado2dCompleto.push(0)
                                         } %>
-                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResMecanizado2dCompleto %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>" value="<%= valueArrayResMecanizado2dCompleto %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResRevisionMecanizado2dCompleto %>">
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResMecanizado2dCompleto %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResMecanizado2dCompleto %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionMecanizado2dCompleto %>">
                                         
                                         <% switch (resMecanizado2dCompleto) { 
                                             case "prodismo": { %>
-                                                    <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2" >
-                                                        PRODISMO
-                                                    </span>
-                                                    |
-                                                    <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>"class="badge text-dark my-2" >
-                                                        <%= resRevisionMecanizado2dCompleto %>
-                                                    </span>
+                                                <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
                                             <% break; }        
                                             case "terceros": { %>
-                                                    <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">
-                                                        TERCEROS
-                                                    </span>
-                                                    |
-                                                    <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                        <%= resRevisionMecanizado2dCompleto %>
-                                                    </span>
+                                                <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
                                             <% break; }        
                                             case "china": { %>
-                                                    <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-warning text-dark my-2">
-                                                        CHINA
-                                                    </span>
-                                                    |
-                                                    <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                        <%= resRevisionMecanizado2dCompleto %>
-                                                    </span>
+                                                <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
                                             <% break; }
                                             case "noAplica": { %>
-                                                    <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-info text-dark my-2">
-                                                        N/A
-                                                    </span>
-                                                    |
-                                                    <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                        <%= resRevisionMecanizado2dCompleto %>
-                                                    </span>
+                                                <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
                                             <% break; }
                                             default: { %>
-                                                    <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">
-                                                        S/D
-                                                    </span>
-                                                    |
-                                                    <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                        <%= resRevisionMecanizado2dCompleto %>
-                                                    </span>
+                                                <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                             <% break; }
                                         } %>
+                                        <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge text-dark my-2"><%= resRevisionMecanizado2dCompleto %></span>
                                     </td>
                                 <% } else if (q==1) { %>
                                     <!-- Mecanizado 3d Prefinal data Inactivo -->
@@ -712,57 +529,28 @@
                                             arrResRevisionMecanizado3dPrefinal.push(0)
                                         } %>
 
-                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResMecanizado3dPrefinal %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>" value="<%= valueArrayResMecanizado3dPrefinal %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResRevisionMecanizado3dPrefinal %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResMecanizado3dPrefinal %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResMecanizado3dPrefinal %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionMecanizado3dPrefinal %>">
 
                                         <% switch (resMecanizado3dPrefinal) { 
                                             case "prodismo": { %>
-                                                <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2">
-                                                    PRODISMO
-                                                </span>
-                                                |
-                                                <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionMecanizado3dPrefinal %>
-                                                </span>
+                                                <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
                                             <% break; }        
                                             case "terceros": { %>
-                                                    <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">
-                                                        TERCEROS
-                                                    </span>
-                                                    |
-                                                    <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                        <%= resRevisionMecanizado3dPrefinal %>
-                                                    </span>
+                                                <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
                                             <% break; }        
                                             case "china": { %>
-                                                    <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-warning text-dark my-2">
-                                                        CHINA
-                                                    </span>
-                                                    |
-                                                    <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                        <%= resRevisionMecanizado3dPrefinal %>
-                                                    </span>
+                                                <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
                                             <% break; }
                                             case "noAplica": { %>
-                                                    <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-info text-dark my-2">
-                                                        N/A
-                                                    </span>
-                                                    |
-                                                    <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                        <%= resRevisionMecanizado3dPrefinal %>
-                                                    </span>
+                                                <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
                                             <% break; }
                                             default: { %>
-                                                    <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">
-                                                        S/D
-                                                    </span>
-                                                    |
-                                                    <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                        <%= resRevisionMecanizado3dPrefinal %>
-                                                    </span>
+                                                <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                             <% break; }
-                                        } %>
+                                            } %>
+                                            <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge text-dark my-2"><%= resRevisionMecanizado3dPrefinal %></span>
                                     </td>
                                 <% } else if (q==2) { %>
                                     <!-- Mecanizado 3d Final data Inactivo -->
@@ -790,7 +578,6 @@
                                                         resRevisionMecanizado3dFinal = 0
                                                     }
                                                 }
-
                                                 resMecanizado3dFinal = otDistribucion[0].bancoArmado
                                         
                                         } else {
@@ -800,57 +587,28 @@
                                             arrResRevisionMecanizado3dFinal.push(0)
                                         } %>
 
-                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResMecanizado3dFinal %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>" value="<%= valueArrayResMecanizado3dFinal %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResRevisionMecanizado3dFinal %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResMecanizado3dFinal %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResMecanizado3dFinal %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionMecanizado3dFinal %>">
 
                                         <% switch (resMecanizado3dFinal) { 
                                             case "prodismo": { %>
-                                                <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2">
-                                                    PRODISMO
-                                                </span>
-                                                |
-                                                <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionMecanizado3dFinal %>
-                                                </span>
+                                                <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
                                             <% break; }        
                                             case "terceros": { %>
-                                                    <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">
-                                                        TERCEROS
-                                                    </span>
-                                                    |
-                                                    <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                        <%= resRevisionMecanizado3dFinal %>
-                                                    </span>
+                                                <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
                                             <% break; }        
                                             case "china": { %>
-                                                    <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-warning text-dark my-2">
-                                                        CHINA
-                                                    </span>
-                                                    |
-                                                    <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                        <%= resRevisionMecanizado3dFinal %>
-                                                    </span>
+                                                <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
                                             <% break; }
                                             case "noAplica": { %>
-                                                    <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-info text-dark my-2">
-                                                        N/A
-                                                    </span>
-                                                    |
-                                                    <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                        <%= resRevisionMecanizado3dFinal %>
-                                                    </span>
+                                                <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
                                             <% break; }
                                             default: { %>
-                                                    <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">
-                                                        S/D
-                                                    </span>
-                                                    |
-                                                    <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                        <%= resRevisionMecanizado3dFinal %>
-                                                    </span>
+                                                <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                             <% break; }
-                                        } %>
+                                            } %>
+                                            <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge text-dark my-2"><%= resRevisionMecanizado3dFinal %></span>
                                     </td>
                                 <% } else { %>
                                     <!-- Banco Armado data Inactivo -->
@@ -888,57 +646,28 @@
                                             arrResRevisionBancoArmado.push(0)
                                         } %>
 
-                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResBancoArmado %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>" value="<%= valueArrayResBancoArmado %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>" value="<%= arrResRevisionBancoArmado %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResBancoArmado %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResBancoArmado %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionBancoArmado %>">
 
                                         <% switch (resBancoArmado) { 
                                             case "prodismo": { %>
-                                                <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2">
-                                                    PRODISMO
-                                                </span>
-                                                |
-                                                <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionBancoArmado %>
-                                                </span>
+                                                <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
                                             <% break; }        
                                             case "terceros": { %>
-                                                    <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">
-                                                        TERCEROS
-                                                    </span>
-                                                    |
-                                                    <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                        <%= resRevisionBancoArmado %>
-                                                    </span>
+                                                <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
                                             <% break; }        
                                             case "china": { %>
-                                                    <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-warning text-dark my-2">
-                                                        CHINA
-                                                    </span>
-                                                    |
-                                                    <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                        <%= resRevisionBancoArmado %>
-                                                    </span>
+                                                <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
                                             <% break; }
                                             case "noAplica": { %>
-                                                    <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-info text-dark my-2">
-                                                        N/A
-                                                    </span>
-                                                    |
-                                                    <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                        <%= resRevisionBancoArmado %>
-                                                    </span>
+                                                <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
                                             <% break; }
                                             default: { %>
-                                                    <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">
-                                                        S/D
-                                                    </span>
-                                                    |
-                                                    <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>" class="badge text-dark my-2" >
-                                                        <%= resRevisionBancoArmado %>
-                                                    </span>
+                                                <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                             <% break; }
-                                        } %>
+                                            } %>
+                                            <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge text-dark my-2"><%= resRevisionBancoArmado %></span>
                                     </td>
                                 <% }
                             } %>

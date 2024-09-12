@@ -1,10 +1,8 @@
 <!-- tabla Programacion Primera -->
-<table id="tablaOtProgramacionPrimera<%=k%>" class="table-responsive align-middle col-5 border-end border-dark"
-    style="font-size: 10pt; width: 100%">
+<table id="tablaOtProgramacionPrimera<%=k%>" class="table-responsive align-middle col-5 border-end border-dark" style="font-size: 10pt; width: 100%">
     <thead class="align-middle" style="background-color: #d8d8eb">
         <tr>
-            <th colspan="3" class="text-center">
-                PROGRAMACIÓN (1° Parte)
+            <th colspan="3" class="text-center">PROGRAMACIÓN (1° Parte)
                 <button id="posBtnAddDataOtProgramacionPrimera<%=k%>" type="button" name="btnOtProgramacionPrimera" class="btn btn-small btn-success m-1 me-5" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
                     <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>                                                    
                 </button>
@@ -15,58 +13,28 @@
             </th>
         </tr>
         <tr>
-            <th id="colData0" style="width:33vw" scope="col-1"
-                class="text-center pb-1">RT | Estado | Rev.
-            </th>
-            <th id="colData1" style="width:33vw" scope="col-1"
-                class="text-center pb-1">Preparación GEO | Estado | Rev.
-            </th>
-            <th id="colData3" style="width:33vw" scope="col-1"
-                class="text-center pb-1">Programas 2d | Estado | Rev.
-            </th>
+            <th id="colData0" style="width:33vw" scope="col-1" class="text-center pb-1">RT | Estado | Rev.</th>
+            <th id="colData1" style="width:33vw" scope="col-1" class="text-center pb-1">Preparación GEO | Estado | Rev.</th>
+            <th id="colData3" style="width:33vw" scope="col-1" class="text-center pb-1">Programas 2d | Estado | Rev.</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
         
         <%
-        let arrResDatoRt = [];
-        let arrResRt = [];
-        let valueArrayResRt = 0;
-        let arrResRevisionRt = [];
-        let arrResCreadorRt = [];
-        let arrResModificadorRt = [];
-        let arrResFechaRt = [];
-        let arrResFechaModRt = [];
+        let arrResDatoRt = []; let arrResRt = []; let valueArrayResRt = 0; let arrResRevisionRt = [];
+        let arrResCreadorRt = []; let arrResModificadorRt = []; let arrResFechaRt = []; let arrResFechaModRt = [];
 
-        let arrResDatoPreparacionGeo = [];
-        let arrResPreparacionGeo = [];
-        let valueArrayResPreparacionGeo = 0;
-        let arrResRevisionPreparacionGeo = [];
-        let arrResCreadorPreparacionGeo = [];
-        let arrResModificadorPreparacionGeo = [];
-        let arrResFechaPreparacionGeo = [];
-        let arrResFechaModPreparacionGeo = [];
+        let arrResDatoPreparacionGeo = []; let arrResPreparacionGeo = []; let valueArrayResPreparacionGeo = 0; let arrResRevisionPreparacionGeo = [];
+        let arrResCreadorPreparacionGeo = []; let arrResModificadorPreparacionGeo = []; let arrResFechaPreparacionGeo = []; let arrResFechaModPreparacionGeo = [];
 
-        let arrResDatoPrograma2d = [];
-        let arrResPrograma2d = [];
-        let valueArrayResPrograma2d = 0;
-        let arrResRevisionPrograma2d = [];
-        let arrResCreadorPrograma2d = [];
-        let arrResModificadorPrograma2d = [];
-        let arrResFechaPrograma2d = [];
-        let arrResFechaModPrograma2d = [];
+        let arrResDatoPrograma2d = []; let arrResPrograma2d = []; let valueArrayResPrograma2d = 0; let arrResRevisionPrograma2d = [];
+        let arrResCreadorPrograma2d = []; let arrResModificadorPrograma2d = []; let arrResFechaPrograma2d = []; let arrResFechaModPrograma2d = [];
 
         let anteriorDisabled = "disabled";
         let siguienteDisabled = "disabled";
-        let resDatoRt = 'S/D';
-        let resEstadoRt = 'S/D';
-        let resRevisionRt = 0;
-        let resDatoPreparacionGeo = 'S/D';
-        let resEstadoPreparacionGeo = 'S/D';
-        let resRevisionPreparacionGeo = 0;
-        let resDatoPrograma2d = 'S/D';
-        let resEstadoPrograma2d = 'S/D';
-        let resRevisionPrograma2d = 0;
+        let resDatoRt = 'S/D'; let resEstadoRt = 'S/D'; let resRevisionRt = 0;
+        let resDatoPreparacionGeo = 'S/D'; let resEstadoPreparacionGeo = 'S/D'; let resRevisionPreparacionGeo = 0;
+        let resDatoPrograma2d = 'S/D'; let resEstadoPrograma2d = 'S/D'; let resRevisionPrograma2d = 0;
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject[n]
@@ -139,22 +107,22 @@
                                             valueArrayResRt = 0
                                         } %>
                                         
-                                            <div id="btnAnteriorSiguienteRt<%=k%>_<%=n%>_<%=q%>">
-                                                <button id="btnAnteriorRt<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorRt" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            <div id="btnAnteriorSiguienteRt<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                                <button id="btnAnteriorRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorRt" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                                     <%= anteriorDisabled %>
                                                     ><i class="fa-solid fa-arrow-left"></i>
                                                 </button>
-                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoRt %>">
-                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRt %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResRt %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionRt %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorRt %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorRt %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaRt %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModRt %>">
+                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoRt %>">
+                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRt %>">
+                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResRt %>">
+                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionRt %>">
+                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorRt %>">
+                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorRt %>">
+                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaRt %>">
+                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModRt %>">
 
-                                                <span id="resDatoRt<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoRt %></span> |
+                                                <span id="resDatoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoRt %></span> |
 
                                                 <% let icon; let iconColor;
                                                 switch (resEstadoRt) { 
@@ -172,19 +140,19 @@
                                                     break; }
                                                     default: {
                                                         icon = ""; iconColor = ""; %>
-                                                        <span id="resEstadoRt<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                        <span id="resEstadoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                                     <% break; }
                                                 }
 
                                                 if (icon) { %>
-                                                    <span id="resEstadoRt<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoRt%>">
+                                                    <span id="resEstadoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoRt%>">
                                                         <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
                                                     </span> |
                                                 <% } %>
 
-                                                <span id="resRevisionRt<%=k%>_<%=n%>_<%=q%>" name="resRevisionRt" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionRt %></span>
+                                                <span id="resRevisionRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionRt" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionRt %></span>
 
-                                                <button id="btnSiguienteRt<%=k%>_<%=n%>_<%=q%>" name="btnSiguienteRt" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                <button id="btnSiguienteRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteRt" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
                                                     ><i class="fa-solid fa-arrow-right"></i>
                                                 </button>
@@ -249,22 +217,22 @@
                                                     valueArrayResPreparacionGeo = 0
                                             } %>
                                         
-                                            <div id="btnAnteriorSiguientePreparacionGeo<%=k%>_<%=n%>_<%=q%>">
-                                                <button id="btnAnteriorPreparacionGeo<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorPreparacionGeo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            <div id="btnAnteriorSiguientePreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                                <button id="btnAnteriorPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorPreparacionGeo" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                                     <%= anteriorDisabled %>
                                                     ><i class="fa-solid fa-arrow-left"></i>
                                                 </button>
-                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoPreparacionGeo %>">
-                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPreparacionGeo %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPreparacionGeo %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPreparacionGeo %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorPreparacionGeo %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorPreparacionGeo %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaPreparacionGeo %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModPreparacionGeo %>">
+                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPreparacionGeo %>">
+                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResPreparacionGeo %>">
+                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPreparacionGeo %>">
+                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPreparacionGeo %>">
+                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorPreparacionGeo %>">
+                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorPreparacionGeo %>">
+                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaPreparacionGeo %>">
+                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModPreparacionGeo %>">
 
-                                                <span id="resDatoPreparacionGeo<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoPreparacionGeo %></span> |
+                                                <span id="resDatoPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoPreparacionGeo %></span> |
 
                                                 <% let icon; let iconColor;
                                                 switch (resEstadoPreparacionGeo) { 
@@ -282,19 +250,19 @@
                                                     break; }
                                                     default: {
                                                         icon = ""; iconColor = ""; %>
-                                                        <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                        <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                                     <% break; }
                                                 }
 
                                                 if (icon) { %>
-                                                    <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoPreparacionGeo%>">
+                                                    <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPreparacionGeo%>">
                                                         <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
                                                     </span> |
                                                 <% } %>
 
-                                                <span id="resRevisionPreparacionGeo<%=k%>_<%=n%>_<%=q%>" name="resRevisionPreparacionGeo" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionPreparacionGeo %></span>
+                                                <span id="resRevisionPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPreparacionGeo" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionPreparacionGeo %></span>
 
-                                                <button id="btnSiguientePreparacionGeo<%=k%>_<%=n%>_<%=q%>" name="btnSiguientePreparacionGeo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                <button id="btnSiguientePreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguientePreparacionGeo" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                                     <%= siguienteDisabled %>
                                                     ><i class="fa-solid fa-arrow-right"></i>
@@ -360,22 +328,22 @@
                                                     valueArrayResPrograma2d = 0
                                             } %>
 
-                                            <div id="btnAnteriorSiguientePrograma2d<%=k%>_<%=n%>_<%=q%>">
-                                                <button id="btnAnteriorPrograma2d<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorPrograma2d" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            <div id="btnAnteriorSiguientePrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                                <button id="btnAnteriorPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorPrograma2d" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                                     <%= anteriorDisabled %>
                                                     ><i class="fa-solid fa-arrow-left"></i>
                                                 </button>
-                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoPrograma2d %>">
-                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPrograma2d %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPrograma2d %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPrograma2d %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorPrograma2d %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorPrograma2d %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaPrograma2d %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModPrograma2d %>">
+                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPrograma2d %>">
+                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResPrograma2d %>">
+                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPrograma2d %>">
+                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPrograma2d %>">
+                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorPrograma2d %>">
+                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorPrograma2d %>">
+                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaPrograma2d %>">
+                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModPrograma2d %>">
 
-                                                <span id="resDatoPrograma2d<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoPrograma2d %></span> |
+                                                <span id="resDatoPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoPrograma2d %></span> |
 
                                                 <% let icon; let iconColor;
                                                 switch (resEstadoPrograma2d) { 
@@ -393,19 +361,19 @@
                                                     break; }
                                                     default: {
                                                         icon = ""; iconColor = ""; %>
-                                                        <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                        <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                                     <% break; }
                                                 }
 
                                                 if (icon) { %>
-                                                    <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoPrograma2d%>">
+                                                    <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma2d%>">
                                                         <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
                                                     </span> |
                                                 <% } %>
 
-                                                <span id="resRevisionPrograma2d<%=k%>_<%=n%>_<%=q%>" name="resRevisionPrograma2d" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionPrograma2d %></span>
+                                                <span id="resRevisionPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma2d" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionPrograma2d %></span>
 
-                                                <button id="btnSiguientePrograma2d<%=k%>_<%=n%>_<%=q%>" name="btnSiguientePrograma2d" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                <button id="btnSiguientePrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguientePrograma2d" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                                     <%= siguienteDisabled %>
                                                     ><i class="fa-solid fa-arrow-right"></i>
@@ -459,12 +427,12 @@
                                             arrResEstado.push(resEstadoRt)
                                             arrResRevisionRt.push(0)
                                         } %>
-                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoRt %>">
-                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRt %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResRt %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionRt %>">
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoRt %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRt %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResRt %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionRt %>">
                                         
-                                            <span id="resDatoRt<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoRt %></span> |
+                                            <span id="resDatoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoRt %></span> |
 
                                             <% let icon; let iconColor;
                                             switch (resEstadoRt) { 
@@ -482,17 +450,17 @@
                                                 break; }
                                                 default: {
                                                     icon = ""; iconColor = ""; %>
-                                                    <span id="resEstadoRt<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                    <span id="resEstadoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                                 <% break; }
                                             }
 
                                             if (icon) { %>
-                                                <span id="resEstadoRt<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoRt%>">
+                                                <span id="resEstadoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoRt%>">
                                                     <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
                                                 </span> |
                                             <% } %>
 
-                                            <span id="resRevisionRt<%=k%>_<%=n%>_<%=q%>" name="resRevisionRt" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionRt %></span>
+                                            <span id="resRevisionRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionRt" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionRt %></span>
                                     </td>
                                 <% } else if (q==5) { %>
                                     <!-- Preparacion GEO data Inactivo -->
@@ -536,12 +504,12 @@
                                             arrResRevisionPreparacionGeo.push(0)
                                         } %>
 
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoPreparacionGeo %>">
-                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPreparacionGeo %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPreparacionGeo %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPreparacionGeo %>">
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPreparacionGeo %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResPreparacionGeo %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPreparacionGeo %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPreparacionGeo %>">
 
-                                        <span id="resDatoPreparacionGeo<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoPreparacionGeo %></span> |
+                                        <span id="resDatoPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoPreparacionGeo %></span> |
                                         
                                         <% let icon; let iconColor;
                                                 switch (resEstadoPreparacionGeo) { 
@@ -559,17 +527,17 @@
                                                     break; }
                                                     default: {
                                                         icon = ""; iconColor = ""; %>
-                                                        <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                        <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                                     <% break; }
                                                 }
 
                                                 if (icon) { %>
-                                                    <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoPreparacionGeo%>">
+                                                    <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPreparacionGeo%>">
                                                         <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
                                                     </span> |
                                                 <% } %>
 
-                                                <span id="resRevisionPreparacionGeo<%=k%>_<%=n%>_<%=q%>" name="resRevisionPreparacionGeo" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionPreparacionGeo %></span>
+                                                <span id="resRevisionPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPreparacionGeo" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionPreparacionGeo %></span>
                                     </td>
                                 <% } else { %>
                                     <!-- Programa2d data Inactivo -->
@@ -612,12 +580,12 @@
                                             arrResPrograma2d.push(resEstadoPrograma2d)
                                             arrResRevisionPrograma2d.push(0)
                                         } %>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoPrograma2d %>">
-                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPrograma2d %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPrograma2d %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPrograma2d %>">
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPrograma2d %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResPrograma2d %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPrograma2d %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPrograma2d %>">
 
-                                        <span id="resDatoPrograma2d<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoPrograma2d %></span> |
+                                        <span id="resDatoPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoPrograma2d %></span> |
                                         
                                         <% let icon; let iconColor;
                                                 switch (resEstadoPrograma2d) { 
@@ -635,17 +603,17 @@
                                                     break; }
                                                     default: {
                                                         icon = ""; iconColor = ""; %>
-                                                        <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                        <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                                     <% break; }
                                                 }
 
                                                 if (icon) { %>
-                                                    <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoPrograma2d%>">
+                                                    <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma2d%>">
                                                         <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
                                                     </span> |
                                                 <% } %>
 
-                                                <span id="resRevisionPrograma2d<%=k%>_<%=n%>_<%=q%>" name="resRevisionPrograma2d" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionPrograma2d %></span>
+                                                <span id="resRevisionPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma2d" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionPrograma2d %></span>
                                     </td>
                                 <% }
                             } %>

@@ -9,28 +9,28 @@
         <%- include('../partials/header/header'); %>
     <div class="container" style="padding-top: 70px;"></div>
     <br>
-        <% if (userInfo.superAdmin) { %>
-            <%- include('../partials/mainCharts/adminChartDemo'); %>
-        <% } else if (userInfo.admin && !userInfo.superAdmin) { %>
-            <%- include('../partials/mainCharts/adminChartDemo'); %>    
-        <% } else { %>
-            <%- include('../partials/mainCharts/userChartDemo'); %>
-        <% } %>
+    <% if (userInfo.superAdmin) { %>
+        <%- include('../partials/mainCharts/adminChartDemo'); %>
+    <% } else if (userInfo.admin && !userInfo.superAdmin) { %>
+        <%- include('../partials/mainCharts/adminChartDemo'); %>    
+    <% } else { %>
+        <%- include('../partials/mainCharts/userChartDemo'); %>
+    <% } %>
     
-        <div class="d-block mx-auto mt-1 text-center bg-primary-light">    
-            <%- include('../partials/forms/formularioBuscarCliente'); %>
-            <%- include('../partials/data/dataClientSearch'); %>
-        </div>
-        <!-- ------------ Lista de Clientes ------------ -->
-        <%- include('../partials/sections/sectionClientList'); %>
-        
-        <div class="d-block mx-auto mb-3 text-center w-75">
-            <%- include('../partials/data/dataClientList'); %>
-        </div>
-        
-        <br>
-            <%- include('../partials/btnFooterBottom/btnFooterBottom-goUp'); %>
-        <br>
+    <div class="d-block mx-auto mt-1 text-center bg-primary-light">    
+        <%- include('../partials/forms/formularioBuscarCliente'); %>
+        <%- include('../partials/data/dataClientSearch'); %>
+    </div>
+    <!-- ------------ Lista de Clientes ------------ -->
+    <%- include('../partials/sections/sectionClientList'); %>
+    
+    <div class="d-block mx-auto mb-3 text-center w-75">
+        <%- include('../partials/data/dataClientList'); %>
+    </div>
+    
+    <br>
+        <%- include('../partials/btnFooterBottom/btnFooterBottom-goUp'); %>
+    <br>
         
     <footer>
         <%- include('../partials/footer/footer'); %>
@@ -39,7 +39,6 @@
     <!--    scripts     -->
     <script type="text/javascript" src="/js/index.js"></script>
     <script type="text/javascript" src="/js/search.js"></script>
-    <script type="text/javascript" src="/js/clock.js"></script>
-    <script type="text/javascript" src="/js/expiresSession.js"></script>
+
 </body>
 </html>
