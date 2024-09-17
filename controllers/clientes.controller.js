@@ -18,17 +18,17 @@ const data = require('../utils/variablesInicializator.js')
 const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
 
 const {catchError400,
-       catchError400_1,
-       catchError400_2,
-       catchError400_3,
-       catchError400_4,
-       catchError403,
-       catchError401,
-       catchError401_1,
-       catchError401_2,
-       catchError401_3,
-       catchError401_4,
-       catchError500
+    catchError400_1,
+    catchError400_2,
+    catchError400_3,
+    catchError400_4,
+    catchError403,
+    catchError401,
+    catchError401_1,
+    catchError401_2,
+    catchError401_3,
+    catchError401_4,
+    catchError500
 } = require('../utils/catchErrors.js')
 
 class ClientsController {
@@ -45,10 +45,7 @@ class ClientsController {
         
         try {
             const clientes = await this.clients.getAllClients()
-            
-            if (!clientes) {
-                catchError401(req, res, next)
-            }
+            !clientes ? catchError401(req, res, next) : null
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('addNewClients', {
@@ -71,18 +68,12 @@ class ClientsController {
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
 
-        
         try {
             const cliente = await this.clients.getClientById(id)
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
 
             const proyectos = await this.projects.getProjectsByClientId(id)
-            
-            if (!proyectos) {
-                catchError400(req, res, next)
-            }
+            !proyectos ? catchError400(req, res, next) : null
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('clientProjectsDetails', {
@@ -108,14 +99,10 @@ class ClientsController {
 
         try {
             const cliente = await this.clients.getClientById(id)
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
             
             const proyectos = await this.projects.getProjectsByClientId(id)
-            if (!proyectos) {
-                catchError400(req, res, next)
-            }
+            !proyectos ? catchError400(req, res, next) : null
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('clientProjectsDetails', {
@@ -141,14 +128,10 @@ class ClientsController {
 
         try {
             const cliente = await this.clients.getClientById(id)
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
 
             const proyectos = await this.projects.getProjectsByClientId(id)
-            if (!proyectos) {
-                catchError401_1(req, res, next)
-            }
+            !proyectos ? catchError401_1(req, res, next) : null
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('clientDetails', {
@@ -176,9 +159,7 @@ class ClientsController {
             try {
                 const userId = userInfo.id
                 const userCreator = await this.users.getUserById(userId)
-                if (!userCreator) {
-                    catchError401_3(req, res, next)
-                }
+                !userCreator.visible ? catchError401_3(req, res, next) : null
             
                 const clientNameInput = req.body.name.replace(/[!@#$%^*]/g, "");
                 const codeInput = req.body.code
@@ -188,12 +169,12 @@ class ClientsController {
                 }
 
                 const newClientValid = {
-                    creator: dataUserCreator(userCreator),
                     name: clientNameInput,
                     status: req.body.statusClient === 'on' ? Boolean(true) : Boolean(false) || Boolean(true),
                     code: codeInput,
                     project: 0,
                     logo: req.body.imageTextLogoClient || imageNotFound,
+                    creator: dataUserCreator(userCreator),
                     timestamp: now,
                     modificator: dataUserModificatorEmpty(),
                     modifiedOn: '',
@@ -206,9 +187,7 @@ class ClientsController {
                 }
 
                 const cliente = await this.clients.addClient(newClientValid)
-                if (!cliente) {
-                    catchError401(req, res, next)
-                }
+                !cliente ? catchError401(req, res, next) : null
 
                 const csrfToken = csrfTokens.create(req.csrfSecret);
                 return res.render('addNewClients', {
@@ -235,15 +214,11 @@ class ClientsController {
         uploadMulterSingleLogoUpdate(req, res, async (err) => {
             try {
                 const clienteToModify = await this.clients.getClientById(id)
-                if (!clienteToModify) {
-                    catchError401(req, res, next)
-                }
+                !clienteToModify ? catchError401(req, res, next) : null
 
                 const userId = userInfo.id
                 const userCreator = await this.users.getUserById(userId)
-                if (!userCreator) {
-                    catchError401_3(req, res, next)
-                }
+                !userCreator ? catchError401_3(req, res, next) : null
 
                 if (req.file) {
                     await uploadToGCS(req, res, next)
@@ -264,16 +239,12 @@ class ClientsController {
                 let clientesRestantes = eliminarCliente(otherClients, nameValid)
                 
                 const clientesNames = clientesRestantes.map(cliente => cliente.name)
-                if (clientesNames.includes(clienteToModify.name)) {
-                    catchError400_4(req, res, next)
-                }
+                clientesNames.includes(clienteToModify.name) ? catchError400_4(req, res, next) : null
                 
                 const codeInput = req.body.code.replace(/[!@#$%^&*]/g, "")
                 const clientesCodes = clientesRestantes.map(cliente => cliente.code)
                 
-                if (clientesCodes.includes(clienteToModify.code)) {
-                    catchError400_4(req, res, next)
-                }
+                clientesCodes.includes(clienteToModify.code) ? catchError400_4(req, res, next) : null
                 
                 const updatedCliente = {
                     name: req.body.name,
@@ -290,10 +261,7 @@ class ClientsController {
                         updatedCliente, 
                         dataUserModificatorNotEmpty(userCreator)
                     )
-
-                    if(!clientUpdated) {
-                        catchError401(req, res, next)
-                    }
+                    !clientUpdated ? catchError401(req, res, next) : null
 
                     const csrfToken = csrfTokens.create(req.csrfSecret);
                     return res.render('addNewClients', {
@@ -323,24 +291,18 @@ class ClientsController {
 
         const userId = userInfo.id
         const userCreator = await this.users.getUserById(userId)
-        if (!userCreator) {
-            catchError401_3(req, res, next)
-        }
+        !userCreator ? catchError401_3(req, res, next) : null 
 
         try {
             const proyectos = await this.projects.getProjectsByClientId(id)
             const clientToUpdateProjectQty = await this.clients.getClientById(id)
-            if (!proyectos || !clientToUpdateProjectQty) {
-                catchError401_1(req, res, next)
-            }
+            !proyectos || !clientToUpdateProjectQty ? catchError401_1(req, res, next) : null
 
             const cliente = await this.clients.updateClientProjectsQty(
                 id, 
                 clientToUpdateProjectQty, 
                 dataUserModificatorNotEmpty(userCreator))
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
         
             const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('clientProjectsDetails', {

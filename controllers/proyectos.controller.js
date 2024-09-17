@@ -176,7 +176,6 @@ class ProjectsController {
     }
 
     createNewProject = async (req, res, next) => {
-       
         uploadMulterMultiImages(req, res, async (err) => {
             try {
                 let username = res.locals.username

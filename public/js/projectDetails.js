@@ -141,8 +141,7 @@ function extractNumbers(str) {
                                                     </div>
                                                     <div class="col-3">
                                                         <label for="ociDescription" id="labelOciDescription" class="d-flex text-start">Descripción OCI</label>
-                                                        <textarea type="text" name="ociDescription" id="ociDescription" rows="3"
-                                                        maxlength="100" class="form-control" placeholder="Descripcion OCI" required></textarea>
+                                                        <textarea type="text" name="ociDescription" id="ociDescription" rows="3" maxlength="100" class="form-control" placeholder="Descripcion OCI" required></textarea>
                                                     </div>
                                                     <div class="col-2">
                                                         <label for="ociAlias" id="labelOciAlias" class="d-flex text-start">Alias OCI</label>
@@ -256,7 +255,7 @@ function extractNumbers(str) {
                             field.classList.add('is-valid')
                         }
                     })
-console.log('isEmpty', isEmpty)
+
                     if (isEmpty) {
                         // event.preventDefault()
                         document.getElementById('mensajeError').style.display = 'flex'
@@ -416,9 +415,7 @@ console.log('isEmpty', isEmpty)
                         </div>
                         <div class="col-3">
                             <label for="ociDescription${i}" id="labelOciDescription${i}">Descripción OCI</label>
-                            <textarea type="text" name="ociDescription${i}" id="ociDescription${i}" rows="3"
-                                maxlength="100" class="form-control" placeholder="Descripción OCI" required>
-                            </textarea>
+                            <textarea type="text" name="ociDescription${i}" id="ociDescription${i}" rows="3" maxlength="100" class="form-control" placeholder="Descripción OCI" required></textarea>
                         </div>
                         <div class="col-2">
                             <label for="ociAlias${i}" id="labelOciAlias${i}">Alias OCI</label>
@@ -1121,7 +1118,6 @@ function messageChangeProjectLevel(projectName, levelProject, k, idProject) {
     if(projectName) {
 
         if(levelProject=='ganado') {
-                          
             var html = `<form id="formChangeLevelProject${k}_0" action="/api/proyectos/updateLevelProject/${idProject}" method="post">
                             <fieldset>
                                 El nivel del proyecto <b>${projectName}</b> se modificará a
@@ -1153,11 +1149,9 @@ function messageChangeProjectLevel(projectName, levelProject, k, idProject) {
                                     </div>
                                 </div>
                             </fieldset>
-                        </form>
-                        `
+                        </form>`
 
         } else {
-            
             var html = `<form id="formChangeLevelProject${k}_0" action="/api/proyectos/updateLevelProject/${idProject}" method="post">
                             <fieldset>
                                 El nivel del proyecto <b>${projectName}</b> se modificará a
@@ -1805,9 +1799,7 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
                     placeholder="Número OCI" value="${lastOciNumber+1}" required>
                 </div>
                 <div class="col-3 my-1 align-self-middle">
-                    <textarea name="ociDescription0" id="ociDescription0" class="form-control" rows="3"
-                        maxlength="100" placeholder="Descripcion OCI" required>
-                    </textarea>
+                    <textarea name="ociDescription0" id="ociDescription0" class="form-control" rows="3" maxlength="100" placeholder="Descripcion OCI" required></textarea>
                 </div>
                 <div class="col-2 my-1 align-self-middle">
                     <input type="text" name="ociAlias0" id="ociAlias0" class="form-control"
@@ -2098,15 +2090,13 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
             const originalDiv = (
                 `<div class="row text-start">
                     <strong>#${i+1}</strong>
-                 </div>   
+                </div>   
                     <div class="col-2 my-1 align-self-middle">
                         <input type="number" name="ociNumber${i}" id="ociNumber${i}" class="form-control"
                         min="0" max="9999" placeholder="Número OCI" value="${ociNumberValue+1}" required>
                     </div>
                     <div class="col-3 my-1 align-self-middle">
-                        <textarea type="text" name="ociDescription${i}" id="ociDescription${i}" rows="3"
-                            maxlength="100" class="form-control" placeholder="Descripción OCI" required>
-                        </textarea>
+                        <textarea type="text" name="ociDescription${i}" id="ociDescription${i}" rows="3" maxlength="100" class="form-control" placeholder="Descripción OCI" required></textarea>
                     </div>
                     <div class="col-2 my-1 align-self-middle">
                         <input type="text" name="ociAlias${i}" id="ociAlias${i}"

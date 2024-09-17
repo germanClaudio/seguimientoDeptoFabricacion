@@ -484,8 +484,7 @@ const renderSearchedUsers = (arrUsersSearch) => {
                         </div>
                     </div>
                 </div>
-            </div>`
-        )
+            </div>`)
         
         const showUser = document.getElementById('showUsersSearch')
         showUser ? showUser.innerHTML = htmlSearchUserNull : null
@@ -514,13 +513,12 @@ const renderSearchedUsers = (arrUsersSearch) => {
                         </div>
                     </div>
                 </div>
-            </div>`
-        )
-        
+            </div>`)
         document.getElementById('showUsersSearch').innerHTML = htmlSearchUsersNull
 
     } else {
         const htmlSearchUsers = arrUsersSearch.map((element) => {
+            console.log('element', element)
             let disabled = 'disabled'
             let green = 'success'
             let red = 'danger'
@@ -545,9 +543,9 @@ const renderSearchedUsers = (arrUsersSearch) => {
 
             const areaMap = {
                 'ingenieria': { show: 'Ingeniería', option: cian },
-                'fabricacion': { show: 'Simulación', option: yellow },
-                'administracion': { show: grey, option: yellow },
-                'proyectos': { show: black, option: yellow },
+                'fabricacion': { show: 'Fabricación', option: yellow },
+                'administracion': { show: 'Administración', option: yellow },
+                'proyectos': { show: 'Proyectos', option: yellow },
                 'default': { show: 'Todas', option: green }
             };
 
@@ -618,5 +616,134 @@ const renderSearchedUsers = (arrUsersSearch) => {
         }).join(" ");
 
         document.getElementById('showUsersSearch').innerHTML = htmlSearchUsers
+    }
+}
+
+//*******************************************************/
+// -------------- Show Searched Tools ----------------
+socket.on('searchToolsAll', async (arrToolSearch) => {
+    renderSearchedTools (await arrToolSearch)
+})
+
+const searchTools = () => {
+    const queryTool = document.getElementById('queryTools').value
+    let statusTool = document.getElementById('statusTool').value
+
+    statusTool != 'todas' ?
+        statusTool === 'activas' ? statusTool = true : statusTool = false
+    : null
+        
+    socket.emit('searchMaquinaAll', {
+        queryTool,
+        statusTool
+    })
+    return false
+}
+
+const renderSearchedTools = (arrToolSearch) => {
+    if(arrToolSearch.length === 0) {
+        const htmlSearchToolNull = (
+            `<div class="col mx-auto">
+                <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4 my-auto px-1">
+                            <img src="${clientNotFound}"
+                                style="max-width=170vw; object-fit: contain;"
+                                class="img-fluid rounded p-1"
+                                alt="Maquina no encontrada">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Maquina no encontrada</h5>
+                                <p class="card-text">Lo siento, no pudimos encontrar la Maquina</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Pruebe nuevamente con un nombre o código diferente.
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`)
+        
+        const showTool = document.getElementById('showToolsSearch')
+        showTool ? showTool.innerHTML = htmlSearchToolNull : null
+
+    } else if (arrToolSearch.length === 1 && arrToolSearch[0] === 'vacio') {     
+        const htmlSearchToolsNull = (
+            `<div class="col mx-auto">
+                <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4 my-auto px-1">
+                            <img src="${allClientsFound}"
+                                style="max-width=170vw; object-fit: contain;"
+                                class="img-fluid rounded p-1"
+                                alt="Todas las Maquinas">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Todas las Maquinas</h5>
+                                <p class="card-text">Todas las Maquinas están listadas en la tabla de abajo</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Pruebe nuevamente con un nombre o código diferente o haga scroll hacia abajo
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+        )
+        document.getElementById('showToolsSearch').innerHTML = htmlSearchToolsNull
+
+    } else {
+        const htmlSearchTools = arrToolSearch.map((element) => {
+            let disabled = 'disabled'
+            let green = 'success'
+            let red = 'danger'
+
+            const active = 'Activo'
+            const inactive = 'Mantenimiento'
+            
+            let optionStatus = element.status ? green : red
+            let showStatus = element.status ? active : inactive
+            
+            element.visible ? disabled = '' : null
+
+            return (`
+                <div class="col mx-auto">
+                    <div class="card mx-auto rounded-2 shadow-lg" style="max-width: 540px;">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 text-center">
+                                <img src="${element.imageTool}"
+                                    style="max-width=160vw; object-fit: contain;"
+                                    class="img-fluid rounded p-3 mx-auto"
+                                    alt="Maquina">
+                            </div>
+                            <div class="col-md-8 border-start">
+                                <div class="card-body">
+                                    <h6 class="card-title"><strong>${element.designation}</strong></h6>
+                                    <h7 class="card-title">Código #<strong>${element.code}</strong></h7><br>
+                                    Status: <span class="badge rounded-pill bg-${optionStatus} my-1">${showStatus}</span><br>
+                                </div>
+                                <div class="card-footer px-2">
+                                    <div class="row">
+                                        <div class="col m-auto">
+                                            <a class="btn text-light small" ${disabled} type="submit" href="/api/maquinas/${element._id}"
+                                                style="background-color: #272787; font-size: .85rem; width: 15em;">
+                                                    <i class="fa-solid fa-info-circle"></i> Info Maquina
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+            )
+        }).join(" ");
+        document.getElementById('showToolsSearch').innerHTML = htmlSearchTools
     }
 }

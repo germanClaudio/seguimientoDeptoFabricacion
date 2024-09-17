@@ -22,25 +22,25 @@ function message(name, lastName, username) {
     confirmButtonText: 'Si, modificalo! <i class="fa-solid fa-user-pen"></i>',
     cancelButtonText: 'Cancelar <i class="fa-solid fa-user-shield"></i>'
 
-  }).then((result) => {
-    if (result.isConfirmed) {
-        document.getElementById("formUpdateUser").submit()
-        setTimeout(() => {
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById("formUpdateUser").submit()
+            setTimeout(() => {
+                Swal.fire(
+                    `${username} modificado!`,
+                    `El usuario ${name} ${lastName} ha sido modificado exitosamente.`,
+                    'success'
+                )
+            }, 1000)
+        } else {
             Swal.fire(
-                `${username} modificado!`,
-                `El usuario ${name} ${lastName} ha sido modificado exitosamente.`,
-                'success'
+                `${username} no modificado!`,
+                `El usuario ${name} ${lastName} no ha sido modificado.`,
+                'info'
             )
-        }, 1000)
-    } else {
-        Swal.fire(
-            `${username} no modificado!`,
-            `El usuario ${name} ${lastName} no ha sido modificado.`,
-            'info'
-          )
-        return false
-    }
-  })
+            return false
+        }
+    })
 }
 
 const btnUpdate = document.getElementById('btnUpdateUser')
@@ -234,7 +234,6 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
     })
 
     let inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
-
     inpuntDeNumeros.forEach(function(input) {
         input.addEventListener('input', function(event) {
             // Obtener el valor actual del input
@@ -255,6 +254,20 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
                 input.classList.remove("border", "border-danger", "border-2");
             }
         })
+    })
+
+    var inputsDeCheckbox = document.querySelectorAll('input[type="checkbox"]')
+    inputsDeCheckbox.forEach(function(input) {
+        if (input) {
+            input.addEventListener('input', (event) => {
+                event.preventDefault()
+                input.classList.add("border-primary")
+                input.classList.add("border-2")
+                input.classList.add("shadow")
+                btnUpdateTool.removeAttribute('disabled')
+                btnUpdateTool.style = "cursor: pointer;"
+            })
+        }
     })
 
     const inputFile = document.getElementById('drop-areaAvatarUser')

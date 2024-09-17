@@ -14,13 +14,13 @@ async function uploadToGCS(req, res, next) {
 
     if (csrfTokens.verify(req.csrfSecret, req.cookies.csrfSecret)) {
         const err = new Error ('Invalid CSRF token')
-        err.dirNumber = 403
+        err.statusCode = 403
         return next(err)
     }
     
     if (!req.file) {
         const err = new Error('No se agregó ningún archivo válido')
-        err.dirNumber = 400
+        err.statusCode = 400
         return next(err)
     }
 
@@ -35,18 +35,21 @@ async function uploadToGCS(req, res, next) {
     let subFolderName = ''
     let newItemOrUpdate = ''
 
-    if (req.body.imageTextAvatarUser ) {
-        newItemOrUpdate = req.body.imageTextAvatarUser
-        subFolderName = 'AvatarUsersImages';
-    } else if (req.body.imageTextLogoUpdate) {
-        newItemOrUpdate = req.body.imageTextLogoUpdate
-        subFolderName = 'LogoClientImages';
-    } else if (req.body.imageProjectFileName) {
-        newItemOrUpdate = req.body.imageProjectFileName
-        subFolderName = 'projectImages';
-    } else if (req.body.imageOciFileName) {
-        newItemOrUpdate = req.body.imageOciFileName
-        subFolderName = 'projectImages';
+    const mapping = {
+        imageTextAvatarUser: 'AvatarUsersImages',
+        imageTextLogoUpdate: 'LogoClientImages',
+        imageProjectFileName: 'projectImages',
+        imageOciFileName: 'projectImages',
+        imageTextImageTool: 'ToolsImages'
+    };
+    
+    // Iterar sobre el objeto `mapping` para encontrar la coincidencia
+    for (const [key, folder] of Object.entries(mapping)) {
+        if (req.body[key]) {
+            newItemOrUpdate = req.body[key];
+            subFolderName = folder;
+            break; // Salir del bucle una vez que se encuentra la coincidencia
+        }
     }
 
     let originalname = (newItemOrUpdate).match(/[^\/]+$/)[0]
@@ -81,10 +84,11 @@ async function uploadToGCS(req, res, next) {
     });
 
     blobStream.on('error', (err) => {
-        err.dirNumber = 500
+        console.error('Error uploading to Google Cloud:', err);
+        err.statusCode = 500
         return next(err)
     });
-            
+
     blobStream.on('finish', () => {
         req.file.cloudStorageObject = `${originalname}`;
         req.file.cloudStoragePublicUrl = `https://storage.googleapis.com/${bucket.name}/${folderName}/${subFolderName}/${blob.name}`;
@@ -107,13 +111,13 @@ async function uploadToGCSingleFile(req, res, next) {
         
     if (csrfTokens.verify(req.csrfSecret, req.cookies.csrfSecret)) {
         const err = new Error ('Invalid CSRF token')
-        err.dirNumber = 403
+        err.statusCode = 403
         return next(err)
     }
 
     if (!req.files) {
         const err = new Error('Error en carga de Imagen o Imagenes a Google Cloud Storage')
-        err.dirNumber = 400
+        err.statusCode = 400
         return next(err)
     }
 
@@ -162,7 +166,7 @@ async function uploadToGCSingleFile(req, res, next) {
         });
     
         blobStream.on('error', (err) => {
-            err.dirNumber = 500
+            err.statusCode = 500
             return next(err)
         });
                 

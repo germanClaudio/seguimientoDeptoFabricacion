@@ -93,7 +93,6 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
         if(id){
             try {
                 const client = await Clientes.findById({_id: id })
-                // console.info('Cliente encontrado: ',client)
                 return client
                 
             } catch (error) {
@@ -101,31 +100,25 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
             }
             
         } else {
-            // try {
-                // const clients = await Clientes.find()
-                return false
-                
-            // } catch (error) {
-            //     console.error("Error MongoDB selectClientById: ",error)
-            // }
+            return false
         }
     }
 
     async getClientProjectsById(id) {
         if(id){
             try {
-                const client = await Clientes.findById({
-                    _id: id  //client.0._id
-                })
-                // console.info('Cliente encontrado: ',client)
+                const client = await Clientes.findById({_id: id})
                 return client
+
             } catch (error) {
                 console.error("Error MongoDB getClientProjectsById: ",error)
             }
+
         } else {
             try {
                 const clients = await Clientes.find()
                 return clients
+
             } catch (error) {
                 console.error("Error MongoDB getClientProjectsById: ",error)
             }
@@ -152,20 +145,14 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
     }
 
     async getExistingClient(newClient) {
-        
         if (newClient) {
             const client = await Clientes.findOne(
                 { $or: [ {name: `${newClient.name}`},
-                         {code: `${newClient.code}`}
-                       ]
+                        {code: `${newClient.code}`}
+                        ]
                 });
 
-            if (client) {
-                return client
-                
-            } else {
-                return false
-            }
+            client ? client : false
 
         } else {
             return new Error (`No se pudo encontrar al Cliente!`)
@@ -194,7 +181,6 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
     }
 
     async updateClient(id, client, userModificator) {
-        
         if (client) {
             try {
                 const itemMongoDB = await Clientes.findById({_id: id})
@@ -228,14 +214,13 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                 } else {
                     return new Error(`Cliente no existe con este id: ${itemUpdated._id}`)
                 }
-                                    
+
             } catch (error) {
                 console.error("Error MongoDB updateClient: ",error)
                 return new Error (`No se pudo actualizar el Cliente!`)
             }
 
         } else {
-            // console.info('El Cliente no existe! ', itemMongoDB)
             return new Error (`No se pudo actualizar el Cliente!`)
         }
     }
@@ -417,8 +402,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
 
         try {
             const resultados = await switchFilterClients(filter, Clientes, nameAndCodeQuery)
-
-            if(resultados) {
+            if (resultados) {
                 return resultados
             } else {
                 return false

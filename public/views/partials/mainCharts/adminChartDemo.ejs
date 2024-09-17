@@ -165,23 +165,29 @@
                 </div>
             </a>
         </div>
-        <!-- Conversion Rate -->
+        <!-- Maquinas -->
         <div class="col-xl-3 col-sm-6 col-12">
-            <div class="card rounded-3 card_dashboard">
-                <div class="card-content">
-                    <div class="card-body">
-                        <div class="media d-flex mx-2">
-                            <div class="media-body text-left">
-                                <h3 class="warning">??.? %</h3>
-                                <span>Conversion Rate</span>
-                            </div>
-                            <div class="align-self-center ms-auto">
-                                <i class="icon-pie-chart warning font-large-2 float-right"></i>
+            <a href="/api/maquinas" style="text-decoration: none;">
+                <div class="card rounded-3 card_dashboard">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="media d-flex mx-2">
+                                <div class="media-body text-left">
+                                    <% let maquinasVisibles = [];
+                                        for (let h=0; maquinas.length > h ; h++) {
+                                            maquinas[h].visible ? maquinasVisibles.push(maquinas[h]) : null
+                                        } %>
+                                    <h3 class="font-medium"><%= parseInt(maquinasVisibles.length) %>/<span style="font-size: 0.95rem;" ><%= parseInt(maquinas.length) %></span></h3>
+                                    <span>Maquinas Activas</span>
+                                </div>
+                                <div class="align-self-center ms-auto">
+                                    <i class="icon-wrench success font-large-2 float-right"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
         <!-- Sesiones activas -->
         <div class="col-xl-3 col-sm-6 col-12">

@@ -141,7 +141,7 @@ function message(clientName) {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Si, modificalo!'
-      }).then((result) => {
+    }).then((result) => {
         if (result.isConfirmed) {
             document.getElementById("formUpdateClient").submit()
             setTimeout(() => {
@@ -157,10 +157,10 @@ function message(clientName) {
                 'No modificado!',
                 `El cliente ${clientName}, no ha sido modificado.`,
                 'info'
-              )
-              return false
+            )
+            return false
         }
-      })
+    })
 }
 
 const btnUpdateClient = document.getElementById('btnUpdateClient')
@@ -201,7 +201,21 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
                 btnUpdateClient.style = "cursor: pointer;"
             })
         }
-    })        
+    })     
+    
+    var inputsDeCheckbox = document.querySelectorAll('input[type="checkbox"]')
+    inputsDeCheckbox.forEach(function(input) {
+        if (input) {
+            input.addEventListener('input', (event) => {
+                event.preventDefault()
+                input.classList.add("border-primary")
+                input.classList.add("border-2")
+                input.classList.add("shadow")
+                btnUpdateClient.removeAttribute('disabled')
+                btnUpdateClient.style = "cursor: pointer;"
+            })
+        }
+    })
 
     // Crear una nueva instancia de MutationObserver y pasar una función de callback
     const observer = new MutationObserver(function(mutationsList, observer) {

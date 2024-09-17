@@ -1164,3 +1164,14 @@ form.dropzone {
   object-fit: cover;
   object-position: center;
 }
+
+.listDetailNum {
+  list-style: circle inside;
+  margin: 0.4rem;
+  text-align: start;
+}
+
+.listItemDetailNumber {
+  margin-left: 0.4rem;
+  color:#1b257b;
+}

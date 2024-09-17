@@ -4250,7 +4250,7 @@ function updateInputsSelect () {
 
 function disabledBtnAceptar () {
     let btnAceptarModal = document.getElementsByClassName('swal2-confirm');
-    const allInputs = document.querySelectorAll('input[type="text"],input[type="number"],select,textarea')
+    const allInputs = document.querySelectorAll('input[type="text"],input[type="number"],select,textarea,input[type="file"]' )
     const allInputsRange = document.querySelectorAll('input[type="range"]')
     const allInputsCheck = document.querySelectorAll('input[type="checkbox"]')
     const allInputsRadio = document.querySelectorAll('input[type="radio"]')

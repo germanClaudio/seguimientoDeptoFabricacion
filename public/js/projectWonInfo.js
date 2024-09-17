@@ -2023,14 +2023,14 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
         arrayPrograma2d: [], arrayEstadoPrograma2d: [], arrayRevisionPrograma2d: [],
         arrayPrograma3d2F: [], arrayEstadoPrograma3d2F: [], arrayRevisionPrograma3d2F: [],
         arrayPrograma3d4F: [], arrayEstadoPrograma3d4F: [], arrayRevisionPrograma3d4F: [],
-        arrayObservacionesProgramacion: [], arrayRevisionObservacionesProgramacion: [],
+        arrayNotasProgramacion: [], arrayRevisionNotasProgramacion: [],
         arrayFCero: [], arrayRevisionFCero: [],
         arrayFUno: [], arrayRevisionFUno: [],
         arrayFDos: [], arrayRevisionFDos: [],
         arrayFTres: [], arrayRevisionFTres: [],
         arrayFCuatro: [], arrayRevisionFCuatro: [],
         arrayFCinco: [], arrayRevisionFCinco: [],
-        arrayObservacionesMecanizado: [], arrayRevisionObservacionesMecanizado: [],
+        arrayNotasMecanizado: [], arrayRevisionNotasMecanizado: [],
     };
     
     const mapping = {
@@ -2043,22 +2043,26 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
         6: ['arrayPrograma2d','arrayRevisionPrograma2d', 'arrayEstadoPrograma2d'],
         7: ['arrayPrograma3d2F','arrayRevisionPrograma3d2F', 'arrayEstadoPrograma3d2F'],
         8: ['arrayPrograma3d4F','arrayRevisionPrograma3d4F', 'arrayEstadoPrograma3d4F'],
-        9: ['arrayObservacionesProgramacion', 'arrayRevisionObservacionesProgramacion'],
+        9: ['arrayNotasProgramacion', 'arrayRevisionNotasProgramacion'],
         10: ['arrayFCero', 'arrayRevisionFCero', 'arrayEstadoFCero'],
         11: ['arrayFUno', 'arrayRevisionFUno', 'arrayEstadoFUno'],
         12: ['arrayFDos', 'arrayRevisionFDos', 'arrayEstadoFDos'],
         13: ['arrayFTres', 'arrayRevisionFTres', 'arrayEstadoFTres'],
         14: ['arrayFCuatro', 'arrayRevisionFCuatro', 'arrayEstadoFCuatro'],
         15: ['arrayFCinco', 'arrayRevisionFCinco', 'arrayEstadoFCinco'],
-        16: ['arrayObservacionesMecanizado', 'arrayRevisionObservacionesMecanizado']
+        16: ['arrayNotasMecanizado', 'arrayRevisionNotasMecanizado']
     };
 
     for (let n = 0; n < lastChild; n++) {
         for (let q = qInicialX; q < qFinalX; q++) {
             for (let o = 0; o < lastChild; o++) {
-                if (document.getElementById(`resHidden${k}_${n}_${o}_${q}`)) {
-                    const otHidden = document.getElementById(`resHidden${k}_${n}_${o}_${q}`).value;
-                    const otRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${o}_${q}`).value;
+                let estadoDetalleHidden
+                let otHidden
+                let otRevisionHidden
+
+                if (document.getElementById(`resHidden${k}_${n}_${o}_${q}`) && !document.getElementById(`resEstadoHidden${k}_${n}_${o}_${q}`)) {
+                    otHidden = document.getElementById(`resHidden${k}_${n}_${o}_${q}`).value;
+                    otRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${o}_${q}`).value;
                     
                     var otRevision = otRevisionHidden.split(",").pop();
                     var otInfo = changeValueFromArray(otHidden.split(",")).pop();
@@ -2068,23 +2072,33 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
                         arrays[infoKey].push(otInfo);
                         arrays[revisionKey].push(otRevision);
                     }
-                }
-                
-                if (document.getElementById(`resDatoHidden${k}_${n}_${o}_${q}`)) {
-                    const otHidden = document.getElementById(`resDatoHidden${k}_${n}_${o}_${q}`).value;
-                    const estadoDetalleHidden = document.getElementById(`resEstadoHidden${k}_${n}_${o}_${q}`).value;
-                    const otRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${o}_${q}`).value;
+
+                } else if (document.getElementById(`resDatoHidden${k}_${n}_${o}_${q}`) && document.getElementById(`resEstadoHidden${k}_${n}_${o}_${q}`)) {
+                    otHidden = document.getElementById(`resDatoHidden${k}_${n}_${o}_${q}`).value;
+                    document.getElementById(`resEstadoHidden${k}_${n}_${o}_${q}`) ? estadoDetalleHidden = document.getElementById(`resEstadoHidden${k}_${n}_${o}_${q}`).value : null
+                    otRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${o}_${q}`).value;
+
+                    var estadoInfo = changeValueEstadoFromArray(estadoDetalleHidden.split(",")).pop();
+                    var otRevision = otRevisionHidden.split(",").pop();
+                    var otInfo = changeValueFromArray(otHidden.split(",")).pop();
+                    
+
+                } else if (document.getElementById(`resDatoHidden${k}_${n}_${o}_${q}`) && !document.getElementById(`resEstadoHidden${k}_${n}_${o}_${q}`)) {
+                    otHidden = document.getElementById(`resDatoHidden${k}_${n}_${o}_${q}`).value;
+                    otRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${o}_${q}`).value;
                     
                     var otRevision = otRevisionHidden.split(",").pop();
                     var otInfo = changeValueFromArray(otHidden.split(",")).pop();
-                    var estadoInfo = changeValueEstadoFromArray(estadoDetalleHidden.split(",")).pop();
-                    
-                    const [infoKey, revisionKey, estadoKey] = mapping[q] || [];
-                    if (infoKey && estadoKey && revisionKey) {
-                        arrays[infoKey].push(otInfo);
-                        arrays[estadoKey].push(estadoInfo)
-                        arrays[revisionKey].push(otRevision);
-                    }
+                }
+
+                const [infoKey, revisionKey, estadoKey] = mapping[q] || [];
+                if (infoKey && estadoKey && revisionKey) {
+                    arrays[infoKey].push(otInfo);
+                    arrays[estadoKey].push(estadoInfo)
+                    arrays[revisionKey].push(otRevision);
+                } else {
+                    arrays[infoKey].push(otInfo);
+                    arrays[revisionKey].push(otRevision);
                 }
             }
         }
@@ -2093,8 +2107,8 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
     const resultMap = {
         4: ['arrayMecanizado2dCompleto', 'arrayRevisionMecanizado2dCompleto', 'arrayMecanizado3dPrefinal', 'arrayRevisionMecanizado3dPrefinal', 'arrayMecanizado3dFinal', 'arrayRevisionMecanizado3dFinal', 'arrayBancoArmado', 'arrayRevisionBancoArmado'],
         7: ['arrayRt', 'arrayRevisionRt', 'arrayEstadoRt', 'arrayPreparacionGeo', 'arrayRevisionPreparacionGeo', 'arrayEstadoPreparacionGeo', 'arrayPrograma2d', 'arrayRevisionPrograma2d', 'arrayEstadoPrograma2d'],
-        10: ['arrayPrograma3d2F', 'arrayRevisionPrograma3d2F', 'arrayEstadoPrograma3d2F', 'arrayPrograma3d4F', 'arrayRevisionPrograma3d4F', 'arrayEstadoPrograma3d4F', 'arrayObservacionesProgramacion', 'arrayRevisionObservacionesProgramacion'],
-        17: ['arrayFCero', 'arrayRevisionFCero', 'arrayFUno', 'arrayRevisionFUno', 'arrayFDos', 'arrayRevisionFDos', 'arrayFTres', 'arrayRevisionFTres', 'arrayFCuatro', 'arrayRevisionFCuatro', 'arrayFCinco', 'arrayRevisionFCinco', 'arrayObservacionesMecanizado', 'arrayRevisionObservacionesMecanizado']
+        10: ['arrayPrograma3d2F', 'arrayRevisionPrograma3d2F', 'arrayEstadoPrograma3d2F', 'arrayPrograma3d4F', 'arrayRevisionPrograma3d4F', 'arrayEstadoPrograma3d4F', 'arrayNotasProgramacion', 'arrayRevisionNotasProgramacion'],
+        17: ['arrayFCero', 'arrayRevisionFCero', 'arrayFUno', 'arrayRevisionFUno', 'arrayFDos', 'arrayRevisionFDos', 'arrayFTres', 'arrayRevisionFTres', 'arrayFCuatro', 'arrayRevisionFCuatro', 'arrayFCinco', 'arrayRevisionFCinco', 'arrayNotasMecanizado', 'arrayRevisionNotasMecanizado']
     };
 
     const keysToReturn = resultMap[qFinalX] || [];
@@ -2337,8 +2351,8 @@ function swalFireAlert (
     background,
     formulario,
     arrayDeOtNumber,
-    arrayDeDetalleNumber) {
-console.log('arrayDeDetalleNumber: ', arrayDeDetalleNumber)
+    arrayDeDetalleNumber,
+    arrayDeDetalleDescription) {
 
     Swal.fire({
         title: titulo,
@@ -2360,21 +2374,40 @@ console.log('arrayDeDetalleNumber: ', arrayDeDetalleNumber)
         }
 
     }).then((result) => {
+        const resultadoElement = document.createElement('ul');
+        
+        arrayDeOtNumber.forEach((value, index) => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('listItemDetailNumber')
+            listItem.textContent = `Item: #${value}.${arrayDeDetalleNumber[index]} - ${arrayDeDetalleDescription[index]}`;
+            
+            resultadoElement.appendChild(listItem);
+            resultadoElement.classList.add('listDetailNum')
+        })
+        
+        let htmlLista = resultadoElement.outerHTML;
+        let outputOk = `La información ${titulo}, fue agregada a los ítems: ${htmlLista}`
+        let outputNok = `La información ${titulo}, no fue agregada a los ítems: ${htmlLista}`
+        
         if (result.isConfirmed) {
             const formValues = document.getElementById(formulario)
             formValues.submit()
             setTimeout(() => {
                 Toast.fire({
+                    title: `Información <strong>${titulo}</strong>, agregada con éxito!`,
+                    html: outputOk,
                     icon: 'success',
-                    title: `Información de ítems de OT/s #${arrayDeOtNumber.join(" - #")} agregada con éxito!`
+                    width: 600
                 })
             }, 2000)
-        } else {
-            Swal.fire(
-                `Info <strong>${titulo}</strong>, no agregada!`,
-                `La información ${titulo}, no fue agregada a los ítems de las OT/s #${arrayDeOtNumber.join(" - #")} !`,
-                'warning'
-            )
+
+        } else {                
+            Swal.fire({
+                title: `Información <strong>${titulo}</strong>, no agregada!`,
+                html: outputNok,
+                icon: 'warning',
+                width: 600
+            })
             return false
         }
     })
@@ -2625,6 +2658,7 @@ function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
         const formulario = 'formDistribucionValues'
         const arrayDeOtNumber = res.arrayOtNumber
         const arrayDeDetalleNumber = res.arrayOtDetalle
+        const arrayDeDetalleDescription = res.arrayDescripcionDetalle
 
         swalFireAlert (
             titulo,
@@ -2633,13 +2667,13 @@ function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
             background,
             formulario,
             arrayDeOtNumber,
-            arrayDeDetalleNumber
+            arrayDeDetalleNumber,
+            arrayDeDetalleDescription
         )
         disabledBtnAceptar()
     }
 }
 
-//***** addDatoToOtProgramacionPrimera ******
 async function cargarUsuarioPcpCad(res) {
     try {
         const url = `../../../api/usuarios/searchUsers/${userNameBanner}`
@@ -2662,25 +2696,32 @@ async function cargarUsuarioPcpCad(res) {
         const selectElements = [
             document.getElementById(`rt${res}`),
             document.getElementById(`preparacionGeo${res}`),
-            document.getElementById(`programa2d${res}`)
+            document.getElementById(`programa2d${res}`),
+            document.getElementById(`programa3d2F${res}`),
+            document.getElementById(`programa3d4F${res}`)
         ];
+        
     
         // Itera sobre el array de datos
         datos.forEach(dato => {
             // Itera sobre cada select para agregar una nueva opción
             selectElements.forEach(selectElement => {
-                const option = document.createElement('option');
-                option.value = dato._id;  // Asigna el valor de la opción (puede ser un ID u otro identificador)
-                option.textContent = `${dato.name}, ${dato.lastName}`;  // Asigna el texto visible en la opción (puede ser el nombre u otro dato)
-    
-                if (dato.permiso === 'cadCam' || dato.permiso === 'mecanizado' || dato.permiso === 'diseno') {
-                    selectElement.appendChild(option);
+                if (selectElement) {
+                    const option = document.createElement('option');
+                    option.value = dato._id;  // Asigna el valor de la opción (puede ser un ID u otro identificador)
+                    option.textContent = `${dato.name}, ${dato.lastName}`;  // Asigna el texto visible en la opción (puede ser el nombre u otro dato)
+                    
+                    if (dato.permiso === 'cadCam' || dato.permiso === 'mecanizado') {
+                        selectElement.appendChild(option);
+                    }
                 }
+                
             });
         });
     }
 }
 
+//***** addDatoToOtProgramacionPrimera ******
 function addDatoToOtProgramacionPrimera(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal) {
         let res = getOtList(i)
@@ -2705,16 +2746,14 @@ function addDatoToOtProgramacionPrimera(i, idTabla, qInicial, qFinal) {
 
                 <div class="col my-auto" style="width: 7vw;">
                     <select id="estadoRt${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="estadoRt${y}"
-                        oninput="updateInputsSelect()"
-                        class="form-select" ${(colorStatusOt(res.arrayOtDetalleStatus[y]).disabled)}>
+                        oninput="updateInputsSelect()" class="form-select" ${(colorStatusOt(res.arrayOtDetalleStatus[y]).disabled)}>
                         <option selected value="${(switchEstadoSelected(getValues.arrayEstadoRt[y])).variableValue}" disabled>
                             ${(switchEstadoSelected(getValues.arrayEstadoRt[y])).getValueArrayDato}
                         </option>
                         ${(switchEstadoSelected(getValues.arrayEstadoRt[y])).optionDefined}
                     </select>
                     <input type="hidden" id="estadoRtHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
-                    name="estadoRtHidden${[y]}"
-                    value="${(switchEstadoSelected(getValues.arrayEstadoRt[y])).variableValue}">
+                    name="estadoRtHidden${[y]}" value="${(switchEstadoSelected(getValues.arrayEstadoRt[y])).variableValue}">
                 </div>
                 
                 <div class="col-1 my-auto" style="width: 4vw;">
@@ -2746,8 +2785,7 @@ function addDatoToOtProgramacionPrimera(i, idTabla, qInicial, qFinal) {
                         ${(switchEstadoSelected(getValues.arrayEstadoPreparacionGeo[y])).optionDefined}
                     </select>
                     <input type="hidden" id="estadoPreparacionGeoHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
-                    name="estadoPreparacionGeoHidden${[y]}"
-                    value="${(switchEstadoSelected(getValues.arrayEstadoPreparacionGeo[y])).variableValue}">
+                    name="estadoPreparacionGeoHidden${[y]}" value="${(switchEstadoSelected(getValues.arrayEstadoPreparacionGeo[y])).variableValue}">
                 </div>
                 
                 <div class="col-1 my-auto" style="width: 4vw;">
@@ -2849,6 +2887,8 @@ function addDatoToOtProgramacionPrimera(i, idTabla, qInicial, qFinal) {
         const ancho = 1850
         const background = '#efefef'
         const arrayDeOtNumber = res.arrayOtNumber
+        const arrayDeDetalleNumber = res.arrayOtDetalle
+        const arrayDeDetalleDescription = res.arrayDescripcionDetalle
     
         swalFireAlert (
             titulo,
@@ -2856,45 +2896,101 @@ function addDatoToOtProgramacionPrimera(i, idTabla, qInicial, qFinal) {
             ancho,
             background,
             formulario,
-            arrayDeOtNumber
+            arrayDeOtNumber,
+            arrayDeDetalleNumber,
+            arrayDeDetalleDescription
         )
         disabledBtnAceptar()
     }
 }
 
 //***** addDatoToOtProgramacionSegunda ******
-//TODO:
 function addDatoToOtProgramacionSegunda(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
 
-        for (let y=0; y < res.lastChild; y++) {
-            var getUsersNames = cargarUsuarioPcpCad(res.arrayOtNumber[y]+'_'+res.arrayOtDetalle[y])
-        }
-        
         let arrayBloqueProgramacionSegunda = []
         for (let y=0; y < res.lastChild; y++) {
-            
+            let getUsersNames = cargarUsuarioPcpCad(res.arrayOtNumber[y]+'_'+res.arrayOtDetalle[y])
+
             const dataEnArrayBloque = `
-                        <div class="col my-auto">
-                            <select id="rt${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="rt${y}"
-                                class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
-                                <option selected value="${getValues.arrayRt[y]}" disabled>
-                                    ${getValues.arrayRt[y]}
-                                </option>
-                                    ${getUsersNames}
-                            </select>
-                            <input type="hidden" id="rtHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
-                                name="rtHidden${[y]}" value="${(switchOptionSelected(getValues.arrayRt[y])).variableValue}">
-                        </div>
-                        <div class="col-1 my-auto" style="width: 5vw;">
-                            <input type="text" value="${getValues.arrayRevisionRt[y]}"
-                                class="form-control" style="text-align: center;" disabled readonly">
-                            <input type="hidden" id="revisionRt${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
-                                name="revisionRt${y}" value="${getValues.arrayRevisionRt[y]}">
-                        </div>
-                        `
+                <div class="col my-auto">
+                    <select id="programa3d2F${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="programa3d2F${y}"
+                        class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
+                        <option selected value="${getValues.arrayPrograma3d2F[y]}" disabled>
+                            ${getValues.arrayPrograma3d2F[y]}
+                        </option>
+                            ${getUsersNames}
+                    </select>
+                    <input type="hidden" id="programa3d2FHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="programa3d2FHidden${[y]}" value="${(switchOptionSelected(getValues.arrayPrograma3d2F[y])).variableValue}">
+                </div>
+
+                <div class="col-1 my-auto" style="width: 9vw;">
+                    <select id="estadoPrograma3d2F${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="estadoPrograma3d2F${y}"
+                        oninput="updateInputsSelect()" class="form-select" ${(colorStatusOt(res.arrayOtDetalleStatus[y]).disabled)}>
+                        <option selected value="${(switchEstadoSelected(getValues.arrayEstadoPrograma3d2F[y])).variableValue}" disabled>
+                            ${(switchEstadoSelected(getValues.arrayEstadoPrograma3d2F[y])).getValueArrayDato}
+                        </option>
+                        ${(switchEstadoSelected(getValues.arrayEstadoPrograma3d2F[y])).optionDefined}
+                    </select>
+                    <input type="hidden" id="estadoPrograma3d2FHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                    name="estadoPrograma3d2FHidden${[y]}" value="${(switchEstadoSelected(getValues.arrayEstadoPrograma3d2F[y])).variableValue}">
+
+                </div>
+                
+                <div class="col-1 my-auto" style="width: 4vw;">
+                    <input type="text" value="${getValues.arrayRevisionPrograma3d2F[y]}"
+                        class="form-control" style="text-align: center;" disabled readonly">
+                    <input type="hidden" id="revisionPrograma3d2F${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="revisionPrograma3d2F${y}" value="${getValues.arrayRevisionPrograma3d2F[y]}">
+                </div>
+
+                <div class="col my-auto">
+                    <select id="programa3d4F${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="programa3d4F${y}"
+                        class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
+                        <option selected value="${getValues.arrayPrograma3d4F[y]}" disabled>
+                            ${getValues.arrayPrograma3d4F[y]}
+                        </option>
+                            ${getUsersNames}
+                    </select>
+                    <input type="hidden" id="programa3d4FHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="programa3d4FHidden${[y]}" value="${(switchOptionSelected(getValues.arrayPrograma3d4F[y])).variableValue}">
+                </div>
+
+                <div class="col-1 my-auto" style="width: 9vw;">
+                    <select id="estadoPrograma3d4F${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="estadoPrograma3d4F${y}"
+                        oninput="updateInputsSelect()" class="form-select" ${(colorStatusOt(res.arrayOtDetalleStatus[y]).disabled)}>
+                        <option selected value="${(switchEstadoSelected(getValues.arrayEstadoPrograma3d4F[y])).variableValue}" disabled>
+                            ${(switchEstadoSelected(getValues.arrayEstadoPrograma3d4F[y])).getValueArrayDato}
+                        </option>
+                        ${(switchEstadoSelected(getValues.arrayEstadoPrograma3d4F[y])).optionDefined}
+                    </select>
+                    <input type="hidden" id="estadoPrograma3d4FHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                    name="estadoPrograma3d4FHidden${[y]}" value="${(switchEstadoSelected(getValues.arrayEstadoPrograma3d4F[y])).variableValue}">
+                </div>
+                
+                <div class="col-1 my-auto" style="width: 4vw;">
+                    <input type="text" value="${getValues.arrayRevisionPrograma3d4F[y]}"
+                        class="form-control" style="text-align: center;" disabled readonly">
+                    <input type="hidden" id="revisionPrograma3d4F${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="revisionPrograma3d4F${y}" value="${getValues.arrayRevisionPrograma3d4F[y]}">
+                </div>
+
+                <div class="col-1 my-auto" style="width: 13vw;">
+                    <textarea class="form-control" id="notasProgramacion${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="notasProgramacion${y}" rows="1">${getValues.arrayNotasProgramacion[y].trim()}</textarea>
+                    <input type="hidden" id="notasProgramacionHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="notasProgramacionHidden${[y]}" value="${getValues.arrayNotasProgramacion[y]}">
+                </div>
+                
+                <div class="col-1 my-auto" style="width: 4vw;">
+                    <input type="text" value="${getValues.arrayRevisionNotasProgramacion[y]}"
+                        class="form-control" style="text-align: center;" disabled readonly">
+                    <input type="hidden" id="revisionNotasProgramacion${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="revisionNotasProgramacion${y}" value="${getValues.arrayRevisionNotasProgramacion[y]}">
+                </div>
+                `
 
             const isInactive = res.arrayOtDetalleStatus[y] === 'Inactivo';
             const divStyle = isInactive ? 'style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5"' : '';
@@ -2916,19 +3012,25 @@ function addDatoToOtProgramacionSegunda(i, idTabla, qInicial, qFinal) {
                         <div class="row mx-auto">
                             ${cabeceraFormulario}
                             <div class="col my-auto">
-                                <span><strong>Prog. 3D Prefinal</strong></span>
+                                <span><strong>Programa 3d F2</strong></span>
+                            </div>
+                            <div class="col-1 my-auto align-self-start border-start border-end border-dark" style="width: 9vw;">
+                                <span><strong>Estado</strong></span>
                             </div>
                             <div class="col-1 my-auto align-self-start" style="width: 4vw;">
                                 <span"><strong>Rev</strong></span>
                             </div>
                             <div class="col my-auto">
-                                <span><strong>Prog. 3D Final</strong></span>
+                                <spano><strong>Programa 3d F4</strong></span>
+                            </div>
+                            <div class="col-1 my-auto align-self-start border-start border-end border-dark" style="width: 9vw;">
+                                <span><strong>Estado</strong></span>
                             </div>
                             <div class="col-1 my-auto align-self-start" style="width: 4vw;">
                                 <span"><strong>Rev</strong></span>
                             </div>
-                            <div class="col my-auto">
-                                <span><strong>Notas</strong></span>
+                            <div class="col-1 my-auto border-end border-dark" style="width: 13vw;">
+                                <spano><strong>Notas</strong></span>
                             </div>
                             <div class="col-1 my-auto align-self-start" style="width: 4vw;">
                                 <span"><strong>Rev</strong></span>
@@ -2942,9 +3044,11 @@ function addDatoToOtProgramacionSegunda(i, idTabla, qInicial, qFinal) {
     
         const titulo = "Programación (2° Parte)"
         const formulario = 'formProgramacionSegundaValues'
-        const ancho = 1600
+        const ancho = 1850
         const background = '#efefef'
         const arrayDeOtNumber = res.arrayOtNumber
+        const arrayDeDetalleNumber = res.arrayOtDetalle
+        const arrayDeDetalleDescription = res.arrayDescripcionDetalle
     
         swalFireAlert (
             titulo,
@@ -2952,7 +3056,9 @@ function addDatoToOtProgramacionSegunda(i, idTabla, qInicial, qFinal) {
             ancho,
             background,
             formulario,
-            arrayDeOtNumber
+            arrayDeOtNumber,
+            arrayDeDetalleNumber,
+            arrayDeDetalleDescription
         )
         disabledBtnAceptar()
     }

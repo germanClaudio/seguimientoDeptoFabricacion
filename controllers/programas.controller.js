@@ -20,17 +20,17 @@ let data = require('../utils/variablesInicializator.js')
 const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
 
 const {catchError400,
-       catchError400_1,
-       catchError400_2,
-       catchError400_3,
-       catchError400_4,
-       catchError403,
-       catchError401,
-       catchError401_1,
-       catchError401_2,
-       catchError401_3,
-       catchError401_4,
-       catchError500
+    catchError400_1,
+    catchError400_2,
+    catchError400_3,
+    catchError400_4,
+    catchError403,
+    catchError401,
+    catchError401_1,
+    catchError401_2,
+    catchError401_3,
+    catchError401_4,
+    catchError500
 } = require('../utils/catchErrors.js')
 
 class ProgramationController {
@@ -112,18 +112,12 @@ class ProgramationController {
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
 
-        
-        
         try {
             const cliente = await this.clients.getClientById(id)
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
 
             const proyectos = await this.projects.getProjectsByClientId(id)
-            if (!proyectos) {
-                catchError400(req, res, next)
-            }
+            !proyectos ? catchError400(req, res, next) : null
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('clientProjectsDetails', {
@@ -147,15 +141,11 @@ class ProgramationController {
 
         try {
             const proyecto = await this.programms.selectProjectByProjectId(id)
-            if (!proyecto) {
-                catchError400(req, res, next)
-            }
+            !proyecto ? catchError400(req, res, next) : null
 
             const idCliente = proyecto[0].client[0]._id
             const cliente = await this.clients.getClientByProjectId(idCliente)
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             setTimeout(() => {
@@ -165,6 +155,7 @@ class ProgramationController {
                     userInfo,
                     expires,
                     cliente,
+                    csrfToken,
                     data
                 })
             }, 500)
@@ -300,7 +291,7 @@ class ProgramationController {
             otInfoSim2_3: [],
             otInfoSim4: [],
             otInfoSim5: []
-          }]
+        }]
 
         var arrayOtAddedToOci = []
         for(let i=0; i<otQuantity; i++) {

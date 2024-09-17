@@ -2,6 +2,7 @@ const UserService = require("../services/users.service.js")
 const ProyectosService = require("../services/projects.service.js")
 const ClientesService = require("../services/clients.service.js")
 const MessagesService = require("../services/messages.service.js")
+const ToolsService = require("../services/tools.service.js")
 
 const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
 const { uploadMulterSingleAvatarUser } = require("../utils/uploadMulter.js")
@@ -53,6 +54,7 @@ class UsersController {
         this.clients = new ClientesService()
         this.users = new UserService()
         this.messages = new MessagesService()
+        this.tools = new ToolsService()
     }
 
     getAllUsers = async (req, res, next) => {
@@ -62,9 +64,8 @@ class UsersController {
         
         try {
             const usuarios = await this.users.getAllUsers()
-            if(!usuarios) {
-                catchError400_5(req, res, next)
-            }
+            !usuarios ? catchError400_5(req, res, next) : null
+
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewUser', {
                 usuarios,
@@ -88,9 +89,7 @@ class UsersController {
         
         try {
             const usuario = await this.users.getUserById(id)
-            if(!usuario) {
-                catchError401_3(req, res, next)
-            }
+            !usuario ? catchError401_3(req, res, next) : null
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('userDetails', {
@@ -114,9 +113,7 @@ class UsersController {
         
         try {
             const usuario = await this.users.getUserByUsername(username)
-            if(!usuario) {
-                catchError401_3(req, res, next)
-            }
+            !usuario ? catchError401_3(req, res, next) : null
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('userDetails', {
@@ -139,9 +136,7 @@ class UsersController {
 
         try {
             const usuario = await this.users.getUserByUsernameAndPassword(username, password)
-            if(!usuario) {
-                catchError400_3(req, res, next)
-            }
+            !usuario ? catchError400_3(req, res, next) : null
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -156,16 +151,12 @@ class UsersController {
         //------ Storage New User Image in Google Store --------        
         uploadMulterSingleAvatarUser(req, res, async (err) => {
             try {
-                if (req.file) {
-                    await uploadToGCS(req, res, next);
-                }
+                req.file ? await uploadToGCS(req, res, next) : null
 
                 let userManager = await this.users.getUserByUsername(username);
                 const userId = userManager._id;
                 const userCreator = await this.users.getUserById(userId);
-                if (!userCreator) {
-                    catchError401_3(req, res, next)
-                }
+                !userCreator ? catchError401_3(req, res, next) : null
 
                 const usernameInput = req.body.username.replace(/[!@#$%^&*]/g, "");
                 const emailInput = req.body.email;
@@ -178,13 +169,9 @@ class UsersController {
                 };
 
                 const userExist = await this.users.getExistingUser(newUserValid);
-                if (userExist) {
-                    catchError400_6(req, res, next)
-                }
+                userExist ? catchError400_6(req, res, next) : null
 
-                if (req.body.password !== req.body.confirmPassword) {
-                    catchError400_3(req, res, next)
-                }
+                req.body.password !== req.body.confirmPassword ? catchError400_3(req, res, next) : null
 
                 const selectFieldPermiso = req.body.permiso;
                 const selectFieldArea = req.body.area;
@@ -208,22 +195,18 @@ class UsersController {
                         status: req.body.status === 'on' ? Boolean(true) : Boolean(false) || Boolean(true),
                         admin: req.body.admin === 'on' ? Boolean(true) : Boolean(false),
                         superAdmin: req.body.superAdmin === 'on' ? Boolean(true) : Boolean(false),
-                        creator: dataUserCreator,
+                        creator: dataUserCreator(userCreator),
                         timestamp: now,
-                        modificator: dataUserModificatorEmpty,
+                        modificator: dataUserModificatorEmpty(),
                         modifiedOn: '',
                         visible: true
                     };
 
                     const usuario = await this.users.addNewUser(newUser);
-                    if (!usuario) {
-                        catchError400_6(req, res, next)
-                    }
+                    !usuario ? catchError400_6(req, res, next) : null
 
                     const usuarioLog = await this.users.getUserByUsername(username);
-                    if (!usuarioLog) {
-                        catchError401_3(req, res, next)
-                    }
+                    !usuarioLog ? catchError401_3(req, res, next) : null
 
                     const csrfToken = csrfTokens.create(req.csrfSecret);
                     return res.render('addNewUser', {
@@ -238,7 +221,6 @@ class UsersController {
                 } else {
                     catchError400_3(req, res, next)
                 }
-            
                 validateSelectField(value)
 
             } catch (err) {
@@ -255,16 +237,12 @@ class UsersController {
 
         uploadMulterSingleAvatarUser(req, res, async (err) => {
             try {
-                if(req.file) {
-                    await uploadToGCS(req, res, next)
-                }
+                req.file ? await uploadToGCS(req, res, next) : null
                 
                 const userId = userInfo.id
                 const userToModify = await this.users.getUserById(id)
                 const userLogged = await this.users.getUserById(userId)
-                if (!userLogged || !userToModify) {
-                    catchError401_3(req, res, next)
-                }
+                !userLogged || !userToModify ? catchError401_3(req, res, next) : null
 
                 const usernameInput = req.body.username.replace(/[!@#$%^&* ]/g, "")
                 const usernameValid = await this.users.getUserByUsername(usernameInput)
@@ -299,7 +277,7 @@ class UsersController {
 
                 const legajoIdInput = req.body.legajoIdDisable
                 const legajosId = usuariosRestantes.map(usuario => usuario.legajoId);
-           
+
                 if (legajosId.includes(userToModify.legajoId)) {
                     const err = new Error (`Ya existe un Usuario con este Legajo #${legajoIdInput} o # Legajo inválido!!`)
                     err.statusCode = 400
@@ -349,9 +327,7 @@ class UsersController {
                     }
 
                         const usuario = await this.users.updateUser(id, updatedUser, dataUserModificatorNotEmpty(userLogged))
-                        if(!usuario) {
-                            catchError400_3(req, res, next)
-                        }
+                        !usuario ? catchError400_3(req, res, next) : null
                                 
                         const csrfToken = csrfTokens.create(req.csrfSecret);
                         return res.render('addNewUser', {
@@ -370,7 +346,6 @@ class UsersController {
             } catch (err) {
                 catchError500(err, req, res, next)
             }
-             
             validateSelectField(value)
         })
     }
@@ -383,16 +358,12 @@ class UsersController {
             //------ Storage User Image in Google Store --------
             uploadMulterSingleAvatarUser(req, res, async (err) => {
                 try {
-                    if(req.file){
-                        await uploadToGCS(req, res, next)
-                    }
+                    req.file ? await uploadToGCS(req, res, next) : null
 
                     const userId = userInfo.id
                     const userToModify = await this.users.getUserById(id)
                     const userLogged = await this.users.getUserById(userId)
-                    if (!userLogged || !userToModify) {
-                        catchError401_3(req, res, next)
-                    }
+                    !userLogged || !userToModify ? catchError401_3(req, res, next) : null
 
                     const emailInput = req.body.email
                     const emailValid = await this.users.getUserByEmail(emailInput)
@@ -413,9 +384,7 @@ class UsersController {
                         }
                     
                         const usuario = await this.users.updateUserPreferences(id, updatedUser, dataUserModificatorNotEmpty(userLogged))
-                        if(!usuario) {
-                            catchError401_3(req, res, next)
-                        }
+                        !usuario ? catchError401_3(req, res, next) : null
                         
                         const csrfToken = csrfTokens.create(req.csrfSecret);
                         res.render('userSettings', {
@@ -444,9 +413,7 @@ class UsersController {
         const expires = cookie(req)
 
         const csrfToken = req.body._csrf;
-        if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-            catchError403(req, res, next)
-        }
+        !csrfTokens.verify(req.csrfSecret, csrfToken) ? catchError403(req, res, next) : null
 
         try {
             const userId = userInfo.id
@@ -475,9 +442,7 @@ class UsersController {
     searchUsers = async (req, res, next) => {
         try {
             const users = await this.users.getAllUsers()
-            if(!users) {
-                catchError400_5(req, res, next)
-            }
+            !users ? catchError400_5(req, res, next) : null
             res.send(users)
 
         } catch (err) {
@@ -493,20 +458,14 @@ class UsersController {
 
         try {
             const userToDelete = await this.users.getUserById(id)
-            if (userToDelete) {
-                catchError401_3(req, res, next)
-            }
+            userToDelete ? catchError401_3(req, res, next) : null
 
             const userId = userInfo.id
             const userLogged = await this.users.getUserById(userId)
-            if (!userLogged) {
-                catchError401_3(req, res, next)
-            }
+            !userLogged ? catchError401_3(req, res, next) : null
 
             const usuario = await this.users.deleteUserById(id, dataUserModificatorNotEmpty(userLogged))
-            if(!usuario) {
-                catchError401_3(req, res, next)
-            }
+            !usuario ? catchError401_3(req, res, next) : null
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewUser', {
@@ -532,9 +491,7 @@ class UsersController {
         let expires = new Date(time)
 
         const csrfToken = req.body._csrf;
-        if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-            catchError403(req, res, next)
-        }
+        !csrfTokens.verify(req.csrfSecret, csrfToken) ? catchError403(req, res, next) : null
         
         try {
             if (sessionStarted) {
@@ -564,6 +521,7 @@ class UsersController {
                 const proyectos = await this.projects.getAllProjects()
                 const mensajes = await this.messages.getAllMessages()
                 const sessionLogin = await this.users.getAllSessions()
+                const maquinas = await this.tools.getAllTools()
                 
                 const sessions = parseInt(sessionLogin.length+1)
 
@@ -593,7 +551,8 @@ class UsersController {
                             proyectos,
                             mensajes,
                             data,
-                            sessions
+                            sessions,
+                            maquinas
                         })
                     }, 350)
 
@@ -628,12 +587,9 @@ class UsersController {
 
     resetUserPassword = async (req, res, next) => {
         const csrfToken = req.body._csrf;
-        if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-            catchError403(req, res, next)
-        }
+        !csrfTokens.verify(req.csrfSecret, csrfToken) ? catchError403(req, res, next) : null
 
         try {
-            
             const existeUsuario = await this.users.getUserByEmail(req.body.email)
             if (!existeUsuario) {
                 setTimeout(() => {
@@ -656,7 +612,7 @@ class UsersController {
                     }, 2000)
                 }
             }
-       
+
         } catch (err) {
             catchError500(err, req, res, next)
         }
@@ -669,18 +625,14 @@ class UsersController {
         let userInfo = res.locals.userInfo
 
         const csrfToken = req.body._csrf;
-        if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-            catchError403(req, res, next)
-        }
+        !csrfTokens.verify(req.csrfSecret, csrfToken) ? catchError403(req, res, next) : null
         
         if (newPassword === confirmNewPassword) {
             const userToModify = await this.users.getUserById(id)
 
             const userId = userInfo.id
             const userLogged = await this.users.getUserById(userId)
-            if (!userLogged) {
-                catchError401_3(req, res, next)
-            }
+            !userLogged ? catchError401_3(req, res, next) : null
         
             if(userToModify.visible && userToModify.status) {
                 const updatedUserPassword = {
@@ -727,14 +679,10 @@ class UsersController {
         
         try {
             const usuario = await this.users.userLogout(userInfo._id, username)
-            if(!usuario) {
-                catchError401_3(req, res, next)
-            }
+            !usuario ? catchError401_3(req, res, next) : null
             
             req.session.destroy(err => {
-                if (err) {
-                    catchError400_3(req, res, next)
-                }
+                err ? catchError400_3(req, res, next) : null
             })
 
             setTimeout(() => {
@@ -758,22 +706,14 @@ class UsersController {
     
         try {
             const usuario = await this.users.userLogout(password, username)
-            if(!usuario) {
-                catchError400_3(req, res, next)
-            }
+            !usuario ? catchError400_3(req, res, next) : null
 
-            if (!username || !password || !users[username]) {
-                process.exit(1)
-            }
+            (!username || !password || !users[username]) ? process.exit(1) : null
 
             const { salt, hash } = users[username]
             const encryptHash = crypto.pbkdf2Sync(password, salt, 10000, 512, "sha512")
         
-            if (crypto.timingSafeEqual(hash, encryptHash)) {
-                res.sendStatus(200)
-            } else {
-                process.exit(1)
-            }
+            crypto.timingSafeEqual(hash, encryptHash) ? res.sendStatus(200) : process.exit(1)
             
         } catch (err) {
             catchError500(err, req, res, next)
@@ -787,20 +727,12 @@ class UsersController {
     
         try {
             const usuario = await this.users.userLogout(password, username)
-            if(!usuario) {
-                catchError400_3(req, res, next)
-            }
+            !usuario ? catchError400_3(req, res, next) : null
 
-            if (!username || !password || !users[username]) {
-                process.exit(1)
-            }
+            (!username || !password || !users[username]) ? process.exit(1) : null
 
             crypto.pbkdf2(password, users[username].salt, 10000, 512, 'sha512', (err, hash) => {
-                if (users[username].hash.toString() === hash.toString()) {
-                  res.sendStatus(200);
-                } else {
-                  process.exit(1)
-                }
+                (users[username].hash.toString() === hash.toString()) ? res.sendStatus(200) : process.exit(1)
             })
             
         } catch (err) {
@@ -818,13 +750,14 @@ class UsersController {
             const visits = req.session.visits
             const clientes = await this.clients.getAllClients()
             const usuarios = await this.users.getAllUsers()
+            const maquinas = await this.tools.getAllTools()
             const proyectos = await this.projects.getAllProjects()
             const mensajes = await this.messages.getAllMessages()
             const sessionsIndex = await this.users.getAllSessions()
             const sessions = sessionsIndex.length
 
             const { flag, fail } = true
-    
+
             const user = await this.users.getUserByUsername(username)
             if (!user) {
                 const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -856,7 +789,8 @@ class UsersController {
                         proyectos,
                         mensajes,
                         data,
-                        sessions
+                        sessions,
+                        maquinas
                     })
                 }, 350)
                 
@@ -871,7 +805,7 @@ class UsersController {
                     })
                 }, 500)
             }
-             
+
         } catch (err) {
             catchError500(err, req, res, next)
         }
@@ -885,9 +819,7 @@ class UsersController {
         const { flag, fail } = true
 
         const csrfToken = req.body._csrf;
-        if (!csrfTokens.verify(req.csrfSecret, csrfToken)) {
-            catchError403(req, res, next)
-        }
+        !csrfTokens.verify(req.csrfSecret, csrfToken) ? catchError403(req, res, next) : null
         
         try {            
             const user = await this.users.getUserByUsername(username)

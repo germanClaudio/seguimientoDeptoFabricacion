@@ -13,6 +13,9 @@ const containerProgramm = ContainerProgramms.getDaoProgramms()
 const ContainerUsers = require("../daos/usuarios/UsuariosDaoFactory.js")
 const containerUser = ContainerUsers.getDaoUsers()
 
+const ContainerTools = require("../daos/maquinas/MaquinasDaoFactory.js")
+const containerTool = ContainerTools.getDaoTools()
+
 const { schema } = require("normalizr")
 
 const initSocket = (io) => {
@@ -69,14 +72,19 @@ const initSocket = (io) => {
             io.sockets.emit('searchUsersAll', await containerUser.getUsersBySearching(query))
         })
 
-        // -----------------------------  Messages ---------------------------------
-            // const normalizarMensajes = (mensajesConId) =>
-            // normalize(mensajesConId, schemaMensajes)
+        //-------------------------------- Tools  ----------------------------------
+        socket.on('newMaquina', async (maquina) => {
+            await containerTool.createNewTool(maquina)
+            io.sockets.emit('toolsAll', await containerTool.getAllTools())
+        })
+        
+        socket.on('searchMaquinaAll', async (query) => {
+            io.sockets.emit('searchToolsAll', await containerTool.getToolsBySearching(query))
+        })
 
+        // -----------------------------  Messages ---------------------------------
         async function listarMensajesNormalizados() {
             const mensajes = await containerMsg.getAllMessages()
-            // const normalizados = normalizarMensajes({ mensajes }); //id: "mensajes",
-            
             return mensajes//normalizados;
             }
 
@@ -94,7 +102,6 @@ const initSocket = (io) => {
         )
 
         socket.on("newMensaje", async (message) => {
-            //console.log('message: ', message)
             await containerMsg.createNewMessage(message)
             io.sockets.emit("mensajesAll",
                 await listarMensajesNormalizados(),
@@ -109,9 +116,22 @@ const initSocket = (io) => {
             io.sockets.emit('usersAll', await containerUser.getAllUsers())
         })
 
-        // socket.on('disconnect', () => {
-        //     console.log(`User desconectado`)
-        // })
+        //-------------------- maquinas ----------------------
+        socket.emit('toolsAll', await containerTool.getAllTools())
+
+        socket.on('newMaquina', async (maquina) => {
+            await containerTool.createNewTool(maquina)
+            io.sockets.emit('toolsAll', await containerTool.getAllTools())
+        })
+
+        socket.on('searchToolAll', async (query) => {
+            io.sockets.emit('searchToolsAll', await containerTool.getToolsBySearching(query))
+        })
+
+        socket.on('searchToolNew', async (query) => {
+            io.sockets.emit('searchToolsNew', await containerTool.getToolsBySearching(query))
+        })
+
     });
 
     io.on('disconnect', () => {

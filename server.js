@@ -20,6 +20,7 @@ const routerClientes = require('./Routes/clientes.route.js')
 const routerProyectos = require('./Routes/proyectos.route.js')
 const routerProgramas = require('./Routes/programas.route.js')
 const routerMensajes = require('./Routes/mensajes.route.js')
+const routerTools = require('./Routes/maquinas.route.js')
 
 const { infoRouter } = require('./Routes/info.routes.js')
 const { authRouter } = require('./Routes/auth.routes.js')
@@ -88,7 +89,7 @@ const initServer = () => {
         res.cookie('csrfSecret',
             csrfSecret,
             { httpOnly: true,
-              sameSite: "lax",
+            sameSite: "lax",
             }
         );
         req.csrfSecret = csrfSecret;
@@ -104,6 +105,7 @@ const initServer = () => {
     app.use('/api/usuarios', routerUsers)
     app.use('/info', infoRouter)
     app.use('/api/webchat', routerMensajes)
+    app.use('/api/maquinas', routerTools)
     ///////////////////////////////////////////////////
 
 

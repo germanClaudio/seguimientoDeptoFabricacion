@@ -70,11 +70,23 @@ const uploadMulterSingleAvatarUser = multer({
     }
 }).single('imageAvatarUser')
 
+const uploadMulterSingleImageTool = multer({
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Solo se permiten imágenes'));
+        }
+    }
+}).single('imageImageTool')
+
 module.exports = {
     uploadMulterMultiImages,
     uploadMulterSingleImageProject,
     uploadMulterSingleImageOci,
     uploadMulterSingleLogoClient,
     uploadMulterSingleLogoUpdate,
-    uploadMulterSingleAvatarUser
+    uploadMulterSingleAvatarUser,
+    uploadMulterSingleImageTool
 }

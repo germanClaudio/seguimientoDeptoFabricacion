@@ -1,4 +1,4 @@
-const { Schema, model, mongoose } = require('mongoose')
+const { Schema, mongoose } = require('mongoose')
 const now = require('../utils/formatDate.js')
 
 // ------- Creator Schema -------------
@@ -137,7 +137,7 @@ let otProgramacionPrimeraSchema = new Schema({
     },
 })
 
-// ------- OT Programacion Primera Schema ---------
+// ------- OT Programacion Segunda Schema ---------
 let otProgramacionSegundaSchema = new Schema({
     programa3d2F: {
         type: String,
@@ -167,7 +167,7 @@ let otProgramacionSegundaSchema = new Schema({
         type: String,
         default: '',
     },
-    revisionObservacionesProgramacion: {
+    revisionNotasProgramacion: {
         type: Number,
         default: 0,
     },
@@ -183,9 +183,13 @@ let otProgramacionSegundaSchema = new Schema({
     },
 })
 
-// ------- OT Distribucion Schema ---------
-let otMecanizadoSchema = new Schema({
-    fCero: { 
+// ------- OT Mecanizado Primera Schema ---------
+let otMecanizadoPrimeraSchema = new Schema({
+    fCero: {
+        type: String,
+        default: 'sinDato',
+    },
+    estadofCero: {
         type: String,
         default: 'sinDato',
     },
@@ -193,7 +197,11 @@ let otMecanizadoSchema = new Schema({
         type: Number,
         default: 0,
     },
-    fUno: { 
+    fUno: {
+        type: String,
+        default: 'sinDato',
+    },
+    estadofUno: {
         type: String,
         default: 'sinDato',
     },
@@ -202,6 +210,10 @@ let otMecanizadoSchema = new Schema({
         default: 0,
     },
     fDos: { 
+        type: String,
+        default: 'sinDato',
+    },
+    estadofDos: { 
         type: String,
         default: 'sinDato',
     },
@@ -217,7 +229,25 @@ let otMecanizadoSchema = new Schema({
         type: Number,
         default: 0,
     },
+    creator: [creatorSchema],
+    timestamp: {
+        type: String,
+        default: now,
+    },
+    modificator: [modificatorSchema],
+    modifiedOn: {
+        type: String,
+        default: ""
+    },
+})
+
+// ------- OT Mecanizado Segunda Schema ---------
+let otMecanizadoSegundaSchema = new Schema({
     fCuatro: { 
+        type: String,
+        default: 'sinDato',
+    },
+    estadofCuatro: { 
         type: String,
         default: 'sinDato',
     },
@@ -229,13 +259,21 @@ let otMecanizadoSchema = new Schema({
         type: String,
         default: 'sinDato',
     },
+    estadofCinco: { 
+        type: String,
+        default: 'sinDato',
+    },
     revisionFCinco: { 
         type: Number,
         default: 0,
     },
-    observacionesMecanizado: {
+    notasMecanizado: {
         type: String,
         default: '',
+    },
+    revisionNotasMecanizado: { 
+        type: Number,
+        default: 0,
     },
     creator: [creatorSchema],
     timestamp: {
@@ -249,7 +287,7 @@ let otMecanizadoSchema = new Schema({
     },
 })
 
-// ------- OT Detalles ---------
+// ------- Programacion ---------
 let ProgramacionSchema = new Schema({
     detalleId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -266,7 +304,8 @@ let ProgramacionSchema = new Schema({
     otDistribucion: [otDistribucionSchema],
     otProgramacionPrimera: [otProgramacionPrimeraSchema],
     otProgramacionSegunda: [otProgramacionSegundaSchema],
-    otMecanizado: [otMecanizadoSchema],
+    otMecanizadoPrimera: [otMecanizadoPrimeraSchema],
+    otMecanizadoSegunda: [otMecanizadoSegundaSchema],
     creator: [creatorSchema],
     timestamp: {
         type: String,
@@ -286,8 +325,4 @@ let ProgramacionSchema = new Schema({
     },
 })
 
-// let ProgramacionSchema = new Schema({
-//     otDetalles: [otDetallesSchema]
-// })
-
-module.exports = { ProgramacionSchema } //model('Programacion', ProgramacionSchema)
+module.exports = { ProgramacionSchema }

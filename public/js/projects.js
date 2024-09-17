@@ -82,37 +82,35 @@ socket.on('projectsAll', (arrayProjects, arrUsers) => {
 // --------------- Render Project table for AdminS -----------------------------------
 const renderProjectsForAdmin = (arrayProjects) => {
     let arrayProyectos = arrayProjects
-        
-    const html = arrayProyectos.map((element) => {
 
-        let green = 'success'
-        let red = 'danger'
-        let text = "Cotizado"
-        let grey = 'secondary'
-        let yellow = 'warning'
-        let white = 'white'
-        let colorResult = grey
-        let colorLevel
-                        
+    const html = arrayProyectos.map((element) => {
+        let green = 'success';
+        let red = 'danger';
+        let grey = 'secondary';
+        let yellow = 'warning';
+        let white = 'white';
+
+        // Definir valores predeterminados
+        let colorResult = grey;
+        let colorLevel = white;
+        let text = "Cotizado";
+
         // ----------- Loops de Array OCI ----------------
         function loopOci(j) {
             let ociArr = []
             let otVisibleLength = 0
             for (let i=0; i < element.project[0].oci[j].otProject.length; i++) {
-                if (element.project[0].oci[j].otProject[i].visible) {
-                    otVisibleLength++
-                }
+                element.project[0].oci[j].otProject[i].visible ? otVisibleLength++ : null
             }
             
             if (otVisibleLength > 0 ) {
                 if (otVisibleLength % 2 === 0) {
                     for (let i=0; i < otVisibleLength; i++) {
                         if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-1) {
-                            if (element.project[0].oci[j].ociStatus) {
+                            element.project[0].oci[j].ociStatus ?
                                 ociArr.push(element.project[0].oci[j].ociNumber)
-                            } else {
+                            :
                                 ociArr.push(element.project[0].oci[j].ociNumber + ' ' + '<i class="fa-solid fa-circle-info" title="OCI Inactiva" style="color: #ff0000;"></i><br>')
-                            }
                         } else {
                             ociArr.push('&#8203;')
                         }
@@ -121,11 +119,10 @@ const renderProjectsForAdmin = (arrayProjects) => {
                 } else {
                     for (let i=0; i < otVisibleLength; i++) {
                         if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-0.5) {
-                            if (element.project[0].oci[j].ociStatus) {
+                            element.project[0].oci[j].ociStatus ?
                                 ociArr.push(element.project[0].oci[j].ociNumber)
-                            } else {
+                                :
                                 ociArr.push(element.project[0].oci[j].ociNumber + ' ' + '<i class="fa-solid fa-circle-info" title="OCI Inactiva" style="color: #ff0000;"></i><br>')
-                            }
                         } else {
                             ociArr.push('&#8203;')
                         }
@@ -141,9 +138,7 @@ const renderProjectsForAdmin = (arrayProjects) => {
         let arrOciArr = []
         function loopArrayOci() {
             for (let j=0; j < element.project[0].oci.length; j++) {
-                if (element.project[0].oci[j].visible) {
-                    arrOciArr.push(loopOci(j))
-                }
+                element.project[0].oci[j].visible ? arrOciArr.push(loopOci(j)) : null
             }
             return arrOciArr.join('<hr>')
         }
@@ -154,20 +149,18 @@ const renderProjectsForAdmin = (arrayProjects) => {
             let ociAliasArr = []
             let otVisibleLength = 0
             for (let i=0; i < element.project[0].oci[j].otProject.length; i++) {
-                if (element.project[0].oci[j].otProject[i].visible) {
-                    otVisibleLength++
-                }
+                element.project[0].oci[j].otProject[i].visible? otVisibleLength++ : null
             }
             
             if (otVisibleLength > 0 ) {
                 if (otVisibleLength % 2 === 0) {
                     for (let i=0; i < otVisibleLength; i++) {
                         if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-1) {
-                            if (element.project[0].oci[j].ociStatus) {
+                            element.project[0].oci[j].ociStatus ?
                                 ociAliasArr.push(`<span class="badge bg-primary text-light my-auto">${element.project[0].oci[j].ociAlias}</span>`)
-                            } else {
+                                :
                                 ociAliasArr.push(`<span class="badge bg-danger text-light my-auto">${element.project[0].oci[j].ociAlias}</span><br>`)
-                            }
+
                         } else {
                             ociAliasArr.push('&#8203;')
                         }
@@ -176,11 +169,11 @@ const renderProjectsForAdmin = (arrayProjects) => {
                 } else {
                     for (let i=0; i < otVisibleLength; i++) {
                         if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-0.5) {
-                            if (element.project[0].oci[j].ociStatus) {
+                            element.project[0].oci[j].ociStatus ?
                                 ociAliasArr.push(`<span class="badge bg-primary text-light my-auto">${element.project[0].oci[j].ociAlias}</span>`)
-                            } else {
+                                :
                                 ociAliasArr.push(`<span class="badge bg-danger text-light my-auto">${element.project[0].oci[j].ociAlias}</span><br>`)
-                            }
+
                         } else {
                             ociAliasArr.push('&#8203;')
                         }
@@ -196,9 +189,7 @@ const renderProjectsForAdmin = (arrayProjects) => {
         let arrOciAliasArr = []
         function loopArrayAliasOci() {
             for (let j=0; j < element.project[0].oci.length; j++) {
-                if (element.project[0].oci[j].visible) {
-                    arrOciAliasArr.push(loopAliasOci(j))
-                }
+                element.project[0].oci[j].visible ? arrOciAliasArr.push(loopAliasOci(j)) : null
             }
             return arrOciAliasArr.join('<hr>')
         }
@@ -210,11 +201,10 @@ const renderProjectsForAdmin = (arrayProjects) => {
 
                 for (let i=0; i < element.project[0].oci[j].otProject.length; i++) {
                     if (element.project[0].oci[j].otProject[i].visible) {
-                        if (element.project[0].oci[j].otProject[i].otStatus) {
+                        element.project[0].oci[j].otProject[i].otStatus ?
                             otArr.push(element.project[0].oci[j].otProject[i].otNumber)
-                        } else {
+                            :
                             otArr.push(element.project[0].oci[j].otProject[i].otNumber + ' ' + '<i class="fa-solid fa-circle-info" title="OT Inactiva" style="color: #ff0000;"></i>')
-                        }
                     }
                 }
                 return otArr.join('<br>')
@@ -226,9 +216,7 @@ const renderProjectsForAdmin = (arrayProjects) => {
         let arrOtArr = []
         function loopArrayOt() {
             for (let j=0; j < element.project[0].oci.length; j++) {
-                if (element.project[0].oci[j].visible) {
-                    arrOtArr.push(loopOt(j))
-                }
+                element.project[0].oci[j].visible ? arrOtArr.push(loopOt(j)) : null
             }
             return arrOtArr.join('<hr>')
         }
@@ -238,9 +226,7 @@ const renderProjectsForAdmin = (arrayProjects) => {
             let opArr = []
             if (element.project[0].oci[j].otProject.length > 0 ) {
                 for (let i=0; i < element.project[0].oci[j].otProject.length; i++) {
-                    if (element.project[0].oci[j].otProject[i].visible) {
-                        opArr.push(element.project[0].oci[j].otProject[i].opNumber)
-                    }
+                    element.project[0].oci[j].otProject[i].visible ? opArr.push(element.project[0].oci[j].otProject[i].opNumber) : null
                 }
                 return opArr.join('<br>')
             } else {
@@ -283,20 +269,33 @@ const renderProjectsForAdmin = (arrayProjects) => {
             return arrDescriptionArr.join('<hr>')
         }    
 
+        // Crear un objeto para mapear los diferentes estados
+        const levelProjectMap = {
+            ganado: {
+                colorLevel: white,
+                colorResult: green,
+                text: "Ganado"
+            },
+            paraCotizar: {
+                colorLevel: yellow,
+                colorResult: grey,
+                text: "Para Cotizar"
+            },
+            default: {
+                colorLevel: white,
+                colorResult: red,
+                text: "A Riesgo"
+            }
+        };
 
-        if ( element.project[0].levelProject === "ganado") {
-            colorLevel = white
-            colorResult = green
-            text = "Ganado"
-        } else if ( element.project[0].levelProject === "paraCotizar") {
-            colorLevel = yellow
-            colorResult = grey
-            text = "Para Cotizar"
-        } else {
-            colorLevel = white
-            colorResult = red
-            text = "A Riesgo"
-        }
+        // Obtener los valores correspondientes al levelProject
+        const projectLevel = element.project[0].levelProject;
+        const levelData = levelProjectMap[projectLevel] || levelProjectMap.default;
+
+        // Asignar los valores
+        colorLevel = levelData.colorLevel;
+        colorResult = levelData.colorResult;
+        text = levelData.text;
 
         if(element.project[0].visible) {
             return (`<tr style="border-bottom: 2px solid #dedede";>
@@ -369,9 +368,7 @@ const renderProjectsForAdmin = (arrayProjects) => {
     
         let arrayCantProyectos = []
         for (let i=0; i<arrayProyectos.length; i++){
-            if(arrayProyectos[i].project[0].visible) {
-                arrayCantProyectos.push(i)
-            }
+            arrayProyectos[i].project[0].visible ? arrayCantProyectos.push(i) : null
         }
 
         const totalProyectos = parseInt(arrayCantProyectos.length)
@@ -381,7 +378,7 @@ const renderProjectsForAdmin = (arrayProjects) => {
 
         totalProyectos>1 ? textTotalProyectos = `Mostrando ${totalProyectos} Proyectos en total`
                             : 
-                           textTotalProyectos = `Mostrando ${totalProyectos} Proyecto en total`
+                            textTotalProyectos = `Mostrando ${totalProyectos} Proyecto en total`
 
         projectosEliminados>1 ? textProyectosEliminados = `(${projectosEliminados}) Proyectos, fueron eliminados`
                                 : 
@@ -406,34 +403,34 @@ const renderProjectsForUser = (arrayProjects) => {
     let arrayProyectos = arrayProjects
         
     const html = arrayProyectos.map((element) => {
-        let green = 'success'
-        let red = 'danger'
-        let text = "Cotizado"
-        let grey = 'secondary'
-        let yellow = 'warning'
-        let white = 'white'
-        let colorResult = grey
-        let colorLevel
+        let green = 'success';
+        let red = 'danger';
+        let grey = 'secondary';
+        let yellow = 'warning';
+        let white = 'white';
+
+        // Definir valores predeterminados
+        let colorResult = grey;
+        let colorLevel = white;
+        let text = "Cotizado";
 
         // ----------- Loops de Array OCI ----------------
         function loopOci(j) {
             let ociArr = []
             let otVisibleLength = 0
             for (let i=0; i < element.project[0].oci[j].otProject.length; i++) {
-                if (element.project[0].oci[j].otProject[i].visible) {
-                    otVisibleLength++
-                }
+                element.project[0].oci[j].otProject[i].visible ? otVisibleLength++ : null
             }
             
             if (otVisibleLength > 0 ) {
                 if (otVisibleLength % 2 === 0) {
                     for (let i=0; i < otVisibleLength; i++) {
                         if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-1) {
-                            if (element.project[0].oci[j].ociStatus) {
+                            element.project[0].oci[j].ociStatus ?
                                 ociArr.push(element.project[0].oci[j].ociNumber)
-                            } else {
+                            :
                                 ociArr.push(element.project[0].oci[j].ociNumber + ' ' + '<i class="fa-solid fa-circle-info" title="OCI Inactiva" style="color: #ff0000;"></i><br>')
-                            }
+
                         } else {
                             ociArr.push('&#8203;')
                         }
@@ -442,11 +439,11 @@ const renderProjectsForUser = (arrayProjects) => {
                 } else {
                     for (let i=0; i < otVisibleLength; i++) {
                         if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-0.5) {
-                            if (element.project[0].oci[j].ociStatus) {
+                            element.project[0].oci[j].ociStatus ?
                                 ociArr.push(element.project[0].oci[j].ociNumber)
-                            } else {
+                                :
                                 ociArr.push(element.project[0].oci[j].ociNumber + ' ' + '<i class="fa-solid fa-circle-info" title="OCI Inactiva" style="color: #ff0000;"></i><br>')
-                            }
+
                         } else {
                             ociArr.push('&#8203;')
                         }
@@ -516,9 +513,7 @@ const renderProjectsForUser = (arrayProjects) => {
         let arrOciAliasArr = []
         function loopArrayAliasOci() {
             for (let j=0; j < element.project[0].oci.length; j++) {
-                if (element.project[0].oci[j].visible) {
-                    arrOciAliasArr.push(loopAliasOci(j))
-                }
+                element.project[0].oci[j].visible ? arrOciAliasArr.push(loopAliasOci(j)) : null
             }
             return arrOciAliasArr.join('<hr>')
         }
@@ -530,11 +525,10 @@ const renderProjectsForUser = (arrayProjects) => {
 
                 for (let i=0; i < element.project[0].oci[j].otProject.length; i++) {
                     if (element.project[0].oci[j].otProject[i].visible) {
-                        if (element.project[0].oci[j].otProject[i].otStatus) {
+                        element.project[0].oci[j].otProject[i].otStatus ?
                             otArr.push(element.project[0].oci[j].otProject[i].otNumber)
-                        } else {
+                            :
                             otArr.push(element.project[0].oci[j].otProject[i].otNumber + ' ' + '<i class="fa-solid fa-circle-info" title="OT Inactiva" style="color: #ff0000;"></i>')
-                        }
                     }
                 }
                 return otArr.join('<br>')
@@ -546,9 +540,7 @@ const renderProjectsForUser = (arrayProjects) => {
         let arrOtArr = []
         function loopArrayOt() {
             for (let j=0; j < element.project[0].oci.length; j++) {
-                if (element.project[0].oci[j].visible) {
-                    arrOtArr.push(loopOt(j))
-                }
+                element.project[0].oci[j].visible ? arrOtArr.push(loopOt(j)) : null
             }
             return arrOtArr.join('<hr>')
         }
@@ -558,9 +550,7 @@ const renderProjectsForUser = (arrayProjects) => {
             let opArr = []
             if (element.project[0].oci[j].otProject.length > 0 ) {
                 for (let i=0; i < element.project[0].oci[j].otProject.length; i++) {
-                    if (element.project[0].oci[j].otProject[i].visible) {
-                        opArr.push(element.project[0].oci[j].otProject[i].opNumber)
-                    }
+                    element.project[0].oci[j].otProject[i].visible ? opArr.push(element.project[0].oci[j].otProject[i].opNumber) : null
                 }
                 return opArr.join('<br>')
             } else {
@@ -571,9 +561,7 @@ const renderProjectsForUser = (arrayProjects) => {
         let arrOpArr = []
         function loopArrayOp() {
             for (let j=0; j < element.project[0].oci.length; j++) {
-                if (element.project[0].oci[j].visible) {
-                    arrOpArr.push(loopOp(j))
-                }
+                element.project[0].oci[j].visible ? arrOpArr.push(loopOp(j)) : null
             }
             return arrOpArr.join('<hr>')
         } 
@@ -583,9 +571,7 @@ const renderProjectsForUser = (arrayProjects) => {
             let DescriptionArr = []
             if (element.project[0].oci[j].otProject.length > 0 ) {
                 for (let i=0; i < element.project[0].oci[j].otProject.length; i++) {
-                    if (element.project[0].oci[j].otProject[i].visible) {
-                        DescriptionArr.push(element.project[0].oci[j].otProject[i].opDescription)
-                    }
+                    element.project[0].oci[j].otProject[i].visible ? DescriptionArr.push(element.project[0].oci[j].otProject[i].opDescription) : null
                 }
                 return DescriptionArr.join('<br>')
             } else {
@@ -596,27 +582,38 @@ const renderProjectsForUser = (arrayProjects) => {
         let arrDescriptionArr = []
         function loopArrayDescription() {
             for (let j=0; j < element.project[0].oci.length; j++) {
-                if (element.project[0].oci[j].visible) {
-                    arrDescriptionArr.push(loopDescription(j))
-                }
+                element.project[0].oci[j].visible ? arrDescriptionArr.push(loopDescription(j)) : null
             }
             return arrDescriptionArr.join('<hr>')
         }
 
+        // Crear un objeto para mapear los diferentes estados
+        const levelProjectMap = {
+            ganado: {
+                colorLevel: white,
+                colorResult: green,
+                text: "Ganado"
+            },
+            paraCotizar: {
+                colorLevel: yellow,
+                colorResult: grey,
+                text: "Para Cotizar"
+            },
+            default: {
+                colorLevel: white,
+                colorResult: red,
+                text: "A Riesgo"
+            }
+        };
 
-        if ( element.project[0].levelProject === "ganado") {
-            colorLevel = white
-            colorResult = green
-            text = "Ganado"
-        } else if ( element.project[0].levelProject === "paraCotizar") {
-            colorLevel = yellow
-            colorResult = grey
-            text = "Para Cotizar"
-        } else {
-            colorLevel = white
-            colorResult = red
-            text = "A Riesgo"
-        }
+        // Obtener los valores correspondientes al levelProject
+        const projectLevel = element.project[0].levelProject;
+        const levelData = levelProjectMap[projectLevel] || levelProjectMap.default;
+
+        // Asignar los valores
+        colorLevel = levelData.colorLevel;
+        colorResult = levelData.colorResult;
+        text = levelData.text;
         
         if(element.project[0].visible) {
             return (`<tr style="border-bottom: 2px solid #dedede";>
@@ -703,7 +700,7 @@ const renderProjectsForUser = (arrayProjects) => {
 
         totalProyectos>1 ? textTotalProyectos = `Mostrando ${totalProyectos} Proyectos en total`
                             : 
-                           textTotalProyectos = `Mostrando ${totalProyectos} Proyecto en total`
+                            textTotalProyectos = `Mostrando ${totalProyectos} Proyecto en total`
 
         projectosEliminados>1 ? textProyectosEliminados = `(${projectosEliminados}) Proyectos, fueron eliminados`
                                 : 

@@ -39,109 +39,93 @@ const renderUser = (arrUsers) => {
     const html = arrUsers.map((element) => {
         let optionStatus = element.status ? green : red
         let optionAdmin = element.admin ? dark : grey
-        var optionPermiso = element.permiso ? grey : red
-        var optionArea = element.area ? cian : green
+        //var optionPermiso = element.permiso ? grey : red
+        //var optionArea = element.area ? cian : green
         let showStatus = element.status ? active : inactive
         let showAdmin = element.admin ? admin : user
         let idChain = element._id.substring(19)
-        var showArea = "Ingeniería"
+        //var showArea = "Ingeniería"
 
-            if (element.area === 'ingenieria') {
-                showArea
-                optionArea = cian
-            } else if (element.area === "fabricacion") {
-                showArea = 'Simulación'
-                optionArea = yellow
-            } else if (element.area === "administracion") {
-                showArea = grey
-                optionArea = yellow
-            } else if (element.area === "proyectos") {
-                showArea = "Proyectos"
-                optionArea = yellow
-            } else {
-                showArea = 'Todas'
-                optionArea = green
-            }
-
-        var showPermiso = "Diseño/Simulación"
+        const areaMapping = {
+            'ingenieria': { showArea: 'Ingeniería', optionArea: 'cian' },
+            'fabricacion': { showArea: 'Simulación', optionArea: 'yellow' },
+            'administracion': { showArea: 'Administración', optionArea: 'grey' },
+            'proyectos': { showArea: 'Proyectos', optionArea: 'yellow' }
+        };
         
-            if (element.permiso === 'diseno') {
-                showPermiso = "Diseño"
-                optionPermiso = cian
-            } else if (element.permiso === "simulacion") {
-                showPermiso = 'Simulación'
-                optionPermiso = yellow
-            } else if (element.permiso === "disenoSimulacion") {
-                showPermiso
-                optionPermiso = red
-            } else if (element.permiso === "cadCam") {
-                showPermiso = 'Cad-Cam'
-                optionPermiso = grey
-            } else if (element.permiso === "projectManager") {
-                showPermiso = 'Project Manager'
-                optionPermiso = dark
-            } else if (element.permiso === "mecanizado") {
-                showPermiso = 'Mecanizado'
-                optionPermiso = yellow
-            } else if (element.permiso === "ajuste") {
-                showPermiso = 'Ajuste'
-                optionPermiso = red
-            } else {
-                showPermiso = 'Todos'
-                optionPermiso = green
-            }
+        // Valores predeterminados
+        const defaultValues = { showArea: 'Todas', optionArea: 'green' };
+        
+        // Asignar valores basados en el área
+        const { showArea, optionArea } = areaMapping[element.area] || defaultValues;
+        
+        //var showPermiso = "Diseño/Simulación"
+        
+        const permisoMap = {
+            diseno: { showPermiso: "Diseño", optionPermiso: cian },
+            simulacion: { showPermiso: "Simulación", optionPermiso: yellow },
+            disenoSimulacion: { showPermiso: "Diseño-Simulación", optionPermiso: red },
+            cadCam: { showPermiso: "Cad-Cam", optionPermiso: grey },
+            projectManager: { showPermiso: "Project Manager", optionPermiso: dark },
+            mecanizado: { showPermiso: "Mecanizado", optionPermiso: yellow },
+            ajuste: { showPermiso: "Ajuste", optionPermiso: red }
+        };
+        
+        const defaultPermiso = { showPermiso: "Todos", optionPermiso: green };
+        
+        const { showPermiso, optionPermiso } = permisoMap[element.permiso] || defaultPermiso;
 
-            var superAdmin = element.superAdmin ? '<i class="fa-solid fa-crown fa-rotate-by fa-xl" title="SuperAdmin" style="color: #a89c0d; --fa-rotate-angle: 20deg;"></i>' : null
+        var superAdmin = element.superAdmin ? '<i class="fa-solid fa-crown fa-rotate-by fa-xl" title="SuperAdmin" style="color: #a89c0d; --fa-rotate-angle: 20deg;"></i>' : null
 
-            if (element.visible && element.superAdmin) {
-                return (`<tr>
-                            <th scope="row" class="text-center"><strong>...${idChain}</strong>${superAdmin}</th>
-                            <td class="text-center" id="legajoId_${element._id}">${element.legajoId}</td>
-                            <td class="text-center" id="name_${element._id}">${element.name}</td>
-                            <td class="text-center" id="lastName_${element._id}">${element.lastName}</td>
-                            <td class="text-center" id="email_${element._id}">${element.email}</td>
-                            <td class="text-center" id="username_${element._id}">${element.username}</td>
-                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Avatar" src='${element.avatar}' width="90px" height="70px"></td>
-                            <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
-                            <td class="text-center">
-                                <span class="badge rounded-pill bg-${optionAdmin} position-relative">
-                                    ${showAdmin}
-                                    <span class="position-absolute top-0 start-100 translate-middle">
-                                        ${superAdmin}
-                                    </span>
+        if (element.visible && element.superAdmin) {
+            return (`<tr>
+                        <th scope="row" class="text-center"><strong>...${idChain}</strong>${superAdmin}</th>
+                        <td class="text-center" id="legajoId_${element._id}">${element.legajoId}</td>
+                        <td class="text-center" id="name_${element._id}">${element.name}</td>
+                        <td class="text-center" id="lastName_${element._id}">${element.lastName}</td>
+                        <td class="text-center" id="email_${element._id}">${element.email}</td>
+                        <td class="text-center" id="username_${element._id}">${element.username}</td>
+                        <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Avatar" src='${element.avatar}' width="90px" height="70px"></td>
+                        <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
+                        <td class="text-center">
+                            <span class="badge rounded-pill bg-${optionAdmin} position-relative">
+                                ${showAdmin}
+                                <span class="position-absolute top-0 start-100 translate-middle">
+                                    ${superAdmin}
                                 </span>
-                            </td>
-                            <td class="text-center"><span class="badge rounded-pill bg-${optionArea}"> ${showArea} </span></td>
-                            <td class="text-center"><span class="badge text-bg-${optionPermiso}"> ${showPermiso} </span></td>
-                            <td class="text-center">
-                                <div class="d-block align-items-center text-center">
-                                    <a href="/api/usuarios/${element._id}" class="btn btn-primary btn-sm me-1"><i class="fa-solid fa-user-pen"></i></a>
-                                    <button id="${element._id}" name="btnDeleteUser" type="button" class="btn btn-danger btn-sm ms-1" title="Eliminar Usuario ${element.username}"><i class="fa-regular fa-trash-can"></i></button>
-                                </div>
-                            </td>
-                        </tr>`)
+                            </span>
+                        </td>
+                        <td class="text-center"><span class="badge rounded-pill bg-${optionArea}"> ${showArea} </span></td>
+                        <td class="text-center"><span class="badge text-bg-${optionPermiso}"> ${showPermiso} </span></td>
+                        <td class="text-center">
+                            <div class="d-block align-items-center text-center">
+                                <a href="/api/usuarios/${element._id}" class="btn btn-primary btn-sm me-1"><i class="fa-solid fa-user-pen"></i></a>
+                                <button id="${element._id}" name="btnDeleteUser" type="button" class="btn btn-danger btn-sm ms-1" title="Eliminar Usuario ${element.username}"><i class="fa-regular fa-trash-can"></i></button>
+                            </div>
+                        </td>
+                    </tr>`)
 
-            } else {
-                return (`<tr>
-                            <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
-                            <td class="text-center" id="legajoId_${element._id}">${element.legajoId}</td>
-                            <td class="text-center" id="name_${element._id}">${element.name}</td>
-                            <td class="text-center" id="lastName_${element._id}">${element.lastName}</td>
-                            <td class="text-center" id="email_${element._id}">${element.email}</td>
-                            <td class="text-center" id="username_${element._id}">${element.username}</td>
-                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Avatar" src='${element.avatar}' width="90px" height="70px"></td>
-                            <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
-                            <td class="text-center"><span class="badge rounded-pill bg-${optionAdmin}"> ${showAdmin} </span></td>
-                            <td class="text-center"><span class="badge rounded-pill bg-${optionArea}"> ${showArea} </span></td>
-                            <td class="text-center"><span class="badge text-bg-${optionPermiso}"> ${showPermiso} </span></td>
-                            <td class="text-center">
-                                <div class="d-block align-items-center text-center">
-                                    <a href="/api/usuarios/${element._id}" class="btn btn-primary btn-sm me-1"><i class="fa-solid fa-user-pen"></i></a>
-                                    <button id="${element._id}" name="btnDeleteUser" type="button" class="btn btn-danger btn-sm ms-1" title="Eliminar Usuario ${element.username}"><i class="fa-regular fa-trash-can"></i></button>
-                                </div>
-                            </td>
-                        </tr>`)
-            }
+        } else {
+            return (`<tr>
+                        <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
+                        <td class="text-center" id="legajoId_${element._id}">${element.legajoId}</td>
+                        <td class="text-center" id="name_${element._id}">${element.name}</td>
+                        <td class="text-center" id="lastName_${element._id}">${element.lastName}</td>
+                        <td class="text-center" id="email_${element._id}">${element.email}</td>
+                        <td class="text-center" id="username_${element._id}">${element.username}</td>
+                        <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Avatar" src='${element.avatar}' width="90px" height="70px"></td>
+                        <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
+                        <td class="text-center"><span class="badge rounded-pill bg-${optionAdmin}"> ${showAdmin} </span></td>
+                        <td class="text-center"><span class="badge rounded-pill bg-${optionArea}"> ${showArea} </span></td>
+                        <td class="text-center"><span class="badge text-bg-${optionPermiso}"> ${showPermiso} </span></td>
+                        <td class="text-center">
+                            <div class="d-block align-items-center text-center">
+                                <a href="/api/usuarios/${element._id}" class="btn btn-primary btn-sm me-1"><i class="fa-solid fa-user-pen"></i></a>
+                                <button id="${element._id}" name="btnDeleteUser" type="button" class="btn btn-danger btn-sm ms-1" title="Eliminar Usuario ${element.username}"><i class="fa-regular fa-trash-can"></i></button>
+                            </div>
+                        </td>
+                    </tr>`)
+        }
     }).join(" ");
 
     document.getElementById('mostrarUsuarios').innerHTML = html
@@ -155,7 +139,7 @@ const renderUser = (arrUsers) => {
 
     const htmlUserList = 
         ( `<caption id="capUserList">Cantidad de Usuarios: ${parseInt(usersActiveQty.length)}</caption><br>
-           <caption id="capDeleteUserList">Cantidad de Usuarios Eliminados: ${parseInt(arrayUser.length - usersActiveQty.length)}</caption>`)
+        <caption id="capDeleteUserList">Cantidad de Usuarios Eliminados: ${parseInt(arrayUser.length - usersActiveQty.length)}</caption>`)
 
     document.getElementById('capUserList').innerHTML = htmlUserList
 
@@ -367,7 +351,7 @@ function alertRefresh() {
     dropAreaAvatarUser.style.textAlign = "center"
     dropAreaAvatarUser.style.backgroundColor = '#838383'
     dropAreaAvatarUser.style.display = 'block'
-    dropAreaAvatarUser.innerHTML = 'Arrastra y suelta una imagen aquí'
+    dropAreaAvatarUser.innerHTML = 'Haz click o arrastra y suelta una imagen aquí'
 }
 
 function alertNotImageAvatarUser() {
@@ -389,9 +373,8 @@ dropAreaAvatarUser.addEventListener('drop', (e) => {
     if (file && file.type.startsWith('image/')) {
         dropAreaAvatarUser.style.border = '3px dashed #2d2'
         dropAreaAvatarUser.style.backgroundColor = '#22dd2210'
-        
         handleFileUploadAvatarUser(file)
-   
+
     } else {
         alertNotImageAvatarUser()
     }     
@@ -405,11 +388,9 @@ fileInputAvatarUser.addEventListener('change', (e) => {
     e.preventDefault()
     const file = fileInputAvatarUser.files[0]
     
-    
     if (file && file.type.startsWith('image/')) { 
         dropAreaAvatarUser.style.border = '3px dashed #2d2'
         dropAreaAvatarUser.style.backgroundColor = '#22dd2210'
-
         handleFileUploadAvatarUser(file)
 
     } else {
@@ -467,7 +448,7 @@ function messageNewUser(name, lastName, username, legajoId, email) {
             confirmButtonText: 'Registrarlo! <i class="fa-solid fa-user-plus"></i>',
             cancelButtonText: 'Cancelar <i class="fa-solid fa-user-xmark"></i>'
     
-          }).then((result) => {
+        }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById("newUserForm").submit()
                 setTimeout(() => {
@@ -483,10 +464,11 @@ function messageNewUser(name, lastName, username, legajoId, email) {
                     'No registrado!',
                     `El usuario ${name} ${lastName}, no ha sido registrado`,
                     'info'
-                  )
+                )
                 return false
             }
-          })
+        })
+
     } else {
         swal.fire({
             title: 'Error',
@@ -512,23 +494,15 @@ function messageWarningEmptyFields(
     
     const formFields =[]
     
-    if (name=="") {
-        formFields.push('Nombre')
-    } if (lastName == "") {
-        formFields.push('Apellido')
-    } if (username == "") {
-        formFields.push('Username')
-    } if (email == "") {
-        formFields.push('Email')
-    } if (password == "") {
-        formFields.push('Password')
-    } if (confirmPassword == "") {
-        formFields.push('Confirmacion Password')  
-    } if (legajoId == "") {
-        formFields.push('Legajo')
-    }
-
-    if (formFields.length == 1) {
+    name=="" ? formFields.push('Nombre') : null
+    lastName == "" ? formFields.push('Apellido') : null
+    username == "" ? formFields.push('Username') : null
+    email == "" ? formFields.push('Email') : null
+    password == "" ? formFields.push('Password') : null
+    confirmPassword == "" ? formFields.push('Confirmacion Password') : null
+    legajoId == "" ? formFields.push('Legajo') : null
+    
+    formFields.length == 1 ?
         Swal.fire({
             title: `Campo Vacío`,
             text: `El campo ${formFields[0]} está vacío!`,
@@ -538,7 +512,7 @@ function messageWarningEmptyFields(
             cancelButtonColor: '#d33',
             cancelButtonText: 'Volver al Formulario <i class="fa-solid fa-user-xmark"></i>'
         })
-    } else {
+    :
         Swal.fire({
             title: `${formFields.length} Campos Vacíos`,
             text: `Los campos ${formFields.join(", ")} están vacíos!`,
@@ -548,7 +522,6 @@ function messageWarningEmptyFields(
             cancelButtonColor: '#d33',
             cancelButtonText: 'Volver al Formulario <i class="fa-solid fa-user-xmark"></i>'
         })
-    }
 }
 
 const btnAddNewUser = document.getElementById('btnAddNewUser')
@@ -563,25 +536,10 @@ btnAddNewUser.addEventListener('click', (event) => {
     const confirmPassword = document.getElementById('confirmPassword').value
     const legajoId = document.getElementById('userLegajoId').value
 
-    if (name && lastName && username && legajoId && email && password && confirmPassword) {
-        messageNewUser(
-            name, 
-            lastName, 
-            username, 
-            legajoId, 
-            email
-        )
-    } else {
-        messageWarningEmptyFields(
-            name,
-            lastName,
-            username,
-            email,
-            password,
-            confirmPassword,
-            legajoId
-        )
-    }
+    name && lastName && username && legajoId && email && password && confirmPassword ?
+        messageNewUser(name, lastName, username, legajoId, email)
+    :
+        messageWarningEmptyFields(name, lastName, username, email, password, confirmPassword, legajoId)
 })
 
 const btnResetFormNewUser = document.getElementById('btnResetFormNewUser')
@@ -650,10 +608,9 @@ var inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
 
 function disabledBtnAceptar () {
     let btnAceptarFrom = document.getElementById('btnAddNewUser');
-    const allInputs = document.querySelectorAll('input[type="text"],input[type="number"],select,textarea, input[type="check"]' )
+    const allInputs = document.querySelectorAll('input[type="text"],input[type="number"],select,textarea,input[type="check"], input[type="file"]')
     
     allInputs.forEach(function(input) {
-        if (input.value) {
             input.addEventListener('change', (event) => {
                 event.preventDefault()
                 input.classList.add("border-primary")
@@ -661,8 +618,7 @@ function disabledBtnAceptar () {
                 input.classList.add("shadow")
                 btnAceptarFrom.removeAttribute('disabled')
                 btnAceptarFrom.style = "cursor: pointer;"
-            })    
-        }        
+            })
     })
 }
 

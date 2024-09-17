@@ -81,6 +81,7 @@ const renderClientAdmin = (arrClient) => {
         let blue = 'primary'
         let result = 'S/P'
         let colorResult = grey
+        let colorStatus = green
         let idChain = element._id.substring(19)
         
         let userArr = []
@@ -105,22 +106,20 @@ const renderClientAdmin = (arrClient) => {
             return modifArr.join('<br>')
         }
 
-        if ( element.status === true && element.project > 0) {
-            colorStatus = green
-            colorResult = black
-            result = element.project
-        } else if ( element.status === true && element.project === 0 ) {
-            colorStatus = green
-        } else if ( element.status === false && element.project > 0 ) {
-            colorStatus = red
-            colorResult = blue
-            result = element.project
-            text = "Inactivo"
-        } else if ( element.status === false && element.project === 0 ) {
-            colorStatus = red
-            text = "Inactivo"
+        // Asignar colorStatus basado en element.status
+        colorStatus = element.status ? green : red;
+
+        // Asignar colorResult y result solo si project > 0
+        if (element.project > 0) {
+            colorResult = element.status ? black : blue;
+            result = element.project;
         }
-        
+
+        // Asignar text solo si está inactivo
+        if (!element.status) {
+            text = "Inactivo";
+        }
+
         if(element.visible) {
             return (`<tr>
                         <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
@@ -155,7 +154,7 @@ const renderClientAdmin = (arrClient) => {
 
     const htmlClientList = 
         ( `<caption id="capClientList">Cantidad de Clientes: ${parseInt(clientsActiveQty.length)}</caption><br>
-           <caption id="capClientDeletedList">Cantidad de Clientes Eliminados: ${parseInt(arrayClient.length - clientsActiveQty.length)}</caption>`)
+        <caption id="capClientDeletedList">Cantidad de Clientes Eliminados: ${parseInt(arrayClient.length - clientsActiveQty.length)}</caption>`)
 
     document.getElementById('capClientList').innerHTML = htmlClientList
 
@@ -165,7 +164,6 @@ const renderClientAdmin = (arrClient) => {
 
     // ---- mensaje confirmacion eliminar Cliente
     function messageDeleteClient(id, name, logo, ) {
-
         const htmlForm = `
                 El cliente ${name}, se eliminará completamente.<br>
                 <img class="img-fluid rounded-2 m-2" alt="Logo Cliente" src='${logo}' width="90px" height="75px"><br>
@@ -211,7 +209,6 @@ const renderClientAdmin = (arrClient) => {
                 const idClient = btn.id
                 const name = document.getElementById(`name_${idClient}`).innerText
                 const logo = document.getElementById(`logo_${idClient}`).src
-
                 const projectQty = parseInt(document.getElementById(`projectQty_${idClient}`).innerText)
 
                 if (!isNaN(projectQty)) {
@@ -301,7 +298,6 @@ const renderClientUser = (arrClient) => {
 
         if(element.visible) {
             return (`<tr>
-
                         <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
                         <td class="text-center" id="name_${element._id}">${element.name}</td>
                         <td class="text-center"><a href="/api/clientes/select/${element._id}"><img id="logo_${element._id}" class="img-fluid rounded m-2" alt="Logo Cliente" src='${element.logo}' width="100px" height="80px"></a></td>
@@ -334,7 +330,7 @@ const renderClientUser = (arrClient) => {
 
     const htmlClientList = 
         ( `<caption id="capClientList">Cantidad de Clientes: ${parseInt(clientsActiveQty.length)}</caption><br>
-           <caption id="capClientDeletedList">Cantidad de Clientes Eliminados: ${parseInt(arrayClient.length - clientsActiveQty.length)}</caption>`)
+        <caption id="capClientDeletedList">Cantidad de Clientes Eliminados: ${parseInt(arrayClient.length - clientsActiveQty.length)}</caption>`)
 
     document.getElementById('capClientList').innerHTML = htmlClientList
 }
@@ -395,7 +391,7 @@ function alertSizeImageLogoClient() {
 dropAreaLogoClient.addEventListener('drop', (e) => {
     e.preventDefault()
     const file = e.dataTransfer.files[0]
-   
+
     if (file && file.type.startsWith('image/')) {
         dropAreaLogoClient.style.border = '3px dashed #2d2'
         dropAreaLogoClient.style.backgroundColor = '#22dd2210'

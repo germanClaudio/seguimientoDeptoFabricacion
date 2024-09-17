@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head/head'); %>
+</head>
+
+<body>
+    <%- include('../partials/header/header'); %>
+
+    <div class="container" style="padding-top: 70px;"></div>
+    <br>
+    <div class="collapse" id="collapseExample">
+        <%- include('../partials/forms/formularioTools'); %>
+    </div>
+    <br>
+
+    <%- include('../partials/btnHeaderTop/btnHeaderTop-newTool'); %>
+
+    <div class="d-block mx-auto mt-4 text-center bg-primary-light">    
+        <%- include('../partials/forms/formularioBuscarMaquina'); %>
+        <%- include('../partials/data/dataToolSearch'); %>
+    </div>
+
+    <%- include('../partials/sections/sectionToolsList'); %>
+    
+    <div class="d-block mx-auto px-5 mb-5 text-center w-100">
+        <%- include('../partials/data/dataToolsTable'); %>
+    </div>
+    <br>
+    <%- include('../partials/btnFooterBottom/btnFooterBottom-goUp'); %>
+    <br>
+    <footer>
+        <%- include('../partials/footer/footer'); %>
+    </footer>
+
+    <!--    scripts     -->
+    <script type="text/javascript" src="/js/maquinas.js"></script>
+    <script type="text/javascript" src="/js/search.js"></script>
+                
+</body>
+
+</html>
