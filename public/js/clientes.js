@@ -11,24 +11,24 @@ function formatDate(date) {
     return DD + MM + YY + "_" + hh + mm + ss
 }
 
-function extractNumbers(str) {
-    const numbers = str.match(/\d{1,2}/g); // Extract 1 or 2 digit numbers from the string
+// function extractNumbers(str) {
+//     const numbers = str.match(/\d{1,2}/g); // Extract 1 or 2 digit numbers from the string
     
-    if (numbers) {
-        if (numbers.length === 2) {
-            // If two numbers are found, check if both are numbers
-            if (!isNaN(parseInt(numbers[0])) && !isNaN(parseInt(numbers[1]))) {
-                return numbers; // Return both numbers as an array
-            }
-        } else if (numbers.length === 1) {
-            // If only one number is found, check if it's a number
-            if (!isNaN(parseInt(numbers[0]))) {
-                return numbers[0]; // Return the single number
-            }
-        }
-    }
-    return null // Return null if no valid numbers are found
-}
+//     if (numbers) {
+//         if (numbers.length === 2) {
+//             // If two numbers are found, check if both are numbers
+//             if (!isNaN(parseInt(numbers[0])) && !isNaN(parseInt(numbers[1]))) {
+//                 return numbers; // Return both numbers as an array
+//             }
+//         } else if (numbers.length === 1) {
+//             // If only one number is found, check if it's a number
+//             if (!isNaN(parseInt(numbers[0]))) {
+//                 return numbers[0]; // Return the single number
+//             }
+//         }
+//     }
+//     return null // Return null if no valid numbers are found
+// }
 
 //-------------------------------------------
 const inputName = document.getElementById('name')
@@ -161,86 +161,6 @@ const renderClientAdmin = (arrClient) => {
     // Ocultar el spinner y mostrar la tabla
     document.getElementById('loading-spinner').style.display = 'none';
     document.getElementById('clientTable').style.display = 'block';
-
-    // ---- mensaje confirmacion eliminar Cliente
-    function messageDeleteClient(id, name, logo, ) {
-        const htmlForm = `
-                El cliente ${name}, se eliminará completamente.<br>
-                <img class="img-fluid rounded-2 m-2" alt="Logo Cliente" src='${logo}' width="90px" height="75px"><br>
-                Está seguro que desea continuar?<br>
-                <form id="formDeleteClient" action="/api/clientes/delete/${id}" method="get">
-                </form>`
-    
-        Swal.fire({
-            title: `Eliminar Cliente <b>${name}</b>?`,
-            position: 'center',
-            html: htmlForm,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Eliminarlo! <i class="fa-regular fa-trash-can"></i>',
-            cancelButtonText: 'Cancelar <i class="fa-solid fa-user-shield"></i>'
-    
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById("formDeleteClient").submit()
-                Swal.fire(
-                    'Eliminado!',
-                    `El cliente ${name}, ha sido eliminado exitosamente.`,
-                    'success'
-                )
-            } else {
-                Swal.fire(
-                    'No eliminado!',
-                    `El cliente ${name}, no ha sido eliminado`,
-                    'info'
-                    )
-                return false
-            }
-        })
-    }
-
-    const nodeList = document.querySelectorAll('button[name="btnDeleteClient"]')
-    
-    nodeList.forEach(function(btn){
-        if (btn) {
-            btn.addEventListener('click', (event) => {
-                const idClient = btn.id
-                const name = document.getElementById(`name_${idClient}`).innerText
-                const logo = document.getElementById(`logo_${idClient}`).src
-                const projectQty = parseInt(document.getElementById(`projectQty_${idClient}`).innerText)
-
-                if (!isNaN(projectQty)) {
-                    let plText = ''
-                    projectQty==1 ? 
-                    plText = `El cliente ${name}<br>
-                                <img class="img-fluid rounded-2 m-2" alt="Logo Cliente" src='${logo}' width="90px" height="75px"><br>
-                                posee ${projectQty} proyecto asociado.<br>
-                                No es posible eliminarlo.`
-                    :
-                    plText = `El cliente ${name}<br>
-                                <img class="img-fluid rounded-2 m-2" alt="Logo Cliente" src='${logo}' width="90px" height="75px"><br>
-                                posee ${projectQty} proyectos asociados.<br>
-                                No es posible eliminarlo.`
-
-                    Swal.fire({
-                        title: `Atención!`,
-                        position: 'center',
-                        html: plText,
-                        icon: 'warning',
-                        showCancelButton: true,
-                        showConfirmButton: false,
-                        cancelButtonColor: '#d33',
-                        cancelButtonText: 'Salir <i class="fa-solid fa-user-shield"></i>'
-                    })
-
-                } else if (idClient && name && logo) {
-                    messageDeleteClient(idClient, name, logo, projectQty)
-                }
-            })
-        }
-    })
 }
 
 //----------------------- Render User -------------------------------
@@ -312,7 +232,7 @@ const renderClientUser = (arrClient) => {
                             <div class="d-block align-items-center">
                                 <a href="/api/clientes/select/${element._id}" class="btn btn-secondary btn-sm me-1" data-toggle="tooltip" data-placement="top" title="Ver cliente ${element.name}"><i class="fa-regular fa-eye"></i></a>
                                 <a href="/api/clientes/${element._id}" class="btn btn-primary btn-sm mx-1" title="Ver proyectos cliente ${element.name}"><i class="icon-rocket"></i></a>
-                                <button id="${element._id}" name="btnDeleteClient" type="button" class="btn btn-danger btn-sm ms-1" title="Solo Admin puede modificar esto"><i class="fa-solid fa-info-circle"></i></button>
+                                <button type="button" class="btn btn-danger btn-sm ms-1 disabled" title="Solo Admin puede modificar esto"><i class="fa-solid fa-info-circle"></i></button>
                             </div>
                         </td>
                     </tr>`)
@@ -333,7 +253,91 @@ const renderClientUser = (arrClient) => {
         <caption id="capClientDeletedList">Cantidad de Clientes Eliminados: ${parseInt(arrayClient.length - clientsActiveQty.length)}</caption>`)
 
     document.getElementById('capClientList').innerHTML = htmlClientList
+    
+    // Ocultar el spinner y mostrar la tabla
+    document.getElementById('loading-spinner').style.display = 'none';
+    document.getElementById('clientTable').style.display = 'block';
 }
+
+// ---- mensaje confirmacion eliminar Cliente
+function messageDeleteClient(id, name, logo, ) {
+    const htmlForm = `
+            El cliente ${name}, se eliminará completamente.<br>
+            <img class="img-fluid rounded-2 m-2" alt="Logo Cliente" src='${logo}' width="90px" height="75px"><br>
+            Está seguro que desea continuar?<br>
+            <form id="formDeleteClient" action="/api/clientes/delete/${id}" method="get">
+            </form>`
+
+    Swal.fire({
+        title: `Eliminar Cliente <b>${name}</b>?`,
+        position: 'center',
+        html: htmlForm,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Eliminarlo! <i class="fa-regular fa-trash-can"></i>',
+        cancelButtonText: 'Cancelar <i class="fa-solid fa-user-shield"></i>'
+
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById("formDeleteClient").submit()
+            Swal.fire(
+                'Eliminado!',
+                `El cliente ${name}, ha sido eliminado exitosamente.`,
+                'success'
+            )
+        } else {
+            Swal.fire(
+                'No eliminado!',
+                `El cliente ${name}, no ha sido eliminado`,
+                'info'
+                )
+            return false
+        }
+    })
+}
+
+const nodeList = document.querySelectorAll('button[name="btnDeleteClient"]')
+
+nodeList.forEach(function(btn){
+    if (btn) {
+        btn.addEventListener('click', (event) => {
+            const idClient = btn.id
+            const name = document.getElementById(`name_${idClient}`).innerText
+            const logo = document.getElementById(`logo_${idClient}`).src
+            const projectQty = parseInt(document.getElementById(`projectQty_${idClient}`).innerText)
+
+            if (!isNaN(projectQty)) {
+                let plText = ''
+                projectQty==1 ? 
+                plText = `El cliente ${name}<br>
+                            <img class="img-fluid rounded-2 m-2" alt="Logo Cliente" src='${logo}' width="90px" height="75px"><br>
+                            posee ${projectQty} proyecto asociado.<br>
+                            No es posible eliminarlo.`
+                :
+                plText = `El cliente ${name}<br>
+                            <img class="img-fluid rounded-2 m-2" alt="Logo Cliente" src='${logo}' width="90px" height="75px"><br>
+                            posee ${projectQty} proyectos asociados.<br>
+                            No es posible eliminarlo.`
+
+                Swal.fire({
+                    title: `Atención!`,
+                    position: 'center',
+                    html: plText,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    showConfirmButton: false,
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Salir <i class="fa-solid fa-user-shield"></i>'
+                })
+
+            } else if (idClient && name && logo) {
+                messageDeleteClient(idClient, name, logo, projectQty)
+            }
+        })
+    }
+})
 
 // --------------- Create New Client ------------------------
 // ----------- Logo Client Image behavior ---------------

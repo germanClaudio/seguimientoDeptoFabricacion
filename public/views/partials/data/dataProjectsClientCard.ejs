@@ -4,12 +4,8 @@
                 <a href="/api/clientes/select/<%= cliente._id %>">
                     <img src="<%= cliente.logo %>" class="img-fluid rounded" id="imgCliente" alt="Imagen Logo Cliente" width="200px">
                 </a>
-                <h5 class="card-title">
-                    <%= cliente.name %>
-                </h5>
-                <p class="card-text">
-                    <%= cliente.code %>
-                </p>
+                <h5 class="card-title"><%= cliente.name %></h5>
+                <p class="card-text"><%= cliente.code %></p>
                 <input id="idCliente" type="hidden" value="<%= cliente._id %>" >
                 
                 <% if (cliente.status) { %>
@@ -33,19 +29,20 @@
                     }
                     
                 if (cliente.project > 0) {
+                    let projectWonToShowUsers = 0 
                     for (let m=0; arrVisibleProjects.length>m; m++) {
                         if (arrVisibleProjects[m].project[0].visible && cliente.status) { %>
-                                                    
-                                <div class="accordion" id="accordionPanelsStayOpen<%=m %>">
-                                    <% for ( let j = 0;  arrVisibleProjects[m].project.length > j; j++ ) { %>
+                            <div class="accordion" id="accordionPanelsStayOpen<%=m %>">
+                                <% for ( let j = 0;  arrVisibleProjects[m].project.length > j; j++ ) {
+                                    if ( userInfo.admin || userInfo.area === 'ingenieria') { %>
                                         <div class="accordion-item">
                                             <h2 class="accordion-header" id="panelsStayOpen-headingOneCard">
                                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                                     data-bs-target="#panelsStayOpen-collapseOneCard<%=m %>" aria-expanded="false"
                                                     aria-controls="panelsStayOpen-collapseOneCard<%=m %>">
-                                                            <strong># <%= m+1 %></strong> -
-                                                            Codigo Proyecto: <%= arrVisibleProjects[m].project[j].codeProject %> -
-                                                            Nombre Proyecto: <strong class="mx-2"> <%= arrVisibleProjects[m].project[j].projectName %> </strong> -
+                                                        <strong># <%= m+1 %></strong> -
+                                                        Codigo Proyecto: <%= arrVisibleProjects[m].project[j].codeProject %> -
+                                                        Nombre Proyecto: <strong class="mx-2"> <%= arrVisibleProjects[m].project[j].projectName %> </strong> -
                                                     
                                                     <% if (arrVisibleProjects[m].project[j].levelProject == "ganado") { %>
                                                             Nivel: <span class="badge rounded-pill bg-success text-white mx-2"> Ganado </span>
@@ -56,7 +53,6 @@
                                                     <% } %>
                                                 </button>
                                             </h2>
-
                                             <div id="panelsStayOpen-collapseOneCard<%=m %>" class="accordion-collapse collapse"
                                                 aria-labelledby="panelsStayOpen-headingOne">
                                                 <div class="accordion-body px-1 my-auto">
@@ -65,8 +61,7 @@
                                                             <!-- -------------- seccion Foto Proyecto ---------------------- -->
                                                             <div class="col-2 my-auto px-1">
                                                                 <img id="imageProject<%= m %>" src="<%= arrVisibleProjects[m].project[j].imageProject %>"
-                                                                        class="img-fluid rounded px-1" alt="Imagen Proyecto"
-                                                                        width="175px">
+                                                                    class="img-fluid rounded px-1" alt="Imagen Proyecto" width="175px">
                                                             </div>
                                                             <!-- -------------- seccion Proyecto ---------------------- -->
                                                             <div class="col-3 my-auto px-1">
@@ -87,18 +82,24 @@
                                                                 </div>
                                                                 
                                                                 <div class="container px-1">
-                                                                    <div class="d-flex justify-content-center my-4">
-                                                                        <a type="button" title="Ver Proyecto" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeProyectDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
-                                                                        <button type="button" title="Agregar Nueva OCI" id="btnAddNewOciToProject<%= m %>" name="btnAddNewOciToProject" class="btn btn-success rounded-circle mx-2 border border-dark border-1 shadow" value="<%= arrVisibleProjects[m].project[j].id %>"><i class="fa-solid fa-plus-circle"></i></button>
-                                                                        <button type="button" title="Editar proyecto <%= proyectos[m].project[j].projectDescription %>" id="btnUpdateProject<%= m %>_<%= j %>" name="btnUpdateProject" class="btn btn-primary rounded-circle ms-2 border border-dark border-1 shadow" value="<%= arrVisibleProjects[m].project[j].id %>"><i class="fa-solid fa-pencil"></i></button>
-                                                                    </div>
-                                                                    <div class="d-flex justify-content-center my-4">
-                                                                        <button type="button" title="Cambiar Nivel Proyecto <%= arrVisibleProjects[m].project[j].projectDescription %>" id="btnChangeLevelProyect<%= m %>_<%= j %>" class="btn btn-info rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-regular fa-chess-king fa-lg"></i></button>
-                                                                        <button type="button" title="Cambiar Estado Proyecto <%= arrVisibleProjects[m].project[j].projectDescription %>" id="btnChangeStatusProyect<%= m %>_<%= j %>" class="btn btn-dark rounded-circle mx-2 border border-dark border-1 shadow"><i class="fa-solid fa-power-off"></i></button>
-                                                                        <button type="button" title="Eliminar Proyecto <%= arrVisibleProjects[m].project[j].projectDescription %>" id="btnDeleteProject<%= m %>_<%= j %>" class="btn btn-danger rounded-circle ms-2 border border-dark border-1 shadow"><i class="fa-regular fa-trash-can fa-lg"></i></button>
-                                                                    </div>
+                                                                    <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                                                                        <div class="d-flex justify-content-center my-4">
+                                                                            <a type="button" title="Ver Proyecto" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeProyectDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
+                                                                            <button type="button" title="Agregar Nueva OCI" id="btnAddNewOciToProject<%= m %>" name="btnAddNewOciToProject" class="btn btn-success rounded-circle mx-2 border border-dark border-1 shadow" value="<%= arrVisibleProjects[m].project[j].id %>"><i class="fa-solid fa-plus-circle"></i></button>
+                                                                            <button type="button" title="Editar proyecto <%= proyectos[m].project[j].projectDescription %>" id="btnUpdateProject<%= m %>_<%= j %>" name="btnUpdateProject" class="btn btn-primary rounded-circle ms-2 border border-dark border-1 shadow" value="<%= arrVisibleProjects[m].project[j].id %>"><i class="fa-solid fa-pencil"></i></button>
+                                                                        </div>
+                                                                        <div class="d-flex justify-content-center my-4">
+                                                                            <button type="button" title="Cambiar Nivel Proyecto <%= arrVisibleProjects[m].project[j].projectDescription %>" id="btnChangeLevelProyect<%= m %>_<%= j %>" class="btn btn-info rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-regular fa-chess-king fa-lg"></i></button>
+                                                                            <button type="button" title="Cambiar Estado Proyecto <%= arrVisibleProjects[m].project[j].projectDescription %>" id="btnChangeStatusProyect<%= m %>_<%= j %>" class="btn btn-dark rounded-circle mx-2 border border-dark border-1 shadow"><i class="fa-solid fa-power-off"></i></button>
+                                                                            <button type="button" title="Eliminar Proyecto <%= arrVisibleProjects[m].project[j].projectDescription %>" id="btnDeleteProject<%= m %>_<%= j %>" class="btn btn-danger rounded-circle ms-2 border border-dark border-1 shadow"><i class="fa-regular fa-trash-can fa-lg"></i></button>
+                                                                        </div>
+                                                                    <% } else { %>
+                                                                        <div class="d-flex justify-content-center my-4">
+                                                                            <a type="button" title="Ver Proyecto" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeProyectDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
+                                                                            <button type="button" title="Agregar Nueva OCI" id="btnAddNewOciToProject<%= m %>" name="btnAddNewOciToProject" class="btn btn-success rounded-circle mx-2 border border-dark border-1 shadow" value="<%= arrVisibleProjects[m].project[j].id %>"><i class="fa-solid fa-plus-circle"></i></button>
+                                                                        </div>
+                                                                    <% } %>
                                                                 </div>
-
                                                                 <form style="display: none" id="formChangeStatusProject<%= m %>_<%= j %>" action="/api/proyectos/updateStatusProject/<%= arrVisibleProjects[m].project[j].id %>" method="post">
                                                                     <fieldset>
                                                                         <input type="hidden" name="projectNameHidden" id="projectNameHidden<%= m %>_<%= j %>" value="<%= arrVisibleProjects[m].project[j].projectName %>">
@@ -126,10 +127,9 @@
                                                                             countOci++
                                                                         }
                                                                     }
-                
+
                                                                     if (arrVisibleOci.length > 0 && countOci > 0) {
                                                                         for (let k=0; arrVisibleOci.length > k; k++) { %>
-
                                                                             <div class="row align-items-center">
                                                                                 <!-- ----------- seccion Imagen de OCI's ------------ -->
                                                                                 <div class="col-3 my-auto px-1">
@@ -145,19 +145,21 @@
                                                                                     <% if (arrVisibleOci[k].ociStatus) {
                                                                                         const ociStatus="Activa" %>
                                                                                         <div class="my-3">Status OCI: <span class="badge rounded-pill bg-primary text-white"> <%= ociStatus %> </span> </div>
-                                                                                
                                                                                     <% } else {
                                                                                         const ociStatus="Inactiva" %>
                                                                                         <div class="my-3">Status OCI: <span class="badge rounded-pill bg-danger text-white"> <%= ociStatus %> </span> </div>
                                                                                     <% } %>
                                                                                         <div class="my-3">
                                                                                             <% if (arrVisibleProjects[m].project[j].statusProject) { %>
-                                                                                                                                                                        
                                                                                                 <div class="d-flex justify-content-center">
-                                                                                                    <a type="button" title="Ver OCI#<%= arrVisibleOci[k].ociNumber %>" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeOciDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
-                                                                                                    <button type="button" title="Editar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnUpdateOci<%= ociCount %>_<%= k %>" name="btnUpdateOci" class="btn btn-primary rounded-circle mx-2 border border-dark border-1 shadow" value="<%= j%>"><i class="fa-solid fa-pencil"></i></button>
-                                                                                                    <button type="button" title="Cambiar Estado OCI#<%= arrVisibleOci[k].ociNumber %>" id="<%= ociCount %>_<%= k %>" class="btn btn-dark rounded-circle mx-2 border border-dark border-1 shadow"><i class="fa-solid fa-power-off"></i></button>
-                                                                                                    <button type="button" title="Eliminar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnDeleteOci<%= ociCount %>_<%= k %>" class="btn btn-danger rounded-circle ms-2 border border-dark border-1 shadow"><i class="fa-solid fa-trash"></i></button>
+                                                                                                    <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                                                                                                        <a type="button" title="Ver OCI#<%= arrVisibleOci[k].ociNumber %>" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeOciDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
+                                                                                                        <button type="button" title="Editar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnUpdateOci<%= ociCount %>_<%= k %>" name="btnUpdateOci" class="btn btn-primary rounded-circle mx-2 border border-dark border-1 shadow" value="<%= j%>"><i class="fa-solid fa-pencil"></i></button>
+                                                                                                        <button type="button" title="Cambiar Estado OCI#<%= arrVisibleOci[k].ociNumber %>" id="<%= ociCount %>_<%= k %>" class="btn btn-dark rounded-circle mx-2 border border-dark border-1 shadow"><i class="fa-solid fa-power-off"></i></button>
+                                                                                                        <button type="button" title="Eliminar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnDeleteOci<%= ociCount %>_<%= k %>" class="btn btn-danger rounded-circle ms-2 border border-dark border-1 shadow"><i class="fa-solid fa-trash"></i></button>
+                                                                                                    <% } else { %>
+                                                                                                        <a type="button" title="Ver OCI#<%= arrVisibleOci[k].ociNumber %>" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeOciDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
+                                                                                                    <% } %>
                                                                                                 </div>
                                                                                                 <form style="display: none" id="formChangeStatusOci<%= ociCount %>_<%= k %>" action="/api/proyectos/updateStatusOci/<%= arrVisibleProjects[m].project[j].id %>" method="post">
                                                                                                     <fieldset>
@@ -168,7 +170,7 @@
                                                                                                         <input type="hidden" name="statusOciHidden" id="statusOciHidden<%= ociCount %>_<%= k %>" value="<%= arrVisibleOci[k].ociStatus %>">
                                                                                                     </fieldset>
                                                                                                 </form>
-                                                                            
+
                                                                                             <% } else { %>
                                                                                                 <a type="button" title="Ver OCI" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeOciDetails" class="btn btn-secondary rounded-circle mx-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
                                                                                             <% } %>    
@@ -182,17 +184,11 @@
                                                                                                         if (arrVisibleOci[k].otProject[x].otStatus) { %>
                                                                                                             <span>
                                                                                                                 <button id="<%= arrVisibleOci[k].otProject[x].otNumber %>"
-                                                                                                                    name="otNumberSpot"
-                                                                                                                    class="rounded-circle text-white mb-2"
+                                                                                                                    name="otNumberSpot" class="rounded-circle text-white mb-2"
                                                                                                                     style="--bs-btn-font-size: .20rem;
-                                                                                                                    background-color: #1d1da6;
-                                                                                                                    width: 30px;
-                                                                                                                    height: 30px;
-                                                                                                                    border-radius: 50%;
-                                                                                                                    border: 1px solid #272727;
-                                                                                                                    text-align: center;
-                                                                                                                    font-size: 10px;
-                                                                                                                    line-height: 25px;"
+                                                                                                                    background-color: #1d1da6; width: 30px; height: 30px;
+                                                                                                                    border-radius: 50%; border: 1px solid #272727;
+                                                                                                                    text-align: center; font-size: 10px; line-height: 25px;"
                                                                                                                     valueop="<%= arrVisibleOci[k].otProject[x].opNumber %>"
                                                                                                                     valuedes="<%= arrVisibleOci[k].otProject[x].opDescription %>"
                                                                                                                     valuedesig="<%= arrVisibleOci[k].otProject[x].otDesign %>"
@@ -206,17 +202,11 @@
                                                                                                         <% } else { %>
                                                                                                             <span>
                                                                                                                 <button id="<%= arrVisibleOci[k].otProject[x].otNumber %>"
-                                                                                                                    name="otNumberSpot"
-                                                                                                                    class="rounded-circle text-white mb-2"
+                                                                                                                    name="otNumberSpot" class="rounded-circle text-white mb-2"
                                                                                                                     style="--bs-btn-font-size: .20rem;
-                                                                                                                    background-color: #a61d1d;
-                                                                                                                    width: 30px;
-                                                                                                                    height: 30px;
-                                                                                                                    border-radius: 50%;
-                                                                                                                    border: 1px solid #272727;
-                                                                                                                    text-align: center;
-                                                                                                                    font-size: 10px;
-                                                                                                                    line-height: 22px;"
+                                                                                                                    background-color: #a61d1d; width: 30px; height: 30px;
+                                                                                                                    border-radius: 50%; border: 1px solid #272727;
+                                                                                                                    text-align: center; font-size: 10px; line-height: 22px;"
                                                                                                                     valueop="<%= arrVisibleOci[k].otProject[x].opNumber %>"
                                                                                                                     valuedes="<%= arrVisibleOci[k].otProject[x].opDescription %>"
                                                                                                                     valuedesig="<%= arrVisibleOci[k].otProject[x].otDesign %>"
@@ -228,11 +218,9 @@
                                                                                                         <% }
                                                                                                     }
                                                                                                 }
-
                                                                                             } else { %>
                                                                                                 <span class="badge rounded-pill bg-secondary text-light mx-2"> Sin Ot's </span>
                                                                                             <% } %>
-
                                                                                         </div>
                                                                                 </div>
                                                                             
@@ -258,7 +246,6 @@
                                                                                 <% } %>
                                                                             </div>
                                                                         <% }
-
                                                                     } else { %>
                                                                         <span class="badge rounded-pill bg-danger text-white"> No hay OCI cargadas </span>
                                                                         <div class="container my-2 mw-100">
@@ -266,17 +253,13 @@
                                                                             <button class="btn btn-success m-1 rounded-circle"
                                                                                 id="btnAddNewOciSection<%=m%>"
                                                                                 style="--bs-btn-font-size: .95rem; color: var(--bs-white);"
-                                                                                type="button"
-                                                                                name="btnAddNewOciToProject"
-                                                                                title="Agregar Nueva OCI"
-                                                                                value="<%= proyectos[m].project[j].id %>">
+                                                                                type="button" name="btnAddNewOciToProject"
+                                                                                title="Agregar Nueva OCI" value="<%= proyectos[m].project[j].id %>">
                                                                                 <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
                                                                             </button>                        
                                                                         </div>
                                                                     <% } %>
-
                                                             </div>
-
                                                         </div>
                                                         <hr>
                                                         <!-- -------------- seccion creador / modificador de Proyecto --------- -->
@@ -304,29 +287,294 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    <% } %>
-                                </div>
-                                <% ociCount++
-                            }
+                                        <% projectWonToShowUsers++ %>
+                                    <% } else {
+                                        if (arrVisibleProjects[m].project[j].levelProject == "ganado") { %>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="panelsStayOpen-headingOneCard">
+                                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                        data-bs-target="#panelsStayOpen-collapseOneCard<%=m %>" aria-expanded="false"
+                                                        aria-controls="panelsStayOpen-collapseOneCard<%=m %>">
+                                                            <strong># <%= m+1 %></strong> -
+                                                            Codigo Proyecto: <%= arrVisibleProjects[m].project[j].codeProject %> -
+                                                            Nombre Proyecto: <strong class="mx-2"> <%= arrVisibleProjects[m].project[j].projectName %> </strong> -
+                                                            Nivel: <span class="badge rounded-pill bg-success text-white mx-2"> Ganado </span>
+                                                    </button>
+                                                </h2>
+                                                <div id="panelsStayOpen-collapseOneCard<%=m %>" class="accordion-collapse collapse"
+                                                    aria-labelledby="panelsStayOpen-headingOne">
+                                                    <div class="accordion-body px-1 my-auto">
+                                                        <div class="container px-1">
+                                                            <div class="row">
+                                                                <!-- -------------- seccion Foto Proyecto ---------------------- -->
+                                                                <div class="col-2 my-auto px-1">
+                                                                    <img id="imageProject<%= m %>" src="<%= arrVisibleProjects[m].project[j].imageProject %>"
+                                                                        class="img-fluid rounded px-1" alt="Imagen Proyecto" width="175px">
+                                                                </div>
+                                                                <!-- -------------- seccion Proyecto ---------------------- -->
+                                                                <div class="col-3 my-auto px-1">
+                                                                    <div class="mb-3" id="projectDescription<%=m%>">Descripción: <%= arrVisibleProjects[m].project[j].projectDescription %>
+                                                                    </div>
+                                                                    <div class="mb-3" id="prioProject<%=m%>">Prio: <span class="badge bg-dark text-white mx-2"> <%= proyectos[m].project[j].prioProject %> </span>
+                                                                    </div>
+                                                                    <% if (arrVisibleProjects[m].project[j].statusProject) {
+                                                                        const status="Activo" %>
+                                                                        <div class="mb-3">Status: <span class="badge rounded-pill bg-primary text-white mx-2"> <%= status %> </span>
+                                                                        </div>
+                                                                    <% } else {
+                                                                        const status="Inactivo" %>
+                                                                        <div class="mb-3">Status: <span class="badge rounded-pill bg-danger text-white mx-2"> <%= status %> </span>
+                                                                        </div>
+                                                                    <% } %>
+                                                                    <div class="mb-3" id="codeProject<%=m%>"><span class="badge bg-light text-dark mx-2"> <%= arrVisibleProjects[m].project[j].codeProject %> </span>
+                                                                    </div>
+                                                                    <div class="container px-1">
+                                                                        <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                                                                            <div class="d-flex justify-content-center my-4">
+                                                                                <a type="button" title="Ver Proyecto" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeProyectDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
+                                                                                <button type="button" title="Agregar Nueva OCI" id="btnAddNewOciToProject<%= m %>" name="btnAddNewOciToProject" class="btn btn-success rounded-circle mx-2 border border-dark border-1 shadow" value="<%= arrVisibleProjects[m].project[j].id %>"><i class="fa-solid fa-plus-circle"></i></button>
+                                                                                <button type="button" title="Editar proyecto <%= proyectos[m].project[j].projectDescription %>" id="btnUpdateProject<%= m %>_<%= j %>" name="btnUpdateProject" class="btn btn-primary rounded-circle ms-2 border border-dark border-1 shadow" value="<%= arrVisibleProjects[m].project[j].id %>"><i class="fa-solid fa-pencil"></i></button>
+                                                                            </div>
+                                                                            <div class="d-flex justify-content-center my-4">
+                                                                                <button type="button" title="Cambiar Nivel Proyecto <%= arrVisibleProjects[m].project[j].projectDescription %>" id="btnChangeLevelProyect<%= m %>_<%= j %>" class="btn btn-info rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-regular fa-chess-king fa-lg"></i></button>
+                                                                                <button type="button" title="Cambiar Estado Proyecto <%= arrVisibleProjects[m].project[j].projectDescription %>" id="btnChangeStatusProyect<%= m %>_<%= j %>" class="btn btn-dark rounded-circle mx-2 border border-dark border-1 shadow"><i class="fa-solid fa-power-off"></i></button>
+                                                                                <button type="button" title="Eliminar Proyecto <%= arrVisibleProjects[m].project[j].projectDescription %>" id="btnDeleteProject<%= m %>_<%= j %>" class="btn btn-danger rounded-circle ms-2 border border-dark border-1 shadow"><i class="fa-regular fa-trash-can fa-lg"></i></button>
+                                                                            </div>
+                                                                        <% } else { %>
+                                                                            <div class="d-flex justify-content-center my-4">
+                                                                                <a type="button" title="Ver Proyecto" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeProyectDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
+                                                                                <button type="button" title="Agregar Nueva OCI" id="btnAddNewOciToProject<%= m %>" name="btnAddNewOciToProject" class="btn btn-success rounded-circle mx-2 border border-dark border-1 shadow" value="<%= arrVisibleProjects[m].project[j].id %>"><i class="fa-solid fa-plus-circle"></i></button>
+                                                                            </div>
+                                                                        <% } %>
+
+                                                                    </div>
+
+                                                                    <form style="display: none" id="formChangeStatusProject<%= m %>_<%= j %>" action="/api/proyectos/updateStatusProject/<%= arrVisibleProjects[m].project[j].id %>" method="post">
+                                                                        <fieldset>
+                                                                            <input type="hidden" name="projectNameHidden" id="projectNameHidden<%= m %>_<%= j %>" value="<%= arrVisibleProjects[m].project[j].projectName %>">
+                                                                            <input type="hidden" name="projectIdHidden" id="projectIdHidden<%= m %>_<%= j %>" value="<%= arrVisibleProjects[m].project[j].id %>">
+                                                                            <input type="hidden" name="statusProjectHidden" id="statusProjectHidden<%= m %>_<%= j %>" value="<%= arrVisibleProjects[m].project[j].statusProject %>">
+                                                                            <input type="hidden" id="totalOciQtyHidden" value="<%= arrVisibleProjects[m].project[j].oci.length %>">
+                                                                        </fieldset>
+                                                                    </form>
+                                                                    <input type="hidden" name="levelProjectHidden" id="levelProjectHidden<%= m %>_<%= j %>" value="<%= arrVisibleProjects[m].project[j].levelProject %>">
+                                                                    <form style="display: none" id="formNewOci<%= m %>_<%= j %>" action="/api/proyectos/addNewOciToProject/<%= arrVisibleProjects[m].project[j].id %>" method="post">
+                                                                        <fieldset>
+                                                                            <input type="hidden" name="newOciHidden" id="newOciHidden<%= m %>_<%= j %>" value="">
+                                                                        </fieldset>
+                                                                    </form>
+                                                                </div>
+                                                                <!-- -------------- seccion OCI's ---------------------- -->
+                                                                <div class="col my-auto border-start">
+                                                                    <% var countOci=0
+                                                                        var arrVisibleOci = []
+                                                                        var xOciNumber = []
+                                                                        for ( let x=0; arrVisibleProjects[m].project[j].oci.length > x; x++) {
+                                                                            if (arrVisibleProjects[m].project[j].oci[x].visible) { 
+                                                                                arrVisibleOci.push(arrVisibleProjects[m].project[j].oci[x])
+                                                                                xOciNumber.push(x)
+                                                                                countOci++
+                                                                            }
+                                                                        }
+
+                                                                        if (arrVisibleOci.length > 0 && countOci > 0) {
+                                                                            for (let k=0; arrVisibleOci.length > k; k++) { %>
+                                                                                <div class="row align-items-center">
+                                                                                    <!-- ----------- seccion Imagen de OCI's ------------ -->
+                                                                                    <div class="col-3 my-auto px-1">
+                                                                                        <img id="imageOci<%= ociCount %>_<%= k %>" src="<%= arrVisibleOci[k].ociImage %>"
+                                                                                            class="img-fluid rounded my-auto px-1" alt="Imagen OCI" width="150px">
+                                                                                    </div>
+                                                                                
+                                                                                    <!-- ----------- seccion Datos de OCI's ------------ -->
+                                                                                    <div class="col my-auto px-1">
+                                                                                        <div class="mb-3">OCI #: <strong><%= arrVisibleOci[k].ociNumber %></strong></div>
+                                                                                        <div class="my-3" id="ociDescription<%= ociCount %>_<%= k %>">Descripción: <%= arrVisibleOci[k].ociDescription %> </div>
+                                                                                        <div class="my-3" id="ociAlias<%= ociCount %>_<%= k %>">Alias: <span class="badge rounded-pill bg-info text-dark"><%= arrVisibleOci[k].ociAlias %></span></div>
+                                                                                        <% if (arrVisibleOci[k].ociStatus) {
+                                                                                            const ociStatus="Activa" %>
+                                                                                            <div class="my-3">Status OCI: <span class="badge rounded-pill bg-primary text-white"> <%= ociStatus %> </span> </div>
+                                                                                        <% } else {
+                                                                                            const ociStatus="Inactiva" %>
+                                                                                            <div class="my-3">Status OCI: <span class="badge rounded-pill bg-danger text-white"> <%= ociStatus %> </span> </div>
+                                                                                        <% } %>
+                                                                                            <div class="my-3">
+                                                                                                <% if (arrVisibleProjects[m].project[j].statusProject) { %>
+                                                                                                    <div class="d-flex justify-content-center">
+                                                                                                        <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                                                                                                            <a type="button" title="Ver OCI#<%= arrVisibleOci[k].ociNumber %>" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeOciDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
+                                                                                                            <button type="button" title="Editar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnUpdateOci<%= ociCount %>_<%= k %>" name="btnUpdateOci" class="btn btn-primary rounded-circle mx-2 border border-dark border-1 shadow" value="<%= j%>"><i class="fa-solid fa-pencil"></i></button>
+                                                                                                            <button type="button" title="Cambiar Estado OCI#<%= arrVisibleOci[k].ociNumber %>" id="<%= ociCount %>_<%= k %>" class="btn btn-dark rounded-circle mx-2 border border-dark border-1 shadow"><i class="fa-solid fa-power-off"></i></button>
+                                                                                                            <button type="button" title="Eliminar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnDeleteOci<%= ociCount %>_<%= k %>" class="btn btn-danger rounded-circle ms-2 border border-dark border-1 shadow"><i class="fa-solid fa-trash"></i></button>
+                                                                                                        <% } else { %>
+                                                                                                            <a type="button" title="Ver OCI#<%= arrVisibleOci[k].ociNumber %>" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeOciDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
+                                                                                                            <button type="button" title="Editar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnUpdateOci<%= ociCount %>_<%= k %>" name="btnUpdateOci" class="btn btn-primary rounded-circle mx-2 border border-dark border-1 shadow" value="<%= j%>"><i class="fa-solid fa-pencil"></i></button>
+                                                                                                        <% } %>
+                                                                                                        </div>
+                                                                                                    <form style="display: none" id="formChangeStatusOci<%= ociCount %>_<%= k %>" action="/api/proyectos/updateStatusOci/<%= arrVisibleProjects[m].project[j].id %>" method="post">
+                                                                                                        <fieldset>
+                                                                                                            <input type="hidden" name="projectIdHidden" id="projectIdHidden<%= ociCount %>_<%= k %>" value="<%= arrVisibleProjects[m].project[j].id %>">
+                                                                                                            <input type="hidden" name="ociNumberHidden" id="ociNumberHidden<%= ociCount %>_<%= k %>" value="<%= arrVisibleOci[k].ociNumber %>">
+                                                                                                            <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden<%= ociCount %>_<%= k %>" value="<%= xOciNumber[k] %>">
+                                                                                                            <input type="hidden" name="ociQuantityHidden" id="ociQuantityHidden<%= ociCount %>_<%= k %>" value="<%= arrVisibleOci.length %>">
+                                                                                                            <input type="hidden" name="statusOciHidden" id="statusOciHidden<%= ociCount %>_<%= k %>" value="<%= arrVisibleOci[k].ociStatus %>">
+                                                                                                        </fieldset>
+                                                                                                    </form>
+    
+                                                                                                <% } else { %>
+                                                                                                    <a type="button" title="Ver OCI" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeOciDetails" class="btn btn-secondary rounded-circle mx-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
+                                                                                                <% } %>    
+                                                                                            </div>
+    
+                                                                                            Cantidad de OT:
+                                                                                            <div class="m-3 px-3 justify-content-center">
+                                                                                                <% if (arrVisibleOci[k].otProject.length > 0) {
+                                                                                                    for (let x=0; arrVisibleOci[k].otProject.length > x; x++) {                                                                                            
+                                                                                                        if (arrVisibleOci[k].otProject[x].visible) {                                                                                                    
+                                                                                                            if (arrVisibleOci[k].otProject[x].otStatus) { %>
+                                                                                                                <span>
+                                                                                                                    <button id="<%= arrVisibleOci[k].otProject[x].otNumber %>"
+                                                                                                                        name="otNumberSpot" class="rounded-circle text-white mb-2"
+                                                                                                                        style="--bs-btn-font-size: .20rem;
+                                                                                                                        background-color: #1d1da6; width: 30px; height: 30px;
+                                                                                                                        border-radius: 50%; border: 1px solid #272727;
+                                                                                                                        text-align: center; font-size: 10px; line-height: 25px;"
+                                                                                                                        valueop="<%= arrVisibleOci[k].otProject[x].opNumber %>"
+                                                                                                                        valuedes="<%= arrVisibleOci[k].otProject[x].opDescription %>"
+                                                                                                                        valuedesig="<%= arrVisibleOci[k].otProject[x].otDesign %>"
+                                                                                                                        valuesim="<%= arrVisibleOci[k].otProject[x].otSimulation %>"
+                                                                                                                        valuesup="<%= arrVisibleOci[k].otProject[x].otSupplier %>">
+                                                                                                                            
+                                                                                                                        <%= arrVisibleOci[k].otProject[x].otNumber %>
+                                                                                                                    </button>
+                                                                                                                </span>
+                                                                                                                
+                                                                                                            <% } else { %>
+                                                                                                                <span>
+                                                                                                                    <button id="<%= arrVisibleOci[k].otProject[x].otNumber %>"
+                                                                                                                        name="otNumberSpot" class="rounded-circle text-white mb-2"
+                                                                                                                        style="--bs-btn-font-size: .20rem;
+                                                                                                                        background-color: #a61d1d; width: 30px; height: 30px;
+                                                                                                                        border-radius: 50%; border: 1px solid #272727;
+                                                                                                                        text-align: center; font-size: 10px; line-height: 22px;"
+                                                                                                                        valueop="<%= arrVisibleOci[k].otProject[x].opNumber %>"
+                                                                                                                        valuedes="<%= arrVisibleOci[k].otProject[x].opDescription %>"
+                                                                                                                        valuedesig="<%= arrVisibleOci[k].otProject[x].otDesign %>"
+                                                                                                                        valuesim="<%= arrVisibleOci[k].otProject[x].otSimulation %>"
+                                                                                                                        valuesup="<%= arrVisibleOci[k].otProject[x].otSupplier %>">
+                                                                                                                        <%= arrVisibleOci[k].otProject[x].otNumber %>
+                                                                                                                    </button>
+                                                                                                                </span>
+                                                                                                            <% }
+                                                                                                        }
+                                                                                                    }
+                                                                                                } else { %>
+                                                                                                    <span class="badge rounded-pill bg-secondary text-light mx-2"> Sin Ot's </span>
+                                                                                                <% } %>
+                                                                                            </div>
+                                                                                    </div>
+                                                                                
+                                                                                    <!-- ----------- seccion creador / modificador de OCI's --------- -->
+                                                                                    <div class="col-3 my-auto px-1" style="font-size: 9pt">
+                                                                                        <div class="container mb-4">
+                                                                                            <span>OCI creada por: <%= arrVisibleOci[k].creator[0].name %>, <%= arrVisibleOci[k].creator[0].lastName %> </span><br>
+                                                                                            <span>Fecha: <%= arrVisibleOci[k].timestamp %> </span>
+                                                                                        </div>
+                                                                                        <div class="container mb-4">
+                                                                                                <% if (arrVisibleOci[k].modificator[j]) { %>
+                                                                                                    <span>OCI modif. por: <%= arrVisibleOci[k].modificator[j].name %>, <%= arrVisibleOci[k].modificator[j].lastName %> </span><br>
+                                                                                                    <span>Fecha modif.: <%= arrVisibleOci[k].modifiedOn %> </span>
+                                                                                                <% } else { %>
+                                                                                                    <span>OCI modifi. por: </span><br>
+                                                                                                    <span>Fecha modif.: </span>
+                                                                                                <% } %>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                    <%  if (k !== arrVisibleOci.length - 1 ) { %>
+                                                                                            <hr>
+                                                                                    <% } %>
+                                                                                </div>
+                                                                            <% }
+                                                                        } else { %>
+                                                                            <span class="badge rounded-pill bg-danger text-white"> No hay OCI cargadas </span>
+                                                                            <div class="container my-2 mw-100">
+                                                                                Puedes agregar nuevas OCI en el proyecto <strong><%= arrVisibleProjects[m].project[j].projectName %></strong>,<br>haciendo click en el siguiente botón
+                                                                                <button class="btn btn-success m-1 rounded-circle"
+                                                                                    id="btnAddNewOciSection<%=m%>"
+                                                                                    style="--bs-btn-font-size: .95rem; color: var(--bs-white);"
+                                                                                    type="button" name="btnAddNewOciToProject"
+                                                                                    title="Agregar Nueva OCI" value="<%= proyectos[m].project[j].id %>">
+                                                                                    <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
+                                                                                </button>                        
+                                                                            </div>
+                                                                        <% } %>
+                                                                </div>
+                                                            </div>
+                                                            <hr>
+                                                            <!-- -------------- seccion creador / modificador de Proyecto --------- -->
+                                                            <div class="container px-1" style="font-size: 9pt">
+                                                                <div class="row my-auto">
+                                                                    <% for ( let k = 0; arrVisibleProjects[m].project.length > k; k++) { %>
+                                                                        <div class="col my-auto px-1">
+                                                                            <ul>Proyecto creador por: <%= arrVisibleProjects[m].creator[j].name %>, <%= arrVisibleProjects[m].creator[j].lastName %> </ul>
+                                                                            <ul>Fecha: <%= proyectos[m].timestamp %> </ul>
+                                                                        </div>
+                                                                        <div class="col my-auto px-1">
+                                                                            <% if (proyectos[m].modificator[j]) { %>
+                                                                                <ul>Proyecto modificado por: <%= arrVisibleProjects[m].modificator[j].name %>, <%= arrVisibleProjects[m].modificator[j].lastName %> </ul>
+                                                                                <ul>Fecha modificación: <%= arrVisibleProjects[m].modifiedOn %> </ul>
+                                                                            <% } else { %>
+                                                                                <ul>Proyecto Modificado por: </ul>
+                                                                                <ul>Fecha modificación: </ul>
+                                                                            <% } %>
+                                                                        </div>      
+                                                                    <% } %>    
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <% projectWonToShowUsers++
+                                        }
+                                    }    
+                                } %>
+                            </div>
+                            <% ociCount++
+                        }
                     }
+                    if (projectWonToShowUsers === 0) { %>
+                        No puedes ver o agregar proyectos en el cliente <strong><%= cliente.name %></strong>, debido a tus permisos
+                        <button class="btn btn-danger m-1 rounded-circle shadow disabled"
+                            style="--bs-btn-font-size: .95rem; color: var(--bs-white);" type="button">
+                            <i class="fa-solid fa-ban" aria-hidden="true"></i>
+                        </button>
+                    <% }
 
                 } else {
-                    let m = 0, j = 0 %>
-                        <span class="badge rounded-pill bg-danger text-white"> No hay Proyectos cargados</span>
-                            <div class="container my-2 mw-100">
-                                Puedes agregar proyectos en el cliente <strong><%= cliente.name %></strong>, haciendo click en el siguiente botón
-                                <button class="btn btn-success m-1 rounded-circle"
-                                    id="btnAddProjectToClient<%=m%>"
-                                    aria-controls="collapseExample"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#collapseExample" aria-expanded="false"
-                                    style="--bs-btn-font-size: .95rem; color: var(--bs-white);"
-                                    type="button"
-                                    name="<%= cliente.name %>"
-                                    title="Agregar Proyecto">
-                                    <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
-                                </button>                        
-                            </div>
+                    let m = 0, j = 0, k = 0 %>
+                    <!-- contenedor de Proyecto vacío -->
+                    <div class="container my-3">
+                        <span class="badge rounded-pill bg-danger text-white">No hay Proyectos o datos cargados para mostrar</span>
+                    </div>
+                    <div class="container my-2 mw-100">
+                        <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                            Puedes agregar proyectos en el cliente <strong><%= cliente.name %></strong>, haciendo click en el siguiente botón
+                            <button class="btn btn-success m-1 rounded-circle"
+                                id="btnAddProjectToClient<%=m%>" aria-controls="collapseExample" data-bs-toggle="collapse"
+                                data-bs-target="#collapseExample" aria-expanded="false" style="--bs-btn-font-size: .95rem; color: var(--bs-white);"
+                                type="button" name="<%= cliente.name %>" title="Agregar Proyecto">
+                                <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
+                            </button>                        
+                        <% } else { %>
+                            No puedes agregar proyectos en el cliente <strong><%= cliente.name %></strong>, debido a tus permisos
+                                <button class="btn btn-danger m-1 rounded-circle shadow disabled"
+                                style="--bs-btn-font-size: .95rem; color: var(--bs-white);" type="button">
+                                <i class="fa-solid fa-ban" aria-hidden="true"></i>
+                            </button>
+                        <% } %>
+                    </div>
                 <% } %>
             </div>
         </div>

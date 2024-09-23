@@ -372,7 +372,7 @@ const renderProjectsWonForAdmin = (arrayProjects) => {
 
         totalProyectos>1 ? textTotalProyectos = `Mostrando ${totalProyectos} Proyectos en total`
                             : 
-                           textTotalProyectos = `Mostrando ${totalProyectos} Proyecto en total`
+                            textTotalProyectos = `Mostrando ${totalProyectos} Proyecto en total`
 
         projectosEliminados>1 ? textProyectosEliminados = `(${projectosEliminados}) Proyectos, fueron eliminados`
                                 : 
@@ -654,8 +654,8 @@ const renderProjectsWonForUser = (arrayProjects) => {
                         <td class="text-center" data-column="fecha">${element.timestamp}</td>
                         <td class="text-center">
                             <div class="d-block align-items-center">
-                                <a href="/api/clientes/${element.client[0]._id}" class="btn btn-secondary btn-sm me-1" data-toggle="tooltip" data-placement="top" title="Ver proyecto"><i class="fa-solid fa-eye"></i></a>
-                                <a href="/api/programas/selectWonProjects/${element.project[0]._id}" class="btn btn-primary btn-sm ms-1" title="Editar datos de OCI"><i class="fa-solid fa-pencil"></i></a>
+                                <a href="/api/proyectos/${element.client[0]._id}" class="btn btn-secondary btn-sm me-1" data-toggle="tooltip" data-placement="top" title="Ver proyecto"><i class="fa-solid fa-eye"></i></a>
+                                <a href="/api/programas/selectWonProjects/${element.project[0]._id}" class="btn btn-primary btn-sm ms-1" title="Editar datos de OCI/OT/Ítems"><i class="fa-solid fa-pencil"></i></a>
                             </div>
                         </td>
                     </tr>`)
@@ -679,20 +679,20 @@ const renderProjectsWonForUser = (arrayProjects) => {
 
         totalProyectos>1 ? textTotalProyectos = `Mostrando ${totalProyectos} Proyectos en total`
                             : 
-                           textTotalProyectos = `Mostrando ${totalProyectos} Proyecto en total`
+                        textTotalProyectos = `Mostrando ${totalProyectos} Proyecto en total`
 
         projectosEliminados>1 ? textProyectosEliminados = `(${projectosEliminados}) Proyectos, fueron eliminados`
                                 : 
                                 textProyectosEliminados = `(${projectosEliminados}) Proyecto, fue eliminado`                  
         
         const htmlProjectsList = 
-            ( `<caption id="capProjectsList">
+            ( `<caption id="capProjectsWonList">
                 ${textTotalProyectos}
                 <br>
                 ${textProyectosEliminados}
             </caption>`)
 
-        document.getElementById('capProjectsList').innerHTML = htmlProjectsList
+        document.getElementById('capProjectsWonList').innerHTML = htmlProjectsList
 
         // Ocultar el spinner y mostrar la tabla
         document.getElementById('loading-spinner').style.display = 'none';

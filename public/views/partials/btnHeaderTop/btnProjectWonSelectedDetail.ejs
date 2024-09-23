@@ -1,10 +1,10 @@
 <div class="container-fluid">
-    <section class="mx-auto" style="width: 92%;">
+    <section class="mx-auto" style="width: 94%;">
         <div class="row">
-            <div class="col-xl-9 mx-auto">
+            <div class="col-xl-12 mx-auto">
                 <div class="row">
-                    
-                    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 mx-auto">
+                    <!-- Volver al Home -->
+                    <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 col-12 mx-auto">
                         <!-- .card -->
                         <div class="card rounded-3 card-figure mb-1">
                             <!-- .card-figure -->
@@ -30,16 +30,16 @@
                         </div>
                         <!-- /.card -->
                     </div>
-
-                    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 mx-auto">
+                    <!-- Ir a Proyectos ganados -->
+                    <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 col-12 mx-auto">
                         <!-- .card -->
                         <div class="card rounded-3 card-figure mb-1">
                             <!-- .card-figure -->
                             <figure class="figure">
                                 <!-- .figure-img -->
                                 <div class="figure-img text-center mx-auto">
-                                    <img class="img-fluid" src="/src/images/proyectos.jpg" alt="Ir a Proyectos" style="max-width: 3rem; max-height: 3rem;">
-                                    <a href="/api/proyectos" class="img-link">
+                                    <img class="img-fluid" src="/src/images/proyectos.jpg" alt="Ir a Proyectos Ganados" style="max-width: 3rem; max-height: 3rem;">
+                                    <a href="/api/programas" class="img-link">
                                         <div class="tile tile-circle ">
                                             <span><i class="fas fa-circle text-primary fa-2x"></i></span>
                                         </div>
@@ -48,8 +48,36 @@
                                 <!-- /.figure-img -->
                                 <!-- .figure-caption -->
                                 <figcaption class="figure-caption">
-                                    <h6 class="figure-title"><a href="/api/proyectos" style="text-decoration: none;">Proyectos</a></h6>
-                                    <p class="text-muted mb-0"> Ir a Proyectos </p>
+                                    <h6 class="figure-title"><a href="/api/proyectos" style="text-decoration: none;">Proyectos Ganados</a></h6>
+                                    <p class="text-muted mb-0"> Ir a Proyectos Ganados</p>
+                                </figcaption>
+                                <!-- /.figure-caption -->
+                            </figure>
+                            <!-- /.card-figure -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+
+                    <!-- Ir a Maquinas -->
+                    <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 col-12 mx-auto">
+                        <!-- .card -->
+                        <div class="card rounded-3 card-figure mb-1">
+                            <!-- .card-figure -->
+                            <figure class="figure">
+                                <!-- .figure-img -->
+                                <div class="figure-img text-center mx-auto">
+                                    <img class="img-fluid" src="/src/images/maquinas.png" alt="Ir a Máquinas" style="max-width: 3rem; max-height: 3rem;">
+                                    <a href="/api/maquinas" class="img-link">
+                                        <div class="tile tile-circle ">
+                                            <span><i class="fas fa-circle text-primary fa-2x"></i></span>
+                                        </div>
+                                    </a>
+                                </div>
+                                <!-- /.figure-img -->
+                                <!-- .figure-caption -->
+                                <figcaption class="figure-caption">
+                                    <h6 class="figure-title"><a href="/api/maquinas" style="text-decoration: none;">Máquinas</a></h6>
+                                    <p class="text-muted mb-0"> Ir a Máquinas</p>
                                 </figcaption>
                                 <!-- /.figure-caption -->
                             </figure>
@@ -59,67 +87,75 @@
                     </div>
 
                     <% if (proyecto[0].project[0].statusProject ) { %>
-
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 mx-auto">
+                        <!-- Agregar nueva/s OT's -->
+                        <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 col-12 mx-auto">
                             <!-- .card -->
-                            <div class="card rounded-3 card-figure mb-1">
-                                <!-- .card-figure -->
-                                <figure class="figure">
-                                    <!-- .figure-img -->
-                                    <div class="figure-img text-center mx-auto" data-bs-toggle="collapse" data-bs-target="#collapseExample"
-                                    aria-expanded="false" aria-controls="collapseExample">
-                                        <img class="img-fluid" src="/src/images/plus-icon-blue.jpg" alt="Agregar OT's" style="max-width: 3rem; max-height: 3rem;">
-                                        <a href="#" class="img-link">
-                                            <div class="tile tile-circle ">
-                                                <span><i class="fas fa-circle text-primary fa-2x"></i></span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <!-- /.figure-img -->
-                                    <!-- .figure-caption -->
-                                    <figcaption class="figure-caption" data-bs-toggle="collapse" data-bs-target="#collapseExample"
-                                    aria-expanded="false" aria-controls="collapseExample">
-                                        <h6 class="figure-title"><a href="#" style="text-decoration: none;">Agregar OT's</a></h6>
-                                        <p class="text-muted mb-0"> Agregar nueva/s OT's </p>
-                                    </figcaption>
-                                    <!-- /.figure-caption -->
-                                </figure>
-                                <!-- /.card-figure -->
-                            </div>
+                            <% if (userInfo.admin || userInfo.area === 'ingenieria' || userInfo.area === 'fabricacion' ) { %>
+                                <div class="card rounded-3 card-figure mb-1">
+                            <% } else { %>
+                                <div class="card rounded-3 card-figure mb-1 disabled-card">
+                            <% } %>
+                                    <!-- .card-figure -->
+                                    <figure class="figure">
+                                        <!-- .figure-img -->
+                                        <div class="figure-img text-center mx-auto" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+                                        aria-expanded="false" aria-controls="collapseExample">
+                                            <img class="img-fluid" src="/src/images/plus-icon-blue.jpg" alt="Agregar OT's" style="max-width: 3rem; max-height: 3rem;">
+                                            <a href="#" class="img-link">
+                                                <div class="tile tile-circle ">
+                                                    <span><i class="fas fa-circle text-primary fa-2x"></i></span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <!-- /.figure-img -->
+                                        <!-- .figure-caption -->
+                                        <figcaption class="figure-caption" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+                                        aria-expanded="false" aria-controls="collapseExample">
+                                            <h6 class="figure-title"><a href="#" style="text-decoration: none;">Agregar OT's</a></h6>
+                                            <p class="text-muted mb-0"> Agregar nueva/s OT's </p>
+                                        </figcaption>
+                                        <!-- /.figure-caption -->
+                                    </figure>
+                                    <!-- /.card-figure -->
+                                </div>
                             <!-- /.card -->
                         </div>
-
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 mx-auto">
-                            <!-- .card -->
-                            <div id="idAddDetalles" class="card rounded-3 card-figure mb-1">
-                                <!-- .card-figure -->
-                                <figure class="figure">
-                                    <!-- .figure-img -->
-                                    <div class="figure-img text-center mx-auto">
-                                        <img class="img-fluid" src="/src/images/plus-icon-green.png" alt="Agregar Detalles a OT"
-                                            style="max-width: 3rem; max-height: 3rem;">
-                                        <a href="#" class="img-link">
-                                            <div class="tile tile-circle ">
-                                                <span><i class="fas fa-circle text-success fa-2x"></i></span>
+                        <!-- Agregar Items a OT -->
+                            <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 col-12 mx-auto">
+                                <!-- .card -->
+                                <% if (userInfo.admin || userInfo.area === 'fabricacion' ) { %>
+                                    <div id="idAddDetalles" class="card rounded-3 card-figure mb-1">
+                                <% } else { %>
+                                    <div id="idAddDetalles" class="card rounded-3 card-figure mb-1 disabled-card">
+                                <% } %>
+                                        <!-- .card-figure -->
+                                        <figure class="figure">
+                                            <!-- .figure-img -->
+                                            <div class="figure-img text-center mx-auto">
+                                                <img class="img-fluid" src="/src/images/plus-icon-green.png" alt="Agregar Detalles a OT"
+                                                    style="max-width: 3rem; max-height: 3rem;">
+                                                <a href="#" class="img-link">
+                                                    <div class="tile tile-circle ">
+                                                        <span><i class="fas fa-circle text-success fa-2x"></i></span>
+                                                    </div>
+                                                </a>
                                             </div>
-                                        </a>
+                                            <!-- /.figure-img -->
+                                            <!-- .figure-caption -->
+                                            <figcaption class="figure-caption" >
+                                                <h6 class="figure-title"><a href="#" style="text-decoration: none;">Agregar Items</a></h6>
+                                                <p class="text-muted mb-0"> Agregar Items a OT</p>
+                                            </figcaption>
+                                            <!-- /.figure-caption -->
+                                        </figure>
+                                        <!-- /.card-figure -->
                                     </div>
-                                    <!-- /.figure-img -->
-                                    <!-- .figure-caption -->
-                                    <figcaption class="figure-caption" >
-                                        <h6 class="figure-title"><a href="#" style="text-decoration: none;">Agregar Items</a></h6>
-                                        <p class="text-muted mb-0"> Agregar Items a OT</p>
-                                    </figcaption>
-                                    <!-- /.figure-caption -->
-                                </figure>
-                                <!-- /.card-figure -->
+                                <!-- /.card -->
                             </div>
-                            <!-- /.card -->
-                        </div>
-
+                            
                     <% } else { %>
-
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 mx-auto">
+                        <!-- Agregar nueva/s OT's -->
+                        <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 col-12 mx-auto">
                             <!-- .card -->
                             <div class="card rounded-3 card-figure mb-1 pe-none opacity-50">
                                 <!-- .card-figure -->
@@ -147,8 +183,8 @@
                             </div>
                             <!-- /.card -->
                         </div>
-
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 mx-auto">
+                        <!-- Agregar Detalles a OT -->
+                        <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 col-12 mx-auto">
                             <!-- .card -->
                             <div id="idAddDetalles" class="card rounded-3 card-figure mb-1 pe-none opacity-50">
                                 <!-- .card-figure -->
@@ -177,7 +213,6 @@
                         </div>
 
                     <% } %>
-
                 </div>
             </div>
         </div>

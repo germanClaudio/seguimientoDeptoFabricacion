@@ -246,9 +246,9 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
         if (newUser) {
             const user = await Usuarios.findOne(
                 { $or: [ {username: `${newUser.username}`},
-                         {legajoId: legajoIdNum},
-                         {email: `${newUser.email}`}
-                       ]
+                        {legajoId: legajoIdNum},
+                        {email: `${newUser.email}`}
+                    ]
                 });
 
             if (user) {
@@ -281,9 +281,9 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                 try {
                     function createHash(password) {
                         return bCrypt.hashSync(
-                                  password,
-                                  bCrypt.genSaltSync(10),
-                                  null);
+                                password,
+                                bCrypt.genSaltSync(10),
+                                null);
                     }
                     password = createHash(password)
 
@@ -388,18 +388,17 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
 
     async getUserByEmail(email) {
         // console.log('email: ', email)
-
         if(email){
             try {
                 const user = await Usuarios.findOne( { email: `${email}` })
                 
-                 if ( user === undefined || user === null) {
-                    return false
-                 } else if (user.status && user.visible) {
-                    return user
-                 } else {
-                    return false
-                 }
+                if ( user === undefined || user === null) {
+                return false
+                } else if (user.status && user.visible) {
+                return user
+                } else {
+                return false
+                }
 
             } catch (error) {
                 console.error('Aca esta el error vieja: ', error)
@@ -411,13 +410,11 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
 
     async resetUserPassword(usuario) {
         // console.log('usuario: ', usuario)
-
         if (usuario) {
             let userId = usuario.id
 
             const user = await Usuarios.findOne({_id: `${userId}`})
         //    console.log(user);  console.log(user.email);
-
             if (!user) {
                 return false
             }
@@ -557,11 +554,8 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
         }
     }
 
-
     async updateUser(id, updatedUser, userModificator) {
-        
         if (updatedUser && userModificator) {
-
             try {
                 const userMongoDB = await Usuarios.findById( { _id: id } ) //`${id}`
                             
@@ -616,9 +610,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
     }
 
     async updateUserPreferences(id, updatedUser, userModificator) {
-        
         if (updatedUser && userModificator) {
-
             try {
                 const userMongoDB = await Usuarios.findById( { _id: id } ) //`${id}`
                             
@@ -667,7 +659,6 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
     }
 
     async deleteUserById(id, userModificator) {
-        
         if(id){
             try {
                 const userMongoDB = await Usuarios.findById({_id: id })

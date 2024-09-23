@@ -5,17 +5,24 @@
 </div>
 Puedes comenzar a cargar datos de OT en esta OCI# <strong><%= arrayVisibleOci[k].ociNumber %></strong>,<br>
 haciendo click en el siguiente botón
-<button class="btn btn-danger m-1 rounded-circle shadow"
-    id="btnAddOtFormSelected<%=k%>"
-    aria-controls="collapseExample"
-    data-bs-toggle="collapse"
-    data-bs-target="#collapseExample" aria-expanded="false"
-    value="<%=k%>"
+<% if (userInfo.admin || userInfo.area === 'ingenieria' || || userInfo.area === 'fabricacion') { %>
+    <button class="btn btn-danger m-1 rounded-circle shadow"
+        id="btnAddOtFormSelected<%=k%>"
+        aria-controls="collapseExample"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseExample" aria-expanded="false"
+        value="<%=k%>"
+        style="--bs-btn-font-size: .95rem; color: var(--bs-white);"
+        type="button"
+        name="<%= arrayVisibleOci[k].ociNumber %>"
+        title="Agregar OT">
+        
+            <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
+    </button>
+<% } esle { %>
+    <button class="btn btn-danger m-1 rounded-circle shadow disabled"
     style="--bs-btn-font-size: .95rem; color: var(--bs-white);"
-    type="button"
-    name="<%= arrayVisibleOci[k].ociNumber %>"
-    title="Agregar OT">
-    
-        <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
+    type="button">
+        <i class="fa-solid fa-ban" aria-hidden="true"></i>
 </button>
-                                                        
+<% } %>

@@ -110,7 +110,6 @@ class ToolsController {
         //------ Storage New Tool Image in Google Store --------        
         uploadMulterSingleImageTool(req, res, async (err) => {
             try {
-                console.log('req.file2: ', req.file)
                 if (req.file) {
                     await uploadToGCS(req, res, next)
                 }
@@ -133,8 +132,9 @@ class ToolsController {
                     catchError400_6(req, res, next)
                 } else {
                         const newTool = {
-                        designation: req.body.designation,
+                        designation: designationInput,
                         code: codeInput,
+                        type: req.body.type,
                         characteristics: req.body.characteristics,
                         imageTool: req.body.imageTextImageTool || toolPictureNotFound,
                         status: req.body.status === 'on' ? Boolean(true) : Boolean(false) || Boolean(true),
@@ -222,6 +222,7 @@ class ToolsController {
                 let updatedTool = {
                     designation: req.body.designation,
                     code: req.body.code,
+                    type: req.body.type,
                     characteristics: req.body.characteristics,
                     imageTool: req.body.imageTextImageToolUpdate,
                     status: req.body.status === 'on' ? Boolean(true) : Boolean(false),

@@ -1,30 +1,26 @@
 <!-- --------- tabla Info al 100% ----------- -->
 <table id="tablaInfo100<%=k%>"
-    class="table-responsive align-middle col-5 border-end border-dark"
-    style="font-size: 10pt; width: 100%">
+    class="table-responsive align-middle col-5 border-end border-dark" style="font-size: 10pt; width: 100%">
     <thead class="align-middle" style="background-color: #aac">
         <tr>
             <th colspan="2" class="text-center">
                 INFO 100%
-                <button
-                    id="posBtnAddDataInfo100<%=k%>"
-                    type="button"
-                    name="btnInfo100"
-                    class="btn btn-small btn-success m-1"
-                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
-                    title="Agregar Datos"
-                    value="<%=k%>">
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                <button id="posBtnAddDataInfo100<%=k%>" type="button" name="btnInfo100" class="btn btn-small btn-success shadow m-1"
+                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
                     <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
                 </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 disabled"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } %>
             </th>
         </tr>
         <tr>
-            <th style="width:50vw" scope="col-1"
-                class="text-center pb-1"> LDM 100% | Rev
-            </th>
-            <th style="width:50vw" scope="col-1"
-                class="text-center pb-1"> Info 100% | Rev
-            </th>
+            <th style="width:50vw" scope="col-1" class="text-center pb-1"> LDM 100% | Rev</th>
+            <th style="width:50vw" scope="col-1" class="text-center pb-1"> Info 100% | Rev</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -32,21 +28,11 @@
         <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length>n; n++) {
             if (proyecto[m].project[j].oci[k].otProject[n].visible) {
 
-                var arrRes100Ldm = [];
-                var valueArrayRes100Ldm = 0;
-                var arrResRevision100Ldm = [];
-                var arrResCreador100Ldm = [];
-                var arrResModificador100Ldm = [];
-                var arrResFecha100Ldm = [];
-                var arrResFechaMod100Ldm = [];
+                var arrRes100Ldm = []; var valueArrayRes100Ldm = 0; var arrResRevision100Ldm = []; var arrResCreador100Ldm = [];
+                var arrResModificador100Ldm = []; var arrResFecha100Ldm = []; var arrResFechaMod100Ldm = [];
 
-                var arrRes100Info = [];
-                var valueArrayRes100Info = 0;
-                var arrResRevision100Info = [];
-                var arrResCreador100Info = [];
-                var arrResModificador100Info = [];
-                var arrResFecha100Info = [];
-                var arrResFechaMod100Info = [];
+                var arrRes100Info = []; var valueArrayRes100Info = 0; var arrResRevision100Info = []; var arrResCreador100Info = [];
+                var arrResModificador100Info = []; var arrResFecha100Info = []; var arrResFechaMod100Info = [];
 
                 if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
                     <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">

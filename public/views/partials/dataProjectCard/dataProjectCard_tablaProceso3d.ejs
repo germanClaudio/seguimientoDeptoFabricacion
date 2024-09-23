@@ -1,21 +1,22 @@
 <!-- --------- tablaProceso3D ----------- -->
 <table id="tablaProceso3D<%=k%>"
-    class="table-responsive align-middle col-5 border-end border-dark"
-    style="font-size: 10pt; width: 100%;">
+    class="table-responsive align-middle col-5 border-end border-dark" style="font-size: 10pt; width: 100%;">
     <thead class="align-middle" style="background-color: #aac">
         <tr>
             <th colspan="2" class="text-center">
                 PROCESO 3D
-                <button
-                    id="posBtnAddDataProceso3d<%=k%>"
-                    type="button"
-                    name="btnProceso3d"
-                    class="btn btn-small btn-success m-1"
-                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
-                    title="Agregar/Modificar Datos"
-                    value="<%=k%>">
-                    <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
-                </button>
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                    <button id="posBtnAddDataProceso3d<%=k%>" type="button" name="btnProceso3d" class="btn btn-small btn-success shadow m-1"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
+                        title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 disabled"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } %>
             </th>
         </tr>
         <tr>

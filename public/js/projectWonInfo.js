@@ -70,24 +70,41 @@ function hiddeTableDetalles(k) {
     }
 }
 
-function extractNumbers(str) {
-    const numbers = str.match(/\d{1,2}/g) // Extract 1 or 2 digit numbers from the string
-    
-    if (numbers) {
-        if (numbers.length === 2) {
-            // If two numbers are found, check if both are numbers
-            if (!isNaN(parseInt(numbers[0])) && !isNaN(parseInt(numbers[1]))) {
-                return numbers; // Return both numbers as an array
-            }
-        } else if (numbers.length === 1) {
-            // If only one number is found, check if it's a number
-            if (!isNaN(parseInt(numbers[0]))) {
-                return numbers[0]; // Return the single number
+    function extractNumbers(str) {
+        const numbers = str.match(/\d{1,2}/g) // Extract 1 or 2 digit numbers from the string
+        
+        if (numbers) {
+            if (numbers.length === 2) {
+                // If two numbers are found, check if both are numbers
+                if (!isNaN(parseInt(numbers[0])) && !isNaN(parseInt(numbers[1]))) {
+                    return numbers; // Return both numbers as an array
+                }
+            } else if (numbers.length === 1) {
+                // If only one number is found, check if it's a number
+                if (!isNaN(parseInt(numbers[0]))) {
+                    return numbers[0]; // Return the single number
+                }
             }
         }
+        return null; // Return null if no valid numbers are found
     }
-    return null; // Return null if no valid numbers are found
-}
+
+    function extractTreeNumbers(str) {
+        // Usamos una expresión regular para extraer todos los números de la cadena
+        const numbers = str.match(/\d+/g);
+
+        if (numbers) {
+            // Si encontramos al menos 3 números, devolvemos los últimos 3
+            if (numbers.length >= 3) {
+                return numbers.slice(-3); // Devolvemos los últimos tres números
+            }
+            // Si hay menos de 3 números, devolvemos todos los que haya
+            return numbers;
+        }
+
+        return null; // Si no hay números, devolvemos null
+    }
+
 
 // Ocultar tablas cabeceras
 if (arrBtnHidde !=[]) {
@@ -177,8 +194,8 @@ const arrayOriginal = Array.from(slidesCarousel)
 const arrayOriginalBtn = Array.from(btnInferiorCarousel)
 
 // Dividir el array en subarrays de 3 elementos cada uno
-const subarrays = dividirArrayEnSubarrays(arrayOriginal, 4); // cant. maxima de slides
-const subarrayBtns = dividirArrayEnSubarrays(arrayOriginalBtn, 4); // cant. maxima de slides
+const subarrays = dividirArrayEnSubarrays(arrayOriginal, 5); // cant. maxima de slides
+const subarrayBtns = dividirArrayEnSubarrays(arrayOriginalBtn, 5); // cant. maxima de slides
 
 function activarElemento(subarray, index) {
     if (subarray.length > 0) {
@@ -772,27 +789,27 @@ function messageUpdateOtDetalle(
 function messageAddDetalleOt(
     idProjectSelected,
     ociKNumber,
+    ociNumber,
     otNumber,
     otKNumber,
     opNumber,
-    statusOt,
+    statusOtDetalle,
     otDescription,
-    otDesign,
-    otSimulation,
+    // otDetail,
+    // detailDescription,
     detalleIdSelected
 ) {
     
     let numberKOci = parseInt(ociKNumber)
+    let numberOci = parseInt(ociNumber)
     let numberKOt = parseInt(otKNumber)
     let numberOt = parseInt(otNumber)
     let numberOp = parseInt(opNumber)
     let checked = 'checked'
-    statusOt=='Activo' ? checked : checked = ''
+    statusOtDetalle=='Activo' ? checked : checked = ''
 
     let bgColorStatus
-    statusOt=='Activo' ? bgColorStatus='background-color: #55dd5560;'
-                        : 
-                        bgColorStatus='background-color: #dd555560;'
+    statusOtDetalle=='Activo' ? bgColorStatus='background-color: #55dd5560;' : bgColorStatus='background-color: #dd555560;'
 
     const Toast = Swal.mixin({
         toast: true,
@@ -802,23 +819,42 @@ function messageAddDetalleOt(
         timerProgressBar: false,
     })
 
-    let html = `<form id="formUpdateOt${idProjectSelected}" action="/api/proyectos/updateOt/${idProjectSelected}" method="post">
+    let html = `<form id="formAddOtDetalle${idProjectSelected}" action="/api/proyectos/addOtDetalle/${idProjectSelected}" method="post">
                     <fieldset>
                         <div class="row justify-content-between mb-3 mx-1 px-1">
-                            <div class="col-4">
-                                <label for="numberOt" class="form-label d-flex justify-content-start ms-1">Número OT</label>
-                                <input type="number" name="numberOt" class="form-control"
-                                    placeholder="Número OT" value="${numberOt}" required>
+                            <div class="col-3">
+                                <label for="numberOt" class="form-label d-flex justify-content-start ms-1">Número OCI</label>
+                                <input type="text" class="form-control" value="${numberOci}" disabled>
+                            </div>
+                            <div class="col-3">
+                                <label for="detalleOt" class="form-label d-flex justify-content-start ms-1">Número OT</label>
+                                <input type="text" name="numberOtDetalle" class="form-control" value="${numberOt}" disabled>
+                            </div>
+                            <div class="col-3">
+                                <label for="numeroOp" class="form-label d-flex justify-content-start ms-1">Número OP</label>
+                                <input type="number" name="numeroOp" class="form-control" value="${numberOp}" disabled>
+                            </div>
+                            <div class="col-3">
+                                <label for="numeroOp" class="form-label d-flex justify-content-start ms-1">Descripción OP</label>
+                                <input type="text" class="form-control" value="${otDescription}" disabled>
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-between mb-3 mx-1 px-1">
+                            <div class="col-3">
+                                <label for="detalleOt" class="form-label d-flex justify-content-start ms-1">Número Ítem</label>
+                                <input type="text" name="numberOt" class="form-control" placeholder="Número Ítem" value="${numberOt}" disabled>
+                                <input type="text" name="numberOtDetalle" class="form-control" placeholder="Número Ítem" value="" required>
                             </div>
                             
                             <div class="col-5" style="${bgColorStatus}">
-                                <label for="statusOt" class="form-label d-flex justify-content-start ms-1">Status OT</label>
+                                <label for="statusOtDetalle" class="form-label d-flex justify-content-start ms-1">Status Ítem</label>
                                 <div>
                                     <p class="d-inline-block me-1">Inactiva</p>
                                     <div class="form-check form-switch d-inline-block mt-2">
-                                        <input id="statusOtForm" class="form-check-input" type="checkbox" role="switch"
-                                            name="statusOtForm" style="cursor: pointer;" ${checked}>
-                                        <label class="form-check-label" for="statusOt">Activa</label>
+                                        <input id="statusOtDetalleForm" class="form-check-input" type="checkbox" role="switch"
+                                            name="statusOtDetalleForm" style="cursor: pointer;" ${checked}>
+                                        <label class="form-check-label" for="statusOtDetalleForm">Activa</label>
                                     </div>    
                                 </div>
                             </div>
@@ -826,47 +862,20 @@ function messageAddDetalleOt(
                         
                         <div class="row mb-3 mx-1 px-1">
                             <div class="col-8">
-                                <label for="descriptionOt" class="form-label d-flex justify-content-start ms-1">Descripción OT</label>
-                                <input type="text" name="descriptionOt" class="form-control"
-                                    placeholder="Descripción OT" value="${otDescription}" required>
+                                <label for="descriptionDetalle" class="form-label d-flex justify-content-start ms-1">Descripción Ítem</label>
+                                <input type="text" name="descriptionDetalle" class="form-control" placeholder="Descripción Ítem" value="" required>
                             </div>
-                            <div class="col-4">
-                                <label for="numeroOp" class="form-label d-flex justify-content-start ms-1">Número OP</label>
-                                <input type="number" name="numeroOp" class="form-control"
-                                    placeholder="Numero Op" value="${numberOp}" required>
-                            </div>
+                            
                         </div>
-
-                        <div class="row justify-content-evenly mb-3 mx-1 px-1">
-                            <div class="col-4">
-                                <label for="designOt" class="form-label d-flex justify-content-start align-items-center ms-1 mb-2">Diseño seguido por
-                                    <button type="button" id="searchDesignUserModal" class="btn btn-light rounded-circle ms-1">
-                                        <i class="fa-solid fa-database"></i>
-                                    </button>
-                                </label>
-                                <input type="text" id="designOt" name="designOt" class="form-control"
-                                    placeholder="Diseño seguido por" value="${otDesign}" required>
-                            </div>
-                            <div class="col-4">
-                                <label for="simulationOt" class="form-label d-flex justify-content-start align-items-center ms-1 mb-2">Simulación seguida por
-                                    <button type="button" id="searchSimulationUserModal" class="btn btn-light rounded-circle ms-1">
-                                        <i class="fa-solid fa-database"></i>
-                                    </button>
-                                </label>
-                                <input type="text" id="simulationOt" name="simulationOt" class="form-control"
-                                    placeholder="Simulacion seguida por" value="${otSimulation}" required>
-                            </div>                   
-                        </div> 
-
-                            <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden${numberKOci}" value="${numberKOci}">
-                            <input type="hidden" name="otKNumberHidden" id="otKNumberHidden${numberKOt}" value="${numberKOt}">
-                            <input type="hidden" name="detalleIdHidden" id="detalleIdHidden${numberKOt}" value="${detalleIdSelected}">
+                        <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden${numberKOci}" value="${numberKOci}">
+                        <input type="hidden" name="otKNumberHidden" id="otKNumberHidden${numberKOt}" value="${numberKOt}">
+                        <input type="hidden" name="detalleIdHidden" id="detalleIdHidden${numberKOt}" value="${detalleIdSelected}">
                     </fieldset>
                 </form>`
 
     if (idProjectSelected && numberOt && detalleIdSelected) {
         Swal.fire({
-            title: `Actualizar OT# ${numberOt} - ${otDescription}`,
+            title: `Agregar ítem a OT# ${numberOt} - `,
             position: 'center',
             html: html,
             width: 950,
@@ -874,7 +883,7 @@ function messageAddDetalleOt(
             showCancelButton: true,
             showConfirmButton: true,
             focusConfirm: false,
-            confirmButtonText: 'Actualizar <i class="fa-regular fa-pen-to-square"></i>',
+            confirmButtonText: 'Guardar <i class="fa-regular fa-save"></i>',
             cancelButtonText: 'Cancelar <i class="fa-solid fa-ban"></i>',
             didOpen: ()=> {
                 let btnAceptar = document.getElementsByClassName('swal2-confirm');
@@ -884,12 +893,12 @@ function messageAddDetalleOt(
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById(`formUpdateOt${idProjectSelected}`).submit()
+                Toast.fire({
+                    icon: 'success',
+                    title: `La OT# <b>${numberOt}</b>, se modificó con éxito!`
+                })
                 setTimeout(() => {
-                    Toast.fire({
-                        icon: 'success',
-                        title: `La OT# <b>${numberOt}</b>, se modificó con éxito!`
-                    })
+                    document.getElementById(`formUpdateOtDetalle${idProjectSelected}`).submit()
                 }, 2000)
 
             } else {
@@ -1034,8 +1043,8 @@ function messageAddDetalleOt(
         .catch(error => {
         console.error('Error:', error)
         })
-        }
-        cargarUsuarioDiseno()
+    }
+    cargarUsuarioDiseno()
     })
 
     //-----Btns Buscar en BBDD el Usuario Seguidor de Simulacion --------------
@@ -1121,8 +1130,8 @@ function messageAddDetalleOt(
         .catch(error => {
         console.error('Error:', error)
         })
-        }
-        cargarUsuarioSimulacion()
+    }
+    cargarUsuarioSimulacion()
     })
     // ****************** End To be done *******************************
 }
@@ -1351,7 +1360,8 @@ let arrayBtnChangeStatusOtDetalle = [],
     arrayCheckBoxSelect = [],
     arrayBtnCheckSelectionAll = [],
     arrayBtnCheckSelecMasive = [],
-    arrayBtnAddDetallesOt = []
+    arrayBtnAddDetallesOt = [],
+    arrayRowsOtDetalles = []
 
     for (let m=0; m<ociTotalQty; m++) {
         let btnCheckSelectionAll = document.getElementById(`btnCheckSelectionAll${m}`)
@@ -1362,6 +1372,9 @@ let arrayBtnChangeStatusOtDetalle = [],
             btnCheckSelecMasive.setAttribute('disabled', true)
             arrayBtnCheckSelecMasive.push(btnCheckSelecMasive)
         }
+
+        let btnAddDetallesOt = document.getElementById(`btnAddDetallesFormSelected${m}`)
+            btnAddDetallesOt ? arrayBtnAddDetallesOt.push(btnAddDetallesOt) : null
 
         for (let n=0; n<maxOtQuantity; n++) {
             for (let o=0; o<varLimMaxDetallesOT; o++) {
@@ -1377,8 +1390,8 @@ let arrayBtnChangeStatusOtDetalle = [],
                 let btnUpdateOtDetalle = document.getElementById(`btnEditOtDetalle${m}_${n}_${o}`)
                 btnUpdateOtDetalle ? arrayBtnUpdateOtDetalle.push(btnUpdateOtDetalle) : null
 
-                let btnAddDetallesOt = document.getElementById(`btnAddDetallesFormSelected${m}_${n}_${o}`)
-                btnAddDetallesOt ? arrayBtnAddDetallesOt.push(btnAddDetallesOt) : null
+                let rowOtDetalle = document.getElementById(`rowSelected${m}_${n}_${o}`)
+                rowOtDetalle ? arrayRowsOtDetalles.push(rowOtDetalle) : null
             }
         }
     }
@@ -1427,6 +1440,7 @@ function updateBtnCheckSelecMasive(idOci) {
     }
 }  
 
+//FIXME:
 arrayBtnCheckSelecMasive.forEach(function(elemento) {
     if (elemento.id) {
         elemento.addEventListener('click', (event) => {
@@ -1435,7 +1449,7 @@ arrayBtnCheckSelecMasive.forEach(function(elemento) {
             var arrayRowsSelected = []
             for (let z=0; varLimMaxOtProyecto > z; z++) {
                 let selected = document.getElementById(`checkSelect${idOci}_${z}`)
-    
+
                 if (selected && selected.checked) {
                     const statusOt = cleanString(document.getElementById(`lastOtStatus${idOci}_${z}`).textContent)
                     const otNumber = parseInt(document.getElementById(`lastOtNumber${idOci}_${z}`).textContent)
@@ -1455,45 +1469,49 @@ arrayBtnCheckSelecMasive.forEach(function(elemento) {
                     })
                 }
             }
-                    
             messageUpdateMasiveOt(arrayRowsSelected)
-            
         })
     }
 })
 
+//FIXME:
 arrayBtnAddDetallesOt.forEach(function(elemento) {
     if (elemento.id) {
         elemento.addEventListener('click', (event) => {
             event.preventDefault()
             const elementoId = elemento.id
             let regex = /^btnAddDetallesFormSelected/;
-
             // Eliminar el texto inicial de la cadena
-            var idOtOciDet = elementoId.replace(regex, '')
-            const arrayOciOtSelected = idOtOciDet.split('_')
+            var idOci = elementoId.replace(regex, '')
+            const arrayOciOtSelected = idOci.split('_')
 
+            let regexRows = /^rowSelected/;
+            var idOciOtDet = arrayRowsOtDetalles[idOci].id.replace(regexRows, '')
+            console.log('idOciOtDet:' , idOciOtDet, arrayRowsOtDetalles[idOci].id)
+            
             const idProjectSelected = document.getElementById('projectIdHidden').value
             const ociKNumber = parseInt(arrayOciOtSelected[0])
-            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOciDet}`).textContent)
+            const ociNumber = document.getElementById(`ociNumber${ociKNumber}`).textContent
+            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOciOtDet}`).textContent)
             const otKNumber = parseInt(arrayOciOtSelected[1])       
-            const opNumber = parseInt(document.getElementById(`lastOpNumber${idOtOciDet}`).textContent)
-            const statusOt = document.getElementById(`lastOtStatus${idOtOciDet}`).textContent
-            const otDescription = document.getElementById(`lastOpDescription${idOtOciDet}`).textContent
-            const otDetail =  document.getElementById(`otDesign${idOtOciDet}`).textContent
-            const detailDescription =  document.getElementById(`otSimulation${idOtOciDet}`).textContent
-            const detailIdSelected = document.getElementById(`detalleIdHidden${idOtOciDet}`).textContent
+            const opNumber = parseInt(document.getElementById(`lastOpNumber${idOciOtDet}`).textContent)
+            const statusOt = document.getElementById(`statusDetalle${idOciOtDet}`).textContent
+            const otDescription = document.getElementById(`lastOpDescription${idOciOtDet}`).textContent
+            // const otDetail =  document.getElementById(`numeroDetalle${idOciOtDet}`).textContent
+            // const detailDescription =  document.getElementById(`descripcionDetalle${idOciOtDet}`).textContent
+            const detailIdSelected = document.getElementById(`detalleIdHidden${idOciOtDet}`).textContent
             
             messageAddDetalleOt(
                 idProjectSelected,
                 ociKNumber,
+                ociNumber,
                 otNumber,
                 otKNumber,
                 opNumber,
                 cleanString(statusOt),
                 cleanString(otDescription),
-                cleanString(otDetail),
-                cleanString(detailDescription),
+                // cleanString(otDetail),
+                // cleanString(detailDescription),
                 detailIdSelected
             )
         })
@@ -1544,7 +1562,7 @@ arrayBtnUpdateOtDetalle.forEach(function(elemento) {
             let regex = /^btnEditOtDetalle/;
 
             // Eliminar el texto inicial de la cadena
-            var idOtOciDet = elementoId.replace(regex, '')
+            let idOtOciDet = elementoId.replace(regex, '')
             const arrayOciOtSelected = idOtOciDet.split('_')
 
             const idProjectSelected = document.getElementById('projectIdHidden').value
@@ -1556,8 +1574,8 @@ arrayBtnUpdateOtDetalle.forEach(function(elemento) {
             const opNumber = parseInt(document.getElementById(`lastOpNumber${idOtOciDet}`).textContent)
             const statusOtDetalle = document.getElementById(`lastOtDetalleStatus${idOtOciDet}`).textContent
             const otDescription = document.getElementById(`lastOpDescription${idOtOciDet}`).textContent
-            const otDetalle =  document.getElementById(`numeroDetalle${idOtOciDet}`).textContent
-            const otDetalleDescripcion =  document.getElementById(`descripcionDetalle${idOtOciDet}`).textContent
+            const otDetalle = document.getElementById(`numeroDetalle${idOtOciDet}`).textContent
+            const otDetalleDescripcion = document.getElementById(`descripcionDetalle${idOtOciDet}`).textContent
             
             messageUpdateOtDetalle(
                 cleanString(statusOtDetalle),
@@ -1619,22 +1637,22 @@ arrayCheckBoxSelect.forEach(function(element) {
     element.addEventListener('change', (event) => {
         event.preventDefault()
         const idOtOciDet = (event.target.id).slice(11)
-        if (document.getElementsByName(`rowSelected${idOtOciDet}`)) {
-            var rowSelectCheck = Array.from(document.getElementsByName(`rowSelected${idOtOciDet}`))
-        }
+        console.log('idOtOciDet:' , idOtOciDet)
+        let rowSelectCheck
+        document.getElementsByName(`rowSelected${idOtOciDet}`) ?
+            rowSelectCheck = Array.from(document.getElementsByName(`rowSelected${idOtOciDet}`)) : null
 
-        let idOci = extractNumbers(element.id)[0]
-        // let idOt = extractNumbers(element.id)[1]
-        // let idDet = extractNumbers(element.id)[2]
-        
+        let idOci = extractTreeNumbers(element.id)[0]
+        // let idOt = extractTreeNumbers(element.id)[1]
+        // let idDet = extractTreeNumbers(element.id)[2]
+
         updateBtnCheckSelecMasive(idOci)
 
-        for (let q=0; q<rowSelectCheck.length; q++) { //12
-            if (rowSelectCheck[q] && rowSelectCheck[q].style.cssText == "height: 7vh;") {
-                rowSelectCheck[q].setAttribute('style', "height: 7vh; background-color: #c4f0fd;")
-            } else {
-                rowSelectCheck[q].setAttribute('style', "height: 7vh;")
-            }
+        for (let q=0; q<rowSelectCheck.length; q++) { //7
+            rowSelectCheck[q] && rowSelectCheck[q].style.cssText === "height: 5vh;" ?
+                rowSelectCheck[q].setAttribute('style', "height: 5vh; background-color: #c4f0fd;")
+                :
+                rowSelectCheck[q].setAttribute('style', "height: 5vh;")
         }
     })
 })
@@ -1646,19 +1664,23 @@ arrayBtnCheckSelectionAll.forEach(function(element) {
         element.addEventListener('click', (event) => {
             event.preventDefault()
             const idOci = parseInt((element.id).slice(20))
-            let checkboxes = Array.from(document.querySelectorAll(`#tablaGeneral${idOci} tbody input[type="checkbox"]`))
-            
+            var checkboxes = Array.from(document.querySelectorAll(`#tablaGeneral${idOci} tbody input[type="checkbox"]`))
+
             var arrQueryRows=[]
-            for(let q=0; q<varLimMaxOtProyecto; q++) {
-                let rowsSelectCheck = document.getElementsByName(`rowSelected${idOci}_${q}`)
-                rowsSelectCheck.length > 0 ? arrQueryRows.push(rowsSelectCheck) : null
+            let idOtOciDet
+            for(let q=0; q<checkboxes.length; q++) {
+                if (checkboxes[q].id) {
+                    idOtOciDet = checkboxes[q].id.slice(11)
+                    let rowsSelectCheck = document.getElementsByName(`rowSelected${idOtOciDet}`)
+                    rowsSelectCheck.length > 0 ? arrQueryRows.push(rowsSelectCheck) : null
+                }
             }
 
             // funcion selecciona todas las filas
             function seleccionarTodasFilas() {
                 arrQueryRows.forEach(nodeList => {
                     Array.from(nodeList).forEach(element => {
-                        !seleccionarFilas ? element.style = "height: 7vh; background-color: rgb(196, 240, 253);" : element.style = "height: 7vh;"                    
+                        !seleccionarFilas ? element.style = "height: 5vh; background-color: rgb(196, 240, 253);" : element.style = "height: 5vh;"                    
                     })
                 })
                 seleccionarFilas = !seleccionarFilas
@@ -2024,15 +2046,14 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
         arrayPrograma3d2F: [], arrayEstadoPrograma3d2F: [], arrayRevisionPrograma3d2F: [],
         arrayPrograma3d4F: [], arrayEstadoPrograma3d4F: [], arrayRevisionPrograma3d4F: [],
         arrayNotasProgramacion: [], arrayRevisionNotasProgramacion: [],
-        arrayFCero: [], arrayRevisionFCero: [],
-        arrayFUno: [], arrayRevisionFUno: [],
-        arrayFDos: [], arrayRevisionFDos: [],
-        arrayFTres: [], arrayRevisionFTres: [],
-        arrayFCuatro: [], arrayRevisionFCuatro: [],
-        arrayFCinco: [], arrayRevisionFCinco: [],
+        arrayFCero: [], arrayEstadoFCero: [], arrayRevisionFCero: [],
+        arrayFUno: [], arrayEstadoFUno: [], arrayRevisionFUno: [],
+        arrayFDos: [], arrayEstadoFDos: [], arrayRevisionFDos: [],
+        arrayFTres: [], arrayEstadoFTres: [], arrayRevisionFTres: [],
+        arrayFCuatro: [], arrayEstadoFCuatro: [], arrayRevisionFCuatro: [],
         arrayNotasMecanizado: [], arrayRevisionNotasMecanizado: [],
     };
-    
+
     const mapping = {
         0: ['arrayMecanizado2dCompleto', 'arrayRevisionMecanizado2dCompleto'],
         1: ['arrayMecanizado3dPrefinal', 'arrayRevisionMecanizado3dPrefinal'],
@@ -2049,8 +2070,7 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
         12: ['arrayFDos', 'arrayRevisionFDos', 'arrayEstadoFDos'],
         13: ['arrayFTres', 'arrayRevisionFTres', 'arrayEstadoFTres'],
         14: ['arrayFCuatro', 'arrayRevisionFCuatro', 'arrayEstadoFCuatro'],
-        15: ['arrayFCinco', 'arrayRevisionFCinco', 'arrayEstadoFCinco'],
-        16: ['arrayNotasMecanizado', 'arrayRevisionNotasMecanizado']
+        15: ['arrayNotasMecanizado', 'arrayRevisionNotasMecanizado']
     };
 
     for (let n = 0; n < lastChild; n++) {
@@ -2063,7 +2083,7 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
                 if (document.getElementById(`resHidden${k}_${n}_${o}_${q}`) && !document.getElementById(`resEstadoHidden${k}_${n}_${o}_${q}`)) {
                     otHidden = document.getElementById(`resHidden${k}_${n}_${o}_${q}`).value;
                     otRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${o}_${q}`).value;
-                    
+
                     var otRevision = otRevisionHidden.split(",").pop();
                     var otInfo = changeValueFromArray(otHidden.split(",")).pop();
 
@@ -2108,7 +2128,8 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
         4: ['arrayMecanizado2dCompleto', 'arrayRevisionMecanizado2dCompleto', 'arrayMecanizado3dPrefinal', 'arrayRevisionMecanizado3dPrefinal', 'arrayMecanizado3dFinal', 'arrayRevisionMecanizado3dFinal', 'arrayBancoArmado', 'arrayRevisionBancoArmado'],
         7: ['arrayRt', 'arrayRevisionRt', 'arrayEstadoRt', 'arrayPreparacionGeo', 'arrayRevisionPreparacionGeo', 'arrayEstadoPreparacionGeo', 'arrayPrograma2d', 'arrayRevisionPrograma2d', 'arrayEstadoPrograma2d'],
         10: ['arrayPrograma3d2F', 'arrayRevisionPrograma3d2F', 'arrayEstadoPrograma3d2F', 'arrayPrograma3d4F', 'arrayRevisionPrograma3d4F', 'arrayEstadoPrograma3d4F', 'arrayNotasProgramacion', 'arrayRevisionNotasProgramacion'],
-        17: ['arrayFCero', 'arrayRevisionFCero', 'arrayFUno', 'arrayRevisionFUno', 'arrayFDos', 'arrayRevisionFDos', 'arrayFTres', 'arrayRevisionFTres', 'arrayFCuatro', 'arrayRevisionFCuatro', 'arrayFCinco', 'arrayRevisionFCinco', 'arrayNotasMecanizado', 'arrayRevisionNotasMecanizado']
+        13: ['arrayFCero', 'arrayRevisionFCero', 'arrayEstadoFCero', 'arrayFUno', 'arrayRevisionFUno', 'arrayEstadoFUno', 'arrayFDos', 'arrayRevisionFDos', 'arrayEstadoFDos' ],
+        16: ['arrayFTres', 'arrayRevisionFTres', 'arrayEstadoFTres', 'arrayFCuatro', 'arrayRevisionFCuatro', 'arrayEstadoFCuatro', 'arrayNotasMecanizado', 'arrayRevisionNotasMecanizado']
     };
 
     const keysToReturn = resultMap[qFinalX] || [];
@@ -2989,8 +3010,7 @@ function addDatoToOtProgramacionSegunda(i, idTabla, qInicial, qFinal) {
                         class="form-control" style="text-align: center;" disabled readonly">
                     <input type="hidden" id="revisionNotasProgramacion${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
                         name="revisionNotasProgramacion${y}" value="${getValues.arrayRevisionNotasProgramacion[y]}">
-                </div>
-                `
+                </div>`
 
             const isInactive = res.arrayOtDetalleStatus[y] === 'Inactivo';
             const divStyle = isInactive ? 'style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5"' : '';
@@ -3064,204 +3084,386 @@ function addDatoToOtProgramacionSegunda(i, idTabla, qInicial, qFinal) {
     }
 }
 
-//TODO: function
-//***** addDatoToMecanizado ******
-function addDatoToMecanizado(i, idTabla, qInicial, qFinal) {
+async function cargarMaquina(res) {
+    try {
+        const url = `../../../api/maquinas/searchTools/all`
+        await fetch(url, {method: "GET", mode: 'cors', cache: 'default'})
+            .then(response => response.json())
+            .then(data => {
+                // console.log('data: ',data)
+                cargarOpcionesEnSelect(data, res);
+            })
+            .catch(error => new Error(`Error en la solicitud: ${error}`));
+
+    } catch (error) {
+        const titulo = 'Error'
+        const message = `${error}`
+        const icon = 'error'
+        messageAlertUser(titulo, message, icon)
+    }
+
+    // Función para cargar las opciones en el select
+    function cargarOpcionesEnSelect(datos, res) {
+        const selectElements = [
+            document.getElementById(`fCero${res}`),
+            document.getElementById(`fUno${res}`),
+            document.getElementById(`fDos${res}`),
+            document.getElementById(`fTres${res}`),
+            document.getElementById(`fCuatro${res}`)
+        ];
+
+        // Itera sobre el array de datos
+        datos.forEach(dato => {
+            // Itera sobre cada select para agregar una nueva opción
+            selectElements.forEach(selectElement => {
+                if (selectElement) {
+                    const option = document.createElement('option');
+                    option.value = dato._id;  // Asigna el valor de la opción (puede ser un ID u otro identificador)
+                    option.textContent = `${dato.designation}`;  // Asigna el texto visible en la opción (puede ser el nombre u otro dato)
+
+                    dato.status ? selectElement.appendChild(option) : null
+                }
+            });
+        });
+    }
+}
+
+//***** addDatoToMecanizadoPrimera ******
+function addDatoToMecanizadoPrimera(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-    
-        var arrayBloqueDisenoPrimera = []
-    
+
+        let arrayBloqueMecanizadoPrimera = []
         for (let y=0; y < res.lastChild; y++) {
-    
-            const dataEnArrayBloque = `
-                <div class="col m-auto">
-                    <div class="row justify-content-center">
-                        <div class="col-7 my-auto">
-                            <input type="text" class="form-control"
-                                min="0" max="100" step="5"
-                                id="avDisenoDisabled${res.arrayOtNumber[y]}"
-                                name="avDisenoDisabled"
-                                value="${getValues.arrayAvDiseno[y]}"
-                                style="text-align: center; width: 4.25rem;"
-                                disabled>
-                        </div>
-                        <div class="col my-auto">
-                            <strong>%</strong>
-                        </div>
-                    </div>
-                    <div class="row justify-content-center">
-                        <div class="col my-auto">
-                            <input type="range" class="form-range"
-                                min="0" max="100" step="5"
-                                id="avDiseno${res.arrayOtNumber[y]}"
-                                name="avDisenoRange"
-                                value="${getValues.arrayAvDiseno[y]}"
-                                oninput="updateInputsText()">
-                            <input type="hidden" class="form-control"
-                                id="avDisenoHidden${res.arrayOtNumber[y]}"
-                                name="avDisenoHidden${[y]}"
-                                value="${getValues.arrayAvDiseno[y]}">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-1 my-auto">    
-                    <input type="text"
-                        value="${getValues.arrayRevisionAvDiseno[y]}"
-                        class="form-control mx-auto"
-                        style="text-align: center; width: 3.5rem;"
-                        disabled readonly>
-                    <input type="hidden"
-                        id="revisionAvDiseno${res.arrayOtNumber[y]}"
-                        name="revisionAvDiseno${[y]}"
-                        value="${getValues.arrayRevisionAvDiseno[y]}">
-                </div>
-
-                <div class="col my-auto">
-                    <select id="av50Diseno${res.arrayOtNumber[y]}" name="av50Diseno${[y]}"
-                        oninput="updateInputsSelect()"
-                        class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
-                        <option selected value="${(switchOptionSelected(getValues.arrayAv50Diseno[y])).variableValue}">
-                            ${(switchOptionSelected(getValues.arrayAv50Diseno[y])).getValueArrayDato}
-                        </option>
-                            ${(switchOptionSelected(getValues.arrayAv50Diseno[y])).optionDefined}
-                    </select>
-                    <input type="hidden" id="av50DisenoHidden${res.arrayOtNumber[y]}"
-                        name="av50DisenoHidden${[y]}"
-                        value="${(switchOptionSelected(getValues.arrayAv50Diseno[y])).variableValue}">
-                </div>
-                <div class="col-1 my-auto">
-                    <input type="text"
-                        value="${getValues.arrayRevisionAv50Diseno[y]}"
-                        class="form-control mx-auto"
-                        style="text-align: center; width: 3.5rem;"
-                        disabled readonly>
-                    <input type="hidden"
-                        id="revisionAv50Diseno${res.arrayOtNumber[y]}"
-                        name="revisionAv50Diseno${[y]}"
-                        value="${getValues.arrayRevisionAv50Diseno[y]}">
-                </div>
-
-                <div class="col my-auto">
-                    <select id="av80Diseno${res.arrayOtNumber[y]}" name="av80Diseno${[y]}"
-                    oninput="updateInputsSelect()"    
-                    class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
-                        <option selected value="${(switchOptionSelected(getValues.arrayAv80Diseno[y])).variableValue}" disabled>
-                        ${(switchOptionSelected(getValues.arrayAv80Diseno[y])).getValueArrayDato}
-                        </option>
-                            ${(switchOptionSelected(getValues.arrayAv80Diseno[y])).optionDefined}
-                    </select>
-                    <input type="hidden" id="av80DisenoHidden${res.arrayOtNumber[y]}"
-                        name="av80DisenoHidden${[y]}"
-                        value="${(switchOptionSelected(getValues.arrayAv80Diseno[y])).variableValue}">
-                </div>
-                <div class="col-1 my-auto">
-                    <input type="text"
-                        value="${getValues.arrayRevisionAv80Diseno[y]}"
-                        class="form-control mx-auto"
-                        style="text-align: center; width: 3.5rem;"
-                        disabled readonly>
-                    <input type="hidden"
-                        id="revisionAv80Diseno${res.arrayOtNumber[y]}"
-                        name="revisionAv80Diseno${[y]}"
-                        value="${getValues.arrayRevisionAv80Diseno[y]}">
-                </div>
-
-                <div class="col my-auto">
-                    <select id="envioCliente${res.arrayOtNumber[y]}" name="envioCliente${[y]}"
-                    oninput="updateInputsSelect()"    
-                    class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
-                        <option selected value="${(switchOptionSelected(getValues.arrayEnvioCliente[y])).variableValue}" disabled>
-                            ${(switchOptionSelected(getValues.arrayEnvioCliente[y])).getValueArrayDato}
-                        </option>
-                            ${(switchOptionSelected(getValues.arrayEnvioCliente[y])).optionDefined}
-                    </select>
-                    <input type="hidden" id="envioClienteHidden${res.arrayOtNumber[y]}"
-                        name="envioClienteHidden${[y]}"
-                        value="${(switchOptionSelected(getValues.arrayEnvioCliente[y])).variableValue}">
-                </div>
-                <div class="col-1 my-auto">    
-                    <input type="text"
-                        value="${getValues.arrayRevisionEnvioCliente[y]}"
-                        class="form-control mx-auto"
-                        style="text-align: center; width: 3.5rem;"
-                        disabled readonly>
-                    <input type="hidden"
-                        id="revisionEnvioCliente${res.arrayOtNumber[y]}"
-                        name="revisionEnvioCliente${[y]}"
-                        value="${getValues.arrayRevisionEnvioCliente[y]}">
-                </div>`
-    
-            if (res.arrayOtDetalleStatus[y]==='Inactivo') {
-                arrayBloqueDisenoPrimera.push(`
-                <div class="row py-1 mx-auto pe-none" contenteditable="false" style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5">
-                    ${datosCabeceraFormulario (res.arrayOtDetalleStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
-                    ${dataEnArrayBloque}
-                </div>     
-            `)
+            let getToolsNames = cargarMaquina(res.arrayOtNumber[y]+'_'+res.arrayOtDetalle[y])
             
-            } else {
-    
-                arrayBloqueDisenoPrimera.push(`
-                <div class="row my-1 mx-auto justify-content-center">
-                    ${datosCabeceraFormulario (res.arrayOtDetalleStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
+            const dataEnArrayBloque = `
+                <div class="col my-auto">
+                    <select id="fCero${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="fCero${y}"
+                        class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
+                        <option selected value="${getValues.arrayFCero[y]}" disabled>
+                            ${getValues.arrayFCero[y]}
+                        </option>
+                            ${getToolsNames}
+                    </select>
+                    <input type="hidden" id="fCeroHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="fCeroHidden${[y]}" value="${(switchOptionSelected(getValues.arrayFCero[y])).variableValue}">
+                </div>
+
+                <div class="col my-auto" style="width: 7vw;">
+                    <select id="estadoFCero${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="estadoFCero${y}"
+                        oninput="updateInputsSelect()" class="form-select" ${(colorStatusOt(res.arrayOtDetalleStatus[y]).disabled)}>
+                        <option selected value="${(switchEstadoSelected(getValues.arrayEstadoFCero[y])).variableValue}" disabled>
+                            ${(switchEstadoSelected(getValues.arrayEstadoFCero[y])).getValueArrayDato}
+                        </option>
+                        ${(switchEstadoSelected(getValues.arrayEstadoFCero[y])).optionDefined}
+                    </select>
+                    <input type="hidden" id="estadoFCeroHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                    name="estadoFCeroHidden${[y]}" value="${(switchEstadoSelected(getValues.arrayEstadoFCero[y])).variableValue}">
+                </div>
+                
+                <div class="col-1 my-auto" style="width: 4vw;">
+                    <input type="text" value="${getValues.arrayRevisionFCero[y]}"
+                        class="form-control" style="text-align: center;" disabled readonly">
+                    <input type="hidden" id="revisionFCero${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="revisionFCero${y}" value="${getValues.arrayRevisionFCero[y]}">
+                </div>
+
+                <div class="col my-auto">
+                    <select id="fUno${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="fUno${y}"
+                        class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
+                        <option selected value="${getValues.arrayFUno[y]}" disabled>
+                            ${getValues.arrayFUno[y]}
+                        </option>
+                            ${getToolsNames}
+                    </select>
+                    <input type="hidden" id="fUnoHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="fUnoHidden${[y]}" value="${(switchOptionSelected(getValues.arrayFUno[y])).variableValue}">
+                </div>
+
+                <div class="col my-auto" style="width: 7vw;">
+                    <select id="estadoFUno${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="estadoFUno${y}"
+                        oninput="updateInputsSelect()"
+                        class="form-select" ${(colorStatusOt(res.arrayOtDetalleStatus[y]).disabled)}>
+                        <option selected value="${(switchEstadoSelected(getValues.arrayEstadoFUno[y])).variableValue}" disabled>
+                            ${(switchEstadoSelected(getValues.arrayEstadoFUno[y])).getValueArrayDato}
+                        </option>
+                        ${(switchEstadoSelected(getValues.arrayEstadoFUno[y])).optionDefined}
+                    </select>
+                    <input type="hidden" id="estadoFUnoHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                    name="estadoFUnoHidden${[y]}" value="${(switchEstadoSelected(getValues.arrayEstadoFUno[y])).variableValue}">
+                </div>
+                
+                <div class="col-1 my-auto" style="width: 4vw;">
+                    <input type="text" value="${getValues.arrayRevisionFUno[y]}"
+                        class="form-control" style="text-align: center;" disabled readonly">
+                    <input type="hidden" id="revisionFUno${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="revisionFUno${y}" value="${getValues.arrayRevisionFUno[y]}">
+                </div>
+
+                <div class="col my-auto">
+                    <select id="fDos${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="fDos${y}"
+                        class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
+                        <option selected value="${getValues.arrayFDos[y]}" disabled>
+                            ${getValues.arrayFDos[y]}
+                        </option>
+                            ${getToolsNames}
+                    </select>
+                    <input type="hidden" id="fDosHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="fDosHidden${[y]}" value="${(switchOptionSelected(getValues.arrayFDos[y])).variableValue}">
+                </div>
+
+                <div class="col my-auto" style="width: 7vw;">
+                    <select id="estadoFDos${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="estadoFDos${y}"
+                        oninput="updateInputsSelect()"
+                        class="form-select" ${(colorStatusOt(res.arrayOtDetalleStatus[y]).disabled)}>
+                        <option selected value="${(switchEstadoSelected(getValues.arrayEstadoFDos[y])).variableValue}" disabled>
+                            ${(switchEstadoSelected(getValues.arrayEstadoFDos[y])).getValueArrayDato}
+                        </option>
+                        ${(switchEstadoSelected(getValues.arrayEstadoFDos[y])).optionDefined}
+                    </select>
+                    <input type="hidden" id="estadoFDosHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                    name="estadoFDosHidden${[y]}"
+                    value="${(switchEstadoSelected(getValues.arrayEstadoFDos[y])).variableValue}">
+                </div>
+                
+                <div class="col-1 my-auto" style="width: 4vw;">
+                    <input type="text" value="${getValues.arrayRevisionFDos[y]}"
+                        class="form-control" style="text-align: center;" disabled readonly">
+                    <input type="hidden" id="revisionFDos${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="revisionFDos${y}" value="${getValues.arrayRevisionFDos[y]}">
+                </div>`
+
+            const isInactive = res.arrayOtDetalleStatus[y] === 'Inactivo';
+            const divStyle = isInactive ? 'style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5"' : '';
+            const divClass = isInactive ? 'pe-none contenteditable="false"' : '';
+            
+            arrayBloqueMecanizadoPrimera.push(`
+                <div class="row mx-auto ${divClass}" ${divStyle}>
+                    ${datosCabeceraFormulario(res.arrayOtDetalleStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], res.arrayOtDetalle[y], res.arrayDescripcionDetalle[y], res.arrayOnumber[y], res.arrayDetalleId[y])}
                     ${dataEnArrayBloque}
-                </div>`)
-            }
+                </div>`);
+            
+            res.arrayOtNumber[y] !== res.arrayOtNumber[y+1] ? arrayBloqueMecanizadoPrimera.push(`<hr class="my-1">`) : null
         }
-    
+
         const html = `
-                <form id="formDisenoPrimeraValues" action="/api/proyectos/otInfoAvDisenoPrimera" method="post" style="font-size: 10pt">
+                <form id="formMecanizadoPrimeraValues" action="/api/proyectos/otInfoMecanizadoPrimera" method="post" style="font-size: 10pt">
                     <fieldset>
-                        <div class="row mx-auto justify-content-center">
+                        <div class="row mx-auto">
                             ${cabeceraFormulario}
                             <div class="col my-auto">
-                                <label for="avDiseno"><strong>Av. Diseño</strong></label>
+                                <span><strong>F0</strong></span>
                             </div>
-                            <div class="col-1 my-auto align-self-start">
-                                <label for="revisionAvDiseno"><strong>Rev</strong></label>
+                            <div class="col my-auto align-self-start border-start border-end border-dark" style="width: 7vw;">
+                                <span><strong>Estado</strong></span>
                             </div>
-                            <div class="col my-auto">
-                                <label for="primerRev50"><strong>1° Rev 50%</strong></label>
-                            </div>
-                            <div class="col-1 my-auto align-self-start">
-                                <label for="revisionPrimerRev50"><strong>Rev</strong></label>
+                            <div class="col-1 my-auto align-self-start" style="width: 4vw;">
+                                <span"><strong>Rev</strong></span>
                             </div>
                             <div class="col my-auto">
-                                <label for="segundaRev80"><strong>2° Rev 80%</strong></label>
+                                <spano><strong>F1</strong></span>
                             </div>
-                            <div class="col-1 my-auto align-self-start">
-                                <label for="revisionSegundaRev80"><strong>Rev</strong></label>
+                            <div class="col my-auto align-self-start border-start border-end border-dark" style="width: 7vw;">
+                                <span><strong>Estado</strong></span>
+                            </div>
+                            <div class="col-1 my-auto align-self-start" style="width: 4vw;">
+                                <span"><strong>Rev</strong></span>
                             </div>
                             <div class="col my-auto">
-                                <label for="envCliente"><strong>Env a Cliente</strong></label>
+                                <spano><strong>F2</strong></span>
                             </div>
-                            <div class="col-1 my-auto align-self-start">
-                                <label for="revisionEnvCliente"><strong>Rev</strong></label>
+                            <div class="col my-auto align-self-start border-start border-end border-dark" style="width: 7vw;">
+                                <span><strong>Estado</strong></span>
+                            </div>
+                            <div class="col-1 my-auto align-self-start" style="width: 4vw;">
+                                <span"><strong>Rev</strong></span>
                             </div>
                         </div>
                         <hr>
-                            ${arrayBloqueDisenoPrimera}
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueDisenoPrimera.length)}    
+                            ${arrayBloqueMecanizadoPrimera.join("<br>")}
+                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueMecanizadoPrimera.length)}
                     </fieldset>
-                </form>`  
-    
-            const titulo = "Mecanizado (1° Parte)"
-            const ancho = 1350
-            const background = '#dfefff'
-            const formulario = 'formMecanizadoPrimeraValues'
-            const arrayDeOtNumber = res.arrayOtNumber
-    
-            swalFireAlert (
-                titulo,
-                html,
-                ancho,
-                background,
-                formulario,
-                arrayDeOtNumber
-            )
-            disabledBtnAceptar()
+                </form>`
+
+        const titulo = "Mecanizado (1° Parte)"
+        const formulario = 'formMecanizadoPrimeraValues'
+        const ancho = 1850
+        const background = '#efefef'
+        const arrayDeOtNumber = res.arrayOtNumber
+        const arrayDeDetalleNumber = res.arrayOtDetalle
+        const arrayDeDetalleDescription = res.arrayDescripcionDetalle
+
+        swalFireAlert (
+            titulo,
+            html,
+            ancho,
+            background,
+            formulario,
+            arrayDeOtNumber,
+            arrayDeDetalleNumber,
+            arrayDeDetalleDescription
+        )
+        disabledBtnAceptar()
+    }
+}
+
+//***** addDatoToMecanizadoSegunda ******
+function addDatoToMecanizadoSegunda(i, idTabla, qInicial, qFinal) {
+    if (i, idTabla, qInicial, qFinal) {
+        let res = getOtList(i)
+        let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
+
+        let arrayBloqueMecanizadoSegunda = []
+        for (let y=0; y < res.lastChild; y++) {
+            let getToolsNames = cargarMaquina(res.arrayOtNumber[y]+'_'+res.arrayOtDetalle[y])
+            
+            const dataEnArrayBloque = `
+                <div class="col my-auto">
+                    <select id="fTres${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="fTres${y}"
+                        class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
+                        <option selected value="${getValues.arrayFTres[y]}" disabled>
+                            ${getValues.arrayFTres[y]}
+                        </option>
+                            ${getToolsNames}
+                    </select>
+                    <input type="hidden" id="fTresHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="fTresHidden${[y]}" value="${(switchOptionSelected(getValues.arrayFTres[y])).variableValue}">
+                </div>
+
+                <div class="col-1 my-auto" style="width: 9vw;">
+                    <select id="estadoFTres${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="estadoFTres${y}"
+                        oninput="updateInputsSelect()" class="form-select" ${(colorStatusOt(res.arrayOtDetalleStatus[y]).disabled)}>
+                        <option selected value="${(switchEstadoSelected(getValues.arrayEstadoFTres[y])).variableValue}" disabled>
+                            ${(switchEstadoSelected(getValues.arrayEstadoFTres[y])).getValueArrayDato}
+                        </option>
+                        ${(switchEstadoSelected(getValues.arrayEstadoFTres[y])).optionDefined}
+                    </select>
+                    <input type="hidden" id="estadoFTresHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                    name="estadoFTresHidden${[y]}" value="${(switchEstadoSelected(getValues.arrayEstadoFTres[y])).variableValue}">
+                </div>
+                
+                <div class="col-1 my-auto" style="width: 4vw;">
+                    <input type="text" value="${getValues.arrayRevisionFTres[y]}"
+                        class="form-control" style="text-align: center;" disabled readonly">
+                    <input type="hidden" id="revisionFTres${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="revisionFTres${y}" value="${getValues.arrayRevisionFTres[y]}">
+                </div>
+
+                <div class="col my-auto">
+                    <select id="fCuatro${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="fCuatro${y}"
+                        class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
+                        <option selected value="${getValues.arrayFCuatro[y]}" disabled>
+                            ${getValues.arrayFCuatro[y]}
+                        </option>
+                            ${getToolsNames}
+                    </select>
+                    <input type="hidden" id="fCuatroHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="fCuatroHidden${[y]}" value="${(switchOptionSelected(getValues.arrayFCuatro[y])).variableValue}">
+                </div>
+
+                <div class="col-1 my-auto" style="width: 9vw;">
+                    <select id="estadoFCuatro${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="estadoFCuatro${y}"
+                        oninput="updateInputsSelect()"
+                        class="form-select" ${(colorStatusOt(res.arrayOtDetalleStatus[y]).disabled)}>
+                        <option selected value="${(switchEstadoSelected(getValues.arrayEstadoFCuatro[y])).variableValue}" disabled>
+                            ${(switchEstadoSelected(getValues.arrayEstadoFCuatro[y])).getValueArrayDato}
+                        </option>
+                        ${(switchEstadoSelected(getValues.arrayEstadoFCuatro[y])).optionDefined}
+                    </select>
+                    <input type="hidden" id="estadoFCuatroHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                    name="estadoFCuatroHidden${[y]}" value="${(switchEstadoSelected(getValues.arrayEstadoFCuatro[y])).variableValue}">
+                </div>
+                
+                <div class="col-1 my-auto" style="width: 4vw;">
+                    <input type="text" value="${getValues.arrayRevisionFCuatro[y]}"
+                        class="form-control" style="text-align: center;" disabled readonly">
+                    <input type="hidden" id="revisionFCuatro${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="revisionFCuatro${y}" value="${getValues.arrayRevisionFCuatro[y]}">
+                </div>
+
+                <div class="col-1 my-auto" style="width: 13vw;">
+                    <textarea class="form-control" id="notasMecanizado${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="notasMecanizado${y}" rows="1">${getValues.arrayNotasMecanizado[y].trim()}</textarea>
+                    <input type="hidden" id="notasMecanizadoHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="notasMecanizadoHidden${[y]}" value="${getValues.arrayNotasMecanizado[y]}">
+                </div>
+                
+                <div class="col-1 my-auto" style="width: 4vw;">
+                    <input type="text" value="${getValues.arrayRevisionNotasMecanizado[y]}"
+                        class="form-control" style="text-align: center;" disabled readonly">
+                    <input type="hidden" id="revisionNotasMecanizado${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
+                        name="revisionNotasMecanizado${y}" value="${getValues.arrayRevisionNotasMecanizado[y]}">
+                </div>`
+
+            const isInactive = res.arrayOtDetalleStatus[y] === 'Inactivo';
+            const divStyle = isInactive ? 'style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5"' : '';
+            const divClass = isInactive ? 'pe-none contenteditable="false"' : '';
+            
+            arrayBloqueMecanizadoSegunda.push(`
+                <div class="row mx-auto ${divClass}" ${divStyle}>
+                    ${datosCabeceraFormulario(res.arrayOtDetalleStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], res.arrayOtDetalle[y], res.arrayDescripcionDetalle[y], res.arrayOnumber[y], res.arrayDetalleId[y])}
+                    ${dataEnArrayBloque}
+                </div>`);
+            
+            res.arrayOtNumber[y] !== res.arrayOtNumber[y+1] ? arrayBloqueMecanizadoSegunda.push(`<hr class="my-1">`) : null
+        }
+
+        const html = `
+                <form id="formMecanizadoSegundaValues" action="/api/proyectos/otInfoMecanizadoSegunda" method="post" style="font-size: 10pt">
+                    <fieldset>
+                        <div class="row mx-auto">
+                            ${cabeceraFormulario}
+                            <div class="col my-auto">
+                                <span><strong>F3</strong></span>
+                            </div>
+                            <div class="col-1 my-auto align-self-start border-start border-end border-dark" style="width: 9vw;">
+                                <span><strong>Estado</strong></span>
+                            </div>
+                            <div class="col-1 my-auto align-self-start" style="width: 4vw;">
+                                <span"><strong>Rev</strong></span>
+                            </div>
+                            <div class="col my-auto">
+                                <spano><strong>F4</strong></span>
+                            </div>
+                            <div class="col-1 my-auto align-self-start border-start border-end border-dark" style="width: 9vw;">
+                                <span><strong>Estado</strong></span>
+                            </div>
+                            <div class="col-1 my-auto align-self-start" style="width: 4vw;">
+                                <span"><strong>Rev</strong></span>
+                            </div>
+                            <div class="col-1 my-auto border-end border-dark" style="width: 13vw;">
+                                <spano><strong>Notas</strong></span>
+                            </div>
+                            <div class="col-1 my-auto align-self-start" style="width: 4vw;">
+                                <span"><strong>Rev</strong></span>
+                            </div>
+                        </div>
+                        <hr>
+                            ${arrayBloqueMecanizadoSegunda.join("<br>")}
+                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueMecanizadoSegunda.length)}
+                    </fieldset>
+                </form>`
+
+        const titulo = "Mecanizado (2° Parte)"
+        const formulario = 'formMecanizadoSegundaValues'
+        const ancho = 1850
+        const background = '#efefef'
+        const arrayDeOtNumber = res.arrayOtNumber
+        const arrayDeDetalleNumber = res.arrayOtDetalle
+        const arrayDeDetalleDescription = res.arrayDescripcionDetalle
+
+        swalFireAlert (
+            titulo,
+            html,
+            ancho,
+            background,
+            formulario,
+            arrayDeOtNumber,
+            arrayDeDetalleNumber,
+            arrayDeDetalleDescription
+        )
+        disabledBtnAceptar()
     }
 }
 
@@ -3325,7 +3527,6 @@ function disabledBtnAceptar () {
     allInputs.forEach(function(input) {
         if (input.value) {
             input.addEventListener('change', (event) => {
-                console.log('input.value: ', input.value)
                 event.preventDefault()
                 input.classList.add("border-primary")
                 input.classList.add("border-2")
@@ -3381,11 +3582,11 @@ if (arrTables !=[]) {
         button[name="btnOtDistribucion"],
         button[name="btnOtProgramacionPrimera"],
         button[name="btnOtProgramacionSegunda"],
-        button[name="btnMecanizadoPrimeraParte"]
+        button[name="btnOtMecanizadoPrimera"],
+        button[name="btnOtMecanizadoSegunda"]
     `);
 
-    let arrayTituloTabla =
-    [
+    let arrayTituloTabla = [
         {
             nombreTabla: "tablaOtDistribucion",
             btnName: "btnOtDistribucion",
@@ -3408,11 +3609,18 @@ if (arrTables !=[]) {
             qFinal: 10
         },
         {
-            nombreTabla: "tablaMecanizado",
-            btnName: "btnMecanziado",
-            functionName: addDatoToMecanizado,
+            nombreTabla: "tablaOtMecanizadoPrimera",
+            btnName: "btnOtMecanizadoPrimera",
+            functionName: addDatoToMecanizadoPrimera,
             qInicial: 10,
-            qFinal: 17
+            qFinal: 13
+        },
+        {
+            nombreTabla: "tablaOtMecanizadoSegunda",
+            btnName: "btnOtMecanizadoSegunda",
+            functionName: addDatoToMecanizadoSegunda,
+            qInicial: 13,
+            qFinal: 16
         }
     ]
 

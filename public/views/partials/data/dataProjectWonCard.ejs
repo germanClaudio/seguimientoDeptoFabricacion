@@ -60,7 +60,8 @@
                                                                                     let totalColDataOtDistribucion = 4;
                                                                                     let totalColDataProgramacionPrimera = 7;
                                                                                     let totalColDataProgramacionSegunda = 10;
-                                                                                    let totalColDataMecanizado = 17; %>
+                                                                                    let totalColDataMecanizadoPrimera = 13; 
+                                                                                    let totalColDataMecanizadoSegunda = 16; %>
 
                                                                                     <div class="carousel-inner">
                                                                                         <!-- --------- tabla otDistribucion ----------- -->
@@ -75,15 +76,19 @@
                                                                                         <div id="slideProgramacionSegunda" class="carousel-item" data-bs-interval="600000">
                                                                                             <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_tablaProgramacionSegunda', { k, m, j, totalColDataProgramacionSegunda }); %>
                                                                                         </div>
-                                                                                        <!-- --------- tabla Mecanizado ----------- -->
-                                                                                        <div id="slideMecanizado" class="carousel-item" data-bs-interval="600000">
-                                                                                            <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_tablaMecanizado', { k, m, j, totalColDataMecanizado }); %>
+                                                                                        <!-- --------- tabla Mecanizado Primera ----------- -->
+                                                                                        <div id="slideMecanizadoPrimera" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_tablaMecanizadoPrimera', { k, m, j, totalColDataMecanizadoPrimera }); %>
+                                                                                        </div>
+                                                                                        <!-- --------- tabla Mecanizado Segunda ----------- -->
+                                                                                        <div id="slideMecanizadoSegunda" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_tablaMecanizadoSegunda', { k, m, j, totalColDataMecanizadoSegunda }); %>
                                                                                         </div>
                                                                                     </div>
                                                                                 <% } %>
                                                                                 <!-- --------- botonera carrusel < > ----------- -->
                                                                                 <%- include('../../partials/dataProjectCard/dataProjectCard_btnCarrousel', { k, m, j }); %>
-                                                                                <input id="slideHidden" type="hidden" value="<%= slide %>">                                                                
+                                                                                <input id="slideHidden" type="hidden" value="<%= slide %>">
                                                                             </div>
                                                                         </div>
                                                                         <hr>

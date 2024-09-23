@@ -10,6 +10,10 @@ const maquinasSchema = new Schema({
         type: String,
         maxlength: 50
     },
+    type: {
+        type: String,
+        maxlength: 50
+    },
     imageTool: { 
         type: String,
         maxlength: 1000
@@ -21,7 +25,7 @@ const maquinasSchema = new Schema({
     },
     characteristics: { 
         type: String,
-        maxlength: 150,
+        maxlength: 250,
         default: ''
     },
     creator: {

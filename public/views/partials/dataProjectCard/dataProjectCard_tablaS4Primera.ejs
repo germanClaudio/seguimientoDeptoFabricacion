@@ -1,36 +1,28 @@
 <!-- --------- tabla S4 Primera Parte ----------- -->
 <table id="tabla4SimPrimera<%=k%>"
-    class="table-responsive align-middle col-2 border-end border-dark"
-    style="font-size: 10pt; width: 100%">
+    class="table-responsive align-middle col-2 border-end border-dark" style="font-size: 10pt; width: 100%">
     <thead class="align-middle" style="background-color: #88c">
         <tr>
             <th colspan="4" class="text-center">
                 Sim 4 (Primera Parte)
-                <button
-                    id="posBtnAddDataS4Primera<%=k%>"
-                    type="button"
-                    name="btn4PrimeraSim"
-                    class="btn btn-small btn-success m-1"
-                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
-                    title="Agregar Datos"
-                    value="<%=k%>">
-                    <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
-                </button>
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                    <button id="posBtnAddDataS4Primera<%=k%>" type="button" name="btn4PrimeraSim" class="btn btn-small btn-success shadow m-1"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 disabled"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } %>
             </th>
         </tr>
         <tr>
-            <th style="width:25vw" scope="col-1"
-                class="text-center pb-1"> Mat Ensayo | Rev
-            </th>
-            <th style="width:25vw" scope="col-1"
-                class="text-center pb-1"> <i class="fa-solid fa-plus-minus"></i>10% | Rev
-            </th>
-            <th style="width:25vw" scope="col-1"
-                class="text-center pb-1"> MP <i class="fa-solid fa-shapes"></i> | Rev
-            </th>
-            <th style="width:25vw" scope="col-1"
-                class="text-center pb-1"> Reun. Sim | Rev
-            </th>
+            <th style="width:25vw" scope="col-1" class="text-center pb-1">Mat Ensayo | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center pb-1"><i class="fa-solid fa-plus-minus"></i>10% | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center pb-1">MP <i class="fa-solid fa-shapes"></i> | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center pb-1">Reun. Sim | Rev</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -38,37 +30,17 @@
         <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length > n; n++) {
             if (proyecto[m].project[j].oci[k].otProject[n].visible) {
 
-                var arrResMatEnsayo = [];
-                var valueArrayResMatEnsayo = 0;
-                var arrResRevisionMatEnsayo = [];
-                var arrResCreadorMatEnsayo = [];
-                var arrResModificadorMatEnsayo = [];
-                var arrResFechaMatEnsayo = [];
-                var arrResFechaModMatEnsayo = [];
+                var arrResMatEnsayo = []; var valueArrayResMatEnsayo = 0; var arrResRevisionMatEnsayo = []; var arrResCreadorMatEnsayo = [];
+                var arrResModificadorMatEnsayo = []; var arrResFechaMatEnsayo = []; var arrResFechaModMatEnsayo = [];
 
-                var arrResMas10Menos = [];
-                var valueArrayResMas10Menos = 0;
-                var arrResRevisionMas10Menos = [];
-                var arrResCreadorMas10Menos = [];
-                var arrResModificadorMas10Menos = [];
-                var arrResFechaMas10Menos = [];
-                var arrResFechaModMas10Menos = [];
+                var arrResMas10Menos = []; var valueArrayResMas10Menos = 0; var arrResRevisionMas10Menos = []; var arrResCreadorMas10Menos = [];
+                var arrResModificadorMas10Menos = []; var arrResFechaMas10Menos = []; var arrResFechaModMas10Menos = [];
 
-                var arrResMpAlternativo = [];
-                var valueArrayResMpAlternativo = 0;
-                var arrResRevisionMpAlternativo = [];
-                var arrResCreadorMpAlternativo = [];
-                var arrResModificadorMpAlternativo = [];
-                var arrResFechaMpAlternativo = [];
-                var arrResFechaModMpAlternativo = [];
+                var arrResMpAlternativo = []; var valueArrayResMpAlternativo = 0; var arrResRevisionMpAlternativo = []; var arrResCreadorMpAlternativo = [];
+                var arrResModificadorMpAlternativo = []; var arrResFechaMpAlternativo = []; var arrResFechaModMpAlternativo = [];
 
-                var arrResReunionSim = [];
-                var valueArrayResReunionSim = 0;
-                var arrResRevisionReunionSim = [];
-                var arrResCreadorReunionSim = [];
-                var arrResModificadorReunionSim = [];
-                var arrResFechaReunionSim = [];
-                var arrResFechaModReunionSim = [];
+                var arrResReunionSim = []; var valueArrayResReunionSim = 0; var arrResRevisionReunionSim = []; var arrResCreadorReunionSim = [];
+                var arrResModificadorReunionSim = []; var arrResFechaReunionSim = []; var arrResFechaModReunionSim = [];
 
                 if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
                     <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">

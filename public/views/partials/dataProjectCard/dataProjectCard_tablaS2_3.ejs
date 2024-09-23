@@ -1,39 +1,31 @@
 <!-- --------- tabla S2-S3 ----------- -->
 <table id="tabla2_3Sim<%=k%>"
-    class="table-responsive align-middle col-2 border-end border-dark"
-    style="font-size: 10pt; width: 100%">
+    class="table-responsive align-middle col-2 border-end border-dark" style="font-size: 10pt; width: 100%">
     <thead class="align-middle" style="background-color: #88c">
         <tr>
             <th colspan="3" class="text-center border-end">
                 Sim 2
-                <button
-                    id="posBtnAddData2_3Sim<%=k%>"
-                    type="button"
-                    name="btn2_3Sim"
-                    class="btn btn-small btn-success m-1 ms-5"
-                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
-                    title="Agregar Datos"
-                    value="<%=k%>">
-                    <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
-                </button>
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                    <button id="posBtnAddData2_3Sim<%=k%>" type="button" name="btn2_3Sim" class="btn btn-small btn-success shadow m-1 ms-5"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 ms-5 disabled"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } %>
             </th>
             <th colspan="1" class="text-center">
                 Sim 3
             </th>
         </tr>
         <tr>
-            <th style="width:25vw" scope="col-1"
-                class="text-center pb-1"> Sim 2 | Rev
-            </th>
-            <th style="width:25vw" scope="col-1"
-                class="text-center pb-1"> Reporte | Rev
-            </th>
-            <th style="width:25vw" scope="col-1"
-                class="text-center pb-1 border-end"> DFN Prodismo | Rev
-            </th>
-            <th style="width:25vw" scope="col-1"
-                class="text-center pb-1"> Sim 3 | Rev
-            </th>
+            <th style="width:25vw" scope="col-1" class="text-center pb-1">Sim 2 | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center pb-1">Reporte | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center pb-1 border-end">DFN Prodismo | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center pb-1">Sim 3 | Rev</th>
 
         </tr>
     </thead>
@@ -42,37 +34,17 @@
         <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length > n; n++) {
             if (proyecto[m].project[j].oci[k].otProject[n].visible) {
 
-                var arrRes2Sim = [];
-                var valueArrayRes2Sim = 0;
-                var arrResRevision2Sim = [];
-                var arrResCreador2Sim = [];
-                var arrResModificador2Sim = [];
-                var arrResFecha2Sim = [];
-                var arrResFechaMod2Sim = [];
+                var arrRes2Sim = []; var valueArrayRes2Sim = 0; var arrResRevision2Sim = []; var arrResCreador2Sim = [];
+                var arrResModificador2Sim = []; var arrResFecha2Sim = []; var arrResFechaMod2Sim = [];
 
-                var arrResReporte = [];
-                var valueArrayResReporte = 0;
-                var arrResRevisionReporte = [];
-                var arrResCreadorReporte = [];
-                var arrResModificadorReporte = [];
-                var arrResFechaReporte = [];
-                var arrResFechaModReporte = [];
+                var arrResReporte = []; var valueArrayResReporte = 0; var arrResRevisionReporte = []; var arrResCreadorReporte = [];
+                var arrResModificadorReporte = []; var arrResFechaReporte = []; var arrResFechaModReporte = [];
 
-                var arrResDfnProdismo = [];
-                var valueArrayResDfnProdismo = 0;
-                var arrResRevisionDfnProdismo = [];
-                var arrResCreadorDfnProdismo = [];
-                var arrResModificadorDfnProdismo = [];
-                var arrResFechaDfnProdismo = [];
-                var arrResFechaModDfnProdismo = [];
+                var arrResDfnProdismo = []; var valueArrayResDfnProdismo = 0; var arrResRevisionDfnProdismo = []; var arrResCreadorDfnProdismo = [];
+                var arrResModificadorDfnProdismo = []; var arrResFechaDfnProdismo = []; var arrResFechaModDfnProdismo = [];
 
-                var arrRes3Sim = [];
-                var valueArrayRes3Sim = 0;
-                var arrResRevision3Sim = [];
-                var arrResCreador3Sim = [];
-                var arrResModificador3Sim = [];
-                var arrResFecha3Sim = [];
-                var arrResFechaMod3Sim = [];
+                var arrRes3Sim = []; var valueArrayRes3Sim = 0; var arrResRevision3Sim = []; var arrResCreador3Sim = [];
+                var arrResModificador3Sim = []; var arrResFecha3Sim = []; var arrResFechaMod3Sim = [];
 
                 if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
                     <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">

@@ -189,7 +189,7 @@ let otMecanizadoPrimeraSchema = new Schema({
         type: String,
         default: 'sinDato',
     },
-    estadofCero: {
+    estadoFCero: {
         type: String,
         default: 'sinDato',
     },
@@ -201,7 +201,7 @@ let otMecanizadoPrimeraSchema = new Schema({
         type: String,
         default: 'sinDato',
     },
-    estadofUno: {
+    estadoFUno: {
         type: String,
         default: 'sinDato',
     },
@@ -213,19 +213,11 @@ let otMecanizadoPrimeraSchema = new Schema({
         type: String,
         default: 'sinDato',
     },
-    estadofDos: { 
+    estadoFDos: { 
         type: String,
         default: 'sinDato',
     },
     revisionFDos: { 
-        type: Number,
-        default: 0,
-    },
-    fTres: { 
-        type: String,
-        default: 'sinDato',
-    },
-    revisionFTres: { 
         type: Number,
         default: 0,
     },
@@ -243,6 +235,18 @@ let otMecanizadoPrimeraSchema = new Schema({
 
 // ------- OT Mecanizado Segunda Schema ---------
 let otMecanizadoSegundaSchema = new Schema({
+    fTres: { 
+        type: String,
+        default: 'sinDato',
+    },
+    estadoFTres: { 
+        type: String,
+        default: 'sinDato',
+    },
+    revisionFTres: { 
+        type: Number,
+        default: 0,
+    },
     fCuatro: { 
         type: String,
         default: 'sinDato',
@@ -252,18 +256,6 @@ let otMecanizadoSegundaSchema = new Schema({
         default: 'sinDato',
     },
     revisionFCuatro: { 
-        type: Number,
-        default: 0,
-    },
-    fCinco: { 
-        type: String,
-        default: 'sinDato',
-    },
-    estadofCinco: { 
-        type: String,
-        default: 'sinDato',
-    },
-    revisionFCinco: { 
         type: Number,
         default: 0,
     },

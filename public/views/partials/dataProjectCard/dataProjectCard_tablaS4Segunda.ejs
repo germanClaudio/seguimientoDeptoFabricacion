@@ -6,28 +6,23 @@
         <tr>
             <th colspan="4" class="text-center">
                 Sim 4 (Segunda Parte)
-                <button
-                    id="posBtnAddDataS4Segunda<%=k%>"
-                    type="button"
-                    name="btn4SegundaSim"
-                    class="btn btn-small btn-success m-1"
-                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
-                    title="Agregar Datos"
-                    value="<%=k%>">
-                    <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
-                </button>
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                    <button id="posBtnAddDataS4Segunda<%=k%>" type="button" name="btn4SegundaSim" class="btn btn-small btn-success shadow m-1"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 disabled"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } %>
             </th>
         </tr>
         <tr>
-            <th style="width:23vw" scope="col-1"
-                class="text-center pb-1"> Informe | Rev
-            </th>
-            <th style="width:23vw" scope="col-1"
-                class="text-center pb-1"> Geo Cop#1 | Rev
-            </th>
-            <th style="width:23vw" scope="col-1"
-                class="text-center pb-1"> Geo Cop#2 | Rev
-            </th>
+            <th style="width:23vw" scope="col-1" class="text-center pb-1">Informe | Rev</th>
+            <th style="width:23vw" scope="col-1" class="text-center pb-1">Geo Cop#1 | Rev</th>
+            <th style="width:23vw" scope="col-1" class="text-center pb-1">Geo Cop#2 | Rev</th>
 
             <% var arrayHsSim4Segunda = []
             for ( let n=0; proyecto[m].project[j].oci[k].otProject.length>n; n++) {
@@ -43,12 +38,8 @@
                 }, 0);
             } %>
 
-            <th style="width:31vw" scope="col-1"
-                class="text-center pb-1"> Hs Sim | Rev | Total Hs:
-                    <span id="resHsTotalSim4Segunda<%=k%>"
-                        class="badge rounded-pill bg-dark text-white">
-                            <%= sumaHsSim4SegundaTotal %>
-                    </span>
+            <th style="width:31vw" scope="col-1" class="text-center pb-1"> Hs Sim | Rev | Total Hs:
+                    <span id="resHsTotalSim4Segunda<%=k%>" class="badge rounded-pill bg-dark text-white"><%= sumaHsSim4SegundaTotal %></span>
             </th>
         </tr>
     </thead>
@@ -57,37 +48,17 @@
         <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length > n; n++) {
             if (proyecto[m].project[j].oci[k].otProject[n].visible) {
 
-                var arrResInforme4Sim = [];
-                var valueArrayResInforme4Sim = 0;
-                var arrResRevisionInforme4Sim = [];
-                var arrResCreadorInforme4Sim = [];
-                var arrResModificadorInforme4Sim = [];
-                var arrResFechaInforme4Sim = [];
-                var arrResFechaModInforme4Sim = [];
+                var arrResInforme4Sim = []; var valueArrayResInforme4Sim = 0; var arrResRevisionInforme4Sim = []; var arrResCreadorInforme4Sim = [];
+                var arrResModificadorInforme4Sim = []; var arrResFechaInforme4Sim = []; var arrResFechaModInforme4Sim = [];
 
-                var arrResGeo1Copiado = [];
-                var valueArrayResGeo1Copiado = 0;
-                var arrResRevisionGeo1Copiado = [];
-                var arrResCreadorGeo1Copiado = [];
-                var arrResModificadorGeo1Copiado = [];
-                var arrResFechaGeo1Copiado = [];
-                var arrResFechaModGeo1Copiado = [];
+                var arrResGeo1Copiado = []; var valueArrayResGeo1Copiado = 0; var arrResRevisionGeo1Copiado = []; var arrResCreadorGeo1Copiado = [];
+                var arrResModificadorGeo1Copiado = []; var arrResFechaGeo1Copiado = []; var arrResFechaModGeo1Copiado = [];
 
-                var arrResGeo2Copiado = [];
-                var valueArrayResGeo2Copiado = 0;
-                var arrResRevisionGeo2Copiado = [];
-                var arrResCreadorGeo2Copiado = [];
-                var arrResModificadorGeo2Copiado = [];
-                var arrResFechaGeo2Copiado = [];
-                var arrResFechaModGeo2Copiado = [];
+                var arrResGeo2Copiado = []; var valueArrayResGeo2Copiado = 0; var arrResRevisionGeo2Copiado = []; var arrResCreadorGeo2Copiado = [];
+                var arrResModificadorGeo2Copiado = []; var arrResFechaGeo2Copiado = []; var arrResFechaModGeo2Copiado = [];
 
-                var arrResHorasSim = [];
-                var valueArrayResHorasSim = 0;
-                var arrResRevisionHorasSim = [];
-                var arrResCreadorHorasSim = [];
-                var arrResModificadorHorasSim = [];
-                var arrResFechaHorasSim = [];
-                var arrResFechaModHorasSim = [];
+                var arrResHorasSim = []; var valueArrayResHorasSim = 0; var arrResRevisionHorasSim = []; var arrResCreadorHorasSim = [];
+                var arrResModificadorHorasSim = []; var arrResFechaHorasSim = []; var arrResFechaModHorasSim = [];
 
                 if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
                     <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">

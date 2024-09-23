@@ -68,12 +68,29 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
             return new Error (`Error en codigo ${code}!`)
         }
     }
+
+    async getToolByTyoe(type) {
+        if(type){
+            try {
+                const tool = await Maquinas.findOne( {type: `${type}`} )
+                if (tool) {
+                    return null
+                } else {
+                    return tool
+                }
+
+            } catch (error) {
+                console.error(error)
+            }
+        } else {
+            return new Error (`Error en tipo ${type}!`)
+        }
+    }
     
     async getToolByDesignation(designation) { 
         if(designation) {
             try {        
                 const tool = await Maquinas.findOne( {designation: `${designation}`} );
-                console.log('toolDao', tool)
                 if (tool) {
                     return false
                 } else {
@@ -91,24 +108,73 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
     async getToolsBySearching(query) {
         let filter
         var designationAndCodeQuery = [{ 'designation': { $regex: `${query.queryTool}`, $options: 'i' } }, 
-                                        { 'code': { $regex: `${query.queryTool}`, $options: 'i' } }]
+                                        { 'code': { $regex: `${query.queryTool}`, $options: 'i' } },
+                                    ]
 
         if (query.queryTool === '') {
             if (query.statusTool === 'todas') {
-                filter = 'nullAllAll'
+                if (query.typeTool === 'todas') {
+                    filter = 'nullAllAll'
+                } else if (query.typeTool === 'cnc') {
+                    filter = 'nullAllCnc'
+                } else if (query.typeTool === 'prensa') {
+                    filter = 'nullAllPress'
+                } else {
+                    filter = 'nullAllOther'
+                }
             } else if (query.statusTool) {
-                filter = 'nullActiveAll'
+                if (query.typeTool === 'todas') {
+                    filter = 'nullActiveAll'
+                } else if (query.typeTool === 'cnc') {
+                    filter = 'nullActiveCnc'
+                } else if (query.typeTool === 'prensa') {
+                    filter = 'nullActivePress'
+                } else {
+                    filter = 'nullActiveOther'
+                }
             } else if (!query.statusTool) {
-                filter = 'nullInactiveAll'
+                if (query.typeTool === 'todas') {
+                    filter = 'nullInactiveAll'
+                } else if (query.typeTool === 'cnc') {
+                    filter = 'nullInactiveCnc'
+                } else if (query.typeTool === 'prensa') {
+                    filter = 'nullInactivePress'
+                } else {
+                    filter = 'nullInactiveOther'
+                }
             }
 
         } else {
             if (query.statusTool === 'todas') {
-                filter = 'notNullAllAll'
+                if (query.typeTool === 'todas') {
+                    filter = 'notNullAllAll'
+                } else if (query.typeTool === 'cnc') {
+                    filter = 'notNullAllCnc'
+                } else if (query.typeTool === 'prensa') {
+                    filter = 'notNullAllPress'
+                } else {
+                    filter = 'notNullAllOther'
+                }
             } else if (query.statusTool) {
-                filter = 'notNullActiveAll'
+                if (query.typeTool === 'todas') {
+                    filter = 'notNullActiveAll'
+                } else if (query.typeTool === 'cnc') {
+                    filter = 'notNullActiveCnc'
+                } else if (query.typeTool === 'prensa') {
+                    filter = 'notNullActivePress'
+                } else {
+                    filter = 'notNullActiveOther'
+                }
             } else if (!query.statusTool) {
-                filter = 'notNullInactiveAll'
+                if (query.typeTool === 'todas') {
+                    filter = 'notNullInactiveAll'
+                } else if (query.typeTool === 'cnc') {
+                    filter = 'notNullInactiveCnc'
+                } else if (query.typeTool === 'prensa') {
+                    filter = 'notNullInactivePress'
+                } else {
+                    filter = 'notNullInactiveOther'
+                }
             }
         }
 
@@ -154,6 +220,7 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
                     const nuevaMaquina = {
                         designation: newTool.designation,
                         code: newTool.code,
+                        type: newTool.type,
                         characteristics: newTool.characteristics,
                         imageTool: newTool.imageTool,
                         status: newTool.status,
@@ -183,12 +250,13 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
         if (id && updatedTool && userModificator) {
             try {
                 const toolMongoDB = await Maquinas.findById( { _id: id } )
-                let imageUrl = '', designation = '', characteristics = '', code = ''
+                let imageUrl = '', designation = '', characteristics = '', code = '', type = ''
 
                 updatedTool.imageTool !== '' ? imageUrl = updatedTool.imageTool : imageUrl = toolMongoDB.imageTool
                 updatedTool.designation !== '' ? designation = updatedTool.designation : designation = toolMongoDB.designation
                 updatedTool.characteristics !== '' ? characteristics = updatedTool.characteristics : characteristics = toolMongoDB.characteristics
                 updatedTool.code !== '' ? code = updatedTool.code : code = toolMongoDB.code
+                updatedTool.type !== '' ? type = updatedTool.type : code = toolMongoDB.type
                 
                 if(toolMongoDB) {
                     var updatedFinalTool = await Maquinas.updateOne(
@@ -197,6 +265,7 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
                             $set: {
                                 designation: designation,
                                 code: code,
+                                type: type,
                                 characteristics: characteristics,
                                 imageTool: imageUrl,
                                 status: updatedTool.status,

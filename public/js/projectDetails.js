@@ -1090,17 +1090,17 @@ const projectQuantity = parseInt(document.getElementById('projectQuantity').inne
 var arrayBtnChangeStatusProject = []
 let j=0
 for (let k=0; k<projectQuantity; k++) {
-    var btnChangeStatusProject = document.getElementById(`btnChangeStatusProyect${k}_${j}`)
-    if(btnChangeStatusProject) {
-        arrayBtnChangeStatusProject.push(btnChangeStatusProject)
-    }
-    
-    arrayBtnChangeStatusProject[k].addEventListener('click', (event) => {
-        event.preventDefault()
-        const projectName = document.getElementById(`projectNameHidden${k}_${j}`).value
-        const statusProject = document.getElementById(`statusProjectHidden${k}_${j}`).value
-        messageChangeProjectStatus(projectName, statusProject, k)
-    })
+    let btnChangeStatusProject = document.getElementById(`btnChangeStatusProyect${k}_${j}`)
+    btnChangeStatusProject ? arrayBtnChangeStatusProject.push(btnChangeStatusProject) : null
+
+    arrayBtnChangeStatusProject.length !=0 ?
+        arrayBtnChangeStatusProject[k].addEventListener('click', (event) => {
+            event.preventDefault()
+            const projectName = document.getElementById(`projectNameHidden${k}_${j}`).value
+            const statusProject = document.getElementById(`statusProjectHidden${k}_${j}`).value
+            messageChangeProjectStatus(projectName, statusProject, k)
+        })
+    : null
 }
 
 //---- Change Project Level ----------------
@@ -1243,18 +1243,18 @@ function messageChangeProjectLevel(projectName, levelProject, k, idProject) {
 var arrayBtnChangeLevelProject = []
 let x=0
 for (let k=0; k<projectQuantity; k++) {
-    var btnChangeLevelProject = document.getElementById(`btnChangeLevelProyect${k}_${x}`)
-    if(btnChangeLevelProject) {
-        arrayBtnChangeLevelProject.push(btnChangeLevelProject)
-    }
+    let btnChangeLevelProject = document.getElementById(`btnChangeLevelProyect${k}_${x}`)
+    btnChangeLevelProject ? arrayBtnChangeLevelProject.push(btnChangeLevelProject) : null
     
-    arrayBtnChangeLevelProject[k].addEventListener('click', (event) => {
-        event.preventDefault()
-        const projectName = document.getElementById(`projectNameHidden${k}_${x}`).value
-        const levelProject = document.getElementById(`levelProjectHidden${k}_${x}`).value
-        const idProject = document.getElementById(`projectIdHidden${k}_${x}`).value
-        messageChangeProjectLevel(projectName, levelProject, k, idProject)
-    })
+    arrayBtnChangeLevelProject.length !=0 ?
+        arrayBtnChangeLevelProject[k].addEventListener('click', (event) => {
+            event.preventDefault()
+            const projectName = document.getElementById(`projectNameHidden${k}_${x}`).value
+            const levelProject = document.getElementById(`levelProjectHidden${k}_${x}`).value
+            const idProject = document.getElementById(`projectIdHidden${k}_${x}`).value
+            messageChangeProjectLevel(projectName, levelProject, k, idProject)
+        })
+    : null
 }
 
 
@@ -2755,34 +2755,34 @@ function messageUpdateProject(
 var arrayBtnUpdateProject = []
 let l=0
 for (let k=0; k<projectQuantity; k++) {
-    var btnUpdateProject = document.getElementById(`btnUpdateProject${k}_${l}`)
-    if(btnUpdateProject) {
-        arrayBtnUpdateProject.push(btnUpdateProject)
-    }
+    let btnUpdateProject = document.getElementById(`btnUpdateProject${k}_${l}`)
+    btnUpdateProject ? arrayBtnUpdateProject.push(btnUpdateProject) : null
     
-    arrayBtnUpdateProject[k].addEventListener('click', (event) => {
-        event.preventDefault()
-        const projectName = document.getElementById(`projectNameHidden${k}_${l}`).value
-        const levelProject = document.getElementById(`levelProjectHidden${k}_${l}`).value
-        const idProject = document.getElementById(`projectIdHidden${k}_${l}`).value
-        const statusProject = document.getElementById(`statusProjectHidden${k}_${l}`).value
-        const descriptionProject = document.getElementById(`projectDescription${k}`).innerText
-        const prioProject = document.getElementById(`prioProject${k}`).innerText
-        const codeProject = document.getElementById(`codeProject${k}`).innerText
-        const imgProject = document.getElementById(`imageProject${k}`).src
-        
-        messageUpdateProject(
-            idProject,
-            projectName,
-            statusProject,
-            imgProject,
-            descriptionProject,
-            prioProject,
-            codeProject,
-            levelProject,
-            k
-        )
-    })
+    arrayBtnUpdateProject.length !=0 ?
+        arrayBtnUpdateProject[k].addEventListener('click', (event) => {
+            event.preventDefault()
+            const projectName = document.getElementById(`projectNameHidden${k}_${l}`).value
+            const levelProject = document.getElementById(`levelProjectHidden${k}_${l}`).value
+            const idProject = document.getElementById(`projectIdHidden${k}_${l}`).value
+            const statusProject = document.getElementById(`statusProjectHidden${k}_${l}`).value
+            const descriptionProject = document.getElementById(`projectDescription${k}`).innerText
+            const prioProject = document.getElementById(`prioProject${k}`).innerText
+            const codeProject = document.getElementById(`codeProject${k}`).innerText
+            const imgProject = document.getElementById(`imageProject${k}`).src
+            
+            messageUpdateProject(
+                idProject,
+                projectName,
+                statusProject,
+                imgProject,
+                descriptionProject,
+                prioProject,
+                codeProject,
+                levelProject,
+                k
+            )
+        })
+    : null
 }
 
 //------------ Delete Project ------------------------
@@ -2866,18 +2866,18 @@ function messageDeleteProject(projectName, id, k, imgProject) {
 var arrayBtnDeleteProject = []
 let p=0
 for (let k=0; k<projectQuantity; k++) {
-    var btnDeleteProject = document.getElementById(`btnDeleteProject${k}_${p}`)
-    if(btnDeleteProject) {
-        arrayBtnDeleteProject.push(btnDeleteProject)
-    }
+    let btnDeleteProject = document.getElementById(`btnDeleteProject${k}_${p}`)
+    btnDeleteProject ? arrayBtnDeleteProject.push(btnDeleteProject) :null
     
-    arrayBtnDeleteProject[k].addEventListener('click', (event) => {
-        event.preventDefault()
-        const projectName = document.getElementById(`projectNameHidden${k}_${p}`).value
-        const idProject = document.getElementById(`projectIdHidden${k}_${p}`).value
-        const imgProject = document.getElementById(`imageProject${k}`).src
-        messageDeleteProject(projectName, idProject, k, imgProject)
-    })
+    arrayBtnDeleteProject.length !=0 ?
+        arrayBtnDeleteProject[k].addEventListener('click', (event) => {
+            event.preventDefault()
+            const projectName = document.getElementById(`projectNameHidden${k}_${p}`).value
+            const idProject = document.getElementById(`projectIdHidden${k}_${p}`).value
+            const imgProject = document.getElementById(`imageProject${k}`).src
+            messageDeleteProject(projectName, idProject, k, imgProject)
+        })
+    : null
 }
 
 //---------- ToolTip btn-spot OT -----------
@@ -2889,11 +2889,11 @@ btnOtNumberSpot.forEach(function(btnSpot) {
         
         tippy(btnSpotOtNumber, {
             content: `OT: ${btnSpotOtNumber.id}<br>
-                      Op: ${btnSpotOtNumber.getAttribute("valueop")}<br>
-                      Descripcion: ${btnSpotOtNumber.getAttribute("valuedes")}<br>
-                      Diseño: ${btnSpotOtNumber.getAttribute("valuedesig")}<br>
-                      Simulacion: ${btnSpotOtNumber.getAttribute("valuesim")}<br>
-                      Proveedor: ${btnSpotOtNumber.getAttribute("valuesup")}`,
+                    Op: ${btnSpotOtNumber.getAttribute("valueop")}<br>
+                    Descripcion: ${btnSpotOtNumber.getAttribute("valuedes")}<br>
+                    Diseño: ${btnSpotOtNumber.getAttribute("valuedesig")}<br>
+                    Simulacion: ${btnSpotOtNumber.getAttribute("valuesim")}<br>
+                    Proveedor: ${btnSpotOtNumber.getAttribute("valuesup")}`,
             allowHTML: true,
             arrow: true,
             animation: 'scale',

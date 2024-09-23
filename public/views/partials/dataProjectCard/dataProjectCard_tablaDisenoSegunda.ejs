@@ -1,36 +1,28 @@
 <!-- --------- tabla Diseno Segunda Parte ----------- -->
 <table id="tablaDisenoSegunda<%=k%>"
-    class="table-responsive align-middle col-5 border-end border-dark"
-    style="font-size: 10pt; width: 100%;">
+    class="table-responsive align-middle col-5 border-end border-dark" style="font-size: 10pt; width: 100%;">
     <thead class="align-middle" style="background-color: #aac">
         <tr>
             <th colspan="4" class="text-center">
                 DISEÑO SEGUNDA PARTE
-                <button
-                    id="posBtnAddDataDisenoSegunda<%=k%>"
-                    type="button"
-                    name="btnDisenoSegunda"
-                    class="btn btn-small btn-success m-1"
-                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
-                    title="Agregar/Modificar Datos"
-                    value="<%=k%>">
-                    <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
-                </button>
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                    <button id="posBtnAddDataDisenoSegunda<%=k%>" type="button" name="btnDisenoSegunda" class="btn btn-small btn-success shadow m-1"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 disabled"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } %>
             </th>
         </tr>
         <tr>
-            <th style="width:25vw" scope="col-1"
-                class="text-center pb-1"> Rev. Cliente | Rev.
-            </th>
-            <th style="width:25vw" scope="col-1"
-                class="text-center pb-1"> LDM Provisoria | Rev.
-            </th>
-            <th style="width:25vw" scope="col-1"
-                class="text-center pb-1"> Rev. 100% | Rev.
-            </th>
-            <th style="width:25vw" scope="col-1"
-                class="text-center pb-1"> Aprob. Cliente | Rev.
-            </th>
+            <th style="width:25vw" scope="col-1" class="text-center pb-1">Rev. Cliente | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center pb-1">LDM Provisoria | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center pb-1">Rev. 100% | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center pb-1">Aprob. Cliente | Rev</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -38,37 +30,17 @@
         <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length>n; n++) {
             if (proyecto[m].project[j].oci[k].otProject[n].visible) {
 
-                var arrResAv100Diseno = [];
-                var valueArrayResAv100Diseno = 0;
-                var arrResRevisionAv100Diseno = [];
-                var arrResCreadorAv100Diseno = [];
-                var arrResModificadorAv100Diseno = [];
-                var arrResFechaAv100Diseno = [];
-                var arrResFechaModAv100Diseno = [];
+                var arrResAv100Diseno = []; var valueArrayResAv100Diseno = 0; var arrResRevisionAv100Diseno = []; var arrResCreadorAv100Diseno = [];
+                var arrResModificadorAv100Diseno = []; var arrResFechaAv100Diseno = []; var arrResFechaModAv100Diseno = [];
 
-                var arrResRevisionCliente = [];
-                var valueArrayResRevisionCliente = 0;
-                var arrResRevisionRevisionCliente = [];
-                var arrResCreadorRevisionCliente = [];
-                var arrResModificadorRevisionCliente = [];
-                var arrResFechaRevisionCliente = [];
-                var arrResFechaModRevisionCliente = [];
+                var arrResRevisionCliente = []; var valueArrayResRevisionCliente = 0; var arrResRevisionRevisionCliente = []; var arrResCreadorRevisionCliente = [];
+                var arrResModificadorRevisionCliente = []; var arrResFechaRevisionCliente = []; var arrResFechaModRevisionCliente = [];
 
-                var arrResLdmProvisoria = [];
-                var valueArrayResLdmProvisoria = 0;
-                var arrResRevisionLdmProvisoria = [];
-                var arrResCreadorLdmProvisoria = [];
-                var arrResModificadorLdmProvisoria = [];
-                var arrResFechaLdmProvisoria = [];
-                var arrResFechaModLdmProvisoria = [];
+                var arrResLdmProvisoria = []; var valueArrayResLdmProvisoria = 0; var arrResRevisionLdmProvisoria = []; var arrResCreadorLdmProvisoria = [];
+                var arrResModificadorLdmProvisoria = []; var arrResFechaLdmProvisoria = []; var arrResFechaModLdmProvisoria = [];
 
-                var arrResAprobadoCliente = [];
-                var valueArrayResAprobadoCliente = 0;
-                var arrResRevisionAprobadoCliente = [];
-                var arrResCreadorAprobadoCliente = [];
-                var arrResModificadorAprobadoCliente = [];
-                var arrResFechaAprobadoCliente = [];
-                var arrResFechaModAprobadoCliente = [];
+                var arrResAprobadoCliente = []; var valueArrayResAprobadoCliente = 0; var arrResRevisionAprobadoCliente = []; var arrResCreadorAprobadoCliente = [];
+                var arrResModificadorAprobadoCliente = []; var arrResFechaAprobadoCliente = []; var arrResFechaModAprobadoCliente = [];
 
                 if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
                     <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">

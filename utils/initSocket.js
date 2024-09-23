@@ -117,7 +117,9 @@ const initSocket = (io) => {
         })
 
         //-------------------- maquinas ----------------------
-        socket.emit('toolsAll', await containerTool.getAllTools())
+        socket.emit('toolsAll', await containerTool.getAllTools(),
+                                await containerUser.getAllUsers()
+        )
 
         socket.on('newMaquina', async (maquina) => {
             await containerTool.createNewTool(maquina)

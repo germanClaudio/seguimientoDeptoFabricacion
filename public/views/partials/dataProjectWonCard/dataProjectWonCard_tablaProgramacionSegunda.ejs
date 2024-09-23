@@ -3,9 +3,15 @@
     <thead class="align-middle" style="background-color: #c6c6eb">
         <tr>
             <th colspan="3" class="text-center">PROGRAMACIÓN (2° Parte)
-                <button id="posBtnAddDataOtProgramacionSegunda<%=k%>" type="button" name="btnOtProgramacionSegunda" class="btn btn-small btn-success m-1 me-5" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
-                    <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>                                                    
-                </button>
+                <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
+                    <button id="posBtnAddDataOtProgramacionSegunda<%=k%>" type="button" name="btnOtProgramacionSegunda" class="btn btn-small btn-success shadow m-1 me-5" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>                                                    
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 me-5 disabled" style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i> 
+                    </button>
+                <% } %>
                 <i class="fa-solid fa-arrows-spin fa-lg" style="color: #b09b12;"></i> En Proceso -
                 <i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i> Terminado -
                 <i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i> Suspendido -
@@ -14,8 +20,8 @@
             </th>
         </tr>
         <tr>
-            <th id="colData0" style="width:30vw" scope="col-1" class="text-center pb-1">Programas 3d F2 | Estado | Rev.</th>
-            <th id="colData1" style="width:30vw" scope="col-1" class="text-center pb-1">Programas 3d F4 | Estado | Rev.</th>
+            <th id="colData0" style="width:30vw" scope="col-1" class="text-center pb-1">Programas 3d F2 | Estado | Rev</th>
+            <th id="colData1" style="width:30vw" scope="col-1" class="text-center pb-1">Programas 3d F4 | Estado | Rev</th>
             <th id="colData3" style="width:40vw" scope="col-1" class="text-center pb-1">Notas | Rev.</th>
         </tr>
     </thead>

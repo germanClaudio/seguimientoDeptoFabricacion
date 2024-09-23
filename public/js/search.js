@@ -625,17 +625,20 @@ socket.on('searchToolsAll', async (arrToolSearch) => {
     renderSearchedTools (await arrToolSearch)
 })
 
+
 const searchTools = () => {
     const queryTool = document.getElementById('queryTools').value
     let statusTool = document.getElementById('statusTool').value
-
+    let typeTool = document.getElementById('typeTool').value
+console.log('typeTool:', typeTool)
     statusTool != 'todas' ?
         statusTool === 'activas' ? statusTool = true : statusTool = false
     : null
         
     socket.emit('searchMaquinaAll', {
         queryTool,
-        statusTool
+        statusTool,
+        typeTool
     })
     return false
 }
@@ -703,11 +706,32 @@ const renderSearchedTools = (arrToolSearch) => {
             let disabled = 'disabled'
             let green = 'success'
             let red = 'danger'
+            let info = 'info'
+            let blue = 'primary'
+            let grey = 'secondary'
 
             const active = 'Activo'
             const inactive = 'Mantenimiento'
+
+            const cnc = 'CNC'
+            const press = 'Prensa'
+            const other = 'Otras'
             
             let optionStatus = element.status ? green : red
+
+            let showType
+            let optionType
+            if (element.type === 'cnc') {
+                optionType = info
+                showType = cnc
+            } else if (element.type === 'prensa') {
+                optionType = grey
+                showType = press
+            } else {
+                optionType = blue
+                showType = other
+            }
+
             let showStatus = element.status ? active : inactive
             
             element.visible ? disabled = '' : null
@@ -726,6 +750,7 @@ const renderSearchedTools = (arrToolSearch) => {
                                 <div class="card-body">
                                     <h6 class="card-title"><strong>${element.designation}</strong></h6>
                                     <h7 class="card-title">Código #<strong>${element.code}</strong></h7><br>
+                                    Tipo: <span class="badge rounded-pill bg-${optionType} my-1">${showType}</span><br>
                                     Status: <span class="badge rounded-pill bg-${optionStatus} my-1">${showStatus}</span><br>
                                 </div>
                                 <div class="card-footer px-2">

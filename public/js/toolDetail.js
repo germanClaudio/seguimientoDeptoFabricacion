@@ -165,13 +165,15 @@ function message(designation) {
 }
 
 const btnUpdateTool = document.getElementById('btnUpdateTool')
-btnUpdateTool.addEventListener('click', (event)=>{
-    event.preventDefault()
-    const desigantion = document.getElementById('designation').value
-    message(desigantion)
-})
+if (btnUpdateTool) {
+    btnUpdateTool.addEventListener('click', (event)=>{
+        event.preventDefault()
+        const desigantion = document.getElementById('designation').value
+        message(desigantion)
+    })
+}
 
-var inputsDeTexto = document.querySelectorAll('input[type="text"], textarea, input[type="file"]')
+let inputsDeTexto = document.querySelectorAll('input[type="text"], textarea, input[type="file"], input[type="hidden"]')
 
     // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
@@ -204,8 +206,8 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"], textarea, inp
         }
     })
     
-    var inputsDeCheckbox = document.querySelectorAll('input[type="checkbox"]')
-    inputsDeCheckbox.forEach(function(input) {
+    let inputsDeCheckbox = document.querySelectorAll('input[type="checkbox"], input[type="select"]')
+    .forEach(function(input) {
         if (input) {
             input.addEventListener('input', (event) => {
                 event.preventDefault()
@@ -217,6 +219,18 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"], textarea, inp
             })
         }
     })
+
+    let inputsSelect = document.getElementById('type')
+        if (inputsSelect) {
+            inputsSelect.addEventListener('input', (event) => {
+                event.preventDefault()
+                inputsSelect.classList.add("border-primary")
+                inputsSelect.classList.add("border-2")
+                inputsSelect.classList.add("shadow")
+                btnUpdateTool.removeAttribute('disabled')
+                btnUpdateTool.style = "cursor: pointer;"
+            })
+        }
 
     // Crear una nueva instancia de MutationObserver y pasar una función de callback
     const observer = new MutationObserver(function(mutationsList, observer) {

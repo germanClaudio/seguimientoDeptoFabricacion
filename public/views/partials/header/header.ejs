@@ -1,6 +1,6 @@
 <header>
     <nav class="navbar fixed-top navbar-dark bg-dark text-white m-b-80">
-        <div class="container-fluid px-2 my-2">
+        <div class="container-fluid px-2 my-1">
             <a class="navbar-brand mx-2" role="button" href="#offcanvasExample" data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasWithBothOptions"
                 aria-controls="offcanvasWithBothOptions">
@@ -56,40 +56,7 @@
                 <div class="vr mx-1 d-none d-xl-inline" style="color: white;"></div>
 
                 <div class="container text-center m-auto" style="width: auto;">
-                    <% if (userInfo.superAdmin) { %>
-                        <div class="mx-auto small text-center">
-                            <span id="mostrarRolUser" class="badge rounded-pill bg-primary position-relative">
-                                SuperAdmin
-                                <span class="position-absolute top-0 start-100 translate-middle">
-                                    <i class="fa-solid fa-crown fa-beat fa-lg"
-                                        title="SuperAdmin"
-                                        style="color: #a89c0d; --fa-rotate-angle: 20deg;">
-                                    </i>
-                                </span>
-                            </span>
-                        </div>
-                        <div class="mx-auto small text-center" id="mostrarUserName">
-                            <%= userInfo.name %>, <%= userInfo.lastName %>
-                        </div>
-                        <div class="d-none" id="userBanner_<%= userInfo._id %>"><%= userInfo._id %></div>
-                        <div class="d-none" id="userNameBanner"><%= userInfo.username %></div>
-                    <% } else if (userInfo.admin && !userInfo.superAdmin) { %>
-                        <div class="mx-auto small text-center">
-                            <span id="mostrarRolUser" class="badge rounded-pill bg-primary">Admin</span>
-                        </div>
-                        <div class="mx-auto small text-center" id="mostrarUserName">
-                            <%= userInfo.name %>, <%= userInfo.lastName %>
-                        </div>
-                        <div class="d-none" id="userBanner_<%= userInfo._id %>"><%= userInfo._id %></div>
-                    <% } else { %>
-                        <div class="mx-auto small text-center">
-                            <span id="mostrarRolUser" class="badge rounded-pill bg-info text-dark">User</span>
-                        </div>
-                        <div class="mx-auto small text-center" id="mostrarUserName">
-                            <%= userInfo.name %>, <%= userInfo.lastName %>
-                        </div>
-                        <div class="d-none" id="<%= userInfo._id %>"></div>
-                    <% } %>
+                    <%- include('../../partials/userBanner/userBanner'); %>
                 </div>
                 <button type="button" title="Preferencias Usuario" class="btn btn-link rounded-circle my-auto mx-2 shadow" name="btnPreferences" id="btnPreferences">
                     <i class="fa-regular fa-star"></i>

@@ -1,30 +1,26 @@
 <!-- --------- tabla Sim0 ----------- -->
 <table id="tabla0Sim<%=k%>"
-    class="table-responsive align-middle col-5 border-end border-dark"
-    style="font-size: 10pt; width: 100%">
+    class="table-responsive align-middle col-5 border-end border-dark" style="font-size: 10pt; width: 100%">
     <thead class="align-middle" style="background-color: #99c">
         <tr>
             <th colspan="2" class="text-center">
                 Sim 0
-                <button
-                    id="posBtnAddData0Sim<%=k%>"
-                    type="button"
-                    name="btn0Sim"
-                    class="btn btn-small btn-success m-1"
-                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
-                    title="Agregar Datos"
-                    value="<%=k%>">
-                    <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
-                </button>
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                    <button id="posBtnAddData0Sim<%=k%>" type="button" name="btn0Sim" class="btn btn-small btn-success shadow m-1"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 disabled"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } %>
             </th>
         </tr>
         <tr>
-            <th style="width:50vw" scope="col-1"
-                class="text-center pb-1"> Sim 0 | Rev.
-            </th>
-            <th style="width:50vw" scope="col-1"
-                class="text-center pb-1"> Docum. | Rev.
-            </th>
+            <th style="width:50vw" scope="col-1" class="text-center pb-1">Sim 0 | Rev</th>
+            <th style="width:50vw" scope="col-1" class="text-center pb-1">Docum. | Rev</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -32,21 +28,11 @@
         <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length > n; n++) {
             if (proyecto[m].project[j].oci[k].otProject[n].visible) {
 
-                var arrRes0Sim = [];
-                var valueArrayRes0Sim = 0;
-                var arrResRevision0Sim = [];
-                var arrResCreador0Sim = [];
-                var arrResModificador0Sim = [];
-                var arrResFecha0Sim = [];
-                var arrResFechaMod0Sim = [];
+                var arrRes0Sim = []; var valueArrayRes0Sim = 0; var arrResRevision0Sim = []; var arrResCreador0Sim = [];
+                var arrResModificador0Sim = []; var arrResFecha0Sim = []; var arrResFechaMod0Sim = [];
 
-                var arrResDocu0Sim = [];
-                var valueArrayResDocu0Sim = 0;
-                var arrResRevisionDocu0Sim = [];
-                var arrResCreadorDocu0Sim = [];
-                var arrResModificadorDocu0Sim = [];
-                var arrResFechaDocu0Sim = [];
-                var arrResFechaModDocu0Sim = []; 
+                var arrResDocu0Sim = []; var valueArrayResDocu0Sim = 0; var arrResRevisionDocu0Sim = []; var arrResCreadorDocu0Sim = [];
+                var arrResModificadorDocu0Sim = []; var arrResFechaDocu0Sim = []; var arrResFechaModDocu0Sim = []; 
 
                 if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
                     <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">

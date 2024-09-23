@@ -164,11 +164,14 @@ function message(clientName) {
 }
 
 const btnUpdateClient = document.getElementById('btnUpdateClient')
-btnUpdateClient.addEventListener('click', (event)=>{
+
+btnUpdateClient ? 
+    btnUpdateClient.addEventListener('click', (event)=>{
     event.preventDefault()
     const clientName = document.getElementById('name').value
     message(clientName)
-})
+    })
+    : null
 
 var inputsDeTexto = document.querySelectorAll('input[type="text"]')
 

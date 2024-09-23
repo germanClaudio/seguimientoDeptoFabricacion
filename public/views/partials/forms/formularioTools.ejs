@@ -1,5 +1,5 @@
 <div class="form-group col-6 mx-auto my-2 w-75 border rounded p-3 text-white bg-opacity-75" style="background-color: #b6b6b6;">
-    <h3 class="mx-auto my-2 text-center">Agregar Nueva Maquina</h3>
+    <h3 id="titleNewTool" class="mx-auto my-2 text-center">Agregar Nueva Máquina</h3>
     <form action="/api/maquinas/newTool" enctype="multipart/form-data" method="post" id="newToolForm">
         <fieldset>
             <div class="row my-2 mx-auto">
@@ -11,6 +11,15 @@
                 <div class="col-2">
                     <label for="code">Modelo</label>
                     <input type="text" name="code" id="code" class="form-control" placeholder="Modelo" required>
+                </div>
+
+                <div class="col-2">
+                    <label class="form-check-label" for="type">Tipo</label>
+                    <select class="form-select form-select" aria-label=".form-select" name="type" id="type">
+                        <option selected value="cnc">CNC</option>
+                        <option value="prensa">Prensa</option>
+                        <option value="otras">Otras</option>
+                    </select>
                 </div>
                 
                 <div class="col">
@@ -55,6 +64,7 @@
                     </div>
                 </div>
             </div>
+
             <br>  
             <div class="d-flex justify-content-center">
                 <button type="button" class="btn btn-primary mx-auto" id="btnAddNewTool" disabled>Guardar Maquina

@@ -11,36 +11,89 @@ function formatDate(date) {
     return DD + MM + YY + "_" + hh + mm + ss
 }
 
+//-------------------------------------------
+const inputName = document.getElementById('designation')
+function mostrarNombre() {
+    const titleNewTool = document.getElementById('titleNewTool')
+    titleNewTool.innerText = 'Agregar Nueva Máquina: '+ inputName.value
+}
+
+    if(inputName) {
+        inputName.addEventListener('keyup', () => {
+            mostrarNombre()    
+        })
+        
+        inputName.addEventListener('blur', () => {
+            mostrarNombre()    
+        })
+    }
+//-------------------------------------
+
 document.addEventListener('DOMContentLoaded', function() {
     // Mostrar el spinner y ocultar la tabla al cargar la página
     document.getElementById('loading-spinner').style.display = 'block';
     document.getElementById('toolTable').style.display = 'none';
 });
 
-
-//  ----------- Tools historial ----------------
-socket.on('toolsAll', (arrTools) => {
-    renderTools(arrTools)
+//  ----------- Tools list ----------------
+socket.on('toolsAll', (arrTools, arrUsers) => {
+    const cadena = document.getElementById('mostrarUserName').innerText
+    let indice = cadena.indexOf(",");
+    const name = cadena.substring(0,indice)
+    let index = arrUsers.findIndex(el=> el.name == name.trim())
+    
+    if(index !== -1) {
+        let user = arrUsers[index].admin
+        let userId = arrUsers[index]._id
+        user ? renderToolsAdmin(arrTools, userId) : renderToolsUser(arrTools)
+    }   
 })
 
-const renderTools = (arrTools) => {
+// --------------- Render Admin ----------------------------
+const renderToolsAdmin = (arrTools) => {
     const arrayTool = arrTools
     const green = 'success'
     const red = 'danger'
+    const blue = 'primary'
+    const grey = 'secondary'
+    const black = 'dark'
+    const white = 'light'
     const active = 'Activa'
     const inactive = 'Mantenimiento'
+    const info = 'info'
+    const cnc = 'CNC'
+    const press = 'Prensa'
+    let textColor
+    
     let html
     if (arrTools.length>0) {
         html = arrTools.map((element) => {
             let optionStatus = element.status ? green : red
+            let optionType 
+            let showType
+            if(element.type === 'cnc') {
+                optionType = info
+                showType = cnc
+                textColor = black
+            } else if(element.type === 'prensa') {
+                optionType = grey
+                showType = press
+                textColor = white
+            } else {
+                optionType = blue
+                showType = 'Otros'
+                textColor = white
+            }
             let showStatus = element.status ? active : inactive
+            cnc : press
             let idChain = element._id.substring(19)
 
             if (element.visible) {
                 return (`<tr>
                             <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
                             <td class="text-center" id="codigo_${element._id}">${element.code}</td>
-                            <td class="text-center" id="designation_${element._id}">${element.designation}</td>
+                            <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
+                            <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
                             <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageTool}' width="150px" height="150px"></td>
                             <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
                             <td class="text-center" id="characteristics_${element._id}">${element.characteristics}</td>
@@ -135,7 +188,152 @@ const renderTools = (arrTools) => {
                 const idTool = btn.id
                 const designation = document.getElementById(`designation_${idTool}`).innerText
                 const code = document.getElementById(`codigo_${idTool}`).innerText
-                console.log(idTool, designation, code)
+
+                idTool && designation && code ? messageDeleteTool(idTool, designation, code) : null
+            })
+        }
+    })
+}
+
+//----------------------- Render User -------------------------------
+const renderToolsUser = (arrTools) => {
+    const arrayTool = arrTools
+    const green = 'success'
+    const red = 'danger'
+    const blue = 'primary'
+    const grey = 'secondary'
+    const black = 'dark'
+    const white = 'light'
+    const active = 'Activa'
+    const inactive = 'Mantenimiento'
+    const info = 'info'
+    const cnc = 'CNC'
+    const press = 'Prensa'
+    let textColor
+    
+    let html
+    if (arrTools.length>0) {
+        html = arrTools.map((element) => {
+            let optionStatus = element.status ? green : red
+            let optionType 
+            let showType
+            if(element.type === 'cnc') {
+                optionType = info
+                showType = cnc
+                textColor = black
+            } else if(element.type === 'prensa') {
+                optionType = grey
+                showType = press
+                textColor = white
+            } else {
+                optionType = blue
+                showType = 'Otros'
+                textColor = white
+            }
+            let showStatus = element.status ? active : inactive
+            cnc : press
+            let idChain = element._id.substring(19)
+
+            if (element.visible) {
+                return (`<tr>
+                            <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
+                            <td class="text-center" id="codigo_${element._id}">${element.code}</td>
+                            <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
+                            <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
+                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageTool}' width="150px" height="150px"></td>
+                            <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
+                            <td class="text-center" id="characteristics_${element._id}">${element.characteristics}</td>
+                            <td class="text-center">${element.creator[0].name}, ${element.creator[0].lastName}</td>
+                            <td class="text-center">${element.timestamp}</td>
+                            <td class="text-center">${element.modificator[0].name} ${element.modificator[0].lastName}</td>
+                            <td class="text-center">${element.modifiedOn}</td>
+                            <td class="text-center">
+                                <div class="d-blck align-items-center text-center mx-1">
+                                    <a href="/api/maquinas/${element._id}" class="btn btn-primary btn-sm me-1" title="Editar Máquina ${element.designation}"><i class="fa-solid fa-gears"></i></a>
+                                    <button type="button" class="btn btn-danger btn-sm ms-1 disabled" title="Solo Admin puede modificar esto"><i class="fa-solid fa-info-circle"></i></button>
+                                </div>
+                            </td>
+                        </tr>`)
+
+            }
+        }).join(" ");
+        document.getElementById('mostrarMaquinas').innerHTML = html
+
+        const toolsActiveQty = []
+        for(let u=0; u<arrayTool.length; u++) {
+            arrayTool[u].visible ? toolsActiveQty.push(u) : null
+        }
+
+        const htmlToolList = 
+            ( `<caption id="capToolList">Cantidad de Máquinas: ${parseInt(toolsActiveQty.length)}</caption><br>
+            <caption id="capDeleteToolList">Cantidad de Máquinas Eliminadas: ${parseInt(arrayTool.length - toolsActiveQty.length)}</caption>`)
+
+        document.getElementById('capToolList').innerHTML = htmlToolList
+        
+    } else {
+        html = (`<tr>
+                    <th scope="row" class="text-center"><strong>No hay items cargados para mostrar</strong></th>
+                </tr>`)
+
+        document.getElementById('mostrarMaquinas').innerHTML = html    
+    }
+    // Ocultar el spinner y mostrar la tabla
+    document.getElementById('loading-spinner').style.display = 'none';
+    document.getElementById('toolTable').style.display = 'block';
+
+    // ---- mensaje confirmacion eliminar Usuario -----------
+    function messageDeleteTool(id, code, designation) {
+
+        const htmlForm = `
+                La maquina ${designation} - Codigo: ${code}, se eliminará completamente.<br>
+                Está seguro que desea continuar?<br>
+                <form id="formDeleteTool" action="/api/maquinas/delete/${id}" method="get">
+                    <fieldset>
+                    </fieldset>
+                </form>
+                        `
+    
+        Swal.fire({
+            title: `Eliminar Máquina <b>${designation}</b>?`,
+            position: 'center',
+            html: htmlForm,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            focusConfirm: false,
+            confirmButtonText: 'Eliminarla! <i class="fa-regular fa-trash-can"></i>',
+            cancelButtonText: 'Cancelar <i class="fa-solid fa-user-shield"></i>'
+    
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById("formDeleteTool").submit()
+                setTimeout(() => {
+                    Swal.fire(
+                        'Eliminada!',
+                        `La maquina ${designation}, ha sido eliminada exitosamente.`,
+                        'success'
+                    )
+                }, 1500)
+            } else {
+                Swal.fire(
+                    'No eliminada!',
+                    `La maquina ${designation}, no ha sido eliminada.`,
+                    'info'
+                    )
+                return false
+            }
+        })
+    }
+
+    const nodeList = document.querySelectorAll('button[name="btnDeleteTool"]')
+    nodeList.forEach(function(btn){
+        if (btn.id) {
+            btn.addEventListener("click", (event) => {
+                event.preventDefault()
+                const idTool = btn.id
+                const designation = document.getElementById(`designation_${idTool}`).innerText
+                const code = document.getElementById(`codigo_${idTool}`).innerText
 
                 idTool && designation && code ? messageDeleteTool(idTool, designation, code) : null
             })
@@ -169,7 +367,7 @@ dropAreaImageTool.addEventListener('dragover', (e) => {
 dropAreaImageTool.addEventListener('dragleave', (e) => {
     e.preventDefault()
     dropAreaImageTool.style.border = '2px dashed #ccc'
-    dropAreaImageTool.style.backgroundColor = '#838383'
+    dropAreaImageTool.style.backgroundColor = '#B6B6B6'
 })
 
 function alertRefresh() {
@@ -178,7 +376,7 @@ function alertRefresh() {
     fileImputTextImageTool.value = ''
     dropAreaImageTool.style.border = "2px dashed #ccc"
     dropAreaImageTool.style.textAlign = "center"
-    dropAreaImageTool.style.backgroundColor = '#838383'
+    dropAreaImageTool.style.backgroundColor = '#B6B6B6'
     dropAreaImageTool.style.display = 'block'
     dropAreaImageTool.innerHTML = 'Haz click o arrastra y suelta una imagen aquí'
 }
@@ -263,11 +461,11 @@ removeImageButtonImageTool.addEventListener('click', (e)=> {
 })
 
 
-function messageNewTool(designation, code) {
-    if (designation, code) {
+function messageNewTool(designation, code, type) {
+    if (designation, code, type) {
         Swal.fire({
             title: `Nueva Maquina <b>${designation}</b>`,
-            text: `La maquina ${designation}, código: ${code} será registrada!`,
+            text: `La maquina ${designation}, tipo: ${type}, código: ${code} será registrada!`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -278,14 +476,14 @@ function messageNewTool(designation, code) {
     
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById("newToolForm").submit()
+                Swal.fire(
+                    'Creada!',
+                    `La máquina ${designation} (${type}) , código #:${code}, ha sido registrada exitosamente.`,
+                    'success'
+                )
                 setTimeout(() => {
-                    Swal.fire(
-                        'Creada!',
-                        `La máquina ${designation}, código #:${code}, ha sido registrada exitosamente.`,
-                        'success'
-                    )
-                }, 2000)
+                    document.getElementById("newToolForm").submit()
+                }, 1000)
                 
             } else {
                 Swal.fire(
@@ -315,6 +513,7 @@ function messageWarningEmptyFields(designation, code) {
     
     designation == "" ? formFields.push('Designacion') : null
     code == "" ? formFields.push('Código') : null
+    type == "" ? formFields.push('Tipo') : null
 
     formFields.length == 1 ?
         Swal.fire({
@@ -344,12 +543,12 @@ btnAddNewTool.addEventListener('click', (event) => {
     event.preventDefault()
     const designation = document.getElementById('designation').value
     const code = document.getElementById('code').value
+    const type = document.getElementById('type').value
 
-    designation && code ?  messageNewTool(designation, code) :  messageWarningEmptyFields(designation, code)
+    designation && code && type ?  messageNewTool(designation, code, type.toUpperCase()) :  messageWarningEmptyFields(designation, code, type.toUpperCase())
 })
 
 const btnResetFormNewTool = document.getElementById('btnResetFormNewTool')
-
 if (btnResetFormNewTool) {
     btnResetFormNewTool.addEventListener('click', () => {
         btnAddNewTool.disabled = true
@@ -410,7 +609,7 @@ var inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
 
 function disabledBtnAceptar () {
     let btnAceptarFrom = document.getElementById('btnAddNewTool');
-    const allInputs = document.querySelectorAll('input[type="text"], textarea, input[type="file"]')
+    const allInputs = document.querySelectorAll('input[type="text"], textarea, input[type="file"], input[type="hidden"]')
     
     allInputs.forEach(function(input) {
             input.addEventListener('change', (event) => {
@@ -423,5 +622,4 @@ function disabledBtnAceptar () {
             })        
     })
 }
-
 disabledBtnAceptar()

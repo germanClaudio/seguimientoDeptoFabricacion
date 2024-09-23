@@ -1,6 +1,6 @@
 <div class="shadow-lg col-md-5 mx-auto my-2 w-50 border rounded p-3 text-white bg-opacity-50" style="background-color: #272787;">
     <form class="row align-items-center" id="searchFormTool" onsubmit="return searchTools(this)">
-        <div class="col-md-5">
+        <div class="col-md-4">
             <label class="form-check-label ms-2 text-white" for="queryTools">Buscar</label>
             <input class="form-control" type="text" id="queryTools" name="queryTools" placeholder="Buscar Maquinas">
         </div>
@@ -11,6 +11,16 @@
                 <option selected value="todas">Todas</option>
                 <option value="activas">Activas</option>
                 <option value="mantenimiento">En Mantenimiento</option>
+            </select>
+        </div>
+
+        <div class="col-md-2 ms-2">
+            <label class="form-check-label ms-2 text-white" for="typeTool">Tipo</label>
+            <select class="form-select small" aria-label=".form-select" name="typeTool" id="typeTool" style="font-size: 13px;">
+                <option selected value="todas">Todas</option>
+                <option value="cnc">CNC</option>
+                <option value="prensa">Prensas</option>
+                <option value="otras">Otras</option>
             </select>
         </div>
 

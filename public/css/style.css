@@ -1175,3 +1175,8 @@ form.dropzone {
   margin-left: 0.4rem;
   color:#1b257b;
 }
+
+.disabled-card {
+  pointer-events: none;
+  opacity: 0.5; /* Para dar la apariencia de que está deshabilitado */
+}

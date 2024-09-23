@@ -615,7 +615,7 @@ const renderProjectsForUser = (arrayProjects) => {
         colorResult = levelData.colorResult;
         text = levelData.text;
         
-        if(element.project[0].visible) {
+        if(element.project[0].visible && projectLevel === 'Ganado') {
             return (`<tr style="border-bottom: 2px solid #dedede";>
                         <td class="text-center">${element.project[0].codeProject}</td>
                         <td class="text-center" data-column="nombre">${element.project[0].projectName}</td>
@@ -680,6 +680,75 @@ const renderProjectsForUser = (arrayProjects) => {
                             </div>
                         </td>
                     </tr>`)
+        } else {
+            return (`<tr style="border-bottom: 2px solid #dedede";>
+                <td class="text-center">${element.project[0].codeProject}</td>
+                <td class="text-center" data-column="nombre">${element.project[0].projectName}</td>
+                <td class="text-center" data-column="cliente"><p style="display: none;"><a href="/api/clientes/${element.client[0]._id}"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Imagen Proyecto" src='${element.project[0].imageProject}' width="90%" height="90%"></a></td>
+                <td class="text-center" data-column="cliente"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Logo Cliente" src='${element.client[0].logo}' width="90%" height="90%"></td>
+                <td class="text-center" data-column="prio"><span class="badge rounded-pill bg-dark">${element.project[0].prioProject}</span></td>
+                <td class="text-center" data-column="nivel"><span class="badge rounded-pill bg-${colorResult} text-${colorLevel}">${text}</span></td>
+                <td class="text-center">${element.project[0].projectDescription}</td>
+                
+                <td class="text-center">
+                    <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td data-column="ociAlias">${loopArrayAliasOci()}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td class="text-center">
+                    <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td data-column="oci">${loopArrayOci()}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td class="text-center">
+                    <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td data-column="ot">${loopArrayOt()}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td class="text-center">
+                    <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td>${loopArrayOp()}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td class="text-center">
+                    <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td>${loopArrayDescription()}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+
+                <td class="text-center" data-column="fecha">${element.timestamp}</td>
+                <td class="text-center">
+                    <div class="d-flex align-items-center mx-1">
+                        <a href="/api/clientes/${element.client[0]._id}" class="btn btn-secondary btn-sm me-1" data-toggle="tooltip" data-placement="top" title="Ver proyecto"><i class="fa-solid fa-eye"></i></a>
+                        <div title="Solo el Admin puede modificar esto">
+                            <a href="/api/proyectos/selectProject/${element.project[0]._id}" class="btn btn-primary btn-sm mx-1 disabled" title="Solo el Admin puede modificar esto"><i class="fa-solid fa-user-slash"></i></a>
+                        </div>
+                        <div title="Solo el Admin puede modificar esto">
+                            <a href="/api/proyectos/delete/${element.project[0]._id}" class="btn btn-danger btn-sm ms-1 disabled" title="Solo el Admin puede modificar esto"><i class="fa-solid fa-circle-info"></i></a>
+                        </div>
+                    </div>
+                </td>
+            </tr>`)
         }
 
     }).join(" ");

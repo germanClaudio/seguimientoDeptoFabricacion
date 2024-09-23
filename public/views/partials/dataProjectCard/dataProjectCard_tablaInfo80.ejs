@@ -1,36 +1,29 @@
 <!-- --------- tabla Info al 80% ----------- -->
 <table id="tablaInfo80<%=k%>"
-    class="table-responsive align-middle col-5 border-end border-dark"
-    style="font-size: 10pt; width: 100%">
+    class="table-responsive align-middle col-5 border-end border-dark" style="font-size: 10pt; width: 100%">
     <thead class="align-middle" style="background-color: #aac">
         <tr>
             <th colspan="4" class="text-center">
                 INFO 80%
-                <button
-                    id="posBtnAddDataInfo80<%=k%>"
-                    type="button"
-                    name="btnInfo80"
-                    class="btn btn-small btn-success m-1"
-                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
-                    title="Agregar Datos"
-                    value="<%=k%>">
-                    <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
-                </button>
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                    <button id="posBtnAddDataInfo80<%=k%>" type="button" name="btnInfo80" class="btn btn-small btn-success shadow m-1"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
+                        title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger m-1 disabled"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } %>
             </th>
         </tr>
         <tr>
-            <th style="width:30vw" scope="col-1"
-                class="text-center pb-1"> LDM Avan. (Cil/Guia) | Rev
-            </th>
-            <th style="width:30vw" scope="col-1"
-                class="text-center pb-1"> LDM Avan. (Tacos D2) | Rev
-            </th>
-            <th style="width:20vw" scope="col-1"
-                class="text-center pb-1"> LDM 80% | Rev
-            </th>
-            <th style="width:20vw" scope="col-1"
-                class="text-center pb-1"> Info Modelo | Rev
-            </th>
+            <th style="width:30vw" scope="col-1" class="text-center pb-1">LDM Avan. (Cil/Guia) | Rev</th>
+            <th style="width:30vw" scope="col-1" class="text-center pb-1">LDM Avan. (Tacos D2) | Rev</th>
+            <th style="width:20vw" scope="col-1" class="text-center pb-1">LDM 80% | Rev</th>
+            <th style="width:20vw" scope="col-1" class="text-center pb-1">Info Modelo | Rev</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -38,37 +31,17 @@
         <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length>n; n++) {
             if (proyecto[m].project[j].oci[k].otProject[n].visible) {
 
-                var arrResLdmAvanceCG = [];
-                var valueArrayResLdmAvanceCG = 0;
-                var arrResRevisionLdmAvanceCG = [];
-                var arrResCreadorLdmAvanceCG = [];
-                var arrResModificadorLdmAvanceCG = [];
-                var arrResFechaLdmAvanceCG = [];
-                var arrResFechaModLdmAvanceCG = [];
+                var arrResLdmAvanceCG = []; var valueArrayResLdmAvanceCG = 0; var arrResRevisionLdmAvanceCG = []; var arrResCreadorLdmAvanceCG = [];
+                var arrResModificadorLdmAvanceCG = []; var arrResFechaLdmAvanceCG = []; var arrResFechaModLdmAvanceCG = [];
 
-                var arrResLdmAvanceTD2 = [];
-                var valueArrayResLdmAvanceTD2 = 0;
-                var arrResRevisionLdmAvanceTD2 = [];
-                var arrResCreadorLdmAvanceTD2 = [];
-                var arrResModificadorLdmAvanceTD2 = [];
-                var arrResFechaLdmAvanceTD2 = [];
-                var arrResFechaModLdmAvanceTD2 = [];
+                var arrResLdmAvanceTD2 = []; var valueArrayResLdmAvanceTD2 = 0; var arrResRevisionLdmAvanceTD2 = []; var arrResCreadorLdmAvanceTD2 = [];
+                var arrResModificadorLdmAvanceTD2 = []; var arrResFechaLdmAvanceTD2 = []; var arrResFechaModLdmAvanceTD2 = [];
 
-                var arrRes80Ldm = [];
-                var valueArrayRes80Ldm = 0;
-                var arrResRevision80Ldm = [];
-                var arrResCreador80Ldm = [];
-                var arrResModificador80Ldm = [];
-                var arrResFecha80Ldm = [];
-                var arrResFechaMod80Ldm = [];
+                var arrRes80Ldm = []; var valueArrayRes80Ldm = 0; var arrResRevision80Ldm = []; var arrResCreador80Ldm = [];
+                var arrResModificador80Ldm = []; var arrResFecha80Ldm = []; var arrResFechaMod80Ldm = [];
 
-                var arrResInfoModelo = [];
-                var valueArrayResInfoModelo = 0;
-                var arrResRevisionInfoModelo = [];
-                var arrResCreadorInfoModelo = [];
-                var arrResModificadorInfoModelo = [];
-                var arrResFechaInfoModelo = [];
-                var arrResFechaModInfoModelo = [];
+                var arrResInfoModelo = []; var valueArrayResInfoModelo = 0; var arrResRevisionInfoModelo = []; var arrResCreadorInfoModelo = [];
+                var arrResModificadorInfoModelo = []; var arrResFechaInfoModelo = []; var arrResFechaModInfoModelo = [];
 
                 if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
                     <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">

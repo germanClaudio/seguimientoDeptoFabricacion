@@ -41,6 +41,11 @@ class ToolService {
         return await this.tools.deleteToolById(id, modificator)
     }
 
+    // search All tools
+    async searchTools() {
+        return await this.tools.searchTools()
+    }
+
     // returns all Tools from serching
     async getToolsBySearching(query) {
         return await this.tools.getToolsBySearching(query)

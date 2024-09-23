@@ -1,15 +1,41 @@
-<% if (userInfo.admin) { %>
-        <div class="d-block mx-auto w-100 text-center alert alert-success mt-1" style="padding-top: 82px;"
-                role="alert" id="mostrarUserName">
-                <%= userInfo.name %>, <%= userInfo.lastName %> - <span id="mostrarRolUser" class="badge rounded-pill bg-primary">Admin</span>
-                <img id="avatarUser" class="img-fluid rounded-circle float-end me-5 my-auto" alt="Avatar" src="<%= userInfo.avatar %>" width="58px" height="58px">
-                <div class="d-none" id="userBanner_<%= userInfo._id %>"><%= userInfo._id %></div>
+<% if (userInfo.superAdmin) { %>
+        <div class="mx-auto small text-center">
+            <span id="mostrarRolUser" class="badge rounded-pill bg-primary position-relative mb-1">
+                SuperAdmin
+                <span class="position-absolute top-0 start-100 translate-middle">
+                    <i class="fa-solid fa-crown fa-beat fa-lg"
+                        title="SuperAdmin"
+                        style="color: #a89c0d; --fa-rotate-angle: 20deg;">
+                    </i>
+                </span>
+            </span>
         </div>
-<% } else { %>
-        <div class="d-block mx-auto w-100 text-center alert alert-success mt-1" style="padding-top: 82px;"
-                role="alert" id="mostrarUserName">
-                <%= userInfo.name %>, <%= userInfo.lastName %> - <span id="mostrarRolUser" class="badge rounded-pill bg-info text-dark">User</span>
-                <img id="avatarUser" class="img-fluid rounded-circle float-end me-5 my-auto" alt="Avatar" src="<%= userInfo.avatar %>" width="58px" height="58px">
-                <div class="d-none" id="<%= userInfo._id %>"></div>
+        <span class="badge bg-warning text-dark my-1"><%= userInfo.area; %></span> - <span class="badge bg-light text-dark my-1"><%= userInfo.permiso %></span>
+        <div class="mx-auto small text-center" id="mostrarUserName">
+            <%= userInfo.name %>, <%= userInfo.lastName %>
         </div>
-<% } %>
+        <div class="d-none" id="userBanner_<%= userInfo._id %>"><%= userInfo._id %></div>
+        <div class="d-none" id="userNameBanner"><%= userInfo.username %></div>
+    
+    <% } else if (userInfo.admin && !userInfo.superAdmin) { %>
+        <div class="mx-auto small text-center">
+            <span id="mostrarRolUser" class="badge rounded-pill bg-primary">Admin</span>
+        </div>
+        <span class="badge bg-warning text-dark my-1"><%= userInfo.area %></span> - <span class="badge bg-light text-dark my-1"><%= userInfo.permiso %></span>
+        <div class="mx-auto small text-center" id="mostrarUserName">
+            <%= userInfo.name %>, <%= userInfo.lastName %>
+        </div>
+        <div class="d-none" id="userBanner_<%= userInfo._id %>"><%= userInfo._id %></div>
+        <div class="d-none" id="userNameBanner"><%= userInfo.username %></div>
+
+    <% } else { %>
+        <div class="mx-auto small text-center">
+            <span id="mostrarRolUser" class="badge rounded-pill bg-info text-dark">User</span>
+        </div>
+        <span class="badge bg-warning text-dark my-1"><%= userInfo.area %></span> - <span class="badge bg-light text-dark my-1"><%= userInfo.permiso %></span>
+        <div class="mx-auto small text-center" id="mostrarUserName">
+            <%= userInfo.name %>, <%= userInfo.lastName %>
+        </div>
+        <div class="d-none" id="<%= userInfo._id %>"></div>
+        <div class="d-none" id="userNameBanner"><%= userInfo.username %></div>
+    <% } %>

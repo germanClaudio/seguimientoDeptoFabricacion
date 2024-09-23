@@ -144,8 +144,7 @@
                                     { value: "todos", text: "Todos" },
                                 ];
                                 
-                                opcionesUpdate.forEach(opcion => {
-                            %>
+                                opcionesUpdate.forEach(opcion => { %>
                                 <option value="<%= opcion.value %>" <%= opcion.value === usuario.permiso ? 'selected disabled' : '' %> > <%= opcion.text %> </option>
                             <% }) %>
                         </select>

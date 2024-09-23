@@ -1,36 +1,28 @@
 <!-- --------- tabla Diseno Primera ----------- -->
 <table id="tablaDisenoPrimera<%=k%>"
-    class="table-responsive align-middle col-5 border-end border-dark"
-    style="font-size: 10pt; width: 100%">
+    class="table-responsive align-middle col-5 border-end border-dark" style="font-size: 10pt; width: 100%">
     <thead class="align-middle" style="background-color: #aac">
         <tr>
             <th colspan="4" class="text-center">
                 DISEÑO PRIMERA PARTE
-                <button
-                    id="posBtnAddDataDisenoPrimera<%=k%>"
-                    type="button"
-                    name="btnDisenoPrimera"
-                    class="btn btn-small btn-success m-1 shadow"
-                    style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
-                    title="Agregar/Modificar Datos"
-                    value="<%=k%>">
-                    <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
-                </button>
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                    <button id="posBtnAddDataDisenoPrimera<%=k%>" type="button" name="btnDisenoPrimera" class="btn btn-small btn-success m-1 shadow"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger m-1 shadow disabled"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } %>
             </th>
         </tr>
         <tr>
-            <th id="colData4" style="width:25vw" scope="col-1"
-                class="text-center pb-1"> Av. Diseño | Rev.
-            </th>
-            <th id="colData5" style="width:25vw" scope="col-1"
-                class="text-center pb-1"> 1° Rev 50% | Rev.
-            </th>
-            <th id="colData6" style="width:25vw" scope="col-1"
-                class="text-center pb-1"> 2° Rev 80% | Rev.
-            </th>
-            <th id="colData7" style="width:25vw" scope="col-1"
-            class="text-center pb-1"> Env. Cliente  | Rev.
-            </th>
+            <th id="colData4" style="width:25vw" scope="col-1" class="text-center pb-1"> Av. Diseño | Rev</th>
+            <th id="colData5" style="width:25vw" scope="col-1" class="text-center pb-1"> 1° Rev 50% | Rev</th>
+            <th id="colData6" style="width:25vw" scope="col-1" class="text-center pb-1"> 2° Rev 80% | Rev</th>
+            <th id="colData7" style="width:25vw" scope="col-1" class="text-center pb-1"> Env. Cliente  | Rev</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -38,37 +30,17 @@
         <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length>n; n++) {
             if (proyecto[m].project[j].oci[k].otProject[n].visible) {
 
-                var arrResAvDiseno = [];
-                var valueArrayResAvDiseno = 0;
-                var arrResRevisionAvDiseno = [];
-                var arrResCreadorAvDiseno = [];
-                var arrResModificadorAvDiseno = [];
-                var arrResFechaAvDiseno = [];
-                var arrResFechaModAvDiseno = [];
+                var arrResAvDiseno = []; var valueArrayResAvDiseno = 0; var arrResRevisionAvDiseno = []; var arrResCreadorAvDiseno = [];
+                var arrResModificadorAvDiseno = []; var arrResFechaAvDiseno = []; var arrResFechaModAvDiseno = [];
 
-                var arrResPrimerRev50 = [];
-                var valueArrayResPrimerRev50 = 0;
-                var arrResRevisionPrimerRev50 = [];
-                var arrResCreadorPrimerRev50 = [];
-                var arrResModificadorPrimerRev50 = [];
-                var arrResFechaPrimerRev50 = [];
-                var arrResFechaModPrimerRev50 = [];
+                var arrResPrimerRev50 = []; var valueArrayResPrimerRev50 = 0; var arrResRevisionPrimerRev50 = []; var arrResCreadorPrimerRev50 = [];
+                var arrResModificadorPrimerRev50 = []; var arrResFechaPrimerRev50 = []; var arrResFechaModPrimerRev50 = [];
 
-                var arrResSegundaRev80 = [];
-                var valueArrayResSegundaRev80 = 0;
-                var arrResRevisionSegundaRev80 = [];
-                var arrResCreadorSegundaRev80 = [];
-                var arrResModificadorSegundaRev80 = [];
-                var arrResFechaSegundaRev80 = [];
-                var arrResFechaModSegundaRev80 = [];
+                var arrResSegundaRev80 = []; var valueArrayResSegundaRev80 = 0; var arrResRevisionSegundaRev80 = []; var arrResCreadorSegundaRev80 = [];
+                var arrResModificadorSegundaRev80 = []; var arrResFechaSegundaRev80 = []; var arrResFechaModSegundaRev80 = [];
 
-                var arrResEnvCliente = [];
-                var valueArrayResEnvCliente = 0;
-                var arrResRevisionEnvCliente = [];
-                var arrResCreadorEnvCliente = [];
-                var arrResModificadorEnvCliente = [];
-                var arrResFechaEnvCliente = [];
-                var arrResFechaModEnvCliente = [];
+                var arrResEnvCliente = []; var valueArrayResEnvCliente = 0; var arrResRevisionEnvCliente = []; var arrResCreadorEnvCliente = [];
+                var arrResModificadorEnvCliente = []; var arrResFechaEnvCliente = []; var arrResFechaModEnvCliente = [];
 
                 if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
                     <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
