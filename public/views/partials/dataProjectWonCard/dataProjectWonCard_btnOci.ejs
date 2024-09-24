@@ -13,21 +13,23 @@
                 name="<%= proyecto[m].project[j].oci[k].ociNumber %>" title="Agregar nueva OT">
                 <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
             </button>
-            o agrega ítems en la/s OT/s, haciendo click en
-            <% if (userInfo.area === 'fabricacion') {                
+            <% if (userInfo.admin || userInfo.area === 'fabricacion') {
+                if (arrayVisibleOci[k].otProject.length === 1) { %>
+                    o agrega ítems en la OT, haciendo click en
+                <% } else { %>
+                    o agrega ítems en las OTs, haciendo click en
+                <% }
+
                 for (let t=0; arrayVisibleOci[k].otProject.length>t; t++) { %>
-                    <button class="rounded-circle text-white m-2"
-                        style="--bs-btn-font-size: .40rem;
-                        background-color: #0f0f53; width: 2.5rem; height: 2.5rem;
-                        border-radius: 50%; border: 1px solid #272727;
-                        text-align: center; font-size: 13px; line-height: 25px;"
-                        id="btnAddDetallesFormSelected<%=k%>"
-                        type="button" value="<%=k%>" name="<%= arrayVisibleOci[k].otProject[t].otNumber %>" title="Agregar nuevos ítems en la OT <%= arrayVisibleOci[k].otProject[t].otNumber %>">
+                    <button class="custom-btn m-2"
+                        id="btnAddDetallesFormSelected<%=k%>_<%=t%>"
+                        type="button" value="<%=k%>_<%=t%>" name="<%= arrayVisibleOci[k].otProject[t].otNumber %>"
+                        title="Agregar nuevos ítems en la OT <%= arrayVisibleOci[k].otProject[t].otNumber %>">
                         <%= arrayVisibleOci[k].otProject[t].otNumber %>
                     </button>
-                <% } %>
+                <% } 
 
-            <% } else { %>
+            } else { %>
                 pero NO puedes agregar ítems en las OT's, debido a tus permisos
                 <button class="btn btn-danger m-1 rounded-circle shadow disabled"
                     style="--bs-btn-font-size: .95rem; color: var(--bs-white);" type="button">

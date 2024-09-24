@@ -326,11 +326,11 @@ btnAddNewRow.addEventListener('click', () => {
     newDiv.id = `otItemRow${i}`;
 
     // Configurar el contenido del nuevo div según el valor de i
-    if (i === 1) {
-        newDiv.innerHTML = `<hr class="my-2"> ${originalDiv} <hr class="my-2">`;
-    } else {
-        newDiv.innerHTML = i === 10 ? originalDiv : originalDiv + `<hr class="my-2">`;
-    }
+    i === 1 ?
+        newDiv.innerHTML = `<hr class="my-2"> ${originalDiv} <hr class="my-2">`
+    :
+        newDiv.innerHTML = i === 10 ? originalDiv : originalDiv + `<hr class="my-2">`
+    
 
     parentDiv.appendChild(newDiv)
     const otQty = document.getElementById("otQuantity")
@@ -568,6 +568,7 @@ function messageChangeOtStatus(
             focusConfirm: false,
             confirmButtonText: 'Continuar',
             cancelButtonText: 'Cancelar'
+
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById(`formChangeStatusOt${idProjectSelected}`).submit()
@@ -963,7 +964,7 @@ function messageDeleteOt(
             Status: <span class="badge rounded-pill bg-${ statusOt==='Activo' ? 'primary' : 'danger' } text-white">
                         ${ statusOt==='Activo' ? 'Activo' : 'Inactivo' }
                     </span>
-            y su toda su información interna se eliminará completamente.
+            y toda su información interna se eliminará completamente.
             <br>
             <hr>
             Está seguro que desea continuar?

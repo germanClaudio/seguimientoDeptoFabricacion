@@ -25,7 +25,7 @@
                     if (pathMongoOtProject.otStatus) { %>
                         <tr id="rowSelected<%=k%>_<%=n%>_<%=o%>" name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh;">
                             <td class="text-center align-middle">
-                                <% if ( userInfo.admin && userInfo.superAdmin ) { %>
+                                <% if ( userInfo.admin || userInfo.superAdmin ) { %>
                                     <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
                                         <input id="checkSelect<%=k%>_<%=n%>_<%=o%>"
                                             title="Checkbox detalle OT#<%= pathMongoOtProject.otNumber %>.<%= pathMongoOtProject.otDetalles[o].numeroDetalle %>"
@@ -55,21 +55,25 @@
                                                 style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </button>
+                                            <button id="btnStatusOtDetalle<%=k%>_<%=n%>_<%=o%>" type="button" class="btn btn-sm btn-light" value="changeStatus" name="btnStatusOtDetalle"
+                                                title="Cambiar status OT#<%= pathMongoOtProject.otNumber %>.<%= pathMongoOtProject.otDetalles[o].numeroDetalle %>"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
+                                                <i class="fa-solid fa-power-off"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
                                         <% } else { %>
                                             <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </button>
+                                            <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;">
+                                                <i class="fa-solid fa-power-off"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
                                         <% } %>
-                                        <button id="btnStatusOt<%=k%>_<%=n%>_<%=o%>" type="button" class="btn btn-sm btn-light disabled" value="changeStatus" name="btnStatusOt"
-                                            title="Cambiar status OT#<%= pathMongoOtProject.otNumber %>.<%= pathMongoOtProject.otDetalles[o].numeroDetalle %>"
-                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;">
-                                            <i class="fa-solid fa-power-off"></i>
-                                        </button>
-                                        <button id="btnDeleteOt<%=k%>_<%=n%>_<%=o%>" type="button" class="btn btn-sm btn-light disabled" value="delete" name="btnDeleteOt"
-                                            title="Eliminar OT#<%= pathMongoOtProject.otNumber %>.<%= pathMongoOtProject.otDetalles[o].numeroDetalle %>"
-                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
                                     </div>
                                 <% } %>
                             </td>
@@ -112,39 +116,23 @@
                     <% } else { %>
                         <tr class="border-bottom" style="height: 5vh; background-color: #dedede;">
                             <td class="text-center align-middle">
-                                <% if ( userInfo.admin) { %>
+                                <% if ( userInfo.admin || userInfo.area === 'fabricacion') { %>
                                     <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
-                                        <input id="checkSelect<%=k%>_<%=n%>_<%=o%>"
-                                            class="form-check-input my-auto me-2"
-                                            type="checkbox"
-                                            value=""
-                                            name="checkSelect"
-                                            disabled>
-                                        <button id="btnEditOt<%=k%>_<%=n%>_<%=o%>"
-                                            type="button"
-                                            class="btn btn-sm btn-light"
-                                            value="edit"
-                                            name="btnEditOt"
-                                            title="Editar OT#<%= pathMongoOtProject.otNumber %>"
+                                        <input id="checkSelect<%=k%>_<%=n%>_<%=o%>" class="form-check-input my-auto me-2" type="checkbox"
+                                            value="" name="checkSelect" disabled>
+                                        <button id="btnEditOt<%=k%>_<%=n%>_<%=o%>" type="button" class="btn btn-sm btn-light" value="edit"
+                                            name="btnEditOt" title="Editar OT#<%= pathMongoOtProject.otNumber %>"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;"
                                             disabled>
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
-                                        <button id="btnStatusOt<%=k%>_<%=n%>_<%=o%>"
-                                            type="button"
-                                            class="btn btn-sm btn-light"
-                                            value="changeStatus"
-                                            name="btnStatusOt"
-                                            title="Cambiar status OT#<%= pathMongoOtProject.otNumber %>"
+                                        <button id="btnStatusOtDetalle<%=k%>_<%=n%>_<%=o%>" type="button" class="btn btn-sm btn-light" value="changeStatus"
+                                            name="btnStatusOtDetalle" title="Cambiar status OT#<%= pathMongoOtProject.otNumber %>"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
                                             <i class="fa-solid fa-power-off"></i>
                                         </button>
-                                        <button id="btnDeleteOt<%=k%>_<%=n%>_<%=o%>"
-                                            type="button"
-                                            class="btn btn-sm btn-light"
-                                            value="delete"
-                                            name="btnDeleteOt"
-                                            title="Eliminar OT#<%= pathMongoOtProject.otNumber %>"
+                                        <button id="btnDeleteOt<%=k%>_<%=n%>_<%=o%>" type="button" class="btn btn-sm btn-light" value="delete"
+                                            name="btnDeleteOt" title="Eliminar OT#<%= pathMongoOtProject.otNumber %>"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;"
                                             disabled>
                                             <i class="fa-solid fa-trash"></i>
@@ -152,41 +140,21 @@
                                     </div>
                                 <% } else { %>
                                     <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
-                                        <input id="checkSelect<%=k%>_<%=n%>_<%=o%>"
-                                            class="form-check-input my-auto me-2"
-                                            type="checkbox"
-                                            value=""
-                                            name="checkSelect"
-                                            style="background-color: #575757;"
-                                            disabled>
-                                        <button id="btnEditOt<%=k%>_<%=n%>_<%=o%>"
-                                            type="button"
-                                            class="btn btn-sm btn-light"
-                                            value="edit"
-                                            name="btnEditOt"
-                                            title="Solo Admin puede Editar OT#<%= pathMongoOtProject.otNumber %>"
-                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;"
-                                            disabled>
+                                        <input id="checkSelect<%=k%>_<%=n%>_<%=o%>" class="form-check-input my-auto me-2" type="checkbox"
+                                            value="" name="checkSelect" style="background-color: #575757;" disabled>
+                                        <button id="btnEditOt<%=k%>_<%=n%>_<%=o%>" type="button" class="btn btn-sm btn-light" value="edit"
+                                            name="btnEditOt" title="Solo Admin puede Editar OT#<%= pathMongoOtProject.otNumber %>"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
-                                        <button id="btnStatusOt<%=k%>_<%=n%>_<%=o%>"
-                                            type="button"
-                                            class="btn btn-sm btn-light disabled"
-                                            value="changeStatus"
-                                            name="btnStatusOt"
-                                            title="Solo Admin puede cambiar status OT#<%= pathMongoOtProject.otNumber %>"
-                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;"
-                                            disabled>
+                                        <button id="btnStatusOtDetalle<%=k%>_<%=n%>_<%=o%>" type="button" class="btn btn-sm btn-light disabled" value="changeStatus"
+                                            name="btnStatusOtDetalle" title="Solo Admin puede cambiar status OT#<%= pathMongoOtProject.otNumber %>"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
                                             <i class="fa-solid fa-power-off"></i>
                                         </button>
-                                        <button id="btnDeleteOt<%=k%>_<%=n%>_<%=o%>"
-                                            type="button"
-                                            class="btn btn-sm btn-light disabled"
-                                            value="delete"
-                                            name="btnDeleteOt"
-                                            title="Solo Admin puede eliminar OT#<%= pathMongoOtProject.otNumber %>"
-                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;"
-                                            disabled>
+                                        <button id="btnDeleteOt<%=k%>_<%=n%>_<%=o%>" type="button" class="btn btn-sm btn-light disabled" value="delete"
+                                            name="btnDeleteOt" title="Solo Admin puede eliminar OT#<%= pathMongoOtProject.otNumber %>"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </div>

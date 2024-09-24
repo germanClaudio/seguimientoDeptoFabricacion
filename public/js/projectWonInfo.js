@@ -546,246 +546,7 @@ for (let i=0; i<radios.length; i++) {
     })
 }
 
-//------- Change ítem OT status ----------------
-function messageChangeOtDetalleStatus(
-    statusOtDetalle, 
-    otNumber, 
-    idProjectSelected, 
-    ociKNumber, 
-    otKNumber,
-    // otDescription,
-    // idDetalle,
-    otDetalleKNumber,
-    otDetalle,
-    otDetalleDescripcion
-) {
-    
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'bottom',
-        showConfirmButton: false,
-        timer: 4000,
-        timerProgressBar: false,
-    })
-
-        Swal.fire({
-            title: `Cambio status de ítem OT#${otNumber}.${otDetalle.trim()}-${otDetalleDescripcion.trim()}`,
-            position: 'center',
-            html: `El status del ítem OT#<strong>${otNumber}.${otDetalle.trim()}</strong> se modificará a
-                    <span class="badge rounded-pill bg-${ statusOtDetalle==='Activo' ? 'danger' : 'primary' } text-white">
-                    ${ statusOtDetalle==='Activo' ? 'Inactivo' : 'Activo' }
-                    </span> y ${ statusOtDetalle==='Activo' ? 'no' : '' } podrá ingresar o modificar datos en este Item.<br>
-                    ¿Desea continuar?
-                    <form id="formChangeStatusOtDetalle${idProjectSelected}" action="/api/proyectos/updateStatusOtDetalle/${idProjectSelected}" method="post" style="display: none;">
-                        <fieldset>
-                            <input type="hidden" name="ociKNumberHidden" value="${ociKNumber}">
-                            <input type="hidden" name="otKNumberHidden" value="${otKNumber}">
-                            <input type="hidden" name="otDetalleKNumberHidden" value="${otDetalleKNumber}">
-                            <input type="hidden" name="statusOtDetalleHidden" value="${statusOtDetalle}">
-                        </fieldset>
-                    </form>
-                    `,
-            icon: 'info',
-            showCancelButton: true,
-            showConfirmButton: true,
-            focusConfirm: false,
-            confirmButtonText: 'Continuar',
-            cancelButtonText: 'Cancelar'
-
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById(`formChangeStatusOtDetalle${idProjectSelected}`).submit()
-                setTimeout(() => {
-                    Toast.fire({
-                        icon: 'success',
-                        title: `El status del ítem OT#<strong>${otNumber}.${otDetalle.trim()}</strong>, se modificó con éxito!`
-                    })
-                }, 2000)
-
-            } else {
-                Swal.fire(
-                    `Status del ítem OT#<strong>${otNumber}.${otDetalle.trim()}</strong> no modificado!`,
-                    `El status del ítem OT#${otNumber}.${otDetalle.trim()}, no se modificó!`,
-                    'warning'
-                )
-                return false
-            }
-        })
-}
-
-//---- Update Detalle OT Data ----------------
-function messageUpdateOtDetalle(
-    statusOtDetalle,
-    otNumber,
-    idProjectSelected,
-    ociKNumber,
-    otKNumber,
-    otDescription,
-    idDetalle,
-    otDetalleKNumber,
-    opNumber,
-    otDetalle,
-    otDescripcionDetalle
-    ) {
-    
-    let numberKOci = parseInt(ociKNumber)
-    let numberKOt = parseInt(otKNumber)
-    let numberOt = parseInt(otNumber)
-    let numberKDetail = parseInt(otDetalleKNumber)
-    let numberOp = parseInt(opNumber)
-    let checked = 'checked'
-    statusOtDetalle=='Activo' ? checked : checked = ''
-
-    let bgColorStatus
-    statusOtDetalle=='Activo' ? bgColorStatus='background-color: #55dd5560;' : bgColorStatus='background-color: #dd555560;'
-
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'bottom',
-        showConfirmButton: false,
-        timer: 4000,
-        timerProgressBar: false,
-    })
-
-    let html = `<form id="formUpdateOtDetail${idProjectSelected}" action="/api/proyectos/updateOtDetail/${idProjectSelected}" method="post">
-                    <fieldset>
-                        <div class="row justify-content-between mb-3 mx-1 px-1">
-                            <div class="col-3">
-                                <label for="numberOt" class="form-label d-flex justify-content-start ms-1">Número OT</label>
-                                <input type="number" name="numberOt" class="form-control"
-                                    placeholder="Número OT" value="${numberOt}" disabled>
-                            </div>
-                            
-                            <div class="col-5" style="${bgColorStatus}">
-                                <label for="statusOt" class="form-label d-flex justify-content-start ms-1">Status Item</label>
-                                <div>
-                                    <p class="d-inline-block me-1">Inactivo</p>
-                                    <div class="form-check form-switch d-inline-block mt-2">
-                                        <input id="statusOtDetalleForm" class="form-check-input" type="checkbox" role="switch"
-                                            name="statusOtDetalleForm" style="cursor: pointer;" disabled ${checked}>
-                                        <label class="form-check-label" for="statusOtDetalle">Activo</label>
-                                    </div>    
-                                </div>
-                            </div>
-                        </div>    
-                        
-                        <div class="row justify-content-between mb-3 mx-1 px-1">
-                            <div class="col-7">
-                                <label for="descriptionOt" class="form-label d-flex justify-content-start ms-1">Descripción OT</label>
-                                <input type="text" name="descriptionOt" class="form-control"
-                                    placeholder="Descripción OT" value="${otDescription}" disabled>
-                            </div>
-                            <div class="col-4">
-                                <label for="numeroOp" class="form-label d-flex justify-content-start ms-1">Número OP</label>
-                                <input type="number" name="numeroOp" class="form-control"
-                                    placeholder="Numero Op" value="${numberOp}" disabled>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row justify-content-evenly mb-3 mx-1 px-1">
-                            <div class="col-4">
-                                <label for="detalleOt" class="form-label d-flex justify-content-start align-items-center ms-1 mb-2">
-                                    Ítem Numero
-                                </label>
-                                <input type="text" id="detalleOt" name="detalleOt" class="form-control"
-                                    placeholder="Ítem numero" value="${otDetalle.trim()}" required>
-                            </div>
-                            <div class="col-7">
-                                <label for="otDescripcionDetalle" class="form-label d-flex justify-content-start align-items-center ms-1 mb-2">
-                                    Descripción ítem
-                                </label>
-                                <input type="text" id="otDescripcionDetalle" name="otDescripcionDetalle" class="form-control"
-                                    placeholder="Descripcion ítem" value="${otDescripcionDetalle}" required>
-                            </div>                   
-                        </div> 
-                            <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden${numberKOci}" value="${numberKOci}">
-                            <input type="hidden" name="otKNumberHidden" id="otKNumberHidden${numberKOt}" value="${numberKOt}">
-                            <input type="hidden" name="otDetailKNumberHidden" id="otDetailKNumberHidden${numberKDetail}" value="${numberKDetail}">
-                            <input type="hidden" name="otDetailIdHidden" id="otDetailIdHidden${idDetalle}" value="${idDetalle}">
-                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                    </fieldset>
-                </form>`
-
-    const htmlTitle = `Actualizar ítem #${otDetalle.trim()} - ${otDescripcionDetalle}
-                        de OT${numberOt} - ${otDescription}`
-
-    if(idProjectSelected && numberOt) {
-        Swal.fire({
-            title: htmlTitle,
-            position: 'center',
-            html: html,
-            width: 750,
-            icon: 'info',
-            showCancelButton: true,
-            showConfirmButton: true,
-            focusConfirm: false,
-            confirmButtonText: 'Actualizar <i class="fa-regular fa-pen-to-square"></i>',
-            cancelButtonText: 'Cancelar <i class="fa-solid fa-ban"></i>',
-            didOpen: ()=> {
-                let btnAceptar = document.getElementsByClassName('swal2-confirm');
-                btnAceptar[0].setAttribute('id','btnAceptarModal')
-                btnAceptar[0].style = "cursor: not-allowed;"
-                btnAceptar[0].disabled = true
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById(`formUpdateOtDetail${idProjectSelected}`).submit()
-                Toast.fire({
-                    icon: 'success',
-                    title: `El ítem #<b>${otDetalle.trim()}</b>, se modificó con éxito!`
-                })
-
-            } else {
-                Swal.fire(
-                    'Ítem no modificado!',
-                    `El ítem #<b>${otDetalle.trim()}</b>, no se modificó!`,
-                    'warning'
-                )
-                return false
-            }
-        })
-        disabledBtnAceptar()
-
-    } else {
-        Swal.fire({
-            title: 'Error',
-            position: 'center',
-            timer: 3500,
-            text: `El ítem #<b>${otDetalle.trim()}</b> no se actualizó correctamente!`,
-            icon: 'error',
-            showCancelButton: false,
-            showConfirmButton: false,
-        })
-    }
-
-    var inputsDeTexto = document.querySelectorAll('input[type="text"]')
-
-    // Agregar un listener de evento a cada input
-    inputsDeTexto.forEach(function(input) {
-        input.addEventListener('input', function(event) { //keydown
-            // Obtener el código de la tecla presionada
-            let key = event.key;
-
-            // Lista de caracteres especiales prohibidos
-            let forbiddenChars = /[#"$%?¡¿^/()=!'~`\\*{}\[\]<>@]/;
-
-            // Verificar si la tecla presionada es un carácter especial
-            if (forbiddenChars.test(key)) {
-                // Cancelar el evento para evitar que se ingrese el carácter
-                event.preventDefault()
-                input.classList.add("border")
-                input.classList.add("border-danger")
-                input.classList.add("border-2")
-            } else {
-                input.classList.remove("border")
-                input.classList.remove("border-danger")
-                input.classList.remove("border-2")
-            }
-        })
-    })
-}
-
-//TODO://---- Add Details to OT ----------------
+//---- Add Details to OT ----------------
 function messageAddDetalleOt(
     idProjectSelected,
     ociKNumber,
@@ -799,7 +560,6 @@ function messageAddDetalleOt(
     // detailDescription,
     detalleIdSelected
 ) {
-    
     let numberKOci = parseInt(ociKNumber)
     let numberOci = parseInt(ociNumber)
     let numberKOt = parseInt(otKNumber)
@@ -830,55 +590,54 @@ function messageAddDetalleOt(
                                 <label for="detalleOt" class="form-label d-flex justify-content-start ms-1">Número OT</label>
                                 <input type="text" name="numberOtDetalle" class="form-control" value="${numberOt}" disabled>
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 <label for="numeroOp" class="form-label d-flex justify-content-start ms-1">Número OP</label>
                                 <input type="number" name="numeroOp" class="form-control" value="${numberOp}" disabled>
                             </div>
-                            <div class="col-3">
+                            <div class="col">
                                 <label for="numeroOp" class="form-label d-flex justify-content-start ms-1">Descripción OP</label>
                                 <input type="text" class="form-control" value="${otDescription}" disabled>
                             </div>
                         </div>
 
                         <div class="row justify-content-between mb-3 mx-1 px-1">
-                            <div class="col-3">
+                            <div class="col-4">
                                 <label for="detalleOt" class="form-label d-flex justify-content-start ms-1">Número Ítem</label>
-                                <input type="text" name="numberOt" class="form-control" placeholder="Número Ítem" value="${numberOt}" disabled>
-                                <input type="text" name="numberOtDetalle" class="form-control" placeholder="Número Ítem" value="" required>
+                                <div class="d-flex">
+                                    <input type="text" name="numberOt" class="form-control text-end" value="${numberOt}" disabled>
+                                    <span class="dot-separator mx-1 mt-2"><b>.</b></span>
+                                    <input type="text" name="numberOtDetalle" id="numeroOtDetalle" class="form-control" placeholder="Número Ítem" value="" required>
+                                </div>
                             </div>
-                            
-                            <div class="col-5" style="${bgColorStatus}">
+                            <div class="col-5">
+                                <label for="descriptionDetalle" class="form-label d-flex justify-content-start ms-1">Descripción Ítem</label>
+                                <input type="text" name="descriptionDetalle" class="form-control" placeholder="Descripción Ítem" value="" required>
+                            </div>                            
+                            <div class="col-3" style="${bgColorStatus}">
                                 <label for="statusOtDetalle" class="form-label d-flex justify-content-start ms-1">Status Ítem</label>
                                 <div>
-                                    <p class="d-inline-block me-1">Inactiva</p>
+                                    <p class="d-inline-block me-1">Inactivo</p>
                                     <div class="form-check form-switch d-inline-block mt-2">
                                         <input id="statusOtDetalleForm" class="form-check-input" type="checkbox" role="switch"
                                             name="statusOtDetalleForm" style="cursor: pointer;" ${checked}>
-                                        <label class="form-check-label" for="statusOtDetalleForm">Activa</label>
-                                    </div>    
+                                        <label class="form-check-label" for="statusOtDetalleForm">Activo</label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>    
-                        
-                        <div class="row mb-3 mx-1 px-1">
-                            <div class="col-8">
-                                <label for="descriptionDetalle" class="form-label d-flex justify-content-start ms-1">Descripción Ítem</label>
-                                <input type="text" name="descriptionDetalle" class="form-control" placeholder="Descripción Ítem" value="" required>
-                            </div>
-                            
                         </div>
                         <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden${numberKOci}" value="${numberKOci}">
                         <input type="hidden" name="otKNumberHidden" id="otKNumberHidden${numberKOt}" value="${numberKOt}">
                         <input type="hidden" name="detalleIdHidden" id="detalleIdHidden${numberKOt}" value="${detalleIdSelected}">
+                        
                     </fieldset>
                 </form>`
 
     if (idProjectSelected && numberOt && detalleIdSelected) {
         Swal.fire({
-            title: `Agregar ítem a OT# ${numberOt} - `,
+            title: `Agregar ítem a OT#${numberOt}. - OP#${numberOp} - ${otDescription}`,
             position: 'center',
             html: html,
-            width: 950,
+            width: 1100,
             icon: 'info',
             showCancelButton: true,
             showConfirmButton: true,
@@ -892,19 +651,456 @@ function messageAddDetalleOt(
                 btnAceptar[0].disabled = true
             }
         }).then((result) => {
+            let numeroOtDetalle = document.getElementById('numeroOtDetalle').value
             if (result.isConfirmed) {
                 Toast.fire({
                     icon: 'success',
-                    title: `La OT# <b>${numberOt}</b>, se modificó con éxito!`
+                    title: `El ítem #<b>${numberOt}.${numeroOtDetalle}</b>, se creó con éxito!`
                 })
                 setTimeout(() => {
                     document.getElementById(`formUpdateOtDetalle${idProjectSelected}`).submit()
                 }, 2000)
 
             } else {
+                numeroOtDetalle ?
+                    Swal.fire(
+                        `Ítem #<b>${numberOt}.${numeroOtDetalle}</b> no se creó!`,
+                        `El ítem #${numberOt}.${numeroOtDetalle}, no se creó correctamente!`,
+                        'warning'
+                    )
+                :
+                    Swal.fire(
+                        `Ítem #<b>${numberOt}</b> no se creó!`,
+                        `El ítem de la OT#${numberOt}, no se creó correctamente!`,
+                        'warning'
+                    )
+                return false
+            }
+        })
+        disabledBtnAceptar()
+
+    } else {
+        let numeroOtDetalle = document.getElementById('numeroOtDetalle').value
+        numeroOtDetalle ?
+            Swal.fire({
+                title: 'Error',
+                position: 'center',
+                timer: 3500,
+                text: `El ítem #<b>${numberOt}.${numeroOtDetalle}</b> no se creó correctamente!`,
+                icon: 'error',
+                showCancelButton: false,
+                showConfirmButton: false,
+            })
+            :
+            Swal.fire({
+                title: 'Error',
+                position: 'center',
+                timer: 3500,
+                text: `El ítem de la OT#<b>${numberOt}</b> no se creó correctamente!`,
+                icon: 'error',
+                showCancelButton: false,
+                showConfirmButton: false,
+            })
+    }
+
+    let inputsDeTexto = document.querySelectorAll('input[type="text"]')
+    let inputNumeroOtDetalle = document.getElementById('numeroOtDetalle')
+    let swal2Title = document.getElementById('swal2-title')
+
+    // Agregar un listener de evento a cada input
+    inputsDeTexto.forEach(function(input) {
+        input.addEventListener('keydown', function(event) {
+            // Obtener el código de la tecla presionada
+            let key = event.key;
+
+            // Lista de caracteres especiales prohibidos
+            let forbiddenChars = /[#"$%?¡¿^/=!'~`\\*{}\[\]<>@]/;
+
+            // Verificar si la tecla presionada es un carácter especial
+            if (forbiddenChars.test(key)) {
+                // Cancelar el evento para evitar que se ingrese el carácter
+                event.preventDefault()
+                input.classList.add("border")
+                input.classList.add("border-danger")
+                input.classList.add("border-2")
+            } else {
+                input.classList.remove("border")
+                input.classList.remove("border-danger")
+                input.classList.remove("border-2")
+            }
+        })
+
+        input.addEventListener('input', function(event) {
+            swal2Title.innerText = `Agregar ítem a OT#${numberOt}.${inputNumeroOtDetalle.value} - OP#${numberOp} - ${otDescription}`
+        })
+    })
+}
+
+//FIXME:
+function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'bottom',
+        showConfirmButton: false,
+        timer: 4000,
+        timerProgressBar: false,
+    })
+
+    let ociNumber = [], otNumber = []
+    for(let o = 0; kNumberOci.length>o; o++) {
+        ociNumber.push({ number: parseInt(document.getElementById(`ociNumber${kNumberOci[o]}`).textContent), 
+                        alias: document.getElementById(`ociAlias${kNumberOci[o]}`).textContent })
+    }
+
+    for(let ood = 0; idOciOtDet.length>ood; ood++) {
+        otNumber.push({ numero: parseInt(document.getElementById(`lastOtNumber${idOciOtDet[ood]}`).textContent),
+                        descripcion: document.getElementById(`lastOpDescription${idOciOtDet[ood]}`).textContent,
+                        numeroOp: parseInt(document.getElementById(`lastOpNumber${idOciOtDet[ood]}`).textContent),
+                        statusOp: document.getElementById(`statusDetalle${idOciOtDet[ood]}`).textContent })
+    }
+
+    // Crear un array para los resultados filtrados y un Set para números únicos
+    const numerosUnicos = new Set();
+    const arrayFiltrado = [];
+
+    // Recorrer el array de objetos
+    otNumber.forEach(obj => {
+        if (!numerosUnicos.has(obj.numero)) {
+            // Si el número no ha sido agregado, lo añadimos
+            numerosUnicos.add(obj.numero);
+            arrayFiltrado.push(obj);
+        }
+    });
+
+    let html = `<form id="formModalAddOtDetalle${idProjectSelected}" action="/api/proyectos/addModalOtDetalle/${idProjectSelected}" method="post">
+                    <fieldset>
+                        <div class="row justify-content-between mb-3 mx-1 px-1">
+                            <div class="col-3">
+                                <label for="numberOci" class="form-label d-flex justify-content-start ms-1">Seleccione Número OCI - Alias</label>
+                                <div id="containerNumberOci"></div>
+                            </div>
+                            <div class="col-3 my-auto">
+                                <i class="fa-solid fa-right-long fa-beat fa-xl" style="color: #0000ff;"></i>
+                            </div>    
+                            <div class="col-6">
+                                <label for="numberOt" class="form-label d-flex justify-content-start ms-1">#OT - Descripción - #Op - Status</label>
+                                <div id="containerNumberOt"></div>
+                            </div>    
+                        </div>
+
+                        <div class="row justify-content-between mb-3 mx-1 px-1">
+                            <div class="col-4">
+                                <label for="detalleOt" class="form-label d-flex justify-content-start ms-1">Número Ítem</label>
+                                <div class="d-flex">
+                                    <input id="inputNumberOtDisabled" type="text" name="numberOt" class="form-control text-end" value="" disabled>
+                                    <span class="dot-separator mx-1 mt-2"><b>.</b></span>
+                                    <input type="text" name="numberOtDetalle" id="numeroOtDetalle" class="form-control" placeholder="Número Ítem" value="" required>
+                                </div>
+                            </div>
+                            <div class="col-5">
+                                <label for="descriptionDetalle" class="form-label d-flex justify-content-start ms-1">Descripción Ítem</label>
+                                <input type="text" name="descriptionDetalle" class="form-control" placeholder="Descripción Ítem" value="" required>
+                            </div>                            
+                            <div class="col-3" style="">
+                                <label for="statusOtDetalle" class="form-label d-flex justify-content-start ms-1">Status Ítem</label>
+                                <div>
+                                    <p class="d-inline-block me-1">Inactivo</p>
+                                    <div class="form-check form-switch d-inline-block mt-2">
+                                        <input id="statusOtDetalleForm" class="form-check-input" type="checkbox" role="switch"
+                                            name="statusOtDetalleForm" style="cursor: pointer;" checked>
+                                        <label class="form-check-label" for="statusOtDetalleForm">Activo</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden$" value="$">
+                        <input type="hidden" name="otKNumberHidden" id="otKNumberHidden$" value="$">
+                        <input type="hidden" name="detalleIdHidden" id="detalleIdHidden$" value="$">
+                    </fieldset>
+                </form>`
+
+    if (idProjectSelected) {
+        Swal.fire({
+            title: `Agregar ítem`,
+            position: 'center',
+            html: html,
+            width: 1100,
+            icon: 'info',
+            showCancelButton: true,
+            showConfirmButton: true,
+            focusConfirm: false,
+            confirmButtonText: 'Guardar <i class="fa-regular fa-save"></i>',
+            cancelButtonText: 'Cancelar <i class="fa-solid fa-ban"></i>',
+            didOpen: ()=> {
+                let btnAceptar = document.getElementsByClassName('swal2-confirm');
+                btnAceptar[0].setAttribute('id','btnAceptarModal')
+                btnAceptar[0].style = "cursor: not-allowed;"
+                btnAceptar[0].disabled = true
+            }
+
+        }).then((result) => {
+            let numeroOtDetalle = document.getElementById('numeroOtDetalle').value
+            let numeroOt = document.getElementById('inputNumberOtDisabled').value
+            if (result.isConfirmed) {
+                Toast.fire({
+                    icon: 'success',
+                    title: `El ítem #<b>${numeroOt}.${numeroOtDetalle}</b>, se creó con éxito!`
+                })
+                setTimeout(() => {
+                    document.getElementById(`formUpdateOtDetalle${idProjectSelected}`).submit()
+                }, 2000)
+
+            } else {
+                numeroOtDetalle ?
+                    Swal.fire(
+                        `Ítem #<b>${numeroOt}.${numeroOtDetalle}</b> no se creó!`,
+                        `El ítem #${numeroOt}.${numeroOtDetalle}, no se creó correctamente!`,
+                        'warning'
+                    )
+                :
+                    Swal.fire(
+                        `Ítem #<b>${numeroOt}</b> no se creó!`,
+                        `El ítem de la OT#${numeroOt}, no se creó correctamente!`,
+                        'warning'
+                    )
+                return false
+            }
+        })
+        disabledBtnAceptar()
+
+    } else {
+        let numeroOtDetalle = document.getElementById('numeroOtDetalle').value
+        numeroOtDetalle ?
+            Swal.fire({
+                title: 'Error',
+                position: 'center',
+                timer: 3500,
+                text: `El ítem #<b>${numeroOt}.${numeroOtDetalle}</b> no se creó correctamente!`,
+                icon: 'error',
+                showCancelButton: false,
+                showConfirmButton: false,
+            })
+            :
+            Swal.fire({
+                title: 'Error',
+                position: 'center',
+                timer: 3500,
+                text: `El ítem de la OT#<b>${numberOt}</b> no se creó correctamente!`,
+                icon: 'error',
+                showCancelButton: false,
+                showConfirmButton: false,
+            })
+    }
+
+    const selectOciNumber = document.createElement('select');
+    selectOciNumber.classList.add('form-select')
+
+    ociNumber.forEach((dato, index) => {
+        const option = document.createElement('option');
+        option.value = dato.number; // Valor de la opción
+        option.text = `#${dato.number} - ${dato.alias}`;  // Texto que se muestra en la opción
+
+        index === 0 ? option.selected = true : null
+
+        selectOciNumber.appendChild(option);
+    });
+    document.getElementById('containerNumberOci').appendChild(selectOciNumber);
+
+
+    // Crear el select
+    const selectOtNumber = document.createElement('select');
+    selectOtNumber.classList.add('form-select')
+    selectOtNumber.setAttribute('id', 'otSelect')
+    
+
+    // Iterar sobre el array para crear las opciones
+    arrayFiltrado.forEach((dato, index) => {  //arrayFiltrado
+        const option = document.createElement('option');
+        option.value = dato.numero;  // Texto que se muestra en la opción
+        option.text = `#${dato.numero} - ${dato.descripcion} - ${dato.numeroOp} - ${dato.statusOp}`; // Valor de la opción
+
+        // Seleccionar por defecto la primera opción
+        if (index === 0) {
+            option.selected = true
+            document.getElementById('inputNumberOtDisabled').value = `${dato.numero}`
+        }
+
+        console.log('contador[dato.numero]: ', contador[dato.numero])
+        // Añadir la opción al select
+        if (contador[dato.numero] >= index) {
+            selectOtNumber.appendChild(option);
+        }
+        index++
+    });
+    // Agregar el select al contenedor en el DOM
+    document.getElementById('containerNumberOt').appendChild(selectOtNumber);
+
+    
+    selectOciNumber.addEventListener('change', function(event) {
+        const selectedIndex = event.target.selectedIndex;
+        console.log('Índice de la opción seleccionada: ', selectedIndex);
+
+    })
+
+
+
+    let inputsDeTexto = document.querySelectorAll('input[type="text"]')
+    let inputNumeroOtDetalle = document.getElementById('numeroOtDetalle')
+    let swal2Title = document.getElementById('swal2-title')
+    let inputSelect = document.getElementById('otSelect')
+
+    inputSelect.addEventListener('change', function(event) {
+        document.getElementById('inputNumberOtDisabled').value = event.target.value
+        swal2Title.innerText = `Agregar ítem #${document.getElementById('inputNumberOtDisabled').value}.${inputNumeroOtDetalle.value}`
+    })
+
+    // Agregar un listener de evento a cada input
+    inputsDeTexto.forEach(function(input) {
+        input.addEventListener('keydown', function(event) {
+            // Obtener el código de la tecla presionada
+            let key = event.key;
+
+            // Lista de caracteres especiales prohibidos
+            let forbiddenChars = /[#"$%?¡¿^/=!'~`\\*{}\[\]<>@]/;
+
+            // Verificar si la tecla presionada es un carácter especial
+            if (forbiddenChars.test(key)) {
+                // Cancelar el evento para evitar que se ingrese el carácter
+                event.preventDefault()
+                input.classList.add("border")
+                input.classList.add("border-danger")
+                input.classList.add("border-2")
+            } else {
+                input.classList.remove("border")
+                input.classList.remove("border-danger")
+                input.classList.remove("border-2")
+            }
+        })
+
+        input.addEventListener('input', function(event) {
+            swal2Title.innerText = `Agregar ítem #${document.getElementById('inputNumberOtDisabled').value}.${inputNumeroOtDetalle.value}`
+        })
+    })
+}
+
+//---- Update Detalle OT Data ----------------
+function messageUpdateOtDetalle(
+    idProjectSelected,
+    ociKNumber,
+    ociNumber,
+    otNumber,
+    otKNumber,
+    opNumber,
+    statusOtDetalle,
+    otDescription,
+    otDetalle,
+    otDescripcionDetalle,
+    detalleIdSelected
+    ) {
+    
+    let numberKOci = parseInt(ociKNumber)
+    let numberOci = parseInt(ociNumber)
+    let numberKOt = parseInt(otKNumber)
+    let numberOt = parseInt(otNumber)
+    let numberOp = parseInt(opNumber)
+    let checked = 'checked'
+    statusOtDetalle==='Activo' ? checked : checked = ''
+
+    let bgColorStatus
+    statusOtDetalle==='Activo' ? bgColorStatus='background-color: #55dd5560;' : bgColorStatus='background-color: #dd555560;'
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'bottom',
+        showConfirmButton: false,
+        timer: 4000,
+        timerProgressBar: false,
+    })
+
+    let html = `<form id="formUpdateOtDetail${idProjectSelected}" action="/api/proyectos/updateOtDetail/${idProjectSelected}" method="post">
+                    <fieldset>
+                        <div class="row justify-content-between mb-3 mx-1 px-1">
+                            <div class="col-3">
+                                <label for="numberOt" class="form-label d-flex justify-content-start ms-1">Número OT</label>
+                                <input type="number" name="numberOt" class="form-control" placeholder="Número OT" value="${numberOt}" disabled>
+                            </div>
+                            
+                            <div class="col-5" style="${bgColorStatus}">
+                                <label for="statusOt" class="form-label d-flex justify-content-start ms-1">Status Ítem</label>
+                                <div>
+                                    <p class="d-inline-block me-1">Inactivo</p>
+                                    <div class="form-check form-switch d-inline-block mt-2">
+                                        <input id="statusOtDetalleForm" class="form-check-input" type="checkbox" role="switch"
+                                            name="statusOtDetalleForm" style="cursor: pointer;" ${checked}>
+                                        <label class="form-check-label" for="statusOtDetalle">Activo</label>
+                                    </div>    
+                                </div>
+                            </div>
+                        </div>    
+                        
+                        <div class="row justify-content-between mb-3 mx-1 px-1">
+                            <div class="col-7">
+                                <label for="descriptionOt" class="form-label d-flex justify-content-start ms-1">Descripción OT</label>
+                                <input type="text" name="descriptionOt" class="form-control" placeholder="Descripción OT" value="${otDescription}" disabled>
+                            </div>
+                            <div class="col-4">
+                                <label for="numeroOp" class="form-label d-flex justify-content-start ms-1">Número OP</label>
+                                <input type="number" name="numeroOp" class="form-control" placeholder="Numero Op" value="${numberOp}" disabled>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row justify-content-evenly mb-3 mx-1 px-1">
+                            <div class="col-4">
+                                <label for="detalleOt" class="form-label d-flex justify-content-start align-items-center ms-1 mb-2">Ítem Número</label>
+                                <input type="text" id="detalleOt" name="detalleOt" class="form-control" placeholder="Ítem número" value="${otDetalle.trim()}" required>
+                            </div>
+                            <div class="col-7">
+                                <label for="otDescripcionDetalle" class="form-label d-flex justify-content-start align-items-center ms-1 mb-2">Descripción ítem</label>
+                                <input type="text" id="otDescripcionDetalle" name="otDescripcionDetalle" class="form-control" placeholder="Descripción ítem" value="${otDescripcionDetalle}" required>
+                            </div>                   
+                        </div> 
+                            <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden${numberKOci}" value="${numberKOci}">
+                            <input type="hidden" name="ociNumberHidden" id="ociNumberHidden${numberOci}" value="${numberOci}">
+                            <input type="hidden" name="otKNumberHidden" id="otKNumberHidden${numberKOt}" value="${numberKOt}">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    </fieldset>
+                </form>`
+
+    const htmlTitle = `Actualizar ítem #${numberOt}.${otDetalle.trim()} - ${otDescripcionDetalle}`
+
+    if(idProjectSelected && numberOt && detalleIdSelected) {
+        Swal.fire({
+            title: htmlTitle,
+            position: 'center',
+            html: html,
+            width: 750,
+            icon: 'info',
+            showCancelButton: true,
+            showConfirmButton: true,
+            focusConfirm: false,
+            confirmButtonText: 'Actualizar <i class="fa-regular fa-pen-to-square"></i>',
+            cancelButtonText: 'Cancelar <i class="fa-solid fa-ban"></i>',
+            didOpen: ()=> {
+                let btnAceptar = document.getElementsByClassName('swal2-confirm');
+                btnAceptar[0].setAttribute('id','btnAceptarModal')
+                btnAceptar[0].style = "cursor: not-allowed;"
+                btnAceptar[0].disabled = true
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Toast.fire({
+                    icon: 'success',
+                    title: `El ítem #<b>${numberOt}.${otDetalle.trim()}</b>, se modificó con éxito!`
+                })
+                setTimeout(() => {
+                    document.getElementById(`formUpdateOtDetail${idProjectSelected}`).submit()
+                }, 2000)
+
+            } else {
                 Swal.fire(
-                    'OT no modificada!',
-                    `La OT# <b>${numberOt}</b>, no se modificó!`,
+                    `Ítem #${numberOt}.${otDetalle.trim()} no modificado!`,
+                    `El ítem #${numberOt}.${otDetalle.trim()}</b>, no se modificó!`,
                     'warning'
                 )
                 return false
@@ -917,7 +1113,7 @@ function messageAddDetalleOt(
             title: 'Error',
             position: 'center',
             timer: 3500,
-            text: `La OT# ${numberOt} no se actualizó correctamente!`,
+            text: `El ítem #<b>${numberOt}.${otDetalle.trim()}</b> no se actualizó correctamente!`,
             icon: 'error',
             showCancelButton: false,
             showConfirmButton: false,
@@ -928,12 +1124,12 @@ function messageAddDetalleOt(
 
     // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
-        input.addEventListener('keydown', function(event) {
+        input.addEventListener('input', function(event) { //keydown
             // Obtener el código de la tecla presionada
             let key = event.key;
 
             // Lista de caracteres especiales prohibidos
-            let forbiddenChars = /[#"$%?¡¿^/()=!'~`\\*{}\[\]<>@]/;
+            let forbiddenChars = /[#"$%?¡¿^/=!'~`\\*{}\[\]<>@]/;
 
             // Verificar si la tecla presionada es un carácter especial
             if (forbiddenChars.test(key)) {
@@ -949,205 +1145,89 @@ function messageAddDetalleOt(
             }
         })
     })
-
-    // //******************** to be done ********************
-    //-----Btns Buscar en BBDD el Usuario Seguidor de Diseño --------------
-    const searchDesignUserModal = document.getElementById('searchDesignUserModal')
-    searchDesignUserModal.addEventListener('click', (event) => {
-    event.preventDefault()
-
-    function cargarUsuarioDiseno() {
-        fetch('../../../api/usuarios/searchUsers/simulacion')
-            .then(response => response.json())
-            .then(users => {
-            const arrayUsuariosDiseno = []
-            const arrayUsersAll = []
-
-            for(let i=0; i<users.usersAll.length; i++) {
-
-                if(users.usersAll[i].status && users.usersAll[i].permiso ==='diseno') {
-                    arrayUsuariosDiseno.push(`
-                                    <label>
-                                        <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-info text-dark my-2">
-                                            <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
-                                            ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                        </span>
-                                    </label>`)
-
-                } else if (users.usersAll[i].status && users.usersAll[i].permiso !=='diseno') {
-                    arrayUsersAll.push(`
-                                <label>
-                                    <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-light text-dark my-2">
-                                        <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
-                                        ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                    </span>
-                                </label>`)
-                }
-            }
-            
-            const html = `
-                    <hr>
-                        <label>Usuarios Diseño</label>
-                        <div name='container' class="container">
-                            ${arrayUsuariosDiseno.join(' ')}
-                        </div>
-                    <hr>
-                        <label>Usuarios</label>
-                        <div name='container' class="container">
-                            ${arrayUsersAll.join(' ')}
-                        </div>
-                    <hr>`
-
-                    Swal.fire({
-                        title: 'Usuarios',
-                        html: html,
-                        width: 450,
-                        background: "#eee",
-                        allowOutsideClick: false,
-                        showCloseButton: true,
-                        showCancelButton: true,
-                        focusConfirm:false,
-                        cancelButtonText: 'Volver <i class="fa-solid fa-back"></i>',
-                        confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>'    
-                    
-                    }).then((secondResult) => {
-                        const radiosToSelect = document.getElementsByName('radioUsuarios')
-
-                        for(let i=0; i<radiosToSelect.length; i++) {
-                            const radioSelected = document.getElementById(i)
-                            
-                            if (radioSelected.checked) {
-                                var usuariosSeleccionado = radioSelected.value
-                            }
-                        }
-                        
-                        if (secondResult.isConfirmed) {
-                            //const inputUserSelected = document.getElementById('designOt')
-                            //inputUserSelected.value = usuariosSeleccionado
-                            
-                        } else if (secondResult.dismiss === Swal.DismissReason.cancel) {
-                            event.preventDefault()
-                            return messageUpdateOt()
-                        }
-
-                        else {
-                            Swal.fire(
-                                'Usuario no seleccionado!',
-                                `No ha seleccionado ningún usuario!`,
-                                'warning'
-                            )
-                            return false
-                        }
-                    })
-        })
-        .catch(error => {
-        console.error('Error:', error)
-        })
-    }
-    cargarUsuarioDiseno()
-    })
-
-    //-----Btns Buscar en BBDD el Usuario Seguidor de Simulacion --------------
-    const searchSimulationUserModal = document.getElementById('searchSimulationUserModal')
-    searchSimulationUserModal.addEventListener('click', (event) => {
-    event.preventDefault()
-
-    function cargarUsuarioSimulacion() {
-        fetch('../../../api/usuarios/searchUsers/all')
-            .then(response => response.json())
-            .then(users => {
-            const arrayUsuariosSimulacion = []
-            const arrayUsersAll = []
-
-            for(let i=0; i<users.usersAll.length; i++) {
-
-                if(users.usersAll[i].status && users.usersAll[i].permiso ==='simulacion') {
-                    arrayUsuariosSimulacion.push(`
-                                    <label>
-                                        <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-warning text-dark my-2">
-                                            <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
-                                            ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                        </span>
-                                    </label>`)
-
-                } else if (users.usersAll[i].status && users.usersAll[i].permiso !=='simulacion') {
-                    arrayUsersAll.push(`
-                                <label>
-                                    <span id="${users.usersAll[i]._id}" class="badge rounded-pill bg-light text-dark my-2">
-                                        <input class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${users.usersAll[i].name}, ${users.usersAll[i].lastName}" id="${i}">
-                                        ${users.usersAll[i].name} ${users.usersAll[i].lastName}
-                                    </span>
-                                </label>`)
-                }
-            }
-            
-            const html = `
-                    <hr>
-                        <label>Usuarios Simulación</label>
-                        <div name='container' class="container">
-                            ${arrayUsuariosSimulacion.join(' ')}
-                        </div>
-                    <hr>
-                        <label>Usuarios</label>
-                        <div name='container' class="container">
-                            ${arrayUsersAll.join(' ')}
-                        </div>
-                    <hr>`
-
-                    Swal.fire({
-                        title: 'Usuarios',
-                        html: html,
-                        width: 450,
-                        background: "#eee",
-                        allowOutsideClick: false,
-                        showCloseButton: true,
-                        confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>'    
-                    }).then((result) => {
-                        const radiosToSelect = document.getElementsByName('radioUsuarios')
-
-                        for(let i=0; i<radiosToSelect.length; i++) {
-                            const radioSelected = document.getElementById(i)
-                            
-                            if (radioSelected.checked) {
-                                var usuariosSeleccionado = radioSelected.value
-                            }
-                        }
-                        
-                        if (result.isConfirmed) {
-                            const inputUserSelected = document.getElementById('internoSimulacion')
-                            inputUserSelected.value = usuariosSeleccionado
-                        
-                        } else {
-                            Swal.fire(
-                                'Usuario no seleccionado!',
-                                `No ha seleccionado ningún usuario!`,
-                                'warning'
-                            )
-                            return false
-                        }
-                    })
-        })
-        .catch(error => {
-        console.error('Error:', error)
-        })
-    }
-    cargarUsuarioSimulacion()
-    })
-    // ****************** End To be done *******************************
 }
 
-//TODO://---- Delete Detalle de OT ----------------
-function messageDeleteOtDetalle(
-    statusOtDetalle,
-    otNumber,
+//------- Change ítem OT status ----------------
+function messageChangeOtDetalleStatus(
     idProjectSelected,
     ociKNumber,
+    ociNumber,
+    otNumber,
     otKNumber,
-    otDetalleKNumber,
-    // otDescription,
-    idDetalleSelected,
+    // opNumber,
+    statusOtDetalle, 
+    // opDescription,
     otDetalle,
     otDetalleDescripcion,
+    detailIdSelected
+) {
+    
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'bottom',
+        showConfirmButton: false,
+        timer: 4000,
+        timerProgressBar: false,
+    })
+
+        Swal.fire({
+            title: `Cambio status de ítem OT#${otNumber}.${otDetalle.trim()} - ${otDetalleDescripcion.trim()}`,
+            position: 'center',
+            html: `El status del ítem #<b>${otNumber}.${otDetalle.trim()}</b> se modificará a
+                    <span class="badge rounded-pill bg-${ statusOtDetalle==='Activo' ? 'danger' : 'primary' } text-white">
+                    ${ statusOtDetalle==='Activo' ? 'Inactivo' : 'Activo' }
+                    </span> y ${ statusOtDetalle==='Activo' ? 'no' : '' } podrá ingresar o modificar datos en este Ítem.<br>
+                    ¿Desea continuar?
+                    <form id="formChangeStatusOtDetalle${idProjectSelected}" action="/api/proyectos/updateStatusOtDetalle/${idProjectSelected}" method="post" style="display: none;">
+                        <fieldset>
+                            <input type="hidden" name="ociKNumberHidden" value="${ociKNumber}">
+                            <input type="hidden" name="otKNumberHidden" value="${otKNumber}">
+                            <input type="hidden" name="statusOtDetalleHidden" value="${statusOtDetalle}">
+                            <input type="hidden" name="detailIdSelectedHidden" value="${detailIdSelected}">
+                        </fieldset>
+                    </form>
+                    `,
+            icon: 'info',
+            showCancelButton: true,
+            showConfirmButton: true,
+            focusConfirm: false,
+            confirmButtonText: 'Continuar',
+            cancelButtonText: 'Cancelar'
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Toast.fire({
+                    icon: 'success',
+                    title: `El status del ítem OT#<b>${otNumber}.${otDetalle.trim()}</b>, se modificó con éxito!`
+                })
+                setTimeout(() => {
+                    document.getElementById(`formChangeStatusOtDetalle${idProjectSelected}`).submit()
+                }, 2000)
+
+            } else {
+                Swal.fire(
+                    `Status del ítem #<b>${otNumber}.${otDetalle.trim()}</b> no modificado!`,
+                    `El status del ítem #${otNumber}.${otDetalle.trim()}, no se modificó!`,
+                    'warning'
+                )
+                return false
+            }
+        })
+}
+
+//---- Delete Detalle de OT ----------------
+function messageDeleteOtDetalle(
+    idProjectSelected,
+    ociKNumber,
+    ociNumber,
+    otNumber,
+    otKNumber,
+    // opNumber,
+    statusOtDetalle,
+    // otDescription,
+    otDetalle,
+    otDetalleDescripcion,
+    idDetalleSelected
     ) {
 
     const Toast = Swal.mixin({
@@ -1164,7 +1244,7 @@ function messageDeleteOtDetalle(
             Status: <span class="badge rounded-pill bg-${ statusOtDetalle==='Activo' ? 'primary' : 'danger' } text-white">
                         ${ statusOtDetalle==='Activo' ? 'Activo' : 'Inactivo' }
                     </span>
-            y su toda su información interna se eliminará completamente.
+            y toda su información interna se eliminará completamente.
             <br>
             <hr>
             ¿Está seguro que desea continuar?
@@ -1172,12 +1252,11 @@ function messageDeleteOtDetalle(
                 <fieldset>
                     <input type="hidden" name="ociKNumberHidden" value="${ociKNumber}">
                     <input type="hidden" name="otKNumberHidden" value="${otKNumber}">
-                    <input type="hidden" name="otDetalleKNumber" value="${otDetalleKNumber}">
-                    <input type="hidden" name="detalleIdNumber" value="${idDetalleSelected}">
+                    <input type="hidden" name="statusOtDetalleHidden" value="${statusOtDetalle}">
+                    <input type="hidden" name="detailIdSelectedHidden" value="${idDetalleSelected}">
                 </fieldset>
             </form>
-        </div>    
-                    `
+        </div>`
     
     if(idProjectSelected && otNumber) {
         Swal.fire({
@@ -1195,16 +1274,16 @@ function messageDeleteOtDetalle(
             cancelButtonText: 'Cancelar <i class="fa-solid fa-ban"></i>'
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById(`formDeleteOt${idProjectSelected}`).submit()
+                Toast.fire({
+                    icon: 'success',
+                    title: `El ítem #<strong>${otNumber}.${otDetalle.trim()}</strong>, se eliminó correctamente!`
+                })
                 setTimeout(() => {
-                    Toast.fire({
-                        icon: 'success',
-                        title: `El ítem #<strong>${otNumber}.${otDetalle.trim()}</strong>, se eliminó correctamente!`
-                    })
+                    document.getElementById(`formDeleteOt${idProjectSelected}`).submit()
                 }, 2000)
             } else {
                 Swal.fire(
-                    `Ítem #${otNumber}.${otDetalle.trim()}`,
+                    `Ítem #${otNumber}.${otDetalle.trim()} no eliminado!`,
                     `El ítem #<b>${otNumber}.${otDetalle.trim()}</b>, no se eliminó!`,
                     'warning'
                 )
@@ -1217,7 +1296,7 @@ function messageDeleteOtDetalle(
             title: 'Error',
             position: 'center',
             timer: 3500,
-            text: `El ítem #<strong>${otNumber}.${otDetalle.trim()}</strong>, no se eliminó correctamente!`,
+            text: `El ítem #<b>${otNumber}.${otDetalle.trim()}</b>, no se eliminó correctamente!`,
             icon: 'error',
             showCancelButton: false,
             showConfirmButton: false,
@@ -1354,14 +1433,10 @@ let maxOtQuantity
 checkSelect ? maxOtQuantity = parseInt(checkSelect.length) : maxOtQuantity=0
 let ociTotalQty = parseInt(document.getElementById('ociTotalQty').innerText)
 
-let arrayBtnChangeStatusOtDetalle = [],
-    arrayBtnUpdateOtDetalle = [],
-    arrayBtnDeleteOtDetalle = [],
-    arrayCheckBoxSelect = [],
-    arrayBtnCheckSelectionAll = [],
-    arrayBtnCheckSelecMasive = [],
-    arrayBtnAddDetallesOt = [],
-    arrayRowsOtDetalles = []
+let arrayBtnChangeStatusOtDetalle = [], arrayBtnUpdateOtDetalle = [], 
+    arrayBtnDeleteOtDetalle = [], arrayCheckBoxSelect = [],
+    arrayBtnCheckSelectionAll = [], arrayBtnCheckSelecMasive = [], 
+    arrayBtnAddDetallesOt = [], arrayRowsOtDetalles = []
 
     for (let m=0; m<ociTotalQty; m++) {
         let btnCheckSelectionAll = document.getElementById(`btnCheckSelectionAll${m}`)
@@ -1373,10 +1448,10 @@ let arrayBtnChangeStatusOtDetalle = [],
             arrayBtnCheckSelecMasive.push(btnCheckSelecMasive)
         }
 
-        let btnAddDetallesOt = document.getElementById(`btnAddDetallesFormSelected${m}`)
+        for (let n=0; n<maxOtQuantity; n++) {
+            let btnAddDetallesOt = document.getElementById(`btnAddDetallesFormSelected${m}_${n}`)
             btnAddDetallesOt ? arrayBtnAddDetallesOt.push(btnAddDetallesOt) : null
 
-        for (let n=0; n<maxOtQuantity; n++) {
             for (let o=0; o<varLimMaxDetallesOT; o++) {
                 let btnChangeStatusOtDetalle = document.getElementById(`btnStatusOtDetalle${m}_${n}_${o}`)
                 btnChangeStatusOtDetalle ? arrayBtnChangeStatusOtDetalle.push(btnChangeStatusOtDetalle) : null
@@ -1440,7 +1515,7 @@ function updateBtnCheckSelecMasive(idOci) {
     }
 }  
 
-//FIXME:
+//TODO:
 arrayBtnCheckSelecMasive.forEach(function(elemento) {
     if (elemento.id) {
         elemento.addEventListener('click', (event) => {
@@ -1474,7 +1549,6 @@ arrayBtnCheckSelecMasive.forEach(function(elemento) {
     }
 })
 
-//FIXME:
 arrayBtnAddDetallesOt.forEach(function(elemento) {
     if (elemento.id) {
         elemento.addEventListener('click', (event) => {
@@ -1482,12 +1556,18 @@ arrayBtnAddDetallesOt.forEach(function(elemento) {
             const elementoId = elemento.id
             let regex = /^btnAddDetallesFormSelected/;
             // Eliminar el texto inicial de la cadena
-            var idOci = elementoId.replace(regex, '')
-            const arrayOciOtSelected = idOci.split('_')
+            let idOciOt = elementoId.replace(regex, '')
+            const arrayOciOtSelected = idOciOt.split('_')
 
             let regexRows = /^rowSelected/;
-            var idOciOtDet = arrayRowsOtDetalles[idOci].id.replace(regexRows, '')
-            console.log('idOciOtDet:' , idOciOtDet, arrayRowsOtDetalles[idOci].id)
+            // Seleccionar todos los <tr> cuyos id comienzan con "rowSelected"
+            let rows = document.querySelectorAll('tr[id^="rowSelected"]');
+
+            let filteredRowsNodes = Array.from(rows).filter(function(row) {
+                return row.id.includes(idOciOt);
+            });
+            
+            let idOciOtDet = filteredRowsNodes[filteredRowsNodes.length-1].id.replace(regexRows, '')
             
             const idProjectSelected = document.getElementById('projectIdHidden').value
             const ociKNumber = parseInt(arrayOciOtSelected[0])
@@ -1500,7 +1580,7 @@ arrayBtnAddDetallesOt.forEach(function(elemento) {
             // const otDetail =  document.getElementById(`numeroDetalle${idOciOtDet}`).textContent
             // const detailDescription =  document.getElementById(`descripcionDetalle${idOciOtDet}`).textContent
             const detailIdSelected = document.getElementById(`detalleIdHidden${idOciOtDet}`).textContent
-            
+
             messageAddDetalleOt(
                 idProjectSelected,
                 ociKNumber,
@@ -1518,41 +1598,35 @@ arrayBtnAddDetallesOt.forEach(function(elemento) {
     }
 })
 
-arrayBtnChangeStatusOtDetalle.forEach(function(elemento) {
-    if (elemento.id) {
-        elemento.addEventListener('click', (event) => {
-            event.preventDefault()
-            const elementoId = elemento.id
-            let regex = /^btnStatusOtDetalle/;
+//FIXME:
+let btnAddDetallesModal = document.getElementById('idAddDetallesModal') 
+if (btnAddDetallesModal) {
+    btnAddDetallesModal.addEventListener('click', (event) => {
+        event.preventDefault()
+        let regexRows = /^rowSelected/;
+        // Seleccionar todos los <tr> cuyos id comienzan con "rowSelected"
+        let rows = document.querySelectorAll('tr[id^="rowSelected"]');
 
-            // Eliminar el texto inicial de la cadena
-            let idOtOciDet = elementoId.replace(regex, '')
-            const arrayOciOtSelected = idOtOciDet.split('_')
+        let filteredRowsNodes = Array.from(rows).filter(function(row) {
+            return row.id;
+        });
 
-            const statusOtDetalle = document.getElementById(`lastOtDetalleStatus${idOtOciDet}`).textContent
-            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOciDet}`).textContent)
-            const idProjectSelected = document.getElementById('projectIdHidden').value
-            const idDetalleSelected = document.getElementById(`detalleIdHidden${idOtOciDet}`).value
-            const ociKNumber = parseInt(arrayOciOtSelected[0])
-            const otKNumber = parseInt(arrayOciOtSelected[1])
-            const otDetalleKNumber = parseInt(arrayOciOtSelected[2])
-            const otDetalle =  document.getElementById(`numeroDetalle${idOtOciDet}`).textContent
-            const otDetalleDescripcion =  document.getElementById(`descripcionDetalle${idOtOciDet}`).textContent
-            
-            messageChangeOtDetalleStatus(
-                cleanString(statusOtDetalle),
-                otNumber,
-                idProjectSelected,
-                ociKNumber,
-                otKNumber,
-                idDetalleSelected,
-                otDetalleKNumber,
-                cleanString(otDetalle),
-                cleanString(otDetalleDescripcion)
-            )
-        })
-    }
-})
+        let idOciOtDet = [], kNumberOci = []
+        for (r=0; filteredRowsNodes.length > r; r++) {
+            idOciOtDet.push(filteredRowsNodes[r].id.replace(regexRows, ''))
+        }
+        kNumberOci = [...new Set(idOciOtDet.map(item => item.charAt(0)))];
+
+        const idProjectSelected = document.getElementById('projectIdHidden').value
+
+        messageModalAddDetallesOt(
+            idProjectSelected,
+            idOciOtDet,
+            kNumberOci
+        )
+    })
+}
+
 
 arrayBtnUpdateOtDetalle.forEach(function(elemento) {
     if (elemento.id) {
@@ -1560,35 +1634,93 @@ arrayBtnUpdateOtDetalle.forEach(function(elemento) {
             event.preventDefault()
             const elementoId = elemento.id
             let regex = /^btnEditOtDetalle/;
-
             // Eliminar el texto inicial de la cadena
-            let idOtOciDet = elementoId.replace(regex, '')
-            const arrayOciOtSelected = idOtOciDet.split('_')
+            let idOciOt = elementoId.replace(regex, '')
+            const arrayOciOtSelected = idOciOt.split('_')
 
+            let regexRows = /^rowSelected/;
+            // Seleccionar todos los <tr> cuyos id comienzan con "rowSelected"
+            let rows = document.querySelectorAll('tr[id^="rowSelected"]');
+
+            let filteredRowsNodes = Array.from(rows).filter(function(row) {
+                return row.id.includes(idOciOt);
+            });
+            // console.log('filteredRowsNodes: ', filteredRowsNodes)
+            let idOciOtDet = filteredRowsNodes[filteredRowsNodes.length-1].id.replace(regexRows, '')
+            
             const idProjectSelected = document.getElementById('projectIdHidden').value
-            const idDetalleSelected = document.getElementById(`detalleIdHidden${idOtOciDet}`).value
             const ociKNumber = parseInt(arrayOciOtSelected[0])
-            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOciDet}`).textContent)
-            const otKNumber = parseInt(arrayOciOtSelected[1])
-            const otDetalleKNumber = parseInt(arrayOciOtSelected[2])
-            const opNumber = parseInt(document.getElementById(`lastOpNumber${idOtOciDet}`).textContent)
-            const statusOtDetalle = document.getElementById(`lastOtDetalleStatus${idOtOciDet}`).textContent
-            const otDescription = document.getElementById(`lastOpDescription${idOtOciDet}`).textContent
-            const otDetalle = document.getElementById(`numeroDetalle${idOtOciDet}`).textContent
-            const otDetalleDescripcion = document.getElementById(`descripcionDetalle${idOtOciDet}`).textContent
+            const ociNumber = document.getElementById(`ociNumber${ociKNumber}`).textContent
+            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOciOtDet}`).textContent)
+            const otKNumber = parseInt(arrayOciOtSelected[1])       
+            const opNumber = parseInt(document.getElementById(`lastOpNumber${idOciOtDet}`).textContent)
+            const statusOt = document.getElementById(`statusDetalle${idOciOtDet}`).textContent
+            const opDescription = document.getElementById(`lastOpDescription${idOciOtDet}`).textContent
+            const otDetail =  document.getElementById(`numeroDetalle${idOciOtDet}`).textContent
+            const detailDescription =  document.getElementById(`descripcionDetalle${idOciOtDet}`).textContent
+            const detailIdSelected = document.getElementById(`detalleIdHidden${idOciOtDet}`).textContent
             
             messageUpdateOtDetalle(
-                cleanString(statusOtDetalle),
-                otNumber,
                 idProjectSelected,
                 ociKNumber,
+                ociNumber,
+                otNumber,
                 otKNumber,
-                cleanString(otDescription),
-                idDetalleSelected,
-                otDetalleKNumber,
                 opNumber,
-                cleanString(otDetalle),
-                cleanString(otDetalleDescripcion),
+                cleanString(statusOt),
+                cleanString(opDescription),
+                cleanString(otDetail),
+                cleanString(detailDescription),
+                detailIdSelected
+            )
+        })
+    }
+})
+
+arrayBtnChangeStatusOtDetalle.forEach(function(elemento) {
+    if (elemento.id) {
+        elemento.addEventListener('click', (event) => {
+            event.preventDefault()
+            const elementoId = elemento.id
+            let regex = /^btnStatusOtDetalle/;
+            // Eliminar el texto inicial de la cadena
+            let idOciOt = elementoId.replace(regex, '')
+            const arrayOciOtSelected = idOciOt.split('_')
+
+            let regexRows = /^rowSelected/;
+            // Seleccionar todos los <tr> cuyos id comienzan con "rowSelected"
+            let rows = document.querySelectorAll('tr[id^="rowSelected"]');
+
+            let filteredRowsNodes = Array.from(rows).filter(function(row) {
+                return row.id.includes(idOciOt);
+            });
+            // console.log('filteredRowsNodes: ', filteredRowsNodes)
+            let idOciOtDet = filteredRowsNodes[filteredRowsNodes.length-1].id.replace(regexRows, '')
+            
+            const idProjectSelected = document.getElementById('projectIdHidden').value
+            const ociKNumber = parseInt(arrayOciOtSelected[0])
+            const ociNumber = document.getElementById(`ociNumber${ociKNumber}`).textContent
+            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOciOtDet}`).textContent)
+            const otKNumber = parseInt(arrayOciOtSelected[1])       
+            // const opNumber = parseInt(document.getElementById(`lastOpNumber${idOciOtDet}`).textContent)
+            const statusOt = document.getElementById(`statusDetalle${idOciOtDet}`).textContent
+            // const opDescription = document.getElementById(`lastOpDescription${idOciOtDet}`).textContent
+            const otDetail =  document.getElementById(`numeroDetalle${idOciOtDet}`).textContent
+            const detailDescription =  document.getElementById(`descripcionDetalle${idOciOtDet}`).textContent
+            const detailIdSelected = document.getElementById(`detalleIdHidden${idOciOtDet}`).textContent
+            
+            messageChangeOtDetalleStatus(
+                idProjectSelected,
+                ociKNumber,
+                ociNumber,
+                otNumber,
+                otKNumber,
+                // opNumber,
+                cleanString(statusOt),
+                // cleanString(opDescription),
+                cleanString(otDetail),
+                cleanString(detailDescription),
+                detailIdSelected
             )
         })
     }
@@ -1600,33 +1732,44 @@ arrayBtnDeleteOtDetalle.forEach(function(elemento) {
             event.preventDefault()
             const elementoId = elemento.id
             let regex = /^btnDeleteOtDetalle/;
-
             // Eliminar el texto inicial de la cadena
-            var idOtOciDet = elementoId.replace(regex, '')
-            const arrayOciOtSelected = idOtOciDet.split('_')
-            
-            const statusOtDetalle = document.getElementById(`lastOtDetalleStatus${idOtOciDet}`).textContent
-            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOciDet}`).textContent)
-            const idProjectSelected = document.getElementById('projectIdHidden').value
-            const idDetalleSelected = document.getElementById(`detalleIdHidden${idOtOciDet}`).value
-            const ociKNumber = parseInt(arrayOciOtSelected[0])
-            const otKNumber = parseInt(arrayOciOtSelected[1])   
-            const otDetalleKNumber = parseInt(arrayOciOtSelected[2])    
-            const otDescription = document.getElementById(`lastOpDescription${idOtOciDet}`).textContent
-            const otDetalle =  document.getElementById(`numeroDetalle${idOtOciDet}`).textContent
-            const otDetalleDescripcion =  document.getElementById(`descripcionDetalle${idOtOciDet}`).textContent
+            let idOciOt = elementoId.replace(regex, '')
+            const arrayOciOtSelected = idOciOt.split('_')
 
+            let regexRows = /^rowSelected/;
+            // Seleccionar todos los <tr> cuyos id comienzan con "rowSelected"
+            let rows = document.querySelectorAll('tr[id^="rowSelected"]');
+
+            let filteredRowsNodes = Array.from(rows).filter(function(row) {
+                return row.id.includes(idOciOt);
+            });
+            // console.log('filteredRowsNodes: ', filteredRowsNodes)
+            let idOciOtDet = filteredRowsNodes[filteredRowsNodes.length-1].id.replace(regexRows, '')
+            
+            const idProjectSelected = document.getElementById('projectIdHidden').value
+            const ociKNumber = parseInt(arrayOciOtSelected[0])
+            const ociNumber = document.getElementById(`ociNumber${ociKNumber}`).textContent
+            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOciOtDet}`).textContent)
+            const otKNumber = parseInt(arrayOciOtSelected[1])       
+            // const opNumber = parseInt(document.getElementById(`lastOpNumber${idOciOtDet}`).textContent)
+            const statusOt = document.getElementById(`statusDetalle${idOciOtDet}`).textContent
+            // const opDescription = document.getElementById(`lastOpDescription${idOciOtDet}`).textContent
+            const otDetail =  document.getElementById(`numeroDetalle${idOciOtDet}`).textContent
+            const detailDescription =  document.getElementById(`descripcionDetalle${idOciOtDet}`).textContent
+            const detailIdSelected = document.getElementById(`detalleIdHidden${idOciOtDet}`).textContent
+            
             messageDeleteOtDetalle(
-                cleanString(statusOtDetalle),
-                otNumber,
                 idProjectSelected,
                 ociKNumber,
+                ociNumber,
+                otNumber,
                 otKNumber,
-                otDetalleKNumber,
-                cleanString(otDescription),
-                idDetalleSelected,
-                cleanString(otDetalle),
-                cleanString(otDetalleDescripcion),
+                // opNumber,
+                cleanString(statusOt),
+                // cleanString(opDescription),
+                cleanString(otDetail),
+                cleanString(detailDescription),
+                detailIdSelected
             )
         })
     }
@@ -1637,7 +1780,7 @@ arrayCheckBoxSelect.forEach(function(element) {
     element.addEventListener('change', (event) => {
         event.preventDefault()
         const idOtOciDet = (event.target.id).slice(11)
-        console.log('idOtOciDet:' , idOtOciDet)
+        // console.log('idOtOciDet:' , idOtOciDet)
         let rowSelectCheck
         document.getElementsByName(`rowSelected${idOtOciDet}`) ?
             rowSelectCheck = Array.from(document.getElementsByName(`rowSelected${idOtOciDet}`)) : null
@@ -1963,8 +2106,12 @@ btnCreateNewOt.addEventListener('click', (event) => {
         messageNewOt(ociNumberHiddenValue, otArray, ociAlias)
 
     } else {
-        //TODO: Hacer sweetAlert2
-        console.log('Hubo un error al seleccionar la OCI!!')
+        Swal.fire(
+            'Error',
+            `Hubo un error al seleccionar la OCI!`,
+            'error'
+        )
+        return false
     }
 })
 
@@ -2518,31 +2665,6 @@ function messageAddDetallesToOt(ociNumber, otArray, ociAlias) {
     }
 }
 
-//TODO: Rediseñar esta function 
-//******Agregar ítems a OT *********/
-const btnCreateAddDetallesToOt = document.getElementById('idAddDetalles')
-btnCreateAddDetallesToOt.addEventListener('click', (event) => {
-    event.preventDefault()
-    let ociNumberHiddenValue = parseInt(document.getElementById('ociNumberHidden').value)
-    //let otNumberHiddenValue = parseInt(document.getElementById('otNumberHidden').value)
-    //console.log('ociNumberHiddenValue:', ociNumberHiddenValue)
-    if (ociNumberHiddenValue) {
-        const otQuantity = parseInt(document.getElementById('otQuantity').value)
-        let otArray = [document.getElementById(`otNumber`).value]
-        let ociAlias = document.getElementById('ociAliasHidden').value
-        if (otQuantity > 1) {
-            for (let j = 1; j < otQuantity; j++) {
-                let otNumberSelected = document.getElementById(`otNumber${j}`).value
-                otArray.push(otNumberSelected)
-            }
-        }
-        messageAddDetallesToOt(ociNumberHiddenValue, otArray, ociAlias)
-
-    } else {
-        //TODO: Hacer sweetAlert2
-        console.log('Hubo un error al seleccionar la OCI!!')
-    }
-})
 
 //***** addDatoToDistribucion ******
 function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
@@ -3090,7 +3212,6 @@ async function cargarMaquina(res) {
         await fetch(url, {method: "GET", mode: 'cors', cache: 'default'})
             .then(response => response.json())
             .then(data => {
-                // console.log('data: ',data)
                 cargarOpcionesEnSelect(data, res);
             })
             .catch(error => new Error(`Error en la solicitud: ${error}`));
@@ -3121,7 +3242,7 @@ async function cargarMaquina(res) {
                     option.value = dato._id;  // Asigna el valor de la opción (puede ser un ID u otro identificador)
                     option.textContent = `${dato.designation}`;  // Asigna el texto visible en la opción (puede ser el nombre u otro dato)
 
-                    dato.status ? selectElement.appendChild(option) : null
+                    dato.status && dato.type != 'prensa' ? selectElement.appendChild(option) : null
                 }
             });
         });
@@ -3517,7 +3638,7 @@ function updateInputsSelect() {
     }
 }
 
-function disabledBtnAceptar () {
+function disabledBtnAceptar() {
     let btnAceptarModal = document.getElementsByClassName('swal2-confirm');
     const allInputs = document.querySelectorAll('input[type="text"],input[type="number"],select,textarea')
     const allInputsRange = document.querySelectorAll('input[type="range"]')
