@@ -5,7 +5,7 @@
             <img src="<%= arrayVisibleOci[k].ociImage %>" class="card-img m-auto shadow" title="<%= arrayVisibleOci[k].ociDescription %>" alt="<%= arrayVisibleOci[k].ociDescription %>" style="max-width: 75%; max-height: 75%; object-fit: contain;">
         </div>
         <div class="col-10 d-flex align-items-center">
-            Puedes agregar mas datos de OT en esta OCI# <strong><%= arrayVisibleOci[k].ociNumber %></strong>, haciendo click en el siguiente botón
+            Agrega datos de OT en OCI# <strong><%= arrayVisibleOci[k].ociNumber %></strong>, haciendo click en
             <button class="btn btn-primary m-1 rounded-circle shadow"
                 id="btnAddOtFormSelected<%=k%>" aria-controls="collapseExample" data-bs-toggle="collapse"
                 data-bs-target="#collapseExample" aria-expanded="false"
@@ -24,12 +24,21 @@
                     <button class="custom-btn m-2"
                         id="btnAddDetallesFormSelected<%=k%>_<%=t%>"
                         type="button" value="<%=k%>_<%=t%>" name="<%= arrayVisibleOci[k].otProject[t].otNumber %>"
-                        title="Agregar nuevos ítems en la OT <%= arrayVisibleOci[k].otProject[t].otNumber %>">
+                        title="Agregar ítems en la OT <%= arrayVisibleOci[k].otProject[t].otNumber %>">
                         <%= arrayVisibleOci[k].otProject[t].otNumber %>
                     </button>
-                <% } 
+                <% } %>
 
-            } else { %>
+                o desde la LdM, haciendo click en
+
+                <button class="custom-btn-excel m-2"
+                    id="btnAddDetallesFromExcelFile<%=k%>"
+                    type="button" value="<%=k%>" name="btnAddDetallesFromExcelFile_<%=k%>"
+                    title="Agregar ítems en la OT desde archivo Excel">
+                    <i class="fa-solid fa-file-excel fa-2xl" style="color: #008040;"></i>
+                </button>
+
+            <% } else { %>
                 pero NO puedes agregar ítems en las OT's, debido a tus permisos
                 <button class="btn btn-danger m-1 rounded-circle shadow disabled"
                     style="--bs-btn-font-size: .95rem; color: var(--bs-white);" type="button">

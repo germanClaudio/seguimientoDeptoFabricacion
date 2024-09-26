@@ -1209,6 +1209,35 @@ form.dropzone {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
+.custom-btn-excel {
+  background-color: #edf3ee;
+  color: white;
+  width: 2.45rem;
+  height: 2.45rem;
+  border-radius: 50%;
+  border: 1px solid #2e2e2e;
+  font-size: 13px;
+  line-height: 2.45rem; /* Alinea el texto verticalmente */
+  text-align: center;
+  transition: all 0.3s ease; /* Transición suave */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06); /* Sombra suave */
+  cursor: pointer;
+}
+
+/* Estilo hover */
+.custom-btn-excel:hover {
+  background-color: #56e07d; /* Cambia el color al pasar el mouse */
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.10); /* Aumenta la sombra */
+  transform: scale(1.05); /* Agranda ligeramente el botón */
+}
+
+/* Efecto cuando se presiona el botón */
+.custom-btn-excel:active {
+  transform: scale(0.98); /* Achica el botón temporalmente */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+
 .dot-separator {
   font-size: 20px; /* Ajusta el tamaño del punto */
   line-height: 1; /* Asegura que el punto no tenga espacio extra */

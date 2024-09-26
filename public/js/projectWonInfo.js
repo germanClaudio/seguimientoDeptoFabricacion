@@ -736,7 +736,7 @@ function messageAddDetalleOt(
     })
 }
 
-//FIXME:
+//---- Add Details to OT from Green btn----------------
 function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
 
     const Toast = Swal.mixin({
@@ -747,17 +747,15 @@ function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
         timerProgressBar: false,
     })
 
-    let ociNumber = [], otNumber = []
-    for(let o = 0; kNumberOci.length>o; o++) {
-        ociNumber.push({ number: parseInt(document.getElementById(`ociNumber${kNumberOci[o]}`).textContent), 
-                        alias: document.getElementById(`ociAlias${kNumberOci[o]}`).textContent })
-    }
-
+    let ociNumber = []    
     for(let ood = 0; idOciOtDet.length>ood; ood++) {
-        otNumber.push({ numero: parseInt(document.getElementById(`lastOtNumber${idOciOtDet[ood]}`).textContent),
-                        descripcion: document.getElementById(`lastOpDescription${idOciOtDet[ood]}`).textContent,
-                        numeroOp: parseInt(document.getElementById(`lastOpNumber${idOciOtDet[ood]}`).textContent),
-                        statusOp: document.getElementById(`statusDetalle${idOciOtDet[ood]}`).textContent })
+        const kNumberOci = idOciOtDet[ood][0]
+        ociNumber.push({number: parseInt(document.getElementById(`ociNumber${kNumberOci}`).textContent), 
+                    alias: document.getElementById(`ociAlias${kNumberOci}`).textContent,
+                    numero: parseInt(document.getElementById(`lastOtNumber${idOciOtDet[ood]}`).textContent),
+                    descripcion: document.getElementById(`lastOpDescription${idOciOtDet[ood]}`).textContent,
+                    numeroOp: parseInt(document.getElementById(`lastOpNumber${idOciOtDet[ood]}`).textContent),
+                    statusOp: document.getElementById(`statusDetalle${idOciOtDet[ood]}`).textContent })
     }
 
     // Crear un array para los resultados filtrados y un Set para números únicos
@@ -765,10 +763,10 @@ function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
     const arrayFiltrado = [];
 
     // Recorrer el array de objetos
-    otNumber.forEach(obj => {
-        if (!numerosUnicos.has(obj.numero)) {
+    ociNumber.forEach(obj => {
+        if (!numerosUnicos.has(obj.number)) {
             // Si el número no ha sido agregado, lo añadimos
-            numerosUnicos.add(obj.numero);
+            numerosUnicos.add(obj.number)
             arrayFiltrado.push(obj);
         }
     });
@@ -791,18 +789,18 @@ function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
 
                         <div class="row justify-content-between mb-3 mx-1 px-1">
                             <div class="col-4">
-                                <label for="detalleOt" class="form-label d-flex justify-content-start ms-1">Número Ítem</label>
+                                <label for="detalleOt" class="form-label d-flex justify-content-start ms-1">Número OT . Número Ítem</label>
                                 <div class="d-flex">
-                                    <input id="inputNumberOtDisabled" type="text" name="numberOt" class="form-control text-end" value="" disabled>
+                                    <input id="inputNumberOtDisabled" type="text" name="numberOt" class="form-control text-end" placeholder="Número OT" value="" disabled>
                                     <span class="dot-separator mx-1 mt-2"><b>.</b></span>
-                                    <input type="text" name="numberOtDetalle" id="numeroOtDetalle" class="form-control" placeholder="Número Ítem" value="" required>
+                                    <input type="text" name="numberOtDetalle" id="numeroOtDetalle" class="form-control" placeholder="Número Ítem" value="" required disabled>
                                 </div>
                             </div>
                             <div class="col-5">
                                 <label for="descriptionDetalle" class="form-label d-flex justify-content-start ms-1">Descripción Ítem</label>
-                                <input type="text" name="descriptionDetalle" class="form-control" placeholder="Descripción Ítem" value="" required>
+                                <input type="text" id="descriptionDetalle" name="descriptionDetalle" class="form-control" placeholder="Descripción Ítem" value="" required disabled>
                             </div>                            
-                            <div class="col-3" style="">
+                            <div class="col-3" style="background-color: #55dd5560;">
                                 <label for="statusOtDetalle" class="form-label d-flex justify-content-start ms-1">Status Ítem</label>
                                 <div>
                                     <p class="d-inline-block me-1">Inactivo</p>
@@ -822,7 +820,7 @@ function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
 
     if (idProjectSelected) {
         Swal.fire({
-            title: `Agregar ítem`,
+            title: `Agregar ítem #`,
             position: 'center',
             html: html,
             width: 1100,
@@ -895,66 +893,97 @@ function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
 
     const selectOciNumber = document.createElement('select');
     selectOciNumber.classList.add('form-select')
+    selectOciNumber.setAttribute('id', 'ociSelect')
 
-    ociNumber.forEach((dato, index) => {
+    // Crear la primera opción "Seleccione una OCI"
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.text = 'Seleccione una OCI';
+    defaultOption.selected = true;
+    defaultOption.disabled = true;
+    selectOciNumber.appendChild(defaultOption);
+
+    //*******-------------------------------------------****** */
+    const selectOtNumber = document.createElement('select');
+    selectOtNumber.classList.add('form-select')
+    selectOtNumber.setAttribute('id', 'otSelect')
+    selectOtNumber.setAttribute('disabled', true)
+
+    let inputNumeroOtDetalle = document.getElementById('numeroOtDetalle')
+    let swal2Title = document.getElementById('swal2-title')
+
+    let inputNumberOtDisabled = document.getElementById('inputNumberOtDisabled')
+    let inputDescriptionOtDisabled = document.getElementById('descriptionDetalle')
+    let inputNumberDetailDisabled = document.getElementById('numeroOtDetalle')
+    //******-------------------------------------------******* */
+    
+    arrayFiltrado.forEach((dato) => {
         const option = document.createElement('option');
-        option.value = dato.number; // Valor de la opción
-        option.text = `#${dato.number} - ${dato.alias}`;  // Texto que se muestra en la opción
-
-        index === 0 ? option.selected = true : null
+        option.value = dato.number;
+        option.text = `#${dato.number} - ${dato.alias}`;
 
         selectOciNumber.appendChild(option);
     });
     document.getElementById('containerNumberOci').appendChild(selectOciNumber);
 
 
-    // Crear el select
-    const selectOtNumber = document.createElement('select');
-    selectOtNumber.classList.add('form-select')
-    selectOtNumber.setAttribute('id', 'otSelect')
-    
+    const ociSelected = document.getElementById('ociSelect')
+    ociSelected.addEventListener('change', function() {
+        const arrayOtFiltrado = [], arrayOtReFiltrado = [];
+        const numerosUnicos = new Set();
 
-    // Iterar sobre el array para crear las opciones
-    arrayFiltrado.forEach((dato, index) => {  //arrayFiltrado
-        const option = document.createElement('option');
-        option.value = dato.numero;  // Texto que se muestra en la opción
-        option.text = `#${dato.numero} - ${dato.descripcion} - ${dato.numeroOp} - ${dato.statusOp}`; // Valor de la opción
+        // Obtener el valor seleccionado en el select1
+        const itemSelected = ociSelected.value;
 
-        // Seleccionar por defecto la primera opción
-        if (index === 0) {
-            option.selected = true
-            document.getElementById('inputNumberOtDisabled').value = `${dato.numero}`
+        inputNumberOtDisabled.value = ""
+        inputNumberOtDisabled.disbled = true
+        inputNumeroOtDetalle.value = ""
+        inputNumeroOtDetalle.disabled = true
+        inputDescriptionOtDisabled.value = ""
+        inputDescriptionOtDisabled.disabled = true
+        swal2Title.innerText = `Agregar ítem #`
+
+        // Limpiar el select de OT
+        selectOtNumber.innerHTML = '<option selected value="" disabled>Seleccione una OT</option>';
+
+        if (itemSelected) {
+            selectOtNumber.disabled = false;
+
+            ociNumber.forEach(obj => {
+                obj.number == itemSelected ? arrayOtFiltrado.push(obj) : null
+            });
+
+            arrayOtFiltrado.forEach(obj => {
+                if (!numerosUnicos.has(obj.numero)) {
+                    numerosUnicos.add(obj.numero)
+                    arrayOtReFiltrado.push(obj)
+                }
+            });
+
+            arrayOtReFiltrado.forEach((dato) => {
+                const optionOt = document.createElement('option');
+                optionOt.value = dato.numero;
+                optionOt.text = `#${dato.numero} - ${dato.descripcion} - ${dato.numeroOp} - ${dato.statusOp}`;
+                selectOtNumber.appendChild(optionOt);
+            });
+            const selectOtChild = document.getElementById('containerNumberOt')
+            selectOtChild.appendChild(selectOtNumber);
+
+            let inputSelect = document.getElementById('otSelect')
+            inputSelect.addEventListener('change', function(event) {
+
+                inputDescriptionOtDisabled.disabled = false
+                inputNumberDetailDisabled.disabled = false 
+                inputNumberOtDisabled.value = event.target.value
+                swal2Title.innerText = `Agregar ítem #${inputNumberOtDisabled.value}.${inputNumeroOtDetalle.value}`
+            })
+
+        } else {
+            selectOciNumber.disabled = true;
         }
-
-        console.log('contador[dato.numero]: ', contador[dato.numero])
-        // Añadir la opción al select
-        if (contador[dato.numero] >= index) {
-            selectOtNumber.appendChild(option);
-        }
-        index++
-    });
-    // Agregar el select al contenedor en el DOM
-    document.getElementById('containerNumberOt').appendChild(selectOtNumber);
-
-    
-    selectOciNumber.addEventListener('change', function(event) {
-        const selectedIndex = event.target.selectedIndex;
-        console.log('Índice de la opción seleccionada: ', selectedIndex);
-
     })
-
-
 
     let inputsDeTexto = document.querySelectorAll('input[type="text"]')
-    let inputNumeroOtDetalle = document.getElementById('numeroOtDetalle')
-    let swal2Title = document.getElementById('swal2-title')
-    let inputSelect = document.getElementById('otSelect')
-
-    inputSelect.addEventListener('change', function(event) {
-        document.getElementById('inputNumberOtDisabled').value = event.target.value
-        swal2Title.innerText = `Agregar ítem #${document.getElementById('inputNumberOtDisabled').value}.${inputNumeroOtDetalle.value}`
-    })
-
     // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
         input.addEventListener('keydown', function(event) {
@@ -982,6 +1011,409 @@ function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
             swal2Title.innerText = `Agregar ítem #${document.getElementById('inputNumberOtDisabled').value}.${inputNumeroOtDetalle.value}`
         })
     })
+}
+
+//TODO: ---- Add Details to OT from Excel Btn from file----------------
+function messageModalAddDetallesOtFromFile(idProjectSelected, idOciOtDet, kNumberOci) {
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'bottom',
+        showConfirmButton: false,
+        timer: 4000,
+        timerProgressBar: false,
+    })
+
+    let ociNumber = []    
+    for(let ood = 0; idOciOtDet.length>ood; ood++) {
+        const kNumberOci = idOciOtDet[ood][0]
+        ociNumber.push({number: parseInt(document.getElementById(`ociNumber${kNumberOci}`).textContent), 
+                    alias: document.getElementById(`ociAlias${kNumberOci}`).textContent,
+                    numero: parseInt(document.getElementById(`lastOtNumber${idOciOtDet[ood]}`).textContent),
+                    descripcion: document.getElementById(`lastOpDescription${idOciOtDet[ood]}`).textContent,
+                    numeroOp: parseInt(document.getElementById(`lastOpNumber${idOciOtDet[ood]}`).textContent),
+                    statusOp: document.getElementById(`statusDetalle${idOciOtDet[ood]}`).textContent })
+    }
+
+    // Crear un array para los resultados filtrados y un Set para números únicos
+    const numerosUnicos = new Set();
+    const arrayFiltrado = [];
+
+    // Recorrer el array de objetos
+    ociNumber.forEach(obj => {
+        if (!numerosUnicos.has(obj.number)) {
+            // Si el número no ha sido agregado, lo añadimos
+            numerosUnicos.add(obj.number)
+            arrayFiltrado.push(obj);
+        }
+    });
+
+    let html = `<form id="formModalAddOtDetalleFromFile${idProjectSelected}" action="/api/proyectos/addModalOtDetalleFromFile/${idProjectSelected}" method="post">
+                    <fieldset>
+                        <div class="row justify-content-between mb-3 mx-1 px-1">
+                            <div class="col-3">
+                                <label for="numberOci" class="form-label d-flex justify-content-start ms-1">Seleccione Número OCI - Alias</label>
+                                <div id="containerNumberOci"></div>
+                            </div>
+                            <div class="col-3 my-auto">
+                                <i class="fa-solid fa-right-long fa-beat fa-xl" style="color: #0000ff;"></i>
+                            </div>    
+                            <div class="col-6">
+                                <label for="numberOt" class="form-label d-flex justify-content-start ms-1">#OT - Descripción - #Op - Status</label>
+                                <div id="containerNumberOt"></div>
+                            </div>    
+                        </div>
+
+                        <div class="row justify-content-between mb-3 mx-1 px-1">
+                            <div class="col">
+                                <label for="inputExcel" class="form-label d-flex justify-content-start ms-1">Seleccione archivo Excel LdM con ítems a importar</label>
+                                <input type="file" id="inputExcel" accept=".xlsx, .xls" class="form-control" placeholder="Lista de Materiales" value="" required disabled>
+                            </div>
+                        </div>
+
+                        <!-- Campo para mostrar cuántas filas se agregarán -->
+                        <p>Total de ítem importados: <span class="badge rounded-pill bg-dark text-white my-1" id="rowCount">0</span></p>
+
+                        <div id="formContainer" class="row justify-content-between mb-3 mx-1 px-1"></div>
+
+                        <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden$" value="$">
+                        <input type="hidden" name="otKNumberHidden" id="otKNumberHidden$" value="$">
+                        <input type="hidden" name="detalleIdHidden" id="detalleIdHidden$" value="$">
+                    </fieldset>
+                </form>`
+
+    if (idProjectSelected) {
+        Swal.fire({
+            title: `Agregar ítems desde archivo Excel`,
+            position: 'center',
+            html: html,
+            width: 1100,
+            icon: 'info',
+            showCancelButton: true,
+            showCloseButton: true,
+            showConfirmButton: true,
+            focusConfirm: false,
+            confirmButtonText: 'Guardar <i class="fa-regular fa-save"></i>',
+            cancelButtonText: 'Cancelar <i class="fa-solid fa-ban"></i>',
+            didOpen: ()=> {
+                let btnAceptar = document.getElementsByClassName('swal2-confirm');
+                btnAceptar[0].setAttribute('id','btnAceptarModal')
+                btnAceptar[0].style = "cursor: not-allowed;"
+                btnAceptar[0].disabled = true
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Toast.fire({
+                    icon: 'success',
+                    title: `Los ítems, se crearon con éxito!`
+                })
+                setTimeout(() => {
+                    document.getElementById(`formModalAddOtDetalleFromFile${idProjectSelected}`).submit()
+                }, 2000)
+
+            } else {
+                Swal.fire(
+                    `Los ítems no se crearon!`,
+                    `Los ítems, no se crearon correctamente!`,
+                    'warning'
+                )
+                return false
+            }
+        })
+        disabledBtnAceptar()
+
+    } else {
+        Swal.fire({
+            title: 'Error',
+            position: 'center',
+            timer: 3500,
+            text: `Los ítems no se crearon correctamente!`,
+            icon: 'error',
+            showCancelButton: false,
+            showConfirmButton: false,
+        })
+    }
+
+    const selectOciNumber = document.createElement('select');
+    selectOciNumber.classList.add('form-select')
+    selectOciNumber.setAttribute('id', 'ociSelect')
+
+    // Crear la primera opción "Seleccione una OCI"
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.text = 'Seleccione una OCI';
+    defaultOption.selected = true;
+    defaultOption.disabled = true;
+    selectOciNumber.appendChild(defaultOption);
+
+    //*******-------------------------------------------****** */
+    const selectOtNumber = document.createElement('select');
+    selectOtNumber.classList.add('form-select')
+    selectOtNumber.setAttribute('id', 'otSelect')
+    selectOtNumber.setAttribute('disabled', true)
+
+    let inputExcelDisabled = document.getElementById('inputExcel')
+    //******-------------------------------------------******* */
+    
+    arrayFiltrado.forEach((dato) => {
+        const option = document.createElement('option');
+        option.value = dato.number;
+        option.text = `#${dato.number} - ${dato.alias}`;
+
+        selectOciNumber.appendChild(option);
+    });
+    document.getElementById('containerNumberOci').appendChild(selectOciNumber);
+
+
+    const ociSelected = document.getElementById('ociSelect')
+    ociSelected.addEventListener('change', function() {
+        const arrayOtFiltrado = [], arrayOtReFiltrado = [];
+        const numerosUnicos = new Set();
+
+        // Obtener el valor seleccionado en el select1
+        const itemSelected = ociSelected.value;
+
+        // inputNumberOtDisabled.value = ""
+        // inputNumberOtDisabled.disbled = true
+
+        // Limpiar el select de OT
+        selectOtNumber.innerHTML = '<option selected value="" disabled>Seleccione una OT</option>';
+
+        if (itemSelected) {
+            selectOtNumber.disabled = false;
+
+            ociNumber.forEach(obj => {
+                obj.number == itemSelected ? arrayOtFiltrado.push(obj) : null
+            });
+
+            arrayOtFiltrado.forEach(obj => {
+                if (!numerosUnicos.has(obj.numero)) {
+                    numerosUnicos.add(obj.numero)
+                    arrayOtReFiltrado.push(obj)
+                }
+            });
+
+            arrayOtReFiltrado.forEach((dato) => {
+                const optionOt = document.createElement('option');
+                optionOt.value = dato.numero;
+                optionOt.text = `#${dato.numero} - ${dato.descripcion} - ${dato.numeroOp} - ${dato.statusOp}`;
+                selectOtNumber.appendChild(optionOt);
+            });
+            const selectOtChild = document.getElementById('containerNumberOt')
+            selectOtChild.appendChild(selectOtNumber);
+
+            let inputSelect = document.getElementById('otSelect')
+            inputSelect.addEventListener('change', function(event) {
+                inputExcelDisabled.disabled = false
+            })
+
+        } else {
+            selectOciNumber.disabled = true;
+        }
+    })
+
+    const formContainer = document.getElementById('formContainer');
+        const rowCount = document.getElementById('rowCount');
+        let itemIndex = 1;
+
+        document.getElementById('inputExcel').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+
+                // Suponemos que los datos están en la primera hoja
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+
+                // Convertir la hoja de Excel a JSON
+                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+                // Eliminar la fila de encabezados
+                const rows = jsonData.slice(1);
+
+                // Limpiar el contenedor de formulario si ya había algo
+                formContainer.innerHTML = ""; 
+                itemIndex = 1; // Reiniciar el enumerador
+
+                let undefinedCount = 0;
+
+                // Procesar cada fila del Excel
+                rows.forEach((row, index) => {
+                    const item = row[0];       // Primera columna (Detalle)
+                    const descripcion = row[1];   // Segunda columna (Descripción)
+console.log('item: ', item)
+                    let detalleNumber
+
+                    if (item && descripcion) {
+                        // Obtener solo el número principal antes de cualquier "-"
+                        !parseInt(item) ? detalleNumber = parseInt(item.split('-')[0]) : detalleNumber = item
+console.log('detalleNumber: ', detalleNumber)                        
+                        // Verificar que el número esté en el rango 1000-1399
+                        detalleNumber >= 1000 && detalleNumber <= 1399 ? agregarFilaFormulario(item, descripcion) : null
+                    }
+                });
+
+                // Actualizar el contador de filas totales
+                rowCount.textContent = itemIndex - 1;
+            };
+
+            // Leer el archivo como binario
+            reader.readAsArrayBuffer(file);
+        });
+
+        function agregarFilaFormulario(item, descripcion) {
+            // Crear fila para los inputs
+            const rowDiv = document.createElement('div');
+            rowDiv.classList.add('row', 'align-items-center', 'mb-2');
+            rowDiv.setAttribute('data-index', itemIndex);
+
+            // Enumerador
+            const enumeradorDiv = document.createElement('div');
+            enumeradorDiv.classList.add('col-1');
+            enumeradorDiv.textContent = `#${itemIndex}`;
+
+            // Input de Detalle
+            const detalleDiv = document.createElement('div');
+            detalleDiv.classList.add('col-3');
+            const detalleInput = document.createElement('input');
+            detalleInput.type = 'text';
+            detalleInput.name = `item${itemIndex}`;
+            detalleInput.id = `item${itemIndex}`;
+            detalleInput.value = item;
+            detalleInput.classList.add('form-control');
+            detalleInput.required = true;
+            detalleDiv.appendChild(detalleInput);
+
+            // Input de Descripción
+            const descripcionDiv = document.createElement('div');
+            descripcionDiv.classList.add('col-7');
+            const descripcionInput = document.createElement('input');
+            descripcionInput.type = 'text';
+            descripcionInput.name = `descripcion${itemIndex}`;
+            descripcionInput.id = `descripcion${itemIndex}`;
+            descripcionInput.value = descripcion;
+            descripcionInput.classList.add('form-control');
+            descripcionInput.required = true;
+            descripcionDiv.appendChild(descripcionInput);
+
+            // Botón de eliminar
+            const deleteDiv = document.createElement('div');
+            deleteDiv.classList.add('col', 'text-center');
+            const deleteButton = document.createElement('button');
+            deleteButton.classList.add('btn', 'btn-outline-danger');
+            deleteButton.innerHTML = '<i class="fa-regular fa-circle-xmark fa-xl"></i>'
+            deleteButton.onclick = function() {
+                eliminarFila(rowDiv);
+            };
+            deleteDiv.appendChild(deleteButton);
+
+            // Añadir todos los elementos a la fila
+            rowDiv.appendChild(enumeradorDiv);
+            rowDiv.appendChild(detalleDiv);
+            rowDiv.appendChild(descripcionDiv);
+            rowDiv.appendChild(deleteDiv);
+
+            // Añadir la fila al contenedor de formulario
+            formContainer.appendChild(rowDiv);
+
+            // Incrementar el índice
+            itemIndex++;
+        }
+
+        function eliminarFila(rowDiv) {
+            rowDiv.remove();  // Eliminar la fila
+            actualizarEnumeradores();  // Actualizar los enumeradores y el contador
+        }
+
+        function actualizarEnumeradores() {
+            // Volver a enumerar las filas y actualizar el contador total
+            const rows = document.querySelectorAll('#formContainer .form-row');
+            rows.forEach((row, index) => {
+                row.querySelector('.col-1').textContent = `#${index + 1}`;
+                row.setAttribute('data-index', index + 1);
+            });
+            itemIndex = rows.length + 1;
+            rowCount.textContent = rows.length;  // Actualizar contador de filas
+        }
+
+    // document.getElementById('inputExcel').addEventListener('change', function(e) {
+    //     const file = e.target.files[0];
+    //     const reader = new FileReader();
+        
+    //     reader.onload = function(e) {
+    //         const data = new Uint8Array(e.target.result);
+    //         const workbook = XLSX.read(data, { type: 'array' });
+
+    //         // Suponemos que los datos están en la primera hoja
+    //         const sheetName = workbook.SheetNames[0];
+    //         const sheet = workbook.Sheets[sheetName];
+
+    //         // Convertir la hoja de Excel a JSON
+    //         const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+    //         // Eliminar la fila de encabezados
+    //         const rows = jsonData.slice(1);
+
+    //         // Procesar los datos para el formulario
+    //         const formContainer = document.getElementById('formContainer');
+    //         formContainer.innerHTML = ""; // Limpiar el formulario si ya había algo
+
+    //         // Crear contenedor de grupo de inputs
+    //         const formGroup = document.createElement('div');
+    //         formGroup.classList.add('form-group');
+
+    //         rows.forEach((row, index) => {
+    //             const item = row[0];       // Primera columna (ítem)
+    //             const descripcion = row[1];   // Segunda columna (Descripción)
+
+    //             // Crear label e input de Detalle
+    //             const detalleLabel = document.createElement('label');
+    //             detalleLabel.setAttribute('for', `item${index}`);
+    //             detalleLabel.textContent = `Ítem ${index + 1}`;
+
+    //             // Crear inputs de texto para ítem y Descripción
+    //             const detalleInput = document.createElement('input');
+    //             detalleInput.type = 'text';
+    //             detalleInput.name = `item${index}`;
+    //             detalleInput.id = `item${index}`;
+    //             detalleInput.value = item;
+    //             detalleInput.placeholder = 'Ítem';
+    //             detalleInput.classList.add('form-control')
+    //             detalleInput.classList.add('me-2')
+    //             detalleInput.required = true;  // Validación para que sea obligatorio
+
+    //             // Crear label e input de Descripción
+    //             const descripcionLabel = document.createElement('label');
+    //             descripcionLabel.setAttribute('for', `descripcion${index}`);
+    //             descripcionLabel.textContent = `Descripción ${index + 1}`;
+
+    //             const descripcionInput = document.createElement('input');
+    //             descripcionInput.type = 'text';
+    //             descripcionInput.name = `descripcion${index}`;
+    //             descripcionInput.id = `descripcion${index}`;
+    //             descripcionInput.value = descripcion;
+    //             descripcionInput.placeholder = 'Descripción';
+    //             descripcionInput.classList.add('form-control')
+    //             descripcionInput.classList.add('ms-2')
+
+    //             // Añadir los elementos al contenedor
+    //             formGroup.appendChild(detalleLabel);
+    //             formGroup.appendChild(detalleInput);
+    //             formGroup.appendChild(descripcionLabel);
+    //             formGroup.appendChild(descripcionInput);
+
+    //             // Añadir el contenedor al formulario
+    //             formContainer.appendChild(formGroup);
+    //         });
+    //     };
+
+    //     // Leer el archivo como binario
+    //     reader.readAsArrayBuffer(file);
+    // });
 }
 
 //---- Update Detalle OT Data ----------------
@@ -1436,7 +1868,8 @@ let ociTotalQty = parseInt(document.getElementById('ociTotalQty').innerText)
 let arrayBtnChangeStatusOtDetalle = [], arrayBtnUpdateOtDetalle = [], 
     arrayBtnDeleteOtDetalle = [], arrayCheckBoxSelect = [],
     arrayBtnCheckSelectionAll = [], arrayBtnCheckSelecMasive = [], 
-    arrayBtnAddDetallesOt = [], arrayRowsOtDetalles = []
+    arrayBtnAddDetallesOt = [], arrayRowsOtDetalles = [],
+    arrayBtnAddDetallesOtFromFile = []
 
     for (let m=0; m<ociTotalQty; m++) {
         let btnCheckSelectionAll = document.getElementById(`btnCheckSelectionAll${m}`)
@@ -1446,6 +1879,11 @@ let arrayBtnChangeStatusOtDetalle = [], arrayBtnUpdateOtDetalle = [],
         if (btnCheckSelecMasive) {
             btnCheckSelecMasive.setAttribute('disabled', true)
             arrayBtnCheckSelecMasive.push(btnCheckSelecMasive)
+        }
+
+        let btnAddDetailsFromFile = document.getElementById(`btnAddDetallesFromExcelFile${m}`)
+        if (btnAddDetailsFromFile) {
+            arrayBtnAddDetallesOtFromFile.push(btnAddDetailsFromFile)
         }
 
         for (let n=0; n<maxOtQuantity; n++) {
@@ -1561,14 +1999,14 @@ arrayBtnAddDetallesOt.forEach(function(elemento) {
 
             let regexRows = /^rowSelected/;
             // Seleccionar todos los <tr> cuyos id comienzan con "rowSelected"
-            let rows = document.querySelectorAll('tr[id^="rowSelected"]');
+            let rows = document.querySelectorAll(`tr[id^="rowSelected${idOciOt}"]`);
 
             let filteredRowsNodes = Array.from(rows).filter(function(row) {
                 return row.id.includes(idOciOt);
             });
-            
+
             let idOciOtDet = filteredRowsNodes[filteredRowsNodes.length-1].id.replace(regexRows, '')
-            
+
             const idProjectSelected = document.getElementById('projectIdHidden').value
             const ociKNumber = parseInt(arrayOciOtSelected[0])
             const ociNumber = document.getElementById(`ociNumber${ociKNumber}`).textContent
@@ -1598,7 +2036,37 @@ arrayBtnAddDetallesOt.forEach(function(elemento) {
     }
 })
 
-//FIXME:
+//TODO:
+arrayBtnAddDetallesOtFromFile.forEach(function(elemento) {
+    if (elemento.id) {
+        elemento.addEventListener('click', (event) => {
+            event.preventDefault()
+            let regexRows = /^rowSelected/;
+            // Seleccionar todos los <tr> cuyos id comienzan con "rowSelected"
+            let rows = document.querySelectorAll('tr[id^="rowSelected"]');
+
+            let filteredRowsNodes = Array.from(rows).filter(function(row) {
+                return row.id;
+            });
+
+            let idOciOtDet = [], kNumberOci = []
+            for (r=0; filteredRowsNodes.length > r; r++) {
+                idOciOtDet.push(filteredRowsNodes[r].id.replace(regexRows, ''))
+            }
+            kNumberOci = [...new Set(idOciOtDet.map(item => item.charAt(0)))];
+
+            const idProjectSelected = document.getElementById('projectIdHidden').value
+
+            messageModalAddDetallesOtFromFile(
+                idProjectSelected,
+                idOciOtDet,
+                kNumberOci
+            )
+        })
+    }
+})
+
+
 let btnAddDetallesModal = document.getElementById('idAddDetallesModal') 
 if (btnAddDetallesModal) {
     btnAddDetallesModal.addEventListener('click', (event) => {
@@ -1640,7 +2108,7 @@ arrayBtnUpdateOtDetalle.forEach(function(elemento) {
 
             let regexRows = /^rowSelected/;
             // Seleccionar todos los <tr> cuyos id comienzan con "rowSelected"
-            let rows = document.querySelectorAll('tr[id^="rowSelected"]');
+            let rows = document.querySelectorAll(`tr[id^="rowSelected${idOciOt}"]`);
 
             let filteredRowsNodes = Array.from(rows).filter(function(row) {
                 return row.id.includes(idOciOt);
@@ -1689,7 +2157,7 @@ arrayBtnChangeStatusOtDetalle.forEach(function(elemento) {
 
             let regexRows = /^rowSelected/;
             // Seleccionar todos los <tr> cuyos id comienzan con "rowSelected"
-            let rows = document.querySelectorAll('tr[id^="rowSelected"]');
+            let rows = document.querySelectorAll(`tr[id^="rowSelected${idOciOt}"]`);
 
             let filteredRowsNodes = Array.from(rows).filter(function(row) {
                 return row.id.includes(idOciOt);
@@ -1738,7 +2206,7 @@ arrayBtnDeleteOtDetalle.forEach(function(elemento) {
 
             let regexRows = /^rowSelected/;
             // Seleccionar todos los <tr> cuyos id comienzan con "rowSelected"
-            let rows = document.querySelectorAll('tr[id^="rowSelected"]');
+            let rows = document.querySelectorAll(`tr[id^="rowSelected${idOciOt}"]`);
 
             let filteredRowsNodes = Array.from(rows).filter(function(row) {
                 return row.id.includes(idOciOt);
