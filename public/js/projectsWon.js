@@ -293,13 +293,13 @@ const renderProjectsWonForAdmin = (arrayProjects) => {
         if (element.project[0].visible) {
             return (`<tr style="border-bottom: 2px solid #dedede";>
                         <td class="text-center">${element.project[0].codeProject}</td>
-                        <td class="text-center" data-column="nombre">${element.project[0].projectName}</td>
-                        <td class="text-center"><a href="/api/clientes/${element.client[0]._id}"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Imagen Proyecto" src='${element.project[0].imageProject}' width="90%" height="90%"></a></td>
-                        <td class="text-center" data-column="cliente"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Logo Cliente" src='${element.client[0].logo}' width="90%" height="90%"></td>
-                        <td class="text-center" data-column="prio"><span class="badge rounded-pill bg-dark">${element.project[0].prioProject}</span></td>
-                        <td class="text-center" data-column="nivel"><span class="badge rounded-pill bg-${colorResult} text-${colorLevel}">${text}</span></td>
-                        <td class="text-center px-2">${element.project[0].projectDescription}</td>
-                        <td class="text-center">
+                        <td class="text-center border-start" data-column="nombre">${element.project[0].projectName}</td>
+                        <td class="text-center border-start"><a href="/api/clientes/${element.client[0]._id}"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Imagen Proyecto" src='${element.project[0].imageProject}' width="90%" height="90%"></a></td>
+                        <td class="text-center border-start" data-column="cliente"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Logo Cliente" src='${element.client[0].logo}' width="90%" height="90%"></td>
+                        <td class="text-center border-start" data-column="prio"><span class="badge rounded-pill bg-dark">${element.project[0].prioProject}</span></td>
+                        <td class="text-center border-start" data-column="nivel"><span class="badge rounded-pill bg-${colorResult} text-${colorLevel}">${text}</span></td>
+                        <td class="text-center border-start px-2">${element.project[0].projectDescription}</td>
+                        <td class="text-center border-start">
                             <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                                 <tbody>
                                     <tr>
@@ -308,7 +308,7 @@ const renderProjectsWonForAdmin = (arrayProjects) => {
                                 </tbody>
                             </table>
                         </td>
-                        <td class="text-center">
+                        <td class="text-center border-start">
                             <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                                 <tbody>
                                     <tr>
@@ -317,7 +317,7 @@ const renderProjectsWonForAdmin = (arrayProjects) => {
                                 </tbody>
                             </table>
                         </td>
-                        <td class="text-center">
+                        <td class="text-center border-start">
                             <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                                 <tbody>
                                     <tr>
@@ -326,7 +326,7 @@ const renderProjectsWonForAdmin = (arrayProjects) => {
                                 </tbody>
                             </table>
                         </td>
-                        <td class="text-center">
+                        <td class="text-center border-start">
                             <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                                 <tbody>
                                     <tr>
@@ -335,7 +335,7 @@ const renderProjectsWonForAdmin = (arrayProjects) => {
                                 </tbody>
                             </table>
                         </td>
-                        <td class="text-center">
+                        <td class="text-center border-start">
                             <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                                 <tbody>
                                     <tr>
@@ -344,8 +344,8 @@ const renderProjectsWonForAdmin = (arrayProjects) => {
                                 </tbody>
                             </table>
                         </td>
-                        <td class="text-center" data-column="fecha">${element.timestamp}</td>
-                        <td class="text-center">
+                        <td class="text-center border-start" data-column="fecha">${element.timestamp}</td>
+                        <td class="text-center border-start">
                             <div class="d-block align-items-center">
                                 <a href="/api/clientes/${element.client[0]._id}" class="btn btn-secondary btn-sm me-1 my-2" data-toggle="tooltip" data-placement="top" title="Ver proyecto"><i class="fa-solid fa-eye"></i></a>
                                 <a href="/api/programas/selectWonProjects/${element.project[0]._id}" class="btn btn-primary btn-sm ms-1 my-2" title="Editar datos de OCI"><i class="fa-solid fa-pencil"></i></a>
@@ -598,14 +598,14 @@ const renderProjectsWonForUser = (arrayProjects) => {
         if(element.project[0].visible) {
             return (`<tr style="border-bottom: 2px solid #dedede";>
                         <td class="text-center">${element.project[0].codeProject}</td>
-                        <td class="text-center" data-column="nombre">${element.project[0].projectName}</td>
-                        <td class="text-center"><a href="/api/clientes/${element.client[0]._id}"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Imagen Proyecto" src='${element.project[0].imageProject}' width="90%" height="90%"></a></td>
-                        <td class="text-center" data-column="cliente"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Logo Cliente" src='${element.client[0].logo}' width="90%" height="90%"></td>
-                        <td class="text-center" data-column="prio"><span class="badge rounded-pill bg-dark">${element.project[0].prioProject}</span></td>
-                        <td class="text-center" data-column="nivel"><span class="badge rounded-pill bg-${colorResult} text-${colorLevel}">${text}</span></td>
-                        <td class="text-center">${element.project[0].projectDescription}</td>
+                        <td class="text-center border-start" data-column="nombre">${element.project[0].projectName}</td>
+                        <td class="text-center border-start"><a href="/api/clientes/${element.client[0]._id}"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Imagen Proyecto" src='${element.project[0].imageProject}' width="90%" height="90%"></a></td>
+                        <td class="text-center border-start" data-column="cliente"><img class="img-fluid rounded-3 m-auto p-1 shadow" alt="Logo Cliente" src='${element.client[0].logo}' width="90%" height="90%"></td>
+                        <td class="text-center border-start" data-column="prio"><span class="badge rounded-pill bg-dark">${element.project[0].prioProject}</span></td>
+                        <td class="text-center border-start" data-column="nivel"><span class="badge rounded-pill bg-${colorResult} text-${colorLevel}">${text}</span></td>
+                        <td class="text-center border-start">${element.project[0].projectDescription}</td>
                         
-                        <td class="text-center">
+                        <td class="text-center border-start">
                             <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                                 <tbody>
                                     <tr>
@@ -614,7 +614,7 @@ const renderProjectsWonForUser = (arrayProjects) => {
                                 </tbody>
                             </table>
                         </td>
-                        <td class="text-center">
+                        <td class="text-center border-start">
                             <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                                 <tbody>
                                     <tr>
@@ -623,7 +623,7 @@ const renderProjectsWonForUser = (arrayProjects) => {
                                 </tbody>
                             </table>
                         </td>
-                        <td class="text-center">
+                        <td class="text-center border-start">
                             <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                                 <tbody>
                                     <tr>
@@ -632,7 +632,7 @@ const renderProjectsWonForUser = (arrayProjects) => {
                                 </tbody>
                             </table>
                         </td>
-                        <td class="text-center">
+                        <td class="text-center border-start">
                             <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                                 <tbody>
                                     <tr>
@@ -641,7 +641,7 @@ const renderProjectsWonForUser = (arrayProjects) => {
                                 </tbody>
                             </table>
                         </td>
-                        <td class="text-center">
+                        <td class="text-center border-start">
                             <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                                 <tbody>
                                     <tr>
@@ -651,8 +651,8 @@ const renderProjectsWonForUser = (arrayProjects) => {
                             </table>
                         </td>
 
-                        <td class="text-center" data-column="fecha">${element.timestamp}</td>
-                        <td class="text-center">
+                        <td class="text-center border-start" data-column="fecha">${element.timestamp}</td>
+                        <td class="text-center border-start">
                             <div class="d-block align-items-center">
                                 <a href="/api/proyectos/${element.client[0]._id}" class="btn btn-secondary btn-sm me-1" data-toggle="tooltip" data-placement="top" title="Ver proyecto"><i class="fa-solid fa-eye"></i></a>
                                 <a href="/api/programas/selectWonProjects/${element.project[0]._id}" class="btn btn-primary btn-sm ms-1" title="Editar datos de OCI/OT/Ítems"><i class="fa-solid fa-pencil"></i></a>

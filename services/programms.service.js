@@ -31,163 +31,68 @@ class ProgramasService {
     async getAllOciProjects() {
         return this.proyectos.getAllOciProjects()
     }
-
-    // add new project to a Client
-    async addProjectToClient(payload) {
-        return this.proyectos.createNewProject(payload)
-    }
     
     // add new Ot to OCI - Project
-    async addOtToOciProject(projectId, numberOci, ociNumberK, otAddedToOci) {
-        return this.proyectos.addOtToOciProject(
+    async addOtToOciProject(projectId, ociNumberK, otQuantity, otNumberK, arrayDetalleAddedToOt) {
+        return this.programas.addOtToOciProject(
             projectId,
-            numberOci,
-            ociNumberK, 
-            otAddedToOci
+            ociNumberK,
+            otQuantity,
+            otNumberK,
+            arrayDetalleAddedToOt
         )
     }
 
     // add Info R14 to Ot - Project
-    async addInfoR14ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoR14ToOtProject(
-            projectId,
-            otQuantity,
-            ociNumberK,
-            infoAddedToOt)
-    }
+    // async addInfoR14ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
+    //     return this.proyectos.addInfoR14ToOtProject(
+    //         projectId,
+    //         otQuantity,
+    //         ociNumberK,
+    //         infoAddedToOt)
+    // }
 
     // add Info Proceso 3D to Ot - Project
-    async addInfoProceso3dToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoProceso3dToOtProject(
-            projectId,
-            otQuantity,
-            ociNumberK,
-            infoAddedToOt)
-    }
+    // async addInfoProceso3dToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
+    //     return this.proyectos.addInfoProceso3dToOtProject(
+    //         projectId,
+    //         otQuantity,
+    //         ociNumberK,
+    //         infoAddedToOt)
+    // }
 
      // add Info Avance Diseno Priemra Parte to Ot - Project
-     async addInfoDisenoPrimeraToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoDisenoPrimeraToOtProject(
-            projectId,
-            otQuantity,
-            ociNumberK,
-            infoAddedToOt)
-    }
+    // async addInfoDisenoPrimeraToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
+    //     return this.proyectos.addInfoDisenoPrimeraToOtProject(
+    //         projectId,
+    //         otQuantity,
+    //         ociNumberK,
+    //         infoAddedToOt)
+    // }
 
     // add Info Avance Diseno Segunda Parte to Ot - Project
-     async addInfoDisenoSegundaToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoDisenoSegundaToOtProject(
-            projectId,
-            otQuantity,
-            ociNumberK,
-            infoAddedToOt)
-    }
+    // async addInfoDisenoSegundaToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
+    //     return this.proyectos.addInfoDisenoSegundaToOtProject(
+    //         projectId,
+    //         otQuantity,
+    //         ociNumberK,
+    //         infoAddedToOt)
+    // }
 
      // add Info 80% to Ot - Project
-     async addInfo80ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfo80ToOtProject(
-            projectId,
-            otQuantity,
-            ociNumberK,
-            infoAddedToOt)
-    }
-
-    // add Info 100% to Ot - Project
-    async addInfo100ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfo100ToOtProject(
-            projectId,
-            otQuantity,
-            ociNumberK,
-            infoAddedToOt)
-    }
-
-    // add Info Simulacion 0 to Ot - Project
-    async addInfoSim0ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoSim0ToOtProject(
-            projectId,
-            otQuantity,
-            ociNumberK,
-            infoAddedToOt)
-    }
-
-    // add Info Simulacion 1 to Ot - Project
-    async addInfoSim1ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoSim1ToOtProject(
-            projectId,
-            otQuantity,
-            ociNumberK,
-            infoAddedToOt)
-    }
-
-    // add Info Simulacion 2_3 to Ot - Project
-    async addInfoSim2_3ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoSim2_3ToOtProject(
-            projectId,
-            otQuantity,
-            ociNumberK,
-            infoAddedToOt)
-    }
-
-    // add Info Simulacion 4 Priemra to Ot - Project
-    async addInfoSim4PrimeraToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoSim4PrimeraToOtProject(
-            projectId,
-            otQuantity,
-            ociNumberK,
-            infoAddedToOt)
-    }
-
-    // add Info Simulacion 4 Segunda to Ot - Project
-    async addInfoSim4SegundaToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoSim4SegundaToOtProject(
-            projectId,
-            otQuantity,
-            ociNumberK,
-            infoAddedToOt)
-    }
-
-    // add Info Simulacion 5 to Ot - Project
-    async addInfoSim5ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-        return this.proyectos.addInfoSim5ToOtProject(
-            projectId,
-            otQuantity,
-            ociNumberK,
-            infoAddedToOt)
-    }
+    // async addInfo80ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
+    //     return this.proyectos.addInfo80ToOtProject(
+    //         projectId,
+    //         otQuantity,
+    //         ociNumberK,
+    //         infoAddedToOt)
+    // }
 
 
     
     // Select OCI - Project
     async selectOciByOciNumber(numberOci) {
         return this.proyectos.selectOciByOciNumber(numberOci)
-    }
-
-    // Update Status Project by id
-    async updateStatusProject(id, project, statusProject, userInfo) {
-        return this.proyectos.updateStatusProject(
-            id,
-            project,
-            statusProject,
-            userInfo)
-    }
-
-    // Update Level Project by id
-    async updateLevelProject(id, project, levelProject, userInfo) {
-        return this.proyectos.updateLevelProject(
-            id,
-            project,
-            levelProject,
-            userInfo)
-    }
-
-    // Update Status OCI by id Project
-    async updateStatusOci(id, project, statusOci, ociKNumber, userInfo) {
-        return this.proyectos.updateStatusOci(
-            id,
-            project,
-            statusOci,
-            ociKNumber,
-            userInfo)
     }
 
     // Update Status OT by Ot Number
@@ -201,63 +106,26 @@ class ProgramasService {
             userInfo)
     }
 
-    // add New Oci To Project
-    async addNewOciToProject(id, project, ociKNumber, userInfo) {
-        return this.proyectos.addNewOciToProject(
-            id,
-            project,
-            ociKNumber,
-            userInfo
+    // add New Detail To OT 
+    async addDetailToOtProject(projectId, ociNumberK, otQuantity, otNumberK, arrayDetalleAddedToOt) {
+        return this.programas.addDetailToOtProject(
+            projectId,
+            ociNumberK,
+            otQuantity,
+            otNumberK,
+            arrayDetalleAddedToOt
         )
     }
 
-    // Update Project by id
-    async updateProject(
-            id,
-            project,
-            statusProject,
-            projectName,
-            projectDescription,
-            prioProject,
-            levelProject,
-            codeProject,
-            imageProject,
-            userInfo
-    ) {
-        return this.proyectos.updateProject(
-            id,
-            project,
-            statusProject,
-            projectName,
-            projectDescription,
-            prioProject,
-            levelProject,
-            codeProject,
-            imageProject,
-            userInfo
+    // add New Details To OT from Excel File
+    async addDetailsToOtProjectFromFile(projectId, ociNumberK, detailQuantity, otNumberK, arrayDetalleAddedToOt) {
+        return this.programas.addDetailsToOtProjectFromFile(
+            projectId,
+            ociNumberK,
+            detailQuantity,
+            otNumberK,
+            arrayDetalleAddedToOt
         )
-    }
-
-    // Update Oci by Project id
-    async updateOci(
-            id,
-            proyecto,
-            statusOci,
-            ociDescription,
-            ociNumber,
-            ociKNumber,
-            ociImage,
-            userInfo) {
-
-        return this.proyectos.updateOci(
-            id,
-            proyecto,
-            statusOci,
-            ociDescription,
-            ociNumber,
-            ociKNumber,
-            ociImage,
-            userInfo)
     }
 
     // Update Ot by Project id
@@ -290,10 +158,6 @@ class ProgramasService {
             userInfo)
         }
 
-    // remove one OCI from project by Id
-    async deleteOci(id, project, ociKNumber, user) {
-        return this.proyectos.deleteOci(id, project, ociKNumber, user)
-    }
 
     // remove one OT from OCI by Id
     async deleteOt(
@@ -310,11 +174,6 @@ class ProgramasService {
             otKNumber, 
             userInfo)
         }
-
-    // remove one project by Id
-    async deleteProjectById(id, project, user) {
-        return this.proyectos.deleteProjectById(id, project, user)
-    }
 }
 
 module.exports = ProgramasService

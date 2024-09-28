@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const routerProgramas = Router()
 // const routerProyectos = Router()
-// const { authMiddleware } = require('../middlewares/auth.middleware.js')
+
 const { checkAuthentication } = require('../middlewares/chekAuthentication.js')
 const { authUserMiddleware} = require('../middlewares/authUser.middleware.js')
 
@@ -25,8 +25,6 @@ routerProgramas.get('/selectWonProjects/:id', checkAuthentication, programation.
 // // -------------------  Ver listado de OCI completo ------------------ 
 // routerProyectos.get('/oci-list/all', checkAuthentication, projects.getAllOciProjects)
 
-// // -------------------  Crear Nuevo Proyecto ------------------------ 
-// routerProyectos.post('/', checkAuthentication, authUserMiddleware, projects.createNewProject)
 
 // // -------------------  Agregar informacion R14 a OT --------------------------- 
 // routerProyectos.post('/otInfoR14', checkAuthentication, projects.addInfoR14ToOtProject)
@@ -43,47 +41,18 @@ routerProgramas.get('/selectWonProjects/:id', checkAuthentication, programation.
 // // -------------------  Agregar informacion 80% a OT ------------------------ 
 // routerProyectos.post('/otInfo80', checkAuthentication, projects.addInfo80ToOtProject)
 
-// // -------------------  Agregar informacion 100% a OT ------------------------ 
-// routerProyectos.post('/otInfo100', checkAuthentication, projects.addInfo100ToOtProject)
-
-// // -------------------  Agregar simulacion 0 a OT ------------------------ 
-// routerProyectos.post('/otSimulacion0', checkAuthentication, projects.addInfoSim0ToOtProject)
-
-// // -------------------  Agregar simulacion 1 a OT ------------------------ 
-// routerProyectos.post('/otSimulacion1', checkAuthentication, projects.addInfoSim1ToOtProject)
-
-// // -------------------  Agregar simulacion 2_3 a OT ------------------------ 
-// routerProyectos.post('/otSimulacion2_3', checkAuthentication, projects.addInfoSim2_3ToOtProject)
-
-// // -------------------  Agregar simulacion 4 Primera a OT ------------------------ 
-// routerProyectos.post('/otSimulacion4Primera', checkAuthentication, projects.addInfoSim4PrimeraToOtProject)
-
-// // -------------------  Agregar simulacion 4 Segunda a OT ------------------------ 
-// routerProyectos.post('/otSimulacion4Segunda', checkAuthentication, projects.addInfoSim4SegundaToOtProject)
-
-// // -------------------  Agregar simulacion 5 a OT ------------------------ 
-// routerProyectos.post('/otSimulacion5', checkAuthentication, projects.addInfoSim5ToOtProject)
-
-
 
 // // -------------------  Agregar OT a OCI ---------------- 
 // routerProyectos.post('/oci', checkAuthentication, projects.addOtToOciProject)
 
-// // -------------------  Actualizar Estado del Proyecto por Id ------------------ 
-// routerProyectos.post('/updateStatusProject/:id', checkAuthentication, authUserMiddleware, projects.updateStatusProject)
-
-// // -------------------  Actualizar Nivel del Proyecto por Id ------------------ 
-// routerProyectos.post('/updateLevelProject/:id', checkAuthentication, authUserMiddleware, projects.updateLevelProject)
-
-// // -------------------  Actualizar Estado de OCI por Id Proyecto ------------------ 
-// routerProyectos.post('/updateStatusOci/:id', checkAuthentication, authUserMiddleware, projects.updateStatusOci)
-
 // // -------------------  Actualizar Estado de OT por Id Proyecto ------------------ 
 // routerProyectos.post('/updateStatusOt/:id', checkAuthentication, projects.updateStatusOt)
 
-// // -------------------  Agregar Nueva OCI a Proyecto por Id Proyecto ------------------ 
-// routerProyectos.post('/addNewOciToProject/:id', checkAuthentication, authUserMiddleware, projects.addNewOciToProject)
+// -------------------  Agregar Nuevo Detalle a OCI por Id Proyecto ------------------ 
+routerProgramas.post('/addDetalleToOt/:id', checkAuthentication, programation.addDetailToOtProject)
 
+// -------------------  Agregar Nuevo Detalle a OCI por Id Proyecto ------------------ 
+routerProgramas.post('/addModalOtDetalleFromFile/:id', checkAuthentication, programation.addDetailsToOtProjectFromFile)
 // // -------------------  Editar Proyecto por Id ------------------ 
 // routerProyectos.post('/updateProject/:id', checkAuthentication, authUserMiddleware, projects.updateProject)
 

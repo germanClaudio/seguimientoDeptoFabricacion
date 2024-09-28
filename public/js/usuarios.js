@@ -26,8 +26,10 @@ socket.on('usersAll', (arrUsers) => {
 const renderUser = (arrUsers) => {
     const arrayUser = arrUsers
     const green = 'success'
+    const blue = 'primary'
     const red = 'danger'
     const dark = 'dark'
+    const white = 'light'
     const grey = 'secondary'
     const yellow = 'warning'
     const cian = 'info'
@@ -40,40 +42,38 @@ const renderUser = (arrUsers) => {
         let optionStatus = element.status ? green : red
         let optionAdmin = element.admin ? dark : grey
         //var optionPermiso = element.permiso ? grey : red
-        //var optionArea = element.area ? cian : green
+        //let optionArea = element.area ? cian : green
         let showStatus = element.status ? active : inactive
         let showAdmin = element.admin ? admin : user
         let idChain = element._id.substring(19)
-        //var showArea = "Ingeniería"
+        //let showArea = "Ingeniería"
 
         const areaMapping = {
-            'ingenieria': { showArea: 'Ingeniería', optionArea: 'cian' },
-            'fabricacion': { showArea: 'Simulación', optionArea: 'yellow' },
-            'administracion': { showArea: 'Administración', optionArea: 'grey' },
-            'proyectos': { showArea: 'Proyectos', optionArea: 'yellow' }
+            'ingenieria': { showArea: 'Ingeniería', optionArea: cian, optionTextArea: dark },
+            'fabricacion': { showArea: 'Fabricación', optionArea: yellow, optionTextArea: dark },
+            'administracion': { showArea: 'Administración', optionArea: grey, optionTextArea: white },
+            'proyectos': { showArea: 'Proyectos', optionArea: blue, optionTextArea: dark }
         };
         
         // Valores predeterminados
         const defaultValues = { showArea: 'Todas', optionArea: 'green' };
         
         // Asignar valores basados en el área
-        const { showArea, optionArea } = areaMapping[element.area] || defaultValues;
-        
-        //var showPermiso = "Diseño/Simulación"
+        const { showArea, optionArea, optionTextArea } = areaMapping[element.area] || defaultValues;
         
         const permisoMap = {
-            diseno: { showPermiso: "Diseño", optionPermiso: cian },
-            simulacion: { showPermiso: "Simulación", optionPermiso: yellow },
-            disenoSimulacion: { showPermiso: "Diseño-Simulación", optionPermiso: red },
-            cadCam: { showPermiso: "Cad-Cam", optionPermiso: grey },
-            projectManager: { showPermiso: "Project Manager", optionPermiso: dark },
-            mecanizado: { showPermiso: "Mecanizado", optionPermiso: yellow },
-            ajuste: { showPermiso: "Ajuste", optionPermiso: red }
+            diseno: { showPermiso: "Diseño", optionPermiso: cian, optionTextPermiso: dark },
+            simulacion: { showPermiso: "Simulación", optionPermiso: yellow, optionTextPermiso: dark },
+            disenoSimulacion: { showPermiso: "Diseño-Simulación", optionPermiso: red, optionTextPermiso: white },
+            cadCam: { showPermiso: "Cad-Cam", optionPermiso: grey, optionTextPermiso: dark },
+            projectManager: { showPermiso: "Project Manager", optionPermiso: dark, optionTextPermiso: white },
+            mecanizado: { showPermiso: "Mecanizado", optionPermiso: yellow, optionTextPermiso: dark },
+            ajuste: { showPermiso: "Ajuste", optionPermiso: red, optionTextPermiso: white }
         };
         
-        const defaultPermiso = { showPermiso: "Todos", optionPermiso: green };
+        const defaultPermiso = { showPermiso: "Todos", optionPermiso: green, optionText: dark };
         
-        const { showPermiso, optionPermiso } = permisoMap[element.permiso] || defaultPermiso;
+        const { showPermiso, optionPermiso, optionTextPermsiso } = permisoMap[element.permiso] || defaultPermiso;
 
         var superAdmin = element.superAdmin ? '<i class="fa-solid fa-crown fa-rotate-by fa-xl" title="SuperAdmin" style="color: #a89c0d; --fa-rotate-angle: 20deg;"></i>' : null
 
@@ -95,8 +95,8 @@ const renderUser = (arrUsers) => {
                                 </span>
                             </span>
                         </td>
-                        <td class="text-center"><span class="badge rounded-pill bg-${optionArea}"> ${showArea} </span></td>
-                        <td class="text-center"><span class="badge text-bg-${optionPermiso}"> ${showPermiso} </span></td>
+                        <td class="text-center"><span class="badge rounded-pill bg-${optionArea} text-${optionTextArea}">${showArea}</span></td>
+                        <td class="text-center"><span class="badge text-bg-${optionPermiso} text-${optionTextPermsiso}">${showPermiso}</span></td>
                         <td class="text-center">
                             <div class="d-block align-items-center text-center">
                                 <a href="/api/usuarios/${element._id}" class="btn btn-primary btn-sm me-1"><i class="fa-solid fa-user-pen"></i></a>
@@ -116,8 +116,8 @@ const renderUser = (arrUsers) => {
                         <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Avatar" src='${element.avatar}' width="90px" height="70px"></td>
                         <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
                         <td class="text-center"><span class="badge rounded-pill bg-${optionAdmin}"> ${showAdmin} </span></td>
-                        <td class="text-center"><span class="badge rounded-pill bg-${optionArea}"> ${showArea} </span></td>
-                        <td class="text-center"><span class="badge text-bg-${optionPermiso}"> ${showPermiso} </span></td>
+                        <td class="text-center"><span class="badge rounded-pill bg-${optionArea} text-${optionTextArea}">${showArea}</span></td>
+                        <td class="text-center"><span class="badge text-bg-${optionPermiso} text-${optionTextPermsiso}">${showPermiso}</span></td>
                         <td class="text-center">
                             <div class="d-block align-items-center text-center">
                                 <a href="/api/usuarios/${element._id}" class="btn btn-primary btn-sm me-1"><i class="fa-solid fa-user-pen"></i></a>
@@ -442,6 +442,7 @@ function messageNewUser(name, lastName, username, legajoId, email) {
             text: `El usuario ${name} ${lastName} será registrado!`,
             icon: 'warning',
             showCancelButton: true,
+            showCloseButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             focusConfirm: true,
@@ -571,13 +572,9 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
             if (forbiddenChars.test(key)) {
                 // Cancelar el evento para evitar que se ingrese el carácter
                 event.preventDefault()
-                input.classList.add("border")
-                input.classList.add("border-danger")
-                input.classList.add("border-2")
+                input.classList.add("border", "border-danger", "border-2")
             } else {
-                input.classList.remove("border")
-                input.classList.remove("border-danger")
-                input.classList.remove("border-2")
+                input.classList.remove("border", "border-danger", "border-2")
             }
         })
     })
@@ -613,9 +610,7 @@ function disabledBtnAceptar () {
     allInputs.forEach(function(input) {
             input.addEventListener('change', (event) => {
                 event.preventDefault()
-                input.classList.add("border-primary")
-                input.classList.add("border-2")
-                input.classList.add("shadow")
+                input.classList.add("border-primary", "border-2", "shadow")
                 btnAceptarFrom.removeAttribute('disabled')
                 btnAceptarFrom.style = "cursor: pointer;"
             })

@@ -70,41 +70,50 @@ function hiddeTableDetalles(k) {
     }
 }
 
-    function extractNumbers(str) {
-        const numbers = str.match(/\d{1,2}/g) // Extract 1 or 2 digit numbers from the string
-        
-        if (numbers) {
-            if (numbers.length === 2) {
-                // If two numbers are found, check if both are numbers
-                if (!isNaN(parseInt(numbers[0])) && !isNaN(parseInt(numbers[1]))) {
-                    return numbers; // Return both numbers as an array
-                }
-            } else if (numbers.length === 1) {
-                // If only one number is found, check if it's a number
-                if (!isNaN(parseInt(numbers[0]))) {
-                    return numbers[0]; // Return the single number
-                }
+function extractNumbers(str) {
+    const numbers = str.match(/\d{1,2}/g) // Extract 1 or 2 digit numbers from the string
+    
+    if (numbers) {
+        if (numbers.length === 2) {
+            // If two numbers are found, check if both are numbers
+            if (!isNaN(parseInt(numbers[0])) && !isNaN(parseInt(numbers[1]))) {
+                return numbers; // Return both numbers as an array
+            }
+        } else if (numbers.length === 1) {
+            // If only one number is found, check if it's a number
+            if (!isNaN(parseInt(numbers[0]))) {
+                return numbers[0]; // Return the single number
             }
         }
-        return null; // Return null if no valid numbers are found
     }
+    return null; // Return null if no valid numbers are found
+}
 
-    function extractTreeNumbers(str) {
-        // Usamos una expresión regular para extraer todos los números de la cadena
-        const numbers = str.match(/\d+/g);
+function extractTreeNumbers(str) {
+    // Usamos una expresión regular para extraer todos los números de la cadena
+    const numbers = str.match(/\d+/g);
 
-        if (numbers) {
-            // Si encontramos al menos 3 números, devolvemos los últimos 3
-            if (numbers.length >= 3) {
-                return numbers.slice(-3); // Devolvemos los últimos tres números
-            }
-            // Si hay menos de 3 números, devolvemos todos los que haya
-            return numbers;
+    if (numbers) {
+        // Si encontramos al menos 3 números, devolvemos los últimos 3
+        if (numbers.length >= 3) {
+            return numbers.slice(-3); // Devolvemos los últimos tres números
         }
-
-        return null; // Si no hay números, devolvemos null
+        // Si hay menos de 3 números, devolvemos todos los que haya
+        return numbers;
     }
 
+    return null; // Si no hay números, devolvemos null
+}
+
+function cleanString(cadena) {
+    // Eliminar espacios en blanco al principio y al final
+    let cadenaSinEspaciosInit = cadena.trim()
+    // Eliminar etiquetas HTML
+    let cadenaSinEtiquetas = cadenaSinEspaciosInit.replace(/<[^>]*>/g, '')
+    // Eliminar espacios en blanco al principio y al final
+    let cadenaSinEspaciosEnd = cadenaSinEtiquetas.trim()
+    return cadenaSinEspaciosEnd
+}
 
 // Ocultar tablas cabeceras
 if (arrBtnHidde !=[]) {
@@ -223,10 +232,7 @@ btnAddNewRow.disabled = true
 buttonOne.addEventListener('click', () => {
     let ariaExpanded = buttonOne.getAttribute('aria-expanded')
 
-    ariaExpanded==='true' ?
-        btnAddNewRow.removeAttribute('disabled')
-    :
-        btnAddNewRow.disabled = true
+    ariaExpanded==='true' ? btnAddNewRow.removeAttribute('disabled') : btnAddNewRow.disabled = true
 })
 
 //*********** */
@@ -549,16 +555,14 @@ for (let i=0; i<radios.length; i++) {
 //---- Add Details to OT ----------------
 function messageAddDetalleOt(
     idProjectSelected,
+    clientId,
     ociKNumber,
     ociNumber,
     otNumber,
     otKNumber,
     opNumber,
     statusOtDetalle,
-    otDescription,
-    // otDetail,
-    // detailDescription,
-    detalleIdSelected
+    otDescription
 ) {
     let numberKOci = parseInt(ociKNumber)
     let numberOci = parseInt(ociNumber)
@@ -579,7 +583,7 @@ function messageAddDetalleOt(
         timerProgressBar: false,
     })
 
-    let html = `<form id="formAddOtDetalle${idProjectSelected}" action="/api/proyectos/addOtDetalle/${idProjectSelected}" method="post">
+    let html = `<form id="formAddOtDetalle${idProjectSelected}" action="/api/programas/addDetalleToOt/${idProjectSelected}" method="post">
                     <fieldset>
                         <div class="row justify-content-between mb-3 mx-1 px-1">
                             <div class="col-3">
@@ -614,25 +618,27 @@ function messageAddDetalleOt(
                                 <input type="text" name="descriptionDetalle" class="form-control" placeholder="Descripción Ítem" value="" required>
                             </div>                            
                             <div class="col-3" style="${bgColorStatus}">
-                                <label for="statusOtDetalle" class="form-label d-flex justify-content-start ms-1">Status Ítem</label>
+                                <label for="statusDetalleForm" class="form-label d-flex justify-content-start ms-1">Status Ítem</label>
                                 <div>
                                     <p class="d-inline-block me-1">Inactivo</p>
                                     <div class="form-check form-switch d-inline-block mt-2">
-                                        <input id="statusOtDetalleForm" class="form-check-input" type="checkbox" role="switch"
-                                            name="statusOtDetalleForm" style="cursor: pointer;" ${checked}>
-                                        <label class="form-check-label" for="statusOtDetalleForm">Activo</label>
+                                        <input id="statusDetalleForm" class="form-check-input" type="checkbox" role="switch"
+                                            name="statusDetalleForm" style="cursor: pointer;" ${checked}>
+                                        <label class="form-check-label" for="statusDetalleForm">Activo</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <input type="hidden" name="clientIdHidden" value="${clientId}">
                         <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden${numberKOci}" value="${numberKOci}">
+                        <input type="hidden" name="ociNumberHidden" id="ociNumberHidden${numberKOci}" value="${numberOci}">
                         <input type="hidden" name="otKNumberHidden" id="otKNumberHidden${numberKOt}" value="${numberKOt}">
-                        <input type="hidden" name="detalleIdHidden" id="detalleIdHidden${numberKOt}" value="${detalleIdSelected}">
-                        
+                        <input type="hidden" name="otNumberHidden" id="otNumberHidden${numberKOt}" value="${numberOt}">
+                        <input type="hidden" name="otQuantityHidden" id="otQuantityHidden${numberKOt}" value="${numberKOt+1}">
                     </fieldset>
                 </form>`
 
-    if (idProjectSelected && numberOt && detalleIdSelected) {
+    if (idProjectSelected && numberOt) {
         Swal.fire({
             title: `Agregar ítem a OT#${numberOt}. - OP#${numberOp} - ${otDescription}`,
             position: 'center',
@@ -653,13 +659,12 @@ function messageAddDetalleOt(
         }).then((result) => {
             let numeroOtDetalle = document.getElementById('numeroOtDetalle').value
             if (result.isConfirmed) {
+                document.getElementById(`formAddOtDetalle${idProjectSelected}`).submit()
+                
                 Toast.fire({
                     icon: 'success',
                     title: `El ítem #<b>${numberOt}.${numeroOtDetalle}</b>, se creó con éxito!`
                 })
-                setTimeout(() => {
-                    document.getElementById(`formUpdateOtDetalle${idProjectSelected}`).submit()
-                }, 2000)
 
             } else {
                 numeroOtDetalle ?
@@ -720,13 +725,9 @@ function messageAddDetalleOt(
             if (forbiddenChars.test(key)) {
                 // Cancelar el evento para evitar que se ingrese el carácter
                 event.preventDefault()
-                input.classList.add("border")
-                input.classList.add("border-danger")
-                input.classList.add("border-2")
+                input.classList.add("border", "border-danger", "border-2")
             } else {
-                input.classList.remove("border")
-                input.classList.remove("border-danger")
-                input.classList.remove("border-2")
+                input.classList.remove("border", "border-danger", "border-2")
             }
         })
 
@@ -736,8 +737,8 @@ function messageAddDetalleOt(
     })
 }
 
-//---- Add Details to OT from Green btn----------------
-function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
+//---- Add Details to OT from head Green btn----------------
+function messageModalAddDetallesOt(idProjectSelected, clientId, idOciOtDet, kNumberOci) {
 
     const Toast = Swal.mixin({
         toast: true,
@@ -771,7 +772,7 @@ function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
         }
     });
 
-    let html = `<form id="formModalAddOtDetalle${idProjectSelected}" action="/api/proyectos/addModalOtDetalle/${idProjectSelected}" method="post">
+    let html = `<form id="formModalAddOtDetalle${idProjectSelected}" action="/api/programas/addDetalleToOt/${idProjectSelected}" method="post">
                     <fieldset>
                         <div class="row justify-content-between mb-3 mx-1 px-1">
                             <div class="col-3">
@@ -801,20 +802,20 @@ function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
                                 <input type="text" id="descriptionDetalle" name="descriptionDetalle" class="form-control" placeholder="Descripción Ítem" value="" required disabled>
                             </div>                            
                             <div class="col-3" style="background-color: #55dd5560;">
-                                <label for="statusOtDetalle" class="form-label d-flex justify-content-start ms-1">Status Ítem</label>
+                                <label for="statusDetalleForm" class="form-label d-flex justify-content-start ms-1">Status Ítem</label>
                                 <div>
                                     <p class="d-inline-block me-1">Inactivo</p>
                                     <div class="form-check form-switch d-inline-block mt-2">
-                                        <input id="statusOtDetalleForm" class="form-check-input" type="checkbox" role="switch"
-                                            name="statusOtDetalleForm" style="cursor: pointer;" checked>
-                                        <label class="form-check-label" for="statusOtDetalleForm">Activo</label>
+                                        <input id="statusDetalleForm" class="form-check-input" type="checkbox" role="switch"
+                                            name="statusDetalleForm" style="cursor: pointer;" checked>
+                                        <label class="form-check-label" for="statusDetalleForm">Activo</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden$" value="$">
-                        <input type="hidden" name="otKNumberHidden" id="otKNumberHidden$" value="$">
-                        <input type="hidden" name="detalleIdHidden" id="detalleIdHidden$" value="$">
+                        <input type="hidden" name="clientIdHidden" value="${clientId}">
+                        <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden" value="">
+                        <input type="hidden" name="otKNumberHidden" id="otKNumberHidden" value="">
                     </fieldset>
                 </form>`
 
@@ -841,14 +842,12 @@ function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
             let numeroOtDetalle = document.getElementById('numeroOtDetalle').value
             let numeroOt = document.getElementById('inputNumberOtDisabled').value
             if (result.isConfirmed) {
+                document.getElementById(`formModalAddOtDetalle${idProjectSelected}`).submit()
                 Toast.fire({
                     icon: 'success',
                     title: `El ítem #<b>${numeroOt}.${numeroOtDetalle}</b>, se creó con éxito!`
                 })
-                setTimeout(() => {
-                    document.getElementById(`formUpdateOtDetalle${idProjectSelected}`).submit()
-                }, 2000)
-
+                
             } else {
                 numeroOtDetalle ?
                     Swal.fire(
@@ -894,6 +893,7 @@ function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
     const selectOciNumber = document.createElement('select');
     selectOciNumber.classList.add('form-select')
     selectOciNumber.setAttribute('id', 'ociSelect')
+    selectOciNumber.setAttribute('name', 'ociSelect')
 
     // Crear la primera opción "Seleccione una OCI"
     const defaultOption = document.createElement('option');
@@ -907,6 +907,7 @@ function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
     const selectOtNumber = document.createElement('select');
     selectOtNumber.classList.add('form-select')
     selectOtNumber.setAttribute('id', 'otSelect')
+    selectOtNumber.setAttribute('name', 'otSelect')
     selectOtNumber.setAttribute('disabled', true)
 
     let inputNumeroOtDetalle = document.getElementById('numeroOtDetalle')
@@ -928,12 +929,14 @@ function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
 
 
     const ociSelected = document.getElementById('ociSelect')
-    ociSelected.addEventListener('change', function() {
+    const ociKNumberHidden = document.getElementById('ociKNumberHidden')
+    ociSelected.addEventListener('change', function(event) {
         const arrayOtFiltrado = [], arrayOtReFiltrado = [];
         const numerosUnicos = new Set();
 
         // Obtener el valor seleccionado en el select1
         const itemSelected = ociSelected.value;
+        ociKNumberHidden.value = parseInt(event.target.selectedIndex-1);
 
         inputNumberOtDisabled.value = ""
         inputNumberOtDisabled.disbled = true
@@ -970,7 +973,9 @@ function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
             selectOtChild.appendChild(selectOtNumber);
 
             let inputSelect = document.getElementById('otSelect')
+            let otKNumberHidden = document.getElementById('otKNumberHidden')
             inputSelect.addEventListener('change', function(event) {
+                otKNumberHidden.value = parseInt(event.target.selectedIndex-1);
 
                 inputDescriptionOtDisabled.disabled = false
                 inputNumberDetailDisabled.disabled = false 
@@ -997,13 +1002,9 @@ function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
             if (forbiddenChars.test(key)) {
                 // Cancelar el evento para evitar que se ingrese el carácter
                 event.preventDefault()
-                input.classList.add("border")
-                input.classList.add("border-danger")
-                input.classList.add("border-2")
+                input.classList.add("border", "border-danger", "border-2")
             } else {
-                input.classList.remove("border")
-                input.classList.remove("border-danger")
-                input.classList.remove("border-2")
+                input.classList.remove("border", "border-danger", "border-2")
             }
         })
 
@@ -1013,8 +1014,8 @@ function messageModalAddDetallesOt(idProjectSelected, idOciOtDet, kNumberOci) {
     })
 }
 
-//TODO: ---- Add Details to OT from Excel Btn from file----------------
-function messageModalAddDetallesOtFromFile(idProjectSelected, idOciOtDet, kNumberOci) {
+//---- Add Details to OT from Btn from Excel file----------------
+function messageModalAddDetallesOtFromFile(idProjectSelected, clientId, idOciOtDet, kNumberOci) {
 
     const Toast = Swal.mixin({
         toast: true,
@@ -1048,11 +1049,11 @@ function messageModalAddDetallesOtFromFile(idProjectSelected, idOciOtDet, kNumbe
         }
     });
 
-    let html = `<form id="formModalAddOtDetalleFromFile${idProjectSelected}" action="/api/proyectos/addModalOtDetalleFromFile/${idProjectSelected}" method="post">
+    let html = `<form id="formModalAddOtDetalleFromFile${idProjectSelected}" action="/api/programas/addModalOtDetalleFromFile/${idProjectSelected}" method="post">
                     <fieldset>
                         <div class="row justify-content-between mb-3 mx-1 px-1">
                             <div class="col-3">
-                                <label for="numberOci" class="form-label d-flex justify-content-start ms-1">Seleccione Número OCI - Alias</label>
+                                <label for="numberOci" class="form-label d-flex justify-content-start ms-1">Número OCI - Alias</label>
                                 <div id="containerNumberOci"></div>
                             </div>
                             <div class="col-3 my-auto">
@@ -1076,9 +1077,12 @@ function messageModalAddDetallesOtFromFile(idProjectSelected, idOciOtDet, kNumbe
 
                         <div id="formContainer" class="row justify-content-between mb-3 mx-1 px-1"></div>
 
-                        <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden$" value="$">
-                        <input type="hidden" name="otKNumberHidden" id="otKNumberHidden$" value="$">
-                        <input type="hidden" name="detalleIdHidden" id="detalleIdHidden$" value="$">
+                        <input type="hidden" name="clientIdHidden" value="${clientId}">
+                        <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden" value="${kNumberOci}">
+                        <input type="hidden" name="ociNumberHiddenFile" id="ociNumberHiddenFile" value="">
+                        <input type="hidden" name="otKNumberHidden" id="otKNumberHidden" value="">
+                        <input type="hidden" name="otNumberHidden" id="otNumberHidden" value="">
+                        <input type="hidden" name="rowCountDetailsQty" id="rowCountDetailsQty" value="">
                     </fieldset>
                 </form>`
 
@@ -1087,7 +1091,7 @@ function messageModalAddDetallesOtFromFile(idProjectSelected, idOciOtDet, kNumbe
             title: `Agregar ítems desde archivo Excel`,
             position: 'center',
             html: html,
-            width: 1100,
+            width: 850,
             icon: 'info',
             showCancelButton: true,
             showCloseButton: true,
@@ -1104,13 +1108,12 @@ function messageModalAddDetallesOtFromFile(idProjectSelected, idOciOtDet, kNumbe
 
         }).then((result) => {
             if (result.isConfirmed) {
+                document.getElementById(`formModalAddOtDetalleFromFile${idProjectSelected}`).submit()
                 Toast.fire({
                     icon: 'success',
                     title: `Los ítems, se crearon con éxito!`
                 })
-                setTimeout(() => {
-                    document.getElementById(`formModalAddOtDetalleFromFile${idProjectSelected}`).submit()
-                }, 2000)
+                
 
             } else {
                 Swal.fire(
@@ -1138,14 +1141,7 @@ function messageModalAddDetallesOtFromFile(idProjectSelected, idOciOtDet, kNumbe
     const selectOciNumber = document.createElement('select');
     selectOciNumber.classList.add('form-select')
     selectOciNumber.setAttribute('id', 'ociSelect')
-
-    // Crear la primera opción "Seleccione una OCI"
-    const defaultOption = document.createElement('option');
-    defaultOption.value = '';
-    defaultOption.text = 'Seleccione una OCI';
-    defaultOption.selected = true;
-    defaultOption.disabled = true;
-    selectOciNumber.appendChild(defaultOption);
+    selectOciNumber.setAttribute('disabled', true)
 
     //*******-------------------------------------------****** */
     const selectOtNumber = document.createElement('select');
@@ -1156,26 +1152,25 @@ function messageModalAddDetallesOtFromFile(idProjectSelected, idOciOtDet, kNumbe
     let inputExcelDisabled = document.getElementById('inputExcel')
     //******-------------------------------------------******* */
     
-    arrayFiltrado.forEach((dato) => {
+    arrayFiltrado.forEach((dato, index) => {
         const option = document.createElement('option');
         option.value = dato.number;
         option.text = `#${dato.number} - ${dato.alias}`;
+        
+        index === parseInt(kNumberOci) ? option.selected = true : null // Seleccionar el primer dato por defecto
 
         selectOciNumber.appendChild(option);
     });
     document.getElementById('containerNumberOci').appendChild(selectOciNumber);
 
 
-    const ociSelected = document.getElementById('ociSelect')
-    ociSelected.addEventListener('change', function() {
+    const ociSelected = document.getElementById('ociSelect')    
+    if (ociSelected) {
         const arrayOtFiltrado = [], arrayOtReFiltrado = [];
-        const numerosUnicos = new Set();
+        const numerosUnicosOt = new Set();
 
         // Obtener el valor seleccionado en el select1
         const itemSelected = ociSelected.value;
-
-        // inputNumberOtDisabled.value = ""
-        // inputNumberOtDisabled.disbled = true
 
         // Limpiar el select de OT
         selectOtNumber.innerHTML = '<option selected value="" disabled>Seleccione una OT</option>';
@@ -1188,8 +1183,8 @@ function messageModalAddDetallesOtFromFile(idProjectSelected, idOciOtDet, kNumbe
             });
 
             arrayOtFiltrado.forEach(obj => {
-                if (!numerosUnicos.has(obj.numero)) {
-                    numerosUnicos.add(obj.numero)
+                if (!numerosUnicosOt.has(obj.numero)) {
+                    numerosUnicosOt.add(obj.numero)
                     arrayOtReFiltrado.push(obj)
                 }
             });
@@ -1204,14 +1199,22 @@ function messageModalAddDetallesOtFromFile(idProjectSelected, idOciOtDet, kNumbe
             selectOtChild.appendChild(selectOtNumber);
 
             let inputSelect = document.getElementById('otSelect')
+            let otKNumberHidden = document.getElementById('otKNumberHidden')
+            let otNumberHidden = document.getElementById('otNumberHidden')
+            let ociNumberHidden = document.getElementById('ociNumberHiddenFile')
+            ociNumberHidden.value = itemSelected
+            console.log('ociNumberHiddenFile: ', ociNumberHidden)
+
             inputSelect.addEventListener('change', function(event) {
                 inputExcelDisabled.disabled = false
+                otKNumberHidden.value = parseInt(event.target.selectedIndex-1);
+                otNumberHidden.value = parseInt(event.target.value);
             })
 
         } else {
             selectOciNumber.disabled = true;
         }
-    })
+    }
 
     const formContainer = document.getElementById('formContainer');
         const rowCount = document.getElementById('rowCount');
@@ -1233,25 +1236,30 @@ function messageModalAddDetallesOtFromFile(idProjectSelected, idOciOtDet, kNumbe
                 const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
                 // Eliminar la fila de encabezados
-                const rows = jsonData.slice(1);
+                const rows = jsonData.slice(5);
 
                 // Limpiar el contenedor de formulario si ya había algo
                 formContainer.innerHTML = ""; 
                 itemIndex = 1; // Reiniciar el enumerador
 
-                let undefinedCount = 0;
-
                 // Procesar cada fila del Excel
                 rows.forEach((row, index) => {
                     const item = row[0];       // Primera columna (Detalle)
                     const descripcion = row[1];   // Segunda columna (Descripción)
-console.log('item: ', item)
                     let detalleNumber
 
                     if (item && descripcion) {
-                        // Obtener solo el número principal antes de cualquier "-"
-                        !parseInt(item) ? detalleNumber = parseInt(item.split('-')[0]) : detalleNumber = item
-console.log('detalleNumber: ', detalleNumber)                        
+                        if (isNaN(parseInt(item))) {  // Verificar si el item no es un número
+                            detalleNumber = parseInt(item.split('-')[0]);
+
+                            // Si el detalleNumber es NaN y el item empieza con "M"
+                            isNaN(detalleNumber) && item.startsWith("M") ? agregarFilaFormulario(item, descripcion) : null
+
+                        } else {
+                            // Si es un número válido, se asigna directamente a detalleNumber
+                            detalleNumber = parseInt(item);
+                        }
+
                         // Verificar que el número esté en el rango 1000-1399
                         detalleNumber >= 1000 && detalleNumber <= 1399 ? agregarFilaFormulario(item, descripcion) : null
                     }
@@ -1259,11 +1267,24 @@ console.log('detalleNumber: ', detalleNumber)
 
                 // Actualizar el contador de filas totales
                 rowCount.textContent = itemIndex - 1;
+                document.getElementById('rowCountDetailsQty').value = itemIndex - 1
             };
 
             // Leer el archivo como binario
             reader.readAsArrayBuffer(file);
+
+            let btnAceptarModal = document.getElementsByClassName('swal2-confirm');
+            btnAceptarModal[0].removeAttribute('disabled')
+            btnAceptarModal[0].style = "cursor: pointer;"
         });
+
+        function capitalizarPrimeraLetra(str) {
+            return str
+                .toLowerCase() // Convertimos todo el string a minúsculas
+                .split(' ') // Separamos las palabras por espacios
+                .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1)) // Capitalizamos la primera letra de cada palabra
+                .join(' '); // Volvemos a unir las palabras en un string
+        }
 
         function agregarFilaFormulario(item, descripcion) {
             // Crear fila para los inputs
@@ -1281,8 +1302,8 @@ console.log('detalleNumber: ', detalleNumber)
             detalleDiv.classList.add('col-3');
             const detalleInput = document.createElement('input');
             detalleInput.type = 'text';
-            detalleInput.name = `item${itemIndex}`;
-            detalleInput.id = `item${itemIndex}`;
+            detalleInput.name = `numberOtDetalle${itemIndex}`;
+            detalleInput.id = `numberOtDetalle${itemIndex}`;
             detalleInput.value = item;
             detalleInput.classList.add('form-control');
             detalleInput.required = true;
@@ -1290,12 +1311,12 @@ console.log('detalleNumber: ', detalleNumber)
 
             // Input de Descripción
             const descripcionDiv = document.createElement('div');
-            descripcionDiv.classList.add('col-7');
+            descripcionDiv.classList.add('col-6');
             const descripcionInput = document.createElement('input');
             descripcionInput.type = 'text';
-            descripcionInput.name = `descripcion${itemIndex}`;
-            descripcionInput.id = `descripcion${itemIndex}`;
-            descripcionInput.value = descripcion;
+            descripcionInput.name = `descriptionDetalle${itemIndex}`;
+            descripcionInput.id = `descriptionDetalle${itemIndex}`;
+            descripcionInput.value = capitalizarPrimeraLetra(descripcion);//descripcion;
             descripcionInput.classList.add('form-control');
             descripcionInput.required = true;
             descripcionDiv.appendChild(descripcionInput);
@@ -1331,89 +1352,21 @@ console.log('detalleNumber: ', detalleNumber)
 
         function actualizarEnumeradores() {
             // Volver a enumerar las filas y actualizar el contador total
-            const rows = document.querySelectorAll('#formContainer .form-row');
+            const rows = document.querySelectorAll('#formContainer .row');
             rows.forEach((row, index) => {
                 row.querySelector('.col-1').textContent = `#${index + 1}`;
                 row.setAttribute('data-index', index + 1);
             });
             itemIndex = rows.length + 1;
             rowCount.textContent = rows.length;  // Actualizar contador de filas
+            document.getElementById('rowCountDetailsQty').value = rows.length
+
+            if(rows.length === 0) {
+                let btnAceptarModal = document.getElementsByClassName('swal2-confirm');
+                btnAceptarModal[0].setAttribute('disabled', true)
+                btnAceptarModal[0].style = "cursor: not-allowed;;"
+            }
         }
-
-    // document.getElementById('inputExcel').addEventListener('change', function(e) {
-    //     const file = e.target.files[0];
-    //     const reader = new FileReader();
-        
-    //     reader.onload = function(e) {
-    //         const data = new Uint8Array(e.target.result);
-    //         const workbook = XLSX.read(data, { type: 'array' });
-
-    //         // Suponemos que los datos están en la primera hoja
-    //         const sheetName = workbook.SheetNames[0];
-    //         const sheet = workbook.Sheets[sheetName];
-
-    //         // Convertir la hoja de Excel a JSON
-    //         const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-    //         // Eliminar la fila de encabezados
-    //         const rows = jsonData.slice(1);
-
-    //         // Procesar los datos para el formulario
-    //         const formContainer = document.getElementById('formContainer');
-    //         formContainer.innerHTML = ""; // Limpiar el formulario si ya había algo
-
-    //         // Crear contenedor de grupo de inputs
-    //         const formGroup = document.createElement('div');
-    //         formGroup.classList.add('form-group');
-
-    //         rows.forEach((row, index) => {
-    //             const item = row[0];       // Primera columna (ítem)
-    //             const descripcion = row[1];   // Segunda columna (Descripción)
-
-    //             // Crear label e input de Detalle
-    //             const detalleLabel = document.createElement('label');
-    //             detalleLabel.setAttribute('for', `item${index}`);
-    //             detalleLabel.textContent = `Ítem ${index + 1}`;
-
-    //             // Crear inputs de texto para ítem y Descripción
-    //             const detalleInput = document.createElement('input');
-    //             detalleInput.type = 'text';
-    //             detalleInput.name = `item${index}`;
-    //             detalleInput.id = `item${index}`;
-    //             detalleInput.value = item;
-    //             detalleInput.placeholder = 'Ítem';
-    //             detalleInput.classList.add('form-control')
-    //             detalleInput.classList.add('me-2')
-    //             detalleInput.required = true;  // Validación para que sea obligatorio
-
-    //             // Crear label e input de Descripción
-    //             const descripcionLabel = document.createElement('label');
-    //             descripcionLabel.setAttribute('for', `descripcion${index}`);
-    //             descripcionLabel.textContent = `Descripción ${index + 1}`;
-
-    //             const descripcionInput = document.createElement('input');
-    //             descripcionInput.type = 'text';
-    //             descripcionInput.name = `descripcion${index}`;
-    //             descripcionInput.id = `descripcion${index}`;
-    //             descripcionInput.value = descripcion;
-    //             descripcionInput.placeholder = 'Descripción';
-    //             descripcionInput.classList.add('form-control')
-    //             descripcionInput.classList.add('ms-2')
-
-    //             // Añadir los elementos al contenedor
-    //             formGroup.appendChild(detalleLabel);
-    //             formGroup.appendChild(detalleInput);
-    //             formGroup.appendChild(descripcionLabel);
-    //             formGroup.appendChild(descripcionInput);
-
-    //             // Añadir el contenedor al formulario
-    //             formContainer.appendChild(formGroup);
-    //         });
-    //     };
-
-    //     // Leer el archivo como binario
-    //     reader.readAsArrayBuffer(file);
-    // });
 }
 
 //---- Update Detalle OT Data ----------------
@@ -1567,13 +1520,9 @@ function messageUpdateOtDetalle(
             if (forbiddenChars.test(key)) {
                 // Cancelar el evento para evitar que se ingrese el carácter
                 event.preventDefault()
-                input.classList.add("border")
-                input.classList.add("border-danger")
-                input.classList.add("border-2")
+                input.classList.add("border", "border-danger", "border-2")
             } else {
-                input.classList.remove("border")
-                input.classList.remove("border-danger")
-                input.classList.remove("border-2")
+                input.classList.remove("border", "border-danger", "border-2")
             }
         })
     })
@@ -1908,16 +1857,7 @@ let arrayBtnChangeStatusOtDetalle = [], arrayBtnUpdateOtDetalle = [],
             }
         }
     }
-    
-function cleanString(cadena) {
-    // Eliminar espacios en blanco al principio y al final
-    let cadenaSinEspaciosInit = cadena.trim()
-    // Eliminar etiquetas HTML
-    let cadenaSinEtiquetas = cadenaSinEspaciosInit.replace(/<[^>]*>/g, '')
-    // Eliminar espacios en blanco al principio y al final
-    let cadenaSinEspaciosEnd = cadenaSinEtiquetas.trim()
-    return cadenaSinEspaciosEnd
-}
+
 
 //TODO: 
 function updateBtnCheckSelecMasive(idOci) {     
@@ -2008,6 +1948,7 @@ arrayBtnAddDetallesOt.forEach(function(elemento) {
             let idOciOtDet = filteredRowsNodes[filteredRowsNodes.length-1].id.replace(regexRows, '')
 
             const idProjectSelected = document.getElementById('projectIdHidden').value
+            const clientId = document.getElementById(`clientIdHidden`).value
             const ociKNumber = parseInt(arrayOciOtSelected[0])
             const ociNumber = document.getElementById(`ociNumber${ociKNumber}`).textContent
             const otNumber = parseInt(document.getElementById(`lastOtNumber${idOciOtDet}`).textContent)
@@ -2015,12 +1956,12 @@ arrayBtnAddDetallesOt.forEach(function(elemento) {
             const opNumber = parseInt(document.getElementById(`lastOpNumber${idOciOtDet}`).textContent)
             const statusOt = document.getElementById(`statusDetalle${idOciOtDet}`).textContent
             const otDescription = document.getElementById(`lastOpDescription${idOciOtDet}`).textContent
-            // const otDetail =  document.getElementById(`numeroDetalle${idOciOtDet}`).textContent
-            // const detailDescription =  document.getElementById(`descripcionDetalle${idOciOtDet}`).textContent
-            const detailIdSelected = document.getElementById(`detalleIdHidden${idOciOtDet}`).textContent
+
+            // console.log(idProjectSelected, ociKNumber, ociNumber, otNumber, otKNumber, opNumber, statusOt, otDescription)
 
             messageAddDetalleOt(
                 idProjectSelected,
+                clientId,
                 ociKNumber,
                 ociNumber,
                 otNumber,
@@ -2028,19 +1969,19 @@ arrayBtnAddDetallesOt.forEach(function(elemento) {
                 opNumber,
                 cleanString(statusOt),
                 cleanString(otDescription),
-                // cleanString(otDetail),
-                // cleanString(detailDescription),
-                detailIdSelected
             )
         })
     }
 })
 
-//TODO:
 arrayBtnAddDetallesOtFromFile.forEach(function(elemento) {
     if (elemento.id) {
         elemento.addEventListener('click', (event) => {
             event.preventDefault()
+            const elementoId = elemento.id
+            let regex = /^btnAddDetallesFromExcelFile/;
+            let idOci = elementoId.replace(regex, '')
+
             let regexRows = /^rowSelected/;
             // Seleccionar todos los <tr> cuyos id comienzan con "rowSelected"
             let rows = document.querySelectorAll('tr[id^="rowSelected"]');
@@ -2053,12 +1994,14 @@ arrayBtnAddDetallesOtFromFile.forEach(function(elemento) {
             for (r=0; filteredRowsNodes.length > r; r++) {
                 idOciOtDet.push(filteredRowsNodes[r].id.replace(regexRows, ''))
             }
-            kNumberOci = [...new Set(idOciOtDet.map(item => item.charAt(0)))];
+            kNumberOci = idOci //[...new Set(idOciOtDet.map(item => item.charAt(0)))];
 
             const idProjectSelected = document.getElementById('projectIdHidden').value
+            const clientId = document.getElementById(`clientIdHidden`).value
 
             messageModalAddDetallesOtFromFile(
                 idProjectSelected,
+                clientId,
                 idOciOtDet,
                 kNumberOci
             )
@@ -2086,9 +2029,11 @@ if (btnAddDetallesModal) {
         kNumberOci = [...new Set(idOciOtDet.map(item => item.charAt(0)))];
 
         const idProjectSelected = document.getElementById('projectIdHidden').value
+        const clientId = document.getElementById(`clientIdHidden`).value
 
         messageModalAddDetallesOt(
             idProjectSelected,
+            clientId,
             idOciOtDet,
             kNumberOci
         )
@@ -2492,6 +2437,7 @@ searchSimulationUser.addEventListener('click', async (event) => {
         messageAlertUser(titulo, message, icon)
     }
 });
+//-----End Btns Buscar en BBDD el Usuario Seguidor de Diseño/Simulación -----------
 
 
 function messageNewOt(ociNumber, otArray, ociAlias) {
@@ -3047,90 +2993,6 @@ function swalFireAlert (
             return false
         }
     })
-}
-
-//********* Agregar ítems a OT seleccionada *********** */
-let arrayBtnAddDetallesOtFormSelected = []
-for (let i=0; i<radios.length; i++) {
-    let btnAddDetallesOtFormSelected = document.getElementById(`btnAddDetallesFormSelected${i}`)
-    // console.log('btnAddDetallesOtFormSelected', btnAddDetallesOtFormSelected)
-    btnAddDetallesOtFormSelected ? arrayBtnAddDetallesOtFormSelected.push(btnAddDetallesOtFormSelected) : null
-}
-
-//TODO: Rediseñar esta function
-arrayBtnAddDetallesOtFormSelected.forEach(function(elemento) {
-    if (elemento) {
-        elemento.addEventListener('click', (event) => {
-            event.preventDefault()
-            const radioSelectedValue = elemento.id
-            ociNumberHidden.value = radioSelected(radioSelectedValue, elemento.value)
-            lastOtNumberFn(elemento.id)
-            formulario.scrollIntoView({ behavior: 'smooth', top:0 }) //scrollTo({ behavior: 'smooth', block: 'start' })
-        })
-    }
-})
-
-//TODO: Rediseñar esta function 
-function messageAddDetallesToOt(ociNumber, otArray, ociAlias) {
-
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'bottom',
-        showConfirmButton: false,
-        timer: 4000,
-        timerProgressBar: false,
-    })
-
-    if (otArray.length > 1) {
-        Swal.fire({
-            title: 'Ingreso de datos!',
-            position: 'center',
-            text: `Se agregarán las OT's ${otArray.join(" - ")}, a la OCI# ${ociNumber} - Alias: ${ociAlias}` ,
-            icon: 'info',
-            showCancelButton: true,
-            showConfirmButton: true,
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('formNewOt').submit()
-                Toast.fire({
-                    icon: 'success',
-                    title: `OT's ${otArray.join(" - ")}, agregadas con éxito!`
-                })
-            } else {
-                Swal.fire(
-                    'OTs no agregadas!',
-                    `Las OT's ${otArray.join(" - ")}, no fueron agregadas a la OCI# ${ociNumber}`,
-                    'warning'
-                )
-                return false
-            }
-        })
-
-    } else {
-        Swal.fire({
-            title: 'Ingreso de datos!',
-            position: 'center',
-            text: `Se agregará la OT ${otArray}, a la OCI# ${ociNumber} - Alias: ${ociAlias}`,
-            icon: 'info',
-            showCancelButton: true,
-            showConfirmButton: true,
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('formNewOt').submit()
-                Toast.fire({
-                    icon: 'success',
-                    title: `OT ${otArray.join(" - ")}, agregada con éxito!`
-                })
-            } else {
-                Swal.fire(
-                    'OT no agregada!',
-                    `La OT ${otArray}, no fue agregada a la OCI# ${ociNumber} - Alias: ${ociAlias}`,
-                    'warning'
-                )
-                return false
-            }
-        })
-    }
 }
 
 
@@ -4106,20 +3968,20 @@ function updateInputsSelect() {
     }
 }
 
+// Función para habilitar el btn aceptar de los models
 function disabledBtnAceptar() {
     let btnAceptarModal = document.getElementsByClassName('swal2-confirm');
-    const allInputs = document.querySelectorAll('input[type="text"],input[type="number"],select,textarea')
+    const allInputs = document.querySelectorAll('input[type="text"], input[type="number"], select, textarea')
     const allInputsRange = document.querySelectorAll('input[type="range"]')
     const allInputsCheck = document.querySelectorAll('input[type="checkbox"]')
     const allInputsRadio = document.querySelectorAll('input[type="radio"]')
 
     allInputs.forEach(function(input) {
-        if (input.value) {
-            input.addEventListener('change', (event) => {
+        if (input) {
+            input.addEventListener('input', (event) => {
+                // console.log('event', event)
                 event.preventDefault()
-                input.classList.add("border-primary")
-                input.classList.add("border-2")
-                input.classList.add("shadow")
+                input.classList.add('border-primary', 'border-2', 'shadow')
                 btnAceptarModal[0].removeAttribute('disabled')
                 btnAceptarModal[0].style = "cursor: pointer;"
             })    
@@ -4231,7 +4093,6 @@ if (arrTables !=[]) {
 }
 
 let inputsDeTexto = document.querySelectorAll('input[type="text"]')
-    // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
         input.addEventListener('keydown', function(event) {
             // Obtener el código de la tecla presionada

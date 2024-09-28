@@ -1,8 +1,8 @@
 <div class="form-group col-10 mx-auto mt-2 mb-5 w-75 border p-3 text-white bg-opacity-75" style="background-color: #929292;">
     <form id="formUpdateUserSettings" enctype="multipart/form-data" action="/api/usuarios/updateUserSettings/<%=usuario._id%>" method="post">
         <fieldset>
-            <div class="row my-2 mx-auto">
-                <div class="col-2">
+            <div class="row justify-content-between my-2 mx-auto">
+                <div class="col-auto">
                     <label for="idDisable">Id#</label>
                     <% const subStringID = (usuario._id).toString().substring(19)
                         if (userInfo.superAdmin) { %>
@@ -13,46 +13,37 @@
                                 value="...<%= subStringID %>" disabled>
                         <% } %>
                 </div>
-                <br>
+                
                 <div class="col-1">
                     <label for="legajoIdDisable">Legajo #</label>
                     <input type="text" name="legajoIdDisable" id="legajoIdDisable" class="form-control-plaintext text-white"
                         value="<%=usuario.legajoId%>" disabled>
                 </div>
-                <br>
+                
                 <div class="col-2">
                     <label for="creatorDisable">Creado por</label>
                     <input type="text" name="creatorDisable" id="creatorDisable"
                         class="form-control-plaintext text-white" value="<%=usuario.creator[0].name%>, <%=usuario.creator[0].lastName%>" disabled>    
                 </div>
-                <br>
-                <div class="col-2">
+                
+                <div class="col-auto">
                     <label for="timestampDisable">Fecha Creación</label>
                     <input type="text" name="timestampDisable" id="timestampDisable"
                         class="form-control-plaintext text-white" value="<%=usuario.timestamp%>" disabled>
                 </div>
-                <br>
-                <div class="col-2">
+                
+                <div class="col-auto">
                     <label for="modifiedDisable">Modificado por</label>
-                    <% if (usuario.modificator !== [] ) {
-                        if (usuario.modificator[0].name !== "") { %>
-                        <input type="text" name="modifiedDisable" id="modifiedDisable"
-                        class="form-control-plaintext text-white" value="<%= usuario.modificator[0].name %>, <%= usuario.modificator[0].lastName %>"
-                        disabled>
+                    <% if (usuario.modificator[0]) { %>
+                        <input type="text" name="modifiedDisable" id="modifiedDisable" class="form-control-plaintext text-white"
+                            value="<%= usuario.modificator[0].name %>, <%= usuario.modificator[0].lastName %>" disabled>
 
-                        <% } else { %>
-                            <input type="text" name="modifiedDisable" id="modifiedDisable"
-                            class="form-control-plaintext text-white" value="" disabled>
-
-                        <% } %>        
                     <% } else { %>
-                        <input type="text" name="modifiedDisable" id="modifiedDisable"
-                        class="form-control-plaintext text-white" value="" disabled>
-
+                        <input type="text" name="modifiedDisable" id="modifiedDisable" class="form-control-plaintext text-white"
+                            value="" disabled>
                     <% } %>
                 </div>
-                <br>
-                <br>
+                
                 <div class="col-auto">
                     <label for="modifiedOnDisable">Fecha Modificación</label>
                     <input type="text" name="modifiedOnDisable" id="modifiedOnDisable"
@@ -60,21 +51,46 @@
                 </div>
             </div>
             <hr>
-            <div class="row justify-content-center align-items-center my-3 mx-3">
-                <div class="col-3">
+            <!-- Permisos -  -->
+            <div class="row justify-content-between align-items-center my-3 mx-3">
+                <div class="col-auto">
                     <label for="permisoDisable">Permisos</label><br>
-                    <% if (usuario.permiso === "diseno") { %>
-                        <span name="permisoDisable" id="permisoDisable" class="badge rounded-pill text-bg-primary mt-3"
-                            value=" <%=usuario.permiso %>" disabled>Diseño</span>
-                    <% } else if (usuario.permiso === "simulacion") { %>
-                        <span name="permisoDisable" id="permisoDisable" class="badge rounded-pill text-bg-warninig text-dark mt-3"
-                            value=" <%=usuario.permiso %>" disabled>Simulacion</span>
-                    <% } else { %>
-                        <span name="permisoDisable" id="permisoDisable" class="badge rounded-pill text-bg-info text-dark mt-3"
-                            value=" <%=usuario.permiso %>" disabled>Diseño/Simulacion</span>
-                    <% } %> 
+                    <% const permisos = {
+                            diseno: { clase: "text-bg-primary text-light", texto: "Diseño" },
+                            simulacion: { clase: "text-bg-warning text-dark", texto: "Simulacion" },
+                            disenoSimulacion: { clase: "text-bg-danger text-light", texto: "Diseño/Simulacion" },
+                            cadCam: { clase: "text-bg-secondary text-light", texto: "CadCam" },
+                            projectManager: { clase: "text-bg-dark text-light", texto: "PM" },
+                            mecanizado: { clase: "text-bg-warning text-dark", texto: "Mecanizado" },
+                            ajuste: { clase: "text-bg-danger text-light", texto: "Ajuste" },
+                            default: { clase: "text-bg-success text-light", texto: "Todos" }
+                        };
+                        const permisoActual = permisos[usuario.permiso] || permisos.default;
+                    %>
+                    <span name="permisoDisable" id="permisoDisable" class="badge rounded-pill <%= permisoActual.clase %> mt-3" 
+                        value="<%= usuario.permiso %>" disabled>
+                        <%= permisoActual.texto %>
+                    </span>
                 </div>
+                <!-- Area -->
+                <div class="col-auto">
+                    <label for="areaDisable">Área</label><br>
+                    <% const areas = {
+                            ingenieria: { clase: "text-bg-info text-dark", texto: "Ingeniería" },
+                            fabricacion: { clase: "text-bg-warning text-dark", texto: "Fabricación" },
+                            administracion: { clase: "text-bg-secondary text-light", texto: "Administración" },
+                            proyectos: { clase: "text-bg-primary text-dark", texto: "Proyectos" },
+                            default: { clase: "text-bg-info text-dark", texto: "Todas" }
+                        };
+                        const areaActual = areas[usuario.area] || areas.default;
+                    %>
 
+                    <span name="areaDisable" id="areaDisable" class="badge rounded-pill <%= areaActual.clase %> mt-3" 
+                        value="<%= usuario.area %>" disabled>
+                        <%= areaActual.texto %>
+                    </span>
+                </div>
+                <!-- Rol -->
                 <%  if (usuario.admin) { %>
                     <div class="col-3 mx-5" style="background-color: #00029063;">
                         <label for="creatorDisable">Rol</label>
@@ -88,7 +104,7 @@
                             class="form-control-plaintext text-white" value="Usuario" disabled>    
                     </div>
                 <% } %>
-
+                    <!-- Status -->
                 <%  if (usuario.status) { %>
                     <div class="col-3 mx-5" style="background-color: #55dd5544;">
                         <label for="statusDisable">Status</label>
@@ -97,7 +113,7 @@
                     </div>
                 <% } %> 
             </div>
-
+            
             <hr>
 
             <div class="row my-3 mx-auto">
@@ -131,7 +147,7 @@
             <br>
 
             <div class="row justify-content-start align-items-center my-3 mx-auto">
-                <div class="col">
+                <div class="col-6">
                     <label for="fileInputAvatarUser" class="form-label">
                         Seleccione una nueva imagen de Avatar Usuario
                     </label>
@@ -157,12 +173,7 @@
                             <strong class="me-2">Atención!</strong> El tamaño de la imagen debe ser menor a 3Mb.
                         </div>
                 </div>
-            </div>
-
-            <br>
-           
-            <div class="row justify-content-start align-items-center my-3 mx-auto">
-                <div class="col">
+                <div class="col-auto">
                     <label for="imagenAvatar">Imagen avatar Usuario actual </label>
                     <div class="container-fluid my-1 p-1 text-center">
                         <img src="<%=usuario.avatar%>" name="imagenAvatar" class="img-thumbnail rounded mx-auto" alt="Avatar Usuario" width="200px" height="200px">

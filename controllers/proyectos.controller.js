@@ -254,7 +254,7 @@ class ProjectsController {
                             ociNumber: parseInt(arrayOciNumber[i]),
                             ociDescription: arrayOciDescription[i],
                             ociAlias: arrayOciAlias[i],
-                            ociStatus: arrayOciStatus[i] == 'on' ? true : false,
+                            ociStatus: arrayOciStatus[i] == 'on' ?  Boolean(true) : Boolean(false),
                             creator: dataUserCreator(userCreator),
                             timestamp: now,
                             ociImage: arrayOciImages[i] || imageNotFound,
@@ -278,7 +278,7 @@ class ProjectsController {
                     
                     const project = {
                         projectName: projectInput,
-                        statusProject: req.body.statusProject == 'on' ? true : false,
+                        statusProject: req.body.statusProject == 'on' ? Boolean(true) : Boolean(false),
                         levelProject: selectFieldLevel,
                         codeProject: projectCodeInput,
                         projectDescription: req.body.projectDescription,
@@ -291,7 +291,7 @@ class ProjectsController {
                         modifiedOn: "",
                         oci: arrayOciProjects
                     }
-    
+
                     const newProject = {
                         creator: dataUserCreator(userCreator),
                         client: clienteSeleccionado,
@@ -316,7 +316,7 @@ class ProjectsController {
                     if (!proyectos) {
                         catchError401_1(req, res, next)
                     }
-    
+
                     const csrfToken = csrfTokens.create(req.csrfSecret);
                     setTimeout(() => {
                         return res.render('clientProjectsDetails', {
@@ -382,95 +382,95 @@ class ProjectsController {
 
     addOtToOciProject = async (req, res, next) => {
         const { id } = req.params
-        const clientId = req.body.clientIdHidden
-        const cliente = await this.clients.selectClientById(clientId)
-        if (!cliente) {
-            catchError401(req, res, next)
-        }
-        
-        const numberOci = parseInt(req.body.ociNumber)
-        const ociNumberK = parseInt(req.body.ociNumberK)
-        
-        const projectId = id || req.body.projectIdHidden
-        const otQuantity = parseInt(req.body.otQuantity)
-
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
-        
-        const userId = userInfo.id
-        const userCreator = await this.users.getUserById(userId)
-        if (!userCreator) {
-            catchError401_3(req, res, next)
-        }
-        
-        let arrayOtNumber=[],
-            arrayOpNumber=[],
-            arrayOpDescription=[],
-            arrayOtStatus=[],
-            arrayOtDesign=[],
-            arrayOtSimulation=[],
-            arrayOtSupplier=[]
-
-        const prefixes = [
-            { prefix: 'otNumber', array: arrayOtNumber },
-            { prefix: 'opNumber', array: arrayOpNumber },
-            { prefix: 'opDescription', array: arrayOpDescription },
-            { prefix: 'otStatus', array: arrayOtStatus },
-            { prefix: 'internoDiseno', array: arrayOtDesign },
-            { prefix: 'internoSimulacion', array: arrayOtSimulation },
-            { prefix: 'externoDiseno', array: arrayOtSupplier }
-        ];
-        
-        for (const key in req.body) {
-            const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-            if (match) {
-                match.array.push(req.body[key]);
-            }
-        }
-
-        const otInformationEmpty = [{
-            otInfoR14: [],
-            otInfoProceso: [],
-            otInfoDisenoPrimera: [],
-            otInfoDisenoSegunda: [],
-            otInfoInfo80: [],
-            otInfoInfo100: [],
-            otInfoSim0: [],
-            otInfoSim1: [],
-            otInfoSim2_3: [],
-            otInfoSim4Primera: [],
-            otInfoSim4Segunda: [],
-            otInfoSim5: []
-        }]
-
-        const otDetallesEmpty = []
-        const arrayOtAddedToOci = []
-        if (otQuantity>0) {
-            for(let i=0; i<otQuantity; i++) {
-                var otAddedToOci = {
-                    otNumber: arrayOtNumber[i],
-                    opNumber: arrayOpNumber[i],
-                    opDescription: arrayOpDescription[i],
-                    otStatus: arrayOtStatus[i] == 'on' ? true : false,
-                    otDesign: arrayOtDesign[i],
-                    otSimulation: arrayOtSimulation[i],
-                    otSupplier: arrayOtSupplier[i],
-                    creator: dataUserCreator(userCreator),
-                    timestamp: now,
-                    modificator: dataUserModificatorEmpty(),
-                    modifiedOn: "",
-                    otInformation: otInformationEmpty,
-                    otDetalles: otDetallesEmpty
-                }
-                arrayOtAddedToOci.push(otAddedToOci)
-            }
-
-        } else {
-            catchError400_1(req, res, next)
-        }
 
         try {
+            const clientId = req.body.clientIdHidden
+            const cliente = await this.clients.selectClientById(clientId)
+            if (!cliente) {
+                catchError401(req, res, next)
+            }
+            
+            const numberOci = parseInt(req.body.ociNumber)
+            const ociNumberK = parseInt(req.body.ociNumberK)
+            
+            const projectId = id || req.body.projectIdHidden
+            const otQuantity = parseInt(req.body.otQuantity)
+
+            const userId = userInfo.id
+            const userCreator = await this.users.getUserById(userId)
+            if (!userCreator) {
+                catchError401_3(req, res, next)
+            }
+        
+            let arrayOtNumber=[],
+                arrayOpNumber=[],
+                arrayOpDescription=[],
+                arrayOtStatus=[],
+                arrayOtDesign=[],
+                arrayOtSimulation=[],
+                arrayOtSupplier=[]
+
+            const prefixes = [
+                { prefix: 'otNumber', array: arrayOtNumber },
+                { prefix: 'opNumber', array: arrayOpNumber },
+                { prefix: 'opDescription', array: arrayOpDescription },
+                { prefix: 'otStatus', array: arrayOtStatus },
+                { prefix: 'internoDiseno', array: arrayOtDesign },
+                { prefix: 'internoSimulacion', array: arrayOtSimulation },
+                { prefix: 'externoDiseno', array: arrayOtSupplier }
+            ];
+        
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                if (match) {
+                    match.array.push(req.body[key]);
+                    break;
+                }
+            }
+
+            const otInformationEmpty = [{
+                otInfoR14: [], otInfoProceso: [],
+                otInfoDisenoPrimera: [], otInfoDisenoSegunda: [],
+                otInfoInfo80: [], otInfoInfo100: [],
+                otInfoSim0: [], otInfoSim1: [], otInfoSim2_3: [],
+                otInfoSim4Primera: [], otInfoSim4Segunda: [],
+                otInfoSim5: []
+            }]
+
+            const otDetallesEmpty = [{
+                otDistribution: [],
+                otProgramacionPrimera: [], otProgramacionSegunda: [],
+                otMecanizadoPrimera: [], otMecanizadoSegunda: []
+            }]
+
+            const arrayOtAddedToOci = []
+            if (otQuantity>0) {
+                for(let i=0; i<otQuantity; i++) {
+                    var otAddedToOci = {
+                        otNumber: arrayOtNumber[i],
+                        opNumber: arrayOpNumber[i],
+                        opDescription: arrayOpDescription[i],
+                        otStatus: arrayOtStatus[i] == 'on' ? true : false,
+                        otDesign: arrayOtDesign[i],
+                        otSimulation: arrayOtSimulation[i],
+                        otSupplier: arrayOtSupplier[i],
+                        creator: dataUserCreator(userCreator),
+                        timestamp: now,
+                        modificator: dataUserModificatorEmpty(),
+                        modifiedOn: "",
+                        otInformation: otInformationEmpty,
+                        otDetalles: otDetallesEmpty
+                    }
+                    arrayOtAddedToOci.push(otAddedToOci)
+                }
+
+            } else {
+                catchError400_1(req, res, next)
+            }
+
             await this.projects.addOtToOciProject(
                 projectId,
                 numberOci,
@@ -510,7 +510,7 @@ class ProjectsController {
     updateStatusProject = async (req, res, next) => {
         const id = req.params.id
         let username = res.locals.username
-        const userInfo = res.locals.userInfo
+        let userInfo = res.locals.userInfo
         const expires = cookie(req)
 
         try {
@@ -583,7 +583,7 @@ class ProjectsController {
     updateLevelProject = async (req, res, next) => {
         const id = req.params.id
         let username = res.locals.username
-        const userInfo = res.locals.userInfo
+        let userInfo = res.locals.userInfo
         const expires = cookie(req)
 
         try {
@@ -716,9 +716,7 @@ class ProjectsController {
             }
 
             function validateSelectField(value) {
-                const validOptions = [
-                    'true', 'false'
-                ];
+                const validOptions = [ 'true', 'false' ];
                 return validOptions.includes(value);
             }
 
@@ -730,7 +728,7 @@ class ProjectsController {
     updateStatusOt = async (req, res, next) => {
         const id = req.params.id
         let username = res.locals.username
-        const userInfo = res.locals.userInfo
+        let userInfo = res.locals.userInfo
         const expires = cookie(req)
 
         try {
@@ -794,9 +792,7 @@ class ProjectsController {
             }
 
             function validateSelectField(value) {
-                const validOptions = [
-                    'true', 'false'
-                ];
+                const validOptions = [ 'true', 'false' ];
                 return validOptions.includes(value);
             }
 
@@ -1025,7 +1021,7 @@ class ProjectsController {
     updateOci = async (req, res, next) => {
         const id = req.params.id
         let username = res.locals.username
-        const userInfo = res.locals.userInfo
+        let userInfo = res.locals.userInfo
         const expires = cookie(req)
 
         const proyecto = await this.projects.selectProjectByProjectId(id)
@@ -1148,7 +1144,7 @@ class ProjectsController {
             const otNumberInput = parseInt(req.body.numberOt)
             const confirmationNumberOt = Boolean(req.body.confirmationNumberOt)
             let otNumberValid = 1
-                             
+
             if (!confirmationNumberOt) {
                 otNumberValid = numberOtHidden
 
@@ -1162,7 +1158,7 @@ class ProjectsController {
                 
                 const flattenedArray = arrayOts.flat(1)
                 const otherOtNumbers = flattenedArray.map(ot => ot.otNumber);
-                                
+
                 if (otherOtNumbers.includes(otNumberInput)) {
                     const err = new Error (`Ya existe una OT#${otNumberInput} en esta OCI o Numero de OT inválido!`)
                     err.statusCode = 400
@@ -1319,7 +1315,7 @@ class ProjectsController {
                 otKNumber,
                 dataUserModificatorNotEmpty(userCreator)
                 )
-             
+            
             const cliente = await this.clients.updateClient(
                 clientId, 
                 clienteSeleccionado, 
@@ -1459,6 +1455,7 @@ class ProjectsController {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
                 if (match) {
                     match.array.push(req.body[key]);
+                    break;
                 }
             }
             
@@ -1492,15 +1489,17 @@ class ProjectsController {
             
             data.slide = 0
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            return res.render('projectSelectedDetail', {
-                username,
-                userInfo,
-                expires,
-                cliente,
-                proyecto,
-                data,
-                csrfToken
-            })
+            setTimeout(() => {
+                return res.render('projectSelectedDetail', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -1586,15 +1585,17 @@ class ProjectsController {
 
             data.slide = 1
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            return res.render('projectSelectedDetail', {
-                username,
-                userInfo,
-                expires,
-                cliente,
-                proyecto,
-                data,
-                csrfToken
-            })
+            setTimeout(() => {
+                return res.render('projectSelectedDetail', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -1656,6 +1657,7 @@ class ProjectsController {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
                 if (match) {
                     match.array.push(req.body[key]);
+                    break;
                 }
             }
 
@@ -1692,15 +1694,17 @@ class ProjectsController {
 
             data.slide = 2
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('projectSelectedDetail', {
-                username,
-                userInfo,
-                expires,
-                cliente,
-                proyecto,
-                data,
-                csrfToken
-            })
+            setTimeout(() => {
+                res.render('projectSelectedDetail', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -1762,6 +1766,7 @@ class ProjectsController {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
                 if (match) {
                     match.array.push(req.body[key]);
+                    break;
                 }
             }
             
@@ -1798,15 +1803,17 @@ class ProjectsController {
             
             data.slide = 3
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('projectSelectedDetail', {
-                username,
-                userInfo,
-                expires,
-                cliente,
-                proyecto,
-                data,
-                csrfToken
-            })
+            setTimeout(() => {
+                res.render('projectSelectedDetail', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -1868,6 +1875,7 @@ class ProjectsController {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
                 if (match) {
                     match.array.push(req.body[key]);
+                    break;
                 }
             }    
 
@@ -1904,15 +1912,17 @@ class ProjectsController {
 
             data.slide = 4  
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('projectSelectedDetail', {
-                username,
-                userInfo,
-                expires,
-                cliente,
-                proyecto,
-                data,
-                csrfToken
-            })
+            setTimeout(() => {
+                res.render('projectSelectedDetail', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -1966,6 +1976,7 @@ class ProjectsController {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
                 if (match) {
                     match.array.push(req.body[key]);
+                    break;
                 }
             }    
 
@@ -1998,15 +2009,17 @@ class ProjectsController {
             
             data.slide = 5
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('projectSelectedDetail', {
-                username,
-                userInfo,
-                expires,
-                cliente,
-                proyecto,
-                data,
-                csrfToken
-            })
+            setTimeout(() => {
+                res.render('projectSelectedDetail', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -2060,6 +2073,7 @@ class ProjectsController {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
                 if (match) {
                     match.array.push(req.body[key]);
+                    break;
                 }
             }    
         
@@ -2092,15 +2106,17 @@ class ProjectsController {
         
             data.slide = 6
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('projectSelectedDetail', {
-                username,
-                userInfo,
-                expires,
-                cliente,
-                proyecto,
-                data,
-                csrfToken
-            })
+            setTimeout(() => {
+                res.render('projectSelectedDetail', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -2166,6 +2182,7 @@ class ProjectsController {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
                 if (match) {
                     match.array.push(req.body[key]);
+                    break;
                 }
             }    
 
@@ -2204,15 +2221,17 @@ class ProjectsController {
         
             data.slide = 7
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('projectSelectedDetail', {
-                username,
-                userInfo,
-                expires,
-                cliente,
-                proyecto,
-                data,
-                csrfToken
-            })
+            setTimeout(() => {
+                res.render('projectSelectedDetail', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -2274,6 +2293,7 @@ class ProjectsController {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
                 if (match) {
                     match.array.push(req.body[key]);
+                    break;
                 }
             }
 
@@ -2310,15 +2330,17 @@ class ProjectsController {
 
             data.slide = 8
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('projectSelectedDetail', {  //projectsList
-                username,
-                userInfo,
-                expires,
-                cliente,
-                proyecto,
-                data,
-                csrfToken
-            })
+            setTimeout(() => {
+                res.render('projectSelectedDetail', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -2380,9 +2402,10 @@ class ProjectsController {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
                 if (match) {
                     match.array.push(req.body[key]);
+                    break;
                 }
             }
-       
+
             let arrayInfoAddedToOt = []
             for (let i=0; i<otQuantity; i++ ) {
                 var infoAddedToOt = {
@@ -2416,15 +2439,17 @@ class ProjectsController {
         
             data.slide = 9
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('projectSelectedDetail', {
-                username,
-                userInfo,
-                expires,
-                cliente,
-                proyecto,
-                data,
-                csrfToken
-            })
+            setTimeout(() => {
+                res.render('projectSelectedDetail', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -2486,6 +2511,7 @@ class ProjectsController {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
                 if (match) {
                     match.array.push(req.body[key]);
+                    break;
                 }
             }
 
@@ -2522,15 +2548,17 @@ class ProjectsController {
         
             data.slide = 10
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('projectSelectedDetail', {
-                username,
-                userInfo,
-                expires,
-                cliente,
-                proyecto,
-                data,
-                csrfToken
-            })
+            setTimeout(() => {
+                res.render('projectSelectedDetail', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -2584,6 +2612,7 @@ class ProjectsController {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
                 if (match) {
                     match.array.push(req.body[key]);
+                    break;
                 }
             }
 
@@ -2616,15 +2645,17 @@ class ProjectsController {
         
             data.slide = 11
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('projectSelectedDetail', {
-                username,
-                userInfo,
-                expires,
-                cliente,
-                proyecto,
-                data,
-                csrfToken
-            })
+            setTimeout(() => {
+                res.render('projectSelectedDetail', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
 
         } catch (err) {
             catchError500(err, req, res, next)

@@ -2,7 +2,7 @@
     <form id="formUpdateUser" enctype="multipart/form-data" action="/api/usuarios/update/<%=usuario._id%>" method="post">
         <fieldset>
             <div class="row justify-content-between my-2 mx-auto">
-                <div class="col-2">
+                <div class="col-auto">
                     <label for="idDisable">Id#</label>
                     <% const subStringID = (usuario._id).toString().substring(19)
                         if (userInfo.superAdmin) { %>
@@ -13,8 +13,8 @@
                                 value="...<%= subStringID %>" disabled>
                         <% } %>
                 </div>
-                <br>
-                <div class="col-2">
+                
+                <div class="col-1">
                     <label for="legajoIdDisable">Legajo #</label>
                     <% if (userInfo.superAdmin) { %>
                     <input type="number" name="legajoIdDisable" id="legajoIdDisable" class="form-control"
@@ -24,36 +24,32 @@
                         value="<%=usuario.legajoId%>" disabled>
                     <% } %>    
                 </div>
-                <br>
+                
                 <div class="col-2">
                     <label for="creatorDisable">Creado por</label>
                     <input type="text" name="creatorDisable" id="creatorDisable"
                         class="form-control-plaintext text-white" value="<%=usuario.creator[0].name%>, <%=usuario.creator[0].lastName%>" disabled>    
                 </div>
-                <br>
-                <div class="col-2">
+                
+                <div class="col-auto">
                     <label for="timestampDisable">Fecha Creación</label>
                     <input type="text" name="timestampDisable" id="timestampDisable"
                         class="form-control-plaintext text-white" value="<%=usuario.timestamp%>" disabled>
                 </div>
-                <br>
-                <div class="col-2">
+                
+                <div class="col-auto">
                     <label for="modifiedDisable">Modificado por</label>
-                    
-                    <% if (usuario.modificator[0].name !== "") { %>
-                        <input type="text" name="modifiedDisable" id="modifiedDisable"
-                        class="form-control-plaintext text-white" value="<%= usuario.modificator[0].name %>, <%= usuario.modificator[0].lastName %>"
-                        disabled>
+                    <% if (usuario.modificator[0]) { %>
+                        <input type="text" name="modifiedDisable" id="modifiedDisable" class="form-control-plaintext text-white" 
+                        value="<%= usuario.modificator[0].name %>, <%= usuario.modificator[0].lastName %>" disabled>
 
                     <% } else { %>
-                        <input type="text" name="modifiedDisable" id="modifiedDisable"
-                        class="form-control-plaintext text-white" value="" disabled>
+                        <input type="text" name="modifiedDisable" id="modifiedDisable" class="form-control-plaintext text-white" value="" disabled>
 
                     <% } %>        
                 </div>
-                <br>
-                <br>
-                <div class="col">
+                
+                <div class="col-2">
                     <label for="modifiedOnDisable">Fecha Modificación</label>
                     <input type="text" name="modifiedOnDisable" id="modifiedOnDisable"
                         class="form-control-plaintext text-white" value="<%=usuario.modifiedOn%>" disabled>

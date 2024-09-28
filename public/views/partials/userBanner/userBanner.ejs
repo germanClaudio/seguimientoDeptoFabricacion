@@ -1,4 +1,15 @@
-<% if (userInfo.superAdmin) { %>
+<% function capitalizarPrimeraLetra(str) {
+    return str
+        .toLowerCase()
+        .split(' ')
+        .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+        .join(' ');
+    }
+let area = capitalizarPrimeraLetra(userInfo.area)
+let permiso = capitalizarPrimeraLetra(userInfo.permiso)
+console.log('area: ', area, 'permiso: ', permiso)
+
+    if (userInfo.superAdmin) { %>
         <div class="mx-auto small text-center">
             <span id="mostrarRolUser" class="badge rounded-pill bg-primary position-relative mb-1">
                 SuperAdmin
@@ -10,7 +21,8 @@
                 </span>
             </span>
         </div>
-        <span class="badge bg-warning text-dark my-1"><%= userInfo.area; %></span> - <span class="badge bg-light text-dark my-1"><%= userInfo.permiso %></span>
+        <span class="badge bg-warning text-dark my-1"> <%= area %> </span> - 
+        <span class="badge bg-light text-dark my-1"> <%= permiso %> </span>
         <div class="mx-auto small text-center" id="mostrarUserName">
             <%= userInfo.name %>, <%= userInfo.lastName %>
         </div>
@@ -32,7 +44,8 @@
         <div class="mx-auto small text-center">
             <span id="mostrarRolUser" class="badge rounded-pill bg-info text-dark">User</span>
         </div>
-        <span class="badge bg-warning text-dark my-1"><%= userInfo.area %></span> - <span class="badge bg-light text-dark my-1"><%= userInfo.permiso %></span>
+        <span class="badge bg-warning text-dark my-1"><%= area %></span> -
+        <span class="badge bg-light text-dark my-1"><%= permiso %></span>
         <div class="mx-auto small text-center" id="mostrarUserName">
             <%= userInfo.name %>, <%= userInfo.lastName %>
         </div>

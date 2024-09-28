@@ -412,19 +412,17 @@ class UsersController {
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
 
-        const csrfToken = req.body._csrf;
-        !csrfTokens.verify(req.csrfSecret, csrfToken) ? catchError403(req, res, next) : null
-
         try {
             const userId = userInfo.id
-            const usuario = await this.users.getUserById(userId)
+            let usuario = await this.users.getUserById(userId)
+            
             if (!usuario) {
                 const err = new Error(`No fue posible encontrar el Usuario con el id#: ${id}!`)
                 err.statusCode = 404
                 next(err);
             }
 
-            const csrfToken = csrfTokens.create(req.csrfSecret); 
+            const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('userSettings', {
                 usuario,
                 username,
@@ -458,7 +456,7 @@ class UsersController {
 
         try {
             const userToDelete = await this.users.getUserById(id)
-            userToDelete ? catchError401_3(req, res, next) : null
+            !userToDelete ? catchError401_3(req, res, next) : null
 
             const userId = userInfo.id
             const userLogged = await this.users.getUserById(userId)
@@ -777,6 +775,7 @@ class UsersController {
                 req.session.username = userInfo.username
                 
                 setTimeout(() => {
+                    const csrfToken = csrfTokens.create(req.csrfSecret); 
                     return res.render('index', {
                         userInfo,
                         username,
@@ -790,7 +789,8 @@ class UsersController {
                         mensajes,
                         data,
                         sessions,
-                        maquinas
+                        maquinas,
+                        csrfToken
                     })
                 }, 350)
                 
