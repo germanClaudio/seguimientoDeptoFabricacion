@@ -29,13 +29,13 @@
     <tbody class="table-group-divider">
         
         <%
-        let arrResDatoFCero = []; let arrResFCero = []; let valueArrayResFCero = 0; let arrResRevisionFCero = [];
+        let arrResDatoFCero = []; let arrResEstadoFCero = []; let valueArrayResFCero = 0; let arrResRevisionFCero = [];
         let arrResCreadorFCero = []; let arrResModificadorFCero = []; let arrResFechaFCero = []; let arrResFechaModFCero = [];
 
-        let arrResDatoFUno = []; let arrResFUno = []; let valueArrayResFUno = 0; let arrResRevisionFUno = [];
+        let arrResDatoFUno = []; let arrResEstadoFUno = []; let valueArrayResFUno = 0; let arrResRevisionFUno = [];
         let arrResCreadorFUno = []; let arrResModificadorFUno = []; let arrResFechaFUno = []; let arrResFechaModFUno = [];
 
-        let arrResDatoFDos = []; let arrResFDos = []; let valueArrayResFDos = 0; let arrResRevisionFDos = [];
+        let arrResDatoFDos = []; let arrResEstadoFDos = []; let valueArrayResFDos = 0; let arrResRevisionFDos = [];
         let arrResCreadorFDos = []; let arrResModificadorFDos = []; let arrResFechaFDos = []; let arrResFechaModFDos = [];
 
         let anteriorDisabled = "disabled";
@@ -53,7 +53,7 @@
                 let largoArrayMecanizado = otMecanizadoPrimera.length;
 
                 if (pathMongoOtProject.visible) {
-                    if (pathMongoOtProject.otStatus) { %>
+                    if (pathMongoOtProject.otStatus && pathMongoOtProject.otDetalles[o].statusDetalle) { %>
                         <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh;">
                             <% for (let q = 10; totalColDataMecanizadoPrimera > q; q++) {
                                 if (q==10) { %>
@@ -71,12 +71,12 @@
                                                             
                                                             if (i == 0) {
                                                                 arrResDatoFCero.push(pathToMongoDBOtMecanizado.fCero)
-                                                                arrResFCero.push(pathToMongoDBOtMecanizado.estadoFCero)
+                                                                arrResEstadoFCero.push(pathToMongoDBOtMecanizado.estadoFCero)
                                                                 arrResRevisionFCero.push(pathToMongoDBOtMecanizado.revisionFCero)
                                                             }
                                                             else if (i >= 1 && pathToMongoDBOtMecanizado.revisionFCero != otMecanizadoPrimera[i-1].revisionFCero) {
                                                                 arrResDatoFCero.push(pathToMongoDBOtMecanizado.fCero)
-                                                                arrResFCero.push(pathToMongoDBOtMecanizado.estadoFCero)
+                                                                arrResEstadoFCero.push(pathToMongoDBOtMecanizado.estadoFCero)
                                                                 arrResRevisionFCero.push(pathToMongoDBOtMecanizado.revisionFCero)
                                                             }
                                                                 arrResCreadorFCero.push(pathToMongoDBOtMecanizado.creator[0].username)
@@ -110,7 +110,7 @@
                                             resEstadoFCero = "S/D"
                                             resRevisionFCero = 0
                                             arrResDatoFCero.push(resDatoFCero)
-                                            arrResFCero.push(resEstadoFCero)
+                                            arrResEstadoFCero.push(resEstadoFCero)
                                             arrResRevisionFCero.push(resRevisionFCero)
                                             valueArrayResFCero = 0
                                         } %>
@@ -122,7 +122,7 @@
                                                     ><i class="fa-solid fa-arrow-left"></i>
                                                 </button>
                                                 <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFCero %>">
-                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFCero %>">
+                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFCero %>">
                                                 <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFCero %>">
                                                 <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFCero %>">
                                                 <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorFCero %>">
@@ -135,16 +135,16 @@
                                                 <% let icon; let iconColor;
                                                 switch (resEstadoFCero) { 
                                                     case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
                                                     break; }
                                                     case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = "#008f30";
+                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
                                                     break; }        
                                                     case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
                                                     break; }
                                                     case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = "";
+                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
                                                     break; }
                                                     default: {
                                                         icon = ""; iconColor = ""; %>
@@ -154,7 +154,7 @@
 
                                                 if (icon) { %>
                                                     <span id="resEstadoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFCero%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
                                                     </span> |
                                                 <% } %>
 
@@ -181,19 +181,19 @@
                                                             
                                                             if (i == 0) {
                                                                 arrResDatoFUno.push(pathToMongoDBOtMecanizado.fUno)
-                                                                arrResFUno.push(pathToMongoDBOtMecanizado.estadoFUno)
+                                                                arrResEstadoFUno.push(pathToMongoDBOtMecanizado.estadoFUno)
                                                                 arrResRevisionFUno.push(pathToMongoDBOtMecanizado.revisionFUno)
                                                             }
                                                             else if (i >= 1 && pathToMongoDBOtMecanizado.revisionFUno != otMecanizadoPrimera[i-1].revisionFUno) {
                                                                 arrResDatoFUno.push(pathToMongoDBOtMecanizado.fUno)
-                                                                arrResFUno.push(pathToMongoDBOtMecanizado.estadoFUno)
+                                                                arrResEstadoFUno.push(pathToMongoDBOtMecanizado.estadoFUno)
                                                                 arrResRevisionFUno.push(pathToMongoDBOtMecanizado.revisionFUno)
                                                             }
                                                                 arrResCreadorFUno.push(pathToMongoDBOtMecanizado.creator[0].username)
                                                                 arrResModificadorFUno.push(pathToMongoDBOtMecanizado.modificator[0].username)
                                                                 arrResFechaFUno.push(pathToMongoDBOtMecanizado.timestamp)
                                                                 arrResFechaModFUno.push(pathToMongoDBOtMecanizado.modifiedOn)
-                                                                valueArrayResFUno = parseInt(arrResFUno.length-1)
+                                                                valueArrayResFUno = parseInt(arrResEstadoFUno.length-1)
                                                                                                         
                                                         } else {
                                                             resDatoFUno = 'S/D'
@@ -220,7 +220,7 @@
                                                     resEstadoFUno = "S/D"
                                                     resRevisionFUno = 0
                                                     arrResDatoFUno.push(resDatoFUno)
-                                                    arrResFUno.push(resEstadoFUno)
+                                                    arrResEstadoFUno.push(resEstadoFUno)
                                                     arrResRevisionFUno.push(resRevisionFUno)
                                                     valueArrayResFUno = 0
                                             } %>
@@ -232,7 +232,7 @@
                                                     ><i class="fa-solid fa-arrow-left"></i>
                                                 </button>
                                                 <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFUno %>">
-                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFUno %>">
+                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFUno %>">
                                                 <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFUno %>">
                                                 <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFUno %>">
                                                 <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorFUno %>">
@@ -245,16 +245,16 @@
                                                 <% let icon; let iconColor;
                                                 switch (resEstadoFUno) { 
                                                     case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
                                                     break; }
                                                     case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = "#008f30";
+                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
                                                     break; }        
                                                     case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
                                                     break; }
                                                     case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = "";
+                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
                                                     break; }
                                                     default: {
                                                         icon = ""; iconColor = ""; %>
@@ -264,7 +264,7 @@
 
                                                 if (icon) { %>
                                                     <span id="resEstadoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFUno%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
                                                     </span> |
                                                 <% } %>
 
@@ -286,25 +286,25 @@
                                                         
                                                         if (otMecanizadoPrimera) {
                                                             let largoArray = parseInt(largoArrayMecanizado)
-                                                            resDatoFDos = otMecanizadoPrimera[largoArray-1].fDos
-                                                            resEstadoFDos = otMecanizadoPrimera[largoArray-1].estadoFDos
+                                                            resDatoFDos = otMecanizadoPrimera[largoArray-1].fDos || 'sinDato'
+                                                            resEstadoFDos = otMecanizadoPrimera[largoArray-1].estadoFDos || 'sinDato'
                                                             resRevisionFDos = otMecanizadoPrimera[largoArray-1].revisionFDos
                                                             
                                                             if (i == 0) {
                                                                 arrResDatoFDos.push(pathToMongoDBOtMecanizado.fDos)
-                                                                arrResFDos.push(pathToMongoDBOtMecanizado.estadoFDos)
+                                                                arrResEstadoFDos.push(pathToMongoDBOtMecanizado.estadoFDos)
                                                                 arrResRevisionFDos.push(pathToMongoDBOtMecanizado.revisionFDos)
                                                             }
                                                             else if (i >= 1 && pathToMongoDBOtMecanizado.revisionFDos != otMecanizadoPrimera[i-1].revisionFDos) {
                                                                 arrResDatoFDos.push(pathToMongoDBOtMecanizado.fDos)
-                                                                arrResFDos.push(pathToMongoDBOtMecanizado.estadoFDos)
+                                                                arrResEstadoFDos.push(pathToMongoDBOtMecanizado.estadoFDos)
                                                                 arrResRevisionFDos.push(pathToMongoDBOtMecanizado.revisionFDos)
                                                             }
                                                                 arrResCreadorFDos.push(pathToMongoDBOtMecanizado.creator[0].username)
                                                                 arrResModificadorFDos.push(pathToMongoDBOtMecanizado.modificator[0].username)
                                                                 arrResFechaFDos.push(pathToMongoDBOtMecanizado.timestamp)
                                                                 arrResFechaModFDos.push(pathToMongoDBOtMecanizado.modifiedOn)
-                                                                valueArrayResFDos = parseInt(arrResFDos.length-1)
+                                                                valueArrayResFDos = parseInt(arrResEstadoFDos.length-1)
 
                                                         } else {
                                                             resDatoFDos = 'S/D'
@@ -331,7 +331,7 @@
                                                     resEstadoFDos = "S/D"
                                                     resRevisionFDos = 0
                                                     arrResDatoFDos.push(resDatoFDos)
-                                                    arrResFDos.push(resEstadoFDos)
+                                                    arrResEstadoFDos.push(resEstadoFDos)
                                                     arrResRevisionFDos.push(resRevisionFDos)
                                                     valueArrayResFDos = 0
                                             } %>
@@ -343,7 +343,7 @@
                                                     ><i class="fa-solid fa-arrow-left"></i>
                                                 </button>
                                                 <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFDos %>">
-                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFDos %>">
+                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFDos %>">
                                                 <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFDos %>">
                                                 <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFDos %>">
                                                 <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorFDos %>">
@@ -356,16 +356,16 @@
                                                 <% let icon; let iconColor;
                                                 switch (resEstadoFDos) { 
                                                     case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
                                                     break; }
                                                     case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = "#008f30";
+                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
                                                     break; }        
                                                     case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
                                                     break; }
                                                     case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = "";
+                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
                                                     break; }
                                                     default: {
                                                         icon = ""; iconColor = ""; %>
@@ -375,7 +375,7 @@
 
                                                 if (icon) { %>
                                                     <span id="resEstadoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFDos%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
                                                     </span> |
                                                 <% } %>
 
@@ -393,7 +393,7 @@
                         </tr>
                     <% } else { %>
                         <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="pe-none border-bottom" style="height: 5vh; background-color: #dedede;">
-                            <% for (let q = 10; totalColDataOtMecanizadoPrimera > q; q++) {
+                            <% for (let q = 10; totalColDataMecanizadoPrimera > q; q++) {
                                 if (q==10) { %>
                                     <!-- Fase 0 data Inactivo -->
                                     <td class="text-center align-middle">
@@ -402,25 +402,25 @@
                                                 for (let i = 0; largoArrayMecanizado > i; i++) {
                                                     if (otMecanizadoPrimera) {
                                                         let largoArray = parseInt(largoArrayMecanizado)
-                                                        resDatoFCero = otMecanizadoPrimera[largoArray-1].fCero
-                                                        resEstadoFCero = otMecanizadoPrimera[largoArray-1].estadoFCero
+                                                        resDatoFCero = otMecanizadoPrimera[largoArray-1].fCero || 'sinDato'
+                                                        resEstadoFCero = otMecanizadoPrimera[largoArray-1].estadoFCero || 'sinDato'
                                                         resRevisionFCero = otMecanizadoPrimera[largoArray-1].revisionFCero
                                                         
                                                         if (i == 0) {
                                                             arrResDatoFCero.push(pathToMongoDBOtMecanizado.fCero)
-                                                            arrResFCero.push(pathToMongoDBOtMecanizado.FCero)
+                                                            arrResEstadoFCero.push(pathToMongoDBOtMecanizado.FCero)
                                                             arrResRevisionFCero.push(pathToMongoDBOtMecanizado.revisionFCero)
                                                         }
                                                         else if (i >= 1 && pathToMongoDBOtMecanizado.revisionFCero != otMecanizadoPrimera[i-1].revisionFCero) {
                                                             arrResDatoFCero.push(pathToMongoDBOtMecanizado.fCero)
-                                                            arrResFCero.push(pathToMongoDBOtMecanizado.estadoFCero)
+                                                            arrResEstadoFCero.push(pathToMongoDBOtMecanizado.estadoFCero)
                                                             arrResRevisionFCero.push(pathToMongoDBOtMecanizado.revisionFCero)
                                                         }
-                                                        valueArrayResFCero = parseInt(arrResFCero.length-1)
+                                                        valueArrayResFCero = parseInt(arrResEstadoFCero.length-1)
                                                                                                     
                                                     } else {
-                                                        resDatoFCero = ''
-                                                        resEstadoFCero = ''
+                                                        resDatoFCero = 'S/D'
+                                                        resEstadoFCero = 'S/D'
                                                         resRevisionFCero = 0
                                                     }
                                                 }
@@ -428,33 +428,33 @@
                                                 resEstadoFCero = otMecanizadoPrimera[0].estadoFCero
 
                                         } else {
-                                            resDatoFCero = ''
-                                            resEstadoFCero = ''
+                                            resDatoFCero = 'S/D'
+                                            resEstadoFCero = 'S/D'
                                             resRevisionFCero = 0
                                             arrResDatoFCero.push(resDatoFCero)
-                                            arrResEstado.push(resEstadoFCero)
+                                            arrResEstadoFCero.push(resEstadoFCero)
                                             arrResRevisionFCero.push(0)
                                         } %>
                                             <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFCero %>">
-                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFCero %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFCero %>">
                                             <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFCero %>">
                                             <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFCero %>">
                                         
-                                            <span id="resDatoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoFCero %></span> |
+                                            <span id="resDatoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2"><%= resDatoFCero %></span> |
 
                                             <% let icon; let iconColor;
                                             switch (resEstadoFCero) { 
                                                 case "enProceso": {
-                                                    icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                    icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
                                                 break; }
                                                 case "terminado": {
-                                                    icon = "fa-circle-check"; iconColor = "#008f30";
+                                                    icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
                                                 break; }        
                                                 case "suspendido": {
-                                                    icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                    icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
                                                 break; }
                                                 case "noAplica": {
-                                                    icon = "fa-ban"; iconColor = "";
+                                                    icon = "fa-ban"; iconColor = `style="color:#000000"`;
                                                 break; }
                                                 default: {
                                                     icon = ""; iconColor = ""; %>
@@ -464,7 +464,7 @@
 
                                             if (icon) { %>
                                                 <span id="resEstadoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFCero%>">
-                                                    <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                    <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
                                                 </span> |
                                             <% } %>
 
@@ -478,25 +478,25 @@
                                                     
                                                     if (otMecanizadoPrimera) {
                                                         let largoArray = parseInt(largoArrayMecanizado)
-                                                        resDatoFUno = otMecanizadoPrimera[largoArray-1].fUno
-                                                        resEstadoFUno = otMecanizadoPrimera[largoArray-1].fUno
+                                                        resDatoFUno = otMecanizadoPrimera[largoArray-1].fUno || 'sinDato'
+                                                        resEstadoFUno = otMecanizadoPrimera[largoArray-1].fUno || 'sinDato'
                                                         resRevisionFUno = otMecanizadoPrimera[largoArray-1].revisionFUno
                                                         
                                                         if (i == 0) {
                                                             arrResDatoFUno.push(pathToMongoDBOtMecanizado.fUno)
-                                                            arrResFUno.push(pathToMongoDBOtMecanizado.fUno)
+                                                            arrResEstadoFUno.push(pathToMongoDBOtMecanizado.fUno)
                                                             arrResRevisionFUno.push(pathToMongoDBOtMecanizado.revisionFUno)
                                                         }
                                                         else if (i >= 1 && pathToMongoDBOtMecanizado.revisionFUno != otMecanizadoPrimera[i-1].revisionFUno) {
                                                             arrResDatoFUno.push(pathToMongoDBOtMecanizado.fUno)
-                                                            arrResFUno.push(pathToMongoDBOtMecanizado.fUno)
+                                                            arrResEstadoFUno.push(pathToMongoDBOtMecanizado.fUno)
                                                             arrResRevisionFUno.push(pathToMongoDBOtMecanizado.revisionFUno)
                                                         }
-                                                        valueArrayResFUno = parseInt(arrResFUno.length-1)
+                                                        valueArrayResFUno = parseInt(arrResEstadoFUno.length-1)
 
                                                     } else {
-                                                        resDatoFUno = ''
-                                                        resEstadoFUno = ''
+                                                        resDatoFUno = 'S/D'
+                                                        resEstadoFUno = 'S/D'
                                                         resRevisionFUno = 0
                                                     }
                                                 }
@@ -504,34 +504,34 @@
                                                 resEstadoFUno = otMecanizadoPrimera[0].estadoFUno
                                         
                                         } else {
-                                            resDatoFUno = ""
-                                            resEstadoFUno = ""
+                                            resDatoFUno = "S/D"
+                                            resEstadoFUno = "S/D"
                                             resRevisionFUno = 0
                                             arrResDatoFUno.push(resDatoFUno)
-                                            arrResFUno.push(resEstadoFUno)
+                                            arrResEstadoFUno.push(resEstadoFUno)
                                             arrResRevisionFUno.push(0)
                                         } %>
 
                                         <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFUno %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFUno %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFUno %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFUno %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFUno %>">
 
-                                        <span id="resDatoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoFUno %></span> |
+                                        <span id="resDatoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2"><%= resDatoFUno %></span> |
                                         
                                         <% let icon; let iconColor;
                                                 switch (resEstadoFUno) { 
                                                     case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
                                                     break; }
                                                     case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = "#008f30";
+                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
                                                     break; }        
                                                     case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
                                                     break; }
                                                     case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = "";
+                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
                                                     break; }
                                                     default: {
                                                         icon = ""; iconColor = ""; %>
@@ -541,7 +541,7 @@
 
                                                 if (icon) { %>
                                                     <span id="resEstadoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFUno%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
                                                     </span> |
                                                 <% } %>
 
@@ -555,25 +555,25 @@
                                                     
                                                     if (otMecanizadoPrimera) {
                                                         let largoArray = parseInt(largoArrayMecanizado)
-                                                        resDatoFDos = otMecanizadoPrimera[largoArray-1].fDos
-                                                        resEstadoFDos = otMecanizadoPrimera[largoArray-1].estadoFDos
+                                                        resDatoFDos = otMecanizadoPrimera[largoArray-1].fDos || 'sinDato'
+                                                        resEstadoFDos = otMecanizadoPrimera[largoArray-1].estadoFDos || 'sinDato'
                                                         resRevisionFDos = otMecanizadoPrimera[largoArray-1].revisionFDos
                                                         
                                                         if (i == 0) {
                                                             arrResDatoFDos.push(pathToMongoDBOtMecanizado.fDos)
-                                                            arrResFDos.push(pathToMongoDBOtMecanizado.estadoFDos)
+                                                            arrResEstadoFDos.push(pathToMongoDBOtMecanizado.estadoFDos)
                                                             arrResRevisionFDos.push(pathToMongoDBOtMecanizado.revisionFDos)
                                                         }
                                                         else if (i >= 1 && pathToMongoDBOtMecanizado.revisionFDos != otMecanizadoPrimera[i-1].revisionFDos) {
                                                             arrResDatoFDos.push(pathToMongoDBOtMecanizado.fDos)
-                                                            arrResFDos.push(pathToMongoDBOtMecanizado.estadoFDos)
+                                                            arrResEstadoFDos.push(pathToMongoDBOtMecanizado.estadoFDos)
                                                             arrResRevisionFDos.push(pathToMongoDBOtMecanizado.revisionFDos)
                                                         }
-                                                        valueArrayResFDos = parseInt(arrResFDos.length-1)
-                                                                                                    
+                                                        valueArrayResFDos = parseInt(arrResEstadoFDos.length-1)
+                                                    
                                                     } else {
-                                                        resDatoFDos = ''
-                                                        resEstadoFDos = ''
+                                                        resDatoFDos = 'S/D'
+                                                        resEstadoFDos = 'S/D'
                                                         resRevisionFDos = 0
                                                     }
                                                 }
@@ -581,33 +581,33 @@
                                                 resEstadoFDos = otMecanizadoPrimera[0].estadoFDos
                                         
                                         } else {
-                                            resDatoFDos = ''
-                                            resEstadoFDos = ''
+                                            resDatoFDos = 'S/D'
+                                            resEstadoFDos = 'S/D'
                                             resRevisionFDos = 0
                                             arrResDatoFDos.push(resDatoFDos)
-                                            arrResFDos.push(resEstadoFDos)
+                                            arrResEstadoFDos.push(resEstadoFDos)
                                             arrResRevisionFDos.push(0)
                                         } %>
                                         <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFDos %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFDos %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFDos %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFDos %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFDos %>">
 
-                                        <span id="resDatoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoFDos %></span> |
+                                        <span id="resDatoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2"><%= resDatoFDos %></span> |
                                         
                                         <% let icon; let iconColor;
                                                 switch (resEstadoFDos) { 
                                                     case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
                                                     break; }
                                                     case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = "#008f30";
+                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
                                                     break; }        
                                                     case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
                                                     break; }
                                                     case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = "";
+                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
                                                     break; }
                                                     default: {
                                                         icon = ""; iconColor = ""; %>
@@ -617,7 +617,7 @@
 
                                                 if (icon) { %>
                                                     <span id="resEstadoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFDos%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
                                                     </span> |
                                                 <% } %>
 

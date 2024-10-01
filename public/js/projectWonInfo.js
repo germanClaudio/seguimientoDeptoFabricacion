@@ -634,7 +634,7 @@ function messageAddDetalleOt(
                         <input type="hidden" name="ociNumberHidden" id="ociNumberHidden${numberKOci}" value="${numberOci}">
                         <input type="hidden" name="otKNumberHidden" id="otKNumberHidden${numberKOt}" value="${numberKOt}">
                         <input type="hidden" name="otNumberHidden" id="otNumberHidden${numberKOt}" value="${numberOt}">
-                        <input type="hidden" name="otQuantityHidden" id="otQuantityHidden${numberKOt}" value="${numberKOt+1}">
+                        <input type="hidden" name="otQuantityHidden" id="otQuantityHidden${numberKOt}" value="1">
                     </fieldset>
                 </form>`
 
@@ -2338,8 +2338,7 @@ async function cargarUsuario(idPermiso) {
                 const userHTML = `
                     <label>
                         <span id="${user._id}" class="badge rounded-pill ${user.permiso === `${permisoUsuario}` ? 'bg-info' : 'bg-light'} text-dark my-2">
-                            <input id="${i}" class="form-check-input mb-1" type="radio"
-                                name="radioUsuarios" value="${user.name}, ${user.lastName}">
+                            <input id="${i}" class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${user.name}, ${user.lastName}">
                             ${user.name} ${user.lastName}
                         </span>
                     </label>`;
@@ -2356,7 +2355,7 @@ async function cargarUsuario(idPermiso) {
                     ${arrayUsuariosEspecificos.join(' ')}
                 </div>
                 <hr>
-                <label>Usuarios</label>
+                <label>Otros Usuarios</label>
                 <div name='container' class="container">
                     ${arrayUsersAll.join(' ')}
                 </div>
@@ -2365,7 +2364,7 @@ async function cargarUsuario(idPermiso) {
             Swal.fire({
                 title: tituloSeguimiento,
                 html: html,
-                width: 450,
+                width: 550,
                 background: "#eee",
                 allowOutsideClick: false,
                 showCloseButton: true,
@@ -2549,7 +2548,7 @@ function getOtList(i) {
     const mappings = [
         { prefix: 'lastOtNumber', array: arrayOtNumber },
         { prefix: 'lastOpNumber', array: arrayOpNumber },
-        { prefix: 'lastOtDetalleStatus', array: arrayOtDetalleStatus },
+        { prefix: 'statusDetalle', array: arrayOtDetalleStatus },
         { prefix: 'numeroDetalle', array: arrayOtDetalle, isDetalle: true },
         { prefix: 'descripcionDetalle', array: arrayDescripcionDetalle },
         { prefix: 'detalleIdHidden', array: arrayDetalleId }
@@ -2643,6 +2642,7 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
 
                 if (document.getElementById(`resHidden${k}_${n}_${o}_${q}`) && !document.getElementById(`resEstadoHidden${k}_${n}_${o}_${q}`)) {
                     otHidden = document.getElementById(`resHidden${k}_${n}_${o}_${q}`).value;
+                    console.log('otHidden:', otHidden)
                     otRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${o}_${q}`).value;
 
                     var otRevision = otRevisionHidden.split(",").pop();
@@ -2696,7 +2696,7 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
     const keysToReturn = resultMap[qFinalX] || [];
     const result = {};
     keysToReturn.forEach(key => result[key] = arrays[key]);
-    // console.log('result: ', result)
+    console.log('result: ', result)
     return result;
 }
 
@@ -3079,7 +3079,7 @@ function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
 
                     const isInactive = res.arrayOtDetalleStatus[y] === 'Inactivo';
                     const divStyle = isInactive ? 'style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5"' : '';
-                    const divClass = isInactive ? 'pe-none contenteditable="false"' : '';
+                    const divClass = isInactive ? 'pe-none' : ''
                     
                     arrayBloqueDistribucion.push(`
                         <div class="row mx-auto ${divClass}" ${divStyle}>
@@ -3127,7 +3127,7 @@ function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
 
         const titulo = "Distribución"
         const ancho = 1550
-        const background = '#dfffff'
+        const background = '#eeeeee'
         const formulario = 'formDistribucionValues'
         const arrayDeOtNumber = res.arrayOtNumber
         const arrayDeDetalleNumber = res.arrayOtDetalle
@@ -3741,7 +3741,7 @@ function addDatoToMecanizadoPrimera(i, idTabla, qInicial, qFinal) {
         const titulo = "Mecanizado (1° Parte)"
         const formulario = 'formMecanizadoPrimeraValues'
         const ancho = 1850
-        const background = '#efefef'
+        const background = '#efefff'
         const arrayDeOtNumber = res.arrayOtNumber
         const arrayDeDetalleNumber = res.arrayOtDetalle
         const arrayDeDetalleDescription = res.arrayDescripcionDetalle
@@ -3899,7 +3899,7 @@ function addDatoToMecanizadoSegunda(i, idTabla, qInicial, qFinal) {
         const titulo = "Mecanizado (2° Parte)"
         const formulario = 'formMecanizadoSegundaValues'
         const ancho = 1850
-        const background = '#efefef'
+        const background = '#efefff'
         const arrayDeOtNumber = res.arrayOtNumber
         const arrayDeDetalleNumber = res.arrayOtDetalle
         const arrayDeDetalleDescription = res.arrayDescripcionDetalle

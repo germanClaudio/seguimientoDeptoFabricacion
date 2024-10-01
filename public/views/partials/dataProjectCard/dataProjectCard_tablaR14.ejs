@@ -20,8 +20,8 @@
             </th>
         </tr>
         <tr>
-            <th id="colData0" style="width:50vw" scope="col-1" class="text-center pb-1">Proceso R14 | Rev</th>
-            <th id="colData1" style="width:50vw" scope="col-1" class="text-center pb-1">Aprobado PM | Rev</th>
+            <th id="colData0" style="width:50vw" scope="col-1" class="text-center pb-2">Proceso R14 | Rev</th>
+            <th id="colData1" style="width:50vw" scope="col-1" class="text-center pb-2">Aprobado PM | Rev</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -36,7 +36,7 @@
                 var arrResModificadorAprobadoR14 = []; var arrResFechaAprobadoR14 = []; var arrResFechaModAprobadoR14 = []; 
 
                 if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
-                    <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
+                    <tr name="rowSelected<%=k%>_<%=n%>" class="border-bottom fw-semibold fs-6" style="height: 7vh;">
                         <% for (let q = 0; totalColDataR14 > q; q++) {
                             if (q==0) { %>
                                 <!-- Proceso R14 data Activo--> 

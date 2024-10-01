@@ -37,10 +37,10 @@
         let arrResCreadorBancoArmado = []; let arrResModificadorBancoArmado = []; let arrResFechaBancoArmado = []; let arrResFechaModBancoArmado = [];
 
         let anteriorDisabled = "disabled"; let siguienteDisabled = "disabled";
-        let resMecanizado2dCompleto = 'S/D'; let resRevisionMecanizado2dCompleto = 0;
-        let resMecanizado3dPrefinal = 'S/D'; let resRevisionMecanizado3dPrefinal = 0;
-        let resMecanizado3dFinal = 'S/D'; let resRevisionMecanizado3dFinal = 0;
-        let resBancoArmado = 'S/D'; let resRevisionBancoArmado = 0;
+        let resMecanizado2dCompleto = 'prodismo'; let resRevisionMecanizado2dCompleto = 0;
+        let resMecanizado3dPrefinal = 'prodismo'; let resRevisionMecanizado3dPrefinal = 0;
+        let resMecanizado3dFinal = 'prodismo'; let resRevisionMecanizado3dFinal = 0;
+        let resBancoArmado = 'prodismo'; let resRevisionBancoArmado = 0;
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject[n]
@@ -51,7 +51,7 @@
                 let largoArrayDistribucion = otDistribucion.length;
 
                 if (pathMongoOtProject.visible) {
-                    if (pathMongoOtProject.otStatus) { %>
+                    if (pathMongoOtProject.otStatus && pathMongoOtProject.otDetalles[o].statusDetalle) { %>
                         <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh;">
                             <% for (let q = 0; totalColDataOtDistribucion > q; q++) {
                                 if (q==0) { %>
@@ -63,7 +63,7 @@
 
                                                 if (otDistribucion) {
                                                     let largoArray = parseInt(largoArrayDistribucion)
-                                                    resMecanizado2dCompleto = otDistribucion[largoArray-1].mecanizado2dCompleto
+                                                    resMecanizado2dCompleto = otDistribucion[largoArray-1].mecanizado2dCompleto || 'prodismo'
                                                     resRevisionMecanizado2dCompleto = otDistribucion[largoArray-1].revisionMecanizado2dCompleto
                                                     
                                                     if (i == 0) {
@@ -79,7 +79,7 @@
                                                         arrResFechaOtMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.timestamp)
                                                         arrResFechaModMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.modifiedOn)
                                                         valueArrayResMecanizado2dCompleto = parseInt(arrResOtDistribucion.length-1)
-                                                                                                
+                                                
                                                 } else {
                                                     resMecanizado2dCompleto = 'prodismo'
                                                     resRevisionMecanizado2dCompleto = 0
@@ -159,7 +159,7 @@
                                                         
                                                         if (otDistribucion) {
                                                             let largoArray = parseInt(largoArrayDistribucion)
-                                                            resMecanizado3dPrefinal = otDistribucion[largoArray-1].mecanizado3dPrefinal
+                                                            resMecanizado3dPrefinal = otDistribucion[largoArray-1].mecanizado3dPrefinal || 'prodismo'
                                                             resRevisionMecanizado3dPrefinal = otDistribucion[largoArray-1].revisionMecanizado3dPrefinal
                                                             
                                                             if (i == 0) {
@@ -175,7 +175,7 @@
                                                                 arrResFechaMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.timestamp)
                                                                 arrResFechaModMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.modifiedOn)
                                                                 valueArrayResMecanizado3dPrefinal = parseInt(arrResMecanizado3dPrefinal.length-1)
-                                                                                                        
+                                                        
                                                         } else {
                                                             resMecanizado3dPrefinal = 'prodismo'
                                                             resRevisionMecanizado3dPrefinal = 0
@@ -256,7 +256,7 @@
                                                         
                                                         if (otDistribucion) {
                                                             let largoArray = parseInt(largoArrayDistribucion)
-                                                            resMecanizado3dFinal = otDistribucion[largoArray-1].mecanizado3dFinal
+                                                            resMecanizado3dFinal = otDistribucion[largoArray-1].mecanizado3dFinal || 'prodismo'
                                                             resRevisionMecanizado3dFinal = otDistribucion[largoArray-1].revisionMecanizado3dFinal
                                                             
                                                             if (i == 0) {
@@ -351,7 +351,7 @@
                                                 
                                                 if (otDistribucion) {
                                                     let largoArray = parseInt(largoArrayDistribucion)
-                                                    resBancoArmado = otDistribucion[largoArray-1].bancoArmado
+                                                    resBancoArmado = otDistribucion[largoArray-1].bancoArmado || 'prodismo'
                                                     resRevisionBancoArmado = otDistribucion[largoArray-1].revisionBancoArmado
                                                     
                                                     if (i == 0) {
@@ -452,7 +452,7 @@
 
                                                     if (otDistribucion) {
                                                         let largoArray = parseInt(largoArrayDistribucion)
-                                                        resMecanizado2dCompleto = otDistribucion[largoArray-1].mecanizado2dCompleto
+                                                        resMecanizado2dCompleto = otDistribucion[largoArray-1].mecanizado2dCompleto || 'prodismo'
                                                         resRevisionMecanizado2dCompleto = otDistribucion[largoArray-1].revisionMecanizado2dCompleto
                                                         
                                                         if (i == 0) {
@@ -464,17 +464,18 @@
                                                             arrResRevisionMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.revisionMecanizado2dCompleto)
                                                         }
                                                         valueArrayResMecanizado2dCompleto = parseInt(arrResMecanizado2dCompleto.length-1)
-                                                                                                    
+                                                    
                                                     } else {
-                                                        resMecanizado2dCompleto = ''
+                                                        resMecanizado2dCompleto = 'prodismo'
                                                         resRevisionMecanizado2dCompleto = 0
                                                     }
                                                 }
                                                 resMecanizado2dCompleto = otDistribucion[0].mecanizado2dCompleto
+
                                         } else {
-                                            resMecanizado2dCompleto = ""
+                                            resMecanizado2dCompleto = "prodismo"
                                             resRevisionMecanizado2dCompleto = 0
-                                            arrResMecanizado2dCompleto.push(0)
+                                            arrResMecanizado2dCompleto.push(resMecanizado2dCompleto)
                                             arrResRevisionMecanizado2dCompleto.push(0)
                                         } %>
                                             <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResMecanizado2dCompleto %>">
@@ -508,7 +509,7 @@
                                                     
                                                     if (otDistribucion) {
                                                         let largoArray = parseInt(largoArrayDistribucion)
-                                                        resMecanizado3dPrefinal = otDistribucion[largoArray-1].mecanizado3dPrefinal
+                                                        resMecanizado3dPrefinal = otDistribucion[largoArray-1].mecanizado3dPrefinal || 'prodismo'
                                                         resRevisionMecanizado3dPrefinal = otDistribucion[largoArray-1].revisionMecanizado3dPrefinal
                                                         
                                                         if (i == 0) {
@@ -520,9 +521,9 @@
                                                             arrResRevisionMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.revisionMecanizado3dPrefinal)
                                                         }
                                                         valueArrayResMecanizado3dPrefinal = parseInt(arrResMecanizado3dPrefinal.length-1)
-                                                                                                    
+                                                    
                                                     } else {
-                                                        resMecanizado3dPrefinal = ''
+                                                        resMecanizado3dPrefinal = 'prodismo'
                                                         resRevisionMecanizado3dPrefinal = 0
                                                     }
                                                 }
@@ -530,7 +531,7 @@
                                                 resMecanizado3dPrefinal = otDistribucion[0].mecanizado3dPrefinal
                                         
                                         } else {
-                                            resMecanizado3dPrefinal = ""
+                                            resMecanizado3dPrefinal = "prodismo"
                                             resRevisionMecanizado3dPrefinal = 0
                                             arrResMecanizado3dPrefinal.push(resMecanizado3dPrefinal)
                                             arrResRevisionMecanizado3dPrefinal.push(0)
@@ -567,7 +568,7 @@
                                                     
                                                     if (otDistribucion) {
                                                         let largoArray = parseInt(largoArrayDistribucion)
-                                                        resMecanizado3dFinal = otDistribucion[largoArray-1].mecanizado3dFinal
+                                                        resMecanizado3dFinal = otDistribucion[largoArray-1].mecanizado3dFinal || 'prodismo'
                                                         resRevisionMecanizado3dFinal = otDistribucion[largoArray-1].revisionMecanizado3dFinal
                                                         
                                                         if (i == 0) {
@@ -581,14 +582,14 @@
                                                         valueArrayResMecanizado3dFinal = parseInt(arrResMecanizado3dFinal.length-1)
                                                                                                     
                                                     } else {
-                                                        resMecanizado3dFinal = ''
+                                                        resMecanizado3dFinal = 'prodismo'
                                                         resRevisionMecanizado3dFinal = 0
                                                     }
                                                 }
                                                 resMecanizado3dFinal = otDistribucion[0].bancoArmado
                                         
                                         } else {
-                                            resMecanizado3dFinal = ""
+                                            resMecanizado3dFinal = 'prodismo'
                                             resRevisionMecanizado3dFinal = 0
                                             arrResMecanizado3dFinal.push(resMecanizado3dFinal)
                                             arrResRevisionMecanizado3dFinal.push(0)
@@ -625,7 +626,7 @@
                                                     
                                                     if (otDistribucion) {
                                                         let largoArray = parseInt(largoArrayDistribucion)
-                                                        resBancoArmado = otDistribucion[largoArray-1].bancoArmado
+                                                        resBancoArmado = otDistribucion[largoArray-1].bancoArmado || 'prodismo'
                                                         resRevisionBancoArmado = otDistribucion[largoArray-1].revisionBancoArmado
                                                         
                                                         if (i == 0) {
@@ -639,15 +640,14 @@
                                                         valueArrayResBancoArmado = parseInt(arrResBancoArmado.length-1)
                                                                                                     
                                                     } else {
-                                                        resBancoArmado = ''
+                                                        resBancoArmado = 'prodismo'
                                                         resRevisionBancoArmado = 0
                                                     }
                                                 }
-
                                                 resBancoArmado = otDistribucion[0].bancoArmado
                                         
                                         } else {
-                                            resBancoArmado = ""
+                                            resBancoArmado = 'prodismo'
                                             resRevisionBancoArmado = 0
                                             arrResBancoArmado.push(resBancoArmado)
                                             arrResRevisionBancoArmado.push(0)

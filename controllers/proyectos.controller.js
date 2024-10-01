@@ -204,49 +204,42 @@ class ProjectsController {
                     arrayOciStatus=[],
                     arrayOciImages=[]
 
-                for (const key in req.body) {
-                    if (key.startsWith('ociNumber')) {
-                        arrayOciNumber.push(req.body[key])
+                    const prefixes = [
+                        { prefix: 'ociNumber', array: arrayOciNumber },
+                        { prefix: 'ociDescription', array: arrayOciDescription },
+                        { prefix: 'ociAlias', array: arrayOciAlias },
+                        { prefix: 'ociStatus', array: arrayOciStatus },
+                        { prefix: 'imageOciFileName', array: arrayOciImages }
+                    ];
+                
+                    for (const key in req.body) {
+                        const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                        match ? match.array.push(req.body[key]) : null
                     }
-                    else if (key.startsWith('ociDescription')) {
-                        arrayOciDescription.push(req.body[key])
-                    }
-                    else if (key.startsWith('ociAlias')) {
-                        arrayOciAlias.push(req.body[key])
-                    }
-                    else if (key.startsWith('ociStatus')) {
-                        arrayOciStatus.push(req.body[key])
-                    }
-                    else if (key.startsWith('imageOciFileName')) {
-                        arrayOciImages.push(req.body[key])
-                    }
-                }
 
                 const ociKNumber = 0
                 let invalidOciNumber = true
                 let indexArrayOciNumber = 0
                 for (let h=0; h<arrayOciNumber.length; h++) {
                     const ociNumberValid = await this.projects.selectOciByOciNumber(arrayOciNumber[h], ociKNumber)
-//                     const otherOciNumbers = proyecto[0].project[0].oci.map(oci => oci.ociNumber);
-//                     console.log('otherOciNumbers ', otherOciNumbers)
-//                     if (otherOciNumbers.includes(parseInt(ociNumberValid))) {
-//                         invalidOciNumber = false
-//                         indexArrayOciNumber = h
-//                         break;
-//                     }
+                    const otherOciNumbers = proyecto[0].project[0].oci.map(oci => oci.ociNumber);
+                    console.log('otherOciNumbers ', otherOciNumbers)
+                    if (otherOciNumbers.includes(parseInt(ociNumberValid))) {
+                        invalidOciNumber = false
+                        indexArrayOciNumber = h
+                        break;
+                    }
                 }
             
                 if (!invalidOciNumber) {
-                    const err = new Error (`Ya existe una OCI# ${arrayOciNumber[indexArrayOciNumber]} o Numero de OCI inválido!`)
-                    err.statusCode = 400
-                    return next(err);
+                    catchError401(req, res, next)
                 }
 
                 let arrayOciProjects = []
                 const ociQuantity = parseInt(req.body.ociQuantity)
 
-                if (ociQuantity <= 0) {
-                    return catchError400_1(req, res, next)
+                if (!ociQuantity) {
+                    catchError400_1(req, res, next)
 
                 } else {
                     for(let i=0; i<ociQuantity; i++) {
@@ -344,7 +337,6 @@ class ProjectsController {
             } catch (err) {
                 catchError500(err, req, res, next)
             }
-            
         })
     }
 
@@ -425,10 +417,7 @@ class ProjectsController {
         
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                if (match) {
-                    match.array.push(req.body[key]);
-                    break;
-                }
+                match ? match.array.push(req.body[key]) : null
             }
 
             const otInformationEmpty = [{
@@ -875,7 +864,7 @@ class ProjectsController {
                     if (otherOciNumbers.includes(parseInt(ociNumberValid))) {
                         invalidOciNumber = false
                         indexArrayOciNumber = h
-                        break;
+                        
                     }
                 }
             
@@ -1453,10 +1442,7 @@ class ProjectsController {
             
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                if (match) {
-                    match.array.push(req.body[key]);
-                    break;
-                }
+                match ? match.array.push(req.body[key]) : null
             }
             
             let arrayInfoAddedToOt = []
@@ -1551,9 +1537,7 @@ class ProjectsController {
             
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                if (match) {
-                    match.array.push(req.body[key]);
-                }
+                match ? match.array.push(req.body[key]) : null
             }
 
             let arrayInfoAddedToOt = []
@@ -1655,10 +1639,7 @@ class ProjectsController {
             
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                if (match) {
-                    match.array.push(req.body[key]);
-                    break;
-                }
+                match ? match.array.push(req.body[key]) : null
             }
 
             let arrayInfoAddedToOt = []
@@ -1764,10 +1745,7 @@ class ProjectsController {
             
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                if (match) {
-                    match.array.push(req.body[key]);
-                    break;
-                }
+                match ? match.array.push(req.body[key]) : null
             }
             
             let arrayInfoAddedToOt = []
@@ -1873,10 +1851,7 @@ class ProjectsController {
             
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                if (match) {
-                    match.array.push(req.body[key]);
-                    break;
-                }
+                match ? match.array.push(req.body[key]) : null
             }    
 
             let arrayInfoAddedToOt = []
@@ -1974,10 +1949,7 @@ class ProjectsController {
             
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                if (match) {
-                    match.array.push(req.body[key]);
-                    break;
-                }
+                match ? match.array.push(req.body[key]) : null
             }    
 
             let arrayInfoAddedToOt = []
@@ -2071,10 +2043,7 @@ class ProjectsController {
             
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                if (match) {
-                    match.array.push(req.body[key]);
-                    break;
-                }
+                match ? match.array.push(req.body[key]) : null
             }    
         
             let arrayInfoAddedToOt = []
@@ -2180,11 +2149,8 @@ class ProjectsController {
             
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                if (match) {
-                    match.array.push(req.body[key]);
-                    break;
-                }
-            }    
+                match ? match.array.push(req.body[key]) : null
+            }
 
             let arrayInfoAddedToOt = []
             for (let i=0; i<otQuantity; i++ ) {
@@ -2291,10 +2257,7 @@ class ProjectsController {
             
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                if (match) {
-                    match.array.push(req.body[key]);
-                    break;
-                }
+                match ? match.array.push(req.body[key]) : null
             }
 
             let arrayInfoAddedToOt = []
@@ -2400,10 +2363,7 @@ class ProjectsController {
             
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                if (match) {
-                    match.array.push(req.body[key]);
-                    break;
-                }
+                match ? match.array.push(req.body[key]) : null
             }
 
             let arrayInfoAddedToOt = []
@@ -2509,10 +2469,7 @@ class ProjectsController {
             
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                if (match) {
-                    match.array.push(req.body[key]);
-                    break;
-                }
+                match ? match.array.push(req.body[key]) : null
             }
 
             let arrayInfoAddedToOt = []
@@ -2610,10 +2567,7 @@ class ProjectsController {
             
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                if (match) {
-                    match.array.push(req.body[key]);
-                    break;
-                }
+                match ? match.array.push(req.body[key]) : null
             }
 
             let arrayInfoAddedToOt = []

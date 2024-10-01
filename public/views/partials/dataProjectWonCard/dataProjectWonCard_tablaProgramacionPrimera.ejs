@@ -28,13 +28,13 @@
     <tbody class="table-group-divider">
         
         <%
-        let arrResDatoRt = []; let arrResRt = []; let valueArrayResRt = 0; let arrResRevisionRt = [];
+        let arrResDatoRt = []; let arrResEstadoRt = []; let valueArrayResRt = 0; let arrResRevisionRt = [];
         let arrResCreadorRt = []; let arrResModificadorRt = []; let arrResFechaRt = []; let arrResFechaModRt = [];
 
-        let arrResDatoPreparacionGeo = []; let arrResPreparacionGeo = []; let valueArrayResPreparacionGeo = 0; let arrResRevisionPreparacionGeo = [];
+        let arrResDatoPreparacionGeo = []; let arrResEstadoPreparacionGeo = []; let valueArrayResPreparacionGeo = 0; let arrResRevisionPreparacionGeo = [];
         let arrResCreadorPreparacionGeo = []; let arrResModificadorPreparacionGeo = []; let arrResFechaPreparacionGeo = []; let arrResFechaModPreparacionGeo = [];
 
-        let arrResDatoPrograma2d = []; let arrResPrograma2d = []; let valueArrayResPrograma2d = 0; let arrResRevisionPrograma2d = [];
+        let arrResDatoPrograma2d = []; let arrResEstadoPrograma2d = []; let valueArrayResPrograma2d = 0; let arrResRevisionPrograma2d = [];
         let arrResCreadorPrograma2d = []; let arrResModificadorPrograma2d = []; let arrResFechaPrograma2d = []; let arrResFechaModPrograma2d = [];
 
         let anteriorDisabled = "disabled";
@@ -52,7 +52,7 @@
                 let largoArrayProgramacion = otProgramacionPrimera.length;
 
                 if (pathMongoOtProject.visible) {
-                    if (pathMongoOtProject.otStatus) { %>
+                    if (pathMongoOtProject.otStatus && pathMongoOtProject.otDetalles[o].statusDetalle) { %>
                         <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh;">
                             <% for (let q = 4; totalColDataProgramacionPrimera > q; q++) {
                                 if (q==4) { %>
@@ -70,12 +70,12 @@
                                                             
                                                             if (i == 0) {
                                                                 arrResDatoRt.push(pathToMongoDBOtProgramacion.rt)
-                                                                arrResRt.push(pathToMongoDBOtProgramacion.estadoRt)
+                                                                arrResEstadoRt.push(pathToMongoDBOtProgramacion.estadoRt)
                                                                 arrResRevisionRt.push(pathToMongoDBOtProgramacion.revisionRt)
                                                             }
                                                             else if (i >= 1 && pathToMongoDBOtProgramacion.revisionRt != otProgramacionPrimera[i-1].revisionRt) {
                                                                 arrResDatoRt.push(pathToMongoDBOtProgramacion.rt)
-                                                                arrResRt.push(pathToMongoDBOtProgramacion.estadoRt)
+                                                                arrResEstadoRt.push(pathToMongoDBOtProgramacion.estadoRt)
                                                                 arrResRevisionRt.push(pathToMongoDBOtProgramacion.revisionRt)
                                                             }
                                                                 arrResCreadorRt.push(pathToMongoDBOtProgramacion.creator[0].username)
@@ -109,7 +109,7 @@
                                             resEstadoRt = "S/D"
                                             resRevisionRt = 0
                                             arrResDatoRt.push(resDatoRt)
-                                            arrResRt.push(resEstadoRt)
+                                            arrResEstadoRt.push(resEstadoRt)
                                             arrResRevisionRt.push(resRevisionRt)
                                             valueArrayResRt = 0
                                         } %>
@@ -121,7 +121,7 @@
                                                     ><i class="fa-solid fa-arrow-left"></i>
                                                 </button>
                                                 <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoRt %>">
-                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRt %>">
+                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoRt %>">
                                                 <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResRt %>">
                                                 <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionRt %>">
                                                 <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorRt %>">
@@ -134,26 +134,26 @@
                                                 <% let icon; let iconColor;
                                                 switch (resEstadoRt) { 
                                                     case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
                                                     break; }
                                                     case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = "#008f30";
+                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
                                                     break; }        
                                                     case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
                                                     break; }
                                                     case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = "";
+                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
                                                     break; }
                                                     default: {
-                                                        icon = ""; iconColor = ""; %>
+                                                        icon = ""; iconColor = ''; %>
                                                         <span id="resEstadoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                                     <% break; }
                                                 }
 
                                                 if (icon) { %>
                                                     <span id="resEstadoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoRt%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
                                                     </span> |
                                                 <% } %>
 
@@ -180,20 +180,20 @@
                                                             
                                                             if (i == 0) {
                                                                 arrResDatoPreparacionGeo.push(pathToMongoDBOtProgramacion.preparacionGeo)
-                                                                arrResPreparacionGeo.push(pathToMongoDBOtProgramacion.estadoPreparacionGeo)
+                                                                arrResEstadoPreparacionGeo.push(pathToMongoDBOtProgramacion.estadoPreparacionGeo)
                                                                 arrResRevisionPreparacionGeo.push(pathToMongoDBOtProgramacion.revisionPreparacionGeo)
                                                             }
                                                             else if (i >= 1 && pathToMongoDBOtProgramacion.revisionPreparacionGeo != otProgramacionPrimera[i-1].revisionPreparacionGeo) {
                                                                 arrResDatoPreparacionGeo.push(pathToMongoDBOtProgramacion.preparacionGeo)
-                                                                arrResPreparacionGeo.push(pathToMongoDBOtProgramacion.estadoPreparacionGeo)
+                                                                arrResEstadoPreparacionGeo.push(pathToMongoDBOtProgramacion.estadoPreparacionGeo)
                                                                 arrResRevisionPreparacionGeo.push(pathToMongoDBOtProgramacion.revisionPreparacionGeo)
                                                             }
                                                                 arrResCreadorPreparacionGeo.push(pathToMongoDBOtProgramacion.creator[0].username)
                                                                 arrResModificadorPreparacionGeo.push(pathToMongoDBOtProgramacion.modificator[0].username)
                                                                 arrResFechaPreparacionGeo.push(pathToMongoDBOtProgramacion.timestamp)
                                                                 arrResFechaModPreparacionGeo.push(pathToMongoDBOtProgramacion.modifiedOn)
-                                                                valueArrayResPreparacionGeo = parseInt(arrResPreparacionGeo.length-1)
-                                                                                                        
+                                                                valueArrayResPreparacionGeo = parseInt(arrResEstadoPreparacionGeo.length-1)
+                                                        
                                                         } else {
                                                             resDatoPreparacionGeo = 'S/D'
                                                             resEstadoPreparacionGeo = 'S/D'
@@ -219,7 +219,7 @@
                                                     resEstadoPreparacionGeo = "S/D"
                                                     resRevisionPreparacionGeo = 0
                                                     arrResDatoPreparacionGeo.push(resDatoPreparacionGeo)
-                                                    arrResPreparacionGeo.push(resEstadoPreparacionGeo)
+                                                    arrResEstadoPreparacionGeo.push(resEstadoPreparacionGeo)
                                                     arrResRevisionPreparacionGeo.push(resRevisionPreparacionGeo)
                                                     valueArrayResPreparacionGeo = 0
                                             } %>
@@ -231,7 +231,7 @@
                                                     ><i class="fa-solid fa-arrow-left"></i>
                                                 </button>
                                                 <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPreparacionGeo %>">
-                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResPreparacionGeo %>">
+                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPreparacionGeo %>">
                                                 <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPreparacionGeo %>">
                                                 <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPreparacionGeo %>">
                                                 <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorPreparacionGeo %>">
@@ -244,26 +244,26 @@
                                                 <% let icon; let iconColor;
                                                 switch (resEstadoPreparacionGeo) { 
                                                     case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
                                                     break; }
                                                     case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = "#008f30";
+                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
                                                     break; }        
                                                     case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
                                                     break; }
                                                     case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = "";
+                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
                                                     break; }
                                                     default: {
-                                                        icon = ""; iconColor = ""; %>
+                                                        icon = ""; iconColor = ''; %>
                                                         <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                                     <% break; }
                                                 }
 
                                                 if (icon) { %>
                                                     <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPreparacionGeo%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
                                                     </span> |
                                                 <% } %>
 
@@ -291,19 +291,19 @@
                                                             
                                                             if (i == 0) {
                                                                 arrResDatoPrograma2d.push(pathToMongoDBOtProgramacion.programa2d)
-                                                                arrResPrograma2d.push(pathToMongoDBOtProgramacion.estadoPrograma2d)
+                                                                arrResEstadoPrograma2d.push(pathToMongoDBOtProgramacion.estadoPrograma2d)
                                                                 arrResRevisionPrograma2d.push(pathToMongoDBOtProgramacion.revisionPrograma2d)
                                                             }
                                                             else if (i >= 1 && pathToMongoDBOtProgramacion.revisionPrograma2d != otProgramacionPrimera[i-1].revisionPrograma2d) {
                                                                 arrResDatoPrograma2d.push(pathToMongoDBOtProgramacion.programa2d)
-                                                                arrResPrograma2d.push(pathToMongoDBOtProgramacion.estadoPrograma2d)
+                                                                arrResEstadoPrograma2d.push(pathToMongoDBOtProgramacion.estadoPrograma2d)
                                                                 arrResRevisionPrograma2d.push(pathToMongoDBOtProgramacion.revisionPrograma2d)
                                                             }
                                                                 arrResCreadorPrograma2d.push(pathToMongoDBOtProgramacion.creator[0].username)
                                                                 arrResModificadorPrograma2d.push(pathToMongoDBOtProgramacion.modificator[0].username)
                                                                 arrResFechaPrograma2d.push(pathToMongoDBOtProgramacion.timestamp)
                                                                 arrResFechaModPrograma2d.push(pathToMongoDBOtProgramacion.modifiedOn)
-                                                                valueArrayResPrograma2d = parseInt(arrResPrograma2d.length-1)
+                                                                valueArrayResPrograma2d = parseInt(arrResEstadoPrograma2d.length-1)
 
                                                         } else {
                                                             resDatoPrograma2d = 'S/D'
@@ -330,7 +330,7 @@
                                                     resEstadoPrograma2d = "S/D"
                                                     resRevisionPrograma2d = 0
                                                     arrResDatoPrograma2d.push(resDatoPrograma2d)
-                                                    arrResPrograma2d.push(resEstadoPrograma2d)
+                                                    arrResEstadoPrograma2d.push(resEstadoPrograma2d)
                                                     arrResRevisionPrograma2d.push(resRevisionPrograma2d)
                                                     valueArrayResPrograma2d = 0
                                             } %>
@@ -342,7 +342,7 @@
                                                     ><i class="fa-solid fa-arrow-left"></i>
                                                 </button>
                                                 <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPrograma2d %>">
-                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResPrograma2d %>">
+                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPrograma2d %>">
                                                 <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPrograma2d %>">
                                                 <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPrograma2d %>">
                                                 <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorPrograma2d %>">
@@ -355,26 +355,26 @@
                                                 <% let icon; let iconColor;
                                                 switch (resEstadoPrograma2d) { 
                                                     case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
                                                     break; }
                                                     case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = "#008f30";
+                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
                                                     break; }        
                                                     case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
                                                     break; }
                                                     case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = "";
+                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
                                                     break; }
                                                     default: {
-                                                        icon = ""; iconColor = ""; %>
+                                                        icon = ""; iconColor = ''; %>
                                                         <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                                     <% break; }
                                                 }
 
                                                 if (icon) { %>
                                                     <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma2d%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
                                                     </span> |
                                                 <% } %>
 
@@ -392,7 +392,7 @@
                         </tr>
                     <% } else { %>
                         <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="pe-none border-bottom" style="height: 5vh; background-color: #dedede;">
-                            <% for (let q = 4; totalColDataOtProgramacionPrimera > q; q++) {
+                            <% for (let q = 4; totalColDataProgramacionPrimera > q; q++) {
                                 if (q==4) { %>
                                     <!-- Requerimientos Tecnicos data Inactivo -->
                                     <td class="text-center align-middle">
@@ -401,24 +401,24 @@
                                                 for (let i = 0; largoArrayProgramacion > i; i++) {
                                                     if (otProgramacionPrimera) {
                                                         let largoArray = parseInt(largoArrayProgramacion)
-                                                        resDatoRt = otProgramacionPrimera[largoArray-1].rt
+                                                        resDatoRt = otProgramacionPrimera[largoArray-1].rt || 'sinDato'
                                                         resEstadoRt = otProgramacionPrimera[largoArray-1].estadoRt
                                                         resRevisionRt = otProgramacionPrimera[largoArray-1].revisionRt
                                                         
                                                         if (i == 0) {
                                                             arrResDatoRt.push(pathToMongoDBOtProgramacion.rt)
-                                                            arrResRt.push(pathToMongoDBOtProgramacion.Rt)
+                                                            arrResEstadoRt.push(pathToMongoDBOtProgramacion.Rt)
                                                             arrResRevisionRt.push(pathToMongoDBOtProgramacion.revisionRt)
                                                         }
                                                         else if (i >= 1 && pathToMongoDBOtProgramacion.revisionRt != otProgramacionPrimera[i-1].revisionRt) {
                                                             arrResDatoRt.push(pathToMongoDBOtProgramacion.rt)
-                                                            arrResRt.push(pathToMongoDBOtProgramacion.estadoRt)
+                                                            arrResEstadoRt.push(pathToMongoDBOtProgramacion.estadoRt)
                                                             arrResRevisionRt.push(pathToMongoDBOtProgramacion.revisionRt)
                                                         }
-                                                        valueArrayResRt = parseInt(arrResRt.length-1)
-                                                                                                    
+                                                        valueArrayResRt = parseInt(arrResEstadoRt.length-1)
+                                                    
                                                     } else {
-                                                        resDatoRt = ''
+                                                        resDatoRt = 'S/D'
                                                         resEstadoRt = ''
                                                         resRevisionRt = 0
                                                     }
@@ -427,43 +427,43 @@
                                                 resEstadoRt = otProgramacionPrimera[0].estadoRt
 
                                         } else {
-                                            resDatoRt = ''
+                                            resDatoRt = 'S/D'
                                             resEstadoRt = ''
                                             resRevisionRt = 0
                                             arrResDatoRt.push(resDatoRt)
-                                            arrResEstado.push(resEstadoRt)
+                                            arrResEstadoRt.push(resEstadoRt)
                                             arrResRevisionRt.push(0)
                                         } %>
                                             <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoRt %>">
-                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRt %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoRt %>">
                                             <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResRt %>">
                                             <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionRt %>">
                                         
-                                            <span id="resDatoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoRt %></span> |
+                                            <span id="resDatoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2"><%= resDatoRt %></span> |
 
                                             <% let icon; let iconColor;
                                             switch (resEstadoRt) { 
                                                 case "enProceso": {
-                                                    icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                    icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
                                                 break; }
                                                 case "terminado": {
-                                                    icon = "fa-circle-check"; iconColor = "#008f30";
+                                                    icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
                                                 break; }        
                                                 case "suspendido": {
-                                                    icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                    icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
                                                 break; }
                                                 case "noAplica": {
-                                                    icon = "fa-ban"; iconColor = "";
+                                                    icon = "fa-ban"; iconColor = `style="color:#000000"`;
                                                 break; }
                                                 default: {
-                                                    icon = ""; iconColor = ""; %>
+                                                    icon = ""; iconColor = ''; %>
                                                     <span id="resEstadoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                                 <% break; }
                                             }
 
                                             if (icon) { %>
                                                 <span id="resEstadoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoRt%>">
-                                                    <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                    <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
                                                 </span> |
                                             <% } %>
 
@@ -477,24 +477,24 @@
                                                     
                                                     if (otProgramacionPrimera) {
                                                         let largoArray = parseInt(largoArrayProgramacion)
-                                                        resDatoPreparacionGeo = otProgramacionPrimera[largoArray-1].preparacionGeo
+                                                        resDatoPreparacionGeo = otProgramacionPrimera[largoArray-1].preparacionGeo || 'sinDato'
                                                         resEstadoPreparacionGeo = otProgramacionPrimera[largoArray-1].preparacionGeo
                                                         resRevisionPreparacionGeo = otProgramacionPrimera[largoArray-1].revisionPreparacionGeo
                                                         
                                                         if (i == 0) {
                                                             arrResDatoPreparacionGeo.push(pathToMongoDBOtProgramacion.preparacionGeo)
-                                                            arrResPreparacionGeo.push(pathToMongoDBOtProgramacion.preparacionGeo)
+                                                            arrResEstadoPreparacionGeo.push(pathToMongoDBOtProgramacion.preparacionGeo)
                                                             arrResRevisionPreparacionGeo.push(pathToMongoDBOtProgramacion.revisionPreparacionGeo)
                                                         }
                                                         else if (i >= 1 && pathToMongoDBOtProgramacion.revisionPreparacionGeo != otProgramacionPrimera[i-1].revisionPreparacionGeo) {
                                                             arrResDatoPreparacionGeo.push(pathToMongoDBOtProgramacion.preparacionGeo)
-                                                            arrResPreparacionGeo.push(pathToMongoDBOtProgramacion.preparacionGeo)
+                                                            arrResEstadoPreparacionGeo.push(pathToMongoDBOtProgramacion.preparacionGeo)
                                                             arrResRevisionPreparacionGeo.push(pathToMongoDBOtProgramacion.revisionPreparacionGeo)
                                                         }
-                                                        valueArrayResPreparacionGeo = parseInt(arrResPreparacionGeo.length-1)
+                                                        valueArrayResPreparacionGeo = parseInt(arrResEstadoPreparacionGeo.length-1)
 
                                                     } else {
-                                                        resDatoPreparacionGeo = ''
+                                                        resDatoPreparacionGeo = 'S/D'
                                                         resEstadoPreparacionGeo = ''
                                                         resRevisionPreparacionGeo = 0
                                                     }
@@ -503,44 +503,44 @@
                                                 resEstadoPreparacionGeo = otProgramacionPrimera[0].estadoPreparacionGeo
                                         
                                         } else {
-                                            resDatoPreparacionGeo = ""
+                                            resDatoPreparacionGeo = 'S/D'
                                             resEstadoPreparacionGeo = ""
                                             resRevisionPreparacionGeo = 0
                                             arrResDatoPreparacionGeo.push(resDatoPreparacionGeo)
-                                            arrResPreparacionGeo.push(resEstadoPreparacionGeo)
+                                            arrResEstadoPreparacionGeo.push(resEstadoPreparacionGeo)
                                             arrResRevisionPreparacionGeo.push(0)
                                         } %>
 
                                         <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPreparacionGeo %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResPreparacionGeo %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPreparacionGeo %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPreparacionGeo %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPreparacionGeo %>">
 
-                                        <span id="resDatoPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoPreparacionGeo %></span> |
+                                        <span id="resDatoPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2"><%= resDatoPreparacionGeo %></span> |
                                         
                                         <% let icon; let iconColor;
                                                 switch (resEstadoPreparacionGeo) { 
                                                     case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
                                                     break; }
                                                     case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = "#008f30";
+                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
                                                     break; }        
                                                     case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
                                                     break; }
                                                     case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = "";
+                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
                                                     break; }
                                                     default: {
-                                                        icon = ""; iconColor = ""; %>
+                                                        icon = ""; iconColor = ''; %>
                                                         <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                                     <% break; }
                                                 }
 
                                                 if (icon) { %>
                                                     <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPreparacionGeo%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
                                                     </span> |
                                                 <% } %>
 
@@ -554,24 +554,24 @@
                                                     
                                                     if (otProgramacionPrimera) {
                                                         let largoArray = parseInt(largoArrayProgramacion)
-                                                        resDatoPrograma2d = otProgramacionPrimera[largoArray-1].programa2d
+                                                        resDatoPrograma2d = otProgramacionPrimera[largoArray-1].programa2d || 'sinDato'
                                                         resEstadoPrograma2d = otProgramacionPrimera[largoArray-1].estadoPrograma2d
                                                         resRevisionPrograma2d = otProgramacionPrimera[largoArray-1].revisionPrograma2d
                                                         
                                                         if (i == 0) {
                                                             arrResDatoPrograma2d.push(pathToMongoDBOtProgramacion.programa2d)
-                                                            arrResPrograma2d.push(pathToMongoDBOtProgramacion.estadoPrograma2d)
+                                                            arrResEstadoPrograma2d.push(pathToMongoDBOtProgramacion.estadoPrograma2d)
                                                             arrResRevisionPrograma2d.push(pathToMongoDBOtProgramacion.revisionPrograma2d)
                                                         }
                                                         else if (i >= 1 && pathToMongoDBOtProgramacion.revisionPrograma2d != otProgramacionPrimera[i-1].revisionPrograma2d) {
                                                             arrResDatoPrograma2d.push(pathToMongoDBOtProgramacion.programa2d)
-                                                            arrResPrograma2d.push(pathToMongoDBOtProgramacion.estadoPrograma2d)
+                                                            arrResEstadoPrograma2d.push(pathToMongoDBOtProgramacion.estadoPrograma2d)
                                                             arrResRevisionPrograma2d.push(pathToMongoDBOtProgramacion.revisionPrograma2d)
                                                         }
-                                                        valueArrayResPrograma2d = parseInt(arrResPrograma2d.length-1)
+                                                        valueArrayResPrograma2d = parseInt(arrResEstadoPrograma2d.length-1)
                                                                                                     
                                                     } else {
-                                                        resDatoPrograma2d = ''
+                                                        resDatoPrograma2d = 'S/D'
                                                         resEstadoPrograma2d = ''
                                                         resRevisionPrograma2d = 0
                                                     }
@@ -580,43 +580,43 @@
                                                 resEstadoPrograma2d = otProgramacionPrimera[0].estadoPrograma2d
                                         
                                         } else {
-                                            resDatoPrograma2d = ''
+                                            resDatoPrograma2d = 'S/D'
                                             resEstadoPrograma2d = ''
                                             resRevisionPrograma2d = 0
                                             arrResDatoPrograma2d.push(resDatoPrograma2d)
-                                            arrResPrograma2d.push(resEstadoPrograma2d)
+                                            arrResEstadoPrograma2d.push(resEstadoPrograma2d)
                                             arrResRevisionPrograma2d.push(0)
                                         } %>
                                         <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPrograma2d %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResPrograma2d %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPrograma2d %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPrograma2d %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPrograma2d %>">
 
-                                        <span id="resDatoPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoPrograma2d %></span> |
+                                        <span id="resDatoPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2"><%= resDatoPrograma2d %></span> |
                                         
                                         <% let icon; let iconColor;
                                                 switch (resEstadoPrograma2d) { 
                                                     case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = "#b09b12";
+                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
                                                     break; }
                                                     case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = "#008f30";
+                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
                                                     break; }        
                                                     case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = "#c40000";
+                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
                                                     break; }
                                                     case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = "";
+                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
                                                     break; }
                                                     default: {
-                                                        icon = ""; iconColor = ""; %>
+                                                        icon = ""; iconColor = ''; %>
                                                         <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
                                                     <% break; }
                                                 }
 
                                                 if (icon) { %>
                                                     <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma2d%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" style="color: <%= iconColor %>"></i>
+                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
                                                     </span> |
                                                 <% } %>
 

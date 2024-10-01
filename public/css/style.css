@@ -488,8 +488,8 @@ html body .display-7 {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 4% !important; /***Ancho de link***/
-  height: 25% !important; /***Alto de link***/
+  width: 2vw !important; /***Ancho de link***/
+  height: 7vh !important; /***Alto de link***/
   padding: 0;
   color: #fff;
   text-align: center;
@@ -1159,6 +1159,15 @@ form.dropzone {
   box-shadow:0px 0px 5px 5px #55555542;
 }
 /*********************************/
+
+.text-center
+.align-middle
+.overflow-ellipsis {
+  max-width: 8vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 #avatarUser {
   object-fit: cover;

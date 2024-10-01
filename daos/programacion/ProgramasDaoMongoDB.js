@@ -1264,7 +1264,6 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
 
     // Add new Detalle to Ot
     async addDetailToOtProject(projectId, ociNumberK, otQuantity, otNumberK, arrayDetalleAddedToOt) {
-        const ot_Quantity = parseInt(otQuantity)
         const idProjectTarget = projectId 
         if (idProjectTarget) {
             try {
@@ -1272,7 +1271,7 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
                 if (itemMongoDB) {
 
                     let arrayQueryQuantity = []
-                    for (let i = 0; i < ot_Quantity; i++) {                            
+                    for (let i = 0; i < arrayDetalleAddedToOt.length; i++) {                            
                         let updateQuery = {
                                 numeroDetalle: arrayDetalleAddedToOt[i].detalleNumber,
                                 descripcionDetalle: arrayDetalleAddedToOt[i].detalleDescription,

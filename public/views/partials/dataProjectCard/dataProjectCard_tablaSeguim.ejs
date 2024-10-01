@@ -9,34 +9,34 @@
             <th colspan="1" class="text-center pb-1"> <div class="mb-3">EXTERNO</div></th>
         </tr>
         <tr>
-            <th style="width:30vw" scope="col-1" class="text-center">Diseño</th>
-            <th style="width:30vw" scope="col-1" class="text-center">Simulación</th>
-            <th style="width:30vw" scope="col-1" class="text-center">Proveedor</th>
+            <th style="width:30vw" scope="col-1" class="text-center pb-1">Diseño</th>
+            <th style="width:30vw" scope="col-1" class="text-center pb-1">Simulación</th>
+            <th style="width:30vw" scope="col-1" class="text-center pb-1">Proveedor</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
         <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length> n; n++) { 
             if (proyecto[m].project[j].oci[k].otProject[n].visible) {
                 if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
-                    <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
-                        <td class="text-center">
+                    <tr name="rowSelected<%=k%>_<%=n%>" class="border-bottom fw-semibold fs-6" style="height: 7vh;">
+                        <td class="text-center align-middle overflow-ellipsis">
                             <small id="otDesign<%=k%>_<%=n%>" class="text-dark align-middle">
                                 <%= proyecto[m].project[j].oci[k].otProject[n].otDesign %>
                             </small>
                         </td>
-                        <td class="text-center align-middle">
+                        <td class="text-center align-middle overflow-ellipsis">
                             <small id="otSimulation<%=k%>_<%=n%>" class="text-dark">
                                 <%= proyecto[m].project[j].oci[k].otProject[n].otSimulation %>
                             </small>
                         </td>
-                        <td class="text-center align-middle">
+                        <td class="text-center align-middle overflow-ellipsis">
                             <small id="otSupplier<%=k%>_<%=n%>" class="text-dark">
                                 <%= proyecto[m].project[j].oci[k].otProject[n].otSupplier %>
                             </small>
                         </td>
                     </tr>   
                 <% } else { %>
-                    <tr style="height: 7vh; background-color: #dedede;">
+                    <tr class="border-bottom fw-semibold fs-6" style="height: 7vh; background-color: #dedede;">
                         <td class="text-center">
                             <small id="otDesign<%=k%>_<%=n%>" class="text-dark align-middle">
                                 <%= proyecto[m].project[j].oci[k].otProject[n].otDesign %>

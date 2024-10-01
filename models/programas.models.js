@@ -281,9 +281,8 @@ let otMecanizadoSegundaSchema = new Schema({
 
 // ------- Programacion ---------
 let ProgramacionSchema = new Schema({
-    _id: {
+    detailId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Detalles'
     },
     numeroDetalle: { 
         type: String,

@@ -1,12 +1,11 @@
-let arrBtnAnteriorR14 = []
-let arrBtnSiguienteR14 = []
+let arrBtnAnteriorR14 = [], arrBtnSiguienteR14 = []
 
 for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de proyectos por Cliente
-
     for (let p = 0; p<varLimMaxOtProyecto; p++) { //variable limite maximo de Ot por proyecto
-        
         for (let q = 0; q<varLimMaxOtProyecto; q++) {
-            if (document.getElementById(`btnAnteriorSiguienteR14${i}_${p}_${q}`)) {
+            const btnId = `btnAnteriorSiguienteR14${i}_${p}_${q}`;
+            const btnElement = document.getElementById(btnId);
+            if ( btnElement) {
                 arrBtnAnteriorR14.push(i)
                 arrBtnSiguienteR14.push(i)
             }
@@ -78,59 +77,42 @@ function mostrarElementoR14(
     let containerBtnAnteriorSiguienteR14 = document.getElementById(`btnAnteriorSiguienteR14${kValue}`)
     
     function colorSpanR14(spanElementR14) {
-        let resultColor
-        let resultTextColor
-        spanElementR14.classList.remove("bg-success")
-        spanElementR14.classList.remove("bg-danger")
-        spanElementR14.classList.remove("bg-warning")
-        spanElementR14.classList.remove("bg-secondary")
-        spanElementR14.classList.remove("bg-info")
-        spanElementR14.classList.remove("text-white")
-        spanElementR14.classList.remove("text-dark")
-
-        if (spanElementR14.innerText == "OK") {
-           resultColor = spanElementR14.classList.add("bg-success")
-           resultTextColor = spanElementR14.classList.add("text-white")
-        } else if (spanElementR14.innerText == "No OK") {
-           resultColor = spanElementR14.classList.add("bg-danger")
-           resultTextColor = spanElementR14.classList.add("text-white")
-        } else if (spanElementR14.innerText == "S/D") {
-           resultColor = spanElementR14.classList.add("bg-secondary")
-           resultTextColor = spanElementR14.classList.add("text-white")
-        } else if (spanElementR14.innerText == "Pendiente") {
-           resultColor = spanElementR14.classList.add("bg-warning")
-           resultTextColor = spanElementR14.classList.add("text-dark")
-        } else if (spanElementR14.innerText == "N/A") {
-            resultColor = spanElementR14.classList.add("bg-info")
-            resultTextColor = spanElementR14.classList.add("text-dark")
-         }
-        return resultColor, resultTextColor
+        const classMap = {
+            "OK": { bgClass: "bg-success", textClass: "text-white" },
+            "No OK": { bgClass: "bg-danger", textClass: "text-white" },
+            "S/D": { bgClass: "bg-secondary", textClass: "text-white" },
+            "Pendiente": { bgClass: "bg-warning", textClass: "text-dark" },
+            "N/A": { bgClass: "bg-info", textClass: "text-dark" }
+        };
+    
+        const defaultClasses = ["bg-success", "bg-danger", "bg-warning", "bg-secondary", "bg-info", "text-white", "text-dark"];
+        spanElementR14.classList.remove(...defaultClasses);
+    
+        const text = spanElementR14.innerText;
+        if (classMap[text]) {
+            spanElementR14.classList.add(classMap[text].bgClass, classMap[text].textClass);
+        }
     }
+    
 
     function agregarEstiloRevPasadasR14 (containerBtnAnteriorSiguienteR14) {
-        containerBtnAnteriorSiguienteR14.classList.add("bg-secondary")
-        containerBtnAnteriorSiguienteR14.classList.add("bg-gradient")
-        containerBtnAnteriorSiguienteR14.classList.add("bg-opacity-25")
+        containerBtnAnteriorSiguienteR14.classList.add("bg-secondary", "bg-gradient", "bg-opacity-25")
     }
 
     function eliminarEstiloRevPasadasR14 (containerBtnAnteriorSiguienteR14) {
-        containerBtnAnteriorSiguienteR14.classList.remove("bg-secondary")
-        containerBtnAnteriorSiguienteR14.classList.remove("bg-gradient")
-        containerBtnAnteriorSiguienteR14.classList.remove("bg-opacity-25")
+        containerBtnAnteriorSiguienteR14.classList.remove("bg-secondary", "bg-gradient", "bg-opacity-25")
     }
     
     let spanElementR14
-    if (resProcesoR14) {
-        spanElementR14 = resProcesoR14
-    } else if (resAprobadoR14) {
-        spanElementR14 = resAprobadoR14
-    }
+    resProcesoR14 ? spanElementR14 = resProcesoR14 : null
+    resAprobadoR14 ? spanElementR14 = resAprobadoR14 : null
+
     // console.log('spanElementR14:', spanElementR14)
     // console.log('indiceaMostar:', indiceAMostrar)
 
     if (indiceAMostrar === 0) {
         colorSpanR14(spanElementR14)
-        btnAnteriorR14.disabled = 'true'
+        btnAnteriorR14.disabled = true
         btnSiguienteR14.removeAttribute('disabled')
     } else if (indiceAMostrar === arrayFromValues.length-1) {
         colorSpanR14(spanElementR14)
@@ -204,7 +186,7 @@ spanResR14.forEach(function(spanElement) {
                 var regex = /^resRevisionAprobadoR14/;
             break;
             default:
-                break;
+            break;
         }
         // console.log('regex: ', regex)
 
