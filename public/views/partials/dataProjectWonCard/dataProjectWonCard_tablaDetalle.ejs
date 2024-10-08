@@ -18,7 +18,7 @@
             let largoArrayOtDetalles = pathMongoOtProject.otDetalles.length
 
             for ( let o=0; largoArrayOtDetalles > o; o++) {
-                if (pathMongoOtProject.visible) {
+                if (pathMongoOtProject.visible && pathMongoOtProject.otDetalles[o].visible) {
                     if (pathMongoOtProject.otStatus && pathMongoOtProject.otDetalles[o].statusDetalle) { %>
                         <tr id="rowDetalleSelected<%=k%>_<%=n%>_<%=o%>" name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom fw-semibold fs-6" style="height: 5vh;">
                             <td class="text-center">

@@ -4,9 +4,13 @@
         <tr>
             <th colspan="4" class="text-center">DISTRIBUCIÓN
                 <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
-                    <button id="posBtnAddDataOtDistribucion<%=k%>" type="button" name="btnOtDistribucion" class="btn btn-small btn-success shadow m-1"
+                    <button id="posBtnAddDataOtDistribucion<%=k%>" type="button" name="btnOtDistribucion" class="btn btn-small btn-success shadow m-1 position-relative"
                         style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
-                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>                                                    
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                        <span id="spanCheckSelecMasiveDistribution<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                            <span class="visually-hidden">Elementos seleccionados</span>
+                        </span>
                     </button>
                 <% } else { %>
                     <button type="button" class="btn btn-small btn-danger shadow m-1 disabled"
@@ -50,7 +54,7 @@
                 let otDistribucion = proyecto[m].project[j].oci[k].otProject[n].otDetalles[o].otDistribucion || [];
                 let largoArrayDistribucion = otDistribucion.length;
 
-                if (pathMongoOtProject.visible) {
+                if (pathMongoOtProject.visible && pathMongoOtProject.otDetalles[o].visible) {
                     if (pathMongoOtProject.otStatus && pathMongoOtProject.otDetalles[o].statusDetalle) { %>
                         <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh;">
                             <% for (let q = 0; totalColDataOtDistribucion > q; q++) {

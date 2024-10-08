@@ -43,53 +43,30 @@ class ProgramasService {
         )
     }
 
-    // add Info R14 to Ot - Project
-    // async addInfoR14ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-    //     return this.proyectos.addInfoR14ToOtProject(
-    //         projectId,
-    //         otQuantity,
-    //         ociNumberK,
-    //         infoAddedToOt)
-    // }
+    // add Info Distribution to Detail - Project
+    async addInfoOtDistribucion(projectId, otQuantity, ociNumberK, arrayOtNumberK, detallesQuantity, arrayInfoAddedToDetail) {
+        return this.programas.addInfoOtDistribucion(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            detallesQuantity,
+            arrayInfoAddedToDetail)
+    }
 
-    // add Info Proceso 3D to Ot - Project
-    // async addInfoProceso3dToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-    //     return this.proyectos.addInfoProceso3dToOtProject(
-    //         projectId,
-    //         otQuantity,
-    //         ociNumberK,
-    //         infoAddedToOt)
-    // }
-
-     // add Info Avance Diseno Priemra Parte to Ot - Project
-    // async addInfoDisenoPrimeraToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-    //     return this.proyectos.addInfoDisenoPrimeraToOtProject(
-    //         projectId,
-    //         otQuantity,
-    //         ociNumberK,
-    //         infoAddedToOt)
-    // }
-
-    // add Info Avance Diseno Segunda Parte to Ot - Project
-    // async addInfoDisenoSegundaToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-    //     return this.proyectos.addInfoDisenoSegundaToOtProject(
-    //         projectId,
-    //         otQuantity,
-    //         ociNumberK,
-    //         infoAddedToOt)
-    // }
-
-     // add Info 80% to Ot - Project
-    // async addInfo80ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
-    //     return this.proyectos.addInfo80ToOtProject(
-    //         projectId,
-    //         otQuantity,
-    //         ociNumberK,
-    //         infoAddedToOt)
-    // }
-
-
+    // add Info Programation 1° to Detail - Project
     
+
+    // add Info Programation 2° to Detail - Project
+    
+
+    // add Info Machinned 1° to Detail - Project
+    
+
+    // add Info Machinned 2° to Detail - Project
+    
+
+
     // Select OCI - Project
     async selectOciByOciNumber(numberOci) {
         return this.proyectos.selectOciByOciNumber(numberOci)
@@ -128,6 +105,68 @@ class ProgramasService {
         )
     }
 
+    // Update Detail by Project id
+    async updateOtDetail(
+        id,
+        ociKNumber,
+        otKNumber,
+        detalleKNumber,
+        statusDetalle,
+        detalleOt,
+        descripcionDetalle,
+        userModificator,
+        idDetalle
+    ) {
+        return this.programas.updateOtDetail(
+            id,
+            ociKNumber,
+            otKNumber,
+            detalleKNumber,
+            statusDetalle,
+            detalleOt,
+            descripcionDetalle,
+            userModificator,
+            idDetalle)
+        }
+
+    // Update Status Detail by Project id
+    async updateStatusOtDetail(
+        id,
+        ociKNumber,
+        otKNumber,
+        detalleKNumber,
+        statusDetalle,
+        userModificator,
+        idDetalle
+    ) {
+        return this.programas.updateStatusOtDetail(
+            id,
+            ociKNumber,
+            otKNumber,
+            detalleKNumber,
+            statusDetalle,
+            userModificator,
+            idDetalle)
+        }
+
+    // Delete Detail by Project id
+    async deleteOtDetail(
+        id,
+        ociKNumber,
+        otKNumber,
+        detalleKNumber,
+        userModificator,
+        idDetalle
+    ) {
+        return this.programas.deleteOtDetail(
+            id,
+            ociKNumber,
+            otKNumber,
+            detalleKNumber,
+            userModificator,
+            idDetalle)
+        }
+
     // Update Ot by Project id
     async updateOt(
         id,
@@ -157,7 +196,6 @@ class ProgramasService {
             otSupplier,
             userInfo)
         }
-
 
     // remove one OT from OCI by Id
     async deleteOt(

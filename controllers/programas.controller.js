@@ -664,7 +664,7 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
         }
     }
 
-    //FIXME:-----------------------------------------------------------
+    //-----------------------------------------------------------
     addDetailsToOtProjectFromFile = async (req, res, next) => {
         const { id } = req.params
         let username = res.locals.username
@@ -716,9 +716,7 @@ console.log('ociNumberK-numberOci-otNumberK-numberOt', ociNumberK, numberOci, ot
         
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                if (match) {
-                    match.array.push(req.body[key]);
-                }
+                match ? match.array.push(req.body[key]) : null
             }
 
             const otDetallesEmpty = [{
@@ -776,14 +774,220 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
         }
     }
 
+    //-----------------------------------------------------------
+    updateOtDetail = async (req, res, next) => {
+        const id = req.params.id
+        let username = res.locals.username
+        let userInfo = res.locals.userInfo
+        const expires = cookie(req)
+
+        try {
+            const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
+            !mainProyecto ? catchError400(req, res, next) : null
+
+            const clientId = mainProyecto[0].client[0]._id
+            const cliente = await this.clients.selectClientById(clientId)
+            !cliente ? catchError401(req, res, next) : null
+
+            const userId = userInfo.id
+            const userCreator = await this.users.getUserById(userId)
+            !userCreator.visible ? catchError401_3(req, res, next) : null
+            
+            const userModificator = [{
+                name: userCreator.name,
+                lastName: userCreator.lastName,
+                username: userCreator.username,
+                email: userCreator.email
+            }]
+            // console.log('req.body: ', req.body)
+            const ociKNumber = parseInt(req.body.ociKNumberHidden)
+            const otKNumber =  parseInt(req.body.otKNumberHidden)
+            const detalleKNumber = parseInt(req.body.detalleKNumberHidden)
+            const statusDetalle = req.body.statusOtDetalleForm
+            const detalleOt = req.body.detalleOt
+            const descripcionDetalle = req.body.otDescripcionDetalle
+            const idDetalle = req.body.detalleIdHidden
+
+            await this.programms.updateOtDetail(
+                id,
+                ociKNumber,
+                otKNumber,
+                detalleKNumber,
+                statusDetalle,
+                detalleOt,
+                descripcionDetalle,
+                userModificator,
+                idDetalle
+            )
+            
+            await this.clients.updateClient(
+                clientId, 
+                cliente, 
+                userModificator
+            )
+
+            const proyecto = await this.projects.selectProjectsByMainProjectId(id)
+            !proyecto ? catchError400(req, res, next) : null
+            
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            res.render('projectWonSelectedDetail', {
+                proyecto,
+                username,
+                userInfo,
+                expires,
+                cliente,
+                data,
+                csrfToken
+            })
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    //-----------------------------------------------------------
+    updateStatusOtDetail = async (req, res, next) => {
+        const id = req.params.id
+        let username = res.locals.username
+        let userInfo = res.locals.userInfo
+        const expires = cookie(req)
+
+        try {
+            const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
+            !mainProyecto ? catchError400(req, res, next) : null
+
+            const clientId = mainProyecto[0].client[0]._id
+            const cliente = await this.clients.selectClientById(clientId)
+            !cliente ? catchError401(req, res, next) : null
+
+            const userId = userInfo.id
+            const userCreator = await this.users.getUserById(userId)
+            !userCreator.visible ? catchError401_3(req, res, next) : null
+            
+            const userModificator = [{
+                name: userCreator.name,
+                lastName: userCreator.lastName,
+                username: userCreator.username,
+                email: userCreator.email
+            }]
+            // console.log('req.body: ', req.body)
+            const ociKNumber = parseInt(req.body.ociKNumberHidden)
+            const otKNumber =  parseInt(req.body.otKNumberHidden)
+            const detalleKNumber = parseInt(req.body.detalleKNumberHidden)
+            const statusDetalle = req.body.statusOtDetalleForm
+            const idDetalle = req.body.detalleIdHidden
+
+            await this.programms.updateStatusOtDetail(
+                id,
+                ociKNumber,
+                otKNumber,
+                detalleKNumber,
+                statusDetalle,
+                userModificator,
+                idDetalle
+            )
+            
+            await this.clients.updateClient(
+                clientId,
+                cliente, 
+                userModificator
+            )
+
+            const proyecto = await this.projects.selectProjectsByMainProjectId(id)
+            !proyecto ? catchError400(req, res, next) : null
+            
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            res.render('projectWonSelectedDetail', {
+                proyecto,
+                username,
+                userInfo,
+                expires,
+                cliente,
+                data,
+                csrfToken
+            })
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    //-----------------------------------------------------------
+    deleteOtDetail = async (req, res, next) => {
+        const id = req.params.id
+        let username = res.locals.username
+        let userInfo = res.locals.userInfo
+        const expires = cookie(req)
+
+        try {
+            const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
+            !mainProyecto ? catchError400(req, res, next) : null
+
+            const clientId = mainProyecto[0].client[0]._id
+            const cliente = await this.clients.selectClientById(clientId)
+            !cliente ? catchError401(req, res, next) : null
+
+            const userId = userInfo.id
+            const userCreator = await this.users.getUserById(userId)
+            !userCreator.visible ? catchError401_3(req, res, next) : null
+            
+            const userModificator = [{
+                name: userCreator.name,
+                lastName: userCreator.lastName,
+                username: userCreator.username,
+                email: userCreator.email
+            }]
+    // console.log('req.body: ', req.body)
+            const ociKNumber = parseInt(req.body.ociKNumberHidden)
+            const otKNumber =  parseInt(req.body.otKNumberHidden)
+            const detalleKNumber = parseInt(req.body.detalleKNumberHidden)
+            const idDetalle = req.body.detalleIdHidden
+
+            await this.programms.deleteOtDetail(
+                id,
+                ociKNumber,
+                otKNumber,
+                detalleKNumber,
+                userModificator,
+                idDetalle
+            )
+            
+            await this.clients.updateClient(
+                clientId,
+                cliente, 
+                userModificator
+            )
+
+            const proyecto = await this.projects.selectProjectsByMainProjectId(id)
+            !proyecto ? catchError400(req, res, next) : null
+            
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            res.render('projectWonSelectedDetail', {
+                proyecto,
+                username,
+                userInfo,
+                expires,
+                cliente,
+                data,
+                csrfToken
+            })
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
 
     // -----------------------------------------------------------
     addInfoOtDistribucion = async (req, res, next) => {
+        const id = req.params.id
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
         
         try {
+            const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
+            !mainProyecto ? catchError400(req, res, next) : null
+
             const clientId = req.body.clientIdHidden
             const cliente = await this.clients.selectClientById(clientId)     
             if (!cliente) {
@@ -803,11 +1007,14 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
             }
             
             const ociNumberK = parseInt(req.body.ociNumberK)
-            const detalleNumberK = parseInt(req.body.detalleNumberK)
+            const arrayOtKNumber = req.body.detalleNumberK.split(",")
+            const arrayOtNumberK = arrayOtKNumber.map(Number) 
+// console.log(' arrayOtNumberK: ',  arrayOtNumberK)
             const otQuantity = parseInt(req.body.otQuantity)
-            const detalleQuantity = parseInt(req.body.detalleQuantity)
-
-            let arrayOtNumber=[],
+            const detallesQuantity = parseInt(req.body.detallesQuantity)
+// console.log('req.body: ', req.body)
+            let arrayIdDetalle=[],
+                arrayOtNumber=[],
                 arrayOtStatus=[],
                 arrayDetalleNumber=[],
                 arrayMecanizado2dCompleto=[],
@@ -820,6 +1027,8 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
                 arrayRevisionBancoArmado=[]
 
             const prefixes = [
+                
+                { prefix: 'detalleIdHidden', array: arrayIdDetalle },
                 { prefix: 'otNumberHidden', array: arrayOtNumber },
                 { prefix: 'otStatusHidden', array: arrayOtStatus },
                 { prefix: 'detalleNumberHidden', array: arrayDetalleNumber },
@@ -835,15 +1044,13 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
             
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                if (match) {
-                    match.array.push(req.body[key]);
-                    break;
-                }
+                match ? match.array.push(req.body[key]) : null
             }
             
-            let arrayInfoAddedToOt = []
-            for (let i=0; i<otQuantity; i++ ) {
+            let arrayInfoAddedToDetail = []
+            for (let i=0; i<detallesQuantity; i++ ) {
                 var infoAddedToOt = {
+                    idDetalle: arrayIdDetalle[i],
                     otStatus: arrayOtStatus[i],
                     otNumber: parseInt(arrayOtNumber[i]),
                     detalleNumber: arrayDetalleNumber[i],
@@ -860,16 +1067,18 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
                     modificator: dataUserModificatorEmpty(),
                     modifiedOn: "",
                 }
-                arrayInfoAddedToOt.push(infoAddedToOt)
+                arrayInfoAddedToDetail.push(infoAddedToOt)
             }
 
-            const itemUpdated = await this.projects.addInfoOtDistribucion(
+            // console.log('arrayInfoAddedToDetail-controller', arrayInfoAddedToDetail)
+
+            const itemUpdated = await this.programms.addInfoOtDistribucion(
                 projectId,
                 otQuantity,
                 ociNumberK,
-                detalleNumberK,
-                detalleQuantity,
-                arrayInfoAddedToOt
+                arrayOtNumberK,
+                detallesQuantity,
+                arrayInfoAddedToDetail
             )
     
             if (!itemUpdated) {
@@ -880,11 +1089,11 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
             const csrfToken = csrfTokens.create(req.csrfSecret);
             setTimeout(() => {
                 return res.render('projectWonSelectedDetail', {
+                    proyecto,
                     username,
                     userInfo,
                     expires,
                     cliente,
-                    proyecto,
                     data,
                     csrfToken
                 })
@@ -895,6 +1104,7 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
         }
     }
 
+    //TODO:
     addInfoProgramacionPrimera = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
@@ -1016,6 +1226,7 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
         }
     }
 
+    //TODO:
     addInfoMecanizadoPrimera = async (req, res, next) => {
         const clientId = req.body.clientIdHidden
         const cliente = await this.clients.selectClientById(clientId)

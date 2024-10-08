@@ -22,8 +22,9 @@
 
                 for (let t=0; arrayVisibleOci[k].otProject.length>t; t++) { %>
                     <button class="custom-btn m-2"
-                        id="btnAddDetallesFormSelected<%=k%>_<%=t%>"
-                        type="button" value="<%=k%>_<%=t%>" name="<%= arrayVisibleOci[k].otProject[t].otNumber %>"
+                        id="btnAddDetallesFormSelected<%=k%>_<%=t%>" type="button"
+                        value="<%=k%>_<%=t%>,<%= arrayVisibleOci[k].otProject[t].opNumber %>,<%= arrayVisibleOci[k].otProject[t].otStatus %>,<%= arrayVisibleOci[k].otProject[t].opDescription %>"
+                        name="<%= arrayVisibleOci[k].otProject[t].otNumber %>"
                         title="Agregar ítems en la OT <%= arrayVisibleOci[k].otProject[t].otNumber %>">
                         <%= arrayVisibleOci[k].otProject[t].otNumber %>
                     </button>
@@ -51,49 +52,38 @@
     <hr class="border border-primary opacity-75">
     <div class="row">
         <div id="posBtnHiddeTableGeneral<%=k%>" class="col-3">
-
-            <button id="btnHiddeTableGeneral<%=k%>"
-                name="btnHiddeTableGeneral"
-                type="button" class="btn btn-primary shadow"
-                title="Ocultar General"
+            <button id="btnHiddeTableGeneral<%=k%>" name="btnHiddeTableGeneral"
+                type="button" class="btn btn-primary shadow" title="Ocultar General"
                 style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; background-color: #115; border: none">
                 <i class="fa-solid fa-eye-slash"></i>
             </button>
-
         </div>
+
         <div id="posBtnHiddeTableDetalle<%=k%>" class="col-2">
-
-            <button id="btnHiddeTableDetalle<%=k%>"
-                name="btnHiddeTableDetalle"
-                type="button" class="btn btn-secondary shadow"
-                title="Ocultar Detalles"
+            <button id="btnHiddeTableDetalle<%=k%>" name="btnHiddeTableDetalle"
+                type="button" class="btn btn-secondary shadow" title="Ocultar Detalles"
                 style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; background-color: #115; border: none">
                 <i class="fa-solid fa-eye-slash"></i>
             </button>
-
         </div>
+
         <div id="posCheckSelectionAll<%=k%>" class="col-4">
-
-            <button id="btnCheckSelectionAll<%=k%>"
-                name="btnCheckSelectionAll"
-                type="button" class="btn btn-primary shadow"
-                title="Seleccionar todas las OT"
-                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; border: none">
-                Seleccionar todos <i class="fa-solid fa-check-double"></i>
+            <button id="btnCheckSelectionAll<%=k%>" name="btnCheckSelectionAll"
+                type="button" class="btn btn-primary shadow position-relative" title="Seleccionar todos los ítems"
+                style="--bs-btn-padding-y: .5rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; border: none" value="0">
+                Seleccionar ítems <i class="fa-solid fa-check-double"></i>
+                <span id="spanCheckSelecMasive<%=k%>" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    0
+                    <span class="visually-hidden">Elementos seleccionados</span>
+                </span>
             </button>
-
         </div>
+
         <div id="posCheckSelecMasive<%=k%>" class="col-3">
-
-            <button id="btnCheckSelecMasive<%=k%>"
-                name="btnCheckSelecMasive"
-                type="button" class="btn btn-secondary shadow"
-                title="Modificacion multiple de OT's"
-                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; border: none"
-                disabled>
+            <span id="btnCheckSelecMasive<%=k%>" name="btnCheckSelecMasive"
+                class="badge rounded-pill text-bg-secondary text-warning shadow p-2">
                 <i class="fa-solid fa-list-check"></i> Mod. multiple (0)
-            </button>
-
+            </span>
         </div>
     </div>
 </div>

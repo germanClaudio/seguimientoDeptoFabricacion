@@ -6,9 +6,13 @@
             <th colspan="4" class="text-center">
                 Sim 4 (Primera Parte)
                 <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
-                    <button id="posBtnAddDataS4Primera<%=k%>" type="button" name="btn4PrimeraSim" class="btn btn-small btn-success shadow m-1"
+                    <button id="posBtnAddDataS4Primera<%=k%>" type="button" name="btn4PrimeraSim" class="btn btn-small btn-success shadow m-1 position-relative"
                         style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
                         <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                        <span id="spanCheckSelecMasiveSim4Prima<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                            <span class="visually-hidden">Elementos seleccionados</span>
+                        </span>
                     </button>
                 <% } else { %>
                     <button type="button" class="btn btn-small btn-danger shadow m-1 disabled"

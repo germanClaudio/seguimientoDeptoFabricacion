@@ -6,10 +6,14 @@
             <th colspan="4" class="text-center">
                 INFO 80%
                 <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
-                    <button id="posBtnAddDataInfo80<%=k%>" type="button" name="btnInfo80" class="btn btn-small btn-success shadow m-1"
+                    <button id="posBtnAddDataInfo80<%=k%>" type="button" name="btnInfo80" class="btn btn-small btn-success shadow m-1 position-relative"
                         style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
                         title="Agregar/Modificar Datos" value="<%=k%>">
                         <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                        <span id="spanCheckSelecMasiveInfo80<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                            <span class="visually-hidden">Elementos seleccionados</span>
+                        </span>
                     </button>
                 <% } else { %>
                     <button type="button" class="btn btn-small btn-danger m-1 disabled"

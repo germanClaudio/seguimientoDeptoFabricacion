@@ -16,51 +16,43 @@ const programation = new getProgramation()
 // -------------------  Seleccionar todos los Proyectos Ganados --------------
 routerProgramas.get('/', checkAuthentication, programation.getAllProjectsWon)
 
-// -------------------  Seleccionar Proyecto por Cliente Id ------------------ 
-// routerProyectos.get('/:id', checkAuthentication, projects.getProjectsByClientId)
-
 // -------------------  Ver detalles del Proyecto Ganado por Id del proyecto ------------------ 
 routerProgramas.get('/selectWonProjects/:id', checkAuthentication, programation.selectProjectById)
 
-// // -------------------  Ver listado de OCI completo ------------------ 
-// routerProyectos.get('/oci-list/all', checkAuthentication, projects.getAllOciProjects)
+
+// -------------------  Agregar informacion Distribution a Detalle --------------------------- 
+routerProgramas.post('/infoOtDistribucion/:id', checkAuthentication, programation.addInfoOtDistribucion)
+
+// // -------------------  Agregar informacion Programacion 1° Parte a Detalle ------------------------ 
 
 
-// // -------------------  Agregar informacion R14 a OT --------------------------- 
-// routerProyectos.post('/otInfoR14', checkAuthentication, projects.addInfoR14ToOtProject)
+// // -------------------  Agregar informacion Programacion 2° Parte a Detalle ------------------------ 
 
-// // -------------------  Agregar informacion Proceso 3D a OT ------------------------ 
-// routerProyectos.post('/otInfoProceso3d', checkAuthentication, projects.addInfoProceso3dToOtProject)
 
-// // -------------------  Agregar informacion Avance Diseno Primera Parte a OT ------------------------ 
-// routerProyectos.post('/otInfoAvDisenoPrimera', checkAuthentication, projects.addInfoDisenoPrimeraToOtProject)
+// // -------------------  Agregar informacion Mecanizado 1° Parte a Detalle ------------------------ 
 
-// // -------------------  Agregar informacion Avance Diseno Segunda Parte a OT ------------------------ 
-// routerProyectos.post('/otInfoAvDisenoSegunda', checkAuthentication, projects.addInfoDisenoSegundaToOtProject)
 
-// // -------------------  Agregar informacion 80% a OT ------------------------ 
-// routerProyectos.post('/otInfo80', checkAuthentication, projects.addInfo80ToOtProject)
+// // -------------------  Agregar informacion Mecanizado 2° Parte a Detalle ------------------------ 
+
 
 
 // // -------------------  Agregar OT a OCI ---------------- 
 // routerProyectos.post('/oci', checkAuthentication, projects.addOtToOciProject)
-
-// // -------------------  Actualizar Estado de OT por Id Proyecto ------------------ 
-// routerProyectos.post('/updateStatusOt/:id', checkAuthentication, projects.updateStatusOt)
 
 // -------------------  Agregar Nuevo Detalle a OCI por Id Proyecto ------------------ 
 routerProgramas.post('/addDetalleToOt/:id', checkAuthentication, programation.addDetailToOtProject)
 
 // -------------------  Agregar Nuevo Detalle a OCI por Id Proyecto ------------------ 
 routerProgramas.post('/addModalOtDetalleFromFile/:id', checkAuthentication, programation.addDetailsToOtProjectFromFile)
-// // -------------------  Editar Proyecto por Id ------------------ 
-// routerProyectos.post('/updateProject/:id', checkAuthentication, authUserMiddleware, projects.updateProject)
 
-// // -------------------  Editar OCI por Id de Proyecto ------------------ 
-// routerProyectos.post('/updateOci/:id', checkAuthentication, projects.updateOci)
+// // -------------------  Editar Detalle por Id ------------------ 
+routerProgramas.post('/updateOtDetail/:id', checkAuthentication, programation.updateOtDetail)
 
-// // -------------------  Eliminar OCI por Id de Proyecto ------------------ 
-// routerProyectos.post('/deleteOci/:id', checkAuthentication, authUserMiddleware, projects.deleteOci)
+// -------------------  Actualizar Estado de Detalle por Id Proyecto ------------------ 
+routerProgramas.post('/updateStatusOtDetalle/:id', checkAuthentication, programation.updateStatusOtDetail)
+
+// -------------------  Eliminar Detalle por Id de Proyecto ------------------ 
+routerProgramas.post('/deleteOtDetalle/:id', checkAuthentication, programation.deleteOtDetail)
 
 // // -------------------  Editar OT por Id de Proyecto ------------------ 
 // routerProyectos.post('/updateOt/:id', checkAuthentication, projects.updateOt)

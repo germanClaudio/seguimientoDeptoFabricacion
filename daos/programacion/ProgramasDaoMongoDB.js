@@ -264,22 +264,22 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
         idProjectTarget,
         otQuantity,
         ociNumberK,
-        detalleNumberK,
-        detalleQuantity,
-        infoAddedToOt
+        arrayOtNumberK,
+        detallesQuantity,
+        arrayInfoAddedToDetail //InfoAddedToDetail
     ){
         const ociKNumber = parseInt(ociNumberK) || 0
         const quantityOt = parseInt(otQuantity)
-        const detalleKNumber = parseInt(detalleNumberK)
-        const quantityDetalle = parseInt(detalleQuantity)
-
+        //const detalleKNumber = parseInt(detalleNumberK)
+        const quantityDetalle = parseInt(detallesQuantity)
+console.log('arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
         // compara si el proyecto existe --------
         if (idProjectTarget) {
             try {
                 const itemMongoDB = await Proyectos.findById({ _id: idProjectTarget })
-                // console.log('itemMongoDB', itemMongoDB.project[0].oci[0])
+                console.log('itemMongoDB', itemMongoDB.project[0].oci[1].otProject[1].otDetalles[0]._id)
                 
-                // Si encontro el proyecto en la BBDD ----- 
+                //Si encontro el proyecto en la BBDD ----- 
                 if (itemMongoDB) {
                     let arrayQuantity = []
                     let arrayStructureTree = []
@@ -290,17 +290,17 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
                     //Se verifica si la estructura del arbol existe en la BBDD -----
                     let arrayStructureTreeExists = []
                     for (let i = 0; i < quantityOt; i++) {
-                        const treeOtInformation = itemMongoDB.project[0].oci[`${ociKNumber}`].otProject[`${i}`].otDetalles[`${detalleKNumber}`]
-                        // console.log('0.1-Dao-treeOtInformation----> ',treeOtInformation, ' i=',i)
-                        treeOtInformation ? arrayStructureTreeExists.push(true) : arrayStructureTreeExists.push(false)
+                        const treeDetailInformation = itemMongoDB.project[0].oci[`${ociKNumber}`].otProject[`${i}`].otDetalles[`${detalleKNumber}`]
+                        // console.log('0.1-Dao-treeDetailInformation----> ',treeDetailInformation, ' i=',i)
+                        treeDetailInformation ? arrayStructureTreeExists.push(true) : arrayStructureTreeExists.push(false)
                     }
                         // console.log('0.2-Dao-arrayStructureTreeExists----> ',arrayStructureTreeExists)
 
-                        for (let i = 0; i < quantityOt; i++) {
+                        for (let i = 0; i < quantityDetalle; i++) {
                             // Si no existe la extructura del arbol, se crea la estructura a agregar --
                             if (!arrayStructureTreeExists[i]) {
                                 let estructuraACrear = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otDetalles`]:
+                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otDetalles.${i}`]:
                                     {
                                         otDistribucion: []
                                     }
@@ -326,17 +326,17 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
                                 let updateQuery = {
                                     [`project.0.oci.${ociKNumber}.otProject.${i}.otDetalles.0.otDistribucion`]:
                                     {
-                                        mecanizado2dCompleto: infoAddedToOt[i].mecanizado2dCompleto,
-                                        revisionMecanizado2dCompleto: infoAddedToOt[i].revisionMecanizado2dCompleto+1,
-                                        mecanizado3dPrefinal: infoAddedToOt[i].mecanizado3dPrefinal,
-                                        revisionMecanizado3dPrefinal: infoAddedToOt[i].revisionMecanizado3dPrefinal+1,
-                                        mecanizado3dFinal: infoAddedToOt[i].mecanizado3dFinal,
-                                        revisionMecanizado3dFinal: infoAddedToOt[i].revisionMecanizado3dFinal+1,
-                                        bancoArmado: infoAddedToOt[i].bancoArmado,
-                                        revisionBancoArmado: infoAddedToOt[i].revisionBancoArmado+1,
-                                        creator: infoAddedToOt[i].creator,
+                                        mecanizado2dCompleto: infoAddedToDetail[i].mecanizado2dCompleto,
+                                        revisionMecanizado2dCompleto: infoAddedToDetail[i].revisionMecanizado2dCompleto+1,
+                                        mecanizado3dPrefinal: infoAddedToDetail[i].mecanizado3dPrefinal,
+                                        revisionMecanizado3dPrefinal: infoAddedToDetail[i].revisionMecanizado3dPrefinal+1,
+                                        mecanizado3dFinal: infoAddedToDetail[i].mecanizado3dFinal,
+                                        revisionMecanizado3dFinal: infoAddedToDetail[i].revisionMecanizado3dFinal+1,
+                                        bancoArmado: infoAddedToDetail[i].bancoArmado,
+                                        revisionBancoArmado: infoAddedToDetail[i].revisionBancoArmado+1,
+                                        creator: infoAddedToDetail[i].creator,
                                         timestamp: now,
-                                        modificator: infoAddedToOt[i].modificator,
+                                        modificator: infoAddedToDetail[i].modificator,
                                         modifiedOn: ''
                                     }
                                 }
@@ -344,7 +344,7 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
 
                                     // Si arrayTreeCreation.modifiedCount es = 1 ---
                                     if (arrayTreeCreation[i].modifiedCount===1) {
-                    
+                
                                         var infoProcesoR14AddedToOt = await Proyectos.updateOne(
                                             { _id: itemMongoDB._id },
                                             {
@@ -355,13 +355,13 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
                                         countTreeCreation++
                                     }
                                     // console.log('3-Dao-Ot agregada: ', i,' - ', infoProcesoR14AddedToOt)
-                            
+                
                             } else {
 
                                 // Recupero el creador y la fecha inicial, ya que solo se modifica
                                 let creatorInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].creator[0]
                                 let timestampInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].timestamp
-                                
+                
                                 // Recupero los datos originales y comparo, ya que solo el dato que se modifica cambia su Revision
                                 let otInfoR14Length = parseInt(itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoR14.length)
                                 if (otInfoR14Length > 0) {
@@ -376,34 +376,34 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
                                     var revisionAprobadoR14Initial = 0
                                 }
 
-                                infoAddedToOt[i].procesoR14 == procesoR14Initial ?                            
-                                    infoAddedToOt[i].revisionProcesoR14 = parseInt(revisionProcesoR14Initial)
+                                infoAddedToDetail[i].procesoR14 == procesoR14Initial ?                            
+                                    infoAddedToDetail[i].revisionProcesoR14 = parseInt(revisionProcesoR14Initial)
                                 :
-                                    infoAddedToOt[i].revisionProcesoR14 = parseInt(revisionProcesoR14Initial+1)
-                                
+                                    infoAddedToDetail[i].revisionProcesoR14 = parseInt(revisionProcesoR14Initial+1)
+                
 
-                                infoAddedToOt[i].aprobadoR14 == aprobadoR14Initial ?                                    
-                                    infoAddedToOt[i].revisionAprobadoR14 = parseInt(revisionAprobadoR14Initial)
+                                infoAddedToDetail[i].aprobadoR14 == aprobadoR14Initial ?                                    
+                                    infoAddedToDetail[i].revisionAprobadoR14 = parseInt(revisionAprobadoR14Initial)
                                 :
-                                    infoAddedToOt[i].revisionAprobadoR14 = parseInt(revisionAprobadoR14Initial+1)
+                                    infoAddedToDetail[i].revisionAprobadoR14 = parseInt(revisionAprobadoR14Initial+1)
 
                                 // Si existe la extructura del arbol, se crea el array de datos a agregar --
                                 let updateQuery = {
                                     [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.otInfoR14`]:
                                     {
-                                        procesoR14: infoAddedToOt[i].procesoR14,
-                                        revisionProcesoR14: infoAddedToOt[i].revisionProcesoR14,
-                                        aprobadoR14: infoAddedToOt[i].aprobadoR14,
-                                        revisionAprobadoR14: infoAddedToOt[i].revisionAprobadoR14,
+                                        procesoR14: infoAddedToDetail[i].procesoR14,
+                                        revisionProcesoR14: infoAddedToDetail[i].revisionProcesoR14,
+                                        aprobadoR14: infoAddedToDetail[i].aprobadoR14,
+                                        revisionAprobadoR14: infoAddedToDetail[i].revisionAprobadoR14,
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
-                                        modificator: infoAddedToOt[i].creator,
+                                        modificator: infoAddedToDetail[i].creator,
                                         modifiedOn: now
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
                                     //console.log('5-Dao-arrayQuantity-- ', i,' - ', arrayQuantity)
-                    
+                
                                     // var infoProcesoR14AddedToOt = 
                                     await Proyectos.updateOne(
                                         { _id: itemMongoDB._id },
@@ -418,7 +418,7 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
 
                         // Si el recuento de info agregada o creacion de arbol es mayor a 0
                         if (countInfoAdded > 0 || countTreeCreation > 0 ) {
-                              
+                
                             const itemUpdated = await Proyectos.findById({ _id: idProjectTarget })
                             // console.log('5.1-Dao-proyecto: ', itemUpdated.project[0].oci)
                             return itemUpdated
@@ -432,12 +432,12 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
                 }
 
             } catch (error) {
-                //console.log("Error MongoDB adding info R14 to OT: ", error)
-                console.error("Error MongoDB adding info R14 to OT: ", error)
+                //console.log("Error MongoDB adding info Distribution to Detail: ", error)
+                console.error("Error MongoDB adding info Distribution to Detail: ", error)
             }
 
         } else {
-            return new Error(`No se pudo agregar la info R14 a la OT del Proyecto!`)
+            return new Error(`No se pudo agregar la info Distribution a Detalle de OT!`)
         }
     }
 
@@ -496,7 +496,7 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
                                     { upsert: true }
                                 )
                                 arrayTreeCreation.push(treeInfoOtAddedToOt)
-                               
+
                                 // console.log('2-Dao-Estructura arbol creada: ', i,' - ', arrayTreeCreation)
 
                                 // Se crea el array de datos a agregar --
@@ -1284,7 +1284,7 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
                         }
                         arrayQueryQuantity.push(updateQuery)
                     }    
-                    console.log('Detalle agregado a Ot ', arrayQueryQuantity)
+                    //console.log('Detalle agregado a Ot ', arrayQueryQuantity)
                     // Se agregan las estructuras al arbol de MongoDB ---
                     for (let n=0; n<arrayDetalleAddedToOt.length; n++) {
                         var detalleAddedToOt = await Proyectos.updateOne(
@@ -1296,7 +1296,7 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
                             },
                             { new: true }
                         )
-                        console.info('Detalle agregado a Ot ', detalleAddedToOt)
+                        //console.info('Detalle agregado a Ot ', detalleAddedToOt)
                     }
 
                     // Si se agrega correctamente los detalles a la OTOCI => true ---
@@ -1345,7 +1345,7 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
                         }
                         arrayQueryQuantity.push(updateQuery)
                     }    
-                    console.log('Detalle agregado a Ot ', arrayQueryQuantity)
+                    //console.log('Detalle agregado a Ot ', arrayQueryQuantity)
                     // Se agregan las estructuras al arbol de MongoDB ---
                     for (let n=0; n<arrayDetalleAddedToOt.length; n++) {
                         var detalleAddedToOt = await Proyectos.updateOne(
@@ -1357,7 +1357,7 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
                             },
                             { new: true }
                         )
-                        console.info('Detalle agregado a Ot ', detalleAddedToOt)
+                        //console.info('Detalle agregado a Ot ', detalleAddedToOt)
                     }
 
                     // Si se agrega correctamente los detalles a la OTOCI => true ---
@@ -1383,127 +1383,185 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
         }
     }
 
-    // Update Project Data by Project Id
-    async updateProject(
+    // Update Detail Data by Project Id
+    async updateOtDetail(
         id,
-        project,
-        statusProject,
-        projectName,
-        projectDescription,
-        prioProject,
-        levelProject,
-        codeProject,
-        imageProject,
-        userModificator
-    ) {
-        
-        if (id && project) {
-            try {
-                const itemMongoDB = await Proyectos.findById({ _id: project[0]._id })
-                
-                let booleanStatus
-                statusProject == 'on' ? booleanStatus = true : booleanStatus = false
-                imageProject ? imageProject : itemMongoDB.project[0].imageProject
-
-                if (itemMongoDB) {
-                    var updatedProject = await Proyectos.updateOne(
-                        { _id: itemMongoDB._id },
-                        {
-                            $set: {
-                                'project.0.projectName': projectName,
-                                'project.0.projectDescription': projectDescription,
-                                'project.0.prioProject': prioProject,
-                                'project.0.imageProject': imageProject,
-                                'project.0.codeProject': codeProject,
-                                'project.0.statusProject': booleanStatus,
-                                'project.0.levelProject': levelProject,
-                                modificator: userModificator,
-                                modifiedOn: now
-                            }
-                        },
-                        { new: true }
-                    )
-                    
-                    if(updatedProject.acknowledged) {
-                        const itemUpdated = await Proyectos.findById({ _id: project[0]._id })
-                        
-                        return itemUpdated
-                    } else {
-                        return new Error(`No se actualizó el item: ${itemUpdated._id}`)
-                    }
-                    
-                } else {
-                    return new Error(`Proyecto no existe con este id: ${itemUpdated._id}`)
-                }
-
-            } catch (error) {
-                console.error("Error MongoDB updatingProject: ", error)
-            }
-
-        } else {
-            return new Error(`No se pudo modificar el status del Proyecto!`)
-        }
-    }
-
-    // Update Oci Data by Project Id
-    async updateOci(
-        id,
-        project,
-        statusOci,
-        ociDescription,
-        ociAlias,
-        ociNumber,
         ociKNumber,
-        ociImage,
-        userModificator
+        otKNumber,
+        detalleKNumber,
+        statusDetalle,
+        detalleOt,
+        descripcionDetalle,
+        userModificator,
+        idDetalle
     ) {
-
-        if (project) {
+        const idProjectTarget = id 
+        if (id && idDetalle) {
             try {
-                const itemMongoDB = await Proyectos.findById({ _id: project[0]._id })
+                
+                const itemMongoDB = await Proyectos.findById({ _id: idProjectTarget })
                 
                 let numberOciK = parseInt(ociKNumber)
-                let numberOci = parseInt(ociNumber)
+                let numberOtK = parseInt(otKNumber)
+                let numberDetalleK = parseInt(detalleKNumber)
                 let booleanStatus
-                statusOci=='on' ? booleanStatus=true : booleanStatus=false
-                ociImage ? ociImage : itemMongoDB.project[0].oci[numberOciK].ociImage
+                statusDetalle=='on' ? booleanStatus=true : booleanStatus=false
+                
+                // const detalleData = await Proyectos.find({ "otDetalles._id.$oid": `${idDetalle}` },
+                //     { "otDetalles.$": `${numberDetalleK}` })
+                // console.log('detalleData: ', detalleData)
+
+                // const todosLosDatosDetalle = await Proyectos.aggregate([
+                //     { $unwind: "$otDetalles" },
+                //     { $match: { "otDetalles._id.$oid": `${idDetalle}` } },
+                //     { $project: { otDetalles: `${numberDetalleK}`, _id: 0 } }
+                // ]);
+                // console.log('todosLosDatosDetalle: ', todosLosDatosDetalle)
 
                 if (itemMongoDB) {
-                    
-                    var updatedOci = await Proyectos.updateOne(
+                    var updatedDetail = await Proyectos.updateOne(
                         { _id: itemMongoDB._id },
                         {
                             $set: {
-                                [`project.0.oci.${numberOciK}.ociNumber`]: numberOci,
-                                [`project.0.oci.${numberOciK}.ociDescription`]: ociDescription,
-                                [`project.0.oci.${numberOciK}.ociAlias`]: ociAlias,
-                                [`project.0.oci.${numberOciK}.ociStatus`]: booleanStatus,
-                                [`project.0.oci.${numberOciK}.ociImage`]: ociImage,
-                                [`project.0.oci.${numberOciK}.modificator`]: userModificator,
-                                [`project.0.oci.${numberOciK}.modifiedOn`]: now
+                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.numeroDetalle`]: detalleOt,
+                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.descripcionDetalle`]: descripcionDetalle,
+                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.statusDetalle`]: booleanStatus,
+                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.modificator`]: userModificator,
+                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.modifiedOn`]: now,
                             }
                         },
                         { new: true }
                     )
                     
-                    if(updatedOci.acknowledged) {
-                        const itemUpdated = await Proyectos.findById({ _id: project[0]._id })
-                        //console.log('itemUpdated...', itemUpdated)
+                    if(updatedDetail.acknowledged) {
+                        const itemUpdated = await Proyectos.findById({ _id: idProjectTarget })
+                        // console.log('itemUpdated...', itemUpdated)
                         return itemUpdated
+
                     } else {
                         return new Error(`No se actualizó el item: ${itemMongoDB._id}`)
                     }
                     
                 } else {
-                    return new Error(`Oci no existe con este id: ${id}!`)
+                    return new Error(`DEtalle no existe con este id: ${id}!`)
                 }
 
             } catch (error) {
-                console.error("Error MongoDB updatingOci: ", error)
+                console.error("Error MongoDB updatingDetalle: ", error)
             }
 
         } else {
-            return new Error(`No se pudo modificar el status del Proyecto!`)
+            return new Error(`No se pudo modificar el item del Proyecto!`)
+        }
+    }
+
+    // Update Detail Status by Project Id
+    async updateStatusOtDetail(
+        id,
+        ociKNumber,
+        otKNumber,
+        detalleKNumber,
+        statusDetalle,
+        userModificator,
+        idDetalle
+    ) {
+        const idProjectTarget = id 
+        if (id && idDetalle) {
+            try {
+                const itemMongoDB = await Proyectos.findById({ _id: idProjectTarget })
+                
+                let numberOciK = parseInt(ociKNumber)
+                let numberOtK = parseInt(otKNumber)
+                let numberDetalleK = parseInt(detalleKNumber)
+                let booleanStatus
+                statusDetalle=='Inactivo' ? booleanStatus=true : booleanStatus=false
+
+                if (itemMongoDB) {
+                    var updatedDetail = await Proyectos.updateOne(
+                        { _id: itemMongoDB._id },
+                        {
+                            $set: {
+                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.statusDetalle`]: booleanStatus,
+                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.modificator`]: userModificator,
+                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.modifiedOn`]: now,
+                            }
+                        },
+                        { new: true }
+                    )
+                    
+                    if(updatedDetail.acknowledged) {
+                        const itemUpdated = await Proyectos.findById({ _id: idProjectTarget })
+                        console.log('itemUpdated...', itemUpdated)
+                        return itemUpdated
+
+                    } else {
+                        return new Error(`No se actualizó el item: ${itemMongoDB._id}`)
+                    }
+                    
+                } else {
+                    return new Error(`DEtalle no existe con este id: ${id}!`)
+                }
+
+            } catch (error) {
+                console.error("Error MongoDB updatingDetalle: ", error)
+            }
+
+        } else {
+            return new Error(`No se pudo modificar el item del Proyecto!`)
+        }
+    }
+
+    // Delete Detail by Project Id
+    async deleteOtDetail(
+        id,
+        ociKNumber,
+        otKNumber,
+        detalleKNumber,
+        userModificator,
+        idDetalle
+    ) {
+        const idProjectTarget = id 
+        if (id && idDetalle) {
+            try {
+                const itemMongoDB = await Proyectos.findById({ _id: idProjectTarget })
+                
+                let numberOciK = parseInt(ociKNumber)
+                let numberOtK = parseInt(otKNumber)
+                let numberDetalleK = parseInt(detalleKNumber)
+
+                if (itemMongoDB) {
+                    var updatedDetail = await Proyectos.updateOne(
+                        { _id: itemMongoDB._id },
+                        {
+                            $set: {
+                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.visible`]: Boolean(false),
+                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.statusDetalle`]: Boolean(false),
+                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.modificator`]: userModificator,
+                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.modifiedOn`]: now,
+                            }
+                        },
+                        { new: true }
+                    )
+                    
+                    if(updatedDetail.acknowledged) {
+                        const itemUpdated = await Proyectos.findById({ _id: idProjectTarget })
+                        console.log('itemUpdated...', itemUpdated)
+                        return itemUpdated
+
+                    } else {
+                        return new Error(`No se actualizó el item: ${itemMongoDB._id}`)
+                    }
+                    
+                } else {
+                    return new Error(`DEtalle no existe con este id: ${id}!`)
+                }
+
+            } catch (error) {
+                console.error("Error MongoDB updatingDetalle: ", error)
+            }
+
+        } else {
+            return new Error(`No se pudo modificar el item del Proyecto!`)
         }
     }
 
@@ -1724,67 +1782,6 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
     } else {
         return new Error(`No se pudo eliminar la OT!`)
     }
-}
-
-    // Delete Project by Project Id
-    async deleteProjectById(id, project, userModificator) {
-                        
-        if (id) {
-            try {
-                const itemMongoDB = await Proyectos.findById({ _id: project[0]._id })
-                //console.log('itemMongoDB...', itemMongoDB)
-                if (itemMongoDB) {
-                    
-                    if(itemMongoDB.project[0].visible) {
-                        var deleteProject = await Proyectos.updateOne(
-                            { _id: itemMongoDB._id },
-                            {
-                                $set: {
-                                    'project.0.visible': Boolean(false),
-                                    'project.0.modificator': userModificator,
-                                    'project.0.modifiedOn': now,
-                                    modificator: userModificator,
-                                    modifiedOn: now
-                                }
-                            },
-                            { new: true }
-                        )
-
-                    } else {
-                        var deleteProject = await Proyectos.updateOne(
-                            { _id: itemMongoDB._id },
-                            {
-                                $set: {
-                                    'project.0.visible': Boolean(true),
-                                    'project.0.modificator': userModificator,
-                                    'project.0.modifiedOn': now,
-                                    modificator: userModificator,
-                                    modifiedOn: now
-                                }
-                            },
-                            { new: true }
-                        )
-                    }
-
-                    if(deleteProject.acknowledged) {
-                        const itemUpdated = await Proyectos.findById({ _id: project[0]._id })
-                        return itemUpdated
-
-                    } else {
-                        return new Error(`No se eliminó el proyecto`)
-                    }
-                    
-                } else {
-                    return new Error(`Proyecto no existe con este id: ${id}!`)
-                }
-
-            } catch (error) {
-                console.error("Error MongoDB deletingProject: ", error)
-            }
-
-        } else {
-            return new Error(`No se pudo eliminar el Proyecto!`)
-        }
     }
 
     async disconnet() {
