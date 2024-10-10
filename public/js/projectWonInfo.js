@@ -141,6 +141,63 @@ if (arrBtnHidde !=[]) {
     })
 }
 
+// Inicialización de arrays
+let checkSelect = document.querySelectorAll('input[name="checkSelect"]');
+let maxOtQuantity = checkSelect ? checkSelect.length : 0;
+let ociTotalQty = parseInt(document.getElementById('ociTotalQty').innerText);
+
+let arrayBtnChangeStatusOtDetalle = [], arrayBtnUpdateOtDetalle = [],
+    arrayBtnDeleteOtDetalle = [], arrayCheckBoxSelect = [],
+    arrayBtnCheckSelectionAll = [], arrayBtnCheckSelecMasive = [],
+    arrayBtnAddDetallesOt = [], arrayRowsOtDetalles = [],
+    arrayBtnAddDetallesOtFromFile = [], arrayBtnAddDetallesModal = [],
+    arrayCheckBoxNotNull = [], arrayStatusDetail = [], arrayStatusOt = [],
+    arrayBtnSearchDesignerUser = [], arrayBtnSearchSimulationUser = [], arrayBtnSearchSupplier = [],
+    arrayBtnSearchDesignerUserClean = [], arrayBtnSearchSimulationUserClean = [], arrayBtnSearchSupplierClean = [];
+
+
+// Función auxiliar para buscar y agregar un elemento a un array si existe
+const addElementIfExists = (selector, array, attribute = null) => {
+    let element = document.getElementById(selector);
+    if (element && !array.includes(element)) {
+        if (attribute) element.setAttribute(attribute, true);
+        array.push(element);
+    }
+};
+    
+// Recorrido de ociTotalQty
+for (let m = 0; m < ociTotalQty; m++) {
+    addElementIfExists(`btnCheckSelectionAll${m}`, arrayBtnCheckSelectionAll);
+    addElementIfExists(`btnCheckSelecMasive${m}`, arrayBtnCheckSelecMasive, 'disabled');
+    addElementIfExists(`btnAddDetallesFromExcelFile${m}`, arrayBtnAddDetallesOtFromFile);
+    addElementIfExists('idAddDetallesModal', arrayBtnAddDetallesModal);
+    addElementIfExists(`searchDesignUser${m}`, arrayBtnSearchDesignerUser);
+    addElementIfExists(`searchSimulationUser${m}`, arrayBtnSearchSimulationUser);
+    addElementIfExists(`searchSupplier${m}`, arrayBtnSearchSupplier);
+
+    // Recorrido de maxOtQuantity
+    for (let n = 0; n < maxOtQuantity; n++) {
+        addElementIfExists(`btnAddDetallesFormSelected${m}_${n}`, arrayBtnAddDetallesOt);
+
+        // Recorrido de varLimMaxDetallesOT
+        for (let o = 0; o < varLimMaxDetallesOT; o++) {
+            addElementIfExists(`btnStatusOtDetalle${m}_${n}_${o}`, arrayBtnChangeStatusOtDetalle);
+            addElementIfExists(`btnDeleteOtDetalle${m}_${n}_${o}`, arrayBtnDeleteOtDetalle);
+            addElementIfExists(`btnEditOtDetalle${m}_${n}_${o}`, arrayBtnUpdateOtDetalle);
+            addElementIfExists(`rowSelected${m}_${n}_${o}`, arrayRowsOtDetalles);
+
+            let checkBoxSelect = document.getElementById(`checkSelect${m}_${n}_${o}`);
+            if (checkBoxSelect) {
+                arrayCheckBoxSelect.push(checkBoxSelect);
+                if (checkBoxSelect.checked) arrayCheckBoxNotNull.push(checkBoxSelect);
+            }
+
+            addElementIfExists(`statusDetalle${m}_${n}_${o}`, arrayStatusDetail);
+            addElementIfExists(`lastOtStatus${m}_${n}_${o}`, arrayStatusOt);
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     const projectNameHidden = document.getElementById('projectNameHidden').value
     const projectNameTitle = document.getElementById('projectNameTitle')
@@ -231,7 +288,6 @@ btnAddNewRow.disabled = true
 
 buttonOne.addEventListener('click', () => {
     let ariaExpanded = buttonOne.getAttribute('aria-expanded')
-
     ariaExpanded==='true' ? btnAddNewRow.removeAttribute('disabled') : btnAddNewRow.disabled = true
 })
 
@@ -252,7 +308,6 @@ tippy(btnAddNewRow, {
 
 //-------------------------- Add New OT Row --------------------------------
 btnAddNewRow.addEventListener('click', () => {
-
     const parentDiv = document.getElementById('div_body')
     let i = parseInt(parentDiv.childElementCount)
     const lastChild = parentDiv.children[i - 1]
@@ -272,9 +327,9 @@ btnAddNewRow.addEventListener('click', () => {
 
     let otNumberValue = parseInt(document.getElementById('otNumber').value)
     let opNumberValue = parseInt(document.getElementById('opNumber').value)
-    const internoDisenoValue = document.getElementById('internoDiseno').value
-    const internoSimulacion = document.getElementById('internoSimulacion').value
-    const externoDiseno = document.getElementById('externoDiseno').value
+    const internoDisenoValue = document.getElementById(`internoDiseno${i-1}`).value
+    const internoSimulacion = document.getElementById(`internoSimulacion${i-1}`).value
+    const externoDiseno = document.getElementById(`externoDiseno${i-1}`).value
 
     const originalDiv = (
             `<div class="row">
@@ -304,19 +359,37 @@ btnAddNewRow.addEventListener('click', () => {
             </div>
             <div class="col-2">
                 <label for="internoDiseno${i}" id="labelInternoDiseno${i}">Diseño seguido por</label>
-                <input type="text" name="internoDiseno${i}" id="internoDiseno${i}" class="form-control mt-3"
-                placeholder="Diseño" value="${internoDisenoValue}">    
+                <div class="input-group mb-3">
+                    <input type="text" name="internoDiseno${i}" id="internoDiseno${i}" class="form-control mt-3 position-relative"
+                    placeholder="Diseño" value="${internoDisenoValue}" disabled>  
+                    <button type="button" title="Buscar Diseñador" id="searchDesignUser${i}" class="btn btn-sm btn-primary rounded-circle ms-1 mt-3 border shadow position-absolute top-0 start-100 translate-middle">
+                        <i class="fa-solid fa-database"></i>
+                    </button>
+                </div>
             </div>
+
             <div class="col-2">
                 <label for="internoSimulacion${i}" id="labelInternoSimulacion${i}">Simulación seguida por</label>
-                <input type="text" name="internoSimulacion${i}" id="internoSimulacion${i}" class="form-control mt-3"
-                placeholder="Simulación" value="${internoSimulacion}">    
+                <div class="input-group mb-3">
+                    <input type="text" name="internoSimulacion${i}" id="internoSimulacion${i}" class="form-control mt-3 position-relative"
+                    placeholder="Simulación" value="${internoSimulacion}" disabled>
+                    <button type="button" title="Buscar Simulador" id="searchSimulationUser${i}" class="btn btn-sm btn-primary rounded-circle ms-1 mt-3 border shadow position-absolute top-0 start-100 translate-middle">
+                        <i class="fa-solid fa-database"></i>
+                    </button>
+                </div>
             </div>
+
             <div class="col-2">
                 <label for="externoDiseno${i}" id="labelExternoDiseno${i}">Proveedor externo</label>
-                <input type="text" name="externoDiseno${i}" id="externoDiseno${i}" class="form-control mt-3"
-                placeholder="Proveedor" value="${externoDiseno}">    
+                <div class="input-group mb-3">
+                    <input type="text" name="externoDiseno${i}" id="externoDiseno${i}" class="form-control mt-3 position-relative"
+                    placeholder="Proveedor" value="${externoDiseno}" disabled>
+                    <button type="button" title="Buscar Proveedor" id="searchSupplier${i}" class="btn btn-sm btn-primary rounded-circle ms-1 mt-3 border shadow position-absolute top-0 start-100 translate-middle">
+                        <i class="fa-solid fa-database"></i>
+                    </button>
+                </div>  
             </div>
+
             <div class="col-1 my-auto">
                 <div class="d-flex">
                     <button name="btnRemoveRow" type="button" id="btnRemoveRow${i}" value="${i}" class="btn btn-danger rounded-circle m-2 border border-2 shadow">
@@ -335,25 +408,19 @@ btnAddNewRow.addEventListener('click', () => {
     }
 
     // Lógica principal
-    if (i !== 1) {
-        hideRemoveButton(i - 1);
-    }
-
-    if (i >= 10) {
-        btnAddNewRow.disabled = true;
-    }
+    if (i !== 1) hideRemoveButton(i - 1);
+    if (i >= 10) btnAddNewRow.disabled = true;
 
     const newDiv = document.createElement('div');
     newDiv.setAttribute('class', 'row my-2');
     newDiv.id = `otItemRow${i}`;
 
     // Configurar el contenido del nuevo div según el valor de i
-    if (i === 1) {
-        newDiv.innerHTML = `<hr class="my-2"> ${originalDiv} <hr class="my-2">`;
-    } else {
-        newDiv.innerHTML = i === 10 ? originalDiv : originalDiv + `<hr class="my-2">`;
-    }
-
+    i === 1 ?
+        newDiv.innerHTML = `<hr class="my-2"> ${originalDiv} <hr class="my-2">`
+    :
+        newDiv.innerHTML = i === 10 ? originalDiv : originalDiv + `<hr class="my-2">`
+    
     parentDiv.appendChild(newDiv)
     const otQty = document.getElementById("otQuantity")
     otQty.value = i+1
@@ -361,13 +428,13 @@ btnAddNewRow.addEventListener('click', () => {
     let removeButtons = document.querySelectorAll('button[name="btnRemoveRow"]')
     let lastRemoveButton = removeButtons[removeButtons.length-1]
     
-        if (lastRemoveButton) {
-            lastRemoveButton.addEventListener("click", (event) => {
-                event.preventDefault()
-                let idBtnRemoveRow = lastRemoveButton.id
-                removeRow(idBtnRemoveRow)
-            })
-        }
+    if (lastRemoveButton) {
+        lastRemoveButton.addEventListener("click", (event) => {
+            event.preventDefault()
+            let idBtnRemoveRow = lastRemoveButton.id
+            removeRow(idBtnRemoveRow)
+        })
+    }
 
     //*************** ToolTip cantidad de OT a agregar *************** */
     let contentMessage;
@@ -393,6 +460,98 @@ btnAddNewRow.addEventListener('click', () => {
         });
     }
     //*************************************** */
+    // Recorrido de varLimMaxOtProyecto
+    for (let m = 0; m < varLimMaxOtProyecto; m++) {
+        addElementIfExists(`searchDesignUser${m}`, arrayBtnSearchDesignerUser);
+        addElementIfExists(`searchSimulationUser${m}`, arrayBtnSearchSimulationUser);
+        addElementIfExists(`searchSupplier${m}`, arrayBtnSearchSupplier);
+    }
+
+    arrayBtnSearchDesignerUserClean = [...new Set(arrayBtnSearchDesignerUser)];
+    arrayBtnSearchSimulationUserClean = [...new Set(arrayBtnSearchSimulationUser)];
+    arrayBtnSearchSupplierClean = [...new Set(arrayBtnSearchSupplier)];
+
+
+    arrayBtnSearchDesignerUserClean.forEach(function(element) {
+        if (element) {
+            element.addEventListener('click', async (event) => {
+                let idPermiso = (element.id).replace(/\d+$/, '');
+                event.preventDefault();
+                
+                function obtenerNumeroFinal(element) {
+                    let match = element.id.match(/\d+$/);
+                    return match ? parseInt(match[0], 10) : null;
+                }
+                let idPermisoNumero =  obtenerNumeroFinal(element)
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+
+                try {
+                    await cargarUsuario(idPermiso, idPermisoNumero);
+
+                } catch (error) {
+                    const titulo = 'Error al cargar los usuarios'
+                    const message = error
+                    const icon = 'error'
+                    messageAlertUser(titulo, message, icon)
+                }
+            }, { once: true });
+        }
+    });
+
+    arrayBtnSearchSimulationUserClean.forEach(function(element) {
+        if (element) {
+            element.addEventListener('click', async (event) => {
+                let idPermiso = (element.id).replace(/\d+$/, '');
+                event.preventDefault();
+    
+                function obtenerNumeroFinal(element) {
+                    let match = element.id.match(/\d+$/);
+                    return match ? parseInt(match[0], 10) : null;
+                }
+                let idPermisoNumero =  obtenerNumeroFinal(element)
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+    
+                try {
+                    await cargarUsuario(idPermiso, idPermisoNumero);
+    
+                } catch (error) {
+                    const titulo = 'Error al cargar los usuarios'
+                    const message = error
+                    const icon = 'error'
+                    messageAlertUser(titulo, message, icon)
+                }
+            }, { once: true });
+        }
+    })
+
+    arrayBtnSearchSupplierClean.forEach(function(element) {
+        if (element) {
+            element.addEventListener('click', async (event) => {
+                let idPermiso = (element.id).replace(/\d+$/, '');
+                event.preventDefault();
+    
+                function obtenerNumeroFinal(element) {
+                    let match = element.id.match(/\d+$/);
+                    return match ? parseInt(match[0], 10) : null;
+                }
+                let idPermisoNumero =  obtenerNumeroFinal(element)
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+    
+                try {
+                    await cargarUsuario(idPermiso, idPermisoNumero);
+    
+                } catch (error) {
+                    const titulo = 'Error al cargar los usuarios'
+                    const message = error
+                    const icon = 'error'
+                    messageAlertUser(titulo, message, icon)
+                }
+            }, { once: true });
+        }
+    })
 })
 
 //-------------------------- Remove OT Row ----------------------------------
@@ -452,7 +611,6 @@ function removeRow(e) {
         })
     }
 
-
     if (i > 1 && i <= 9) {
         let tippyFormula = (10-i)+1
         tippyLabel(i, tippyFormula)
@@ -507,8 +665,8 @@ function lastOtNumberFn(i) {
 
 //-------------------- Boton agregar nuevas OT's a OCI ------------------------
 function radioSelected(radioSelectedValue, elementoId) {
+    //console.log('radioSelectedValue: ', radioSelectedValue)
     const radioSelected = document.getElementById(`radioSelectedValue${elementoId}`)
-    //console.log('radioSelected.value2: ', radioSelected.getAttribute('value2'))
     radioSelected.checked = true
     tituloForm.innerHTML = `Agregar Nueva/s OT's a OCI #<strong>${radioSelected.value}</strong> - Alias: "${radioSelected.getAttribute('value2')}" <br> Proyecto: "${projectNameHidden}"`
     ociNumberK.value = extractNumbers(elementoId)
@@ -516,7 +674,7 @@ function radioSelected(radioSelectedValue, elementoId) {
     ociNumberHidden.value = radioSelected.value
     //console.log('ociNumberHidden.value', ociNumberHidden.value)
     lastOtNumberFn(extractNumbers(elementoId))
-    formulario.scrollTo({ behavior: 'smooth', block: 'start', left:0, top:0 }) //.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    formulario.scrollTo({ behavior: 'smooth', block: 'start', left:0, top:0 });
 
     return (ociNumberHidden.value)
 }
@@ -738,7 +896,7 @@ function messageAddDetalleOt(
 }
 
 //---- Add Details to OT from head Green btn----------------
-function messageModalAddDetallesOt(idProjectSelected, clientId,  arrayIdOciOt, arrayIdOciOtDet, kNumberOci) { //idOciOtDet
+function messageModalAddDetallesOt(idProjectSelected, clientId,  arrayIdOciOt, arrayIdOciOtDet, kNumberOci) {
 
     const Toast = Swal.mixin({
         toast: true,
@@ -1071,17 +1229,17 @@ function messageModalAddDetallesOtFromFile(idProjectSelected, clientId, idOciOtD
     let html = `<form id="formModalAddOtDetalleFromFile${idProjectSelected}" action="/api/programas/addModalOtDetalleFromFile/${idProjectSelected}" method="post">
                     <fieldset>
                         <div class="row justify-content-between mb-3 mx-1 px-1">
-                            <div class="col-3">
+                            <div class="col-4">
                                 <label for="numberOci" class="form-label d-flex justify-content-start ms-1">Número OCI - Alias</label>
                                 <div id="containerNumberOci"></div>
                             </div>
-                            <div class="col-3 my-auto">
+                            <div class="col-2 my-auto">
                                 <i class="fa-solid fa-right-long fa-beat fa-xl" style="color: #0000ff;"></i>
-                            </div>    
+                            </div>
                             <div class="col-6">
                                 <label for="numberOt" class="form-label d-flex justify-content-start ms-1">#OT - Descripción - #Op - Status</label>
                                 <div id="containerNumberOt"></div>
-                            </div>    
+                            </div>
                         </div>
 
                         <div class="row justify-content-between mb-3 mx-1 px-1">
@@ -1716,118 +1874,45 @@ function messageDeleteOtDetalle(
     }
 }
 
-let checkSelect = document.querySelectorAll('input[name="checkSelect"]')
-let maxOtQuantity
-checkSelect ? maxOtQuantity = parseInt(checkSelect.length) : maxOtQuantity=0
-let ociTotalQty = parseInt(document.getElementById('ociTotalQty').innerText)
-
-let arrayBtnChangeStatusOtDetalle = [], arrayBtnUpdateOtDetalle = [], 
-    arrayBtnDeleteOtDetalle = [], arrayCheckBoxSelect = [],
-    arrayBtnCheckSelectionAll = [], arrayBtnCheckSelecMasive = [], 
-    arrayBtnAddDetallesOt = [], arrayRowsOtDetalles = [],
-    arrayBtnAddDetallesOtFromFile = [], arrayBtnAddDetallesModal = [],
-    arrayCheckBoxNotNull = [], arrayStatusDetail = [], arrayStatusOt = []
-
-    for (let m=0; m<ociTotalQty; m++) {
-        let btnCheckSelectionAll = document.getElementById(`btnCheckSelectionAll${m}`)
-        btnCheckSelectionAll ? arrayBtnCheckSelectionAll.push(btnCheckSelectionAll) : null
-
-        let btnCheckSelecMasive = document.getElementById(`btnCheckSelecMasive${m}`)
-        if (btnCheckSelecMasive) {
-            btnCheckSelecMasive.setAttribute('disabled', true)
-            arrayBtnCheckSelecMasive.push(btnCheckSelecMasive)
-        }
-
-        let btnAddDetailsFromFile = document.getElementById(`btnAddDetallesFromExcelFile${m}`)
-        if (btnAddDetailsFromFile) {
-            arrayBtnAddDetallesOtFromFile.push(btnAddDetailsFromFile)
-        }
-
-        let btnAddDetallesModal = document.getElementById('idAddDetallesModal') 
-        if (btnAddDetallesModal) {
-            arrayBtnAddDetallesModal.push(btnAddDetallesModal)
-        }
-
-        for (let n=0; n<maxOtQuantity; n++) {
-            let btnAddDetallesOt = document.getElementById(`btnAddDetallesFormSelected${m}_${n}`)
-            btnAddDetallesOt ? arrayBtnAddDetallesOt.push(btnAddDetallesOt) : null
-
-            for (let o=0; o<varLimMaxDetallesOT; o++) {
-                let btnChangeStatusOtDetalle = document.getElementById(`btnStatusOtDetalle${m}_${n}_${o}`)
-                btnChangeStatusOtDetalle ? arrayBtnChangeStatusOtDetalle.push(btnChangeStatusOtDetalle) : null
-
-                let btnDeleteOtDetalle = document.getElementById(`btnDeleteOtDetalle${m}_${n}_${o}`)
-                btnDeleteOtDetalle ? arrayBtnDeleteOtDetalle.push(btnDeleteOtDetalle) : null
-
-                let checkBoxSelect = document.getElementById(`checkSelect${m}_${n}_${o}`)
-                checkBoxSelect ? arrayCheckBoxSelect.push(checkBoxSelect) : null
-                checkBoxSelect && checkBoxSelect.checked ? arrayCheckBoxNotNull.push(checkBoxSelect) : null
-                
-                let statusDetailInfo = document.getElementById(`statusDetalle${m}_${n}_${o}`)
-                statusDetailInfo ? arrayStatusDetail.push(statusDetailInfo) : null
-
-                let statusOtInfo = document.getElementById(`lastOtStatus${m}_${n}_${o}`)
-                statusOtInfo ? arrayStatusOt.push(statusOtInfo) : null
-
-                let btnUpdateOtDetalle = document.getElementById(`btnEditOtDetalle${m}_${n}_${o}`)
-                btnUpdateOtDetalle ? arrayBtnUpdateOtDetalle.push(btnUpdateOtDetalle) : null
-
-                let rowOtDetalle = document.getElementById(`rowSelected${m}_${n}_${o}`)
-                rowOtDetalle ? arrayRowsOtDetalles.push(rowOtDetalle) : null
-            }
-        }
-    }
-
-
 function updateBtnCheckSelecMasive(idOci) {     
-    let btnMasive = document.getElementById(`btnCheckSelecMasive${idOci}`)
-    let spanMasive = document.getElementById(`spanCheckSelecMasive${idOci}`)
-    let spanMasiveDistribution = document.getElementById(`spanCheckSelecMasiveDistribution${idOci}`)
-    let spanMasiveProgPrima = document.getElementById(`spanCheckSelecMasiveProgPrima${idOci}`)
-    let spanMasiveProgSeg = document.getElementById(`spanCheckSelecMasiveProgSeg${idOci}`)
-    let spanMasiveMecaPrima = document.getElementById(`spanCheckSelecMasiveMecaPrima${idOci}`)
-    let spanMasiveMecaSeg = document.getElementById(`spanCheckSelecMasiveMecaSeg${idOci}`)
+    const spansIds = [
+        `spanCheckSelecMasive`, `spanCheckSelecMasiveDistribution`, 
+        `spanCheckSelecMasiveProgPrima`, `spanCheckSelecMasiveProgSeg`,
+        `spanCheckSelecMasiveMecaPrima`, `spanCheckSelecMasiveMecaSeg`
+    ];
 
-    let btnSelectAll = document.getElementById(`btnCheckSelectionAll${idOci}`)
-    
-    const cantidadSeleccionados = parseInt(document.querySelectorAll(`#tablaGeneral${idOci} input[name="checkSelect"]:checked`).length)
-    const cantidadTotalXTabla = parseInt(document.querySelectorAll(`#tablaGeneral${idOci} input[name="checkSelect"]:not(:disabled)`).length)
-    
+    const spans = spansIds.map(id => document.getElementById(`${id}${idOci}`));
+    const btnMasive = document.getElementById(`btnCheckSelecMasive${idOci}`);
+    const btnSelectAll = document.getElementById(`btnCheckSelectionAll${idOci}`);
+
+    const cantidadSeleccionados = document.querySelectorAll(`#tablaGeneral${idOci} input[name="checkSelect"]:checked`).length;
+    const cantidadTotalXTabla = document.querySelectorAll(`#tablaGeneral${idOci} input[name="checkSelect"]:not(:disabled)`).length;
+
+    const updateSpans = (value) => {
+        spans.forEach(span => span.innerText = value);
+    };
+
+    const updateBtnSelectAll = (title, addClass, removeClass, value) => {
+        btnSelectAll.title = title;
+        btnSelectAll.classList.replace(removeClass, addClass);
+        btnSelectAll.value = value;
+    };
+
     if (cantidadSeleccionados > 0) {
         cantidadSeleccionados === cantidadTotalXTabla ?
-            (btnSelectAll.title = 'Des-Seleccionar todos los ítems',
-            btnSelectAll.classList.remove("btn-primary"),
-            btnSelectAll.classList.add("btn-danger"),
-            btnSelectAll.value = 1)
+            updateBtnSelectAll('Des-Seleccionar todos los ítems', 'btn-danger', 'btn-primary', 1)
         :
-            (btnSelectAll.title = 'Seleccionar todos los ítems',
-            btnSelectAll.classList.add("btn-primary"),
-            btnSelectAll.classList.remove("btn-danger"),
-            btnSelectAll.value = 0)
+            updateBtnSelectAll('Seleccionar todos los ítems', 'btn-primary', 'btn-danger', 0)
 
-        btnMasive.innerHTML = `<i class="fa-solid fa-list-check"></i> Mod. multiple (${cantidadSeleccionados}/${cantidadTotalXTabla})`
-        spanMasive.innerText = `${cantidadSeleccionados}/${cantidadTotalXTabla}`
-        spanMasiveDistribution.innerText = `${cantidadSeleccionados}`
-        spanMasiveProgPrima.innerText = `${cantidadSeleccionados}`
-        spanMasiveProgSeg.innerText = `${cantidadSeleccionados}`
-        spanMasiveMecaPrima.innerText = `${cantidadSeleccionados}`
-        spanMasiveMecaSeg.innerText = `${cantidadSeleccionados}`
-    
+        btnMasive.innerHTML = `<i class="fa-solid fa-list-check"></i> Mod. multiple (${cantidadSeleccionados}/${cantidadTotalXTabla})`;
+        updateSpans(cantidadSeleccionados);
+
     } else {
-        btnSelectAll.title = 'Seleccionar todos los ítems'
-        btnSelectAll.classList.add("btn-primary")
-        btnSelectAll.classList.remove("btn-danger")
-        btnSelectAll.value = 0
-
-        btnMasive.innerHTML = `<i class="fa-solid fa-list-check"></i> Mod. multiple (0)`
-        spanMasive.innerText = `${cantidadSeleccionados}`
-        spanMasiveDistribution.innerText = `${cantidadSeleccionados}`
-        spanMasiveProgPrima.innerText = `${cantidadSeleccionados}`
-        spanMasiveProgSeg.innerText = `${cantidadSeleccionados}`
-        spanMasiveMecaPrima.innerText = `${cantidadSeleccionados}`
-        spanMasiveMecaSeg.innerText = `${cantidadSeleccionados}`
+        updateBtnSelectAll('Seleccionar todos los ítems', 'btn-primary', 'btn-danger', 0);
+        btnMasive.innerHTML = `<i class="fa-solid fa-list-check"></i> Mod. multiple (0)`;
+        updateSpans(0);
     }
-}  
+}
 
 arrayBtnAddDetallesOt.forEach(function(elemento) {
     if (elemento.id) {
@@ -2144,102 +2229,84 @@ arrayCheckBoxSelect.forEach(function(element) {
     })
 })
 
-let seleccionados = false
-let seleccionarFilas = false
 arrayBtnCheckSelectionAll.forEach(function(element) {
+    let seleccionados = false;
+    let seleccionarFilas = false;
+
     if (element) {
         element.addEventListener('click', (event) => {
-            event.preventDefault()
-            const idOci = parseInt((element.id).slice(20))
-            var checkboxes = Array.from(document.querySelectorAll(`#tablaGeneral${idOci} tbody input[type="checkbox"]`))
-            let spanMasive = document.getElementById(`spanCheckSelecMasive${idOci}`)
-            let spanMasiveDistribution = document.getElementById(`spanCheckSelecMasiveDistribution${idOci}`)
-            let spanMasiveProgPrima = document.getElementById(`spanCheckSelecMasiveProgPrima${idOci}`)
-            let spanMasiveProgSeg = document.getElementById(`spanCheckSelecMasiveProgSeg${idOci}`)
-            let spanMasiveMecaPrima = document.getElementById(`spanCheckSelecMasiveMecaPrima${idOci}`)
-            let spanMasiveMecaSeg = document.getElementById(`spanCheckSelecMasiveMecaSeg${idOci}`)
+            event.preventDefault();
+            const idOci = parseInt(element.id.slice(20));
+            const checkboxes = Array.from(document.querySelectorAll(`#tablaGeneral${idOci} tbody input[type="checkbox"]`));
+            const spanIds = [
+                `spanCheckSelecMasive`, `spanCheckSelecMasiveDistribution`, 
+                `spanCheckSelecMasiveProgPrima`, `spanCheckSelecMasiveProgSeg`, 
+                `spanCheckSelecMasiveMecaPrima`, `spanCheckSelecMasiveMecaSeg`
+            ];
+            const spans = spanIds.map(id => document.getElementById(`${id}${idOci}`));
 
-            var arrQueryRows=[]
-            let idOtOciDet
-            for(let q=0; q<checkboxes.length; q++) {
-                if (checkboxes[q].id) {
-                    idOtOciDet = checkboxes[q].id.slice(11)
-                    let rowsSelectCheck = document.getElementsByName(`rowSelected${idOtOciDet}`)
-                    let statusDetalle = document.getElementById(`statusDetalle${idOtOciDet}`)
-                    let statusOt = document.getElementById(`lastOtDetalleStatus${idOtOciDet}`)
+            let arrQueryRows = [];
+            checkboxes.forEach(checkbox => {
+                if (checkbox.id) {
+                    const idOtOciDet = checkbox.id.slice(11);
+                    const rowsSelectCheck = document.getElementsByName(`rowSelected${idOtOciDet}`);
+                    const statusDetalle = document.getElementById(`statusDetalle${idOtOciDet}`);
+                    const statusOt = document.getElementById(`lastOtDetalleStatus${idOtOciDet}`);
 
-                    rowsSelectCheck && statusDetalle.innerText === 'Activo' && statusOt.innerText === 'Activo' ? arrQueryRows.push(rowsSelectCheck) : null
+                    if (rowsSelectCheck && statusDetalle.innerText === 'Activo' && statusOt.innerText === 'Activo') {
+                        arrQueryRows.push(rowsSelectCheck);
+                    }
                 }
-            }
+            });
 
-            // funcion selecciona todas las filas
-            function seleccionarTodasFilas() {
+            // Función para seleccionar/des-seleccionar todas las filas
+            const seleccionarTodasFilas = () => {
                 arrQueryRows.forEach(nodeList => {
-                    Array.from(nodeList).forEach(element => {
-                        !seleccionarFilas ? element.style = "height: 5vh; background-color: rgb(196, 240, 253);" : element.style = "height: 5vh;"                    
-                    })
-                })
-                seleccionarFilas = !seleccionarFilas
-            }
-            seleccionarTodasFilas()
-            
-            // funcion selecciona todos los checkbox
-            function seleccionarTodos() {
-                checkboxes.forEach(function(checkbox) {
-                    !checkbox.disabled ?
-                        !seleccionados ? checkbox.checked = true : checkbox.checked = false
-                    : null
-                })
-                seleccionados = !seleccionados
-            }
-            seleccionarTodos()
+                    nodeList.forEach(element => {
+                        element.style = seleccionarFilas ? "height: 5vh;" : "height: 5vh; background-color: rgb(196, 240, 253);";
+                    });
+                });
+                seleccionarFilas = !seleccionarFilas;
+            };
+            seleccionarTodasFilas();
 
-            element.classList[1] === 'btn-primary' ? 
-                (element.classList.remove("btn-primary"),
-                element.classList.add("btn-danger"),
-                element.value = 1,
-                element.title = 'Des-Seleccionar todos los ítems',
-                spanMasive.innerText = arrQueryRows.length,
-                spanMasiveDistribution.innerText = arrQueryRows.length,
-                spanMasiveProgPrima.innerText = arrQueryRows.length,
-                spanMasiveProgSeg.innerText = arrQueryRows.length,
-                spanMasiveMecaPrima.innerText = arrQueryRows.length,
-                spanMasiveMecaSeg.innerText = arrQueryRows.length)
-            :
-                (element.classList.remove("btn-danger"),
-                element.classList.add("btn-primary"),
-                element.value = 0,
-                element.title = 'Seleccionar todos los items',
-                spanMasive.innerText = 0,
-                spanMasiveDistribution.innerText = 0,
-                spanMasiveProgPrima.innerText = 0,
-                spanMasiveProgSeg.innerText = 0,
-                spanMasiveMecaPrima.innerText = 0,
-                spanMasiveMecaSeg.innerText = 0)
+            // Función para seleccionar/des-seleccionar todos los checkboxes
+            const seleccionarTodos = () => {
+                checkboxes.forEach(checkbox => {
+                    if (!checkbox.disabled) {
+                        checkbox.checked = !seleccionados;
+                    }
+                });
+                seleccionados = !seleccionados;
+            };
+            seleccionarTodos();
 
-            element.value === 0 ?
-                (spanMasive.innerText = 0,
-                spanMasiveDistribution.innerText = 0,
-                spanMasiveProgPrima.innerText = 0,
-                spanMasiveProgSeg.innerText = 0,
-                spanMasiveMecaPrima.innerText = 0,
-                spanMasiveMecaSeg.innerText = 0)
-            :
-                (spanMasive.innerText = arrQueryRows.length,
-                spanMasiveDistribution.innerText = arrQueryRows.length,
-                spanMasiveProgPrima.innerText = arrQueryRows.length,
-                spanMasiveProgSeg.innerText = arrQueryRows.length,
-                spanMasiveMecaPrima.innerText = arrQueryRows.length,
-                spanMasiveMecaSeg.innerText = arrQueryRows.length)
+            // Actualizar clases y valores del botón
+            const toggleButtonState = (isPrimary) => {
+                if (isPrimary) {
+                    element.classList.replace("btn-primary", "btn-danger");
+                    element.value = 1;
+                    element.title = 'Des-Seleccionar todos los ítems';
+                } else {
+                    element.classList.replace("btn-danger", "btn-primary");
+                    element.value = 0;
+                    element.title = 'Seleccionar todos los ítems';
+                }
+            };
+            toggleButtonState(element.classList.contains("btn-primary"));
 
-            updateBtnCheckSelecMasive(idOci)
-        })
-    }    
-})
+            // Actualizar valores de los spans
+            const updateSpans = (value) => {
+                spans.forEach(span => span.innerText = value);
+            };
+            updateSpans(arrQueryRows.length);
+
+            updateBtnCheckSelecMasive(idOci);
+        });
+    }
+});
 
 //-----Btns Buscar en BBDD el Usuario Seguidor de Diseño/Simulación --------------
-const searchDesignUser = document.getElementById('searchDesignUser')
-const searchSimulationUser = document.getElementById('searchSimulationUser')
 const userNameBanner = document.getElementById('userNameBanner').innerText
 
 function messageAlertUser(titulo, message, icon){
@@ -2250,22 +2317,27 @@ function messageAlertUser(titulo, message, icon){
     return false
 }
 
-async function cargarUsuario(idPermiso) {
+async function cargarUsuario(idPermiso, idPermisoNumero) {
     const permisos = {
         'searchDesignUser': {
             permisoUsuario: 'diseno',
             tituloSeguimiento: 'Seguimiento Diseño',
-            inputTarget: 'internoDiseno'
+            inputTarget: `internoDiseno${idPermisoNumero}`
         },
         'searchDesignUserModal': {
             permisoUsuario: 'diseno',
             tituloSeguimiento: 'Seguimiento Diseño',
-            inputTarget: 'internoDiseno'
+            inputTarget: `internoDiseno${idPermisoNumero}`
         },
         'searchSimulationUser': {
             permisoUsuario: 'simulacion',
             tituloSeguimiento: 'Seguimiento Simulación',
-            inputTarget: 'internoSimulacion'
+            inputTarget: `internoSimulacion${idPermisoNumero}`
+        },
+        'searchSupplierr': {
+            permisoUsuario: 'proveedor',
+            tituloSeguimiento: 'Proveedor',
+            inputTarget: `externoDiseno${idPermisoNumero}`
         }
     };
     
@@ -2372,31 +2444,86 @@ async function cargarUsuario(idPermiso) {
     disabledBtnAceptar()
 }
 
-searchDesignUser.addEventListener('click', async (event) => {
-    let idPermiso = searchDesignUser.id
-    event.preventDefault();
-    try {
-        await cargarUsuario(idPermiso);
-    } catch (error) {
-        const titulo = 'Error al cargar los usuarios'
-        const message = error
-        const icon = 'error'
-        messageAlertUser(titulo, message, icon)
+arrayBtnSearchDesignerUser.forEach(function(element) {
+    if (element) {
+        element.addEventListener('click', async (event) => {
+            let idPermiso = (element.id).replace(/\d+$/, '');
+            event.preventDefault();
+
+            function obtenerNumeroFinal(element) {
+                let match = element.id.match(/\d+$/);
+                return match ? parseInt(match[0], 10) : null;
+            }
+            let idPermisoNumero =  obtenerNumeroFinal(element)
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+            try {
+                await cargarUsuario(idPermiso, idPermisoNumero);
+
+            } catch (error) {
+                const titulo = 'Error al cargar los usuarios'
+                const message = error
+                const icon = 'error'
+                messageAlertUser(titulo, message, icon)
+            }
+        }, { once: true });
     }
 });
 
-searchSimulationUser.addEventListener('click', async (event) => {
-    let idPermiso = searchSimulationUser.id
-    event.preventDefault();
-    try {
-        await cargarUsuario(idPermiso);
-    } catch (error) {
-        const titulo = 'Error al cargar los usuarios'
-        const message = error
-        const icon = 'error'
-        messageAlertUser(titulo, message, icon)
+arrayBtnSearchSimulationUser.forEach(function(element) {
+    if (element) {
+        element.addEventListener('click', async (event) => {
+            let idPermiso = (element.id).replace(/\d+$/, '');
+            event.preventDefault();
+
+            function obtenerNumeroFinal(element) {
+                let match = element.id.match(/\d+$/);
+                return match ? parseInt(match[0], 10) : null;
+            }
+            let idPermisoNumero =  obtenerNumeroFinal(element)
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+            try {
+                await cargarUsuario(idPermiso, idPermisoNumero);
+
+            } catch (error) {
+                const titulo = 'Error al cargar los usuarios'
+                const message = error
+                const icon = 'error'
+                messageAlertUser(titulo, message, icon)
+            }
+        }, { once: true });
     }
-});
+})
+
+arrayBtnSearchSupplier.forEach(function(element) {
+    if (element) {
+        element.addEventListener('click', async (event) => {
+            let idPermiso = (element.id).replace(/\d+$/, '');
+            event.preventDefault();
+
+            function obtenerNumeroFinal(element) {
+                let match = element.id.match(/\d+$/);
+                return match ? parseInt(match[0], 10) : null;
+            }
+            let idPermisoNumero =  obtenerNumeroFinal(element)
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+            try {
+                await ccargarUsuario(idPermiso, idPermisoNumero);
+
+            } catch (error) {
+                const titulo = 'Error al cargar los usuarios'
+                const message = error
+                const icon = 'error'
+                messageAlertUser(titulo, message, icon)
+            }
+        }, { once: true });
+    }
+})
 //-----End Btns Buscar en BBDD el Usuario Seguidor de Diseño/Simulación -----------
 
 
@@ -2420,6 +2547,13 @@ function messageNewOt(ociNumber, otArray, ociAlias) {
             showConfirmButton: true,
         }).then((result) => {
             if (result.isConfirmed) {
+                for (let i=0; otArray.length>i; i++) {
+                    if (otArray[i]) {
+                        document.getElementById(`internoDiseno${i}`).setAttribute('disabled', false)
+                        document.getElementById(`internoSimulacion${i}`).setAttribute('disabled', false)
+                        document.getElementById(`externoDiseno${i}`).setAttribute('disabled', false)
+                    }
+                }
                 document.getElementById('formNewOt').submit()
                 Toast.fire({
                     icon: 'success',
@@ -4037,7 +4171,7 @@ function disabledBtnAceptar() {
     })
 
     allInputsRadio.forEach(function(input) {
-        if (input.value) {
+        if (input.value && input.name != 'ociNumber') {
             input.addEventListener('input', (event) => {
                 event.preventDefault()
                 if (btnAceptarModal) {
@@ -4119,21 +4253,21 @@ if (arrTables !=[]) {
 }
 
 let inputsDeTexto = document.querySelectorAll('input[type="text"]')
-    inputsDeTexto.forEach(function(input) {
-        input.addEventListener('keydown', function(event) {
-            // Obtener el código de la tecla presionada
-            let key = event.key;
+inputsDeTexto.forEach(function(input) {
+    input.addEventListener('keydown', function(event) {
+        // Obtener el código de la tecla presionada
+        let key = event.key;
 
-            // Lista de caracteres especiales prohibidos
-            let forbiddenChars = /["$%?¡¿^/()=!'~`\\*{}\[\]<>@]/;
+        // Lista de caracteres especiales prohibidos
+        let forbiddenChars = /["$%?¡¿^/()=!'~`\\*{}\[\]<>@]/;
 
-            // Verificar si la tecla presionada es un carácter especial
-            if (forbiddenChars.test(key)) {
-                // Cancelar el evento para evitar que se ingrese el carácter
-                event.preventDefault()
-                input.classList.toggle("border")
-                input.classList.toggle("border-danger")
-                input.classList.toggle("border-2")
-            }
-        })
+        // Verificar si la tecla presionada es un carácter especial
+        if (forbiddenChars.test(key)) {
+            // Cancelar el evento para evitar que se ingrese el carácter
+            event.preventDefault()
+            input.classList.toggle("border")
+            input.classList.toggle("border-danger")
+            input.classList.toggle("border-2")
+        }
     })
+})
