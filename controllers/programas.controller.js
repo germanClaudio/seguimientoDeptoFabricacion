@@ -1007,11 +1007,14 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
             }
             
             const ociNumberK = parseInt(req.body.ociNumberK)
-            const arrayOtKNumber = req.body.detalleNumberK.split(",")
+            const arrayDetalleKNumber = req.body.detalleNumberK.split(",")
+            const arrayDetalleNumberK = arrayDetalleKNumber.map(Number) 
+            const arrayOtKNumber = req.body.otNumberK.split(",")
             const arrayOtNumberK = arrayOtKNumber.map(Number) 
-// console.log(' arrayOtNumberK: ',  arrayOtNumberK)
             const otQuantity = parseInt(req.body.otQuantity)
             const detallesQuantity = parseInt(req.body.detallesQuantity)
+            const totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
+// console.log('totalDetallesQuantity: ', totalDetallesQuantity)           
 // console.log('req.body: ', req.body)
             let arrayIdDetalle=[],
                 arrayOtNumber=[],
@@ -1070,14 +1073,16 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
                 arrayInfoAddedToDetail.push(infoAddedToOt)
             }
 
-            // console.log('arrayInfoAddedToDetail-controller', arrayInfoAddedToDetail)
+            console.log('arrayInfoAddedToDetail-controller', arrayInfoAddedToDetail)
 
             const itemUpdated = await this.programms.addInfoOtDistribucion(
                 projectId,
                 otQuantity,
                 ociNumberK,
                 arrayOtNumberK,
+                arrayDetalleNumberK,
                 detallesQuantity,
+                totalDetallesQuantity,
                 arrayInfoAddedToDetail
             )
     

@@ -346,7 +346,7 @@ const renderProjectsForAdmin = (arrayProjects) => {
                             <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                                 <tbody>
                                     <tr>
-                                        <td class="border border-0">${loopArrayDescription()}</td>
+                                        <td class="border border-0 text-center align-middle overflow-ellipsis"">${loopArrayDescription()}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -730,7 +730,7 @@ const renderProjectsForUser = (arrayProjects) => {
                     <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                         <tbody>
                             <tr>
-                                <td>${loopArrayDescription()}</td>
+                                <td class="text-center align-middle overflow-ellipsis">${loopArrayDescription()}</td>
                             </tr>
                         </tbody>
                     </table>

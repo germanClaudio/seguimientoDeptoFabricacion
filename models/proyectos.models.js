@@ -569,6 +569,7 @@ let otProjectSchema = new Schema({
     opDescription: {
         type: String,
         maxlength: 150,
+        default: 'No definida'
     },
     otStatus:{
         type: Boolean,
@@ -577,14 +578,17 @@ let otProjectSchema = new Schema({
     otDesign:{
         type: String,
         maxlength: 150,
+        default: 'No definido'
     },
     otSimulation:{
         type: String,
         maxlength: 150,
+        default: 'No definido'
     },
     otSupplier:{
         type: String,
         maxlength: 150,
+        default: 'No definido'
     },
     otInformation: [otInformationSchema],
     otDetalles: [programacionModels.ProgramacionSchema],

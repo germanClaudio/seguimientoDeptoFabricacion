@@ -1,9 +1,9 @@
 <!-- cabecera botonera principal de OCI -->
 <div class="container mw-100">
-    <div class="row">
+    <div class="row align-items-center">
         <div class="col-2 d-flex align-items-center">
-            <img id="imageOciHeader<%=k%>" src="<%= arrayVisibleOci[k].ociImage %>" class="card-img m-auto shadow" title="<%= arrayVisibleOci[k].ociDescription %>"
-                alt="<%= arrayVisibleOci[k].ociDescription %>" style="max-width: 75%; max-height: 75%; object-fit: contain;">
+            <img id="imageOciHeader<%=k%>" src="<%= arrayVisibleOci[k].ociImage %>" class="img-fluid img-thumbnail shadow m-auto shadow" title="<%= arrayVisibleOci[k].ociDescription %>"
+                alt="<%= arrayVisibleOci[k].ociDescription %>" style="width: 100px; height: 100px; object-fit: contain;">
         </div>
         <div class="col-10 d-flex align-items-center">
             Puedes agregar mas datos de OT en esta OCI# <strong><%= arrayVisibleOci[k].ociNumber %></strong>, haciendo click en el siguiente botón

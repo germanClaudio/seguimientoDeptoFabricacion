@@ -150,7 +150,7 @@ function handleFileUploadAvatarUser(file) {
         const dotIndex = file.name.lastIndexOf('.');
         const name = file.name.substring(0, dotIndex);
         const extension = file.name.substring(dotIndex);
-        fileImputTextAvatarUser.value = pathToImage + name + "-" + formatDate(new Date()) + extension
+        fileImputTextAvatarUser.value = pathToImage + name.replace(/[^a-zA-Z0-9./_ ]/g, '-') + "-" + formatDate(new Date()) + extension
         removeImageButtonAvatarUser.style.display = 'flex'
         
         const reader = new FileReader()

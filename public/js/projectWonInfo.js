@@ -272,14 +272,19 @@ function activarElemento(subarray, index) {
 }
 
 // Convertimos el valor de slideHidden a entero una vez
-const slideIndex = parseInt(slideHidden.value);
-
-// Activamos los elementos en ambos conjuntos de subarrays
-[subarrays, subarrayBtns].forEach(array => {
-    array.forEach(subarray => {
-        activarElemento(subarray, slideIndex);
+const slideHiddenId = document.getElementById('slideHidden')
+let slideIndex = 0
+if (slideHiddenId) {
+    slideIndex = parseInt(slideHidden.value);
+    
+    // Activamos los elementos en ambos conjuntos de subarrays
+    [subarrays, subarrayBtns].forEach(array => {
+        array.forEach(subarray => {
+            activarElemento(subarray, slideIndex);
+        });
     });
-});
+}
+
 
 // ---------------- Event Add New Ot Row to OCI --------------------
 const btnAddNewRow = document.getElementById("btnAddNewRow")
@@ -2549,9 +2554,9 @@ function messageNewOt(ociNumber, otArray, ociAlias) {
             if (result.isConfirmed) {
                 for (let i=0; otArray.length>i; i++) {
                     if (otArray[i]) {
-                        document.getElementById(`internoDiseno${i}`).setAttribute('disabled', false)
-                        document.getElementById(`internoSimulacion${i}`).setAttribute('disabled', false)
-                        document.getElementById(`externoDiseno${i}`).setAttribute('disabled', false)
+                        document.getElementById(`internoDiseno${i}`).removeAttribute('disabled')
+                        document.getElementById(`internoSimulacion${i}`).removeAttribute('disabled')
+                        document.getElementById(`externoDiseno${i}`).removeAttribute('disabled')
                     }
                 }
                 document.getElementById('formNewOt').submit()
@@ -2635,11 +2640,11 @@ function getOtList(i) {
 
     // Arrays para almacenar los datos
     const arrayOtNumber = [], arrayOpNumber = [], arrayOtDetalleStatus = [], arrayOtDetalle = [], 
-        arrayDescripcionDetalle = [], arrayOnumber = [], arrayDetalleId = [], arraySelectedCheck = [], arrayONumberSelect = [];
+        arrayDescripcionDetalle = [], arrayOnumber = [], arrayNnumber = [], arrayDetalleId = [], arraySelectedCheck = [], arrayONumberSelect = [];
 
     // Configuración de mapeo de IDs a arrays
     const mappings = [
-        { prefix: 'lastOtNumber', array: arrayOtNumber },
+        { prefix: 'lastOtNumber', array: arrayOtNumber, isOt: true },
         { prefix: 'lastOpNumber', array: arrayOpNumber },
         { prefix: 'statusDetalle', array: arrayOtDetalleStatus },
         { prefix: 'numeroDetalle', array: arrayOtDetalle, isDetalle: true },
@@ -2649,7 +2654,7 @@ function getOtList(i) {
 
     for (let n = 0; n < lastChild; n++) {
         for (let o = 0; o < lastChild; o++) {
-            mappings.forEach(({ prefix, array, isDetalle }) => {
+            mappings.forEach(({ prefix, array, isDetalle, isOt }) => {
                 const id = `${prefix}${k}_${n}_${o}`;
                 const text = getElementText(id);
                 const checkId = `checkSelect${k}_${n}_${o}`;
@@ -2660,6 +2665,7 @@ function getOtList(i) {
                 if (text) {
                     array.push(text);
                     if (isDetalle) arrayOnumber.push(`${k}_${n}_${o}`);
+                    if (isOt) arrayNnumber.push(`${n}`);
                 }
             });
         }
@@ -2680,6 +2686,7 @@ function getOtList(i) {
             arrayOtDetalle,
             arrayDescripcionDetalle,
             arrayOnumber,
+            arrayNnumber,
             arrayDetalleId,
             lastChild: uniqueSelectedCheck.length,
             arraySelectedCheck: uniqueSelectedCheck,
@@ -3025,12 +3032,14 @@ function datosCabeceraFormulario (
     return datosCabecera                    
 }
 
-function footerFormularioHidden (projectNumberId, clientId, i, arrayBloqueLength, detallesLength, arrayKNumberDetalles) {
+function footerFormularioHidden (projectNumberId, clientId, i, arrayBloqueLength, arrayOtKNumber, detallesLength, arrayKNumberDetalles) {
     let footerFormulario = `<input type="hidden" name="projectIdHidden" value="${projectNumberId}">
                             <input type="hidden" name="clientIdHidden" value="${clientId}">
                             <input type="hidden" name="ociNumberK" value="${parseInt(i)}">
                             <input type="hidden" name="otQuantity" value="${parseInt(arrayBloqueLength)}">
-                            <input type="hidden" name="detallesQuantity" value="${parseInt(detallesLength)}">
+                            <input type="hidden" name="otNumberK" value="${arrayOtKNumber}">
+                            <input type="hidden" name="detallesQuantity" value="${parseInt(arrayKNumberDetalles.length)}">
+                            <input type="hidden" name="totalDetallesQuantity" value="${parseInt(detallesLength)}">
                             <input type="hidden" name="detalleNumberK" value="${arrayKNumberDetalles}">`
 
     return footerFormulario                            
@@ -3118,13 +3127,14 @@ function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal, getOtList(i)) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-        let arrayBloqueDistribucion = [], arrayNumberKDetalle = [], arrayOtSelected = [], arrayItemsSelected = [], arrayItemsDescriptionSelected = []
+        let arrayBloqueDistribucion = [], arrayNumberKDetalle = [], arrayOtSelected = [], arrayOtKNumber=[], arrayItemsSelected = [], arrayItemsDescriptionSelected = []
 
         res.arraySelectedCheck.forEach(selected => {
-            let index = res.arrayONumberSelect.indexOf(selected);  // Encontrar el índice del valor en arrayONumberSelect
+            let index = res.arrayONumberSelect.indexOf(selected); // Encontrar el índice del valor en arrayONumberSelect
             if (index !== -1) {  // Si el elemento se encuentra, agregar el índice al array de resultados
                 let y = index
                 arrayOtSelected.push(res.arrayOtNumber[y])
+                arrayOtKNumber.push(res.arrayNnumber[y])
                 arrayItemsSelected.push(res.arrayOtDetalle[y])
                 arrayItemsDescriptionSelected.push(res.arrayDescripcionDetalle[y])
 
@@ -3247,7 +3257,7 @@ function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
                             </div>
                             <hr>
                                 ${arrayBloqueDistribucion.join(`<br>`)}
-                                ${footerFormularioHidden(projectNumberId, clientId.value, i, res.arrayOtNumber.length, res.arrayDetalleId.length, arrayNumberKDetalle)}
+                                ${footerFormularioHidden(projectNumberId, clientId.value, i, res.arrayOtNumber.length, arrayOtKNumber, res.arrayDetalleId.length, arrayNumberKDetalle)}
                         </fieldset>
                     </form>`
 
@@ -3483,7 +3493,7 @@ function addDatoToOtProgramacionPrimera(i, idTabla, qInicial, qFinal) {
                         </div>
                         <hr>
                             ${arrayBloqueProgramacionPrimera.join("<br>")}
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, res.arrayOtNumber.length, res.arrayDetalleId.length, arrayNumberKDetalle)}
+                            ${footerFormularioHidden(projectNumberId, clientId.value, i, res.arrayOtNumber.length, arrayOtSelected, res.arrayDetalleId.length, arrayNumberKDetalle)}
                     </fieldset>
                 </form>`
     
@@ -3651,10 +3661,10 @@ function addDatoToOtProgramacionSegunda(i, idTabla, qInicial, qFinal) {
                         </div>
                         <hr>
                             ${arrayBloqueProgramacionSegunda.join("<br>")}
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueProgramacionSegunda.length)}
+                            ${footerFormularioHidden(projectNumberId, clientId.value, i, res.arrayOtNumber.length, arrayOtSelected, res.arrayDetalleId.length, arrayNumberKDetalle)}
                     </fieldset>
                 </form>`
-    
+    //arrayBloqueProgramacionSegunda.length
         const titulo = "Programación (2° Parte)"
         const formulario = 'formProgramacionSegundaValues'
         const ancho = 1850

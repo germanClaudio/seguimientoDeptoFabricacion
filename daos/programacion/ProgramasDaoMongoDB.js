@@ -1,5 +1,6 @@
 const ContenedorMongoDB = require('../../contenedores/containerMongoDB.js')
 const mongoose = require('mongoose')
+const { ObjectId } = require('mongodb');
 const Proyectos = require('../../models/proyectos.models.js')
 const Clientes = require('../../models/clientes.models.js')
 const Programas = require('../../models/programas.models.js')
@@ -265,19 +266,30 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
         otQuantity,
         ociNumberK,
         arrayOtNumberK,
+        arrayDetalleNumberK,
         detallesQuantity,
-        arrayInfoAddedToDetail //InfoAddedToDetail
+        totalDetallesQuantity,
+        arrayInfoAddedToDetail
     ){
+
         const ociKNumber = parseInt(ociNumberK) || 0
         const quantityOt = parseInt(otQuantity)
-        //const detalleKNumber = parseInt(detalleNumberK)
         const quantityDetalle = parseInt(detallesQuantity)
-console.log('arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
+        const infoAddedToDetail = arrayInfoAddedToDetail
+
+console.log('1-otQuantity-Dao:', otQuantity)
+console.log('2-ociNumberK-Dao: ', ociNumberK)
+console.log('3-arrayOtNumberK-Dao:', arrayOtNumberK)
+console.log('4-arrayDetalleNumberK-Dao: ', arrayDetalleNumberK)
+console.log('5-detallesQuantity-Dao:', detallesQuantity)        
+console.log('6-totalDetallesQuantity-Dao: ', totalDetallesQuantity)
+console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
+        
         // compara si el proyecto existe --------
         if (idProjectTarget) {
             try {
                 const itemMongoDB = await Proyectos.findById({ _id: idProjectTarget })
-                console.log('itemMongoDB', itemMongoDB.project[0].oci[1].otProject[1].otDetalles[0]._id)
+                //console.log('itemMongoDB', itemMongoDB)
                 
                 //Si encontro el proyecto en la BBDD ----- 
                 if (itemMongoDB) {
@@ -289,18 +301,25 @@ console.log('arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
 
                     //Se verifica si la estructura del arbol existe en la BBDD -----
                     let arrayStructureTreeExists = []
-                    for (let i = 0; i < quantityOt; i++) {
-                        const treeDetailInformation = itemMongoDB.project[0].oci[`${ociKNumber}`].otProject[`${i}`].otDetalles[`${detalleKNumber}`]
-                        // console.log('0.1-Dao-treeDetailInformation----> ',treeDetailInformation, ' i=',i)
+                    arrayOtNumberK.forEach(element => {
+                        const treeDetailInformation = itemMongoDB.project[0].oci[`${ociKNumber}`].otProject[`${element}`].otDetalles
                         treeDetailInformation ? arrayStructureTreeExists.push(true) : arrayStructureTreeExists.push(false)
-                    }
-                        // console.log('0.2-Dao-arrayStructureTreeExists----> ',arrayStructureTreeExists)
+                    });
 
+                    // for (let i = parseInt(arrayOtNumberK[0]); i < arrayOtNumberK.length; i++) {
+                    //     const treeDetailInformation = itemMongoDB.project[0].oci[`${ociKNumber}`].otProject[`${i}`].otDetalles[`${detalleKNumber}`]
+                    //     //console.log('0.1-Dao-treeDetailInformation----> ',treeDetailInformation, ' i=',i)
+                    //     treeDetailInformation ? arrayStructureTreeExists.push(true) : arrayStructureTreeExists.push(false)
+                    // }
+                    console.log('0.2-Dao-arrayStructureTreeExists----> ',arrayStructureTreeExists)
+
+                    arrayDetalleNumberK.forEach(element => {
                         for (let i = 0; i < quantityDetalle; i++) {
+
                             // Si no existe la extructura del arbol, se crea la estructura a agregar --
                             if (!arrayStructureTreeExists[i]) {
                                 let estructuraACrear = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otDetalles.${i}`]:
+                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otDetalles.${element}`]:
                                     {
                                         otDistribucion: []
                                     }
@@ -312,7 +331,7 @@ console.log('arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                 // console.log('1-Dao-arrayStructureTree-- ', i,' - ', arrayStructureTree[i])
 
                                 // Se agrega la estructura al arbol de MongoDB ---
-                                const treeInfoOtAddedToOt = await Proyectos.updateOne(
+                                const treeInfoOtAddedToOt = Proyectos.updateOne( //await
                                     { _id: itemMongoDB._id },
                                     {
                                         $set: arrayStructureTree[i] || estructuraACrear
@@ -324,7 +343,7 @@ console.log('arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
 
                                 // Se crea el array de datos a agregar --
                                 let updateQuery = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otDetalles.0.otDistribucion`]:
+                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otDetalles.${element}.otDistribucion`]:
                                     {
                                         mecanizado2dCompleto: infoAddedToDetail[i].mecanizado2dCompleto,
                                         revisionMecanizado2dCompleto: infoAddedToDetail[i].revisionMecanizado2dCompleto+1,
@@ -345,7 +364,7 @@ console.log('arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                     // Si arrayTreeCreation.modifiedCount es = 1 ---
                                     if (arrayTreeCreation[i].modifiedCount===1) {
                 
-                                        var infoProcesoR14AddedToOt = await Proyectos.updateOne(
+                                        var infoDistribucionAddedToOt = Proyectos.updateOne( //await
                                             { _id: itemMongoDB._id },
                                             {
                                                 $push: arrayQuantity[i]
@@ -354,14 +373,14 @@ console.log('arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                         )
                                         countTreeCreation++
                                     }
-                                    // console.log('3-Dao-Ot agregada: ', i,' - ', infoProcesoR14AddedToOt)
+                                    console.log('3-Dao-Ot agregada: ', i,' - ', infoDistribucionAddedToOt)
                 
                             } else {
 
                                 // Recupero el creador y la fecha inicial, ya que solo se modifica
                                 let creatorInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].creator[0]
                                 let timestampInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].timestamp
-                
+                //FIXME: -----------------------------------------------
                                 // Recupero los datos originales y comparo, ya que solo el dato que se modifica cambia su Revision
                                 let otInfoR14Length = parseInt(itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoR14.length)
                                 if (otInfoR14Length > 0) {
@@ -405,7 +424,7 @@ console.log('arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                     //console.log('5-Dao-arrayQuantity-- ', i,' - ', arrayQuantity)
                 
                                     // var infoProcesoR14AddedToOt = 
-                                    await Proyectos.updateOne(
+                                    Proyectos.updateOne( //await
                                         { _id: itemMongoDB._id },
                                         {
                                             $push: arrayQuantity[i]
@@ -419,13 +438,14 @@ console.log('arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                         // Si el recuento de info agregada o creacion de arbol es mayor a 0
                         if (countInfoAdded > 0 || countTreeCreation > 0 ) {
                 
-                            const itemUpdated = await Proyectos.findById({ _id: idProjectTarget })
+                            const itemUpdated = Proyectos.findById({ _id: idProjectTarget }) //await 
                             // console.log('5.1-Dao-proyecto: ', itemUpdated.project[0].oci)
                             return itemUpdated
 
                         } else {
                             return new Error(`No se agregó la info de OT en el item: ${itemMongoDB._id}`)
                         }
+                    });     
 
                 } else {
                     return new Error(`No se encontró el Proyecto id#`)

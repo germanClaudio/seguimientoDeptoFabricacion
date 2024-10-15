@@ -53,7 +53,8 @@ async function uploadToGCS(req, res, next) {
     }
 
     let originalname = (newItemOrUpdate).match(/[^\/]+$/)[0]
-    const blob = bucket.file(`${folderName}/${subFolderName}/${originalname}`);
+    let cleanOriginalName = originalname.replace(/[^a-zA-Z0-9./_ ]/g, '-');
+    const blob = bucket.file(`${folderName}/${subFolderName}/${cleanOriginalName}`);
 
     //**************Comprimir imagenes********************/
     // Detectar el formato de la imagen
@@ -90,7 +91,9 @@ async function uploadToGCS(req, res, next) {
     });
 
     blobStream.on('finish', () => {
-        req.file.cloudStorageObject = `${originalname}`;
+        req.file.cloudStorageObject = `${cleanOriginalName}`;
+        console.log('cleanOriginalName: ', cleanOriginalName)
+        console.log('blob.name: ', blob.name)
         req.file.cloudStoragePublicUrl = `https://storage.googleapis.com/${bucket.name}/${folderName}/${subFolderName}/${blob.name}`;
     });
     blobStream.end(data)
@@ -172,7 +175,11 @@ async function uploadToGCSingleFile(req, res, next) {
                 
         blobStream.on('finish', () => {
             req.files.cloudStorageObject = `${originalname}`
+            console.log('originalname: ', originalname)
+            console.log('blob.name: ', blob.name)
             req.files.cloudStoragePublicUrl = `https://storage.googleapis.com/${bucket.name}/${folderName}/${subFolderName}/${blob.name}`;
+        
+        
         });
         blobStream.end(data);
     }
@@ -189,8 +196,10 @@ async function uploadToGCSingleFile(req, res, next) {
 
         for (let f=0; f<updateProjectOrOci.length; f++) {
             originalname = (updateProjectOrOci[f]).match(/[^\/]+$/)[0]
-            blob = bucket.file(`${folderName}/${subFolderName}/${originalname}`);
-            await compressAndUpload(blob, originalname, f)
+            let cleanOriginalName = originalname.replace(/[^a-zA-Z0-9./_ ]/g, '-');
+    console.log('cleanOriginalName: ', cleanOriginalName)
+            blob = bucket.file(`${folderName}/${subFolderName}/${cleanOriginalName}`);
+            await compressAndUpload(blob, cleanOriginalName, f)
         }
 
     } else {
@@ -202,8 +211,10 @@ async function uploadToGCSingleFile(req, res, next) {
 
         for (let f=0; f<updateProjectOrOci.length; f++) {
             originalname = (updateProjectOrOci[f]).match(/[^\/]+$/)[0]
-            blob = bucket.file(`${folderName}/${subFolderName}/${originalname}`);
-            await compressAndUpload(blob, originalname, f)
+            let cleanOriginalName = originalname.replace(/[^a-zA-Z0-9./_ ]/g, '-');
+    console.log('cleanOriginalName: ', cleanOriginalName)
+            blob = bucket.file(`${folderName}/${subFolderName}/${cleanOriginalName}`);
+            await compressAndUpload(blob, cleanOriginalName, f)
         }
     }
 };

@@ -39,8 +39,19 @@
                                             }
                                         }
 
-                                        if ( proyecto[m].project[j].oci.length >= 2 ) {
+                                        if ( proyecto[m].project[j].oci.length === 1 ) { %>
+                                            <div class="form-check form-check-inline">
+                                                <label class="form-check-label" for="radioSelectedValue0">OCI #<%= arrayOciVisibles[0].ociNumber %> - Alias: "<%= arrayOciVisibles[0].ociAlias %>"</label>
+
+                                                <input class="form-check-input" type="radio" name="ociNumber" id="radioSelectedValue0" value="<%= arrayOciVisibles[0].ociNumber %>" value2="<%= arrayOciVisibles[0].ociAlias %>" checked>
+
+                                                <input class="form-input" type="hidden" name="ociNumberId" id="ociNumberId0" value="<%=proyecto[m].project[j].oci[0]._id %>">
+                                                <input class="form-input" type="hidden" name="ociNumberK" id="ociNumberK" value="0">
+                                                <input class="form-input" type="hidden" name="ociNumberHidden" id="ociNumberHidden" value="<%= arrayOciVisibles[0].ociNumber %>">
+                                                <input class="form-input" type="hidden" name="ociAlias" id="ociAliasHidden" value="<%= arrayOciVisibles[0].ociAlias %>">    
+                                            </div>
                                             
+                                        <% } else {
                                             for ( let k = 0; arrayOciVisibles.length > k; k++ ) { %>
                                                 <div class="form-check form-check-inline">
                                                     <% if ( arrayOciVisibles[k].ociStatus ) { %>
@@ -56,17 +67,6 @@
                                                 <input class="form-input" type="hidden" name="ociNumberK" id="ociNumberK" value="">
                                                 <input class="form-input" type="hidden" name="ociNumberHidden" id="ociNumberHidden" value="">    
                                                 <input class="form-input" type="hidden" name="ociAlias" id="ociAliasHidden" value="<%= arrayOciVisibles[k].ociAlias %>">
-                                        <% } else { %>
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="radioSelectedValue0">OCI #<%= arrayOciVisibles[0].ociNumber %> - Alias: "<%= arrayOciVisibles[0].ociAlias %>"</label>
-
-                                                    <input class="form-check-input" type="radio" name="ociNumber" id="radioSelectedValue0" value="<%= arrayOciVisibles[0].ociNumber %>" value2="<%= arrayOciVisibles[0].ociAlias %>" checked>
-
-                                                    <input class="form-input" type="hidden" name="ociNumberId" id="ociNumberId0" value="<%=proyecto[m].project[j].oci[0]._id %>">
-                                                    <input class="form-input" type="hidden" name="ociNumberK" id="ociNumberK" value="0">
-                                                    <input class="form-input" type="hidden" name="ociNumberHidden" id="ociNumberHidden" value="<%= arrayOciVisibles[0].ociNumber %>">
-                                                    <input class="form-input" type="hidden" name="ociAlias" id="ociAliasHidden" value="<%= arrayOciVisibles[0].ociAlias %>">    
-                                                </div>
                                         <% } 
                                     }
 

@@ -131,7 +131,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                 } else {
                     const newProject = new Proyectos(project)
                     await newProject.save()
-                    // console.info('Project created')
+                    console.info('Project created')
                     return newProject
                 }
             } catch (error) {
@@ -187,19 +187,14 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                 const project = await Proyectos.find({
                     [`project.0.oci.${numberKOciParsed}.ociNumber`]: numberOciParsed
                 })
-                return project ? numberOciParsed : null
+                // const projects = await Proyectos.find()
+                console.log('projectDao: ', project)
+                return project ? numberOciParsed : false
 
             } catch (error) {
                 console.error("Error MongoDB selectOciByOciNumber: ", error)
             }
 
-        } else {
-            try {
-                const projects = await Proyectos.find()
-                return projects
-            } catch (error) {
-                console.error("Error MongoDB selectOciByOciNumber: ", error)
-            }
         }
     }
 
@@ -2845,7 +2840,6 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
         if (idProjectTarget) {
             try {
                 const itemMongoDB = await Proyectos.findById({ _id: idProjectTarget })
-                         
                 if (itemMongoDB) {
 
                     let arrayQueryQuantity = []

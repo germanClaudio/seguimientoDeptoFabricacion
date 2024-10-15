@@ -197,7 +197,7 @@ class ProjectsController {
                 if (req.files && req.files.length != 0) {
                     await uploadToGCSingleFile(req, res, next)
                 }
-
+console.log('req.body: ', req.body)
                 let arrayOciNumber=[],
                     arrayOciDescription=[],
                     arrayOciAlias=[],
@@ -222,12 +222,19 @@ class ProjectsController {
                 let indexArrayOciNumber = 0
                 for (let h=0; h<arrayOciNumber.length; h++) {
                     const ociNumberValid = await this.projects.selectOciByOciNumber(arrayOciNumber[h], ociKNumber)
-                    const otherOciNumbers = proyecto[0].project[0].oci.map(oci => oci.ociNumber);
-                    console.log('otherOciNumbers ', otherOciNumbers)
-                    if (otherOciNumbers.includes(parseInt(ociNumberValid))) {
-                        invalidOciNumber = false
-                        indexArrayOciNumber = h
-                        break;
+        console.log('ociNumberValid: ', ociNumberValid)            
+                    if (!ociNumberValid) {
+                        let projects = await this.projects.getAllProjects()
+                        for (let x=0; x<parseInt(projects.length); x++) {
+                            const otherOciNumbers = projects[0].project[0].oci.map(oci => oci.ociNumber);
+        console.log('otherOciNumbers ', otherOciNumbers)
+                            if (otherOciNumbers.includes(parseInt(ociNumberValid))) {
+                                invalidOciNumber = false
+                                indexArrayOciNumber = h
+                                break;
+                            }
+                        }
+
                     }
                 }
             
@@ -247,7 +254,7 @@ class ProjectsController {
                             ociNumber: parseInt(arrayOciNumber[i]),
                             ociDescription: arrayOciDescription[i],
                             ociAlias: arrayOciAlias[i],
-                            ociStatus: arrayOciStatus[i] == 'on' ?  Boolean(true) : Boolean(false),
+                            ociStatus: arrayOciStatus[i] === 'on' ?  Boolean(true) : Boolean(false),
                             creator: dataUserCreator(userCreator),
                             timestamp: now,
                             ociImage: arrayOciImages[i] || imageNotFound,
@@ -294,7 +301,7 @@ class ProjectsController {
                         modifiedOn: "",
                         visible: true
                     }
-    
+    console.log('newProject:', newProject)
                     const newProjectCreated = await this.projects.createNewProject(newProject)
                     if (!newProjectCreated) {
                         catchError401_1(req, res, next)
@@ -313,11 +320,11 @@ class ProjectsController {
                     const csrfToken = csrfTokens.create(req.csrfSecret);
                     setTimeout(() => {
                         return res.render('clientProjectsDetails', {
+                            proyectos,
                             username,
                             userInfo,
                             expires,
                             cliente,
-                            proyectos,
                             data,
                             csrfToken
                         })
@@ -414,7 +421,7 @@ class ProjectsController {
                 { prefix: 'internoSimulacion', array: arrayOtSimulation },
                 { prefix: 'externoDiseno', array: arrayOtSupplier }
             ];
-        
+        console.log('req.body: ', req.body)
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
                 match ? match.array.push(req.body[key]) : null
@@ -429,11 +436,11 @@ class ProjectsController {
                 otInfoSim5: []
             }]
 
-            const otDetallesEmpty = [{
-                otDistribution: [],
-                otProgramacionPrimera: [], otProgramacionSegunda: [],
-                otMecanizadoPrimera: [], otMecanizadoSegunda: []
-            }]
+            // const otDetallesEmpty = [{
+            //     otDistribution: [],
+            //     otProgramacionPrimera: [], otProgramacionSegunda: [],
+            //     otMecanizadoPrimera: [], otMecanizadoSegunda: []
+            // }]
 
             const arrayOtAddedToOci = []
             if (otQuantity>0) {
@@ -451,7 +458,7 @@ class ProjectsController {
                         modificator: dataUserModificatorEmpty(),
                         modifiedOn: "",
                         otInformation: otInformationEmpty,
-                        otDetalles: otDetallesEmpty
+                        otDetalles: []
                     }
                     arrayOtAddedToOci.push(otAddedToOci)
                 }
@@ -847,7 +854,7 @@ class ProjectsController {
                         if (key.startsWith('ociStatus')) {
                             match.array.push(req.body[key] === 'on' ? true : false)
                         } else if (key.startsWith('imageOciFileNameModal')) {
-                            const keyValue = req.body[key] === '' ?  imageNotFound : req.body[key]
+                            const keyValue = req.body[key] === '' ?  imageNotFound : (req.body[key]);
                             match.array.push(keyValue);
                         } else {
                             match.array.push(req.body[key]);

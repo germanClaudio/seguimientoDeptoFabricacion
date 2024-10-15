@@ -339,7 +339,7 @@ const renderProjectsWonForAdmin = (arrayProjects) => {
                             <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                                 <tbody>
                                     <tr>
-                                        <td class="border border-0">${loopArrayDescription()}</td>
+                                        <td class="border border-0 overflow-ellipsis">${loopArrayDescription()}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -609,7 +609,7 @@ const renderProjectsWonForUser = (arrayProjects) => {
                             <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                                 <tbody>
                                     <tr>
-                                        <td data-column="ociAlias">${loopArrayAliasOci()}</td>
+                                        <td class="border border-0" data-column="ociAlias">${loopArrayAliasOci()}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -618,7 +618,7 @@ const renderProjectsWonForUser = (arrayProjects) => {
                             <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                                 <tbody>
                                     <tr>
-                                        <td data-column="oci">${loopArrayOci()}</td>
+                                        <td class="border border-0" data-column="oci">${loopArrayOci()}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -627,7 +627,7 @@ const renderProjectsWonForUser = (arrayProjects) => {
                             <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                                 <tbody>
                                     <tr>
-                                        <td data-column="ot">${loopArrayOt()}</td>
+                                        <td class="border border-0" data-column="ot">${loopArrayOt()}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -636,7 +636,7 @@ const renderProjectsWonForUser = (arrayProjects) => {
                             <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                                 <tbody>
                                     <tr>
-                                        <td>${loopArrayOp()}</td>
+                                        <td class="border border-0">${loopArrayOp()}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -645,7 +645,7 @@ const renderProjectsWonForUser = (arrayProjects) => {
                             <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
                                 <tbody>
                                     <tr>
-                                        <td>${loopArrayDescription()}</td>
+                                        <td class="border border-0 overflow-ellipsis">${loopArrayDescription()}</td>
                                     </tr>
                                 </tbody>
                             </table>

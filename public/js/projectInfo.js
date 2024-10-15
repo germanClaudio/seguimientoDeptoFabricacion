@@ -611,6 +611,7 @@ const projectNameHidden = document.getElementById('projectNameHidden').value
 const projectNumberId = document.getElementById(`projectIdHidden`).value
 const ociNumberK = document.getElementById('ociNumberK')
 const ociNumberHidden = document.getElementById('ociNumberHidden')
+const aliasNameHidden = document.getElementById('ociAliasHidden')
 const clientId = document.getElementById('clientIdHidden')
 
 // ------------- function bucle do/while para encontrar ultima OT ----------
@@ -653,9 +654,9 @@ function radioSelected(radioSelectedValue, elementoId) {
     radioSelected.checked = true
     tituloForm.innerHTML = `Agregar Nueva/s OT's a OCI #<strong>${radioSelected.value}</strong> - Alias: "${radioSelected.getAttribute('value2')}" <br> Proyecto: "${projectNameHidden}"`
     ociNumberK.value = extractNumbers(elementoId)
-    //console.log('ociNumberK', ociNumberK.value)
     ociNumberHidden.value = radioSelected.value
     //console.log('ociNumberHidden.value', ociNumberHidden.value)
+    aliasNameHidden.value = radioSelected.getAttribute('value2')
     lastOtNumberFn(extractNumbers(elementoId))
     formulario.scrollTo({ behavior: 'smooth', block: 'start', left:0, top:0 }) //.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
@@ -674,6 +675,8 @@ arrayBtnAddOtFormSelected.forEach(function(elemento) {
             event.preventDefault()
             const radioSelectedValue = elemento.id
             ociNumberHidden.value = radioSelected(radioSelectedValue, elemento.value)
+            let radioSelectedAlias = document.getElementById(`radioSelectedValue${elemento.value}`)
+            aliasNameHidden.value = radioSelectedAlias.getAttribute('value2')
             lastOtNumberFn(elemento.id)
             formulario.scrollIntoView({ behavior: 'smooth', top:0 }) //scrollTo({ behavior: 'smooth', block: 'start' })
         })
@@ -685,10 +688,10 @@ for (let i=0; i<radios.length; i++) {
         event.preventDefault()
         let ociSeleccionada = event.target.value
         let ociAliasSeleccionada = event.target.getAttribute('value2')
-        //console.log('ociAliasSeleccionada:', ociAliasSeleccionada.getAttribute('value2'))
         tituloForm.innerHTML = `Agregar Nueva/s OT's a OCI #<strong>${ociSeleccionada}</strong> - Alias: "${ociAliasSeleccionada}" <br> Proyecto: ${projectNameHidden}`
         ociNumberK.value = i
         ociNumberHidden.value = ociSeleccionada
+        aliasNameHidden.value =  ociAliasSeleccionada
         lastOtNumberFn(i)
     })
 }
@@ -1082,9 +1085,9 @@ function messageUpdateOt(
         }).then((result) => {
             if (result.isConfirmed) {
                 if (otNumber) {
-                    document.getElementById(`designOt`).setAttribute('disabled', false)
-                    document.getElementById(`simulationOt`).setAttribute('disabled', false)
-                    document.getElementById(`supplierOt`).setAttribute('disabled', false)
+                    document.getElementById(`designOt`).removeAttribute('disabled')
+                    document.getElementById(`simulationOt`).removeAttribute('disabled')
+                    document.getElementById(`supplierOt`).removeAttribute('disabled')
                 }
                 document.getElementById(`formUpdateOt${idProjectSelected}`).submit()
                 setTimeout(() => {
@@ -1711,9 +1714,9 @@ function messageNewOt(ociNumber, otArray, ociAlias) {
         if (result.isConfirmed) {
             for (let i=0; otArray.length>i; i++) {
                 if (otArray[i]) {
-                    document.getElementById(`internoDiseno${i}`).setAttribute('disabled', false)
-                    document.getElementById(`internoSimulacion${i}`).setAttribute('disabled', false)
-                    document.getElementById(`externoDiseno${i}`).setAttribute('disabled', false)
+                    document.getElementById(`internoDiseno${i}`).removeAttribute('disabled')
+                    document.getElementById(`internoSimulacion${i}`).removeAttribute('disabled')
+                    document.getElementById(`externoDiseno${i}`).removeAttribute('disabled')
                 }
             }
             document.getElementById('formNewOt').submit();

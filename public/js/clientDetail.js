@@ -107,7 +107,7 @@ function handleFileUploadLogoUpdate(file) {
         const dotIndex = file.name.lastIndexOf('.');
         const name = file.name.substring(0, dotIndex);
         const extension = file.name.substring(dotIndex);
-        fileImputTextLogoUpdate.value = pathToImage + name + "-" + formatDate(new Date()) + extension
+        fileImputTextLogoUpdate.value = pathToImage + name.replace(/[^a-zA-Z0-9./_ ]/g, '-') + "-" + formatDate(new Date()) + extension
         removeImageButtonLogoUpdate.style.display = 'flex'
         
         const reader = new FileReader()
@@ -185,21 +185,15 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
                 if (forbiddenChars.test(key)) {  // Verificar si la tecla presionada es un carácter especial
                     // Cancelar el evento para evitar que se ingrese el carácter
                     event.preventDefault()
-                    input.classList.add("border")
-                    input.classList.add("border-danger")
-                    input.classList.add("border-2")
+                    input.classList.add("border", "border-danger", "border-2")
                 } else {
-                    input.classList.remove("border")
-                    input.classList.remove("border-danger")
-                    input.classList.remove("border-2")
+                    input.classList.remove("border", "border-danger", "border-2")
                 }
             })
 
             input.addEventListener('input', (event) => {
                 event.preventDefault()
-                input.classList.add("border-primary")
-                input.classList.add("border-2")
-                input.classList.add("shadow")
+                input.classList.add("border", "border-2", "shadow")
                 btnUpdateClient.removeAttribute('disabled')
                 btnUpdateClient.style = "cursor: pointer;"
             })
@@ -211,9 +205,7 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
         if (input) {
             input.addEventListener('input', (event) => {
                 event.preventDefault()
-                input.classList.add("border-primary")
-                input.classList.add("border-2")
-                input.classList.add("shadow")
+                input.classList.add("border", "border-2", "shadow")
                 btnUpdateClient.removeAttribute('disabled')
                 btnUpdateClient.style = "cursor: pointer;"
             })

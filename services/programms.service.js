@@ -44,13 +44,15 @@ class ProgramasService {
     }
 
     // add Info Distribution to Detail - Project
-    async addInfoOtDistribucion(projectId, otQuantity, ociNumberK, arrayOtNumberK, detallesQuantity, arrayInfoAddedToDetail) {
+    async addInfoOtDistribucion(projectId, otQuantity, ociNumberK, arrayOtNumberK, arrayDetalleNumberK, detallesQuantity, totalDetallesQuantity, arrayInfoAddedToDetail) {
         return this.programas.addInfoOtDistribucion(
             projectId,
             otQuantity,
             ociNumberK,
             arrayOtNumberK,
+            arrayDetalleNumberK,
             detallesQuantity,
+            totalDetallesQuantity,
             arrayInfoAddedToDetail)
     }
 
