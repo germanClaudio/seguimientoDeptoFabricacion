@@ -8,7 +8,7 @@ const { uploadMulterMultiImages, uploadMulterSingleImageProject, uploadMulterSin
 
 const multer = require('multer')
 
-let now = require('../utils/formatDate.js')
+let formatDate = require('../utils/formatDate.js')
 const csrf = require('csrf');
 const csrfTokens = csrf();
 
@@ -305,7 +305,7 @@ class ProgramationController {
                     otSimulation: arrayOtSimulation[i],
                     otSupplier: arrayOtSupplier[i],
                     creator: user,
-                    timestamp: now,
+                    timestamp: formatDate(),
                     modificator: modificator,
                     modifiedOn: "",
                     otInformation: otInformationEmpty,
@@ -622,7 +622,7 @@ console.log('ociNumberK-numberOci-otNumberK-numberOt', ociNumberK, numberOci, ot
                     detalleDescription: arrayDetalleDescription[i],
                     detalleStatus: arrayDetalleStatus[i] == 'on' ? Boolean(true) : Boolean(false),
                     creator: user,
-                    timestamp: now,
+                    timestamp: formatDate(),
                     modificator: modificator,
                     modifiedOn: "",
                     otDetalles: otDetallesEmpty
@@ -732,7 +732,7 @@ console.log('ociNumberK-numberOci-otNumberK-numberOt', ociNumberK, numberOci, ot
                     detalleDescription: arrayDetalleDescription[i],
                     detalleStatus: Boolean(true),
                     creator: user,
-                    timestamp: now,
+                    timestamp: formatDate(),
                     modificator: modificator,
                     modifiedOn: "",
                     otDetalles: otDetallesEmpty
@@ -995,7 +995,7 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
             }
             
             const projectId = req.body.projectIdHidden
-            const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             if (!proyecto) {
                 catchError401_1(req, res, next)
             }
@@ -1007,8 +1007,14 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
             }
             
             const ociNumberK = parseInt(req.body.ociNumberK)
-            const arrayDetalleKNumber = req.body.detalleNumberK.split(",")
-            const arrayDetalleNumberK = arrayDetalleKNumber.map(Number) 
+            const resultado = req.body.detalleNumberK.split(",")
+
+            const arrayDetalleKNumber = resultado.map(item => {
+                const partes = item.split('_'); // Dividir la cadena por "_"
+                return parseInt(partes[partes.length - 1]); // Obtener el último número y convertirlo a entero
+            });
+            const arrayDetalleNumberK = arrayDetalleKNumber //.map(Number)
+
             const arrayOtKNumber = req.body.otNumberK.split(",")
             const arrayOtNumberK = arrayOtKNumber.map(Number) 
             const otQuantity = parseInt(req.body.otQuantity)
@@ -1030,7 +1036,6 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
                 arrayRevisionBancoArmado=[]
 
             const prefixes = [
-                
                 { prefix: 'detalleIdHidden', array: arrayIdDetalle },
                 { prefix: 'otNumberHidden', array: arrayOtNumber },
                 { prefix: 'otStatusHidden', array: arrayOtStatus },
@@ -1065,15 +1070,14 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
                     revisionMecanizado3dFinal: parseInt(arrayRevisionMecanizado3dFinal[i]) || 0,
                     bancoArmado: arrayBancoArmado[i] || "sinDato",
                     revisionBancoArmado: parseInt(arrayRevisionBancoArmado[i]) || 0,
-                    timestamp: now,
+                    timestamp: formatDate(),
                     creator: dataUserCreator(userCreator),
                     modificator: dataUserModificatorEmpty(),
                     modifiedOn: "",
                 }
                 arrayInfoAddedToDetail.push(infoAddedToOt)
             }
-
-            console.log('arrayInfoAddedToDetail-controller', arrayInfoAddedToDetail)
+            // console.log('arrayInfoAddedToDetail-controller', arrayInfoAddedToDetail)
 
             const itemUpdated = await this.programms.addInfoOtDistribucion(
                 projectId,
@@ -1089,6 +1093,11 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
             if (!itemUpdated) {
                 catchError400_3(req, res, next)
             }
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_1(req, res, next)
+            }
             
             data.slide = 0
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -1102,7 +1111,7 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
                     data,
                     csrfToken
                 })
-            }, 500)
+            }, 1000)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -1182,7 +1191,7 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
                 revisionProceso3d: parseInt(arrayRevisionProceso3d[i]) || 0,
                 horasProceso3d: parseInt(arrayHorasProceso3d[i]) || 0,
                 revisionHorasProceso3d: parseInt(arrayRevisionHorasProceso3d[i]) || 0,
-                timestamp: now,
+                timestamp: formatDate(),
                 creator: user,
                 modificator: modificator,
                 modifiedOn: "",
@@ -1333,7 +1342,7 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
                 revisionAvDiseno80: parseInt(arrayRevisionAv80Diseno[i]) || 0,
                 envioCliente: arrayEnvioCliente[i] || 'sinDato',
                 revisionEnvioCliente: parseInt(arrayRevisionEnvioCliente[i]) || 0,
-                timestamp: now,
+                timestamp: formatDate(),
                 creator: user,
                 modificator: modificator,
                 modifiedOn: "",

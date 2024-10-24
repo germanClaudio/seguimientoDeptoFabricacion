@@ -8,7 +8,7 @@ const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
 const { uploadMulterSingleAvatarUser } = require("../utils/uploadMulter.js")
 const { generateToken } = require('../utils/generateToken')
 
-let now = require('../utils/formatDate.js')
+let formatDate = require('../utils/formatDate.js')
 const bCrypt = require('bcrypt')
 
 const csrf = require('csrf');
@@ -196,7 +196,7 @@ class UsersController {
                         admin: req.body.admin === 'on' ? Boolean(true) : Boolean(false),
                         superAdmin: req.body.superAdmin === 'on' ? Boolean(true) : Boolean(false),
                         creator: dataUserCreator(userCreator),
-                        timestamp: now,
+                        timestamp: formatDate(),
                         modificator: dataUserModificatorEmpty(),
                         modifiedOn: '',
                         visible: true
@@ -309,7 +309,7 @@ class UsersController {
                             status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
                             permiso: selectFieldPermiso,
                             modificator: dataUserModificatorNotEmpty(userLogged),
-                            modifiedOn: now
+                            modifiedOn: formatDate()
                         }
 
                     } else {
@@ -322,7 +322,7 @@ class UsersController {
                             status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
                             permiso: selectFieldPermiso,
                             modificator: dataUserModificatorNotEmpty(),
-                            modifiedOn: now
+                            modifiedOn: formatDate()
                         }
                     }
 
@@ -380,7 +380,7 @@ class UsersController {
                             email: emailInput,
                             avatar: req.body.imageTextAvatarUser,
                             modificator: dataUserModificatorNotEmpty(userLogged),
-                            modifiedOn: now
+                            modifiedOn: formatDate()
                         }
                     
                         const usuario = await this.users.updateUserPreferences(id, updatedUser, dataUserModificatorNotEmpty(userLogged))
@@ -636,7 +636,7 @@ class UsersController {
                 const updatedUserPassword = {
                     password: newPassword || confirmNewPassword,
                     modificator: dataUserModificatorNotEmpty(userLogged),
-                    modifiedOn: now
+                    modifiedOn: formatDate()
                 }
 
                 try {

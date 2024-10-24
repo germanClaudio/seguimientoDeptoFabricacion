@@ -1,6 +1,8 @@
 <div class="d-block fixed-bottom p-4 overflow-hidden" style="background-color: #000a5a;">
-    <span class="d-block fixed-bottom py-1 mt-1 mb-2 text-white text-center small">Copyright <i class="fa fa-copyright" aria-hidden="true"></i> 2024 - Developed by Germán C.
-        Montalbetti for <img src='/src/images/logo01-bco.png' title="Logo Prodismo" width="105" height="18" class="d-inline-block align-text-top"></span>
+    <span class="d-block fixed-bottom py-1 mt-1 mb-2 text-white text-center small">Copyright <i class="fa fa-copyright"
+            aria-hidden="true"></i> 2024 - Developed by Germán C.
+        Montalbetti for <img src='/src/images/logo01-bco.png' title="Logo Prodismo" width="6.5625rem" height="1.125rem"
+            class="d-inline-block align-text-top"></span>
 </div>
 
 <!-- librerias footer-->
@@ -16,6 +18,20 @@
 <!-- scripts -->
 <script type="text/javascript" src="/js/clock.js"></script>
 <script type="text/javascript" src="/js/expiresSession.js"></script>
+<script type="text/javascript">
+    // Registrar el service worker
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/css/service_worker.js')
+            .then(registration => {
+                // console.log('Service Worker registrado con éxito:', registration);
+            })
+            .catch(error => {
+                console.log('Error al registrar el Service Worker:', error);
+            });
+        });
+    }
+</script>
 <script type="text/javascript">
     function goBack() {
         window.history.back();

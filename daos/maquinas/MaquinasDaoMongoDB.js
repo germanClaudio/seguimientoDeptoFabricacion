@@ -4,7 +4,7 @@ const Maquinas = require('../../models/maquinas.models.js')
 
 const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000 }
 
-const now = require('../../utils/formatDate.js')
+const formatDate = require('../../utils/formatDate.js')
 const util = require('util')
 const { switchFilterTools } = require('../../utils/switchFilterTools.js')
 
@@ -270,7 +270,7 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
                                 imageTool: imageUrl,
                                 status: updatedTool.status,
                                 modificator: userModificator,
-                                modifiedOn: now
+                                modifiedOn: formatDate()
                             }
                         },
                         { new: true }
@@ -309,7 +309,7 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
                                 visible: inactive,
                                 status: inactive,
                                 modificator: userModificator,
-                                modifiedOn: now
+                                modifiedOn: formatDate()
                             }
                         },
                         { new: true }

@@ -5,7 +5,8 @@ const Proyectos = require('../../models/proyectos.models.js')
 const Clientes = require('../../models/clientes.models.js')
 const Programas = require('../../models/programas.models.js')
 
-let now = require('../../utils/formatDate.js')
+// let now = require('../../utils/formatDate.js')
+let formatDate = require('../../utils/formatDate.js');
 const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000}
 
 class ProgramacionDaoMongoDB extends ContenedorMongoDB {
@@ -273,17 +274,17 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
     ){
 
         const ociKNumber = parseInt(ociNumberK) || 0
-        const quantityOt = parseInt(otQuantity)
+        // const quantityOt = parseInt(otQuantity)
         const quantityDetalle = parseInt(detallesQuantity)
         const infoAddedToDetail = arrayInfoAddedToDetail
 
-console.log('1-otQuantity-Dao:', otQuantity)
-console.log('2-ociNumberK-Dao: ', ociNumberK)
-console.log('3-arrayOtNumberK-Dao:', arrayOtNumberK)
-console.log('4-arrayDetalleNumberK-Dao: ', arrayDetalleNumberK)
-console.log('5-detallesQuantity-Dao:', detallesQuantity)        
-console.log('6-totalDetallesQuantity-Dao: ', totalDetallesQuantity)
-console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
+        // console.log('1-otQuantity-Dao:', quantityOt)
+        // console.log('2-ociNumberK-Dao: ', ociNumberK)
+        // console.log('A-arrayOtNumberK-Dao:', arrayOtNumberK)
+        // console.log('B-arrayDetalleNumberK-Dao: ', arrayDetalleNumberK)
+        // console.log('C-detallesQuantity-Dao:', detallesQuantity)
+        // console.log('6-totalDetallesQuantity-Dao: ', totalDetallesQuantity)
+        // console.log('D-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail)
         
         // compara si el proyecto existe --------
         if (idProjectTarget) {
@@ -293,45 +294,37 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                 
                 //Si encontro el proyecto en la BBDD ----- 
                 if (itemMongoDB) {
-                    let arrayQuantity = []
-                    let arrayStructureTree = []
-                    let arrayTreeCreation = []
-                    let countInfoAdded = 0
-                    let countTreeCreation = 0
+                    let arrayQuantity = [], arrayStructureTree = [], arrayTreeCreation = [], countInfoAdded = 0, countTreeCreation = 0
 
                     //Se verifica si la estructura del arbol existe en la BBDD -----
                     let arrayStructureTreeExists = []
-                    arrayOtNumberK.forEach(element => {
-                        const treeDetailInformation = itemMongoDB.project[0].oci[`${ociKNumber}`].otProject[`${element}`].otDetalles
+                    for (let i=0; i < quantityDetalle; i++) {
+                        const iOtKParseInt = parseInt(arrayOtNumberK[i])
+                        const iDetalleKParseInt = parseInt(arrayDetalleNumberK[i])
+                        // console.log('0-If/iOtKParseInt: ', iOtKParseInt, ' - If/iDetalleKParseInt: ', iDetalleKParseInt)
+                        const treeDetailInformation = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otDetalles[iDetalleKParseInt].otDistribucion
+                        // console.log('0.1-Dao-treeDetailInformation----> ',treeDetailInformation, ' i=',i)
                         treeDetailInformation ? arrayStructureTreeExists.push(true) : arrayStructureTreeExists.push(false)
-                    });
+                    
+                        // console.log('0.2-Dao-arrayStructureTreeExists----> ',arrayStructureTreeExists)
 
-                    // for (let i = parseInt(arrayOtNumberK[0]); i < arrayOtNumberK.length; i++) {
-                    //     const treeDetailInformation = itemMongoDB.project[0].oci[`${ociKNumber}`].otProject[`${i}`].otDetalles[`${detalleKNumber}`]
-                    //     //console.log('0.1-Dao-treeDetailInformation----> ',treeDetailInformation, ' i=',i)
-                    //     treeDetailInformation ? arrayStructureTreeExists.push(true) : arrayStructureTreeExists.push(false)
-                    // }
-                    console.log('0.2-Dao-arrayStructureTreeExists----> ',arrayStructureTreeExists)
-
-                    arrayDetalleNumberK.forEach(element => {
-                        for (let i = 0; i < quantityDetalle; i++) {
-
+                        // for (let i = 0; i < quantityDetalle; i++) {
                             // Si no existe la extructura del arbol, se crea la estructura a agregar --
                             if (!arrayStructureTreeExists[i]) {
                                 let estructuraACrear = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otDetalles.${element}`]:
+                                    [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}`]:
                                     {
                                         otDistribucion: []
                                     }
                                 }
-                                // console.log('0.3-Dao-estructuraACrear: ', i,' - ', estructuraACrear)
+                                console.log('0.3-Dao-estructuraACrear: ', i,' - ', estructuraACrear)
                                 if (estructuraACrear) {
                                     arrayStructureTree.push(estructuraACrear)
                                 }
-                                // console.log('1-Dao-arrayStructureTree-- ', i,' - ', arrayStructureTree[i])
+                                console.log('1-Dao-arrayStructureTree-- ', i,' - ', arrayStructureTree[i])
 
                                 // Se agrega la estructura al arbol de MongoDB ---
-                                const treeInfoOtAddedToOt = Proyectos.updateOne( //await
+                                const treeInfoOtAddedToOt = await Proyectos.updateOne(
                                     { _id: itemMongoDB._id },
                                     {
                                         $set: arrayStructureTree[i] || estructuraACrear
@@ -339,11 +332,11 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                     { upsert: true }
                                 )
                                 arrayTreeCreation.push(treeInfoOtAddedToOt)
-                                // console.log('2-Dao-Estructura arbol creada: ', i,' - ', arrayTreeCreation)
+                                console.log('2-Dao-Estructura arbol creada: ', i,' - ', arrayTreeCreation)
 
-                                // Se crea el array de datos a agregar --
+                                // Se crea el array de datos a agregar ---
                                 let updateQuery = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otDetalles.${element}.otDistribucion`]:
+                                    [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}.otDistribucion`]:
                                     {
                                         mecanizado2dCompleto: infoAddedToDetail[i].mecanizado2dCompleto,
                                         revisionMecanizado2dCompleto: infoAddedToDetail[i].revisionMecanizado2dCompleto+1,
@@ -354,7 +347,7 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                         bancoArmado: infoAddedToDetail[i].bancoArmado,
                                         revisionBancoArmado: infoAddedToDetail[i].revisionBancoArmado+1,
                                         creator: infoAddedToDetail[i].creator,
-                                        timestamp: now,
+                                        timestamp: formatDate(),
                                         modificator: infoAddedToDetail[i].modificator,
                                         modifiedOn: ''
                                     }
@@ -364,7 +357,7 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                     // Si arrayTreeCreation.modifiedCount es = 1 ---
                                     if (arrayTreeCreation[i].modifiedCount===1) {
                 
-                                        var infoDistribucionAddedToOt = Proyectos.updateOne( //await
+                                        var infoDistribucionAddedToOt = await Proyectos.updateOne(
                                             { _id: itemMongoDB._id },
                                             {
                                                 $push: arrayQuantity[i]
@@ -373,58 +366,81 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                         )
                                         countTreeCreation++
                                     }
-                                    console.log('3-Dao-Ot agregada: ', i,' - ', infoDistribucionAddedToOt)
+                                    // console.log('3-Dao-Ot agregada: ', i,' - ', infoDistribucionAddedToOt)
                 
                             } else {
-
                                 // Recupero el creador y la fecha inicial, ya que solo se modifica
-                                let creatorInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].creator[0]
-                                let timestampInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].timestamp
-                //FIXME: -----------------------------------------------
+                                let pathToDetalle = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otDetalles[iDetalleKParseInt]
+                                let creatorInitial = pathToDetalle.creator[0]
+                                console.log('creatorInitial: ', creatorInitial)
+                                let timestampInitial = pathToDetalle.timestamp
+
                                 // Recupero los datos originales y comparo, ya que solo el dato que se modifica cambia su Revision
-                                let otInfoR14Length = parseInt(itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoR14.length)
-                                if (otInfoR14Length > 0) {
-                                    var procesoR14Initial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoR14[otInfoR14Length-1].procesoR14
-                                    var revisionProcesoR14Initial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoR14[otInfoR14Length-1].revisionProcesoR14
-                                    var aprobadoR14Initial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoR14[otInfoR14Length-1].aprobadoR14
-                                    var revisionAprobadoR14Initial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoR14[otInfoR14Length-1].revisionAprobadoR14
+                                let otDistribucionLength = parseInt(pathToDetalle.otDistribucion.length) || 1
+                                let pathToOtDistribucion = pathToDetalle.otDistribucion[otDistribucionLength-1]
+                                
+                                if (otDistribucionLength > 1) {
+                                    var mecanizado2dCompletoInitial = pathToOtDistribucion.mecanizado2dCompleto,
+                                        revisionMecanizado2dCompletoInitial = pathToOtDistribucion.revisionMecanizado2dCompleto,
+                                        mecanizado3dPrefinalInitial = pathToOtDistribucion.mecanizado3dPrefinal,
+                                        revisionMecanizado3dPrefinalInitial = pathToOtDistribucion.revisionMecanizado3dPrefinal,
+                                        mecanizado3dFinalInitial = pathToOtDistribucion.mecanizado3dFinal,
+                                        revisionMecanizado3dFinalInitial = pathToOtDistribucion.revisionMecanizado3dFinal,
+                                        bancoArmadoInitial = pathToOtDistribucion.bancoArmado,
+                                        revisionBancoArmadoInitial = pathToOtDistribucion.revisionBancoArmado
+
                                 } else {
-                                    var procesoR14Initial = 'sinDato'
-                                    var revisionProcesoR14Initial = 0
-                                    var aprobadoR14Initial = 'sinDato'
-                                    var revisionAprobadoR14Initial = 0
+                                    var mecanizado2dCompletoInitial = 'prodismo', revisionMecanizado2dCompletoInitial = 0,
+                                        mecanizado3dPrefinalInitial = 'prodismo', revisionMecanizado3dPrefinalInitial = 0,
+                                        mecanizado3dFinalInitial = 'prodismo', revisionMecanizado3dFinalInitial = 0,
+                                        bancoArmadoInitial = 'prodismo', revisionBancoArmadoInitial = 0
                                 }
 
-                                infoAddedToDetail[i].procesoR14 == procesoR14Initial ?                            
-                                    infoAddedToDetail[i].revisionProcesoR14 = parseInt(revisionProcesoR14Initial)
-                                :
-                                    infoAddedToDetail[i].revisionProcesoR14 = parseInt(revisionProcesoR14Initial+1)
-                
+                                // console.log('----infoAddedToDetail[i].mecanizado2dCompleto: ', infoAddedToDetail[i].mecanizado2dCompleto)
+                                // console.log('----infoAddedToDetail[i].revisionMecanizado2dCompleto: ', infoAddedToDetail[i].revisionMecanizado2dCompleto)
 
-                                infoAddedToDetail[i].aprobadoR14 == aprobadoR14Initial ?                                    
-                                    infoAddedToDetail[i].revisionAprobadoR14 = parseInt(revisionAprobadoR14Initial)
+                                infoAddedToDetail[i].mecanizado2dCompleto == mecanizado2dCompletoInitial ?                            
+                                    infoAddedToDetail[i].revisionMecanizado2dCompleto = parseInt(revisionMecanizado2dCompletoInitial)
                                 :
-                                    infoAddedToDetail[i].revisionAprobadoR14 = parseInt(revisionAprobadoR14Initial+1)
+                                    infoAddedToDetail[i].revisionMecanizado2dCompleto = parseInt(revisionMecanizado2dCompletoInitial+1)
+                                
+                                infoAddedToDetail[i].mecanizado3dPrefinal == mecanizado3dPrefinalInitial ?                                    
+                                    infoAddedToDetail[i].revisionMecanizado3dPrefinal = parseInt(revisionMecanizado3dPrefinalInitial)
+                                :
+                                    infoAddedToDetail[i].revisionMecanizado3dPrefinal = parseInt(revisionMecanizado3dPrefinalInitial+1)
 
+                                infoAddedToDetail[i].mecanizado3dFinal == mecanizado3dFinalInitial ?                                    
+                                    infoAddedToDetail[i].revisionMecanizado3dFinal = parseInt(revisionMecanizado3dFinalInitial)
+                                :
+                                    infoAddedToDetail[i].revisionMecanizado3dFinal = parseInt(revisionMecanizado3dFinalInitial+1)
+
+                                infoAddedToDetail[i].bancoArmado == bancoArmadoInitial ?                                    
+                                    infoAddedToDetail[i].revisionBancoArmado = parseInt(revisionBancoArmadoInitial)
+                                :
+                                    infoAddedToDetail[i].revisionBancoArmado = parseInt(revisionBancoArmadoInitial+1)
+                                
                                 // Si existe la extructura del arbol, se crea el array de datos a agregar --
                                 let updateQuery = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.otInfoR14`]:
+                                    [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}.otDistribucion`]:
                                     {
-                                        procesoR14: infoAddedToDetail[i].procesoR14,
-                                        revisionProcesoR14: infoAddedToDetail[i].revisionProcesoR14,
-                                        aprobadoR14: infoAddedToDetail[i].aprobadoR14,
-                                        revisionAprobadoR14: infoAddedToDetail[i].revisionAprobadoR14,
+                                        mecanizado2dCompleto: infoAddedToDetail[i].mecanizado2dCompleto,
+                                        revisionMecanizado2dCompleto: infoAddedToDetail[i].revisionMecanizado2dCompleto,
+                                        mecanizado3dPrefinal: infoAddedToDetail[i].mecanizado3dPrefinal,
+                                        revisionMecanizado3dPrefinal: infoAddedToDetail[i].revisionMecanizado3dPrefinal,
+                                        mecanizado3dFinal: infoAddedToDetail[i].mecanizado3dFinal,
+                                        revisionMecanizado3dFinal: infoAddedToDetail[i].revisionMecanizado3dFinal,
+                                        bancoArmado: infoAddedToDetail[i].bancoArmado,
+                                        revisionBancoArmado: infoAddedToDetail[i].revisionBancoArmado,
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
                                         modificator: infoAddedToDetail[i].creator,
-                                        modifiedOn: now
+                                        modifiedOn: formatDate()
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
-                                    //console.log('5-Dao-arrayQuantity-- ', i,' - ', arrayQuantity)
+                                    // console.log('5-Dao-arrayQuantity-- ', i,' - ', arrayQuantity)
                 
-                                    // var infoProcesoR14AddedToOt = 
-                                    Proyectos.updateOne( //await
+                                    await Proyectos.updateOne(
                                         { _id: itemMongoDB._id },
                                         {
                                             $push: arrayQuantity[i]
@@ -433,26 +449,24 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                     )
                                     countInfoAdded++
                             }
-                        }
-
+                    }
+                        
                         // Si el recuento de info agregada o creacion de arbol es mayor a 0
                         if (countInfoAdded > 0 || countTreeCreation > 0 ) {
-                
-                            const itemUpdated = Proyectos.findById({ _id: idProjectTarget }) //await 
-                            // console.log('5.1-Dao-proyecto: ', itemUpdated.project[0].oci)
+                            const itemUpdated = await Proyectos.findById({ _id: idProjectTarget }) 
+                            // console.log('5.1-Dao-proyecto----otDetalles0: ', itemUpdated.project[0].oci[0].otProject[0].otDetalles[0])
                             return itemUpdated
 
                         } else {
                             return new Error(`No se agregó la info de OT en el item: ${itemMongoDB._id}`)
                         }
-                    });     
-
+                    // }
+                    
                 } else {
                     return new Error(`No se encontró el Proyecto id#`)
                 }
 
             } catch (error) {
-                //console.log("Error MongoDB adding info Distribution to Detail: ", error)
                 console.error("Error MongoDB adding info Distribution to Detail: ", error)
             }
 
@@ -528,7 +542,7 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                         horasProceso3d: infoAddedToOt[i].horasProceso3d,
                                         revisionHorasProceso3d: infoAddedToOt[i].revisionHorasProceso3d+1,
                                         creator: infoAddedToOt[i].creator,
-                                        timestamp: now,
+                                        timestamp: formatDate(),
                                         modificator: infoAddedToOt[i].modificator,
                                         modifiedOn: ''
                                     }
@@ -591,7 +605,7 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
                                         modificator: infoAddedToOt[i].creator,
-                                        modifiedOn: now
+                                        modifiedOn: formatDate()
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
@@ -704,7 +718,7 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                         envioCliente: infoAddedToOt[i].envioCliente,
                                         revisionEnvioCliente: infoAddedToOt[i].revisionEnvioCliente+1,
                                         creator: infoAddedToOt[i].creator,
-                                        timestamp: now,
+                                        timestamp: formatDate(),
                                         modificator: infoAddedToOt[i].modificator,
                                         modifiedOn: ''
                                     }
@@ -789,7 +803,7 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
                                         modificator: infoAddedToOt[i].creator,
-                                        modifiedOn: now
+                                        modifiedOn: formatDate()
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
@@ -902,7 +916,7 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                         aprobadoCliente: infoAddedToOt[i].aprobadoCliente,
                                         revisionAprobadoCliente: infoAddedToOt[i].revisionAprobadoCliente+1,
                                         creator: infoAddedToOt[i].creator,
-                                        timestamp: now,
+                                        timestamp: formatDate(),
                                         modificator: infoAddedToOt[i].modificator,
                                         modifiedOn: ''
                                     }
@@ -987,7 +1001,7 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
                                         modificator: infoAddedToOt[i].creator,
-                                        modifiedOn: now
+                                        modifiedOn: formatDate()
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
@@ -1101,7 +1115,7 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                         revisionInfoModelo: infoAddedToOt[i].revisionInfoModelo+1,
                                         
                                         creator: infoAddedToOt[i].creator,
-                                        timestamp: now,
+                                        timestamp: formatDate(),
                                         modificator: infoAddedToOt[i].modificator,
                                         modifiedOn: ''
                                     }
@@ -1190,7 +1204,7 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
                                         modificator: infoAddedToOt[i].creator,
-                                        modifiedOn: now
+                                        modifiedOn: formatDate()
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
@@ -1252,9 +1266,9 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                             $set: {
                                 [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.otStatus`]: !booleanStatus,
                                 [`project.0.oci.${ociNumberK}.modificator`]: userModificator,
-                                [`project.0.oci.${ociNumberK}.modifiedOn`]: now, 
+                                [`project.0.oci.${ociNumberK}.modifiedOn`]: formatDate(), 
                                 [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modificator`]: userModificator,
-                                [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modifiedOn`]: now
+                                [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modifiedOn`]: formatDate()
                             }
                         },
                         { new: true }
@@ -1297,7 +1311,7 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                 descripcionDetalle: arrayDetalleAddedToOt[i].detalleDescription,
                                 statusDetalle: arrayDetalleAddedToOt[i].detalleStatus,
                                 creator: arrayDetalleAddedToOt[i].creator,
-                                timestamp: now,
+                                timestamp: formatDate(),
                                 modificator: arrayDetalleAddedToOt[i].modificator,
                                 modifiedOn: '',
                                 visible: true
@@ -1358,7 +1372,7 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                 descripcionDetalle: arrayDetalleAddedToOt[i].detalleDescription,
                                 statusDetalle: arrayDetalleAddedToOt[i].detalleStatus,
                                 creator: arrayDetalleAddedToOt[i].creator,
-                                timestamp: now,
+                                timestamp: formatDate(),
                                 modificator: arrayDetalleAddedToOt[i].modificator,
                                 modifiedOn: '',
                                 visible: true
@@ -1447,7 +1461,7 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                 [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.descripcionDetalle`]: descripcionDetalle,
                                 [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.statusDetalle`]: booleanStatus,
                                 [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.modificator`]: userModificator,
-                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.modifiedOn`]: now,
+                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.modifiedOn`]: formatDate(),
                             }
                         },
                         { new: true }
@@ -1503,7 +1517,7 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                             $set: {
                                 [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.statusDetalle`]: booleanStatus,
                                 [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.modificator`]: userModificator,
-                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.modifiedOn`]: now,
+                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.modifiedOn`]: formatDate(),
                             }
                         },
                         { new: true }
@@ -1557,7 +1571,7 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                 [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.visible`]: Boolean(false),
                                 [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.statusDetalle`]: Boolean(false),
                                 [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.modificator`]: userModificator,
-                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.modifiedOn`]: now,
+                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otDetalles.${numberDetalleK}.modifiedOn`]: formatDate(),
                             }
                         },
                         { new: true }
@@ -1609,11 +1623,11 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                 $set: {
                                     [`project.0.oci.${ociNumberK}.visible`]: Boolean(false),
                                     [`project.0.oci.${ociNumberK}.modificator`]: userModificator,
-                                    [`project.0.oci.${ociNumberK}.modifiedOn`]: now,
+                                    [`project.0.oci.${ociNumberK}.modifiedOn`]: formatDate(),
                                     [`project.0.modificator`]: userModificator,
-                                    [`project.0.modifiedOn`]: now,
+                                    [`project.0.modifiedOn`]: formatDate(),
                                     modificator: userModificator,
-                                    modifiedOn: now
+                                    modifiedOn: formatDate()
                                 }
                             },
                             { new: true }
@@ -1626,11 +1640,11 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                 $set: {
                                     [`project.0.oci.${ociNumberK}.visible`]: Boolean(true),
                                     [`project.0.oci.${ociNumberK}.modificator`]: userModificator,
-                                    [`project.0.oci.${ociNumberK}.modifiedOn`]: now,
+                                    [`project.0.oci.${ociNumberK}.modifiedOn`]: formatDate(),
                                     [`project.0.modificator`]: userModificator,
-                                    [`project.0.modifiedOn`]: now,
+                                    [`project.0.modifiedOn`]: formatDate(),
                                     modificator: userModificator,
-                                    modifiedOn: now
+                                    modifiedOn: formatDate()
                                 }
                             },
                             { new: true }
@@ -1698,7 +1712,7 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                                 [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otSimulation`]: otSimulation,
                                 [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otSupplier`]: otSupplier,
                                 [`project.0.oci.${numberOciK}.otProject.${numberOtK}.modificator`]: userModificator,
-                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.modifiedOn`]: now
+                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.modifiedOn`]: formatDate()
                             }
                         },
                         { new: true }
@@ -1751,13 +1765,13 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                             $set: {
                                 [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.visible`]: Boolean(false),
                                 [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modificator`]: userModificator,
-                                [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modifiedOn`]: now,
+                                [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modifiedOn`]: formatDate(),
                                 [`project.0.oci.${ociNumberK}.modificator`]: userModificator,
-                                [`project.0.oci.${ociNumberK}.modifiedOn`]: now,
+                                [`project.0.oci.${ociNumberK}.modifiedOn`]: formatDate(),
                                 [`project.0.modificator`]: userModificator,
-                                [`project.0.modifiedOn`]: now,
+                                [`project.0.modifiedOn`]: formatDate(),
                                 modificator: userModificator,
-                                modifiedOn: now
+                                modifiedOn: formatDate()
                             }
                         },
                         { new: true }
@@ -1770,13 +1784,13 @@ console.log('7-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail[0])
                             $set: {
                                 [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.visible`]: Boolean(true),
                                 [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modificator`]: userModificator,
-                                [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modifiedOn`]: now,
+                                [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modifiedOn`]: formatDate(),
                                 [`project.0.oci.${ociNumberK}.modificator`]: userModificator,
-                                [`project.0.oci.${ociNumberK}.modifiedOn`]: now,
+                                [`project.0.oci.${ociNumberK}.modifiedOn`]: formatDate(),
                                 [`project.0.modificator`]: userModificator,
-                                [`project.0.modifiedOn`]: now,
+                                [`project.0.modifiedOn`]: formatDate(),
                                 modificator: userModificator,
-                                modifiedOn: now
+                                modifiedOn: formatDate()
                             }
                         },
                         { new: true }

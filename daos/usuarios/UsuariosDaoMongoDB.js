@@ -5,7 +5,7 @@ const Sessions = require('../../models/sessions.models.js')
 
 const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000 }
 
-const now = require('../../utils/formatDate.js')
+const formatDate = require('../../utils/formatDate.js')
 const bCrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 const fs = require('fs')
@@ -525,7 +525,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                             $set: {
                                 password: newPasswordEncoded,
                                 modificator: userModificator,
-                                modifiedOn: now
+                                modifiedOn: formatDate()
                             }
                         },
                         { new: true }
@@ -580,7 +580,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                                 permiso: updatedUser.permiso,
                                 area: updatedUser.area,
                                 modificator: userModificator,
-                                modifiedOn: now
+                                modifiedOn: formatDate()
                             }
                         },
                         { new: true }
@@ -629,7 +629,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                                 email: updatedUser.email,
                                 avatar: updatedUser.avatar,
                                 modificator: userModificator,
-                                modifiedOn: now
+                                modifiedOn: formatDate()
                             }
                         },
                         { new: true }
@@ -672,7 +672,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                                 visible: inactive,
                                 status: inactive,
                                 modificator: userModificator,
-                                modifiedOn: now
+                                modifiedOn: formatDate()
                             }
                         },
                         { new: true }

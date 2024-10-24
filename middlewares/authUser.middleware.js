@@ -15,9 +15,9 @@ const authUserMiddleware = async (req, res, next) => {
                 
         let username = res.locals.username
         let userInfo = res.locals.userInfo
-        console.log('req.session?.username', req.session?.username)
-        console.log('!req.session?.admin', !req.session?.admin)
-        console.log('userInfo.area: ', userInfo.area)
+        // console.log('req.session?.username', req.session?.username)
+        // console.log('!req.session?.admin', !req.session?.admin)
+        // console.log('userInfo.area: ', userInfo.area)
 
         if (!req.session?.username || !req.session?.admin) {
             return res.render('notAuthorizated', {

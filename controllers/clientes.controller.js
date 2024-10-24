@@ -5,7 +5,7 @@ const ProjectsService = require("../services/projects.service.js")
 const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
 const { uploadMulterSingleLogoClient, uploadMulterSingleLogoUpdate } = require("../utils/uploadMulter.js")
 
-let now = require('../utils/formatDate.js')
+let formatDate = require('../utils/formatDate.js')
 
 const csrf = require('csrf');
 const csrfTokens = csrf();
@@ -175,7 +175,7 @@ class ClientsController {
                     project: 0,
                     logo: req.body.imageTextLogoClient || imageNotFound,
                     creator: dataUserCreator(userCreator),
-                    timestamp: now,
+                    timestamp: formatDate(),
                     modificator: dataUserModificatorEmpty(),
                     modifiedOn: '',
                     visible: true
@@ -252,7 +252,7 @@ class ClientsController {
                     code: codeInput,
                     logo: req.body.imageTextLogoUpdate,
                     modificator: dataUserModificatorNotEmpty(userCreator),
-                    modifiedOn: now
+                    modifiedOn: formatDate()
                 }
                                 
                 if (clienteToModify) {

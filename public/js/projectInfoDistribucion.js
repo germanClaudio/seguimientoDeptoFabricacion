@@ -180,8 +180,8 @@ function mostrarElementoDistribucion(
     resMecanizado3dFinal,
     resBancoArmado)
     {
-    // console.log('resMecanizado2dCompleto: ', resMecanizado2dCompleto, 'resAprobadoMecanizado2dCompleto: ', resAprobadoMecanizado2dCompleto)
     // console.log('kValue', kValue)
+    // console.log('indiceAMostrar', indiceAMostrar)
     // console.log('arrayFromValues', arrayFromValues)
     
     if (resMecanizado2dCompleto) {
@@ -327,8 +327,9 @@ function mostrarElementoDistribucion(
 // Función para mostrar el elemento anterior
 function mostrarAnteriorDistribucion(arrayFromValues, kValue) {
     let inputSpotIndex = document.getElementById(`resIndexHidden${kValue}`)
+// console.log('inputSpotIndex: ', inputSpotIndex)
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
-
+// console.log('lastIndexArrayFromValues: ', lastIndexArrayFromValues)
     let indiceAMostrar = parseInt(lastIndexArrayFromValues-1)
     inputSpotIndex.value = parseInt(indiceAMostrar)
 
@@ -403,11 +404,13 @@ spanResDistribucion.forEach(function(spanElement) {
         // console.log('regex: ', regex)
 
         // Eliminar el texto inicial de la cadena
-        var idFinalInputs = idSpotSelected.replace(regex, '');
+        let idFinalInputs = idSpotSelected.replace(regex, '');
         // console.log('idFinalInputs: ', idFinalInputs)
 
-        let inputSpotIndex = document.getElementById(`resIndexHidden${idFinalInputs}`).value
+        let inputSpotIndex = parseInt(document.getElementById(`resIndexHidden${idFinalInputs}`).value)
+        // console.log('inputSpotIndex: ', inputSpotIndex)
         let inputSpotRevision = document.getElementById(`resRevisionHidden${idFinalInputs}`).value
+        // console.log('inputSpotRevision: ', inputSpotRevision)
         let inputSpotCreador = document.getElementById(`arrResCreadorHidden${idFinalInputs}`).value
         let inputSpotModificador = document.getElementById(`arrResModificadorHidden${idFinalInputs}`).value
         let inputSpotFecha = document.getElementById(`arrResFechaHidden${idFinalInputs}`).value
@@ -418,22 +421,26 @@ spanResDistribucion.forEach(function(spanElement) {
         let arrayFromSpotModificador = inputSpotModificador.split(",")
         let arrayFromSpotFecha = inputSpotFecha.split(",")
         let arrayFromSpotFechaModificacion = inputSpotFechaModificacion.split(",")
+
+        //console.log(arrayFromSpotRevision, arrayFromSpotCreador, arrayFromSpotModificador, arrayFromSpotFecha, arrayFromSpotFechaModificacion)
                 
-        for (let y=0; arrayFromSpotRevision.length > y; y++) {
-            if (inputSpotIndex == y) {
-                spanSpot.setAttribute("valueRevision", arrayFromSpotRevision[y])
-                spanSpot.setAttribute("valueCreador", arrayFromSpotCreador[y])
-                spanSpot.setAttribute("valueFecha", arrayFromSpotFecha[y])
-                spanSpot.setAttribute("valueModificador", arrayFromSpotModificador[y])
-                spanSpot.setAttribute("valueFechaMod", arrayFromSpotFechaModificacion[y])
+        for (let y=0; parseInt(arrayFromSpotRevision.length) > y; y++) {
+            // console.log('y: ', y, 'inputSpotIndex: ', inputSpotIndex)
+            if (inputSpotIndex === y) {
+                //console.log('arrayFromSpotCreador[y-1]: ', arrayFromSpotCreador[y])
+                spanSpot.setAttribute("valuerevision", arrayFromSpotRevision[y])
+                spanSpot.setAttribute("valuecreador", arrayFromSpotCreador[y])
+                spanSpot.setAttribute("valuefecha", arrayFromSpotFecha[y])
+                spanSpot.setAttribute("valuemodificador", arrayFromSpotModificador[y])
+                spanSpot.setAttribute("valuefechamod", arrayFromSpotFechaModificacion[y])
             }
 
             tippy(spanSpot, {
-                content: `Revision: ${spanSpot.getAttribute("valueRevision")}<br>
-                        Creado por: ${spanSpot.getAttribute("valueCreador")}<br>
-                        Fecha creac.: ${spanSpot.getAttribute("valueFecha")}<br>
-                        Modificado por: ${spanSpot.getAttribute("valueModificador")}<br>
-                        Fecha mod.: ${spanSpot.getAttribute("valueFechaMod")}`,
+                content: `Revision: ${spanSpot.getAttribute("valuerevision")}<br>
+                        Creado por: ${spanSpot.getAttribute("valuecreador")}<br>
+                        Fecha creac.: ${spanSpot.getAttribute("valuefecha")}<br>
+                        Modificado por: ${spanSpot.getAttribute("valuemodificador")}<br>
+                        Fecha mod.: ${spanSpot.getAttribute("valuefechamod")}`,
                 allowHTML: true,
                 maxWidth: 350,
                 arrow: true,

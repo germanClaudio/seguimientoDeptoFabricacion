@@ -6,7 +6,7 @@ const UserService = require("../services/users.service.js")
 
 // let userPictureNotFound = "../../../src/images/upload/AvatarUsersImages/incognito.jpg"
 const cookie = require('../utils/cookie.js')
-let now = require('../utils/formatDate.js')
+let formatDate = require('../utils/formatDate.js')
 
 const csrf = require('csrf');
 const csrfTokens = csrf();
@@ -104,7 +104,7 @@ class MessagesController {
                 avatar: req.body.avatar,
             },
             text: req.body.text,
-            date: now,
+            date: formatDate(),
             status: true,
         }  
         

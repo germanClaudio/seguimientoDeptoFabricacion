@@ -4,7 +4,7 @@ const ToolService = require("../services/tools.service.js")
 const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
 const { uploadMulterSingleImageTool } = require("../utils/uploadMulter.js")
 
-let now = require('../utils/formatDate.js')
+let formatDate = require('../utils/formatDate.js')
 
 const csrf = require('csrf');
 const csrfTokens = csrf();
@@ -139,7 +139,7 @@ class ToolsController {
                         imageTool: req.body.imageTextImageTool || toolPictureNotFound,
                         status: req.body.status === 'on' ? Boolean(true) : Boolean(false) || Boolean(true),
                         creator: dataUserCreator(userCreator),
-                        timestamp: now,
+                        timestamp: formatDate(),
                         modificator: dataUserModificatorEmpty(),
                         modifiedOn: '',
                         visible: true
@@ -227,7 +227,7 @@ class ToolsController {
                     imageTool: req.body.imageTextImageToolUpdate,
                     status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
                     modificator: dataUserModificatorNotEmpty(userLogged),
-                    modifiedOn: now
+                    modifiedOn: formatDate()
                 }
 
                 const maquina = await this.tools.updateTool(toolId, updatedTool, dataUserModificatorNotEmpty(userLogged))

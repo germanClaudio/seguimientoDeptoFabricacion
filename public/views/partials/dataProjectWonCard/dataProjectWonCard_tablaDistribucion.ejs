@@ -28,62 +28,69 @@
         </tr>
     </thead>
     <tbody class="table-group-divider">
-        <% let arrResMecanizado2dCompleto = []; let valueArrayResMecanizado2dCompleto = 0; let arrResRevisionMecanizado2dCompleto = [];
-        let arrResCreadorMecanizado2dCompleto = []; let arrResModificadorMecanizado2dCompleto = []; let arrResFechaMecanizado2dCompleto = []; let arrResFechaModMecanizado2dCompleto = [];
-
-        let arrResMecanizado3dPrefinal = []; let valueArrayResMecanizado3dPrefinal = 0; let arrResRevisionMecanizado3dPrefinal = [];
-        let arrResCreadorMecanizado3dPrefinal = []; let arrResModificadorMecanizado3dPrefinal = []; let arrResFechaMecanizado3dPrefinal = []; let arrResFechaModMecanizado3dPrefinal = [];
-
-        let arrResMecanizado3dFinal = []; let valueArrayResMecanizado3dFinal = 0; let arrResRevisionMecanizado3dFinal = [];
-        let arrResCreadorMecanizado3dFinal = []; let arrResModificadorMecanizado3dFinal = []; let arrResFechaMecanizado3dFinal = []; let arrResFechaModMecanizado3dFinal = [];
-
-        let arrResBancoArmado = []; let valueArrayResBancoArmado = 0; let arrResRevisionBancoArmado = [];
-        let arrResCreadorBancoArmado = []; let arrResModificadorBancoArmado = []; let arrResFechaBancoArmado = []; let arrResFechaModBancoArmado = [];
-
-        let anteriorDisabled = "disabled"; let siguienteDisabled = "disabled";
-        let resMecanizado2dCompleto = 'prodismo'; let resRevisionMecanizado2dCompleto = 0;
-        let resMecanizado3dPrefinal = 'prodismo'; let resRevisionMecanizado3dPrefinal = 0;
-        let resMecanizado3dFinal = 'prodismo'; let resRevisionMecanizado3dFinal = 0;
-        let resBancoArmado = 'prodismo'; let resRevisionBancoArmado = 0;
+        <% let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+            resMecanizado2dCompleto = 'prodismo', resRevisionMecanizado2dCompleto = 0,
+            resMecanizado3dPrefinal = 'prodismo', resRevisionMecanizado3dPrefinal = 0,
+            resMecanizado3dFinal = 'prodismo', resRevisionMecanizado3dFinal = 0,
+            resBancoArmado = 'prodismo', resRevisionBancoArmado = 0
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
-            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject[n]
-            let largoArrayOtDetalles = pathMongoOtProject.otDetalles.length
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+            pathMongoOtDetalles = pathMongoOtProject[n].otDetalles,
+            largoArrayOtDetalles = parseInt(pathMongoOtDetalles.length)
 
-            for ( let o=0; largoArrayOtDetalles> o; o++) {
-                let otDistribucion = proyecto[m].project[j].oci[k].otProject[n].otDetalles[o].otDistribucion || [];
-                let largoArrayDistribucion = otDistribucion.length;
+            for ( let o=0; largoArrayOtDetalles > o; o++) {
+                let pathMongoOtDistribucion = pathMongoOtDetalles[o].otDistribucion || [],
+                largoArrayDistribucion = parseInt(pathMongoOtDistribucion.length);
 
-                if (pathMongoOtProject.visible && pathMongoOtProject.otDetalles[o].visible) {
-                    if (pathMongoOtProject.otStatus && pathMongoOtProject.otDetalles[o].statusDetalle) { %>
+                let arrResMecanizado2dCompleto = [], arrResRevisionMecanizado2dCompleto = [], valueArrayResMecanizado2dCompleto = 0,
+                arrResCreadorMecanizado2dCompleto = [], arrResModificadorMecanizado2dCompleto = [], arrResFechaMecanizado2dCompleto = [], arrResFechaModMecanizado2dCompleto = [];
+
+                let arrResMecanizado3dPrefinal = [], arrResRevisionMecanizado3dPrefinal = [], valueArrayResMecanizado3dPrefinal = 0,
+                arrResCreadorMecanizado3dPrefinal = [], arrResModificadorMecanizado3dPrefinal = [], arrResFechaMecanizado3dPrefinal = [], arrResFechaModMecanizado3dPrefinal = [];
+
+                let arrResMecanizado3dFinal = [], valueArrayResMecanizado3dFinal = 0, arrResRevisionMecanizado3dFinal = [],
+                arrResCreadorMecanizado3dFinal = [], arrResModificadorMecanizado3dFinal = [], arrResFechaMecanizado3dFinal = [], arrResFechaModMecanizado3dFinal = [];
+
+                let arrResBancoArmado = [], valueArrayResBancoArmado = 0, arrResRevisionBancoArmado = [],
+                arrResCreadorBancoArmado = [], arrResModificadorBancoArmado = [], arrResFechaBancoArmado = [], arrResFechaModBancoArmado = [];
+
+                if (pathMongoOtProject[n].visible && pathMongoOtDetalles[o].visible) {
+                    if (pathMongoOtProject[n].otStatus && pathMongoOtDetalles[o].statusDetalle) { %>
+                        <!--Activo-->
                         <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh;">
                             <% for (let q = 0; totalColDataOtDistribucion > q; q++) {
                                 if (q==0) { %>
                                     <!-- Mecanizado 2d Completo data Activo--> 
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayDistribucion > 0) {
+                                            
                                             for (let i = 0; largoArrayDistribucion > i; i++) {
-                                                let pathToMongoDBOtDistribucion = otDistribucion[i]
-
-                                                if (otDistribucion) {
+                                                if (pathMongoOtDistribucion[i]) {
                                                     let largoArray = parseInt(largoArrayDistribucion)
-                                                    resMecanizado2dCompleto = otDistribucion[largoArray-1].mecanizado2dCompleto || 'prodismo'
-                                                    resRevisionMecanizado2dCompleto = otDistribucion[largoArray-1].revisionMecanizado2dCompleto
-                                                    
+                                                    resMecanizado2dCompleto = pathMongoOtDistribucion[largoArray-1].mecanizado2dCompleto || 'prodismo'
+                                                    resRevisionMecanizado2dCompleto = pathMongoOtDistribucion[largoArray-1].revisionMecanizado2dCompleto
+
                                                     if (i == 0) {
-                                                        arrResMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.mecanizado2dCompleto)
-                                                        arrResRevisionMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.revisionMecanizado2dCompleto)
+                                                        arrResMecanizado2dCompleto.push(pathMongoOtDistribucion[i].mecanizado2dCompleto)
+                                                        arrResRevisionMecanizado2dCompleto.push(pathMongoOtDistribucion[i].revisionMecanizado2dCompleto)
+
+                                                        arrResCreadorMecanizado2dCompleto.push(pathMongoOtDistribucion[i].creator[0].username)
+                                                        arrResModificadorMecanizado2dCompleto.push(pathMongoOtDistribucion[i].modificator[0].username)
+                                                        arrResFechaMecanizado2dCompleto.push(pathMongoOtDistribucion[i].timestamp)
+                                                        arrResFechaModMecanizado2dCompleto.push(pathMongoOtDistribucion[i].modifiedOn)
+
+                                                    } else if (i >=1 && pathMongoOtDistribucion[i].revisionMecanizado2dCompleto != pathMongoOtDistribucion[i-1].revisionMecanizado2dCompleto) {
+                                                        arrResMecanizado2dCompleto.push(pathMongoOtDistribucion[largoArray-1].mecanizado2dCompleto)
+                                                        arrResRevisionMecanizado2dCompleto.push(pathMongoOtDistribucion[largoArray-1].revisionMecanizado2dCompleto)
+                                                    
+                                                        arrResCreadorMecanizado2dCompleto.push(pathMongoOtDistribucion[largoArray-1].creator[0].username)
+                                                        arrResModificadorMecanizado2dCompleto.push(pathMongoOtDistribucion[largoArray-1].modificator[0].username)
+                                                        arrResFechaMecanizado2dCompleto.push(pathMongoOtDistribucion[largoArray-1].timestamp)
+                                                        arrResFechaModMecanizado2dCompleto.push(pathMongoOtDistribucion[largoArray-1].modifiedOn)
                                                     }
-                                                    else if (i >= 1 && pathToMongoDBOtDistribucion.revisionMecanizado2dCompleto != otDistribucion[i-1].revisionMecanizado2dCompleto) {
-                                                        arrResMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.mecanizado2dCompleto)
-                                                        arrResRevisionMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.revisionMecanizado2dCompleto)
-                                                    }
-                                                        arrResCreadorMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.creator[0].username)
-                                                        arrResModificadorMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.modificator[0].username)
-                                                        arrResFechaOtMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.timestamp)
-                                                        arrResFechaModMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.modifiedOn)
-                                                        valueArrayResMecanizado2dCompleto = parseInt(arrResOtDistribucion.length-1)
-                                                
+                                                    valueArrayResMecanizado2dCompleto = parseInt(arrResMecanizado2dCompleto.length-1)
+
                                                 } else {
                                                     resMecanizado2dCompleto = 'prodismo'
                                                     resRevisionMecanizado2dCompleto = 0
@@ -100,7 +107,7 @@
                                                 anteriorDisabled = ""
                                                 siguienteDisabled = "disabled"
                                             }
-                                                    
+                                        
                                         } else {
                                             anteriorDisabled = "disabled"
                                             siguienteDisabled = "disabled"
@@ -109,6 +116,11 @@
                                             arrResMecanizado2dCompleto.push(resMecanizado2dCompleto)
                                             arrResRevisionMecanizado2dCompleto.push(resRevisionMecanizado2dCompleto)
                                             valueArrayResMecanizado2dCompleto = 0
+                                        
+                                            arrResCreadorMecanizado2dCompleto.push(pathMongoOtDetalles[o].creator[0].username)
+                                            arrResModificadorMecanizado2dCompleto = ""
+                                            arrResFechaMecanizado2dCompleto.push(pathMongoOtDetalles[o].timestamp)
+                                            arrResFechaModMecanizado2dCompleto = ""
                                         } %>
                                         
                                         <div id="btnAnteriorSiguienteMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>">
@@ -158,229 +170,254 @@
                                     <!-- Mecanizado 3d Prefinal data Activo-->
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayDistribucion > 0) {
-                                                    for (let i = 0; largoArrayDistribucion > i; i++) {
-                                                        let pathToMongoDBOtDistribucion = otDistribucion[i]
-                                                        
-                                                        if (otDistribucion) {
-                                                            let largoArray = parseInt(largoArrayDistribucion)
-                                                            resMecanizado3dPrefinal = otDistribucion[largoArray-1].mecanizado3dPrefinal || 'prodismo'
-                                                            resRevisionMecanizado3dPrefinal = otDistribucion[largoArray-1].revisionMecanizado3dPrefinal
-                                                            
-                                                            if (i == 0) {
-                                                                arrResMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.mecanizado3dPrefinal)
-                                                                arrResRevisionMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.revisionMecanizado3dPrefinal)
-                                                            }
-                                                            else if (i >= 1 && pathToMongoDBOtDistribucion.revisionMecanizado3dPrefinal != otDistribucion[i-1].revisionMecanizado3dPrefinal) {
-                                                                arrResMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.mecanizado3dPrefinal)
-                                                                arrResRevisionMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.revisionMecanizado3dPrefinal)
-                                                            }
-                                                                arrResCreadorMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.creator[0].username)
-                                                                arrResModificadorMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.modificator[0].username)
-                                                                arrResFechaMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.timestamp)
-                                                                arrResFechaModMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.modifiedOn)
-                                                                valueArrayResMecanizado3dPrefinal = parseInt(arrResMecanizado3dPrefinal.length-1)
-                                                        
-                                                        } else {
-                                                            resMecanizado3dPrefinal = 'prodismo'
-                                                            resRevisionMecanizado3dPrefinal = 0
-                                                        }
-                                                    }
-                                                    
-                                                    if (arrResMecanizado3dPrefinal.length == 1 ) {
-                                                        siguienteDisabled = "disabled"
-                                                        anteriorDisabled = "disabled"
-                                                    } else if (arrResMecanizado3dPrefinal.length == arrResRevisionMecanizado3dPrefinal.length) {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    } else {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    }
-                                                    
-                                                } else {
-                                                    anteriorDisabled = "disabled"
-                                                    siguienteDisabled = "disabled"
-                                                    resMecanizado3dPrefinal = "prodismo"
-                                                    resRevisionMecanizado3dPrefinal = 0
-                                                    arrResMecanizado3dPrefinal.push(resMecanizado3dPrefinal)
-                                                    arrResRevisionMecanizado3dPrefinal.push(resRevisionMecanizado3dPrefinal)
-                                                    valueArrayResMecanizado3dPrefinal = 0
-                                            } %>
-                                        
-                                            <div id="btnAnteriorSiguienteMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                                <button id="btnAnteriorMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>"
-                                                    name="btnAnteriorMecanizado3dPrefinal" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= anteriorDisabled %>
-                                                    >
-                                                        <i class="fa-solid fa-arrow-left"></i>
-                                                </button>
-                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResMecanizado3dPrefinal %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResMecanizado3dPrefinal %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionMecanizado3dPrefinal %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorMecanizado3dPrefinal %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorMecanizado3dPrefinal %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaMecanizado3dPrefinal %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModMecanizado3dPrefinal %>">
+                                            
+                                            for (let i = 0; largoArrayDistribucion > i; i++) {
+                                                if (pathMongoOtDistribucion[i]) {
+                                                    let largoArray = parseInt(largoArrayDistribucion)
+                                                    resMecanizado3dPrefinal = pathMongoOtDistribucion[largoArray-1].mecanizado3dPrefinal || 'prodismo'
+                                                    resRevisionMecanizado3dPrefinal = pathMongoOtDistribucion[largoArray-1].revisionMecanizado3dPrefinal
 
-                                                <% switch (resMecanizado3dPrefinal) { 
-                                                    case "prodismo": { %>
-                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
-                                                    <% break; }
-                                                    case "terceros": { %>
-                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
-                                                    <% break; }        
-                                                    case "china": { %>
-                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
-                                                    <% break; }
-                                                    case "noAplica": { %>
-                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
-                                                    <% break; }
-                                                    default: { %>
-                                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                    <% break; }
+                                                    if (i == 0) {
+                                                        arrResMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].mecanizado3dPrefinal)
+                                                        arrResRevisionMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].revisionMecanizado3dPrefinal)
+
+                                                        arrResCreadorMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].creator[0].username)
+                                                        arrResModificadorMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].modificator[0].username)
+                                                        arrResFechaMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].timestamp)
+                                                        arrResFechaModMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].modifiedOn)
+
+                                                    } else if (i >=1 && pathMongoOtDistribucion[i].revisionMecanizado3dPrefinal != pathMongoOtDistribucion[i-1].revisionMecanizado3dPrefinal) {
+                                                        arrResMecanizado3dPrefinal.push(pathMongoOtDistribucion[largoArray-1].mecanizado3dPrefinal)
+                                                        arrResRevisionMecanizado3dPrefinal.push(pathMongoOtDistribucion[largoArray-1].revisionMecanizado3dPrefinal)
+                                                    
+                                                        arrResCreadorMecanizado3dPrefinal.push(pathMongoOtDistribucion[largoArray-1].creator[0].username)
+                                                        arrResModificadorMecanizado3dPrefinal.push(pathMongoOtDistribucion[largoArray-1].modificator[0].username)
+                                                        arrResFechaMecanizado3dPrefinal.push(pathMongoOtDistribucion[largoArray-1].timestamp)
+                                                        arrResFechaModMecanizado3dPrefinal.push(pathMongoOtDistribucion[largoArray-1].modifiedOn)
+                                                    }
+                                                    valueArrayResMecanizado3dPrefinal = parseInt(arrResMecanizado3dPrefinal.length-1)
+
+                                                } else {
+                                                    resMecanizado3dPrefinal = 'prodismo'
+                                                    resRevisionMecanizado3dPrefinal = 0
+                                                }
+                                            }
+                                            
+                                            if (arrResMecanizado3dPrefinal.length == 1 ) {
+                                                anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
+                                            } else if (arrResMecanizado3dPrefinal.length == arrResRevisionMecanizado3dPrefinal.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                        
+                                        } else {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                            resMecanizado3dPrefinal = "prodismo"
+                                            resRevisionMecanizado3dPrefinal = 0
+                                            arrResMecanizado3dPrefinal.push(resMecanizado3dPrefinal)
+                                            arrResRevisionMecanizado3dPrefinal.push(resRevisionMecanizado3dPrefinal)
+                                            valueArrayResMecanizado3dPrefinal = 0
+                                        
+                                            arrResCreadorMecanizado3dPrefinal.push(pathMongoOtDetalles[o].creator[0].username)
+                                            arrResModificadorMecanizado3dPrefinal = ""
+                                            arrResFechaMecanizado3dPrefinal.push(pathMongoOtDetalles[o].timestamp)
+                                            arrResFechaModMecanizado3dPrefinal = ""
+                                        } %>
+                                        
+                                        <div id="btnAnteriorSiguienteMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>"
+                                                name="btnAnteriorMecanizado3dPrefinal" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResMecanizado3dPrefinal %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResMecanizado3dPrefinal %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionMecanizado3dPrefinal %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorMecanizado3dPrefinal %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorMecanizado3dPrefinal %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaMecanizado3dPrefinal %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModMecanizado3dPrefinal %>">
+
+                                            <% switch (resMecanizado3dPrefinal) { 
+                                                case "prodismo": { %>
+                                                        <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
+                                                <% break; }        
+                                                case "terceros": { %>
+                                                        <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
+                                                <% break; }        
+                                                case "china": { %>
+                                                        <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
+                                                <% break; }
+                                                case "noAplica": { %>
+                                                        <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
+                                                <% break; }
+                                                default: { %>
+                                                        <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                <% break; }
                                                 } %>
-                                                <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionMecanizado3dPrefinal" class="badge text-dark my-2" style="cursor: help;"><%= resRevisionMecanizado3dPrefinal %></span>
                                                 
-                                                <button id="btnSiguienteMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>"
-                                                    name="btnSiguienteMecanizado3dPrefinal" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= siguienteDisabled %>
-                                                    >
-                                                        <i class="fa-solid fa-arrow-right"></i>
-                                                </button>
-                                            </div>
+                                                <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionMecanizado3dPrefinal" class="badge text-dark my-2" style="cursor: help;"><%= resRevisionMecanizado3dPrefinal %></span>
+
+                                            <button id="btnSiguienteMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>"
+                                                name="btnSiguienteMecanizado3dPrefinal" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 <% } else if (q==2) { %>
                                     <!-- Mecanizado 3d Final data Activo-->
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayDistribucion > 0) {
-                                                    for (let i = 0; largoArrayDistribucion > i; i++) {
-                                                        let pathToMongoDBOtDistribucion = otDistribucion[i]
-                                                        
-                                                        if (otDistribucion) {
-                                                            let largoArray = parseInt(largoArrayDistribucion)
-                                                            resMecanizado3dFinal = otDistribucion[largoArray-1].mecanizado3dFinal || 'prodismo'
-                                                            resRevisionMecanizado3dFinal = otDistribucion[largoArray-1].revisionMecanizado3dFinal
-                                                            
-                                                            if (i == 0) {
-                                                                arrResMecanizado3dFinal.push(pathToMongoDBOtDistribucion.mecanizado3dFinal)
-                                                                arrResRevisionMecanizado3dFinal.push(pathToMongoDBOtDistribucion.revisionMecanizado3dFinal)
-                                                            }
-                                                            else if (i >= 1 && pathToMongoDBOtDistribucion.revisionMecanizado3dFinal != otDistribucion[i-1].revisionMecanizado3dFinal) {
-                                                                arrResMecanizado3dFinal.push(pathToMongoDBOtDistribucion.mecanizado3dFinal)
-                                                                arrResRevisionMecanizado3dFinal.push(pathToMongoDBOtDistribucion.revisionMecanizado3dFinal)
-                                                            }
-                                                                arrResCreadorMecanizado3dFinal.push(pathToMongoDBOtDistribucion.creator[0].username)
-                                                                arrResModificadorMecanizado3dFinal.push(pathToMongoDBOtDistribucion.modificator[0].username)
-                                                                arrResFechaMecanizado3dFinal.push(pathToMongoDBOtDistribucion.timestamp)
-                                                                arrResFechaModMecanizado3dFinal.push(pathToMongoDBOtDistribucion.modifiedOn)
-                                                                valueArrayResMecanizado3dFinal = parseInt(arrResMecanizado3dFinal.length-1)
-                                                                                                        
-                                                        } else {
-                                                            resMecanizado3dFinal = 'prodismo'
-                                                            resRevisionMecanizado3dFinal = 0
-                                                        }
-                                                    }
-                                                    
-                                                    if (arrResMecanizado3dFinal.length == 1 ) {
-                                                        siguienteDisabled = "disabled"
-                                                        anteriorDisabled = "disabled"
-                                                    } else if (arrResMecanizado3dFinal.length == arrResRevisionMecanizado3dFinal.length) {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    } else {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    }
-                                                    
-                                                } else {
-                                                    anteriorDisabled = "disabled"
-                                                    siguienteDisabled = "disabled"
-                                                    resMecanizado3dFinal = "prodismo"
-                                                    resRevisionMecanizado3dFinal = 0
-                                                    arrResMecanizado3dFinal.push(resMecanizado3dFinal)
-                                                    arrResRevisionMecanizado3dFinal.push(resRevisionMecanizado3dFinal)
-                                                    valueArrayResMecanizado3dFinal = 0
-                                            } %>
-                                        
-                                            <div id="btnAnteriorSiguienteMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                                <button id="btnAnteriorMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>"
-                                                    name="btnAnteriorMecanizado3dFinal" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= anteriorDisabled %>
-                                                    ><i class="fa-solid fa-arrow-left"></i>
-                                                </button>
-                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResMecanizado3dFinal %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResMecanizado3dFinal %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionMecanizado3dFinal %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorMecanizado3dFinal %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorMecanizado3dFinal %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaMecanizado3dFinal %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModMecanizado3dFinal %>">
+                                            
+                                            for (let i = 0; largoArrayDistribucion > i; i++) {
+                                                if (pathMongoOtDistribucion[i]) {
+                                                    let largoArray = parseInt(largoArrayDistribucion)
+                                                    resMecanizado3dFinal = pathMongoOtDistribucion[largoArray-1].mecanizado3dFinal || 'prodismo'
+                                                    resRevisionMecanizado3dFinal = pathMongoOtDistribucion[largoArray-1].revisionMecanizado3dFinal
 
-                                                <% switch (resMecanizado3dFinal) { 
-                                                    case "prodismo": { %>
+                                                    if (i == 0) {
+                                                        arrResMecanizado3dFinal.push(pathMongoOtDistribucion[i].mecanizado3dFinal)
+                                                        arrResRevisionMecanizado3dFinal.push(pathMongoOtDistribucion[i].revisionMecanizado3dFinal)
+
+                                                        arrResCreadorMecanizado3dFinal.push(pathMongoOtDistribucion[i].creator[0].username)
+                                                        arrResModificadorMecanizado3dFinal.push(pathMongoOtDistribucion[i].modificator[0].username)
+                                                        arrResFechaMecanizado3dFinal.push(pathMongoOtDistribucion[i].timestamp)
+                                                        arrResFechaModMecanizado3dFinal.push(pathMongoOtDistribucion[i].modifiedOn)
+
+                                                    } else if (i >=1 && pathMongoOtDistribucion[i].revisionMecanizado3dFinal != pathMongoOtDistribucion[i-1].revisionMecanizado3dFinal) {
+                                                        arrResMecanizado3dFinal.push(pathMongoOtDistribucion[largoArray-1].mecanizado3dFinal)
+                                                        arrResRevisionMecanizado3dFinal.push(pathMongoOtDistribucion[largoArray-1].revisionMecanizado3dFinal)
+                                                    
+                                                        arrResCreadorMecanizado3dFinal.push(pathMongoOtDistribucion[largoArray-1].creator[0].username)
+                                                        arrResModificadorMecanizado3dFinal.push(pathMongoOtDistribucion[largoArray-1].modificator[0].username)
+                                                        arrResFechaMecanizado3dFinal.push(pathMongoOtDistribucion[largoArray-1].timestamp)
+                                                        arrResFechaModMecanizado3dFinal.push(pathMongoOtDistribucion[largoArray-1].modifiedOn)
+                                                    }
+                                                    valueArrayResMecanizado3dFinal = parseInt(arrResMecanizado3dFinal.length-1)
+
+                                                } else {
+                                                    resMecanizado3dFinal = 'prodismo'
+                                                    resRevisionMecanizado3dFinal = 0
+                                                }
+                                            }
+                                            
+                                            if (arrResMecanizado3dFinal.length == 1 ) {
+                                                anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
+                                            } else if (arrResMecanizado3dFinal.length == arrResRevisionMecanizado3dFinal.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                        
+                                        } else {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                            resMecanizado3dFinal = "prodismo"
+                                            resRevisionMecanizado3dFinal = 0
+                                            arrResMecanizado3dFinal.push(resMecanizado3dFinal)
+                                            arrResRevisionMecanizado3dFinal.push(resRevisionMecanizado3dFinal)
+                                            valueArrayResMecanizado3dFinal = 0
+                                        
+                                            arrResCreadorMecanizado3dFinal.push(pathMongoOtDetalles[o].creator[0].username)
+                                            arrResModificadorMecanizado3dFinal = ""
+                                            arrResFechaMecanizado3dFinal.push(pathMongoOtDetalles[o].timestamp)
+                                            arrResFechaModMecanizado3dFinal = ""
+                                        } %>
+                                        
+                                        <div id="btnAnteriorSiguienteMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>"
+                                                name="btnAnteriorMecanizado3dFinal" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResMecanizado3dFinal %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResMecanizado3dFinal %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionMecanizado3dFinal %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorMecanizado3dFinal %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorMecanizado3dFinal %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaMecanizado3dFinal %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModMecanizado3dFinal %>">
+
+                                            <% switch (resMecanizado3dFinal) { 
+                                                case "prodismo": { %>
                                                         <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
-                                                    <% break; }
-                                                    case "terceros": { %>
+                                                <% break; }        
+                                                case "terceros": { %>
                                                         <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
-                                                    <% break; }        
-                                                    case "china": { %>
+                                                <% break; }        
+                                                case "china": { %>
                                                         <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
-                                                    <% break; }
-                                                    case "noAplica": { %>
+                                                <% break; }
+                                                case "noAplica": { %>
                                                         <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
-                                                    <% break; }
-                                                    default: { %>
-                                                            <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                    <% break; }
+                                                <% break; }
+                                                default: { %>
+                                                        <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                <% break; }
                                                 } %>
+                                                
                                                 <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionMecanizado3dFinal" class="badge text-dark my-2" style="cursor: help;"><%= resRevisionMecanizado3dFinal %></span>
 
-                                                <button id="btnSiguienteMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>"
-                                                    name="btnSiguienteMecanizado3dFinal" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= siguienteDisabled %>
-                                                    ><i class="fa-solid fa-arrow-right"></i>
-                                                </button>
-                                            </div>
+                                            <button id="btnSiguienteMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>"
+                                                name="btnSiguienteMecanizado3dFinal" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 <% } else { %>
                                     <!-- Banco Armado data Activo-->
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayDistribucion > 0) {
+                                            
                                             for (let i = 0; largoArrayDistribucion > i; i++) {
-                                                let pathToMongoDBOtDistribucion = otDistribucion[i]
-                                                
-                                                if (otDistribucion) {
+                                                if (pathMongoOtDistribucion[i]) {
                                                     let largoArray = parseInt(largoArrayDistribucion)
-                                                    resBancoArmado = otDistribucion[largoArray-1].bancoArmado || 'prodismo'
-                                                    resRevisionBancoArmado = otDistribucion[largoArray-1].revisionBancoArmado
-                                                    
+                                                    resBancoArmado = pathMongoOtDistribucion[largoArray-1].bancoArmado || 'prodismo'
+                                                    resRevisionBancoArmado = pathMongoOtDistribucion[largoArray-1].revisionBancoArmado
+
                                                     if (i == 0) {
-                                                        arrResBancoArmado.push(pathToMongoDBOtDistribucion.bancoArmado)
-                                                        arrResRevisionBancoArmado.push(pathToMongoDBOtDistribucion.revisionBancoArmado)
+                                                        arrResBancoArmado.push(pathMongoOtDistribucion[i].bancoArmado)
+                                                        arrResRevisionBancoArmado.push(pathMongoOtDistribucion[i].revisionBancoArmado)
+
+                                                        arrResCreadorBancoArmado.push(pathMongoOtDistribucion[i].creator[0].username)
+                                                        arrResModificadorBancoArmado.push(pathMongoOtDistribucion[i].modificator[0].username)
+                                                        arrResFechaBancoArmado.push(pathMongoOtDistribucion[i].timestamp)
+                                                        arrResFechaModBancoArmado.push(pathMongoOtDistribucion[i].modifiedOn)
+
+                                                    } else if (i >=1 && pathMongoOtDistribucion[i].revisionBancoArmado != pathMongoOtDistribucion[i-1].revisionBancoArmado) {
+                                                        arrResBancoArmado.push(pathMongoOtDistribucion[largoArray-1].bancoArmado)
+                                                        arrResRevisionBancoArmado.push(pathMongoOtDistribucion[largoArray-1].revisionBancoArmado)
+                                                    
+                                                        arrResCreadorBancoArmado.push(pathMongoOtDistribucion[largoArray-1].creator[0].username)
+                                                        arrResModificadorBancoArmado.push(pathMongoOtDistribucion[largoArray-1].modificator[0].username)
+                                                        arrResFechaBancoArmado.push(pathMongoOtDistribucion[largoArray-1].timestamp)
+                                                        arrResFechaModBancoArmado.push(pathMongoOtDistribucion[largoArray-1].modifiedOn)
                                                     }
-                                                    else if (i >= 1 && pathToMongoDBOtDistribucion.revisionBancoArmado != otDistribucion[i-1].revisionBancoArmado) {
-                                                        arrResBancoArmado.push(pathToMongoDBOtDistribucion.bancoArmado)
-                                                        arrResRevisionBancoArmado.push(pathToMongoDBOtDistribucion.revisionBancoArmado)
-                                                    }
-                                                        arrResCreadorBancoArmado.push(pathToMongoDBOtDistribucion.creator[0].username)
-                                                        arrResModificadorBancoArmado.push(pathToMongoDBOtDistribucion.modificator[0].username)
-                                                        arrResFechaBancoArmado.push(pathToMongoDBOtDistribucion.timestamp)
-                                                        arrResFechaModBancoArmado.push(pathToMongoDBOtDistribucion.modifiedOn)
-                                                        valueArrayResBancoArmado = parseInt(arrResBancoArmado.length-1)
-                                                                                                
+                                                    valueArrayResBancoArmado = parseInt(arrResBancoArmado.length-1)
+
                                                 } else {
                                                     resBancoArmado = 'prodismo'
                                                     resRevisionBancoArmado = 0
                                                 }
                                             }
-                                                    
+                                            
                                             if (arrResBancoArmado.length == 1 ) {
-                                                siguienteDisabled = "disabled"
                                                 anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
                                             } else if (arrResBancoArmado.length == arrResRevisionBancoArmado.length) {
                                                 anteriorDisabled = ""
                                                 siguienteDisabled = "disabled"
@@ -388,7 +425,7 @@
                                                 anteriorDisabled = ""
                                                 siguienteDisabled = "disabled"
                                             }
-                                                    
+                                        
                                         } else {
                                             anteriorDisabled = "disabled"
                                             siguienteDisabled = "disabled"
@@ -397,55 +434,61 @@
                                             arrResBancoArmado.push(resBancoArmado)
                                             arrResRevisionBancoArmado.push(resRevisionBancoArmado)
                                             valueArrayResBancoArmado = 0
+                                        
+                                            arrResCreadorBancoArmado.push(pathMongoOtDetalles[o].creator[0].username)
+                                            arrResModificadorBancoArmado = ""
+                                            arrResFechaBancoArmado.push(pathMongoOtDetalles[o].timestamp)
+                                            arrResFechaModBancoArmado = ""
                                         } %>
                                         
-                                            <div id="btnAnteriorSiguienteBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                                <button id="btnAnteriorBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>"
-                                                    name="btnAnteriorBancoArmado" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= anteriorDisabled %>
-                                                    ><i class="fa-solid fa-arrow-left"></i>
-                                                </button>
-                                                <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResBancoArmado %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResBancoArmado %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionBancoArmado %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorBancoArmado %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorBancoArmado %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaBancoArmado %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModBancoArmado %>">
+                                        <div id="btnAnteriorSiguienteBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>"
+                                                name="btnAnteriorBancoArmado" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResBancoArmado %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResBancoArmado %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionBancoArmado %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorBancoArmado %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorBancoArmado %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaBancoArmado %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModBancoArmado %>">
 
-                                                <% switch (resBancoArmado) { 
-                                                    case "prodismo": { %>
-                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
-                                                    <% break; }
-                                                    case "terceros": { %>
-                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
-                                                    <% break; }        
-                                                    case "china": { %>
-                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
-                                                    <% break; }
-                                                    case "noAplica": { %>
-                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
-                                                    <% break; }
-                                                    default: { %>
-                                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                            
-                                                    <% break; }
+                                            <% switch (resBancoArmado) { 
+                                                case "prodismo": { %>
+                                                        <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
+                                                <% break; }        
+                                                case "terceros": { %>
+                                                        <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
+                                                <% break; }        
+                                                case "china": { %>
+                                                        <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
+                                                <% break; }
+                                                case "noAplica": { %>
+                                                        <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
+                                                <% break; }
+                                                default: { %>
+                                                        <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
+                                                <% break; }
                                                 } %>
+                                                
                                                 <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionBancoArmado" class="badge text-dark my-2" style="cursor: help;"><%= resRevisionBancoArmado %></span>
 
-                                                <button id="btnSiguienteBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>"
-                                                    name="btnSiguienteBancoArmado" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= siguienteDisabled %>
-                                                    ><i class="fa-solid fa-arrow-right"></i>
-                                                </button>
-                                            </div>
+                                            <button id="btnSiguienteBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>"
+                                                name="btnSiguienteBancoArmado" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 <% }
                             } %>
                         </tr>
                     <% } else { %>
+                        <!--Inactivo-->
                         <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="pe-none border-bottom" style="height: 5vh; background-color: #dedede;">
                             <% for (let q = 0; totalColDataOtDistribucion > q; q++) {
                                 if (q==0) { %>

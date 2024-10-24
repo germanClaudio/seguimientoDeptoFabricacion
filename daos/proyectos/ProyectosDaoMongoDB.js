@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const Proyectos = require('../../models/proyectos.models.js')
 const Clientes = require('../../models/clientes.models.js')
 
-let now = require('../../utils/formatDate.js')
+let formatDate = require('../../utils/formatDate.js')
 
 const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000}
 
@@ -283,7 +283,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                             },
                             { new: true }
                         )
-                        console.info('Ot agregada a OCI ', otAddedToOci)
+                        // console.info('Ot agregada a OCI ', otAddedToOci)
     
                         if (otAddedToOci.acknowledged) {
                             const itemUpdated = await Proyectos.findById({ _id: idProjectTarget })
@@ -407,7 +407,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         aprobadoR14: infoAddedToOt[i].aprobadoR14,
                                         revisionAprobadoR14: infoAddedToOt[i].revisionAprobadoR14+1,
                                         creator: infoAddedToOt[i].creator,
-                                        timestamp: now,
+                                        timestamp: formatDate(),
                                         modificator: infoAddedToOt[i].modificator,
                                         modifiedOn: ''
                                     }
@@ -473,7 +473,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
                                         modificator: infoAddedToOt[i].creator,
-                                        modifiedOn: now
+                                        modifiedOn: formatDate()
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
@@ -581,7 +581,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         horasProceso3d: infoAddedToOt[i].horasProceso3d,
                                         revisionHorasProceso3d: infoAddedToOt[i].revisionHorasProceso3d+1,
                                         creator: infoAddedToOt[i].creator,
-                                        timestamp: now,
+                                        timestamp: formatDate(),
                                         modificator: infoAddedToOt[i].modificator,
                                         modifiedOn: ''
                                     }
@@ -647,7 +647,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
                                         modificator: infoAddedToOt[i].creator,
-                                        modifiedOn: now
+                                        modifiedOn: formatDate()
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
@@ -760,7 +760,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         envioCliente: infoAddedToOt[i].envioCliente,
                                         revisionEnvioCliente: infoAddedToOt[i].revisionEnvioCliente+1,
                                         creator: infoAddedToOt[i].creator,
-                                        timestamp: now,
+                                        timestamp: formatDate(),
                                         modificator: infoAddedToOt[i].modificator,
                                         modifiedOn: ''
                                     }
@@ -848,7 +848,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
                                         modificator: infoAddedToOt[i].creator,
-                                        modifiedOn: now
+                                        modifiedOn: formatDate()
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
@@ -961,7 +961,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         aprobadoCliente: infoAddedToOt[i].aprobadoCliente,
                                         revisionAprobadoCliente: infoAddedToOt[i].revisionAprobadoCliente+1,
                                         creator: infoAddedToOt[i].creator,
-                                        timestamp: now,
+                                        timestamp: formatDate(),
                                         modificator: infoAddedToOt[i].modificator,
                                         modifiedOn: ''
                                     }
@@ -1049,7 +1049,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
                                         modificator: infoAddedToOt[i].creator,
-                                        modifiedOn: now
+                                        modifiedOn: formatDate()
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
@@ -1163,7 +1163,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         revisionInfoModelo: infoAddedToOt[i].revisionInfoModelo+1,
                                         
                                         creator: infoAddedToOt[i].creator,
-                                        timestamp: now,
+                                        timestamp: formatDate(),
                                         modificator: infoAddedToOt[i].modificator,
                                         modifiedOn: ''
                                     }
@@ -1252,7 +1252,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
                                         modificator: infoAddedToOt[i].creator,
-                                        modifiedOn: now
+                                        modifiedOn: formatDate()
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
@@ -1361,7 +1361,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         revisionInfo100: infoAddedToOt[i].revisionInfo100+1,
                                         
                                         creator: infoAddedToOt[i].creator,
-                                        timestamp: now,
+                                        timestamp: formatDate(),
                                         modificator: infoAddedToOt[i].modificator,
                                         modifiedOn: ''
                                     }
@@ -1428,7 +1428,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
                                         modificator: infoAddedToOt[i].creator,
-                                        modifiedOn: now
+                                        modifiedOn: formatDate()
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
@@ -1537,7 +1537,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         revisionDocuSim0: infoAddedToOt[i].revisionDocuSim0+1,
                                         
                                         creator: infoAddedToOt[i].creator,
-                                        timestamp: now,
+                                        timestamp: formatDate(),
                                         modificator: infoAddedToOt[i].modificator,
                                         modifiedOn: ''
                                     }
@@ -1604,7 +1604,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
                                         modificator: infoAddedToOt[i].creator,
-                                        modifiedOn: now
+                                        modifiedOn: formatDate()
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
@@ -1719,7 +1719,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         revisionS1pOp20: infoAddedToOt[i].revisionS1pOp20+1,
                                         
                                         creator: infoAddedToOt[i].creator,
-                                        timestamp: now,
+                                        timestamp: formatDate(),
                                         modificator: infoAddedToOt[i].modificator,
                                         modifiedOn: ''
                                     }
@@ -1819,7 +1819,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
                                         modificator: infoAddedToOt[i].creator,
-                                        modifiedOn: now
+                                        modifiedOn: formatDate()
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
@@ -1932,7 +1932,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         revisionSim3: infoAddedToOt[i].revisionSim3+1,
                                         
                                         creator: infoAddedToOt[i].creator,
-                                        timestamp: now,
+                                        timestamp: formatDate(),
                                         modificator: infoAddedToOt[i].modificator,
                                         modifiedOn: ''
                                     }
@@ -2022,7 +2022,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
                                         modificator: infoAddedToOt[i].creator,
-                                        modifiedOn: now
+                                        modifiedOn: formatDate()
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
@@ -2135,7 +2135,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         revisionReunionSim: infoAddedToOt[i].revisionReunionSim+1,
                                         
                                         creator: infoAddedToOt[i].creator,
-                                        timestamp: now,
+                                        timestamp: formatDate(),
                                         modificator: infoAddedToOt[i].modificator,
                                         modifiedOn: ''
                                     }
@@ -2225,7 +2225,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
                                         modificator: infoAddedToOt[i].creator,
-                                        modifiedOn: now
+                                        modifiedOn: formatDate()
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
@@ -2338,7 +2338,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         revisionHorasSim: infoAddedToOt[i].revisionHorasSim+1,
                                         
                                         creator: infoAddedToOt[i].creator,
-                                        timestamp: now,
+                                        timestamp: formatDate(),
                                         modificator: infoAddedToOt[i].modificator,
                                         modifiedOn: ''
                                     }
@@ -2428,7 +2428,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
                                         modificator: infoAddedToOt[i].creator,
-                                        modifiedOn: now
+                                        modifiedOn: formatDate()
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
@@ -2537,7 +2537,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         revisionMpEnsayada: infoAddedToOt[i].revisionMpEnsayada+1,
                                                                                 
                                         creator: infoAddedToOt[i].creator,
-                                        timestamp: now,
+                                        timestamp: formatDate(),
                                         modificator: infoAddedToOt[i].modificator,
                                         modifiedOn: ''
                                     }
@@ -2605,7 +2605,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                         creator: creatorInitial,
                                         timestamp: timestampInitial,
                                         modificator: infoAddedToOt[i].creator,
-                                        modifiedOn: now
+                                        modifiedOn: formatDate()
                                     }
                                 }
                                     arrayQuantity.push(updateQuery)
@@ -2666,7 +2666,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                             $set: {
                                 'project.0.statusProject': !booleanStatus,
                                 modificator: userModificator,
-                                modifiedOn: now
+                                modifiedOn: formatDate()
                             }
                         },
                         { new: true }
@@ -2711,7 +2711,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                             $set: {
                                 'project.0.levelProject': levelProject,
                                 modificator: userModificator,
-                                modifiedOn: now
+                                modifiedOn: formatDate()
                             }
                         },
                         { new: true }
@@ -2757,7 +2757,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                             $set: {
                                 [`project.0.oci.${ociNumberK}.ociStatus`]: !booleanStatus,
                                 [`project.0.oci.${ociNumberK}.modificator`]: userModificator,
-                                [`project.0.oci.${ociNumberK}.modifiedOn`]: now
+                                [`project.0.oci.${ociNumberK}.modifiedOn`]: formatDate()
                             }
                         },
                         { new: true }
@@ -2803,9 +2803,9 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                             $set: {
                                 [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.otStatus`]: !booleanStatus,
                                 [`project.0.oci.${ociNumberK}.modificator`]: userModificator,
-                                [`project.0.oci.${ociNumberK}.modifiedOn`]: now, 
+                                [`project.0.oci.${ociNumberK}.modifiedOn`]: formatDate(), 
                                 [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modificator`]: userModificator,
-                                [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modifiedOn`]: now
+                                [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modifiedOn`]: formatDate()
                             }
                         },
                         { new: true }
@@ -2850,7 +2850,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                 ociStatus: arrayOciAddedToProject[i].ociStatus,
                                 ociAlias: arrayOciAddedToProject[i].ociAlias,
                                 creator: arrayOciAddedToProject[i].creator,
-                                timestamp: now,
+                                timestamp: formatDate(),
                                 ociImage: arrayOciAddedToProject[i].ociImage,
                                 modificator: arrayOciAddedToProject[i].modificator,
                                 modifiedOn: '',
@@ -2931,7 +2931,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                 'project.0.statusProject': booleanStatus,
                                 'project.0.levelProject': levelProject,
                                 modificator: userModificator,
-                                modifiedOn: now
+                                modifiedOn: formatDate()
                             }
                         },
                         { new: true }
@@ -2992,7 +2992,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                 [`project.0.oci.${numberOciK}.ociStatus`]: booleanStatus,
                                 [`project.0.oci.${numberOciK}.ociImage`]: ociImage,
                                 [`project.0.oci.${numberOciK}.modificator`]: userModificator,
-                                [`project.0.oci.${numberOciK}.modifiedOn`]: now
+                                [`project.0.oci.${numberOciK}.modifiedOn`]: formatDate()
                             }
                         },
                         { new: true }
@@ -3043,11 +3043,11 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                 $set: {
                                     [`project.0.oci.${ociNumberK}.visible`]: Boolean(false),
                                     [`project.0.oci.${ociNumberK}.modificator`]: userModificator,
-                                    [`project.0.oci.${ociNumberK}.modifiedOn`]: now,
+                                    [`project.0.oci.${ociNumberK}.modifiedOn`]: formatDate(),
                                     [`project.0.modificator`]: userModificator,
-                                    [`project.0.modifiedOn`]: now,
+                                    [`project.0.modifiedOn`]: formatDate(),
                                     modificator: userModificator,
-                                    modifiedOn: now
+                                    modifiedOn: formatDate()
                                 }
                             },
                             { new: true }
@@ -3060,11 +3060,11 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                 $set: {
                                     [`project.0.oci.${ociNumberK}.visible`]: Boolean(true),
                                     [`project.0.oci.${ociNumberK}.modificator`]: userModificator,
-                                    [`project.0.oci.${ociNumberK}.modifiedOn`]: now,
+                                    [`project.0.oci.${ociNumberK}.modifiedOn`]: formatDate(),
                                     [`project.0.modificator`]: userModificator,
-                                    [`project.0.modifiedOn`]: now,
+                                    [`project.0.modifiedOn`]: formatDate(),
                                     modificator: userModificator,
-                                    modifiedOn: now
+                                    modifiedOn: formatDate()
                                 }
                             },
                             { new: true }
@@ -3132,7 +3132,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                 [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otSimulation`]: otSimulation,
                                 [`project.0.oci.${numberOciK}.otProject.${numberOtK}.otSupplier`]: otSupplier,
                                 [`project.0.oci.${numberOciK}.otProject.${numberOtK}.modificator`]: userModificator,
-                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.modifiedOn`]: now
+                                [`project.0.oci.${numberOciK}.otProject.${numberOtK}.modifiedOn`]: formatDate()
                             }
                         },
                         { new: true }
@@ -3185,13 +3185,13 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                             $set: {
                                 [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.visible`]: Boolean(false),
                                 [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modificator`]: userModificator,
-                                [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modifiedOn`]: now,
+                                [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modifiedOn`]: formatDate(),
                                 [`project.0.oci.${ociNumberK}.modificator`]: userModificator,
-                                [`project.0.oci.${ociNumberK}.modifiedOn`]: now,
+                                [`project.0.oci.${ociNumberK}.modifiedOn`]: formatDate(),
                                 [`project.0.modificator`]: userModificator,
-                                [`project.0.modifiedOn`]: now,
+                                [`project.0.modifiedOn`]: formatDate(),
                                 modificator: userModificator,
-                                modifiedOn: now
+                                modifiedOn: formatDate()
                             }
                         },
                         { new: true }
@@ -3204,13 +3204,13 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                             $set: {
                                 [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.visible`]: Boolean(true),
                                 [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modificator`]: userModificator,
-                                [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modifiedOn`]: now,
+                                [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modifiedOn`]: formatDate(),
                                 [`project.0.oci.${ociNumberK}.modificator`]: userModificator,
-                                [`project.0.oci.${ociNumberK}.modifiedOn`]: now,
+                                [`project.0.oci.${ociNumberK}.modifiedOn`]: formatDate(),
                                 [`project.0.modificator`]: userModificator,
-                                [`project.0.modifiedOn`]: now,
+                                [`project.0.modifiedOn`]: formatDate(),
                                 modificator: userModificator,
-                                modifiedOn: now
+                                modifiedOn: formatDate()
                             }
                         },
                         { new: true }
@@ -3254,9 +3254,9 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                 $set: {
                                     'project.0.visible': Boolean(false),
                                     'project.0.modificator': userModificator,
-                                    'project.0.modifiedOn': now,
+                                    'project.0.modifiedOn': formatDate(),
                                     modificator: userModificator,
-                                    modifiedOn: now
+                                    modifiedOn: formatDate()
                                 }
                             },
                             { new: true }
@@ -3269,9 +3269,9 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                 $set: {
                                     'project.0.visible': Boolean(true),
                                     'project.0.modificator': userModificator,
-                                    'project.0.modifiedOn': now,
+                                    'project.0.modifiedOn': formatDate(),
                                     modificator: userModificator,
-                                    modifiedOn: now
+                                    modifiedOn: formatDate()
                                 }
                             },
                             { new: true }

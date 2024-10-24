@@ -6,7 +6,7 @@ const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000 }
 
 const { switchFilterClients } = require('../../utils/switchFilterClients.js')
 
-const now = require('../../utils/formatDate.js')
+const formatDate = require('../../utils/formatDate.js')
 
 class ClientesDaoMongoDB extends ContenedorMongoDB {
     constructor(cnxStr) {
@@ -197,7 +197,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                                 logo: logoCliente,
                                 code: client.code,
                                 modificator: userModificator,
-                                modifiedOn: now
+                                modifiedOn: formatDate()
                             }
                         },
                         { new: true }
@@ -237,7 +237,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                             $set: {
                                 project: parseInt(itemMongoDB.project + 1),
                                 modificator: userModificator,
-                                modifiedOn: now
+                                modifiedOn: formatDate()
                             }
                         },
                         { new: true }
@@ -272,7 +272,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                             $set: {
                                 project: parseInt(itemMongoDB.project - 1),
                                 modificator: user,
-                                modifiedOn: now
+                                modifiedOn: formatDate()
                             }
                         },
                         { new: true })
@@ -312,7 +312,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                                 visible: inactive,
                                 status: inactive,
                                 modificator: modificator,
-                                modifiedOn: now
+                                modifiedOn: formatDate()
                             }
                         },
                         { new: true }

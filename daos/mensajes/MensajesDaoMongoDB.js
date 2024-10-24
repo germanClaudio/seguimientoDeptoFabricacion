@@ -1,7 +1,7 @@
 const ContainerMongoDB = require('../../contenedores/containerMongoDB.js')
 const mongoose = require('mongoose')
 const Mensajes = require('../../models/mensajes.models.js')
-const now = require('../../utils/formatDate.js')
+const formatDate = require('../../utils/formatDate.js')
 
 class MensajesDaoMongoDB extends ContainerMongoDB {
     constructor(cnxStr) {
@@ -75,7 +75,7 @@ class MensajesDaoMongoDB extends ContainerMongoDB {
                 const newValues = {
                     author: itemMongoDB.author,
                     text: itemMongoDB.text,
-                    date: now,
+                    date: formatDate(),
                     status: false
                 }
                 const mensaje = await Mensajes.findOneAndUpdate(

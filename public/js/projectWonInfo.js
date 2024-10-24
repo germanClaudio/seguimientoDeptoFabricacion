@@ -3222,7 +3222,7 @@ function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
                     </div>`);
                 
                 res.arrayOtNumber[y] !== res.arrayOtNumber[y+1] ? arrayBloqueDistribucion.push(`<hr class="my-1">`) : null
-                res.arrayOtNumber[y] ? arrayNumberKDetalle.push(y) : null
+                res.arrayOtNumber[y] ? arrayNumberKDetalle.push(res.arrayOnumber[y]) : null
             }
         });
 
@@ -4128,13 +4128,19 @@ function updateInputsSelect() {
     arrayInputSelectHidden !=[] ? allInputsSelect = document.querySelectorAll('select') : null
 
     let largoArrayInputsSelect = parseInt((allInputsSelect.length)-1)
+    
     for (let y=0; y < largoArrayInputsSelect; y++) {
-        const idInputSelectHidden = allInputsSelect[y].id.substring(0, allInputsSelect[y].id.length - 9) + 'Hidden' + allInputsSelect[y].id.substring(allInputsSelect[y].id.length - 9)
-        // console.log('id:', idInputSelectHidden)
-        let inputSelectHidden = document.getElementById(`${idInputSelectHidden}`)
-        // console.log('inputSelectHidden:', inputSelectHidden)
+        const idInputSelectHidden = allInputsSelect[y].id
+        
+        // Función para insertar "Hidden" en la posición correcta
+        function insertarHidden(str) {
+            // Buscar el número 9506 u otro patrón que comience con un número
+            return str.replace(/(.*)(\d{4})(_.*)/, "$1Hidden$2$3");
+        }
+        const resultIdInputSelectHidden = insertarHidden(idInputSelectHidden);
+        
+        let inputSelectHidden = document.getElementById(`${resultIdInputSelectHidden}`)
         inputSelectHidden ? inputSelectHidden.value = document.getElementById(`${allInputsSelect[y].id}`).value : null
-        // console.log('inputSelectHidden.value', inputSelectHidden.value)
     }
 }
 
