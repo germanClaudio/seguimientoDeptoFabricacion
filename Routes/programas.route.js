@@ -23,11 +23,11 @@ routerProgramas.get('/selectWonProjects/:id', checkAuthentication, programation.
 // -------------------  Agregar informacion Distribution a Detalle --------------------------- 
 routerProgramas.post('/infoOtDistribucion/:id', checkAuthentication, programation.addInfoOtDistribucion)
 
-// // -------------------  Agregar informacion Programacion 1° Parte a Detalle ------------------------ 
+// -------------------  Agregar informacion Programacion 1° Parte a Detalle ------------------------ 
+routerProgramas.post('/otInfoProgramacionPrimera/:id', checkAuthentication, programation.addInfoProgramacionPrimera)
 
-
-// // -------------------  Agregar informacion Programacion 2° Parte a Detalle ------------------------ 
-
+// -------------------  Agregar informacion Programacion 2° Parte a Detalle ------------------------ 
+routerProgramas.post('/otInfoProgramacionSegunda/:id', checkAuthentication, programation.addInfoProgramacionSegunda)
 
 // // -------------------  Agregar informacion Mecanizado 1° Parte a Detalle ------------------------ 
 
@@ -35,9 +35,6 @@ routerProgramas.post('/infoOtDistribucion/:id', checkAuthentication, programatio
 // // -------------------  Agregar informacion Mecanizado 2° Parte a Detalle ------------------------ 
 
 
-
-// // -------------------  Agregar OT a OCI ---------------- 
-// routerProyectos.post('/oci', checkAuthentication, projects.addOtToOciProject)
 
 // -------------------  Agregar Nuevo Detalle a OCI por Id Proyecto ------------------ 
 routerProgramas.post('/addDetalleToOt/:id', checkAuthentication, programation.addDetailToOtProject)

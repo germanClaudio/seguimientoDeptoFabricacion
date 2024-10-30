@@ -20,7 +20,7 @@
                 <i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i> Terminado -
                 <i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i> Suspendido -
                 <i class="fa-solid fa-ban fa-lg"></i> No Aplica -
-                <span class="badge rounded-pill bg-secondary text-white">S/D</span> Sin Datos
+                <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i> Sin Datos
             </th>
         </tr>
         <tr>
@@ -31,80 +31,81 @@
     </thead>
     <tbody class="table-group-divider">
         
-        <%
-        let arrResDatoPrograma3d2F = []; let arrResEstadoPrograma3d2F = []; let valueArrayResPrograma3d2F = 0; let arrResRevisionPrograma3d2F = [];
-        let arrResCreadorPrograma3d2F = []; let arrResModificadorPrograma3d2F = []; let arrResFechaPrograma3d2F = []; let arrResFechaModPrograma3d2F = [];
+        <% let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+            resDatoPrograma3d2F = 'S/D', resEstadoPrograma3d2F = 'S/D', resRevisionPrograma3d2F = 0,
+            resDatoPrograma3d4F = 'S/D', resEstadoPrograma3d4F = 'S/D', resRevisionPrograma3d4F = 0,
+            resDatoNotasProgramacion = '', resRevisionNotasProgramacion = 0;
 
-        let arrResDatoPrograma3d4F = []; let arrResEstadoPrograma3d4F = []; let valueArrayResPrograma3d4F = 0; let arrResRevisionPrograma3d4F = [];
-        let arrResCreadorPrograma3d4F = []; let arrResModificadorPrograma3d4F = []; let arrResFechaPrograma3d4F = []; let arrResFechaModPrograma3d4F = [];
-
-        let arrResDatoNotasProgramacion = []; let valueArrayResNotasProgramacion = 0; let arrResRevisionNotasProgramacion = [];
-        let arrResCreadorNotasProgramacion = []; let arrResModificadorNotasProgramacion = []; let arrResFechaNotasProgramacion = []; let arrResFechaModNotasProgramacion = [];
-
-        let anteriorDisabled = "disabled";
-        let siguienteDisabled = "disabled";
-        let resDatoPrograma3d2F = 'S/D'; let resEstadoPrograma3d2F = 'S/D'; let resRevisionPrograma3d2F = 0;
-        let resDatoPrograma3d4F = 'S/D'; let resEstadoPrograma3d4F = 'S/D'; let resRevisionPrograma3d4F = 0;
-        let resDatoNotasProgramacion = ''; let resRevisionNotasProgramacion = 0;
+            const programacionSegundaConfig = {
+                enProceso: { icon: "fa-arrows-spin", iconColor: "color:#b09b12" },
+                terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
+                suspendido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
+                noAplica: { icon: "fa-ban", iconColor: "color:#000000" },
+                default: { icon: "fa-triangle-exclamation", iconColor: "color:#1c21ac" }
+            };
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
-            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject[n]
-            let largoArrayOtDetalles = pathMongoOtProject.otDetalles.length
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+            pathMongoOtDetalles = pathMongoOtProject[n].otDetalles,
+            largoArrayOtDetalles = parseInt(pathMongoOtDetalles.length)
 
             for ( let o=0; largoArrayOtDetalles> o; o++) {
-                let otProgramacionSegunda = proyecto[m].project[j].oci[k].otProject[n].otDetalles[o].otProgramacionSegunda || [];
-                let largoArrayProgramacionSegunda = otProgramacionSegunda.length;
+                let pathMongoOtProgramacionSegunda = pathMongoOtDetalles[o].otProgramacionSegunda || [];
+                let largoArrayProgramacionSegunda = parseInt(pathMongoOtProgramacionSegunda.length);
 
-                if (pathMongoOtProject.visible && pathMongoOtProject.otDetalles[o].visible) {
-                    if (pathMongoOtProject.otStatus && pathMongoOtProject.otDetalles[o].statusDetalle) { %>
+                let arrResDatoPrograma3d2F = [], arrResEstadoPrograma3d2F = [], valueArrayResPrograma3d2F = 0, arrResRevisionPrograma3d2F = [],
+                arrResCreadorPrograma3d2F = [], arrResModificadorPrograma3d2F = [], arrResFechaPrograma3d2F = [], arrResFechaModPrograma3d2F = [];
+
+                let arrResDatoPrograma3d4F = [], arrResEstadoPrograma3d4F = [], valueArrayResPrograma3d4F = 0, arrResRevisionPrograma3d4F = [],
+                arrResCreadorPrograma3d4F = [], arrResModificadorPrograma3d4F = [], arrResFechaPrograma3d4F = [], arrResFechaModPrograma3d4F = [];
+
+                let arrResDatoNotasProgramacion = [], valueArrayResNotasProgramacion = 0, arrResRevisionNotasProgramacion = [],
+                arrResCreadorNotasProgramacion = [], arrResModificadorNotasProgramacion = [], arrResFechaNotasProgramacion = [], arrResFechaModNotasProgramacion = [];
+
+                if (pathMongoOtProject[n].visible && pathMongoOtDetalles[o].visible) {
+                    if (pathMongoOtProject[n].otStatus && pathMongoOtDetalles[o].statusDetalle) { %>
+                        <!--Activo-->
                         <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh;">
                             <% for (let q = 7; totalColDataProgramacionSegunda > q; q++) {
                                 if (q==7) { %>
                                     <!-- Programa3d2F data Activo--> 
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayProgramacionSegunda > 0) {
-                                                    for (let i = 0; largoArrayProgramacionSegunda > i; i++) {
-                                                        let pathToMongoDBOtProgramacion = otProgramacionSegunda[i]
+                                            
+                                            for (let i = 0; largoArrayProgramacionSegunda > i; i++) {
+                                                if (pathMongoOtProgramacionSegunda[i]) {
+                                                    let largoArray = parseInt(largoArrayProgramacionSegunda)
+                                                    resDatoPrograma3d2F = pathMongoOtProgramacionSegunda[largoArray-1].programa3d2F == 'sinDato' ? "S/D" : pathMongoOtProgramacionSegunda[largoArray-1].programa3d2F
+                                                    resEstadoPrograma3d2F = pathMongoOtProgramacionSegunda[largoArray-1].estadoPrograma3d2F == 'sinDato' ? "S/D" : pathMongoOtProgramacionSegunda[largoArray-1].estadoPrograma3d2F
+                                                    resRevisionPrograma3d2F = pathMongoOtProgramacionSegunda[largoArray-1].revisionPrograma3d2F
+                                                    
+                                                    pathMongoOtProgramacionSegunda[i].programa3d2F == 'sinDato' ? arrResDatoPrograma3d2F.push("S/D") : arrResDatoPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].programa3d2F)
+                                                    pathMongoOtProgramacionSegunda[i].estadoPrograma3d2F == 'sinDato' ? arrResEstadoPrograma3d2F.push("S/D") : arrResEstadoPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].estadoPrograma3d2F)
+                                                    arrResRevisionPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].revisionPrograma3d2F)
+                                                    
+                                                    arrResCreadorPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].creator[0].username)
+                                                    arrResModificadorPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].modificator[0].username)
+                                                    arrResFechaPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].timestamp)
+                                                    arrResFechaModPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].modifiedOn)
+                                                    
+                                                } else {
+                                                    resDatoPrograma3d2F = 'S/D'
+                                                    resEstadoPrograma3d2F = 'S/D'
+                                                    resRevisionPrograma3d2F = 0
+                                                }
+                                            }
+                                            valueArrayResPrograma3d2F = parseInt(arrResDatoPrograma3d2F.length-1)
 
-                                                        if (otProgramacionSegunda) {
-                                                            let largoArray = parseInt(largoArrayProgramacionSegunda)
-                                                            resDatoPrograma3d2F = otProgramacionSegunda[largoArray-1].programa3d2F
-                                                            resEstadoPrograma3d2F = otProgramacionSegunda[largoArray-1].estadoPrograma3d2F
-                                                            resRevisionPrograma3d2F = otProgramacionSegunda[largoArray-1].revisionPrograma3d2F
-                                                            
-                                                            if (i == 0) {
-                                                                arrResDatoPrograma3d2F.push(pathToMongoDBOtProgramacion.programa3d2F)
-                                                                arrResEstadoPrograma3d2F.push(pathToMongoDBOtProgramacion.estadoPrograma3d2F)
-                                                                arrResRevisionPrograma3d2F.push(pathToMongoDBOtProgramacion.revisionPrograma3d2F)
-                                                            }
-                                                            else if (i >= 1 && pathToMongoDBOtProgramacion.revisionPrograma3d2F != otProgramacionSegunda[i-1].revisionPrograma3d2F) {
-                                                                arrResDatoPrograma3d2F.push(pathToMongoDBOtProgramacion.programa3d2F)
-                                                                arrResEstadoPrograma3d2F.push(pathToMongoDBOtProgramacion.estadoPrograma3d2F)
-                                                                arrResRevisionPrograma3d2F.push(pathToMongoDBOtProgramacion.revisionPrograma3d2F)
-                                                            }
-                                                                arrResCreadorPrograma3d2F.push(pathToMongoDBOtProgramacion.creator[0].username)
-                                                                arrResModificadorPrograma3d2F.push(pathToMongoDBOtProgramacion.modificator[0].username)
-                                                                arrResFechaOtPrograma3d2F.push(pathToMongoDBOtProgramacion.timestamp)
-                                                                arrResFechaModPrograma3d2F.push(pathToMongoDBOtProgramacion.modifiedOn)
-                                                                valueArrayResPrograma3d2F = parseInt(arrResDatoPrograma3d2F.length-1)
-
-                                                        } else {
-                                                            resDatoPrograma3d2F = 'S/D'
-                                                            resEstadoPrograma3d2F = 'S/D'
-                                                            resRevisionPrograma3d2F = 0
-                                                        }
-                                                    }
-
-                                                    if (arrResDatoPrograma3d2F.length == 1 ) {
-                                                        anteriorDisabled = "disabled"
-                                                        siguienteDisabled = "disabled"
-                                                    } else if (arrResDatoPrograma3d2F.length == arrResRevisionPrograma3d2F.length) {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    } else {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    }
+                                            if (arrResDatoPrograma3d2F.length == 1 ) {
+                                                anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
+                                            } else if (arrResDatoPrograma3d2F.length == arrResRevisionPrograma3d2F.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
                                                     
                                         } else {
                                             anteriorDisabled = "disabled"
@@ -116,6 +117,11 @@
                                             arrResEstadoPrograma3d2F.push(resEstadoPrograma3d2F)
                                             arrResRevisionPrograma3d2F.push(resRevisionPrograma3d2F)
                                             valueArrayResPrograma3d2F = 0
+
+                                            arrResCreadorPrograma3d2F.push(pathMongoOtDetalles[o].creator[0].username)
+                                            arrResModificadorPrograma3d2F = ""
+                                            arrResFechaPrograma3d2F.push(pathMongoOtDetalles[o].timestamp)
+                                            arrResFechaModPrograma3d2F = ""
                                         } %>
                                         
                                             <div id="btnAnteriorSiguientePrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>">
@@ -133,35 +139,18 @@
                                                 <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaPrograma3d2F %>">
                                                 <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModPrograma3d2F %>">
 
-                                                <span id="resDatoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoPrograma3d2F %></span> |
+                                                <span id="resDatoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                    <%= resDatoPrograma3d2F %>
+                                                </span> |
 
-                                                <% let icon; let iconColor;
-                                                switch (resEstadoPrograma3d2F) { 
-                                                    case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
-                                                    break; }
-                                                    case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
-                                                    break; }        
-                                                    case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
-                                                    break; }
-                                                    case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
-                                                    break; }
-                                                    default: {
-                                                        icon = ""; iconColor = ''; %>
-                                                        <span id="resEstadoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                    <% break; }
-                                                }
+                                                <% const config = programacionSegundaConfig[resEstadoPrograma3d2F] || programacionSegundaConfig.default; %>
+                                                <span id="resEstadoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma3d2F%>">
+                                                    <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                                </span> |
 
-                                                if (icon) { %>
-                                                    <span id="resEstadoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma3d2F%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
-                                                    </span> |
-                                                <% } %>
-
-                                                <span id="resRevisionPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma3d2F" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionPrograma3d2F %></span>
+                                                <span id="resRevisionPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma3d2F" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                    <%= resRevisionPrograma3d2F %>
+                                                </span>
 
                                                 <button id="btnSiguientePrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguientePrograma3d2F" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
@@ -169,64 +158,63 @@
                                                 </button>
                                             </div>
                                     </td>
+
                                 <% } else if (q==8) { %>
                                     <!-- Programa3d4F data Activo-->
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayProgramacionSegunda > 0) {
-                                                    for (let i = 0; largoArrayProgramacionSegunda > i; i++) {
-                                                        let pathToMongoDBOtProgramacion = otProgramacionSegunda[i]
-                                                        
-                                                        if (otProgramacionSegunda) {
-                                                            let largoArray = parseInt(largoArrayProgramacionSegunda)
-                                                            resDatoPrograma3d4F = otProgramacionSegunda[largoArray-1].programa3d4F
-                                                            resEstadoPrograma3d4F = otProgramacionSegunda[largoArray-1].estadoPrograma3d4F
-                                                            resRevisionPrograma3d4F = otProgramacionSegunda[largoArray-1].revisionPrograma3d4F
-                                                            
-                                                            if (i == 0) {
-                                                                arrResDatoPrograma3d4F.push(pathToMongoDBOtProgramacion.programa3d4F)
-                                                                arrResEstadoPrograma3d4F.push(pathToMongoDBOtProgramacion.estadoPrograma3d4F)
-                                                                arrResRevisionPrograma3d4F.push(pathToMongoDBOtProgramacion.revisionPrograma3d4F)
-                                                            }
-                                                            else if (i >= 1 && pathToMongoDBOtProgramacion.revisionPrograma3d4F != otProgramacionSegunda[i-1].revisionPrograma3d4F) {
-                                                                arrResDatoPrograma3d4F.push(pathToMongoDBOtProgramacion.programa3d4F)
-                                                                arrResEstadoPrograma3d4F.push(pathToMongoDBOtProgramacion.estadoPrograma3d4F)
-                                                                arrResRevisionPrograma3d4F.push(pathToMongoDBOtProgramacion.revisionPrograma3d4F)
-                                                            }
-                                                                arrResCreadorPrograma3d4F.push(pathToMongoDBOtProgramacion.creator[0].username)
-                                                                arrResModificadorPrograma3d4F.push(pathToMongoDBOtProgramacion.modificator[0].username)
-                                                                arrResFechaPrograma3d4F.push(pathToMongoDBOtProgramacion.timestamp)
-                                                                arrResFechaModPrograma3d4F.push(pathToMongoDBOtProgramacion.modifiedOn)
-                                                                valueArrayResPrograma3d4F = parseInt(arrResEstadoPrograma3d4F.length-1)
-                                                        
-                                                        } else {
-                                                            resDatoPrograma3d4F = 'S/D'
-                                                            resEstadoPrograma3d4F = 'S/D'
-                                                            resRevisionPrograma3d4F = 0
-                                                        }
-                                                    }
+                                            for (let i = 0; largoArrayProgramacionSegunda > i; i++) {
+
+                                                if (pathMongoOtProgramacionSegunda[i]) {
+                                                    let largoArray = parseInt(largoArrayProgramacionSegunda)
+                                                    resDatoPrograma3d4F = pathMongoOtProgramacionSegunda[largoArray-1].programa3d4F == 'sinDato' ? "S/D" : pathMongoOtProgramacionSegunda[largoArray-1].programa3d4F
+                                                    resEstadoPrograma3d4F = pathMongoOtProgramacionSegunda[largoArray-1].estadoPrograma3d4F == 'sinDato' ? "S/D" : pathMongoOtProgramacionSegunda[largoArray-1].estadoPrograma3d4F
+                                                    resRevisionPrograma3d4F = pathMongoOtProgramacionSegunda[largoArray-1].revisionPrograma3d4F
                                                     
-                                                    if (arrResDatoPrograma3d4F.length == 1 ) {
-                                                        anteriorDisabled = "disabled"
-                                                        siguienteDisabled = "disabled"
-                                                    } else if (arrResDatoPrograma3d4F.length == arrResRevisionPrograma3d4F.length) {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    } else {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    }
+                                                    pathMongoOtProgramacionSegunda[i].programa3d4F == 'sinDato' ? arrResDatoPrograma3d4F.push("S/D") : arrResDatoPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].programa3d4F)
+                                                    pathMongoOtProgramacionSegunda[i].estadoPrograma3d4F == 'sinDato' ? arrResEstadoPrograma3d4F.push("S/D") : arrResEstadoPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].estadoPrograma3d4F)
+                                                    arrResRevisionPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].revisionPrograma3d4F)
+                                                
+                                                    arrResCreadorPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].creator[0].username)
+                                                    arrResModificadorPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].modificator[0].username)
+                                                    arrResFechaPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].timestamp)
+                                                    arrResFechaModPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].modifiedOn)
                                                     
                                                 } else {
-                                                    anteriorDisabled = "disabled"
-                                                    siguienteDisabled = "disabled"
-                                                    resDatoPrograma3d4F = "S/D"
-                                                    resEstadoPrograma3d4F = "S/D"
+                                                    resDatoPrograma3d4F = 'S/D'
+                                                    resEstadoPrograma3d4F = 'S/D'
                                                     resRevisionPrograma3d4F = 0
-                                                    arrResDatoPrograma3d4F.push(resDatoPrograma3d4F)
-                                                    arrResEstadoPrograma3d4F.push(resEstadoPrograma3d4F)
-                                                    arrResRevisionPrograma3d4F.push(resRevisionPrograma3d4F)
-                                                    valueArrayResPrograma3d4F = 0
-                                            } %>
+                                                }
+                                            }
+                                            valueArrayResPrograma3d4F = parseInt(arrResEstadoPrograma3d4F.length-1)
+                                            
+                                            if (arrResDatoPrograma3d4F.length == 1 ) {
+                                                anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
+                                            } else if (arrResDatoPrograma3d4F.length == arrResRevisionPrograma3d4F.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                            
+                                        } else {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                            resDatoPrograma3d4F = "S/D"
+                                            resEstadoPrograma3d4F = "S/D"
+                                            resRevisionPrograma3d4F = 0
+                                            arrResDatoPrograma3d4F.push(resDatoPrograma3d4F)
+                                            arrResEstadoPrograma3d4F.push(resEstadoPrograma3d4F)
+                                            arrResRevisionPrograma3d4F.push(resRevisionPrograma3d4F)
+                                            valueArrayResPrograma3d4F = 0
+
+                                            arrResCreadorPrograma3d4F.push(pathMongoOtDetalles[o].creator[0].username)
+                                            arrResModificadorPrograma3d4F = ""
+                                            arrResFechaPrograma3d4F.push(pathMongoOtDetalles[o].timestamp)
+                                            arrResFechaModPrograma3d4F = ""
+                                        } %>
                                         
                                             <div id="btnAnteriorSiguientePrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>">
                                                 <button id="btnAnteriorPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorPrograma3d4F" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
@@ -243,35 +231,18 @@
                                                 <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaPrograma3d4F %>">
                                                 <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModPrograma3d4F %>">
 
-                                                <span id="resDatoPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoPrograma3d4F %></span> |
+                                                <span id="resDatoPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                    <%= resDatoPrograma3d4F %>
+                                                </span> |
 
-                                                <% let icon; let iconColor;
-                                                switch (resEstadoPrograma3d4F) { 
-                                                    case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
-                                                    break; }
-                                                    case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
-                                                    break; }        
-                                                    case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
-                                                    break; }
-                                                    case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
-                                                    break; }
-                                                    default: {
-                                                        icon = ""; iconColor = ''; %>
-                                                        <span id="resEstadoPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                    <% break; }
-                                                }
+                                                <% const config = programacionSegundaConfig[resEstadoPrograma3d4F] || programacionSegundaConfig.default; %>
+                                                <span id="resEstadoPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma3d4F%>">
+                                                    <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                                </span> |
 
-                                                if (icon) { %>
-                                                    <span id="resEstadoPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma3d4F%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
-                                                    </span> |
-                                                <% } %>
-
-                                                <span id="resRevisionPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma3d4F" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionPrograma3d4F %></span>
+                                                <span id="resRevisionPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma3d4F" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                    <%= resRevisionPrograma3d4F %>
+                                                </span>
 
                                                 <button id="btnSiguientePrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguientePrograma3d4F" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
@@ -280,58 +251,58 @@
                                                 </button>
                                             </div>
                                     </td>
+
                                 <% } else { %>
                                     <!-- Notas Programacion data Activo-->
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayProgramacionSegunda > 0) {
-                                                    for (let i = 0; largoArrayProgramacionSegunda > i; i++) {
-                                                        let pathToMongoDBOtProgramacion = otProgramacionSegunda[i]
-                                                        
-                                                        if (otProgramacionSegunda) {
-                                                            let largoArray = parseInt(largoArrayProgramacionSegunda)
-                                                            resDatoNotasProgramacion = otProgramacionSegunda[largoArray-1].notasProgramacion
-                                                            resRevisionNotasProgramacion = otProgramacionSegunda[largoArray-1].revisionNotasProgramacion
-                                                            
-                                                            if (i == 0) {
-                                                                arrResDatoNotasProgramacion.push(pathToMongoDBOtProgramacion.notasProgramacion)
-                                                                arrResRevisionNotasProgramacion.push(pathToMongoDBOtProgramacion.revisionNotasProgramacion)
-                                                            }
-                                                            else if (i >= 1 && pathToMongoDBOtProgramacion.revisionNotasProgramacion != otProgramacionSegunda[i-1].revisionNotasProgramacion) {
-                                                                arrResDatoNotasProgramacion.push(pathToMongoDBOtProgramacion.notasProgramacion)
-                                                                arrResRevisionNotasProgramacion.push(pathToMongoDBOtProgramacion.revisionNotasProgramacion)
-                                                            }
-                                                                arrResCreadorNotasProgramacion.push(pathToMongoDBOtProgramacion.creator[0].username)
-                                                                arrResModificadorNotasProgramacion.push(pathToMongoDBOtProgramacion.modificator[0].username)
-                                                                arrResFechaNotasProgramacion.push(pathToMongoDBOtProgramacion.timestamp)
-                                                                arrResFechaModNotasProgramacion.push(pathToMongoDBOtProgramacion.modifiedOn)
-                                                                valueArrayResNotasProgramacion = parseInt(arrResDatoNotasProgramacion.length-1)
-
-                                                        } else {
-                                                            resDatoNotasProgramacion = ''
-                                                            resRevisionNotasProgramacion = 0
-                                                        }
-                                                    }
+                                            for (let i = 0; largoArrayProgramacionSegunda > i; i++) {
+                                                
+                                                if (pathMongoOtProgramacionSegunda[i]) {
+                                                    let largoArray = parseInt(largoArrayProgramacionSegunda)
+                                                    resDatoNotasProgramacion = pathMongoOtProgramacionSegunda[largoArray-1].notasProgramacion == 'sinDato' ? "S/D" : pathMongoOtProgramacionSegunda[largoArray-1].notasProgramacion
+                                                    resRevisionNotasProgramacion = pathMongoOtProgramacionSegunda[largoArray-1].revisionNotasProgramacion == 'sinDato' ? "S/D" : pathMongoOtProgramacionSegunda[largoArray-1].revisionNotasProgramacion
                                                     
-                                                    if (arrResDatoNotasProgramacion.length == 1 ) {
-                                                        siguienteDisabled = "disabled"
-                                                        anteriorDisabled = "disabled"
-                                                    } else if (arrResDatoNotasProgramacion.length == arrResRevisionNotasProgramacion.length) {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    } else {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    }
+                                                    arrResDatoNotasProgramacion.push(pathMongoOtProgramacionSegunda[i].notasProgramacion)
+                                                    arrResRevisionNotasProgramacion.push(pathMongoOtProgramacionSegunda[i].revisionNotasProgramacion)
+                                                
+                                                    arrResCreadorNotasProgramacion.push(pathMongoOtProgramacionSegunda[i].creator[0].username)
+                                                    arrResModificadorNotasProgramacion.push(pathMongoOtProgramacionSegunda[i].modificator[0].username)
+                                                    arrResFechaNotasProgramacion.push(pathMongoOtProgramacionSegunda[i].timestamp)
+                                                    arrResFechaModNotasProgramacion.push(pathMongoOtProgramacionSegunda[i].modifiedOn)
                                                     
                                                 } else {
-                                                    anteriorDisabled = "disabled"
-                                                    siguienteDisabled = "disabled"
-                                                    resDatoNotasProgramacion = ""
+                                                    resDatoNotasProgramacion = 'S/D'
                                                     resRevisionNotasProgramacion = 0
-                                                    arrResDatoNotasProgramacion.push(resDatoNotasProgramacion)
-                                                    arrResRevisionNotasProgramacion.push(resRevisionNotasProgramacion)
-                                                    valueArrayResNotasProgramacion = 0
-                                            } %>
+                                                }
+                                            }
+                                            valueArrayResNotasProgramacion = parseInt(arrResDatoNotasProgramacion.length-1)
+                                                    
+                                            if (arrResDatoNotasProgramacion.length == 1 ) {
+                                                siguienteDisabled = "disabled"
+                                                anteriorDisabled = "disabled"
+                                            } else if (arrResDatoNotasProgramacion.length == arrResRevisionNotasProgramacion.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                            
+                                        } else {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                            resDatoNotasProgramacion = "S/D"
+                                            resRevisionNotasProgramacion = 0
+                                            arrResDatoNotasProgramacion.push(resDatoNotasProgramacion)
+                                            arrResRevisionNotasProgramacion.push(resRevisionNotasProgramacion)
+                                            valueArrayResNotasProgramacion = 0
+
+                                            arrResCreadorNotasProgramacion.push(pathMongoOtDetalles[o].creator[0].username)
+                                            arrResModificadorNotasProgramacion = ""
+                                            arrResFechaNotasProgramacion.push(pathMongoOtDetalles[o].timestamp)
+                                            arrResFechaModNotasProgramacion = ""
+                                    } %>
 
                                             <div id="btnAnteriorSiguienteNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>">
                                                 <button id="btnAnteriorNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorNotasProgramacion" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
@@ -347,9 +318,14 @@
                                                 <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaNotasProgramacion %>">
                                                 <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModNotasProgramacion %>">
 
-                                                <span id="resDatoNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="text-dark my-2"><%= resDatoNotasProgramacion %></span> |
-                                                <span id="resRevisionNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionNotasProgramacion" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionNotasProgramacion %></span>
-
+                                                
+                                                    <span id="resDatoNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="d-inline-block text-truncate align-middle text-dark" style="max-width: 13vw;">
+                                                        <%= resDatoNotasProgramacion %>
+                                                    </span> |                                                
+                                                    <span id="resRevisionNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionNotasProgramacion" class="badge text-dark align-middle" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                        <%= resRevisionNotasProgramacion %>
+                                                    </span>
+                                                    
                                                 <button id="btnSiguienteNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteNotasProgramacion" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                                     <%= siguienteDisabled %>
@@ -360,41 +336,36 @@
                                 <% }
                             } %>
                         </tr>
+
                     <% } else { %>
+                        <!--Inactivo-->
                         <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="pe-none border-bottom" style="height: 5vh; background-color: #dedede;">
                             <% for (let q = 7; totalColDataProgramacionSegunda > q; q++) {
                                 if (q==7) { %>
                                     <!-- Programas 3d F2 data Inactivo -->
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayProgramacionSegunda > 0) {
-                                        
-                                                for (let i = 0; largoArrayProgramacionSegunda > i; i++) {
-                                                    if (otProgramacionSegunda) {
-                                                        let largoArray = parseInt(largoArrayProgramacionSegunda)
-                                                        resDatoPrograma3d2F = otProgramacionSegunda[largoArray-1].programa3d2F || 'sinDato'
-                                                        resEstadoPrograma3d2F = otProgramacionSegunda[largoArray-1].estadoPrograma3d2F
-                                                        resRevisionPrograma3d2F = otProgramacionSegunda[largoArray-1].revisionPrograma3d2F
-                                                        
-                                                        if (i == 0) {
-                                                            arrResDatoPrograma3d2F.push(pathToMongoDBOtProgramacion.programa3d2F)
-                                                            arrResEstadoPrograma3d2F.push(pathToMongoDBOtProgramacion.Programa3d2F)
-                                                            arrResRevisionPrograma3d2F.push(pathToMongoDBOtProgramacion.revisionPrograma3d2F)
-                                                        }
-                                                        else if (i >= 1 && pathToMongoDBOtProgramacion.revisionPrograma3d2F != otProgramacionSegunda[i-1].revisionPrograma3d2F) {
-                                                            arrResDatoPrograma3d2F.push(pathToMongoDBOtProgramacion.programa3d2F)
-                                                            arrResEstadoPrograma3d2F.push(pathToMongoDBOtProgramacion.estadoPrograma3d2F)
-                                                            arrResRevisionPrograma3d2F.push(pathToMongoDBOtProgramacion.revisionPrograma3d2F)
-                                                        }
-                                                        valueArrayResPrograma3d2F = parseInt(arrResEstadoPrograma3d2F.length-1)
+                                            for (let i = 0; largoArrayProgramacionSegunda > i; i++) {
+                                                
+                                                if (pathMongoOtProgramacionSegunda[i]) {
+                                                    let largoArray = parseInt(largoArrayProgramacionSegunda)
+                                                    resDatoPrograma3d2F = pathMongoOtProgramacionSegunda[largoArray-1].programa3d2F || 'sinDato'
+                                                    resEstadoPrograma3d2F = pathMongoOtProgramacionSegunda[largoArray-1].estadoPrograma3d2F
+                                                    resRevisionPrograma3d2F = pathMongoOtProgramacionSegunda[largoArray-1].revisionPrograma3d2F
                                                     
-                                                    } else {
-                                                        resDatoPrograma3d2F = 'S/D'
-                                                        resEstadoPrograma3d2F = ''
-                                                        resRevisionPrograma3d2F = 0
-                                                    }
+                                                    arrResDatoPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].programa3d2F)
+                                                    arrResEstadoPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].estadoPrograma3d2F)
+                                                    arrResRevisionPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].revisionPrograma3d2F)
+                                                    
+                                                } else {
+                                                    resDatoPrograma3d2F = 'S/D'
+                                                    resEstadoPrograma3d2F = ''
+                                                    resRevisionPrograma3d2F = 0
                                                 }
-                                                resDatoPrograma3d2F = otProgramacionSegunda[0].Programa3d2F
-                                                resEstadoPrograma3d2F = otProgramacionSegunda[0].estadoPrograma3d2F
+                                            }
+                                            valueArrayResPrograma3d2F = parseInt(arrResEstadoPrograma3d2F.length-1)
+                                            resDatoPrograma3d2F = pathMongoOtProgramacionSegunda[0].Programa3d2F
+                                            resEstadoPrograma3d2F = pathMongoOtProgramacionSegunda[0].estadoPrograma3d2F
 
                                         } else {
                                             resDatoPrograma3d2F = 'S/D'
@@ -409,68 +380,46 @@
                                             <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPrograma3d2F %>">
                                             <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPrograma3d2F %>">
                                         
-                                            <span id="resDatoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2"><%= resDatoPrograma3d2F %></span> |
+                                            <span id="resDatoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2">
+                                                <%= resDatoPrograma3d2F %>
+                                            </span> |
 
-                                            <% let icon; let iconColor;
-                                            switch (resEstadoPrograma3d2F) { 
-                                                case "enProceso": {
-                                                    icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
-                                                break; }
-                                                case "terminado": {
-                                                    icon = "fa-circle-check"; iconColor = `style="color:008f30"`;
-                                                break; }        
-                                                case "suspendido": {
-                                                    icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
-                                                break; }
-                                                case "noAplica": {
-                                                    icon = "fa-ban"; iconColor = `style="color:#000000"`;
-                                                break; }
-                                                default: {
-                                                    icon = ""; iconColor = ''; %>
-                                                    <span id="resEstadoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                <% break; }
-                                            }
+                                            <% const config = programacionSegundaConfig[resEstadoPrograma3d2F] || programacionSegundaConfig.default; %>
+                                            <span id="resEstadoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma3d2F%>">
+                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                            </span> |
 
-                                            if (icon) { %>
-                                                <span id="resEstadoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma3d2F%>">
-                                                    <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
-                                                </span> |
-                                            <% } %>
-
-                                            <span id="resRevisionPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma3d2F" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionPrograma3d2F %></span>
+                                            <span id="resRevisionPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma3d2F" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                <%= resRevisionPrograma3d2F %>
+                                            </span>
                                     </td>
+
                                 <% } else if (q==8) { %>
                                     <!-- Programa3d4F data Inactivo -->
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayProgramacionSegunda > 0) {
-                                                for (let i = 0; largoArrayProgramacionSegunda > i; i++) {
+                                            for (let i = 0; largoArrayProgramacionSegunda > i; i++) {
+                                                
+                                                if (pathMongoOtProgramacionSegunda[i]) {
+                                                    let largoArray = parseInt(largoArrayProgramacionSegunda)
+                                                    resDatoPrograma3d4F = pathMongoOtProgramacionSegunda[largoArray-1].programa3d4F || 'sinDato'
+                                                    resEstadoPrograma3d4F = pathMongoOtProgramacionSegunda[largoArray-1].programa3d4F
+                                                    resRevisionPrograma3d4F = pathMongoOtProgramacionSegunda[largoArray-1].revisionPrograma3d4F
                                                     
-                                                    if (otProgramacionSegunda) {
-                                                        let largoArray = parseInt(largoArrayProgramacionSegunda)
-                                                        resDatoPrograma3d4F = otProgramacionSegunda[largoArray-1].programa3d4F || 'sinDato'
-                                                        resEstadoPrograma3d4F = otProgramacionSegunda[largoArray-1].programa3d4F
-                                                        resRevisionPrograma3d4F = otProgramacionSegunda[largoArray-1].revisionPrograma3d4F
-                                                        
-                                                        if (i == 0) {
-                                                            arrResDatoPrograma3d4F.push(pathToMongoDBOtProgramacion.programa3d4F)
-                                                            arrResEstadoPrograma3d4F.push(pathToMongoDBOtProgramacion.programa3d4F)
-                                                            arrResRevisionPrograma3d4F.push(pathToMongoDBOtProgramacion.revisionPrograma3d4F)
-                                                        }
-                                                        else if (i >= 1 && pathToMongoDBOtProgramacion.revisionPrograma3d4F != otProgramacionSegunda[i-1].revisionPrograma3d4F) {
-                                                            arrResDatoPrograma3d4F.push(pathToMongoDBOtProgramacion.programa3d4F)
-                                                            arrResEstadoPrograma3d4F.push(pathToMongoDBOtProgramacion.programa3d4F)
-                                                            arrResRevisionPrograma3d4F.push(pathToMongoDBOtProgramacion.revisionPrograma3d4F)
-                                                        }
-                                                        valueArrayResPrograma3d4F = parseInt(arrResEstadoPrograma3d4F.length-1)
-
-                                                    } else {
-                                                        resDatoPrograma3d4F = 'S/D'
-                                                        resEstadoPrograma3d4F = ''
-                                                        resRevisionPrograma3d4F = 0
-                                                    }
+                                                    arrResDatoPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].programa3d4F)
+                                                    arrResEstadoPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].programa3d4F)
+                                                    arrResRevisionPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].revisionPrograma3d4F)
+                                                    
+                                                    
+                                                } else {
+                                                    resDatoPrograma3d4F = 'S/D'
+                                                    resEstadoPrograma3d4F = ''
+                                                    resRevisionPrograma3d4F = 0
                                                 }
-                                                resDatoPrograma3d4F = otProgramacionSegunda[0].programa3d4F
-                                                resEstadoPrograma3d4F = otProgramacionSegunda[0].estadoPrograma3d4F
+                                            }
+                                            valueArrayResPrograma3d4F = parseInt(arrResEstadoPrograma3d4F.length-1)
+                                            resDatoPrograma3d4F = pathMongoOtProgramacionSegunda[0].programa3d4F
+                                            resEstadoPrograma3d4F = pathMongoOtProgramacionSegunda[0].estadoPrograma3d4F
                                         
                                         } else {
                                             resDatoPrograma3d4F = 'S/D'
@@ -486,63 +435,41 @@
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPrograma3d4F %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPrograma3d4F %>">
 
-                                        <span id="resDatoPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2"><%= resDatoPrograma3d4F %></span> |
+                                        <span id="resDatoPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2">
+                                            <%= resDatoPrograma3d4F %>
+                                        </span> |
 
-                                        <% let icon; let iconColor;
-                                                switch (resEstadoPrograma3d4F) { 
-                                                    case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
-                                                    break; }
-                                                    case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
-                                                    break; }        
-                                                    case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
-                                                    break; }
-                                                    case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
-                                                    break; }
-                                                    default: {
-                                                        icon = ""; iconColor = ''; %>
-                                                        <span id="resEstadoPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                    <% break; }
-                                                }
+                                        <% const config = programacionSegundaConfig[resEstadoPrograma3d4F] || programacionSegundaConfig.default; %>
+                                        <span id="resEstadoPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma3d4F%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
 
-                                                if (icon) { %>
-                                                    <span id="resEstadoPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma3d4F%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
-                                                    </span> |
-                                                <% } %>
-
-                                                <span id="resRevisionPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma3d4F" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionPrograma3d4F %></span>
+                                        <span id="resRevisionPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma3d4F" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionPrograma3d4F %>
+                                        </span>
                                     </td>
+
                                 <% } else { %>
                                     <!-- NotasProgramacion data Inactivo -->
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayProgramacionSegunda > 0) {
                                                 for (let i = 0; largoArrayProgramacionSegunda > i; i++) {
                                                     
-                                                    if (otProgramacionSegunda) {
+                                                    if (pathMongoOtProgramacionSegunda[i]) {
                                                         let largoArray = parseInt(largoArrayProgramacionSegunda)
-                                                        resDatoNotasProgramacion = otProgramacionSegunda[largoArray-1].notasProgramacion || 'sinDato'
-                                                        resRevisionNotasProgramacion = otProgramacionSegunda[largoArray-1].revisionNotasProgramacion
+                                                        resDatoNotasProgramacion = pathMongoOtProgramacionSegunda[largoArray-1].notasProgramacion || 'sinDato'
+                                                        resRevisionNotasProgramacion = pathMongoOtProgramacionSegunda[largoArray-1].revisionNotasProgramacion
                                                         
-                                                        if (i == 0) {
-                                                            arrResDatoNotasProgramacion.push(pathToMongoDBOtProgramacion.notasProgramacion)
-                                                            arrResRevisionNotasProgramacion.push(pathToMongoDBOtProgramacion.revisionNotasProgramacion)
-                                                        }
-                                                        else if (i >= 1 && pathToMongoDBOtProgramacion.revisionNotasProgramacion != otProgramacionSegunda[i-1].revisionNotasProgramacion) {
-                                                            arrResDatoNotasProgramacion.push(pathToMongoDBOtProgramacion.notasProgramacion)
-                                                            arrResRevisionNotasProgramacion.push(pathToMongoDBOtProgramacion.revisionNotasProgramacion)
-                                                        }
-                                                        valueArrayResNotasProgramacion = parseInt(arrResDatoNotasProgramacion.length-1)
-
+                                                        arrResDatoNotasProgramacion.push(pathMongoOtProgramacionSegunda[i].notasProgramacion)
+                                                        arrResRevisionNotasProgramacion.push(pathMongoOtProgramacionSegunda[i].revisionNotasProgramacion)
+                                                                                                                
                                                     } else {
                                                         resDatoNotasProgramacion = 'S/D'
                                                         resRevisionNotasProgramacion = 0
                                                     }
                                                 }
-                                                resDatoNotasProgramacion = otProgramacionSegunda[0].notasProgramacion || 'sinDato'
+                                                valueArrayResNotasProgramacion = parseInt(arrResDatoNotasProgramacion.length-1)
+                                                resDatoNotasProgramacion = pathMongoOtProgramacionSegunda[0].notasProgramacion || 'sinDato'
                                                 
                                         } else {
                                             resDatoNotasProgramacion = 'S/D'
@@ -554,8 +481,8 @@
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResNotasProgramacion %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionNotasProgramacion %>">
 
-                                        <span id="resDatoNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="text-dark my-2"><%= resDatoNotasProgramacion %></span> |
-                                        <span id="resRevisionNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionNotasProgramacion" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionNotasProgramacion %></span>
+                                        <span id="resDatoNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="d-inline-block text-truncate align-middle text-dark" style="max-width: 13vw;"><%= resDatoNotasProgramacion %></span> |
+                                        <span id="resRevisionNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionNotasProgramacion" class="badge text-dark align-middle" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionNotasProgramacion %></span>
                                     </td>
                                 <% }
                             } %>

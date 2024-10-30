@@ -45,10 +45,11 @@ if(arrBtnAnteriorMecanizado2dCompleto !=[]) {
         if (btn.value) {
             btn.addEventListener("click", (event) => {
                 let kValue = btn.value
+                //console.log('48-kValue-btnanterior: ', kValue)
                 let arrayActual = document.getElementById(`resHidden${kValue}`)
+                // console.log('50-arrayActual: ', arrayActual)
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
-                //console.log('kValue. ', kValue)
                 mostrarAnteriorDistribucion(changeValueFromArray(arrayFromValues), kValue)
             })
         }
@@ -64,8 +65,8 @@ if(arrBtnSiguienteMecanizado2dCompleto !=[]) {
                 let arrayActual = document.getElementById(`resHidden${kValue}`)
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
-                // console.log('kValue. ', kValue)
-                mostrarAnteriorDistribucion(changeValueFromArray(arrayFromValues), kValue)
+                // console.log('68-kValue. ', kValue)
+                mostrarSiguienteDistribucion(changeValueFromArray(arrayFromValues), kValue)
             })
         }
     })
@@ -80,7 +81,7 @@ if(arrBtnAnteriorMecanizado3dPrefinal !=[]) {
                 let arrayActual = document.getElementById(`resHidden${kValue}`)
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
-                // console.log('kValue. ', kValue)
+                // console.log('kValue.BtnAnteriorMec3dPref ', kValue)
                 mostrarAnteriorDistribucion(changeValueFromArray(arrayFromValues), kValue)
             })
         }
@@ -96,7 +97,7 @@ if(arrBtnSiguienteMecanizado3dPrefinal !=[]) {
                 let arrayActual = document.getElementById(`resHidden${kValue}`)
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
-                // console.log('kValue. ', kValue)
+                // console.log('kValue.BtnSiguienteMec3dPref ', kValue)
                 mostrarSiguienteDistribucion(changeValueFromArray(arrayFromValues), kValue)
             })
         }
@@ -137,7 +138,6 @@ if(arrBtnSiguienteMecanizado3dFinal !=[]) {
 
 if(arrBtnAnteriorBancoArmado !=[]) {    
     let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorBancoArmado"]')
-    
     allBtnAnterior.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -145,6 +145,7 @@ if(arrBtnAnteriorBancoArmado !=[]) {
                 let arrayActual = document.getElementById(`resHidden${kValue}`)
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
+                // console.log('arrayFromValues. ', arrayFromValues)
                 // console.log('kValue. ', kValue)
                 mostrarAnteriorDistribucion(changeValueFromArray(arrayFromValues), kValue)
             })
@@ -154,7 +155,6 @@ if(arrBtnAnteriorBancoArmado !=[]) {
 
 if(arrBtnSiguienteBancoArmado !=[]) {    
     let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteBancoArmado"]')
-    
     allBtnSiguiente.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -173,6 +173,7 @@ if(arrBtnSiguienteBancoArmado !=[]) {
 // Mostrar el elemento actual en la página
 function mostrarElementoDistribucion(
     arrayFromValues,
+    arrValuesRevisionMark,
     indiceAMostrar,
     kValue,
     resMecanizado2dCompleto,
@@ -183,77 +184,85 @@ function mostrarElementoDistribucion(
     // console.log('kValue', kValue)
     // console.log('indiceAMostrar', indiceAMostrar)
     // console.log('arrayFromValues', arrayFromValues)
+
+    let btnAnteriorMecanizado2dCompleto, btnSiguienteMecanizado2dCompleto, containerBtnAnteriorSiguienteMecanizado2dCompleto;
+    let btnAnteriorMecanizado3dPrefinal, btnSiguienteMecanizado3dPrefinal, containerBtnAnteriorSiguienteMecanizado3dPrefinal;
+    let btnAnteriorMecanizado3dFinal, btnSiguienteMecanizado3dFinal, containerBtnAnteriorSiguienteMecanizado3dFinal;
+    let btnAnteriorBancoArmado, btnSiguienteBancoArmado, containerBtnAnteriorSiguienteBancoArmado;
     
     if (resMecanizado2dCompleto) {
         let spanMecanizado2dCompleto = document.getElementById(`resMecanizado2dCompleto${kValue}`)
         let spanRevisionMecanizado2dCompleto = document.getElementById(`resRevisionMecanizado2dCompleto${kValue}`)
         spanMecanizado2dCompleto.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionMecanizado2dCompleto.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionMecanizado2dCompleto.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)] //parseInt(indiceAMostrar+1)
+
+        btnAnteriorMecanizado2dCompleto = document.getElementById(`btnAnteriorMecanizado2dCompleto${kValue}`)
+        btnSiguienteMecanizado2dCompleto = document.getElementById(`btnSiguienteMecanizado2dCompleto${kValue}`)
+        containerBtnAnteriorSiguienteMecanizado2dCompleto = document.getElementById(`btnAnteriorSiguienteMecanizado2dCompleto${kValue}`)
+
     } else if (resMecanizado3dPrefinal) {
         let spanMecanizado3dPrefinal = document.getElementById(`resMecanizado3dPrefinal${kValue}`)
         let spanRevisionMecanizado3dPrefinal = document.getElementById(`resRevisionMecanizado3dPrefinal${kValue}`)
         spanMecanizado3dPrefinal.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionMecanizado3dPrefinal.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionMecanizado3dPrefinal.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)] //parseInt(indiceAMostrar+1)
+
+        btnAnteriorMecanizado3dPrefinal = document.getElementById(`btnAnteriorMecanizado3dPrefinal${kValue}`)
+        btnSiguienteMecanizado3dPrefinal = document.getElementById(`btnSiguienteMecanizado3dPrefinal${kValue}`)
+        containerBtnAnteriorSiguienteMecanizado3dPrefinal = document.getElementById(`btnAnteriorSiguienteMecanizado3dPrefinal${kValue}`)
+
     } else if (resMecanizado3dFinal) {
         let spanMecanizado3dFinal = document.getElementById(`resMecanizado3dFinal${kValue}`)
         let spanRevisionMecanizado3dFinal = document.getElementById(`resRevisionMecanizado3dFinal${kValue}`)
         spanMecanizado3dFinal.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionMecanizado3dFinal.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionMecanizado3dFinal.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)] //parseInt(indiceAMostrar+1)
+
+        btnAnteriorMecanizado3dFinal = document.getElementById(`btnAnteriorMecanizado3dFinal${kValue}`)
+        btnSiguienteMecanizado3dFinal = document.getElementById(`btnSiguienteMecanizado3dFinal${kValue}`)
+        containerBtnAnteriorSiguienteMecanizado3dFinal = document.getElementById(`btnAnteriorSiguienteMecanizado3dFinal${kValue}`)
+
     } else if (resBancoArmado) {
         let spanBancoArmado = document.getElementById(`resBancoArmado${kValue}`)
         let spanRevisionBancoArmado = document.getElementById(`resRevisionBancoArmado${kValue}`)
         spanBancoArmado.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionBancoArmado.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionBancoArmado.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]//parseInt(indiceAMostrar+1)
+
+        btnAnteriorBancoArmado = document.getElementById(`btnAnteriorBancoArmado${kValue}`)
+        btnSiguienteBancoArmado = document.getElementById(`btnSiguienteBancoArmado${kValue}`)
+        containerBtnAnteriorSiguienteBancoArmado = document.getElementById(`btnAnteriorSiguienteBancoArmado${kValue}`)
     }
-    
-    let btnAnteriorMecanizado2dCompleto = document.getElementById(`btnAnteriorMecanizado2dCompleto${kValue}`)
-    let btnSiguienteMecanizado2dCompleto = document.getElementById(`btnSiguienteMecanizado2dCompleto${kValue}`)
-    let containerBtnAnteriorSiguienteMecanizado2dCompleto = document.getElementById(`btnAnteriorSiguienteMecanizado2dCompleto${kValue}`)
-    
-    let btnAnteriorMecanizado3dPrefinal = document.getElementById(`btnAnteriorMecanizado3dPrefinal${kValue}`)
-    let btnSiguienteMecanizado3dPrefinal = document.getElementById(`btnSiguienteMecanizado3dPrefinal${kValue}`)
-    let containerBtnAnteriorSiguienteMecanizado3dPrefinal = document.getElementById(`btnAnteriorSiguienteMecanizado3dPrefinal${kValue}`)
-
-    let btnAnteriorMecanizado3dFinal = document.getElementById(`btnAnteriorMecanizado3dFinal${kValue}`)
-    let btnSiguienteMecanizado3dFinal = document.getElementById(`btnSiguienteMecanizado3dFinal${kValue}`)
-    let containerBtnAnteriorSiguienteMecanizado3dFinal = document.getElementById(`btnAnteriorSiguienteMecanizado3dFinal${kValue}`)
-
-    let btnAnteriorBancoArmado = document.getElementById(`btnAnteriorBancoArmado${kValue}`)
-    let btnSiguienteBancoArmado = document.getElementById(`btnSiguienteBancoArmado${kValue}`)
-    let containerBtnAnteriorSiguienteBancoArmado = document.getElementById(`btnAnteriorSiguienteBancoArmado${kValue}`)
 
 
     function colorSpanDistribucion(spanElementDistribucion) {
         const classMap = {
             "PRODISMO": { bgClass: "bg-success", textClass: "text-white" },
-            "Terceros": { bgClass: "bg-danger", textClass: "text-white" },
+            "TERCEROS": { bgClass: "bg-danger", textClass: "text-white" },
             "S/D": { bgClass: "bg-secondary", textClass: "text-white" },
             "CHINA": { bgClass: "bg-warning", textClass: "text-dark" },
             "N/A": { bgClass: "bg-info", textClass: "text-dark" }
         };
     
+        // console.log('spanElementDistribucion: ', spanElementDistribucion)
         const defaultClasses = ["bg-success", "bg-danger", "bg-warning", "bg-secondary", "bg-info", "text-white", "text-dark"];
-        spanElementDistribucion.classList.remove(...defaultClasses);
-    
-        const text = spanElementDistribucion.innerText;
-        if (classMap[text]) {
-            spanElementDistribucion.classList.add(classMap[text].bgClass, classMap[text].textClass);
+        if (spanElementDistribucion) {
+            spanElementDistribucion.classList.remove(...defaultClasses)
+            
+            const text = spanElementDistribucion.innerText;
+            if (classMap[text]) {
+                spanElementDistribucion.classList.add(classMap[text].bgClass, classMap[text].textClass);
+            } 
         }
     }
-    
 
-    function agregarEstiloRevPasadasDistribucion (containerBtnAnteriorSiguienteMecanizado2dCompleto) {
+    function agregarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteMecanizado2dCompleto) {
         containerBtnAnteriorSiguienteMecanizado2dCompleto.classList.add("bg-secondary", "bg-gradient", "bg-opacity-25")
     }
 
-    function eliminarEstiloRevPasadasDistribucion (containerBtnAnteriorSiguienteMecanizado2dCompleto) {
+    function eliminarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteMecanizado2dCompleto) {
         containerBtnAnteriorSiguienteMecanizado2dCompleto.classList.remove("bg-secondary", "bg-gradient", "bg-opacity-25")
     }
     
-    let spanElementMecanizado2dCompleto
-    let spanElementMecanizado3dPrefinal
-    let spanElementMecanizado3dFinal
-    let spanElementBancoArmado
+    let spanElementMecanizado2dCompleto, spanElementMecanizado3dPrefinal,
+    spanElementMecanizado3dFinal, spanElementBancoArmado
     resMecanizado2dCompleto ? spanElementMecanizado2dCompleto = resMecanizado2dCompleto : null
     resMecanizado3dPrefinal ? spanElementMecanizado3dPrefinal = resMecanizado3dPrefinal : null
     resMecanizado3dFinal ? spanElementMecanizado3dFinal = resMecanizado3dFinal : null
@@ -263,63 +272,91 @@ function mostrarElementoDistribucion(
     // console.log('indiceaMostar:', indiceAMostrar)
 
     if (indiceAMostrar === 0) {
-        colorSpanDistribucion(spanElementMecanizado2dCompleto)
-        btnAnteriorMecanizado2dCompleto.disabled = true
-        btnSiguienteMecanizado2dCompleto.removeAttribute('disabled')
+        if (btnAnteriorMecanizado2dCompleto && btnSiguienteMecanizado2dCompleto) {
+            colorSpanDistribucion(spanElementMecanizado2dCompleto)
+            btnAnteriorMecanizado2dCompleto.disabled = true
+            btnSiguienteMecanizado2dCompleto.removeAttribute('disabled')
+            agregarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteMecanizado2dCompleto)
+        }
 
-        colorSpanDistribucion(spanElementMecanizado3dPrefinal)
-        btnAnteriorMecanizado3dPrefinal.disabled = true
-        btnSiguienteMecanizado3dPrefinal.removeAttribute('disabled')
+        if (btnAnteriorMecanizado3dPrefinal && btnSiguienteMecanizado3dPrefinal) {
+            colorSpanDistribucion(spanElementMecanizado3dPrefinal)
+            btnAnteriorMecanizado3dPrefinal.disabled = true
+            btnSiguienteMecanizado3dPrefinal.removeAttribute('disabled')
+            agregarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteMecanizado3dPrefinal)
+        }
 
-        colorSpanDistribucion(spanElementMecanizado3dFinal)
-        btnAnteriorMecanizado3dFinal.disabled = true
-        btnSiguienteMecanizado3dFinal.removeAttribute('disabled')
+        if (btnAnteriorMecanizado3dFinal && btnSiguienteMecanizado3dFinal) {
+            colorSpanDistribucion(spanElementMecanizado3dFinal)
+            btnAnteriorMecanizado3dFinal.disabled = true
+            btnSiguienteMecanizado3dFinal.removeAttribute('disabled')
+            agregarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteMecanizado3dFinal)
+        }
 
-        colorSpanDistribucion(spanElementBancoArmado)
-        btnAnteriorBancoArmado.disabled = true
-        btnSiguienteBancoArmado.removeAttribute('disabled')
+        if (btnAnteriorBancoArmado && btnSiguienteBancoArmado) {
+            colorSpanDistribucion(spanElementBancoArmado)
+            btnAnteriorBancoArmado.disabled = true
+            btnSiguienteBancoArmado.removeAttribute('disabled')
+            agregarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteBancoArmado)
+        }
 
     } else if (indiceAMostrar === arrayFromValues.length-1) {
-        colorSpanDistribucion(spanElementMecanizado2dCompleto)
-        btnAnteriorMecanizado2dCompleto.removeAttribute('disabled')
-        btnSiguienteMecanizado2dCompleto.disabled = true
-        eliminarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteMecanizado2dCompleto)
+        if (btnAnteriorMecanizado2dCompleto && btnSiguienteMecanizado2dCompleto) {
+            colorSpanDistribucion(spanElementMecanizado2dCompleto)
+            btnAnteriorMecanizado2dCompleto.removeAttribute('disabled')
+            btnSiguienteMecanizado2dCompleto.disabled = true
+            eliminarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteMecanizado2dCompleto)
+        }
 
-        colorSpanDistribucion(spanElementMecanizado3dPrefinal)
-        btnAnteriorMecanizado3dPrefinal.removeAttribute('disabled')
-        btnSiguienteMecanizado3dPrefinal.disabled = true
-        eliminarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteMecanizado3dPrefinal)
+        if (btnAnteriorMecanizado3dPrefinal && btnSiguienteMecanizado3dPrefinal) {
+            colorSpanDistribucion(spanElementMecanizado3dPrefinal)
+            btnAnteriorMecanizado3dPrefinal.removeAttribute('disabled')
+            btnSiguienteMecanizado3dPrefinal.disabled = true
+            eliminarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteMecanizado3dPrefinal)
+        }
 
-        colorSpanDistribucion(spanElementMecanizado3dFinal)
-        btnAnteriorMecanizado3dFinal.removeAttribute('disabled')
-        btnSiguienteMecanizado3dFinal.disabled = true
-        eliminarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteMecanizado3dFinal)
+        if (btnAnteriorMecanizado3dFinal && btnSiguienteMecanizado3dFinal) {
+            colorSpanDistribucion(spanElementMecanizado3dFinal)
+            btnAnteriorMecanizado3dFinal.removeAttribute('disabled')
+            btnSiguienteMecanizado3dFinal.disabled = true
+            eliminarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteMecanizado3dFinal)
+        }
 
-        colorSpanDistribucion(spanElementBancoArmado)
-        btnAnteriorBancoArmado.removeAttribute('disabled')
-        btnSiguienteBancoArmado.disabled = true
-        eliminarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteBancoArmado)
+        if (btnAnteriorBancoArmado && btnSiguienteBancoArmado) {
+            colorSpanDistribucion(spanElementBancoArmado)
+            btnAnteriorBancoArmado.removeAttribute('disabled')
+            btnSiguienteBancoArmado.disabled = true
+            eliminarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteBancoArmado)
+        }
 
     } else {
-        colorSpanDistribucion(spanElementMecanizado2dCompleto)
-        btnAnteriorMecanizado2dCompleto.removeAttribute('disabled')
-        btnSiguienteMecanizado2dCompleto.removeAttribute('disabled')
-        agregarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteMecanizado2dCompleto)
+        if (btnAnteriorMecanizado2dCompleto && btnSiguienteMecanizado2dCompleto) {
+            colorSpanDistribucion(spanElementMecanizado2dCompleto)
+            btnAnteriorMecanizado2dCompleto.removeAttribute('disabled')
+            btnSiguienteMecanizado2dCompleto.removeAttribute('disabled')
+            agregarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteMecanizado2dCompleto)
+        }
 
-        colorSpanDistribucion(spanElementMecanizado3dPrefinal)
-        btnAnteriorMecanizado3dPrefinal.removeAttribute('disabled')
-        btnSiguienteMecanizado3dPrefinal.removeAttribute('disabled')
-        agregarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteMecanizado3dPrefinal)
+        if (btnAnteriorMecanizado3dPrefinal && btnSiguienteMecanizado3dPrefinal) {
+            colorSpanDistribucion(spanElementMecanizado3dPrefinal)
+            btnAnteriorMecanizado3dPrefinal.removeAttribute('disabled')
+            btnSiguienteMecanizado3dPrefinal.removeAttribute('disabled')
+            agregarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteMecanizado3dPrefinal)
+        }
 
-        colorSpanDistribucion(spanElementMecanizado3dFinal)
-        btnAnteriorMecanizado3dFinal.removeAttribute('disabled')
-        btnSiguienteMecanizado3dFinal.removeAttribute('disabled')
-        agregarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteMecanizado3dFinal)
+        if (btnAnteriorMecanizado3dFinal && btnSiguienteMecanizado3dFinal) {
+            colorSpanDistribucion(spanElementMecanizado3dFinal)
+            btnAnteriorMecanizado3dFinal.removeAttribute('disabled')
+            btnSiguienteMecanizado3dFinal.removeAttribute('disabled')
+            agregarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteMecanizado3dFinal)
+        }
 
-        colorSpanDistribucion(spanElementBancoArmado)
-        btnAnteriorBancoArmado.removeAttribute('disabled')
-        btnSiguienteBancoArmado.removeAttribute('disabled')
-        agregarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteBancoArmado)
+        if (btnAnteriorBancoArmado && btnSiguienteBancoArmado) {
+            colorSpanDistribucion(spanElementBancoArmado)
+            btnAnteriorBancoArmado.removeAttribute('disabled')
+            btnSiguienteBancoArmado.removeAttribute('disabled')
+            agregarEstiloRevPasadasDistribucion(containerBtnAnteriorSiguienteBancoArmado)
+        }
     }
 }
 
@@ -327,11 +364,15 @@ function mostrarElementoDistribucion(
 // Función para mostrar el elemento anterior
 function mostrarAnteriorDistribucion(arrayFromValues, kValue) {
     let inputSpotIndex = document.getElementById(`resIndexHidden${kValue}`)
-// console.log('inputSpotIndex: ', inputSpotIndex)
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
-// console.log('lastIndexArrayFromValues: ', lastIndexArrayFromValues)
+
     let indiceAMostrar = parseInt(lastIndexArrayFromValues-1)
     inputSpotIndex.value = parseInt(indiceAMostrar)
+
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
+    // console.log('arrValuesRevisionMark: ', arrValuesRevisionMark)
 
     let resMecanizado2dCompleto = document.getElementById(`resMecanizado2dCompleto${kValue}`)
     let resMecanizado3dPrefinal = document.getElementById(`resMecanizado3dPrefinal${kValue}`)
@@ -340,6 +381,7 @@ function mostrarAnteriorDistribucion(arrayFromValues, kValue) {
 
     mostrarElementoDistribucion(
         arrayFromValues,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resMecanizado2dCompleto,
@@ -353,18 +395,22 @@ function mostrarAnteriorDistribucion(arrayFromValues, kValue) {
 function mostrarSiguienteDistribucion(arrayFromValues, kValue) {
     let inputSpotIndex = document.getElementById(`resIndexHidden${kValue}`)
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
-
+    
     let indiceAMostrar = parseInt(lastIndexArrayFromValues+1)
     inputSpotIndex.value =  parseInt(indiceAMostrar)
+
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
 
     let resMecanizado2dCompleto = document.getElementById(`resMecanizado2dCompleto${kValue}`)
     let resMecanizado3dPrefinal = document.getElementById(`resMecanizado3dPrefinal${kValue}`)
     let resMecanizado3dFinal = document.getElementById(`resMecanizado3dFinal${kValue}`)
     let resBancoArmado = document.getElementById(`resBancoArmado${kValue}`)
     
-
     mostrarElementoDistribucion(
         arrayFromValues,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resMecanizado2dCompleto,
@@ -408,9 +454,7 @@ spanResDistribucion.forEach(function(spanElement) {
         // console.log('idFinalInputs: ', idFinalInputs)
 
         let inputSpotIndex = parseInt(document.getElementById(`resIndexHidden${idFinalInputs}`).value)
-        // console.log('inputSpotIndex: ', inputSpotIndex)
         let inputSpotRevision = document.getElementById(`resRevisionHidden${idFinalInputs}`).value
-        // console.log('inputSpotRevision: ', inputSpotRevision)
         let inputSpotCreador = document.getElementById(`arrResCreadorHidden${idFinalInputs}`).value
         let inputSpotModificador = document.getElementById(`arrResModificadorHidden${idFinalInputs}`).value
         let inputSpotFecha = document.getElementById(`arrResFechaHidden${idFinalInputs}`).value
@@ -421,13 +465,9 @@ spanResDistribucion.forEach(function(spanElement) {
         let arrayFromSpotModificador = inputSpotModificador.split(",")
         let arrayFromSpotFecha = inputSpotFecha.split(",")
         let arrayFromSpotFechaModificacion = inputSpotFechaModificacion.split(",")
-
-        //console.log(arrayFromSpotRevision, arrayFromSpotCreador, arrayFromSpotModificador, arrayFromSpotFecha, arrayFromSpotFechaModificacion)
                 
         for (let y=0; parseInt(arrayFromSpotRevision.length) > y; y++) {
-            // console.log('y: ', y, 'inputSpotIndex: ', inputSpotIndex)
             if (inputSpotIndex === y) {
-                //console.log('arrayFromSpotCreador[y-1]: ', arrayFromSpotCreador[y])
                 spanSpot.setAttribute("valuerevision", arrayFromSpotRevision[y])
                 spanSpot.setAttribute("valuecreador", arrayFromSpotCreador[y])
                 spanSpot.setAttribute("valuefecha", arrayFromSpotFecha[y])

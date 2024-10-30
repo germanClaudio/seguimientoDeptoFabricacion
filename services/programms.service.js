@@ -57,10 +57,30 @@ class ProgramasService {
     }
 
     // add Info Programation 1° to Detail - Project
-    
+    async addInfoProgramacionPrimera(projectId, otQuantity, ociNumberK, arrayOtNumberK, arrayDetalleNumberK, detallesQuantity, totalDetallesQuantity, arrayInfoAddedToDetail) {
+        return this.programas.addInfoProgramacionPrimera(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            arrayDetalleNumberK,
+            detallesQuantity,
+            totalDetallesQuantity,
+            arrayInfoAddedToDetail)
+    }
 
     // add Info Programation 2° to Detail - Project
-    
+    async addInfoProgramacionSegunda(projectId, otQuantity, ociNumberK, arrayOtNumberK, arrayDetalleNumberK, detallesQuantity, totalDetallesQuantity, arrayInfoAddedToDetail) {
+        return this.programas.addInfoProgramacionSegunda(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            arrayDetalleNumberK,
+            detallesQuantity,
+            totalDetallesQuantity,
+            arrayInfoAddedToDetail)
+    }
 
     // add Info Machinned 1° to Detail - Project
     

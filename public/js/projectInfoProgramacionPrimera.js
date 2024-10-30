@@ -30,10 +30,23 @@ for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de p
     }
 }
 
+function changeIconEstadoFromArray(arrayFromEstadoValues) {
+    // console.log('arrayFromEstadoValues(): ', arrayFromEstadoValues)
+    const valueEstadoMap = {
+        'enProceso': '<i class="fa-solid fa-arrows-spin fa-spin fa-lg" style="color: #b09b12;"></i>', // 'En Proceso',
+        'terminado': '<i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i>', //'Terminado',
+        'suspendido': '<i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i>', // 'Suspendido',
+        'noAplica': '<i class="fa-solid fa-ban fa-lg"></i>', // 'N/A',
+        'sinDato': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>', //'S/D',
+        'S/D': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>',
+        '': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>'
+    };
+    return arrayFromEstadoValues.map(value => valueEstadoMap[value] || value);
+}
+
 //*********** Evento btn's anterior y siguiente ************* */
 if(arrBtnAnteriorRt !=[]) {
     let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorRt"]')
-    
     allBtnAnterior.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -46,7 +59,7 @@ if(arrBtnAnteriorRt !=[]) {
                 let actualEstadoValue = arrayEstadoActual.value
                 let arrayFromEstadoValues = actualEstadoValue.split(",")
                 //console.log('kValue. ', kValue)
-                mostrarAnteriorProgramacionPrimera(changeValueFromArray(arrayFromValues), changeValueEstadoFromArray(arrayFromEstadoValues), kValue)
+                mostrarAnteriorProgramacionPrimera(arrayFromValues, changeIconEstadoFromArray(arrayFromEstadoValues), kValue)
             })
         }
     })
@@ -54,7 +67,6 @@ if(arrBtnAnteriorRt !=[]) {
 
 if(arrBtnSiguienteRt !=[]) {    
     let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteRt"]')
-    
     allBtnSiguiente.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -67,7 +79,7 @@ if(arrBtnSiguienteRt !=[]) {
                 let actualEstadoValue = arrayEstadoActual.value
                 let arrayFromEstadoValues = actualEstadoValue.split(",")
                 // console.log('kValue. ', kValue)
-                mostrarSiguienteProgramacionPrimera(changeValueFromArray(arrayFromValues), changeValueEstadoFromArray(arrayFromEstadoValues), kValue)
+                mostrarSiguienteProgramacionPrimera(arrayFromValues, changeIconEstadoFromArray(arrayFromEstadoValues), kValue)
             })
         }
     })
@@ -75,7 +87,6 @@ if(arrBtnSiguienteRt !=[]) {
 
 if(arrBtnAnteriorPreparacionGeo !=[]) {    
     let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorPreparacionGeo"]')
-    
     allBtnAnterior.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -88,7 +99,7 @@ if(arrBtnAnteriorPreparacionGeo !=[]) {
                 let actualEstadoValue = arrayEstadoActual.value
                 let arrayFromEstadoValues = actualEstadoValue.split(",")
                 // console.log('kValue. ', kValue)
-                mostrarAnteriorProgramacionPrimera(changeValueFromArray(arrayFromValues), changeValueEstadoFromArray(arrayFromEstadoValues), kValue)
+                mostrarAnteriorProgramacionPrimera(arrayFromValues, changeIconEstadoFromArray(arrayFromEstadoValues), kValue)
             })
         }
     })
@@ -108,7 +119,7 @@ if(arrBtnSiguientePreparacionGeo !=[]) {
                 let actualEstadoValue = arrayEstadoActual.value
                 let arrayFromEstadoValues = actualEstadoValue.split(",")
                 // console.log('kValue. ', kValue)
-                mostrarSiguienteProgramacionPrimera(changeValueFromArray(arrayFromValues), changeValueEstadoFromArray(arrayFromEstadoValues), kValue)
+                mostrarSiguienteProgramacionPrimera(arrayFromValues, changeIconEstadoFromArray(arrayFromEstadoValues), kValue)
             })
         }
     })
@@ -128,7 +139,7 @@ if(arrBtnAnteriorPrograma2d !=[]) {
                 let actualEstadoValue = arrayEstadoActual.value
                 let arrayFromEstadoValues = actualEstadoValue.split(",")
                 // console.log('kValue. ', kValue)
-                mostrarAnteriorProgramacionPrimera(changeValueFromArray(arrayFromValues), changeValueEstadoFromArray(arrayFromEstadoValues), kValue)
+                mostrarAnteriorProgramacionPrimera(arrayFromValues, changeIconEstadoFromArray(arrayFromEstadoValues), kValue)
             })
         }
     })
@@ -136,7 +147,6 @@ if(arrBtnAnteriorPrograma2d !=[]) {
 
 if(arrBtnSiguientePrograma2d !=[]) {    
     let allBtnSiguiente = document.querySelectorAll('[name="btnSiguientePrograma2d"]')
-    
     allBtnSiguiente.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -149,7 +159,7 @@ if(arrBtnSiguientePrograma2d !=[]) {
                 let actualEstadoValue = arrayEstadoActual.value
                 let arrayFromEstadoValues = actualEstadoValue.split(",")
                 // console.log('kValue. ', kValue)
-                mostrarSiguienteProgramacionPrimera(changeValueFromArray(arrayFromValues), changeValueEstadoFromArray(arrayFromEstadoValues), kValue)
+                mostrarSiguienteProgramacionPrimera(arrayFromValues, changeIconEstadoFromArray(arrayFromEstadoValues), kValue)
             })
         }
     })
@@ -160,69 +170,78 @@ if(arrBtnSiguientePrograma2d !=[]) {
 function mostrarElementoProgramacionPrimera(
     arrayFromValues,
     arrayFromEstadoValues,
+    arrValuesRevisionMark,
     indiceAMostrar,
     kValue,
     resDatoRt,
-    resPreparacionGeo,
-    resPrograma2d)
+    resDatoPreparacionGeo,
+    resDatoPrograma2d)
     {
-    // console.log('resRt: ', resRt, 'resAprobadoRt: ', resAprobadoRt)
+    // console.log('resDatoRt: ', resDatoRt)
     // console.log('kValue', kValue)
+    // console.log('indiceAMostrar', indiceAMostrar)
     // console.log('arrayFromValues', arrayFromValues)
+
+    let btnAnteriorRt, btnSiguienteRt, containerBtnAnteriorSiguienteRt;
+    let btnAnteriorPreparacionGeo, btnSiguientePreparacionGeo, containerBtnAnteriorSiguientePreparacionGeo;
+    let btnAnteriorPrograma2d, btnSiguientePrograma2d, containerBtnAnteriorSiguientePrograma2d;
     
     if (resDatoRt) {
         let spanRt = document.getElementById(`resDatoRt${kValue}`)
         let spanEstadoRt = document.getElementById(`resEstadoRt${kValue}`)
         let spanRevisionRt = document.getElementById(`resRevisionRt${kValue}`)
         spanRt.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanEstadoRt.innerText = arrayFromEstadoValues[parseInt(indiceAMostrar)]
-        spanRevisionRt.innerText = parseInt(indiceAMostrar+1)
+        spanEstadoRt.innerHTML = arrayFromEstadoValues[parseInt(indiceAMostrar)]
+        spanRevisionRt.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorRt = document.getElementById(`btnAnteriorRt${kValue}`)
+        btnSiguienteRt = document.getElementById(`btnSiguienteRt${kValue}`)
+        containerBtnAnteriorSiguienteRt = document.getElementById(`btnAnteriorSiguienteRt${kValue}`)
         
-    } else if (resPreparacionGeo) {
-        let spanPreparacionGeo = document.getElementById(`resPreparacionGeo${kValue}`)
+    } else if (resDatoPreparacionGeo) {
+        let spanPreparacionGeo = document.getElementById(`resDatoPreparacionGeo${kValue}`)
         let spanEstadoPreparacionGeo = document.getElementById(`resEstadoPreparacionGeo${kValue}`)
         let spanRevisionPreparacionGeo = document.getElementById(`resRevisionPreparacionGeo${kValue}`)
         spanPreparacionGeo.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanEstadoPreparacionGeo.innerText = arrayFromEstadoValues[parseInt(indiceAMostrar)]
-        spanRevisionPreparacionGeo.innerText = parseInt(indiceAMostrar+1)
+        spanEstadoPreparacionGeo.innerHTML = arrayFromEstadoValues[parseInt(indiceAMostrar)]
+        spanRevisionPreparacionGeo.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorPreparacionGeo = document.getElementById(`btnAnteriorPreparacionGeo${kValue}`)
+        btnSiguientePreparacionGeo = document.getElementById(`btnSiguientePreparacionGeo${kValue}`)
+        containerBtnAnteriorSiguientePreparacionGeo = document.getElementById(`btnAnteriorSiguientePreparacionGeo${kValue}`)
         
-    } else if (resPrograma2d) {
-        let spanPrograma2d = document.getElementById(`resPrograma2d${kValue}`)
+    } else if (resDatoPrograma2d) {
+        let spanPrograma2d = document.getElementById(`resDatoPrograma2d${kValue}`)
         let spanEstadoPrograma2d = document.getElementById(`resEstadoPrograma2d${kValue}`)
         let spanRevisionPrograma2d = document.getElementById(`resRevisionPrograma2d${kValue}`)
         spanPrograma2d.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanEstadoPrograma2d.innerText = arrayFromEstadoValues[parseInt(indiceAMostrar)]
-        spanRevisionPrograma2d.innerText = parseInt(indiceAMostrar+1)
+        spanEstadoPrograma2d.innerHTML = arrayFromEstadoValues[parseInt(indiceAMostrar)]
+        spanRevisionPrograma2d.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+        
+        btnAnteriorPrograma2d = document.getElementById(`btnAnteriorPrograma2d${kValue}`)
+        btnSiguientePrograma2d = document.getElementById(`btnSiguientePrograma2d${kValue}`)
+        containerBtnAnteriorSiguientePrograma2d = document.getElementById(`btnAnteriorSiguientePrograma2d${kValue}`)
     }
-    
-    let btnAnteriorRt = document.getElementById(`btnAnteriorRt${kValue}`)
-    let btnSiguienteRt = document.getElementById(`btnSiguienteRt${kValue}`)
-    let containerBtnAnteriorSiguienteRt = document.getElementById(`btnAnteriorSiguienteRt${kValue}`)
-    
-    let btnAnteriorPreparacionGeo = document.getElementById(`btnAnteriorPreparacionGeo${kValue}`)
-    let btnSiguientePreparacionGeo = document.getElementById(`btnSiguientePreparacionGeo${kValue}`)
-    let containerBtnAnteriorSiguientePreparacionGeo = document.getElementById(`btnAnteriorSiguientePreparacionGeo${kValue}`)
-
-    let btnAnteriorPrograma2d = document.getElementById(`btnAnteriorPrograma2d${kValue}`)
-    let btnSiguientePrograma2d = document.getElementById(`btnSiguientePrograma2d${kValue}`)
-    let containerBtnAnteriorSiguientePrograma2d = document.getElementById(`btnAnteriorSiguientePrograma2d${kValue}`)
 
 
     function colorSpanProgramacionPrimera(spanElementProgramacionPrimera) {
         const classMap = {
-            "terminado": { bgClass: "bg-success", textClass: "text-white" },
-            "enProceso": { bgClass: "bg-warning", textClass: "text-dark" },
-            "suspendido": { bgClass: "bg-danger", textClass: "text-white" },
-            "sinDato": { bgClass: "bg-secondary", textClass: "text-white" },
-            "noAplica": { bgClass: "bg-info", textClass: "text-dark" }
+            "Terminado": { bgClass: "bg-success" },
+            "En Proceso": { bgClass: "bg-warning" },
+            "Suspendido": { bgClass: "bg-danger" },
+            "S/D": { bgClass: "bg-secondary" },
+            "N/A": { bgClass: "bg-info" }
         };
-    
-        const defaultClasses = ["bg-success", "bg-danger", "bg-warning", "bg-secondary", "bg-info", "text-white", "text-dark"];
-        spanElementProgramacionPrimera.classList.remove(...defaultClasses);
-    
-        const text = spanElementProgramacionPrimera.innerText;
-        if (classMap[text]) {
-            spanElementProgramacionPrimera.classList.add(classMap[text].bgClass, classMap[text].textClass);
+
+        // console.log('spanElementProgramacionPrimera: ', spanElementProgramacionPrimera)
+        const defaultClasses = ["bg-success", "bg-danger", "bg-warning", "bg-secondary", "bg-info"];
+        if (spanElementProgramacionPrimera) {
+            spanElementProgramacionPrimera.classList.remove(...defaultClasses)
+            
+            const text = spanElementProgramacionPrimera.innerText;
+            if (classMap[text]) {
+                spanElementProgramacionPrimera.classList.add(classMap[text].bgClass);
+            } 
         }
     }
     
@@ -235,61 +254,79 @@ function mostrarElementoProgramacionPrimera(
         containerBtnAnteriorSiguienteProgramacionPrimera.classList.remove("bg-secondary", "bg-gradient", "bg-opacity-25")
     }
     
-    let spanElementRt
-    let spanElementPreparacionGeo
-    let spanElementPrograma2d
-    
+    let spanElementRt, spanElementPreparacionGeo, spanElementPrograma2d
     resDatoRt ? spanElementRt = resDatoRt : null
-    resPreparacionGeo ? spanElementPreparacionGeo = resPreparacionGeo : null
-    resPrograma2d ? spanElementPrograma2d = resPrograma2d : null
+    resDatoPreparacionGeo ? spanElementPreparacionGeo = resDatoPreparacionGeo : null
+    resDatoPrograma2d ? spanElementPrograma2d = resDatoPrograma2d : null
 
     // console.log('spanElementRt:', spanElementRt)
     // console.log('indiceaMostar:', indiceAMostrar)
 
     if (indiceAMostrar === 0) {
-        colorSpanProgramacionPrimera(spanElementRt)
-        btnAnteriorRt.disabled = true
-        btnSiguienteRt.removeAttribute('disabled')
+        if (btnAnteriorRt && btnSiguienteRt) {
+            colorSpanProgramacionPrimera(spanElementRt)
+            btnAnteriorRt.disabled = true
+            btnSiguienteRt.removeAttribute('disabled')
+            agregarEstiloRevPasadasProgramacionPrimera(containerBtnAnteriorSiguienteRt)
+        }
 
-        colorSpanProgramacionPrimera(spanElementPreparacionGeo)
-        btnAnteriorPreparacionGeo.disabled = true
-        btnSiguientePreparacionGeo.removeAttribute('disabled')
+        if (btnAnteriorPreparacionGeo && btnSiguientePreparacionGeo) {
+            colorSpanProgramacionPrimera(spanElementPreparacionGeo)
+            btnAnteriorPreparacionGeo.disabled = true
+            btnSiguientePreparacionGeo.removeAttribute('disabled')
+            agregarEstiloRevPasadasProgramacionPrimera(containerBtnAnteriorSiguientePreparacionGeo)
+        }
 
-        colorSpanProgramacionPrimera(spanElementPrograma2d)
-        btnAnteriorPrograma2d.disabled = true
-        btnSiguientePrograma2d.removeAttribute('disabled')
+        if (btnAnteriorPrograma2d && btnSiguientePrograma2d) {
+            colorSpanProgramacionPrimera(spanElementPrograma2d)
+            btnAnteriorPrograma2d.disabled = true
+            btnSiguientePrograma2d.removeAttribute('disabled')
+            agregarEstiloRevPasadasProgramacionPrimera(containerBtnAnteriorSiguientePrograma2d)
+        }
 
     } else if (indiceAMostrar === arrayFromValues.length-1) {
-        colorSpanProgramacionPrimera(spanElementRt)
-        btnAnteriorRt.removeAttribute('disabled')
-        btnSiguienteRt.disabled = true
-        eliminarEstiloRevPasadasProgramacionPrimera(containerBtnAnteriorSiguienteRt)
+        if (btnAnteriorRt && btnSiguienteRt) {
+            colorSpanProgramacionPrimera(spanElementRt)
+            btnAnteriorRt.removeAttribute('disabled')
+            btnSiguienteRt.disabled = true
+            eliminarEstiloRevPasadasProgramacionPrimera(containerBtnAnteriorSiguienteRt)
+        }
 
-        colorSpanProgramacionPrimera(spanElementPreparacionGeo)
-        btnAnteriorPreparacionGeo.removeAttribute('disabled')
-        btnSiguientePreparacionGeo.disabled = true
-        eliminarEstiloRevPasadasProgramacionPrimera(containerBtnAnteriorSiguientePreparacionGeo)
+        if (btnAnteriorPreparacionGeo && btnSiguientePreparacionGeo) {
+            colorSpanProgramacionPrimera(spanElementPreparacionGeo)
+            btnAnteriorPreparacionGeo.removeAttribute('disabled')
+            btnSiguientePreparacionGeo.disabled = true
+            eliminarEstiloRevPasadasProgramacionPrimera(containerBtnAnteriorSiguientePreparacionGeo)
+        }
 
-        colorSpanProgramacionPrimera(spanElementPrograma2d)
-        btnAnteriorPrograma2d.removeAttribute('disabled')
-        btnSiguientePrograma2d.disabled = true
-        eliminarEstiloRevPasadasProgramacionPrimera(containerBtnAnteriorSiguientePrograma2d)
+        if (btnAnteriorPrograma2d && btnSiguientePrograma2d) {
+            colorSpanProgramacionPrimera(spanElementPrograma2d)
+            btnAnteriorPrograma2d.removeAttribute('disabled')
+            btnSiguientePrograma2d.disabled = true
+            eliminarEstiloRevPasadasProgramacionPrimera(containerBtnAnteriorSiguientePrograma2d)
+        }
 
     } else {
-        colorSpanProgramacionPrimera(spanElementRt)
-        btnAnteriorRt.removeAttribute('disabled')
-        btnSiguienteRt.removeAttribute('disabled')
-        agregarEstiloRevPasadasProgramacionPrimera(containerBtnAnteriorSiguienteRt)
+        if (btnAnteriorRt && btnSiguienteRt) {
+            colorSpanProgramacionPrimera(spanElementRt)
+            btnAnteriorRt.removeAttribute('disabled')
+            btnSiguienteRt.removeAttribute('disabled')
+            agregarEstiloRevPasadasProgramacionPrimera(containerBtnAnteriorSiguienteRt)
+        }
 
-        colorSpanProgramacionPrimera(spanElementPreparacionGeo)
-        btnAnteriorPreparacionGeo.removeAttribute('disabled')
-        btnSiguientePreparacionGeo.removeAttribute('disabled')
-        agregarEstiloRevPasadasProgramacionPrimera(containerBtnAnteriorSiguientePreparacionGeo)
+        if (btnAnteriorPreparacionGeo && btnSiguientePreparacionGeo) {
+            colorSpanProgramacionPrimera(spanElementPreparacionGeo)
+            btnAnteriorPreparacionGeo.removeAttribute('disabled')
+            btnSiguientePreparacionGeo.removeAttribute('disabled')
+            agregarEstiloRevPasadasProgramacionPrimera(containerBtnAnteriorSiguientePreparacionGeo)
+        }
 
-        colorSpanProgramacionPrimera(spanElementPrograma2d)
-        btnAnteriorPrograma2d.removeAttribute('disabled')
-        btnSiguientePrograma2d.removeAttribute('disabled')
-        agregarEstiloRevPasadasProgramacionPrimera(containerBtnAnteriorSiguientePrograma2d)
+        if (btnAnteriorPrograma2d && btnSiguientePrograma2d) {
+            colorSpanProgramacionPrimera(spanElementPrograma2d)
+            btnAnteriorPrograma2d.removeAttribute('disabled')
+            btnSiguientePrograma2d.removeAttribute('disabled')
+            agregarEstiloRevPasadasProgramacionPrimera(containerBtnAnteriorSiguientePrograma2d)
+        }
     }
 }
 
@@ -297,23 +334,30 @@ function mostrarElementoProgramacionPrimera(
 // Función para mostrar el elemento anterior
 function mostrarAnteriorProgramacionPrimera(arrayFromValues, arrayFromEstadoValues, kValue) {
     let inputSpotIndex = document.getElementById(`resIndexHidden${kValue}`)
+// console.log('inputSpotIndex: ', inputSpotIndex)
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
-
+// console.log('lastIndexArrayFromValues: ', lastIndexArrayFromValues)
     let indiceAMostrar = parseInt(lastIndexArrayFromValues-1)
     inputSpotIndex.value = parseInt(indiceAMostrar)
 
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
+    // console.log('arrValuesRevisionMark: ', arrValuesRevisionMark)
+
     let resDatoRt = document.getElementById(`resDatoRt${kValue}`)
-    let resPreparacionGeo = document.getElementById(`resPreparacionGeo${kValue}`)
-    let resPrograma2d = document.getElementById(`resPrograma2d${kValue}`)
+    let resDatoPreparacionGeo = document.getElementById(`resDatoPreparacionGeo${kValue}`)
+    let resDatoPrograma2d = document.getElementById(`resDatoPrograma2d${kValue}`)
 
     mostrarElementoProgramacionPrimera(
         arrayFromValues,
         arrayFromEstadoValues,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resDatoRt,
-        resPreparacionGeo,
-        resPrograma2d
+        resDatoPreparacionGeo,
+        resDatoPrograma2d
     )
 }
 
@@ -325,18 +369,23 @@ function mostrarSiguienteProgramacionPrimera(arrayFromValues, arrayFromEstadoVal
     let indiceAMostrar = parseInt(lastIndexArrayFromValues+1)
     inputSpotIndex.value =  parseInt(indiceAMostrar)
 
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
+
     let resDatoRt = document.getElementById(`resDatoRt${kValue}`)
-    let resPreparacionGeo = document.getElementById(`resPreparacionGeo${kValue}`)
-    let resPrograma2d = document.getElementById(`resPrograma2d${kValue}`)    
+    let resDatoPreparacionGeo = document.getElementById(`resDatoPreparacionGeo${kValue}`)
+    let resDatoPrograma2d = document.getElementById(`resDatoPrograma2d${kValue}`)    
 
     mostrarElementoProgramacionPrimera(
         arrayFromValues,
         arrayFromEstadoValues,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resDatoRt,
-        resPreparacionGeo,
-        resPrograma2d
+        resDatoPreparacionGeo,
+        resDatoPrograma2d
     )
 }
 //*********** End Evento btn anterior y siguiente ********* */
@@ -367,7 +416,7 @@ spanResProgramacionPrimera.forEach(function(spanElement) {
         // console.log('regex: ', regex)
 
         // Eliminar el texto inicial de la cadena
-        var idFinalInputs = idSpotSelected.replace(regex, '');
+        let idFinalInputs = idSpotSelected.replace(regex, '');
         // console.log('idFinalInputs: ', idFinalInputs)
 
         let inputSpotIndex = document.getElementById(`resIndexHidden${idFinalInputs}`).value
@@ -384,24 +433,37 @@ spanResProgramacionPrimera.forEach(function(spanElement) {
         let arrayFromSpotModificador = inputSpotModificador.split(",")
         let arrayFromSpotFecha = inputSpotFecha.split(",")
         let arrayFromSpotFechaModificacion = inputSpotFechaModificacion.split(",")
+
+        function changeIconEstadoFromSingle(value) {
+            const valueEstadoMap = {
+                'enProceso': '<i class="fa-solid fa-arrows-spin fa-lg" style="color: #b09b12;"></i>', // 'En Proceso',
+                'terminado': '<i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i>', //'Terminado',
+                'suspendido': '<i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i>', // 'Suspendido',
+                'noAplica': '<i class="fa-solid fa-ban fa-lg"></i>', // 'N/A',
+                'sinDato': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>', //'S/D',
+                'S/D': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>',
+                '': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>'
+            };
+            return valueEstadoMap[value];
+        }
                 
-        for (let y=0; arrayFromSpotRevision.length > y; y++) {
+        for (let y=0; parseInt(arrayFromSpotRevision.length) > y; y++) {
             if (inputSpotIndex == y) {
-                spanSpot.setAttribute("valueEstado", arrayFromSpotEstado[y])
-                spanSpot.setAttribute("valueRevision", arrayFromSpotRevision[y])
-                spanSpot.setAttribute("valueCreador", arrayFromSpotCreador[y])
-                spanSpot.setAttribute("valueFecha", arrayFromSpotFecha[y])
-                spanSpot.setAttribute("valueModificador", arrayFromSpotModificador[y])
-                spanSpot.setAttribute("valueFechaMod", arrayFromSpotFechaModificacion[y])
+                spanSpot.setAttribute("valuerevision", arrayFromSpotRevision[y])
+                spanSpot.setAttribute("valueestado", changeIconEstadoFromSingle(arrayFromSpotEstado[y]))
+                spanSpot.setAttribute("valuecreador", arrayFromSpotCreador[y])
+                spanSpot.setAttribute("valuefecha", arrayFromSpotFecha[y])
+                spanSpot.setAttribute("valuemodificador", arrayFromSpotModificador[y])
+                spanSpot.setAttribute("valuefechamod", arrayFromSpotFechaModificacion[y])
             }
 
             tippy(spanSpot, {
-                content: `Revision: ${spanSpot.getAttribute("valueRevision")}<br>
-                        Estado: ${spanSpot.getAttribute("valueEstado")}<br>
-                        Creado por: ${spanSpot.getAttribute("valueCreador")}<br>
-                        Fecha creac.: ${spanSpot.getAttribute("valueFecha")}<br>
-                        Modificado por: ${spanSpot.getAttribute("valueModificador")}<br>
-                        Fecha mod.: ${spanSpot.getAttribute("valueFechaMod")}`,
+                content: `Revision: ${spanSpot.getAttribute("valuerevision")}<br>
+                        Estado: ${spanSpot.getAttribute("valueestado")}<br>
+                        Creado por: ${spanSpot.getAttribute("valuecreador")}<br>
+                        Fecha creac.: ${spanSpot.getAttribute("valuefecha")}<br>
+                        Modificado por: ${spanSpot.getAttribute("valuemodificador")}<br>
+                        Fecha mod.: ${spanSpot.getAttribute("valuefechamod")}`,
                 allowHTML: true,
                 maxWidth: 350,
                 arrow: true,

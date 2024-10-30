@@ -9,6 +9,8 @@ const { uploadMulterMultiImages, uploadMulterSingleImageProject, uploadMulterSin
 const multer = require('multer')
 
 let formatDate = require('../utils/formatDate.js')
+let tieneNumeros = require('../utils/gotNumbers.js')
+let esStringUObjeto = require('../utils/isNumberOrObject.js')
 const csrf = require('csrf');
 const csrfTokens = csrf();
 
@@ -554,8 +556,8 @@ class ProgramationController {
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
 
-console.log('req.params: ', req.params)        
-console.log('req.body: ', req.body)
+// console.log('req.params: ', req.params)        
+// console.log('req.body: ', req.body)
 
         try {
             const clientId = req.body.clientIdHidden
@@ -567,7 +569,7 @@ console.log('req.body: ', req.body)
             const otNumberK = parseInt(req.body.otKNumberHidden)
             const numberOt = parseInt(req.body.otNumberHidden) || parseInt(req.body.otSelect)
 
-console.log('ociNumberK-numberOci-otNumberK-numberOt', ociNumberK, numberOci, otNumberK, numberOt)        
+// console.log('ociNumberK-numberOci-otNumberK-numberOt', ociNumberK, numberOci, otNumberK, numberOt)        
             
             const projectId = id || req.body.projectIdHidden
             const otQuantity = parseInt(req.body.otQuantityHidden) || 1
@@ -630,7 +632,7 @@ console.log('ociNumberK-numberOci-otNumberK-numberOt', ociNumberK, numberOci, ot
                 arrayDetalleAddedToOt.push(detalleAddedToOt)
             }
 
-console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
+// console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
             await this.programms.addDetailToOtProject(
                 projectId,
                 ociNumberK,
@@ -671,7 +673,7 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
 
-console.log('req.body: ', req.body)
+// console.log('req.body: ', req.body)
 
         try {
             const clientId = req.body.clientIdHidden
@@ -683,7 +685,7 @@ console.log('req.body: ', req.body)
             const otNumberK = parseInt(req.body.otKNumberHidden)
             const numberOt = parseInt(req.body.otNumberHidden) || parseInt(req.body.otSelect)
 
-console.log('ociNumberK-numberOci-otNumberK-numberOt', ociNumberK, numberOci, otNumberK, numberOt)        
+// console.log('ociNumberK-numberOci-otNumberK-numberOt', ociNumberK, numberOci, otNumberK, numberOt)        
             
             const projectId = id || req.body.projectIdHidden
             const detailQuantity = parseInt(req.body.rowCountDetailsQty) || 1
@@ -740,7 +742,7 @@ console.log('ociNumberK-numberOci-otNumberK-numberOt', ociNumberK, numberOci, ot
                 arrayDetalleAddedToOt.push(detalleAddedToOt)
             }
 
-console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
+// console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
             await this.programms.addDetailsToOtProjectFromFile(
                 projectId,
                 ociNumberK,
@@ -1118,125 +1120,327 @@ console.log('arrayDetalleAddedToOt: ', arrayDetalleAddedToOt)
         }
     }
 
-    //TODO:
+    // -----------------------------------------------------------
     addInfoProgramacionPrimera = async (req, res, next) => {
+        const id = req.params.id
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
-
-        const clientId = req.body.clientIdHidden
-        const cliente = await this.clients.selectClientById(clientId)
-        
-        const ociNumberK = req.body.ociNumberK
-        const projectId = req.body.projectIdHidden
-        const otQuantity = parseInt(req.body.otQuantity)
-
-        const userId = userInfo.id
-        const userCreator = await this.users.getUserById(userId)
-
-        const user = [{
-            name: userCreator.name,
-            lastName: userCreator.lastName,
-            username: userCreator.username,
-            email: userCreator.email
-        }]
-
-        const modificator = [{
-            name: "",
-            lastName: "",
-            username: "",
-            email: ""
-        }]
-
-        let arrayOtNumber=[],
-            arrayOtStatus=[],
-            arrayProceso3d=[],
-            arrayRevisionProceso3d=[],
-            arrayHorasProceso3d=[],
-            arrayRevisionHorasProceso3d=[]
-
-        for (const key in req.body) {
-            
-            if (key.startsWith('otNumberHidden')) {
-                arrayOtNumber.push(req.body[key])
-            }
-            else if (key.startsWith('otStatusHidden')) {
-                arrayOtStatus.push(req.body[key])
-            }
-            else if (key.startsWith('proceso3dHidden')) {
-                arrayProceso3d.push(req.body[key])
-            }
-            else if (key.startsWith('revisionProceso3d')) {
-                arrayRevisionProceso3d.push(req.body[key])
-            }
-            else if (key.startsWith('horasProceso3d')) {
-                arrayHorasProceso3d.push(req.body[key])
-            }
-            else if (key.startsWith('revisionHorasProceso3d')) {
-                arrayRevisionHorasProceso3d.push(req.body[key])
-            }
-        }
-
-// console.log('arrayOtNmber', arrayOtNumber)        
-// console.log('arrayOtStatus', arrayOtStatus)
-// console.log('arrayProceso3d', arrayProceso3d)
-// console.log('arrayHorasProceso3d', arrayHorasProceso3d)
-
-        let arrayInfoAddedToOt = []
-        for (let i=0; i<otQuantity; i++ ) {
-            var infoAddedToOt = {
-                otStatus: arrayOtStatus[i],
-                otNumber: parseInt(arrayOtNumber[i]),
-                proceso3d: arrayProceso3d[i] || "sinDato",
-                revisionProceso3d: parseInt(arrayRevisionProceso3d[i]) || 0,
-                horasProceso3d: parseInt(arrayHorasProceso3d[i]) || 0,
-                revisionHorasProceso3d: parseInt(arrayRevisionHorasProceso3d[i]) || 0,
-                timestamp: formatDate(),
-                creator: user,
-                modificator: modificator,
-                modifiedOn: "",
-            }
-            arrayInfoAddedToOt.push(infoAddedToOt)
-        }
-        //console.log('arrayInfoAddedToOt_Controller: ', arrayInfoAddedToOt)
-        //const itemUpdated = 
-        await this.projects.addInfoProceso3dToOtProject(
-            projectId,
-            otQuantity,
-            ociNumberK,
-            arrayInfoAddedToOt
-        )
-        //console.log('itemUpdated_Controller: ', itemUpdated.project)    
-        const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
-
-        const data = { // Inicializar variables en servidor
-            k: 0, 
-            m: 0,
-            j: 0,
-            slide: 1
-        }
         
         try {
-            if (!proyecto) return res.status(404).json({ msg: 'Proyecto, OCI u OT no encontrada' })
-            res.render('projectSelectedDetail', {
-                username,
-                userInfo,
-                expires,
-                cliente,
-                proyecto,
-                data
-            })
+            const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
+            !mainProyecto ? catchError400(req, res, next) : null
 
-        } catch (error) {
-            const errorInfo = {
-                errorNumber: 666,
-                status: false,
-                msg: 'controllerError - Adding Info Proceso 3D to OT - Proyect'
+            const clientId = req.body.clientIdHidden
+            const cliente = await this.clients.selectClientById(clientId)     
+            if (!cliente) {
+                catchError401(req, res, next)
             }
-            res.render('errorPages', {
-                error,
-                errorInfo
-            })
+            
+            const projectId = req.body.projectIdHidden
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_1(req, res, next)
+            }
+
+            const userId = userInfo.id
+            const userCreator = await this.users.getUserById(userId)
+            if (!userCreator) {
+                catchError401_3(req, res, next)
+            }
+            
+            const ociNumberK = parseInt(req.body.ociNumberK)
+            const resultado = req.body.detalleNumberK.split(",")
+
+            const arrayDetalleKNumber = resultado.map(item => {
+                const partes = item.split('_'); // Dividir la cadena por "_"
+                return parseInt(partes[partes.length - 1]); // Obtener el último número y convertirlo a entero
+            });
+            const arrayDetalleNumberK = arrayDetalleKNumber //.map(Number)
+
+            const arrayOtKNumber = req.body.otNumberK.split(",")
+            const arrayOtNumberK = arrayOtKNumber.map(Number) 
+            const otQuantity = parseInt(req.body.otQuantity)
+            const detallesQuantity = parseInt(req.body.detallesQuantity)
+            const totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
+// console.log('totalDetallesQuantity: ', totalDetallesQuantity)           
+// console.log('req.body: ', req.body)
+            let arrayIdDetalle=[],
+                arrayOtNumber=[],
+                arrayOtStatus=[],
+                arrayDetalleNumber=[],
+                arrayRt=[],
+                arrayEstadoRt=[],
+                arrayRevisionRt=[],
+                arrayPreparacionGeo=[],
+                arrayEstadoPreparacionGeo=[],
+                arrayRevisionPreparacionGeo=[],
+                arrayPrograma2d=[],
+                arrayEstadoPrograma2d=[],
+                arrayRevisionPrograma2d=[]
+
+            const prefixes = [
+                { prefix: 'detalleIdHidden', array: arrayIdDetalle },
+                { prefix: 'otNumberHidden', array: arrayOtNumber },
+                { prefix: 'otStatusHidden', array: arrayOtStatus },
+                { prefix: 'detalleNumberHidden', array: arrayDetalleNumber },
+                { prefix: 'rtHidden', array: arrayRt },
+                { prefix: 'estadoRtHidden', array: arrayEstadoRt },
+                { prefix: 'revisionRtHidden', array: arrayRevisionRt },
+                { prefix: 'preparacionGeoHidden', array: arrayPreparacionGeo },
+                { prefix: 'estadoPreparacionGeoHidden', array: arrayEstadoPreparacionGeo },
+                { prefix: 'revisionPreparacionGeoHidden', array: arrayRevisionPreparacionGeo },
+                { prefix: 'programa2dHidden', array: arrayPrograma2d },
+                { prefix: 'estadoPrograma2dHidden', array: arrayEstadoPrograma2d },
+                { prefix: 'revisionPrograma2dHidden', array: arrayRevisionPrograma2d }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayInfoAddedToDetail = []
+            for (let i=0; i<detallesQuantity; i++ ) {
+
+                let rtUser, preparacionGeoUser, programa2dUser
+                let rtUserToShow, preparacionGeoUserToShow, programa2dUserToShow
+                arrayRt[i] == 'sinDato' || arrayRt[i] == 'S/D' ?
+                    rtUser = 'sinDato'
+                :
+                    tieneNumeros(arrayRt[i]) ? rtUser = await this.users.getUserById(arrayRt[i]) : rtUser = arrayRt[i]
+                
+                arrayPreparacionGeo[i] == 'sinDato' || arrayPreparacionGeo[i] == 'S/D' ?
+                    preparacionGeoUser = 'sinDato'
+                :    
+                    tieneNumeros(arrayPreparacionGeo[i]) ? preparacionGeoUser = await this.users.getUserById(arrayPreparacionGeo[i]) : preparacionGeoUser = arrayPreparacionGeo[i]
+                
+                arrayPrograma2d[i] == 'sinDato' || arrayPrograma2d[i] == 'S/D' ?
+                    programa2dUser = 'sinDato'
+                :        
+                    tieneNumeros(arrayPrograma2d[i]) ? programa2dUser = await this.users.getUserById(arrayPrograma2d[i]) : programa2dUser = arrayPrograma2d[i]
+
+                rtUser == 'sinDato' ? rtUserToShow = 'sinDato' : esStringUObjeto(rtUser) ? rtUserToShow = `${rtUser.name} ${rtUser.lastName}` : rtUserToShow = rtUser
+                preparacionGeoUser == 'sinDato' ? preparacionGeoUserToShow = 'sinDato' : esStringUObjeto(preparacionGeoUser) ? preparacionGeoUserToShow = `${preparacionGeoUser.name} ${preparacionGeoUser.lastName}` : preparacionGeoUserToShow = preparacionGeoUser
+                programa2dUser == 'sinDato' ? programa2dUserToShow = 'sinDato' : esStringUObjeto(programa2dUser) ? programa2dUserToShow = `${programa2dUser.name} ${programa2dUser.lastName}` : programa2dUserToShow = programa2dUser
+
+                var infoAddedToOt = {
+                    idDetalle: arrayIdDetalle[i],
+                    otStatus: arrayOtStatus[i],
+                    otNumber: parseInt(arrayOtNumber[i]),
+                    detalleNumber: arrayDetalleNumber[i],
+                    rt: rtUserToShow || "sinDato",
+                    estadoRt: arrayEstadoRt[i] || "sinDato",
+                    revisionRt: parseInt(arrayRevisionRt[i]) || 0,
+                    preparacionGeo: preparacionGeoUserToShow || "sinDato",
+                    estadoPreparacionGeo: arrayEstadoPreparacionGeo[i] || "sinDato",
+                    revisionPreparacionGeo: parseInt(arrayRevisionPreparacionGeo[i]) || 0,
+                    programa2d: programa2dUserToShow || "sinDato",
+                    estadoPrograma2d: arrayEstadoPrograma2d[i] || "sinDato",
+                    revisionPrograma2d: parseInt(arrayRevisionPrograma2d[i]) || 0,
+                    timestamp: formatDate(),
+                    creator: dataUserCreator(userCreator),
+                    modificator: dataUserModificatorEmpty(),
+                    modifiedOn: "",
+                }
+                arrayInfoAddedToDetail.push(infoAddedToOt)
+            }
+            //console.log('arrayInfoAddedToDetail-controller', arrayInfoAddedToDetail)
+
+            const itemUpdated = await this.programms.addInfoProgramacionPrimera(
+                projectId,
+                otQuantity,
+                ociNumberK,
+                arrayOtNumberK,
+                arrayDetalleNumberK,
+                detallesQuantity,
+                totalDetallesQuantity,
+                arrayInfoAddedToDetail
+            )
+    
+            if (!itemUpdated) {
+                catchError400_3(req, res, next)
+            }
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_1(req, res, next)
+            }
+
+            data.slide = 1
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectWonSelectedDetail', {
+                    proyecto,
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    data,
+                    csrfToken
+                })
+            }, 1000)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    //TODO:
+    // -----------------------------------------------------------
+    addInfoProgramacionSegunda = async (req, res, next) => {
+        const id = req.params.id
+        let username = res.locals.username
+        let userInfo = res.locals.userInfo
+        const expires = cookie(req)
+        
+        try {
+            const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
+            !mainProyecto ? catchError400(req, res, next) : null
+
+            const clientId = req.body.clientIdHidden
+            const cliente = await this.clients.selectClientById(clientId)     
+            if (!cliente) {
+                catchError401(req, res, next)
+            }
+            
+            const projectId = req.body.projectIdHidden
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_1(req, res, next)
+            }
+
+            const userId = userInfo.id
+            const userCreator = await this.users.getUserById(userId)
+            if (!userCreator) {
+                catchError401_3(req, res, next)
+            }
+            
+            const ociNumberK = parseInt(req.body.ociNumberK)
+            const resultado = req.body.detalleNumberK.split(",")
+
+            const arrayDetalleKNumber = resultado.map(item => {
+                const partes = item.split('_'); // Dividir la cadena por "_"
+                return parseInt(partes[partes.length - 1]); // Obtener el último número y convertirlo a entero
+            });
+            const arrayDetalleNumberK = arrayDetalleKNumber //.map(Number)
+
+            const arrayOtKNumber = req.body.otNumberK.split(",")
+            const arrayOtNumberK = arrayOtKNumber.map(Number) 
+            const otQuantity = parseInt(req.body.otQuantity)
+            const detallesQuantity = parseInt(req.body.detallesQuantity)
+            const totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
+// console.log('totalDetallesQuantity: ', totalDetallesQuantity)           
+// console.log('req.body: ', req.body)
+            let arrayIdDetalle=[],
+                arrayOtNumber=[],
+                arrayOtStatus=[],
+                arrayDetalleNumber=[],
+                arrayPrograma3d2F=[],
+                arrayEstadoPrograma3d2F=[],
+                arrayRevisionPrograma3d2F=[],
+                arrayPrograma3d4F=[],
+                arrayEstadoPrograma3d4F=[],
+                arrayRevisionPrograma3d4F=[],
+                arrayNotasProgramacion=[],
+                arrayRevisionNotasProgramacion=[]
+
+            const prefixes = [
+                { prefix: 'detalleIdHidden', array: arrayIdDetalle },
+                { prefix: 'otNumberHidden', array: arrayOtNumber },
+                { prefix: 'otStatusHidden', array: arrayOtStatus },
+                { prefix: 'detalleNumberHidden', array: arrayDetalleNumber },
+                { prefix: 'programa3d2FHidden', array: arrayPrograma3d2F },
+                { prefix: 'estadoPrograma3d2FHidden', array: arrayEstadoPrograma3d2F },
+                { prefix: 'revisionPrograma3d2FHidden', array: arrayRevisionPrograma3d2F },
+                { prefix: 'programa3d4FHidden', array: arrayPrograma3d4F },
+                { prefix: 'estadoPrograma3d4FHidden', array: arrayEstadoPrograma3d4F },
+                { prefix: 'revisionPrograma3d4FHidden', array: arrayRevisionPrograma3d4F },
+                { prefix: 'notasProgramacionHidden', array: arrayNotasProgramacion },
+                { prefix: 'revisionNotasProgramacionHidden', array: arrayRevisionNotasProgramacion }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayInfoAddedToDetail = []
+            for (let i=0; i<detallesQuantity; i++ ) {
+
+                let programa3d2FUser, programa3d4FUser
+                let programa3d2FUserToShow, programa3d4FUserToShow
+                arrayPrograma3d2F[i] == 'sinDato' || arrayPrograma3d2F[i] == 'S/D' ?
+                    programa3d2FUser = 'sinDato'
+                :
+                    tieneNumeros(arrayPrograma3d2F[i]) ? programa3d2FUser = await this.users.getUserById(arrayPrograma3d2F[i]) : programa3d2FUser = arrayPrograma3d2F[i]
+                
+                arrayPrograma3d4F[i] == 'sinDato' || arrayPrograma3d4F[i] == 'S/D' ?
+                    programa3d4FUser = 'sinDato'
+                :    
+                    tieneNumeros(arrayPrograma3d4F[i]) ? programa3d4FUser = await this.users.getUserById(arrayPrograma3d4F[i]) : programa3d4FUser = arrayPrograma3d4F[i]
+                
+                programa3d2FUser == 'sinDato' ? programa3d2FUserToShow = 'sinDato' : esStringUObjeto(programa3d2FUser) ? programa3d2FUserToShow = `${programa3d2FUser.name} ${programa3d2FUser.lastName}` : programa3d2FUserToShow = programa3d2FUser
+                programa3d4FUser == 'sinDato' ? programa3d4FUserToShow = 'sinDato' : esStringUObjeto(programa3d4FUser) ? programa3d4FUserToShow = `${programa3d4FUser.name} ${programa3d4FUser.lastName}` : programa3d4FUserToShow = programa3d4FUser
+                
+                var infoAddedToOt = {
+                    idDetalle: arrayIdDetalle[i],
+                    otStatus: arrayOtStatus[i],
+                    otNumber: parseInt(arrayOtNumber[i]),
+                    detalleNumber: arrayDetalleNumber[i],
+                    programa3d2F: programa3d2FUserToShow || "sinDato",
+                    estadoPrograma3d2F: arrayEstadoPrograma3d2F[i] || "sinDato",
+                    revisionPrograma3d2F: parseInt(arrayRevisionPrograma3d2F[i]) || 0,
+                    programa3d4F: programa3d4FUserToShow || "sinDato",
+                    estadoPrograma3d4F: arrayEstadoPrograma3d4F[i] || "sinDato",
+                    revisionPrograma3d4F: parseInt(arrayRevisionPrograma3d4F[i]) || 0,
+                    notasProgramacion: arrayNotasProgramacion[i] || "sinDato",
+                    revisionNotasProgramacion: parseInt(arrayRevisionNotasProgramacion[i]) || 0,
+                    timestamp: formatDate(),
+                    creator: dataUserCreator(userCreator),
+                    modificator: dataUserModificatorEmpty(),
+                    modifiedOn: "",
+                }
+                arrayInfoAddedToDetail.push(infoAddedToOt)
+            }
+            //console.log('arrayInfoAddedToDetail-controller', arrayInfoAddedToDetail)
+
+            const itemUpdated = await this.programms.addInfoProgramacionSegunda(
+                projectId,
+                otQuantity,
+                ociNumberK,
+                arrayOtNumberK,
+                arrayDetalleNumberK,
+                detallesQuantity,
+                totalDetallesQuantity,
+                arrayInfoAddedToDetail
+            )
+    
+            if (!itemUpdated) {
+                catchError400_3(req, res, next)
+            }
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_1(req, res, next)
+            }
+
+            data.slide = 2
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectWonSelectedDetail', {
+                    proyecto,
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    data,
+                    csrfToken
+                })
+            }, 1000)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
         }
     }
 

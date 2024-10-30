@@ -32,80 +32,81 @@
     </thead>
     <tbody class="table-group-divider">
         
-        <%
-        let arrResDatoFCero = []; let arrResEstadoFCero = []; let valueArrayResFCero = 0; let arrResRevisionFCero = [];
-        let arrResCreadorFCero = []; let arrResModificadorFCero = []; let arrResFechaFCero = []; let arrResFechaModFCero = [];
+        <%let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+            resDatoFCero = 'S/D', resEstadoFCero = 'S/D', resRevisionFCero = 0,
+            resDatoFUno = 'S/D', resEstadoFUno = 'S/D', resRevisionFUno = 0,
+            resDatoFDos = 'S/D', resEstadoFDos = 'S/D', resRevisionFDos = 0;
 
-        let arrResDatoFUno = []; let arrResEstadoFUno = []; let valueArrayResFUno = 0; let arrResRevisionFUno = [];
-        let arrResCreadorFUno = []; let arrResModificadorFUno = []; let arrResFechaFUno = []; let arrResFechaModFUno = [];
-
-        let arrResDatoFDos = []; let arrResEstadoFDos = []; let valueArrayResFDos = 0; let arrResRevisionFDos = [];
-        let arrResCreadorFDos = []; let arrResModificadorFDos = []; let arrResFechaFDos = []; let arrResFechaModFDos = [];
-
-        let anteriorDisabled = "disabled";
-        let siguienteDisabled = "disabled";
-        let resDatoFCero = 'S/D'; let resEstadoFCero = 'S/D'; let resRevisionFCero = 0;
-        let resDatoFUno = 'S/D'; let resEstadoFUno = 'S/D'; let resRevisionFUno = 0;
-        let resDatoFDos = 'S/D'; let resEstadoFDos = 'S/D'; let resRevisionFDos = 0;
+            const mecanizadoPrimeraConfig = {
+                enProceso: { icon: "fa-arrows-spin", iconColor: "color:#b09b12" },
+                terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
+                suspendido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
+                noAplica: { icon: "fa-ban", iconColor: "color:#000000" },
+                default: { icon: "fa-triangle-exclamation", iconColor: "color:#1c21ac" }
+            };
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
-            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject[n]
-            let largoArrayOtDetalles = pathMongoOtProject.otDetalles.length
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+            pathMongoOtDetalles = pathMongoOtProject[n].otDetalles,
+            largoArrayOtDetalles = parseInt(pathMongoOtDetalles.length)
 
             for ( let o=0; largoArrayOtDetalles> o; o++) {
-                let otMecanizadoPrimera = proyecto[m].project[j].oci[k].otProject[n].otDetalles[o].otMecanizadoPrimera || [];
-                let largoArrayMecanizado = otMecanizadoPrimera.length;
+                let pathToMongoOtMecanizadoPrimera = pathMongoOtDetalles[o].otMecanizadoPrimera || [];
+                let largoArrayMecanizado = parseInt(pathToMongoOtMecanizadoPrimera.length);
 
-                if (pathMongoOtProject.visible && pathMongoOtProject.otDetalles[o].visible) {
-                    if (pathMongoOtProject.otStatus && pathMongoOtProject.otDetalles[o].statusDetalle) { %>
+                let arrResDatoFCero = [], arrResEstadoFCero = [], valueArrayResFCero = 0, arrResRevisionFCero = [],
+                arrResCreadorFCero = [], arrResModificadorFCero = [], arrResFechaFCero = [], arrResFechaModFCero = [];
+
+                let arrResDatoFUno = [], arrResEstadoFUno = [], valueArrayResFUno = 0, arrResRevisionFUno = [],
+                arrResCreadorFUno = [], arrResModificadorFUno = [], arrResFechaFUno = [], arrResFechaModFUno = [];
+
+                let arrResDatoFDos = [], arrResEstadoFDos = [], valueArrayResFDos = 0, arrResRevisionFDos = [],
+                arrResCreadorFDos = [], arrResModificadorFDos = [], arrResFechaFDos = [], arrResFechaModFDos = [];
+
+                if (pathMongoOtProject[n].visible && pathMongoOtDetalles[o].visible) {
+                    if (pathMongoOtProject[n].otStatus && pathMongoOtDetalles[o].statusDetalle) { %>
+                        <!--Activo-->
                         <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh;">
                             <% for (let q = 10; totalColDataMecanizadoPrimera > q; q++) {
                                 if (q==10) { %>
                                     <!--Fase 0 data Activo--> 
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
-                                                    for (let i = 0; largoArrayMecanizado > i; i++) {
-                                                        let pathToMongoDBOtMecanizado = otMecanizadoPrimera[i]
+                                                    
+                                            for (let i = 0; largoArrayMecanizado > i; i++) {
+                                                if (pathToMongoOtMecanizadoPrimera[i]) {
+                                                    let largoArray = parseInt(largoArrayMecanizado)
+                                                    resDatoFCero = pathToMongoOtMecanizadoPrimera[largoArray-1].fCero || "S/D"
+                                                    resEstadoFCero = pathToMongoOtMecanizadoPrimera[largoArray-1].estadoFCero
+                                                    resRevisionFCero = pathToMongoOtMecanizadoPrimera[largoArray-1].revisionFCero
+                                                    
+                                                    arrResDatoFCero.push(pathToMongoOtMecanizado[i].fCero)
+                                                    arrResEstadoFCero.push(pathToMongoOtMecanizado[i].estadoFCero)
+                                                    arrResRevisionFCero.push(pathToMongoOtMecanizado[i].revisionFCero)
+                                                
+                                                    arrResCreadorFCero.push(pathToMongoOtMecanizado[i].creator[0].username)
+                                                    arrResModificadorFCero.push(pathToMongoOtMecanizado[i].modificator[0].username)
+                                                    arrResFechaOtFCero.push(pathToMongoOtMecanizado[i].timestamp)
+                                                    arrResFechaModFCero.push(pathToMongoOtMecanizado[i].modifiedOn)
+                                                    
+                                                } else {
+                                                    resDatoFCero = 'S/D'
+                                                    resEstadoFCero = 'S/D'
+                                                    resRevisionFCero = 0
+                                                }
+                                            }
+                                            valueArrayResFCero = parseInt(arrResDatoFCero.length-1)
 
-                                                        if (otMecanizadoPrimera) {
-                                                            let largoArray = parseInt(largoArrayMecanizado)
-                                                            resDatoFCero = otMecanizadoPrimera[largoArray-1].fCero
-                                                            resEstadoFCero = otMecanizadoPrimera[largoArray-1].estadoFCero
-                                                            resRevisionFCero = otMecanizadoPrimera[largoArray-1].revisionFCero
-                                                            
-                                                            if (i == 0) {
-                                                                arrResDatoFCero.push(pathToMongoDBOtMecanizado.fCero)
-                                                                arrResEstadoFCero.push(pathToMongoDBOtMecanizado.estadoFCero)
-                                                                arrResRevisionFCero.push(pathToMongoDBOtMecanizado.revisionFCero)
-                                                            }
-                                                            else if (i >= 1 && pathToMongoDBOtMecanizado.revisionFCero != otMecanizadoPrimera[i-1].revisionFCero) {
-                                                                arrResDatoFCero.push(pathToMongoDBOtMecanizado.fCero)
-                                                                arrResEstadoFCero.push(pathToMongoDBOtMecanizado.estadoFCero)
-                                                                arrResRevisionFCero.push(pathToMongoDBOtMecanizado.revisionFCero)
-                                                            }
-                                                                arrResCreadorFCero.push(pathToMongoDBOtMecanizado.creator[0].username)
-                                                                arrResModificadorFCero.push(pathToMongoDBOtMecanizado.modificator[0].username)
-                                                                arrResFechaOtFCero.push(pathToMongoDBOtMecanizado.timestamp)
-                                                                arrResFechaModFCero.push(pathToMongoDBOtMecanizado.modifiedOn)
-                                                                valueArrayResFCero = parseInt(arrResDatoFCero.length-1)
-
-                                                        } else {
-                                                            resDatoFCero = 'S/D'
-                                                            resEstadoFCero = 'S/D'
-                                                            resRevisionFCero = 0
-                                                        }
-                                                    }
-
-                                                    if (arrResDatoFCero.length == 1 ) {
-                                                        anteriorDisabled = "disabled"
-                                                        siguienteDisabled = "disabled"
-                                                    } else if (arrResDatoFCero.length == arrResRevisionFCero.length) {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    } else {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    }
+                                            if (arrResDatoFCero.length == 1 ) {
+                                                anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
+                                            } else if (arrResDatoFCero.length == arrResRevisionFCero.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
                                                     
                                         } else {
                                             anteriorDisabled = "disabled"
@@ -117,6 +118,11 @@
                                             arrResEstadoFCero.push(resEstadoFCero)
                                             arrResRevisionFCero.push(resRevisionFCero)
                                             valueArrayResFCero = 0
+
+                                            arrResCreadorFCero.push(pathMongoOtDetalles[o].creator[0].username)
+                                            arrResModificadorFCero = ""
+                                            arrResFechaFCero.push(pathMongoOtDetalles[o].timestamp)
+                                            arrResFechaModFCero = ""
                                         } %>
                                         
                                             <div id="btnAnteriorSiguienteFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>">
@@ -134,35 +140,18 @@
                                                 <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaFCero %>">
                                                 <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModFCero %>">
 
-                                                <span id="resDatoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoFCero %></span> |
+                                                <span id="resDatoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                    <%= resDatoFCero %>
+                                                </span> |
 
-                                                <% let icon; let iconColor;
-                                                switch (resEstadoFCero) { 
-                                                    case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
-                                                    break; }
-                                                    case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
-                                                    break; }        
-                                                    case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
-                                                    break; }
-                                                    case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
-                                                    break; }
-                                                    default: {
-                                                        icon = ""; iconColor = ""; %>
-                                                        <span id="resEstadoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                    <% break; }
-                                                }
+                                                <% const config = mecanizadoPrimeraConfig[resEstadoFCero] || mecanizadoPrimeraConfig.default; %>
+                                                <span id="resEstadoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFCero%>">
+                                                    <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                                </span> |
 
-                                                if (icon) { %>
-                                                    <span id="resEstadoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFCero%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
-                                                    </span> |
-                                                <% } %>
-
-                                                <span id="resRevisionFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFCero" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionFCero %></span>
+                                                <span id="resRevisionFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFCero" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                    <%= resRevisionFCero %>
+                                                </span>
 
                                                 <button id="btnSiguienteFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteFCero" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
@@ -170,64 +159,63 @@
                                                 </button>
                                             </div>
                                     </td>
+
                                 <% } else if (q==11) { %>
                                     <!-- Fase 1 data Activo-->
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
-                                                    for (let i = 0; largoArrayMecanizado > i; i++) {
-                                                        let pathToMongoDBOtMecanizado = otMecanizadoPrimera[i]
-                                                        
-                                                        if (otMecanizadoPrimera) {
-                                                            let largoArray = parseInt(largoArrayMecanizado)
-                                                            resDatoFUno = otMecanizadoPrimera[largoArray-1].fUno
-                                                            resEstadoFUno = otMecanizadoPrimera[largoArray-1].estadoFUno
-                                                            resRevisionFUno = otMecanizadoPrimera[largoArray-1].revisionFUno
-                                                            
-                                                            if (i == 0) {
-                                                                arrResDatoFUno.push(pathToMongoDBOtMecanizado.fUno)
-                                                                arrResEstadoFUno.push(pathToMongoDBOtMecanizado.estadoFUno)
-                                                                arrResRevisionFUno.push(pathToMongoDBOtMecanizado.revisionFUno)
-                                                            }
-                                                            else if (i >= 1 && pathToMongoDBOtMecanizado.revisionFUno != otMecanizadoPrimera[i-1].revisionFUno) {
-                                                                arrResDatoFUno.push(pathToMongoDBOtMecanizado.fUno)
-                                                                arrResEstadoFUno.push(pathToMongoDBOtMecanizado.estadoFUno)
-                                                                arrResRevisionFUno.push(pathToMongoDBOtMecanizado.revisionFUno)
-                                                            }
-                                                                arrResCreadorFUno.push(pathToMongoDBOtMecanizado.creator[0].username)
-                                                                arrResModificadorFUno.push(pathToMongoDBOtMecanizado.modificator[0].username)
-                                                                arrResFechaFUno.push(pathToMongoDBOtMecanizado.timestamp)
-                                                                arrResFechaModFUno.push(pathToMongoDBOtMecanizado.modifiedOn)
-                                                                valueArrayResFUno = parseInt(arrResDatoFUno.length-1)
-                                                                                                        
-                                                        } else {
-                                                            resDatoFUno = 'S/D'
-                                                            resEstadoFUno = 'S/D'
-                                                            resRevisionFUno = 0
-                                                        }
-                                                    }
+
+                                            for (let i = 0; largoArrayMecanizado > i; i++) {
+                                                if (pathToMongoOtMecanizadoPrimera[i]) {
+                                                    let largoArray = parseInt(largoArrayMecanizado)
+                                                    resDatoFUno = pathToMongoOtMecanizadoPrimera[largoArray-1].fUno
+                                                    resEstadoFUno = pathToMongoOtMecanizadoPrimera[largoArray-1].estadoFUno
+                                                    resRevisionFUno = pathToMongoOtMecanizadoPrimera[largoArray-1].revisionFUno
                                                     
-                                                    if (arrResDatoFUno.length == 1 ) {
-                                                        anteriorDisabled = "disabled"
-                                                        siguienteDisabled = "disabled"
-                                                    } else if (arrResDatoFUno.length == arrResRevisionFUno.length) {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    } else {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    }
+                                                    arrResDatoFUno.push(pathToMongoOtMecanizado[i].fUno)
+                                                    arrResEstadoFUno.push(pathToMongoOtMecanizado[i].estadoFUno)
+                                                    arrResRevisionFUno.push(pathToMongoOtMecanizado[i].revisionFUno)
+                                                
+                                                    arrResCreadorFUno.push(pathToMongoOtMecanizado[i].creator[0].username)
+                                                    arrResModificadorFUno.push(pathToMongoOtMecanizado[i].modificator[0].username)
+                                                    arrResFechaFUno.push(pathToMongoOtMecanizado[i].timestamp)
+                                                    arrResFechaModFUno.push(pathToMongoOtMecanizado[i].modifiedOn)
                                                     
                                                 } else {
-                                                    anteriorDisabled = "disabled"
-                                                    siguienteDisabled = "disabled"
-                                                    resDatoFUno = "S/D"
-                                                    resEstadoFUno = "S/D"
+                                                    resDatoFUno = 'S/D'
+                                                    resEstadoFUno = 'S/D'
                                                     resRevisionFUno = 0
-                                                    arrResDatoFUno.push(resDatoFUno)
-                                                    arrResEstadoFUno.push(resEstadoFUno)
-                                                    arrResRevisionFUno.push(resRevisionFUno)
-                                                    valueArrayResFUno = 0
-                                            } %>
+                                                }
+                                            }
+                                            valueArrayResFUno = parseInt(arrResDatoFUno.length-1)
+                                                    
+                                            if (arrResDatoFUno.length == 1 ) {
+                                                anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
+                                            } else if (arrResDatoFUno.length == arrResRevisionFUno.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                                    
+                                        } else {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                            resDatoFUno = "S/D"
+                                            resEstadoFUno = "S/D"
+                                            resRevisionFUno = 0
+                                            arrResDatoFUno.push(resDatoFUno)
+                                            arrResEstadoFUno.push(resEstadoFUno)
+                                            arrResRevisionFUno.push(resRevisionFUno)
+                                            valueArrayResFUno = 0
+
+                                            arrResCreadorFUno.push(pathMongoOtDetalles[o].creator[0].username)
+                                            arrResModificadorFUno = ""
+                                            arrResFechaFUno.push(pathMongoOtDetalles[o].timestamp)
+                                            arrResFechaModFUno = ""
+                                        } %>
                                         
                                             <div id="btnAnteriorSiguienteFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>">
                                                 <button id="btnAnteriorFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorFUno" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
@@ -244,35 +232,18 @@
                                                 <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaFUno %>">
                                                 <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModFUno %>">
 
-                                                <span id="resDatoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoFUno %></span> |
+                                                <span id="resDatoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                    <%= resDatoFUno %>
+                                                </span> |
 
-                                                <% let icon; let iconColor;
-                                                switch (resEstadoFUno) { 
-                                                    case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
-                                                    break; }
-                                                    case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
-                                                    break; }        
-                                                    case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
-                                                    break; }
-                                                    case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
-                                                    break; }
-                                                    default: {
-                                                        icon = ""; iconColor = ""; %>
-                                                        <span id="resEstadoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                    <% break; }
-                                                }
+                                                <% const config = mecanizadoPrimeraConfig[resEstadoFUno] || mecanizadoPrimeraConfig.default; %>
+                                                <span id="resEstadoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFUno%>">
+                                                    <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                                </span> |
 
-                                                if (icon) { %>
-                                                    <span id="resEstadoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFUno%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
-                                                    </span> |
-                                                <% } %>
-
-                                                <span id="resRevisionFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFUno" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionFUno %></span>
+                                                <span id="resRevisionFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFUno" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                    <%= resRevisionFUno %>
+                                                </span>
 
                                                 <button id="btnSiguienteFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteFUno" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
@@ -281,64 +252,63 @@
                                                 </button>
                                             </div>
                                     </td>
+
                                 <% } else { %>
                                     <!-- Fase 2 data Activo-->
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
-                                                    for (let i = 0; largoArrayMecanizado > i; i++) {
-                                                        let pathToMongoDBOtMecanizado = otMecanizadoPrimera[i]
-                                                        
-                                                        if (otMecanizadoPrimera) {
-                                                            let largoArray = parseInt(largoArrayMecanizado)
-                                                            resDatoFDos = otMecanizadoPrimera[largoArray-1].fDos || 'sinDato'
-                                                            resEstadoFDos = otMecanizadoPrimera[largoArray-1].estadoFDos || 'sinDato'
-                                                            resRevisionFDos = otMecanizadoPrimera[largoArray-1].revisionFDos
-                                                            
-                                                            if (i == 0) {
-                                                                arrResDatoFDos.push(pathToMongoDBOtMecanizado.fDos)
-                                                                arrResEstadoFDos.push(pathToMongoDBOtMecanizado.estadoFDos)
-                                                                arrResRevisionFDos.push(pathToMongoDBOtMecanizado.revisionFDos)
-                                                            }
-                                                            else if (i >= 1 && pathToMongoDBOtMecanizado.revisionFDos != otMecanizadoPrimera[i-1].revisionFDos) {
-                                                                arrResDatoFDos.push(pathToMongoDBOtMecanizado.fDos)
-                                                                arrResEstadoFDos.push(pathToMongoDBOtMecanizado.estadoFDos)
-                                                                arrResRevisionFDos.push(pathToMongoDBOtMecanizado.revisionFDos)
-                                                            }
-                                                                arrResCreadorFDos.push(pathToMongoDBOtMecanizado.creator[0].username)
-                                                                arrResModificadorFDos.push(pathToMongoDBOtMecanizado.modificator[0].username)
-                                                                arrResFechaFDos.push(pathToMongoDBOtMecanizado.timestamp)
-                                                                arrResFechaModFDos.push(pathToMongoDBOtMecanizado.modifiedOn)
-                                                                valueArrayResFDos = parseInt(arrResDatoFDos.length-1)
 
-                                                        } else {
-                                                            resDatoFDos = 'S/D'
-                                                            resEstadoFDos = 'S/D'
-                                                            resRevisionFDos = 0
-                                                        }
-                                                    }
+                                            for (let i = 0; largoArrayMecanizado > i; i++) {
+                                                if (pathToMongoOtMecanizadoPrimera[i]) {
+                                                    let largoArray = parseInt(largoArrayMecanizado)
+                                                    resDatoFDos = pathToMongoOtMecanizadoPrimera[largoArray-1].fDos || 'sinDato'
+                                                    resEstadoFDos = pathToMongoOtMecanizadoPrimera[largoArray-1].estadoFDos || 'sinDato'
+                                                    resRevisionFDos = pathToMongoOtMecanizadoPrimera[largoArray-1].revisionFDos
                                                     
-                                                    if (arrResDatoFDos.length == 1 ) {
-                                                        siguienteDisabled = "disabled"
-                                                        anteriorDisabled = "disabled"
-                                                    } else if (arrResDatoFDos.length == arrResRevisionFDos.length) {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    } else {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    }
-                                                    
+                                                    arrResDatoFDos.push(pathToMongoOtMecanizado[i].fDos)
+                                                    arrResEstadoFDos.push(pathToMongoOtMecanizado[i].estadoFDos)
+                                                    arrResRevisionFDos.push(pathToMongoOtMecanizado[i].revisionFDos)
+                                                
+                                                    arrResCreadorFDos.push(pathToMongoOtMecanizado[i].creator[0].username)
+                                                    arrResModificadorFDos.push(pathToMongoOtMecanizado[i].modificator[0].username)
+                                                    arrResFechaFDos.push(pathToMongoOtMecanizado[i].timestamp)
+                                                    arrResFechaModFDos.push(pathToMongoOtMecanizado[i].modifiedOn)
+                                                        
                                                 } else {
-                                                    anteriorDisabled = "disabled"
-                                                    siguienteDisabled = "disabled"
-                                                    resDatoFDos = "S/D"
-                                                    resEstadoFDos = "S/D"
+                                                    resDatoFDos = 'S/D'
+                                                    resEstadoFDos = 'S/D'
                                                     resRevisionFDos = 0
-                                                    arrResDatoFDos.push(resDatoFDos)
-                                                    arrResEstadoFDos.push(resEstadoFDos)
-                                                    arrResRevisionFDos.push(resRevisionFDos)
-                                                    valueArrayResFDos = 0
-                                            } %>
+                                                }
+                                            }
+                                            valueArrayResFDos = parseInt(arrResDatoFDos.length-1)
+                                                    
+                                            if (arrResDatoFDos.length == 1 ) {
+                                                siguienteDisabled = "disabled"
+                                                anteriorDisabled = "disabled"
+                                            } else if (arrResDatoFDos.length == arrResRevisionFDos.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                                
+                                        } else {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                            resDatoFDos = "S/D"
+                                            resEstadoFDos = "S/D"
+                                            resRevisionFDos = 0
+                                            arrResDatoFDos.push(resDatoFDos)
+                                            arrResEstadoFDos.push(resEstadoFDos)
+                                            arrResRevisionFDos.push(resRevisionFDos)
+                                            valueArrayResFDos = 0
+
+                                            arrResCreadorFDos.push(pathMongoOtDetalles[o].creator[0].username)
+                                            arrResModificadorFDos = ""
+                                            arrResFechaFDos.push(pathMongoOtDetalles[o].timestamp)
+                                            arrResFechaModFDos = ""
+                                        } %>
 
                                             <div id="btnAnteriorSiguienteFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>">
                                                 <button id="btnAnteriorFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorFDos" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
@@ -355,35 +325,18 @@
                                                 <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaFDos %>">
                                                 <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModFDos %>">
 
-                                                <span id="resDatoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2"><%= resDatoFDos %></span> |
+                                                <span id="resDatoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                    <%= resDatoFDos %>
+                                                </span> |
 
-                                                <% let icon; let iconColor;
-                                                switch (resEstadoFDos) { 
-                                                    case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
-                                                    break; }
-                                                    case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
-                                                    break; }        
-                                                    case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
-                                                    break; }
-                                                    case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
-                                                    break; }
-                                                    default: {
-                                                        icon = ""; iconColor = ""; %>
-                                                        <span id="resEstadoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                    <% break; }
-                                                }
+                                                <% const config = mecanizadoPrimeraConfig[resEstadoFDos] || mecanizadoPrimeraConfig.default; %>
+                                                <span id="resEstadoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFDos%>">
+                                                    <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                                </span> |
 
-                                                if (icon) { %>
-                                                    <span id="resEstadoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFDos%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
-                                                    </span> |
-                                                <% } %>
-
-                                                <span id="resRevisionFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFDos" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionFDos %></span>
+                                                <span id="resRevisionFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFDos" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                    <%= resRevisionFDos %>
+                                                </span>
 
                                                 <button id="btnSiguienteFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteFDos" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
                                                     style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
@@ -395,7 +348,9 @@
                                 <% }
                             } %>
                         </tr>
+
                     <% } else { %>
+                        <!-- Inactivo -->
                         <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="pe-none border-bottom" style="height: 5vh; background-color: #dedede;">
                             <% for (let q = 10; totalColDataMecanizadoPrimera > q; q++) {
                                 if (q==10) { %>
@@ -403,33 +358,26 @@
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
                                         
-                                                for (let i = 0; largoArrayMecanizado > i; i++) {
-                                                    if (otMecanizadoPrimera) {
-                                                        let largoArray = parseInt(largoArrayMecanizado)
-                                                        resDatoFCero = otMecanizadoPrimera[largoArray-1].fCero || 'sinDato'
-                                                        resEstadoFCero = otMecanizadoPrimera[largoArray-1].estadoFCero || 'sinDato'
-                                                        resRevisionFCero = otMecanizadoPrimera[largoArray-1].revisionFCero
-                                                        
-                                                        if (i == 0) {
-                                                            arrResDatoFCero.push(pathToMongoDBOtMecanizado.fCero)
-                                                            arrResEstadoFCero.push(pathToMongoDBOtMecanizado.FCero)
-                                                            arrResRevisionFCero.push(pathToMongoDBOtMecanizado.revisionFCero)
-                                                        }
-                                                        else if (i >= 1 && pathToMongoDBOtMecanizado.revisionFCero != otMecanizadoPrimera[i-1].revisionFCero) {
-                                                            arrResDatoFCero.push(pathToMongoDBOtMecanizado.fCero)
-                                                            arrResEstadoFCero.push(pathToMongoDBOtMecanizado.estadoFCero)
-                                                            arrResRevisionFCero.push(pathToMongoDBOtMecanizado.revisionFCero)
-                                                        }
-                                                        valueArrayResFCero = parseInt(arrResDatoFCero.length-1)
-                                                                                                    
-                                                    } else {
-                                                        resDatoFCero = 'S/D'
-                                                        resEstadoFCero = 'S/D'
-                                                        resRevisionFCero = 0
-                                                    }
+                                            for (let i = 0; largoArrayMecanizado > i; i++) {
+                                                if (pathToMongoOtMecanizadoPrimera[i]) {
+                                                    let largoArray = parseInt(largoArrayMecanizado)
+                                                    resDatoFCero = pathToMongoOtMecanizadoPrimera[largoArray-1].fCero || 'sinDato'
+                                                    resEstadoFCero = pathToMongoOtMecanizadoPrimera[largoArray-1].estadoFCero || 'sinDato'
+                                                    resRevisionFCero = pathToMongoOtMecanizadoPrimera[largoArray-1].revisionFCero
+                                                                                                            
+                                                    arrResDatoFCero.push(pathToMongoOtMecanizado[i].fCero)
+                                                    arrResEstadoFCero.push(pathToMongoOtMecanizado[i].estadoFCero)
+                                                    arrResRevisionFCero.push(pathToMongoOtMecanizado[i].revisionFCero)
+                                                    
+                                                } else {
+                                                    resDatoFCero = 'S/D'
+                                                    resEstadoFCero = 'S/D'
+                                                    resRevisionFCero = 0
                                                 }
-                                                resDatoFCero = otMecanizadoPrimera[0].FCero
-                                                resEstadoFCero = otMecanizadoPrimera[0].estadoFCero
+                                            }
+                                            valueArrayResFCero = parseInt(arrResDatoFCero.length-1)
+                                            resDatoFCero = pathToMongoOtMecanizadoPrimera[0].FCero
+                                            resEstadoFCero = pathToMongoOtMecanizadoPrimera[0].estadoFCero
 
                                         } else {
                                             resDatoFCero = 'S/D'
@@ -444,69 +392,45 @@
                                             <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFCero %>">
                                             <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFCero %>">
                                         
-                                            <span id="resDatoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2"><%= resDatoFCero %></span> |
+                                            <span id="resDatoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2">
+                                                <%= resDatoFCero %>
+                                            </span> |
 
-                                            <% let icon; let iconColor;
-                                            switch (resEstadoFCero) { 
-                                                case "enProceso": {
-                                                    icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
-                                                break; }
-                                                case "terminado": {
-                                                    icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
-                                                break; }        
-                                                case "suspendido": {
-                                                    icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
-                                                break; }
-                                                case "noAplica": {
-                                                    icon = "fa-ban"; iconColor = `style="color:#000000"`;
-                                                break; }
-                                                default: {
-                                                    icon = ""; iconColor = ""; %>
-                                                    <span id="resEstadoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                <% break; }
-                                            }
+                                            <% const config = mecanizadoPrimeraConfig[resEstadoFCero] || mecanizadoPrimeraConfig.default; %>
+                                            <span id="resEstadoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFCero%>">
+                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                            </span> |
 
-                                            if (icon) { %>
-                                                <span id="resEstadoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFCero%>">
-                                                    <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
-                                                </span> |
-                                            <% } %>
-
-                                            <span id="resRevisionFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFCero" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionFCero %></span>
+                                            <span id="resRevisionFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFCero" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                <%= resRevisionFCero %>
+                                            </span>
                                     </td>
                                 <% } else if (q==11) { %>
                                     <!-- Fase 1 data Inactivo -->
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
-                                                for (let i = 0; largoArrayMecanizado > i; i++) {
+                                            for (let i = 0; largoArrayMecanizado > i; i++) {
+                                                
+                                                if (pathToMongoOtMecanizadoPrimera[i]) {
+                                                    let largoArray = parseInt(largoArrayMecanizado)
+                                                    resDatoFUno = pathToMongoOtMecanizadoPrimera[largoArray-1].fUno || 'sinDato'
+                                                    resEstadoFUno = pathToMongoOtMecanizadoPrimera[largoArray-1].fUno || 'sinDato'
+                                                    resRevisionFUno = pathToMongoOtMecanizadoPrimera[largoArray-1].revisionFUno
                                                     
-                                                    if (otMecanizadoPrimera) {
-                                                        let largoArray = parseInt(largoArrayMecanizado)
-                                                        resDatoFUno = otMecanizadoPrimera[largoArray-1].fUno || 'sinDato'
-                                                        resEstadoFUno = otMecanizadoPrimera[largoArray-1].fUno || 'sinDato'
-                                                        resRevisionFUno = otMecanizadoPrimera[largoArray-1].revisionFUno
-                                                        
-                                                        if (i == 0) {
-                                                            arrResDatoFUno.push(pathToMongoDBOtMecanizado.fUno)
-                                                            arrResEstadoFUno.push(pathToMongoDBOtMecanizado.fUno)
-                                                            arrResRevisionFUno.push(pathToMongoDBOtMecanizado.revisionFUno)
-                                                        }
-                                                        else if (i >= 1 && pathToMongoDBOtMecanizado.revisionFUno != otMecanizadoPrimera[i-1].revisionFUno) {
-                                                            arrResDatoFUno.push(pathToMongoDBOtMecanizado.fUno)
-                                                            arrResEstadoFUno.push(pathToMongoDBOtMecanizado.fUno)
-                                                            arrResRevisionFUno.push(pathToMongoDBOtMecanizado.revisionFUno)
-                                                        }
-                                                        valueArrayResFUno = parseInt(arrResDatoFUno.length-1)
-
-                                                    } else {
-                                                        resDatoFUno = 'S/D'
-                                                        resEstadoFUno = 'S/D'
-                                                        resRevisionFUno = 0
-                                                    }
+                                                    arrResDatoFUno.push(pathToMongoOtMecanizado[i].fUno)
+                                                    arrResEstadoFUno.push(pathToMongoOtMecanizado[i].fUno)
+                                                    arrResRevisionFUno.push(pathToMongoOtMecanizado[i].revisionFUno)
+                                                    
+                                                } else {
+                                                    resDatoFUno = 'S/D'
+                                                    resEstadoFUno = 'S/D'
+                                                    resRevisionFUno = 0
                                                 }
-                                                resDatoFUno = otMecanizadoPrimera[0].fUno
-                                                resEstadoFUno = otMecanizadoPrimera[0].estadoFUno
-                                        
+                                            }
+                                            valueArrayResFUno = parseInt(arrResDatoFUno.length-1)
+                                            resDatoFUno = pathToMongoOtMecanizadoPrimera[0].fUno
+                                            resEstadoFUno = pathToMongoOtMecanizadoPrimera[0].estadoFUno
+                                    
                                         } else {
                                             resDatoFUno = "S/D"
                                             resEstadoFUno = "S/D"
@@ -521,68 +445,45 @@
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFUno %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFUno %>">
 
-                                        <span id="resDatoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2"><%= resDatoFUno %></span> |
+                                        <span id="resDatoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2">
+                                            <%= resDatoFUno %>
+                                        </span> |
                                         
-                                        <% let icon; let iconColor;
-                                                switch (resEstadoFUno) { 
-                                                    case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
-                                                    break; }
-                                                    case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
-                                                    break; }        
-                                                    case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
-                                                    break; }
-                                                    case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
-                                                    break; }
-                                                    default: {
-                                                        icon = ""; iconColor = ""; %>
-                                                        <span id="resEstadoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                    <% break; }
-                                                }
+                                        <% const config = mecanizadoPrimeraConfig[resEstadoFUno] || mecanizadoPrimeraConfig.default; %>
+                                        <span id="resEstadoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFUno%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
 
-                                                if (icon) { %>
-                                                    <span id="resEstadoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFUno%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
-                                                    </span> |
-                                                <% } %>
-
-                                                <span id="resRevisionFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFUno" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionFUno %></span>
+                                        <span id="resRevisionFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFUno" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionFUno %>
+                                        </span>
                                     </td>
+
                                 <% } else { %>
                                     <!-- Fase 2 data Inactivo -->
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
-                                                for (let i = 0; largoArrayMecanizado > i; i++) {
+                                            for (let i = 0; largoArrayMecanizado > i; i++) {
+                                                
+                                                if (pathToMongoOtMecanizadoPrimera[i]) {
+                                                    let largoArray = parseInt(largoArrayMecanizado)
+                                                    resDatoFDos = pathToMongoOtMecanizadoPrimera[largoArray-1].fDos || 'sinDato'
+                                                    resEstadoFDos = pathToMongoOtMecanizadoPrimera[largoArray-1].estadoFDos || 'sinDato'
+                                                    resRevisionFDos = pathToMongoOtMecanizadoPrimera[largoArray-1].revisionFDos
                                                     
-                                                    if (otMecanizadoPrimera) {
-                                                        let largoArray = parseInt(largoArrayMecanizado)
-                                                        resDatoFDos = otMecanizadoPrimera[largoArray-1].fDos || 'sinDato'
-                                                        resEstadoFDos = otMecanizadoPrimera[largoArray-1].estadoFDos || 'sinDato'
-                                                        resRevisionFDos = otMecanizadoPrimera[largoArray-1].revisionFDos
-                                                        
-                                                        if (i == 0) {
-                                                            arrResDatoFDos.push(pathToMongoDBOtMecanizado.fDos)
-                                                            arrResEstadoFDos.push(pathToMongoDBOtMecanizado.estadoFDos)
-                                                            arrResRevisionFDos.push(pathToMongoDBOtMecanizado.revisionFDos)
-                                                        }
-                                                        else if (i >= 1 && pathToMongoDBOtMecanizado.revisionFDos != otMecanizadoPrimera[i-1].revisionFDos) {
-                                                            arrResDatoFDos.push(pathToMongoDBOtMecanizado.fDos)
-                                                            arrResEstadoFDos.push(pathToMongoDBOtMecanizado.estadoFDos)
-                                                            arrResRevisionFDos.push(pathToMongoDBOtMecanizado.revisionFDos)
-                                                        }
-                                                        valueArrayResFDos = parseInt(arrResDatoFDos.length-1)
+                                                    arrResDatoFDos.push(pathToMongoOtMecanizado[i].fDos)
+                                                    arrResEstadoFDos.push(pathToMongoOtMecanizado[i].estadoFDos)
+                                                    arrResRevisionFDos.push(pathToMongoOtMecanizado[i].revisionFDos)
                                                     
-                                                    } else {
-                                                        resDatoFDos = 'S/D'
-                                                        resEstadoFDos = 'S/D'
-                                                        resRevisionFDos = 0
-                                                    }
+                                                } else {
+                                                    resDatoFDos = 'S/D'
+                                                    resEstadoFDos = 'S/D'
+                                                    resRevisionFDos = 0
                                                 }
-                                                resDatoFDos = otMecanizadoPrimera[0].fDos
-                                                resEstadoFDos = otMecanizadoPrimera[0].estadoFDos
+                                            }
+                                            valueArrayResFDos = parseInt(arrResDatoFDos.length-1)
+                                            resDatoFDos = pathToMongoOtMecanizadoPrimera[0].fDos
+                                            resEstadoFDos = pathToMongoOtMecanizadoPrimera[0].estadoFDos
                                         
                                         } else {
                                             resDatoFDos = 'S/D'
@@ -597,35 +498,18 @@
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFDos %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFDos %>">
 
-                                        <span id="resDatoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2"><%= resDatoFDos %></span> |
+                                        <span id="resDatoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2">
+                                            <%= resDatoFDos %>
+                                        </span> |
                                         
-                                        <% let icon; let iconColor;
-                                                switch (resEstadoFDos) { 
-                                                    case "enProceso": {
-                                                        icon = "fa-arrows-spin"; iconColor = `style="color:#b09b12"`;
-                                                    break; }
-                                                    case "terminado": {
-                                                        icon = "fa-circle-check"; iconColor = `style="color:#008f30"`;
-                                                    break; }        
-                                                    case "suspendido": {
-                                                        icon = "fa-circle-xmark"; iconColor = `style="color:#c40000"`;
-                                                    break; }
-                                                    case "noAplica": {
-                                                        icon = "fa-ban"; iconColor = `style="color:#000000"`;
-                                                    break; }
-                                                    default: {
-                                                        icon = ""; iconColor = ""; %>
-                                                        <span id="resEstadoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                    <% break; }
-                                                }
+                                        <% const config = mecanizadoPrimeraConfig[resEstadoFDos] || mecanizadoPrimeraConfig.default; %>
+                                        <span id="resEstadoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFDos%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
 
-                                                if (icon) { %>
-                                                    <span id="resEstadoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFDos%>">
-                                                        <i class="fa-solid <%= icon %> fa-lg" <%= iconColor %>></i>
-                                                    </span> |
-                                                <% } %>
-
-                                                <span id="resRevisionFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFDos" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionFDos %></span>
+                                        <span id="resRevisionFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFDos" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionFDos %>
+                                        </span>
                                     </td>
                                 <% }
                             } %>

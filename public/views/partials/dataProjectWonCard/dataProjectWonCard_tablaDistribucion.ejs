@@ -34,6 +34,14 @@
             resMecanizado3dFinal = 'prodismo', resRevisionMecanizado3dFinal = 0,
             resBancoArmado = 'prodismo', resRevisionBancoArmado = 0
 
+            const mecanizadoConfig = {
+                prodismo: { text: "PRODISMO", classes: "bg-success text-white" },
+                terceros: { text: "TERCEROS", classes: "bg-danger text-white" },
+                china: { text: "CHINA", classes: "bg-warning text-dark" },
+                noAplica: { text: "N/A", classes: "bg-info text-dark" },
+                default: { text: "S/D", classes: "bg-secondary text-white" }
+            };
+
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
             pathMongoOtDetalles = pathMongoOtProject[n].otDetalles,
@@ -71,31 +79,20 @@
                                                     resMecanizado2dCompleto = pathMongoOtDistribucion[largoArray-1].mecanizado2dCompleto || 'prodismo'
                                                     resRevisionMecanizado2dCompleto = pathMongoOtDistribucion[largoArray-1].revisionMecanizado2dCompleto
 
-                                                    if (i == 0) {
-                                                        arrResMecanizado2dCompleto.push(pathMongoOtDistribucion[i].mecanizado2dCompleto)
-                                                        arrResRevisionMecanizado2dCompleto.push(pathMongoOtDistribucion[i].revisionMecanizado2dCompleto)
+                                                    arrResMecanizado2dCompleto.push(pathMongoOtDistribucion[i].mecanizado2dCompleto)
+                                                    arrResRevisionMecanizado2dCompleto.push(pathMongoOtDistribucion[i].revisionMecanizado2dCompleto)
 
-                                                        arrResCreadorMecanizado2dCompleto.push(pathMongoOtDistribucion[i].creator[0].username)
-                                                        arrResModificadorMecanizado2dCompleto.push(pathMongoOtDistribucion[i].modificator[0].username)
-                                                        arrResFechaMecanizado2dCompleto.push(pathMongoOtDistribucion[i].timestamp)
-                                                        arrResFechaModMecanizado2dCompleto.push(pathMongoOtDistribucion[i].modifiedOn)
-
-                                                    } else if (i >=1 && pathMongoOtDistribucion[i].revisionMecanizado2dCompleto != pathMongoOtDistribucion[i-1].revisionMecanizado2dCompleto) {
-                                                        arrResMecanizado2dCompleto.push(pathMongoOtDistribucion[largoArray-1].mecanizado2dCompleto)
-                                                        arrResRevisionMecanizado2dCompleto.push(pathMongoOtDistribucion[largoArray-1].revisionMecanizado2dCompleto)
-                                                    
-                                                        arrResCreadorMecanizado2dCompleto.push(pathMongoOtDistribucion[largoArray-1].creator[0].username)
-                                                        arrResModificadorMecanizado2dCompleto.push(pathMongoOtDistribucion[largoArray-1].modificator[0].username)
-                                                        arrResFechaMecanizado2dCompleto.push(pathMongoOtDistribucion[largoArray-1].timestamp)
-                                                        arrResFechaModMecanizado2dCompleto.push(pathMongoOtDistribucion[largoArray-1].modifiedOn)
-                                                    }
-                                                    valueArrayResMecanizado2dCompleto = parseInt(arrResMecanizado2dCompleto.length-1)
+                                                    arrResCreadorMecanizado2dCompleto.push(pathMongoOtDistribucion[i].creator[0].username)
+                                                    arrResModificadorMecanizado2dCompleto.push(pathMongoOtDistribucion[i].modificator[0].username)
+                                                    arrResFechaMecanizado2dCompleto.push(pathMongoOtDistribucion[i].timestamp)
+                                                    arrResFechaModMecanizado2dCompleto.push(pathMongoOtDistribucion[i].modifiedOn)
 
                                                 } else {
                                                     resMecanizado2dCompleto = 'prodismo'
                                                     resRevisionMecanizado2dCompleto = 0
                                                 }
                                             }
+                                            valueArrayResMecanizado2dCompleto = parseInt(arrResMecanizado2dCompleto.length-1)
                                             
                                             if (arrResMecanizado2dCompleto.length == 1 ) {
                                                 anteriorDisabled = "disabled"
@@ -138,25 +135,14 @@
                                             <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaMecanizado2dCompleto %>">
                                             <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModMecanizado2dCompleto %>">
 
-                                            <% switch (resMecanizado2dCompleto) { 
-                                                case "prodismo": { %>
-                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
-                                                <% break; }        
-                                                case "terceros": { %>
-                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
-                                                <% break; }        
-                                                case "china": { %>
-                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
-                                                <% break; }
-                                                case "noAplica": { %>
-                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
-                                                <% break; }
-                                                default: { %>
-                                                        <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                <% break; }
-                                                } %>
-                                                
-                                                <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionMecanizado2dCompleto" class="badge text-dark my-2" style="cursor: help;"><%= resRevisionMecanizado2dCompleto %></span>
+                                            <% const config = mecanizadoConfig[resMecanizado2dCompleto] || mecanizadoConfig.default; %>
+
+                                            <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                            <%= config.text %>
+                                            </span> |
+                                            <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionMecanizado2dCompleto" class="badge text-dark my-2" style="cursor: help;">
+                                                <%= resRevisionMecanizado2dCompleto %>
+                                            </span>
 
                                             <button id="btnSiguienteMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>"
                                                 name="btnSiguienteMecanizado2dCompleto" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
@@ -166,6 +152,7 @@
                                             </button>
                                         </div>
                                     </td>
+                                    
                                 <% } else if (q==1) { %>
                                     <!-- Mecanizado 3d Prefinal data Activo-->
                                     <td class="text-center align-middle">
@@ -177,31 +164,20 @@
                                                     resMecanizado3dPrefinal = pathMongoOtDistribucion[largoArray-1].mecanizado3dPrefinal || 'prodismo'
                                                     resRevisionMecanizado3dPrefinal = pathMongoOtDistribucion[largoArray-1].revisionMecanizado3dPrefinal
 
-                                                    if (i == 0) {
-                                                        arrResMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].mecanizado3dPrefinal)
-                                                        arrResRevisionMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].revisionMecanizado3dPrefinal)
+                                                    arrResMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].mecanizado3dPrefinal)
+                                                    arrResRevisionMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].revisionMecanizado3dPrefinal)
 
-                                                        arrResCreadorMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].creator[0].username)
-                                                        arrResModificadorMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].modificator[0].username)
-                                                        arrResFechaMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].timestamp)
-                                                        arrResFechaModMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].modifiedOn)
-
-                                                    } else if (i >=1 && pathMongoOtDistribucion[i].revisionMecanizado3dPrefinal != pathMongoOtDistribucion[i-1].revisionMecanizado3dPrefinal) {
-                                                        arrResMecanizado3dPrefinal.push(pathMongoOtDistribucion[largoArray-1].mecanizado3dPrefinal)
-                                                        arrResRevisionMecanizado3dPrefinal.push(pathMongoOtDistribucion[largoArray-1].revisionMecanizado3dPrefinal)
-                                                    
-                                                        arrResCreadorMecanizado3dPrefinal.push(pathMongoOtDistribucion[largoArray-1].creator[0].username)
-                                                        arrResModificadorMecanizado3dPrefinal.push(pathMongoOtDistribucion[largoArray-1].modificator[0].username)
-                                                        arrResFechaMecanizado3dPrefinal.push(pathMongoOtDistribucion[largoArray-1].timestamp)
-                                                        arrResFechaModMecanizado3dPrefinal.push(pathMongoOtDistribucion[largoArray-1].modifiedOn)
-                                                    }
-                                                    valueArrayResMecanizado3dPrefinal = parseInt(arrResMecanizado3dPrefinal.length-1)
+                                                    arrResCreadorMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].creator[0].username)
+                                                    arrResModificadorMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].modificator[0].username)
+                                                    arrResFechaMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].timestamp)
+                                                    arrResFechaModMecanizado3dPrefinal.push(pathMongoOtDistribucion[i].modifiedOn)
 
                                                 } else {
                                                     resMecanizado3dPrefinal = 'prodismo'
                                                     resRevisionMecanizado3dPrefinal = 0
                                                 }
                                             }
+                                            valueArrayResMecanizado3dPrefinal = parseInt(arrResMecanizado3dPrefinal.length-1)
                                             
                                             if (arrResMecanizado3dPrefinal.length == 1 ) {
                                                 anteriorDisabled = "disabled"
@@ -244,25 +220,15 @@
                                             <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaMecanizado3dPrefinal %>">
                                             <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModMecanizado3dPrefinal %>">
 
-                                            <% switch (resMecanizado3dPrefinal) { 
-                                                case "prodismo": { %>
-                                                        <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
-                                                <% break; }        
-                                                case "terceros": { %>
-                                                        <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
-                                                <% break; }        
-                                                case "china": { %>
-                                                        <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
-                                                <% break; }
-                                                case "noAplica": { %>
-                                                        <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
-                                                <% break; }
-                                                default: { %>
-                                                        <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                <% break; }
-                                                } %>
-                                                
-                                                <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionMecanizado3dPrefinal" class="badge text-dark my-2" style="cursor: help;"><%= resRevisionMecanizado3dPrefinal %></span>
+                                            <% const config = mecanizadoConfig[resMecanizado3dPrefinal] || mecanizadoConfig.default; %>
+
+                                            <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                            <%= config.text %>
+                                            </span> |
+                                            
+                                            <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionMecanizado3dPrefinal" class="badge text-dark my-2" style="cursor: help;">
+                                                <%= resRevisionMecanizado3dPrefinal %>
+                                            </span>
 
                                             <button id="btnSiguienteMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>"
                                                 name="btnSiguienteMecanizado3dPrefinal" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
@@ -272,6 +238,7 @@
                                             </button>
                                         </div>
                                     </td>
+
                                 <% } else if (q==2) { %>
                                     <!-- Mecanizado 3d Final data Activo-->
                                     <td class="text-center align-middle">
@@ -283,31 +250,20 @@
                                                     resMecanizado3dFinal = pathMongoOtDistribucion[largoArray-1].mecanizado3dFinal || 'prodismo'
                                                     resRevisionMecanizado3dFinal = pathMongoOtDistribucion[largoArray-1].revisionMecanizado3dFinal
 
-                                                    if (i == 0) {
-                                                        arrResMecanizado3dFinal.push(pathMongoOtDistribucion[i].mecanizado3dFinal)
-                                                        arrResRevisionMecanizado3dFinal.push(pathMongoOtDistribucion[i].revisionMecanizado3dFinal)
+                                                    arrResMecanizado3dFinal.push(pathMongoOtDistribucion[i].mecanizado3dFinal)
+                                                    arrResRevisionMecanizado3dFinal.push(pathMongoOtDistribucion[i].revisionMecanizado3dFinal)
 
-                                                        arrResCreadorMecanizado3dFinal.push(pathMongoOtDistribucion[i].creator[0].username)
-                                                        arrResModificadorMecanizado3dFinal.push(pathMongoOtDistribucion[i].modificator[0].username)
-                                                        arrResFechaMecanizado3dFinal.push(pathMongoOtDistribucion[i].timestamp)
-                                                        arrResFechaModMecanizado3dFinal.push(pathMongoOtDistribucion[i].modifiedOn)
-
-                                                    } else if (i >=1 && pathMongoOtDistribucion[i].revisionMecanizado3dFinal != pathMongoOtDistribucion[i-1].revisionMecanizado3dFinal) {
-                                                        arrResMecanizado3dFinal.push(pathMongoOtDistribucion[largoArray-1].mecanizado3dFinal)
-                                                        arrResRevisionMecanizado3dFinal.push(pathMongoOtDistribucion[largoArray-1].revisionMecanizado3dFinal)
-                                                    
-                                                        arrResCreadorMecanizado3dFinal.push(pathMongoOtDistribucion[largoArray-1].creator[0].username)
-                                                        arrResModificadorMecanizado3dFinal.push(pathMongoOtDistribucion[largoArray-1].modificator[0].username)
-                                                        arrResFechaMecanizado3dFinal.push(pathMongoOtDistribucion[largoArray-1].timestamp)
-                                                        arrResFechaModMecanizado3dFinal.push(pathMongoOtDistribucion[largoArray-1].modifiedOn)
-                                                    }
-                                                    valueArrayResMecanizado3dFinal = parseInt(arrResMecanizado3dFinal.length-1)
+                                                    arrResCreadorMecanizado3dFinal.push(pathMongoOtDistribucion[i].creator[0].username)
+                                                    arrResModificadorMecanizado3dFinal.push(pathMongoOtDistribucion[i].modificator[0].username)
+                                                    arrResFechaMecanizado3dFinal.push(pathMongoOtDistribucion[i].timestamp)
+                                                    arrResFechaModMecanizado3dFinal.push(pathMongoOtDistribucion[i].modifiedOn)
 
                                                 } else {
                                                     resMecanizado3dFinal = 'prodismo'
                                                     resRevisionMecanizado3dFinal = 0
                                                 }
                                             }
+                                            valueArrayResMecanizado3dFinal = parseInt(arrResMecanizado3dFinal.length-1)
                                             
                                             if (arrResMecanizado3dFinal.length == 1 ) {
                                                 anteriorDisabled = "disabled"
@@ -350,25 +306,14 @@
                                             <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaMecanizado3dFinal %>">
                                             <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModMecanizado3dFinal %>">
 
-                                            <% switch (resMecanizado3dFinal) { 
-                                                case "prodismo": { %>
-                                                        <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
-                                                <% break; }        
-                                                case "terceros": { %>
-                                                        <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
-                                                <% break; }        
-                                                case "china": { %>
-                                                        <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
-                                                <% break; }
-                                                case "noAplica": { %>
-                                                        <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
-                                                <% break; }
-                                                default: { %>
-                                                        <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                <% break; }
-                                                } %>
-                                                
-                                                <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionMecanizado3dFinal" class="badge text-dark my-2" style="cursor: help;"><%= resRevisionMecanizado3dFinal %></span>
+                                            <% const config = mecanizadoConfig[resMecanizado3dFinal] || mecanizadoConfig.default; %>
+                                            
+                                            <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                            <%= config.text %>
+                                            </span> |
+                                            <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionMecanizado3dFinal" class="badge text-dark my-2" style="cursor: help;">
+                                                <%= resRevisionMecanizado3dFinal %>
+                                            </span>
 
                                             <button id="btnSiguienteMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>"
                                                 name="btnSiguienteMecanizado3dFinal" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
@@ -378,6 +323,7 @@
                                             </button>
                                         </div>
                                     </td>
+
                                 <% } else { %>
                                     <!-- Banco Armado data Activo-->
                                     <td class="text-center align-middle">
@@ -388,32 +334,21 @@
                                                     let largoArray = parseInt(largoArrayDistribucion)
                                                     resBancoArmado = pathMongoOtDistribucion[largoArray-1].bancoArmado || 'prodismo'
                                                     resRevisionBancoArmado = pathMongoOtDistribucion[largoArray-1].revisionBancoArmado
-
-                                                    if (i == 0) {
-                                                        arrResBancoArmado.push(pathMongoOtDistribucion[i].bancoArmado)
-                                                        arrResRevisionBancoArmado.push(pathMongoOtDistribucion[i].revisionBancoArmado)
-
-                                                        arrResCreadorBancoArmado.push(pathMongoOtDistribucion[i].creator[0].username)
-                                                        arrResModificadorBancoArmado.push(pathMongoOtDistribucion[i].modificator[0].username)
-                                                        arrResFechaBancoArmado.push(pathMongoOtDistribucion[i].timestamp)
-                                                        arrResFechaModBancoArmado.push(pathMongoOtDistribucion[i].modifiedOn)
-
-                                                    } else if (i >=1 && pathMongoOtDistribucion[i].revisionBancoArmado != pathMongoOtDistribucion[i-1].revisionBancoArmado) {
-                                                        arrResBancoArmado.push(pathMongoOtDistribucion[largoArray-1].bancoArmado)
-                                                        arrResRevisionBancoArmado.push(pathMongoOtDistribucion[largoArray-1].revisionBancoArmado)
                                                     
-                                                        arrResCreadorBancoArmado.push(pathMongoOtDistribucion[largoArray-1].creator[0].username)
-                                                        arrResModificadorBancoArmado.push(pathMongoOtDistribucion[largoArray-1].modificator[0].username)
-                                                        arrResFechaBancoArmado.push(pathMongoOtDistribucion[largoArray-1].timestamp)
-                                                        arrResFechaModBancoArmado.push(pathMongoOtDistribucion[largoArray-1].modifiedOn)
-                                                    }
-                                                    valueArrayResBancoArmado = parseInt(arrResBancoArmado.length-1)
+                                                    arrResBancoArmado.push(pathMongoOtDistribucion[i].bancoArmado)
+                                                    arrResRevisionBancoArmado.push(pathMongoOtDistribucion[i].revisionBancoArmado)
+
+                                                    arrResCreadorBancoArmado.push(pathMongoOtDistribucion[i].creator[0].username)
+                                                    arrResModificadorBancoArmado.push(pathMongoOtDistribucion[i].modificator[0].username)
+                                                    arrResFechaBancoArmado.push(pathMongoOtDistribucion[i].timestamp)
+                                                    arrResFechaModBancoArmado.push(pathMongoOtDistribucion[i].modifiedOn)
 
                                                 } else {
                                                     resBancoArmado = 'prodismo'
                                                     resRevisionBancoArmado = 0
                                                 }
                                             }
+                                            valueArrayResBancoArmado = parseInt(arrResBancoArmado.length-1)
                                             
                                             if (arrResBancoArmado.length == 1 ) {
                                                 anteriorDisabled = "disabled"
@@ -456,25 +391,14 @@
                                             <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaBancoArmado %>">
                                             <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModBancoArmado %>">
 
-                                            <% switch (resBancoArmado) { 
-                                                case "prodismo": { %>
-                                                        <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
-                                                <% break; }        
-                                                case "terceros": { %>
-                                                        <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
-                                                <% break; }        
-                                                case "china": { %>
-                                                        <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
-                                                <% break; }
-                                                case "noAplica": { %>
-                                                        <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
-                                                <% break; }
-                                                default: { %>
-                                                        <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                                <% break; }
-                                                } %>
-                                                
-                                                <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionBancoArmado" class="badge text-dark my-2" style="cursor: help;"><%= resRevisionBancoArmado %></span>
+                                            <% const config = mecanizadoConfig[resBancoArmado] || mecanizadoConfig.default; %>
+                                            
+                                            <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                            <%= config.text %>
+                                            </span> |
+                                            <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionBancoArmado" class="badge text-dark my-2" style="cursor: help;">
+                                                <%= resRevisionBancoArmado %>
+                                            </span>
 
                                             <button id="btnSiguienteBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>"
                                                 name="btnSiguienteBancoArmado" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
@@ -487,6 +411,7 @@
                                 <% }
                             } %>
                         </tr>
+
                     <% } else { %>
                         <!--Inactivo-->
                         <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="pe-none border-bottom" style="height: 5vh; background-color: #dedede;">
@@ -497,26 +422,20 @@
                                         <% if (largoArrayOtDetalles > 0 && largoArrayDistribucion > 0) {
                                                 for (let i = 0; largoArrayDistribucion > i; i++) {
 
-                                                    if (otDistribucion) {
+                                                    if (otDistribucion[i]) {
                                                         let largoArray = parseInt(largoArrayDistribucion)
                                                         resMecanizado2dCompleto = otDistribucion[largoArray-1].mecanizado2dCompleto || 'prodismo'
                                                         resRevisionMecanizado2dCompleto = otDistribucion[largoArray-1].revisionMecanizado2dCompleto
                                                         
-                                                        if (i == 0) {
-                                                            arrResMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.mecanizado2dCompleto)
-                                                            arrResRevisionMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.revisionMecanizado2dCompleto)
-                                                        }
-                                                        else if (i >= 1 && pathToMongoDBOtDistribucion.revisionMecanizado2dCompleto != otDistribucion[i-1].revisionMecanizado2dCompleto) {
-                                                            arrResMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.mecanizado2dCompleto)
-                                                            arrResRevisionMecanizado2dCompleto.push(pathToMongoDBOtDistribucion.revisionMecanizado2dCompleto)
-                                                        }
-                                                        valueArrayResMecanizado2dCompleto = parseInt(arrResMecanizado2dCompleto.length-1)
-                                                    
+                                                        arrResMecanizado2dCompleto.push(pathToMongoDBOtDistribucion[i].mecanizado2dCompleto)
+                                                        arrResRevisionMecanizado2dCompleto.push(pathToMongoDBOtDistribucion[i].revisionMecanizado2dCompleto)
+                                                        
                                                     } else {
                                                         resMecanizado2dCompleto = 'prodismo'
                                                         resRevisionMecanizado2dCompleto = 0
                                                     }
                                                 }
+                                                valueArrayResMecanizado2dCompleto = parseInt(arrResMecanizado2dCompleto.length-1)
                                                 resMecanizado2dCompleto = otDistribucion[0].mecanizado2dCompleto
 
                                         } else {
@@ -529,52 +448,36 @@
                                             <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResMecanizado2dCompleto %>">
                                             <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionMecanizado2dCompleto %>">
                                         
-                                        <% switch (resMecanizado2dCompleto) { 
-                                            case "prodismo": { %>
-                                                <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
-                                            <% break; }        
-                                            case "terceros": { %>
-                                                <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
-                                            <% break; }        
-                                            case "china": { %>
-                                                <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
-                                            <% break; }
-                                            case "noAplica": { %>
-                                                <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
-                                            <% break; }
-                                            default: { %>
-                                                <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                            <% break; }
-                                        } %>
-                                        <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge text-dark my-2"><%= resRevisionMecanizado2dCompleto %></span>
+                                            <% const config = mecanizadoConfig[resMecanizado2dCompleto] || mecanizadoConfig.default; %>
+                                            
+                                            <span id="resMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                            <%= config.text %>
+                                            </span> |
+                                            <span id="resRevisionMecanizado2dCompleto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge text-dark my-2">
+                                                <%= resRevisionMecanizado2dCompleto %>
+                                            </span>
                                     </td>
+
                                 <% } else if (q==1) { %>
                                     <!-- Mecanizado 3d Prefinal data Inactivo -->
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayDistribucion > 0) {
                                                 for (let i = 0; largoArrayDistribucion > i; i++) {
                                                     
-                                                    if (otDistribucion) {
+                                                    if (otDistribucion[i]) {
                                                         let largoArray = parseInt(largoArrayDistribucion)
                                                         resMecanizado3dPrefinal = otDistribucion[largoArray-1].mecanizado3dPrefinal || 'prodismo'
                                                         resRevisionMecanizado3dPrefinal = otDistribucion[largoArray-1].revisionMecanizado3dPrefinal
                                                         
-                                                        if (i == 0) {
-                                                            arrResMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.mecanizado3dPrefinal)
-                                                            arrResRevisionMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.revisionMecanizado3dPrefinal)
-                                                        }
-                                                        else if (i >= 1 && pathToMongoDBOtDistribucion.revisionMecanizado3dPrefinal != otDistribucion[i-1].revisionMecanizado3dPrefinal) {
-                                                            arrResMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.mecanizado3dPrefinal)
-                                                            arrResRevisionMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion.revisionMecanizado3dPrefinal)
-                                                        }
-                                                        valueArrayResMecanizado3dPrefinal = parseInt(arrResMecanizado3dPrefinal.length-1)
-                                                    
+                                                        arrResMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion[i].mecanizado3dPrefinal)
+                                                        arrResRevisionMecanizado3dPrefinal.push(pathToMongoDBOtDistribucion[i].revisionMecanizado3dPrefinal)
+                                                        
                                                     } else {
                                                         resMecanizado3dPrefinal = 'prodismo'
                                                         resRevisionMecanizado3dPrefinal = 0
                                                     }
                                                 }
-
+                                                valueArrayResMecanizado3dPrefinal = parseInt(arrResMecanizado3dPrefinal.length-1)
                                                 resMecanizado3dPrefinal = otDistribucion[0].mecanizado3dPrefinal
                                         
                                         } else {
@@ -588,52 +491,37 @@
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResMecanizado3dPrefinal %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionMecanizado3dPrefinal %>">
 
-                                        <% switch (resMecanizado3dPrefinal) { 
-                                            case "prodismo": { %>
-                                                <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
-                                            <% break; }        
-                                            case "terceros": { %>
-                                                <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
-                                            <% break; }        
-                                            case "china": { %>
-                                                <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
-                                            <% break; }
-                                            case "noAplica": { %>
-                                                <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
-                                            <% break; }
-                                            default: { %>
-                                                <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                            <% break; }
-                                            } %>
-                                            <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge text-dark my-2"><%= resRevisionMecanizado3dPrefinal %></span>
+                                        <% const config = mecanizadoConfig[resMecanizado3dPrefinal] || mecanizadoConfig.default; %>
+                                        
+                                        <span id="resMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                        <%= config.text %>
+                                        </span> |
+                                        <span id="resRevisionMecanizado3dPrefinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge text-dark my-2">
+                                            <%= resRevisionMecanizado3dPrefinal %>
+                                        </span>
                                     </td>
+
                                 <% } else if (q==2) { %>
                                     <!-- Mecanizado 3d Final data Inactivo -->
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayDistribucion > 0) {
                                                 for (let i = 0; largoArrayDistribucion > i; i++) {
                                                     
-                                                    if (otDistribucion) {
+                                                    if (otDistribucion[i]) {
                                                         let largoArray = parseInt(largoArrayDistribucion)
                                                         resMecanizado3dFinal = otDistribucion[largoArray-1].mecanizado3dFinal || 'prodismo'
                                                         resRevisionMecanizado3dFinal = otDistribucion[largoArray-1].revisionMecanizado3dFinal
                                                         
-                                                        if (i == 0) {
-                                                            arrResMecanizado3dFinal.push(pathToMongoDBOtDistribucion.mecanizado3dFinal)
-                                                            arrResRevisionMecanizado3dFinal.push(pathToMongoDBOtDistribucion.revisionMecanizado3dFinal)
-                                                        }
-                                                        else if (i >= 1 && pathToMongoDBOtDistribucion.revisionMecanizado3dFinal != otDistribucion[i-1].revisionMecanizado3dFinal) {
-                                                            arrResMecanizado3dFinal.push(pathToMongoDBOtDistribucion.mecanizado3dFinal)
-                                                            arrResRevisionMecanizado3dFinal.push(pathToMongoDBOtDistribucion.revisionMecanizado3dFinal)
-                                                        }
-                                                        valueArrayResMecanizado3dFinal = parseInt(arrResMecanizado3dFinal.length-1)
-                                                                                                    
+                                                        arrResMecanizado3dFinal.push(pathToMongoDBOtDistribucion[i].mecanizado3dFinal)
+                                                        arrResRevisionMecanizado3dFinal.push(pathToMongoDBOtDistribucion[i].revisionMecanizado3dFinal)
+                                                        
                                                     } else {
                                                         resMecanizado3dFinal = 'prodismo'
                                                         resRevisionMecanizado3dFinal = 0
                                                     }
                                                 }
-                                                resMecanizado3dFinal = otDistribucion[0].bancoArmado
+                                                valueArrayResMecanizado3dFinal = parseInt(arrResMecanizado3dFinal.length-1)
+                                                resMecanizado3dFinal = otDistribucion[0].mecanizado3dFinal
                                         
                                         } else {
                                             resMecanizado3dFinal = 'prodismo'
@@ -646,51 +534,36 @@
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResMecanizado3dFinal %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionMecanizado3dFinal %>">
 
-                                        <% switch (resMecanizado3dFinal) { 
-                                            case "prodismo": { %>
-                                                <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
-                                            <% break; }        
-                                            case "terceros": { %>
-                                                <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
-                                            <% break; }        
-                                            case "china": { %>
-                                                <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
-                                            <% break; }
-                                            case "noAplica": { %>
-                                                <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
-                                            <% break; }
-                                            default: { %>
-                                                <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                            <% break; }
-                                            } %>
-                                            <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge text-dark my-2"><%= resRevisionMecanizado3dFinal %></span>
+                                        <% const config = mecanizadoConfig[resMecanizado3dFinal] || mecanizadoConfig.default; %>
+                                        
+                                        <span id="resMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                        <%= config.text %>
+                                        </span> |
+                                        <span id="resRevisionMecanizado3dFinal<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge text-dark my-2">
+                                            <%= resRevisionMecanizado3dFinal %>
+                                        </span>
                                     </td>
+
                                 <% } else { %>
                                     <!-- Banco Armado data Inactivo -->
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayDistribucion > 0) {
                                                 for (let i = 0; largoArrayDistribucion > i; i++) {
                                                     
-                                                    if (otDistribucion) {
+                                                    if (otDistribucion[i]) {
                                                         let largoArray = parseInt(largoArrayDistribucion)
                                                         resBancoArmado = otDistribucion[largoArray-1].bancoArmado || 'prodismo'
                                                         resRevisionBancoArmado = otDistribucion[largoArray-1].revisionBancoArmado
                                                         
-                                                        if (i == 0) {
-                                                            arrResBancoArmado.push(pathToMongoDBOtDistribucion.bancoArmado)
-                                                            arrResRevisionBancoArmado.push(pathToMongoDBOtDistribucion.revisionBancoArmado)
-                                                        }
-                                                        else if (i >= 1 && pathToMongoDBOtDistribucion.revisionBancoArmado != otDistribucion[i-1].revisionBancoArmado) {
-                                                            arrResBancoArmado.push(pathToMongoDBOtDistribucion.bancoArmado)
-                                                            arrResRevisionBancoArmado.push(pathToMongoDBOtDistribucion.revisionBancoArmado)
-                                                        }
-                                                        valueArrayResBancoArmado = parseInt(arrResBancoArmado.length-1)
-                                                                                                    
+                                                        arrResBancoArmado.push(pathToMongoDBOtDistribucion[i].bancoArmado)
+                                                        arrResRevisionBancoArmado.push(pathToMongoDBOtDistribucion[i].revisionBancoArmado)
+
                                                     } else {
                                                         resBancoArmado = 'prodismo'
                                                         resRevisionBancoArmado = 0
                                                     }
                                                 }
+                                                valueArrayResBancoArmado = parseInt(arrResBancoArmado.length-1)
                                                 resBancoArmado = otDistribucion[0].bancoArmado
                                         
                                         } else {
@@ -704,24 +577,14 @@
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResBancoArmado %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionBancoArmado %>">
 
-                                        <% switch (resBancoArmado) { 
-                                            case "prodismo": { %>
-                                                <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">PRODISMO</span> |
-                                            <% break; }        
-                                            case "terceros": { %>
-                                                <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">TERCEROS</span> |
-                                            <% break; }        
-                                            case "china": { %>
-                                                <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">CHINA</span> |
-                                            <% break; }
-                                            case "noAplica": { %>
-                                                <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">N/A</span> |
-                                            <% break; }
-                                            default: { %>
-                                                <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">S/D</span> |
-                                            <% break; }
-                                            } %>
-                                            <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge text-dark my-2"><%= resRevisionBancoArmado %></span>
+                                        <% const config = mecanizadoConfig[resBancoArmado] || mecanizadoConfig.default; %>
+                                        
+                                        <span id="resBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                        <%= config.text %>
+                                        </span> |
+                                            <span id="resRevisionBancoArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge text-dark my-2">
+                                                <%= resRevisionBancoArmado %>
+                                            </span>
                                     </td>
                                 <% }
                             } %>

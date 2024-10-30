@@ -30,10 +30,23 @@ for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de p
     }
 }
 
+function changeIconEstadoFromArray(arrayFromEstadoValues) {
+    // console.log('arrayFromEstadoValues(): ', arrayFromEstadoValues)
+    const valueEstadoMap = {
+        'enProceso': '<i class="fa-solid fa-arrows-spin fa-spin fa-lg" style="color: #b09b12;"></i>', // 'En Proceso',
+        'terminado': '<i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i>', //'Terminado',
+        'suspendido': '<i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i>', // 'Suspendido',
+        'noAplica': '<i class="fa-solid fa-ban fa-lg"></i>', // 'N/A',
+        'sinDato': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>', //'S/D',
+        'S/D': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>',
+        '': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>'
+    };
+    return arrayFromEstadoValues.map(value => valueEstadoMap[value] || value);
+}
+
 //*********** Evento btn's anterior y siguiente ************* */
 if(arrBtnAnteriorPrograma3d2F !=[]) {
     let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorPrograma3d2F"]')
-    
     allBtnAnterior.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -46,7 +59,7 @@ if(arrBtnAnteriorPrograma3d2F !=[]) {
                 let actualEstadoValue = arrayEstadoActual.value
                 let arrayFromEstadoValues = actualEstadoValue.split(",")
                 //console.log('kValue. ', kValue)
-                mostrarAnteriorProgramacionSegunda(changeValueFromArray(arrayFromValues), changeValueEstadoFromArray(arrayFromEstadoValues), kValue)
+                mostrarAnteriorProgramacionSegunda(arrayFromValues, changeIconEstadoFromArray(arrayFromEstadoValues), kValue)
             })
         }
     })
@@ -54,7 +67,6 @@ if(arrBtnAnteriorPrograma3d2F !=[]) {
 
 if(arrBtnSiguientePrograma3d2F !=[]) {    
     let allBtnSiguiente = document.querySelectorAll('[name="btnSiguientePrograma3d2F"]')
-    
     allBtnSiguiente.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -67,7 +79,7 @@ if(arrBtnSiguientePrograma3d2F !=[]) {
                 let actualEstadoValue = arrayEstadoActual.value
                 let arrayFromEstadoValues = actualEstadoValue.split(",")
                 // console.log('kValue. ', kValue)
-                mostrarSiguienteProgramacionSegunda(changeValueFromArray(arrayFromValues), changeValueEstadoFromArray(arrayFromEstadoValues), kValue)
+                mostrarSiguienteProgramacionSegunda(arrayFromValues, changeIconEstadoFromArray(arrayFromEstadoValues), kValue)
             })
         }
     })
@@ -75,7 +87,6 @@ if(arrBtnSiguientePrograma3d2F !=[]) {
 
 if(arrBtnAnteriorPrograma3d4F !=[]) {    
     let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorPrograma3d4F"]')
-    
     allBtnAnterior.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -88,7 +99,7 @@ if(arrBtnAnteriorPrograma3d4F !=[]) {
                 let actualEstadoValue = arrayEstadoActual.value
                 let arrayFromEstadoValues = actualEstadoValue.split(",")
                 // console.log('kValue. ', kValue)
-                mostrarAnteriorProgramacionSegunda(changeValueFromArray(arrayFromValues), changeValueEstadoFromArray(arrayFromEstadoValues), kValue)
+                mostrarAnteriorProgramacionSegunda(arrayFromValues, changeIconEstadoFromArray(arrayFromEstadoValues), kValue)
             })
         }
     })
@@ -108,7 +119,7 @@ if(arrBtnSiguientePrograma3d4F !=[]) {
                 let actualEstadoValue = arrayEstadoActual.value
                 let arrayFromEstadoValues = actualEstadoValue.split(",")
                 // console.log('kValue. ', kValue)
-                mostrarSiguienteProgramacionSegunda(changeValueFromArray(arrayFromValues), changeValueEstadoFromArray(arrayFromEstadoValues), kValue)
+                mostrarSiguienteProgramacionSegunda(arrayFromValues, changeIconEstadoFromArray(arrayFromEstadoValues), kValue)
             })
         }
     })
@@ -123,9 +134,8 @@ if(arrBtnAnteriorNotasProgramacion !=[]) {
                 let arrayActual = document.getElementById(`resDatoHidden${kValue}`)
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
-
                 // console.log('kValue. ', kValue)
-                mostrarAnteriorProgramacionSegunda(changeValueFromArray(arrayFromValues), kValue)
+                mostrarAnteriorProgramacionSegunda(arrayFromValues, '', kValue)
             })
         }
     })
@@ -133,7 +143,6 @@ if(arrBtnAnteriorNotasProgramacion !=[]) {
 
 if(arrBtnSiguienteNotasProgramacion !=[]) {    
     let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteNotasProgramacion"]')
-    
     allBtnSiguiente.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -141,9 +150,8 @@ if(arrBtnSiguienteNotasProgramacion !=[]) {
                 let arrayActual = document.getElementById(`resDatoHidden${kValue}`)
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
-
                 // console.log('kValue. ', kValue)
-                mostrarSiguienteProgramacionSegunda(changeValueFromArray(arrayFromValues), kValue)
+                mostrarSiguienteProgramacionSegunda(arrayFromValues, '', kValue)
             })
         }
     })
@@ -154,67 +162,75 @@ if(arrBtnSiguienteNotasProgramacion !=[]) {
 function mostrarElementoProgramacionSegunda(
     arrayFromValues,
     arrayFromEstadoValues,
+    arrValuesRevisionMark,
     indiceAMostrar,
     kValue,
     resDatoPrograma3d2F,
-    resPrograma3d4F,
-    resNotasProgramacion)
+    resDatoPrograma3d4F,
+    resDatoNotasProgramacion)
     {
     // console.log('resPrograma3d2F: ', resPrograma3d2F, 'resAprobadoPrograma3d2F: ', resAprobadoPrograma3d2F)
     // console.log('kValue', kValue)
     // console.log('arrayFromValues', arrayFromValues)
+
+    let btnAnteriorPrograma3d2F, btnSiguientePrograma3d2F, containerBtnAnteriorSiguientePrograma3d2F;
+    let btnAnteriorPrograma3d4F, btnSiguientePrograma3d4F, containerBtnAnteriorSiguientePrograma3d4F
+    let btnAnteriorNotasProgramacion, btnSiguienteNotasProgramacion, containerBtnAnteriorSiguienteNotasProgramacion;
     
     if (resDatoPrograma3d2F) {
         let spanPrograma3d2F = document.getElementById(`resDatoPrograma3d2F${kValue}`)
         let spanEstadoPrograma3d2F = document.getElementById(`resEstadoPrograma3d2F${kValue}`)
         let spanRevisionPrograma3d2F = document.getElementById(`resRevisionPrograma3d2F${kValue}`)
         spanPrograma3d2F.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanEstadoPrograma3d2F.innerText = arrayFromEstadoValues[parseInt(indiceAMostrar)]
-        spanRevisionPrograma3d2F.innerText = parseInt(indiceAMostrar+1)
+        spanEstadoPrograma3d2F.innerHTML = arrayFromEstadoValues[parseInt(indiceAMostrar)]
+        spanRevisionPrograma3d2F.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
 
-    } else if (resPrograma3d4F) {
-        let spanPrograma3d4F = document.getElementById(`resPrograma3d4F${kValue}`)
+        btnAnteriorPrograma3d2F = document.getElementById(`btnAnteriorPrograma3d2F${kValue}`)
+        btnSiguientePrograma3d2F = document.getElementById(`btnSiguientePrograma3d2F${kValue}`)
+        containerBtnAnteriorSiguientePrograma3d2F = document.getElementById(`btnAnteriorSiguientePrograma3d2F${kValue}`)
+
+    } else if (resDatoPrograma3d4F) {
+        let spanPrograma3d4F = document.getElementById(`resDatoPrograma3d4F${kValue}`)
         let spanEstadoPrograma3d4F = document.getElementById(`resEstadoPrograma3d4F${kValue}`)
         let spanRevisionPrograma3d4F = document.getElementById(`resRevisionPrograma3d4F${kValue}`)
         spanPrograma3d4F.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanEstadoPrograma3d4F.innerText = arrayFromEstadoValues[parseInt(indiceAMostrar)]
-        spanRevisionPrograma3d4F.innerText = parseInt(indiceAMostrar+1)
+        spanEstadoPrograma3d4F.innerHTML = arrayFromEstadoValues[parseInt(indiceAMostrar)]
+        spanRevisionPrograma3d4F.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
 
-    } else if (resNotasProgramacion) {
-        let spanNotasProgramacion = document.getElementById(`resNotasProgramacion${kValue}`)
+        btnAnteriorPrograma3d4F = document.getElementById(`btnAnteriorPrograma3d4F${kValue}`)
+        btnSiguientePrograma3d4F = document.getElementById(`btnSiguientePrograma3d4F${kValue}`)
+        containerBtnAnteriorSiguientePrograma3d4F = document.getElementById(`btnAnteriorSiguientePrograma3d4F${kValue}`)
+
+    } else if (resDatoNotasProgramacion) {
+        let spanNotasProgramacion = document.getElementById(`resDatoNotasProgramacion${kValue}`)
         let spanRevisionNotasProgramacion = document.getElementById(`resRevisionNotasProgramacion${kValue}`)
         spanNotasProgramacion.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionNotasProgramacion.innerText = parseInt(indiceAMostrar+1)
-    }
-    
-    let btnAnteriorPrograma3d2F = document.getElementById(`btnAnteriorPrograma3d2F${kValue}`)
-    let btnSiguientePrograma3d2F = document.getElementById(`btnSiguientePrograma3d2F${kValue}`)
-    let containerBtnAnteriorSiguientePrograma3d2F = document.getElementById(`btnAnteriorSiguientePrograma3d2F${kValue}`)
-    
-    let btnAnteriorPrograma3d4F = document.getElementById(`btnAnteriorPrograma3d4F${kValue}`)
-    let btnSiguientePrograma3d4F = document.getElementById(`btnSiguientePrograma3d4F${kValue}`)
-    let containerBtnAnteriorSiguientePrograma3d4F = document.getElementById(`btnAnteriorSiguientePrograma3d4F${kValue}`)
+        spanRevisionNotasProgramacion.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
 
-    let btnAnteriorNotasProgramacion = document.getElementById(`btnAnteriorNotasProgramacion${kValue}`)
-    let btnSiguienteNotasProgramacion = document.getElementById(`btnSiguienteNotasProgramacion${kValue}`)
-    let containerBtnAnteriorSiguienteNotasProgramacion = document.getElementById(`btnAnteriorSiguienteNotasProgramacion${kValue}`)
+        btnAnteriorNotasProgramacion = document.getElementById(`btnAnteriorNotasProgramacion${kValue}`)
+        btnSiguienteNotasProgramacion = document.getElementById(`btnSiguienteNotasProgramacion${kValue}`)
+        containerBtnAnteriorSiguienteNotasProgramacion = document.getElementById(`btnAnteriorSiguienteNotasProgramacion${kValue}`)
+    }
 
 
     function colorSpanProgramacionSegunda(spanElementProgramacionSegunda) {
         const classMap = {
-            "terminado": { bgClass: "bg-success", textClass: "text-white" },
-            "enProceso": { bgClass: "bg-warning", textClass: "text-dark" },
-            "suspendido": { bgClass: "bg-danger", textClass: "text-white" },
-            "sinDato": { bgClass: "bg-secondary", textClass: "text-white" },
-            "noAplica": { bgClass: "bg-info", textClass: "text-dark" }
+            "terminado": { bgClass: "bg-success" },
+            "enProceso": { bgClass: "bg-warning" },
+            "suspendido": { bgClass: "bg-danger" },
+            "sinDato": { bgClass: "bg-secondary" },
+            "": { bgClass: "bg-secondary" },
+            "noAplica": { bgClass: "bg-info" }
         };
     
-        const defaultClasses = ["bg-success", "bg-danger", "bg-warning", "bg-secondary", "bg-info", "text-white", "text-dark"];
-        spanElementProgramacionSegunda.classList.remove(...defaultClasses);
-    
-        const text = spanElementProgramacionSegunda.innerText;
-        if (classMap[text]) {
-            spanElementProgramacionSegunda.classList.add(classMap[text].bgClass, classMap[text].textClass);
+        const defaultClasses = ["bg-success", "bg-danger", "bg-warning", "bg-secondary", "bg-info"];
+        if (spanElementProgramacionSegunda) {
+            spanElementProgramacionSegunda.classList.remove(...defaultClasses)
+            
+            const text = spanElementProgramacionSegunda.innerText;
+            if (classMap[text]) {
+                spanElementProgramacionSegunda.classList.add(classMap[text].bgClass);
+            } 
         }
     }
     
@@ -227,85 +243,111 @@ function mostrarElementoProgramacionSegunda(
         containerBtnAnteriorSiguienteProgramacionSegunda.classList.remove("bg-secondary", "bg-gradient", "bg-opacity-25")
     }
     
-    let spanElementPrograma3d2F
-    let spanElementPrograma3d4F
-    let spanElementNotasProgramacion
+    let spanElementPrograma3d2F, spanElementPrograma3d4F, spanElementNotasProgramacion
     
     resDatoPrograma3d2F ? spanElementPrograma3d2F = resDatoPrograma3d2F : null
-    resPrograma3d4F ? spanElementPrograma3d4F = resPrograma3d4F : null
-    resNotasProgramacion ? spanElementNotasProgramacion = resNotasProgramacion : null
+    resDatoPrograma3d4F ? spanElementPrograma3d4F = resDatoPrograma3d4F : null
+    resDatoNotasProgramacion ? spanElementNotasProgramacion = resDatoNotasProgramacion : null
 
     // console.log('spanElementPrograma3d2F:', spanElementPrograma3d2F)
     // console.log('indiceaMostar:', indiceAMostrar)
 
     if (indiceAMostrar === 0) {
-        colorSpanProgramacionSegunda(spanElementPrograma3d2F)
-        btnAnteriorPrograma3d2F.disabled = true
-        btnSiguientePrograma3d2F.removeAttribute('disabled')
+        if (btnAnteriorPrograma3d2F && btnSiguientePrograma3d2F) {
+            colorSpanProgramacionSegunda(spanElementPrograma3d2F)
+            btnAnteriorPrograma3d2F.disabled = true
+            btnSiguientePrograma3d2F.removeAttribute('disabled')
+            agregarEstiloRevPasadasProgramacionSegunda(containerBtnAnteriorSiguientePrograma3d2F)
+        }
 
-        colorSpanProgramacionSegunda(spanElementPrograma3d4F)
-        btnAnteriorPrograma3d4F.disabled = true
-        btnSiguientePrograma3d4F.removeAttribute('disabled')
+        if (btnAnteriorPrograma3d4F && btnSiguientePrograma3d4F) {
+            colorSpanProgramacionSegunda(spanElementPrograma3d4F)
+            btnAnteriorPrograma3d4F.disabled = true
+            btnSiguientePrograma3d4F.removeAttribute('disabled')
+            agregarEstiloRevPasadasProgramacionSegunda(containerBtnAnteriorSiguientePrograma3d4F)
+        }
 
-        colorSpanProgramacionSegunda(spanElementNotasProgramacion)
-        btnAnteriorNotasProgramacion.disabled = true
-        btnSiguienteNotasProgramacion.removeAttribute('disabled')
+        if (btnAnteriorNotasProgramacion && btnSiguienteNotasProgramacion) {
+            colorSpanProgramacionSegunda(spanElementNotasProgramacion)
+            btnAnteriorNotasProgramacion.disabled = true
+            btnSiguienteNotasProgramacion.removeAttribute('disabled')
+            agregarEstiloRevPasadasProgramacionSegunda(containerBtnAnteriorSiguienteNotasProgramacion)
+        }
 
     } else if (indiceAMostrar === arrayFromValues.length-1) {
-        colorSpanProgramacionSegunda(spanElementPrograma3d2F)
-        btnAnteriorPrograma3d2F.removeAttribute('disabled')
-        btnSiguientePrograma3d2F.disabled = true
-        eliminarEstiloRevPasadasProgramacionSegunda(containerBtnAnteriorSiguientePrograma3d2F)
+        if (btnAnteriorPrograma3d2F && btnSiguientePrograma3d2F) {
+            colorSpanProgramacionSegunda(spanElementPrograma3d2F)
+            btnAnteriorPrograma3d2F.removeAttribute('disabled')
+            btnSiguientePrograma3d2F.disabled = true
+            eliminarEstiloRevPasadasProgramacionSegunda(containerBtnAnteriorSiguientePrograma3d2F)
+        }
 
-        colorSpanProgramacionSegunda(spanElementPrograma3d4F)
-        btnAnteriorPrograma3d4F.removeAttribute('disabled')
-        btnSiguientePrograma3d4F.disabled = true
-        eliminarEstiloRevPasadasProgramacionSegunda(containerBtnAnteriorSiguientePrograma3d4F)
+        if (btnAnteriorPrograma3d4F && btnSiguientePrograma3d4F) {
+            colorSpanProgramacionSegunda(spanElementPrograma3d4F)
+            btnAnteriorPrograma3d4F.removeAttribute('disabled')
+            btnSiguientePrograma3d4F.disabled = true
+            eliminarEstiloRevPasadasProgramacionSegunda(containerBtnAnteriorSiguientePrograma3d4F)
+        }
 
-        colorSpanProgramacionSegunda(spanElementNotasProgramacion)
-        btnAnteriorNotasProgramacion.removeAttribute('disabled')
-        btnSiguienteNotasProgramacion.disabled = true
-        eliminarEstiloRevPasadasProgramacionSegunda(containerBtnAnteriorSiguienteNotasProgramacion)
+        if (btnAnteriorNotasProgramacion && btnSiguienteNotasProgramacion) {
+            colorSpanProgramacionSegunda(spanElementNotasProgramacion)
+            btnAnteriorNotasProgramacion.removeAttribute('disabled')
+            btnSiguienteNotasProgramacion.disabled = true
+            eliminarEstiloRevPasadasProgramacionSegunda(containerBtnAnteriorSiguienteNotasProgramacion)
+        }
 
     } else {
-        colorSpanProgramacionSegunda(spanElementPrograma3d2F)
-        btnAnteriorPrograma3d2F.removeAttribute('disabled')
-        btnSiguientePrograma3d2F.removeAttribute('disabled')
-        agregarEstiloRevPasadasProgramacionSegunda(containerBtnAnteriorSiguientePrograma3d2F)
-
-        colorSpanProgramacionSegunda(spanElementPrograma3d4F)
-        btnAnteriorPrograma3d4F.removeAttribute('disabled')
-        btnSiguientePrograma3d4F.removeAttribute('disabled')
-        agregarEstiloRevPasadasProgramacionSegunda(containerBtnAnteriorSiguientePrograma3d4F)
-
-        colorSpanProgramacionSegunda(spanElementNotasProgramacion)
-        btnAnteriorNotasProgramacion.removeAttribute('disabled')
-        btnSiguienteNotasProgramacion.removeAttribute('disabled')
-        agregarEstiloRevPasadasProgramacionSegunda(containerBtnAnteriorSiguienteNotasProgramacion)
+        if (btnAnteriorPrograma3d2F && btnSiguientePrograma3d2F) {
+            colorSpanProgramacionSegunda(spanElementPrograma3d2F)
+            btnAnteriorPrograma3d2F.removeAttribute('disabled')
+            btnSiguientePrograma3d2F.removeAttribute('disabled')
+            agregarEstiloRevPasadasProgramacionSegunda(containerBtnAnteriorSiguientePrograma3d2F)
+        }
+        
+        if (btnAnteriorPrograma3d4F && btnSiguientePrograma3d4F) {
+            colorSpanProgramacionSegunda(spanElementPrograma3d4F)
+            btnAnteriorPrograma3d4F.removeAttribute('disabled')
+            btnSiguientePrograma3d4F.removeAttribute('disabled')
+            agregarEstiloRevPasadasProgramacionSegunda(containerBtnAnteriorSiguientePrograma3d4F)
+        }
+        
+        if (btnAnteriorNotasProgramacion && btnSiguienteNotasProgramacion) {
+            colorSpanProgramacionSegunda(spanElementNotasProgramacion)
+            btnAnteriorNotasProgramacion.removeAttribute('disabled')
+            btnSiguienteNotasProgramacion.removeAttribute('disabled')
+            agregarEstiloRevPasadasProgramacionSegunda(containerBtnAnteriorSiguienteNotasProgramacion)
+        }
     }
 }
 
 
 // Función para mostrar el elemento anterior
 function mostrarAnteriorProgramacionSegunda(arrayFromValues, arrayFromEstadoValues, kValue) {
+    //console.log('kValue: ', kValue)
     let inputSpotIndex = document.getElementById(`resIndexHidden${kValue}`)
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
 
     let indiceAMostrar = parseInt(lastIndexArrayFromValues-1)
     inputSpotIndex.value = parseInt(indiceAMostrar)
 
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
+    // console.log('arrValuesRevisionMark: ', arrValuesRevisionMark)
+
     let resDatoPrograma3d2F = document.getElementById(`resDatoPrograma3d2F${kValue}`)
-    let resPrograma3d4F = document.getElementById(`resPrograma3d4F${kValue}`)
-    let resNotasProgramacion = document.getElementById(`resNotasProgramacion${kValue}`)
+    let resDatoPrograma3d4F = document.getElementById(`resDatoPrograma3d4F${kValue}`)
+    let resDatoNotasProgramacion = document.getElementById(`resDatoNotasProgramacion${kValue}`)
 
     mostrarElementoProgramacionSegunda(
         arrayFromValues,
         arrayFromEstadoValues,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resDatoPrograma3d2F,
-        resPrograma3d4F,
-        resNotasProgramacion
+        resDatoPrograma3d4F,
+        resDatoNotasProgramacion
     )
 }
 
@@ -317,18 +359,23 @@ function mostrarSiguienteProgramacionSegunda(arrayFromValues, arrayFromEstadoVal
     let indiceAMostrar = parseInt(lastIndexArrayFromValues+1)
     inputSpotIndex.value =  parseInt(indiceAMostrar)
 
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
+
     let resDatoPrograma3d2F = document.getElementById(`resDatoPrograma3d2F${kValue}`)
-    let resPrograma3d4F = document.getElementById(`resPrograma3d4F${kValue}`)
-    let resNotasProgramacion = document.getElementById(`resNotasProgramacion${kValue}`)    
+    let resDatoPrograma3d4F = document.getElementById(`resDatoPrograma3d4F${kValue}`)
+    let resDatoNotasProgramacion = document.getElementById(`resDatoNotasProgramacion${kValue}`)    
 
     mostrarElementoProgramacionSegunda(
         arrayFromValues,
         arrayFromEstadoValues,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resDatoPrograma3d2F,
-        resPrograma3d4F,
-        resNotasProgramacion
+        resDatoPrograma3d4F,
+        resDatoNotasProgramacion
     )
 }
 //*********** End Evento btn anterior y siguiente ********* */
@@ -373,11 +420,24 @@ spanResProgramacionSegunda.forEach(function(spanElement) {
         let arrayFromSpotModificador = inputSpotModificador.split(",")
         let arrayFromSpotFecha = inputSpotFecha.split(",")
         let arrayFromSpotFechaModificacion = inputSpotFechaModificacion.split(",")
+
+        function changeIconEstadoFromSingle(value) {
+            const valueEstadoMap = {
+                'enProceso': '<i class="fa-solid fa-arrows-spin fa-lg" style="color: #b09b12;"></i>', // 'En Proceso',
+                'terminado': '<i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i>', //'Terminado',
+                'suspendido': '<i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i>', // 'Suspendido',
+                'noAplica': '<i class="fa-solid fa-ban fa-lg"></i>', // 'N/A',
+                'sinDato': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>', //'S/D',
+                'S/D': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>',
+                '': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>'
+            };
+            return valueEstadoMap[value];
+        }
                 
         for (let y=0; arrayFromSpotRevision.length > y; y++) {
             if (inputSpotIndex == y) {
-                spanSpot.setAttribute("valueEstado", arrayFromSpotEstado[y])
                 spanSpot.setAttribute("valueRevision", arrayFromSpotRevision[y])
+                spanSpot.setAttribute("valueEstado", changeIconEstadoFromSingle(arrayFromSpotEstado[y]))
                 spanSpot.setAttribute("valueCreador", arrayFromSpotCreador[y])
                 spanSpot.setAttribute("valueFecha", arrayFromSpotFecha[y])
                 spanSpot.setAttribute("valueModificador", arrayFromSpotModificador[y])
@@ -428,6 +488,7 @@ spanResProgramacionSegundaNotas.forEach(function(spanElement) {
         // console.log('idFinalInputs: ', idFinalInputs)
 
         let inputSpotIndex = document.getElementById(`resIndexHidden${idFinalInputs}`).value
+        let inputSpotNota = document.getElementById(`resDatoHidden${idFinalInputs}`).value
         let inputSpotRevision = document.getElementById(`resRevisionHidden${idFinalInputs}`).value
         let inputSpotCreador = document.getElementById(`arrResCreadorHidden${idFinalInputs}`).value
         let inputSpotModificador = document.getElementById(`arrResModificadorHidden${idFinalInputs}`).value
@@ -435,6 +496,7 @@ spanResProgramacionSegundaNotas.forEach(function(spanElement) {
         let inputSpotFechaModificacion = document.getElementById(`arrResFechaModificacionHidden${idFinalInputs}`).value
         
         let arrayFromSpotRevision = inputSpotRevision.split(",")
+        let arrayFromSpotNota = inputSpotNota.split(",")
         let arrayFromSpotCreador = inputSpotCreador.split(",")
         let arrayFromSpotModificador = inputSpotModificador.split(",")
         let arrayFromSpotFecha = inputSpotFecha.split(",")
@@ -442,6 +504,7 @@ spanResProgramacionSegundaNotas.forEach(function(spanElement) {
                 
         for (let y=0; arrayFromSpotRevision.length > y; y++) {
             if (inputSpotIndex == y) {
+                spanSpot.setAttribute("valueNota", arrayFromSpotNota[y])
                 spanSpot.setAttribute("valueRevision", arrayFromSpotRevision[y])
                 spanSpot.setAttribute("valueCreador", arrayFromSpotCreador[y])
                 spanSpot.setAttribute("valueFecha", arrayFromSpotFecha[y])
@@ -451,6 +514,7 @@ spanResProgramacionSegundaNotas.forEach(function(spanElement) {
 
             tippy(spanSpot, {
                 content: `Revision: ${spanSpot.getAttribute("valueRevision")}<br>
+                            Nota: ${spanSpot.getAttribute("valueNota")}<br>
                             Creado por: ${spanSpot.getAttribute("valueCreador")}<br>
                             Fecha creac.: ${spanSpot.getAttribute("valueFecha")}<br>
                             Modificado por: ${spanSpot.getAttribute("valueModificador")}<br>
