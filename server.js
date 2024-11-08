@@ -72,6 +72,15 @@ const initServer = () => {
         saveUninitialized: false,
     }))
 
+    app.use('/api/config', (req, res) => {
+        res.json({
+            URL_GOOGLE_STORE_IMGPROJECTS: process.env.URL_GOOGLE_STORE_IMGPROJECTS,
+            URL_GOOGLE_STORE_AVATARS: process.env.URL_GOOGLE_STORE_AVATARS,
+            URL_GOOGLE_STORE_LOGOCLIENTS: process.env.URL_GOOGLE_STORE_LOGOCLIENTS,
+            URL_GOOGLE_STORE_TOOLIMAGE: process.env.URL_GOOGLE_STORE_TOOLIMAGE
+        });
+    });
+
     app.use(passport.initialize())
     app.use(passport.session())
 

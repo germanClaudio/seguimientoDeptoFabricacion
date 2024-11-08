@@ -7,15 +7,13 @@
     }
 let area = capitalizarPrimeraLetra(userInfo.area)
 let permiso = capitalizarPrimeraLetra(userInfo.permiso)
-console.log('area: ', area, 'permiso: ', permiso)
 
     if (userInfo.superAdmin) { %>
         <div class="mx-auto small text-center">
             <span id="mostrarRolUser" class="badge rounded-pill bg-primary position-relative mb-1">
                 SuperAdmin
                 <span class="position-absolute top-0 start-100 translate-middle">
-                    <i class="fa-solid fa-crown fa-beat fa-lg"
-                        title="SuperAdmin"
+                    <i class="fa-solid fa-crown fa-beat fa-lg" title="SuperAdmin"
                         style="color: #a89c0d; --fa-rotate-angle: 20deg;">
                     </i>
                 </span>

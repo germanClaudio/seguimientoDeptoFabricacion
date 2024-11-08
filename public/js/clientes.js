@@ -1,5 +1,12 @@
-let URL_GOOGLE_STORE_LOGOCLIENTS = 'https://storage.googleapis.com/imagenesproyectosingenieria/upload/LogoClientImages/'
 const socket = io.connect()
+let URL_GOOGLE_STORE_LOGOCLIENTS
+
+fetch('/api/config')
+    .then(response => response.json())
+    .then(config => {
+        URL_GOOGLE_STORE_LOGOCLIENTS = config.URL_GOOGLE_STORE_LOGOCLIENTS
+    })
+    .catch(error => console.error('Error fetching config:', error));
 
 function formatDate(date) {
     const DD = String(date.getDate()).padStart(2, '0');
@@ -10,25 +17,6 @@ function formatDate(date) {
     const ss = String(date.getSeconds()).padStart(2, '0');
     return DD + MM + YY + "_" + hh + mm + ss
 }
-
-// function extractNumbers(str) {
-//     const numbers = str.match(/\d{1,2}/g); // Extract 1 or 2 digit numbers from the string
-    
-//     if (numbers) {
-//         if (numbers.length === 2) {
-//             // If two numbers are found, check if both are numbers
-//             if (!isNaN(parseInt(numbers[0])) && !isNaN(parseInt(numbers[1]))) {
-//                 return numbers; // Return both numbers as an array
-//             }
-//         } else if (numbers.length === 1) {
-//             // If only one number is found, check if it's a number
-//             if (!isNaN(parseInt(numbers[0]))) {
-//                 return numbers[0]; // Return the single number
-//             }
-//         }
-//     }
-//     return null // Return null if no valid numbers are found
-// }
 
 //-------------------------------------------
 const inputName = document.getElementById('name')

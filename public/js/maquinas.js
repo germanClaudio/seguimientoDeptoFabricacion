@@ -1,5 +1,12 @@
 const socket = io.connect()
-let URL_GOOGLE_STORE_IMAGESTOOLS='https://storage.googleapis.com/imagenesproyectosingenieria/upload/ToolsImages/'
+let URL_GOOGLE_STORE_IMAGESTOOLS
+
+fetch('/api/config')
+    .then(response => response.json())
+    .then(config => {
+        URL_GOOGLE_STORE_IMAGESTOOLS = config.URL_GOOGLE_STORE_IMAGESTOOLS
+    })
+    .catch(error => console.error('Error fetching config:', error));
 
 function formatDate(date) {
     const DD = String(date.getDate()).padStart(2, '0');
@@ -572,13 +579,9 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
             if (forbiddenChars.test(key)) {
                 // Cancelar el evento para evitar que se ingrese el carácter
                 event.preventDefault()
-                input.classList.add("border")
-                input.classList.add("border-danger")
-                input.classList.add("border-2")
+                input.classList.add("border", "border-danger", "border-2")
             } else {
-                input.classList.remove("border")
-                input.classList.remove("border-danger")
-                input.classList.remove("border-2")
+                input.classList.remove("border", "border-danger", "border-2")
             }
         })
     })
@@ -614,9 +617,7 @@ function disabledBtnAceptar () {
     allInputs.forEach(function(input) {
             input.addEventListener('change', (event) => {
                 event.preventDefault()
-                input.classList.add("border-primary")
-                input.classList.add("border-2")
-                input.classList.add("shadow")
+                input.classList.add("border-primary", "border-2", "shadow")
                 btnAceptarFrom.removeAttribute('disabled')
                 btnAceptarFrom.style = "cursor: pointer;"
             })        

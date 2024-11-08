@@ -45,7 +45,7 @@
 
                 <div class="col-2">
                     <label class="form-check-label" for="type">Tipo</label>
-                    <select class="form-select form-select" aria-label=".form-select" name="type" id="type">
+                    <select class="form-select form-select" aria-label=".form-select" name="type" id="type" required>
                         <% 
                         const opcionesUpdate = [
                             { value: "cnc", text: "CNC" },
@@ -56,6 +56,7 @@
                             <option value="<%= opcion.value %>" <%= opcion.value === maquina.type ? 'selected disabled' : '' %> > <%= opcion.text %> </option>
                         <% }) %>
                     </select>
+                    <input type="hidden" id="typeHidden" name="typeHidden" value="" style="display: none;">
                 </div>
 
                 <% if(maquina.status) { %>
@@ -94,11 +95,11 @@
 
             <div class="row justify-content-between align-items-center my-2">
                 <div class="col-6">
-                    <label for="fileInputImageToolUpdate" class="form-label">
+                    <label for="fileInputImageTool" class="form-label">
                         Seleccione una nueva imagen de la Máquina
                     </label>
-                    <input type="text" id="fileInputTextImageToolUpdate" name="imageTextImageToolUpdate" value="<%=maquina.imageTool %>" style="display: none;">
-                    <input type="file" id="fileInputImageToolUpdate" name="imageImageToolUpdate" value="" accept="image/*" style="display: none;">
+                    <input type="text" id="fileInputTextImageToolUpdate" name="imageTextImageTool" value="<%=maquina.imageTool %>" style="display: none;">
+                    <input type="file" id="fileInputToolUpdate" name="imageImageTool" value="" accept="image/*" style="display: none;">
                     <div id="drop-areaToolUpdate" class="mb-2 mx-auto">
                         <p>Haz click o arrastra y suelta una imagen aquí</p>
                     </div>
@@ -107,11 +108,11 @@
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                     
-                    <div id="alertToolUpdate" class="alert alert-warning align-items-center mx-auto" role="alert"
+                    <div id="alertImageToolUpdate" class="alert alert-warning align-items-center mx-auto" role="alert"
                         style="display: none; font-size: 0.85rem; height: 1.15rem; width: 26rem;">
                         <strong class="me-2">Error!</strong> Solo puedes ingresar una imagen jpg, png, bmp o jpeg.
                     </div>
-                    <div id="alertToolSize" class="alert alert-warning align-items-center mx-auto" role="alert"
+                    <div id="alertSizeImageToolUpdate" class="alert alert-warning align-items-center mx-auto" role="alert"
                         style="display: none; font-size: 0.85rem; height: 1.15rem; width: 25rem;">
                         <strong class="me-2">Atención!</strong> El tamaño de la imagen debe ser menor a 3Mb.
                     </div>

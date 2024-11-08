@@ -361,7 +361,7 @@
                                                 if (pathToMongoOtProgramacion[i]) {
                                                     let largoArray = parseInt(largoArrayProgramacion)
                                                     resDatoRt = pathToMongoOtProgramacion[largoArray-1].rt || 'sinDato'
-                                                    resEstadoRt = pathToMongoOtProgramacion[largoArray-1].estadoRt
+                                                    resEstadoRt = pathToMongoOtProgramacion[largoArray-1].estadoRt || 'sinDato'
                                                     resRevisionRt = pathToMongoOtProgramacion[largoArray-1].revisionRt
                                                     
                                                     arrResDatoRt.push(pathToMongoOtProgramacion[i].rt)
@@ -370,7 +370,7 @@
                                                     
                                                 } else {
                                                     resDatoRt = 'S/D'
-                                                    resEstadoRt = ''
+                                                    resEstadoRt = 'S/D'
                                                     resRevisionRt = 0
                                                 }
                                             }
@@ -380,7 +380,7 @@
 
                                         } else {
                                             resDatoRt = 'S/D'
-                                            resEstadoRt = ''
+                                            resEstadoRt = 'S/D'
                                             resRevisionRt = 0
                                             arrResDatoRt.push(resDatoRt)
                                             arrResEstadoRt.push(resEstadoRt)
@@ -414,7 +414,7 @@
                                                     if (pathToMongoOtProgramacion[i]) {
                                                         let largoArray = parseInt(largoArrayProgramacion)
                                                         resDatoPreparacionGeo = pathToMongoOtProgramacion[largoArray-1].preparacionGeo || 'sinDato'
-                                                        resEstadoPreparacionGeo = pathToMongoOtProgramacion[largoArray-1].preparacionGeo
+                                                        resEstadoPreparacionGeo = pathToMongoOtProgramacion[largoArray-1].preparacionGeo || 'sinDato'
                                                         resRevisionPreparacionGeo = pathToMongoOtProgramacion[largoArray-1].revisionPreparacionGeo
                                                         
                                                         arrResDatoPreparacionGeo.push(pathToMongoOtProgramacion[i].preparacionGeo)
@@ -423,7 +423,7 @@
                                                     
                                                     } else {
                                                         resDatoPreparacionGeo = 'S/D'
-                                                        resEstadoPreparacionGeo = ''
+                                                        resEstadoPreparacionGeo = 'S/D'
                                                         resRevisionPreparacionGeo = 0
                                                     }
                                                 }
@@ -433,7 +433,7 @@
                                         
                                         } else {
                                             resDatoPreparacionGeo = 'S/D'
-                                            resEstadoPreparacionGeo = ""
+                                            resEstadoPreparacionGeo = 'S/D'
                                             resRevisionPreparacionGeo = 0
                                             arrResDatoPreparacionGeo.push(resDatoPreparacionGeo)
                                             arrResEstadoPreparacionGeo.push(resEstadoPreparacionGeo)
@@ -468,7 +468,7 @@
                                                     if (pathToMongoOtProgramacion[i]) {
                                                         let largoArray = parseInt(largoArrayProgramacion)
                                                         resDatoPrograma2d = pathToMongoOtProgramacion[largoArray-1].programa2d || 'sinDato'
-                                                        resEstadoPrograma2d = pathToMongoOtProgramacion[largoArray-1].estadoPrograma2d
+                                                        resEstadoPrograma2d = pathToMongoOtProgramacion[largoArray-1].estadoPrograma2d || 'sinDato'
                                                         resRevisionPrograma2d = pathToMongoOtProgramacion[largoArray-1].revisionPrograma2d
                                                         
                                                         arrResDatoPrograma2d.push(pathToMongoOtProgramacion[i].programa2d)
@@ -477,7 +477,7 @@
                                                         
                                                     } else {
                                                         resDatoPrograma2d = 'S/D'
-                                                        resEstadoPrograma2d = ''
+                                                        resEstadoPrograma2d = 'S/D'
                                                         resRevisionPrograma2d = 0
                                                     }
                                                 }
@@ -487,7 +487,7 @@
                                         
                                         } else {
                                             resDatoPrograma2d = 'S/D'
-                                            resEstadoPrograma2d = ''
+                                            resEstadoPrograma2d = 'S/D'
                                             resRevisionPrograma2d = 0
                                             arrResDatoPrograma2d.push(resDatoPrograma2d)
                                             arrResEstadoPrograma2d.push(resEstadoPrograma2d)

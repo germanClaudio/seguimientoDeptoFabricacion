@@ -20,7 +20,7 @@
                 <i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i> Terminado -
                 <i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i> Suspendido -
                 <i class="fa-solid fa-ban fa-lg"></i> No Aplica -
-                <span class="badge rounded-pill bg-secondary text-white">S/D</span> Sin Datos
+                <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i> Sin Datos
             </th>
         </tr>
         <tr>
@@ -38,7 +38,7 @@
             resDatoFDos = 'S/D', resEstadoFDos = 'S/D', resRevisionFDos = 0;
 
             const mecanizadoPrimeraConfig = {
-                enProceso: { icon: "fa-arrows-spin", iconColor: "color:#b09b12" },
+                enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
                 terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
                 suspendido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
                 noAplica: { icon: "fa-ban", iconColor: "color:#000000" },
@@ -51,8 +51,8 @@
             largoArrayOtDetalles = parseInt(pathMongoOtDetalles.length)
 
             for ( let o=0; largoArrayOtDetalles> o; o++) {
-                let pathToMongoOtMecanizadoPrimera = pathMongoOtDetalles[o].otMecanizadoPrimera || [];
-                let largoArrayMecanizado = parseInt(pathToMongoOtMecanizadoPrimera.length);
+                let pathToMongoOtMecanizado = pathMongoOtDetalles[o].otMecanizadoPrimera || [];
+                let largoArrayMecanizado = parseInt(pathToMongoOtMecanizado.length);
 
                 let arrResDatoFCero = [], arrResEstadoFCero = [], valueArrayResFCero = 0, arrResRevisionFCero = [],
                 arrResCreadorFCero = [], arrResModificadorFCero = [], arrResFechaFCero = [], arrResFechaModFCero = [];
@@ -74,19 +74,19 @@
                                         <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
                                                     
                                             for (let i = 0; largoArrayMecanizado > i; i++) {
-                                                if (pathToMongoOtMecanizadoPrimera[i]) {
+                                                if (pathToMongoOtMecanizado[i]) {
                                                     let largoArray = parseInt(largoArrayMecanizado)
-                                                    resDatoFCero = pathToMongoOtMecanizadoPrimera[largoArray-1].fCero || "S/D"
-                                                    resEstadoFCero = pathToMongoOtMecanizadoPrimera[largoArray-1].estadoFCero
-                                                    resRevisionFCero = pathToMongoOtMecanizadoPrimera[largoArray-1].revisionFCero
+                                                    resDatoFCero = pathToMongoOtMecanizado[largoArray-1].fCero == 'sinDato' ? "S/D" : pathToMongoOtMecanizado[largoArray-1].fCero
+                                                    resEstadoFCero = pathToMongoOtMecanizado[largoArray-1].estadoFCero == 'sinDato' ? "S/D" : pathToMongoOtMecanizado[largoArray-1].estadoFCero
+                                                    resRevisionFCero = pathToMongoOtMecanizado[largoArray-1].revisionFCero
                                                     
-                                                    arrResDatoFCero.push(pathToMongoOtMecanizado[i].fCero)
-                                                    arrResEstadoFCero.push(pathToMongoOtMecanizado[i].estadoFCero)
+                                                    pathToMongoOtMecanizado[i].fCero == 'sinDato' ? arrResDatoFCero.push("S/D") : arrResDatoFCero.push(pathToMongoOtMecanizado[i].fCero)
+                                                    pathToMongoOtMecanizado[i].estadoFCero == 'sinDato' ? arrResEstadoFCero.push("S/D") : arrResEstadoFCero.push(pathToMongoOtMecanizado[i].estadoFCero)
                                                     arrResRevisionFCero.push(pathToMongoOtMecanizado[i].revisionFCero)
                                                 
                                                     arrResCreadorFCero.push(pathToMongoOtMecanizado[i].creator[0].username)
                                                     arrResModificadorFCero.push(pathToMongoOtMecanizado[i].modificator[0].username)
-                                                    arrResFechaOtFCero.push(pathToMongoOtMecanizado[i].timestamp)
+                                                    arrResFechaFCero.push(pathToMongoOtMecanizado[i].timestamp)
                                                     arrResFechaModFCero.push(pathToMongoOtMecanizado[i].modifiedOn)
                                                     
                                                 } else {
@@ -166,14 +166,14 @@
                                         <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
 
                                             for (let i = 0; largoArrayMecanizado > i; i++) {
-                                                if (pathToMongoOtMecanizadoPrimera[i]) {
+                                                if (pathToMongoOtMecanizado[i]) {
                                                     let largoArray = parseInt(largoArrayMecanizado)
-                                                    resDatoFUno = pathToMongoOtMecanizadoPrimera[largoArray-1].fUno
-                                                    resEstadoFUno = pathToMongoOtMecanizadoPrimera[largoArray-1].estadoFUno
-                                                    resRevisionFUno = pathToMongoOtMecanizadoPrimera[largoArray-1].revisionFUno
+                                                    resDatoFUno = pathToMongoOtMecanizado[largoArray-1].fUno == 'sinDato' ? "S/D" : pathToMongoOtMecanizado[largoArray-1].fUno
+                                                    resEstadoFUno = pathToMongoOtMecanizado[largoArray-1].estadoFUno == 'sinDato' ? "S/D" : pathToMongoOtMecanizado[largoArray-1].estadoFUno
+                                                    resRevisionFUno = pathToMongoOtMecanizado[largoArray-1].revisionFUno
                                                     
-                                                    arrResDatoFUno.push(pathToMongoOtMecanizado[i].fUno)
-                                                    arrResEstadoFUno.push(pathToMongoOtMecanizado[i].estadoFUno)
+                                                    pathToMongoOtMecanizado[i].fUno == 'sinDato' ? arrResDatoFUno.push("S/D") : arrResDatoFUno.push(pathToMongoOtMecanizado[i].fUno)
+                                                    pathToMongoOtMecanizado[i].estadoFUno == 'sinDato' ? arrResEstadoFUno.push("S/D") : arrResEstadoFUno.push(pathToMongoOtMecanizado[i].estadoFUno)
                                                     arrResRevisionFUno.push(pathToMongoOtMecanizado[i].revisionFUno)
                                                 
                                                     arrResCreadorFUno.push(pathToMongoOtMecanizado[i].creator[0].username)
@@ -259,14 +259,14 @@
                                         <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
 
                                             for (let i = 0; largoArrayMecanizado > i; i++) {
-                                                if (pathToMongoOtMecanizadoPrimera[i]) {
+                                                if (pathToMongoOtMecanizado[i]) {
                                                     let largoArray = parseInt(largoArrayMecanizado)
-                                                    resDatoFDos = pathToMongoOtMecanizadoPrimera[largoArray-1].fDos || 'sinDato'
-                                                    resEstadoFDos = pathToMongoOtMecanizadoPrimera[largoArray-1].estadoFDos || 'sinDato'
-                                                    resRevisionFDos = pathToMongoOtMecanizadoPrimera[largoArray-1].revisionFDos
+                                                    resDatoFDos = pathToMongoOtMecanizado[largoArray-1].fDos == 'sinDato' ? "S/D" : pathToMongoOtMecanizado[largoArray-1].fDos
+                                                    resEstadoFDos = pathToMongoOtMecanizado[largoArray-1].estadoFDos == 'sinDato' ? "S/D" : pathToMongoOtMecanizado[largoArray-1].estadoFDos
+                                                    resRevisionFDos = pathToMongoOtMecanizado[largoArray-1].revisionFDos
                                                     
-                                                    arrResDatoFDos.push(pathToMongoOtMecanizado[i].fDos)
-                                                    arrResEstadoFDos.push(pathToMongoOtMecanizado[i].estadoFDos)
+                                                    pathToMongoOtMecanizado[i].fDos == 'sinDato' ? arrResDatoFDos.push("S/D") : arrResDatoFDos.push(pathToMongoOtMecanizado[i].fDos)
+                                                    pathToMongoOtMecanizado[i].estadoFDos == 'sinDato' ? arrResEstadoFDos.push("S/D") : arrResEstadoFDos.push(pathToMongoOtMecanizado[i].estadoFDos)
                                                     arrResRevisionFDos.push(pathToMongoOtMecanizado[i].revisionFDos)
                                                 
                                                     arrResCreadorFDos.push(pathToMongoOtMecanizado[i].creator[0].username)
@@ -359,11 +359,11 @@
                                         <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
                                         
                                             for (let i = 0; largoArrayMecanizado > i; i++) {
-                                                if (pathToMongoOtMecanizadoPrimera[i]) {
+                                                if (pathToMongoOtMecanizado[i]) {
                                                     let largoArray = parseInt(largoArrayMecanizado)
-                                                    resDatoFCero = pathToMongoOtMecanizadoPrimera[largoArray-1].fCero || 'sinDato'
-                                                    resEstadoFCero = pathToMongoOtMecanizadoPrimera[largoArray-1].estadoFCero || 'sinDato'
-                                                    resRevisionFCero = pathToMongoOtMecanizadoPrimera[largoArray-1].revisionFCero
+                                                    resDatoFCero = pathToMongoOtMecanizado[largoArray-1].fCero || 'sinDato'
+                                                    resEstadoFCero = pathToMongoOtMecanizado[largoArray-1].estadoFCero || 'sinDato'
+                                                    resRevisionFCero = pathToMongoOtMecanizado[largoArray-1].revisionFCero
                                                                                                             
                                                     arrResDatoFCero.push(pathToMongoOtMecanizado[i].fCero)
                                                     arrResEstadoFCero.push(pathToMongoOtMecanizado[i].estadoFCero)
@@ -376,8 +376,8 @@
                                                 }
                                             }
                                             valueArrayResFCero = parseInt(arrResDatoFCero.length-1)
-                                            resDatoFCero = pathToMongoOtMecanizadoPrimera[0].FCero
-                                            resEstadoFCero = pathToMongoOtMecanizadoPrimera[0].estadoFCero
+                                            resDatoFCero = pathToMongoOtMecanizado[0].FCero
+                                            resEstadoFCero = pathToMongoOtMecanizado[0].estadoFCero
 
                                         } else {
                                             resDatoFCero = 'S/D'
@@ -411,11 +411,11 @@
                                         <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
                                             for (let i = 0; largoArrayMecanizado > i; i++) {
                                                 
-                                                if (pathToMongoOtMecanizadoPrimera[i]) {
+                                                if (pathToMongoOtMecanizado[i]) {
                                                     let largoArray = parseInt(largoArrayMecanizado)
-                                                    resDatoFUno = pathToMongoOtMecanizadoPrimera[largoArray-1].fUno || 'sinDato'
-                                                    resEstadoFUno = pathToMongoOtMecanizadoPrimera[largoArray-1].fUno || 'sinDato'
-                                                    resRevisionFUno = pathToMongoOtMecanizadoPrimera[largoArray-1].revisionFUno
+                                                    resDatoFUno = pathToMongoOtMecanizado[largoArray-1].fUno || 'sinDato'
+                                                    resEstadoFUno = pathToMongoOtMecanizado[largoArray-1].fUno || 'sinDato'
+                                                    resRevisionFUno = pathToMongoOtMecanizado[largoArray-1].revisionFUno
                                                     
                                                     arrResDatoFUno.push(pathToMongoOtMecanizado[i].fUno)
                                                     arrResEstadoFUno.push(pathToMongoOtMecanizado[i].fUno)
@@ -428,8 +428,8 @@
                                                 }
                                             }
                                             valueArrayResFUno = parseInt(arrResDatoFUno.length-1)
-                                            resDatoFUno = pathToMongoOtMecanizadoPrimera[0].fUno
-                                            resEstadoFUno = pathToMongoOtMecanizadoPrimera[0].estadoFUno
+                                            resDatoFUno = pathToMongoOtMecanizado[0].fUno
+                                            resEstadoFUno = pathToMongoOtMecanizado[0].estadoFUno
                                     
                                         } else {
                                             resDatoFUno = "S/D"
@@ -465,11 +465,11 @@
                                         <% if (largoArrayOtDetalles > 0 && largoArrayMecanizado > 0) {
                                             for (let i = 0; largoArrayMecanizado > i; i++) {
                                                 
-                                                if (pathToMongoOtMecanizadoPrimera[i]) {
+                                                if (pathToMongoOtMecanizado[i]) {
                                                     let largoArray = parseInt(largoArrayMecanizado)
-                                                    resDatoFDos = pathToMongoOtMecanizadoPrimera[largoArray-1].fDos || 'sinDato'
-                                                    resEstadoFDos = pathToMongoOtMecanizadoPrimera[largoArray-1].estadoFDos || 'sinDato'
-                                                    resRevisionFDos = pathToMongoOtMecanizadoPrimera[largoArray-1].revisionFDos
+                                                    resDatoFDos = pathToMongoOtMecanizado[largoArray-1].fDos || 'sinDato'
+                                                    resEstadoFDos = pathToMongoOtMecanizado[largoArray-1].estadoFDos || 'sinDato'
+                                                    resRevisionFDos = pathToMongoOtMecanizado[largoArray-1].revisionFDos
                                                     
                                                     arrResDatoFDos.push(pathToMongoOtMecanizado[i].fDos)
                                                     arrResEstadoFDos.push(pathToMongoOtMecanizado[i].estadoFDos)
@@ -482,8 +482,8 @@
                                                 }
                                             }
                                             valueArrayResFDos = parseInt(arrResDatoFDos.length-1)
-                                            resDatoFDos = pathToMongoOtMecanizadoPrimera[0].fDos
-                                            resEstadoFDos = pathToMongoOtMecanizadoPrimera[0].estadoFDos
+                                            resDatoFDos = pathToMongoOtMecanizado[0].fDos
+                                            resEstadoFDos = pathToMongoOtMecanizado[0].estadoFDos
                                         
                                         } else {
                                             resDatoFDos = 'S/D'

@@ -1,5 +1,12 @@
-let URL_GOOGLE_STORE_AVATARS='https://storage.googleapis.com/imagenesproyectosingenieria/upload/AvatarUsersImages/'
 const socket = io.connect()
+let URL_GOOGLE_STORE_AVATARS
+
+fetch('/api/config')
+    .then(response => response.json())
+    .then(config => {
+        URL_GOOGLE_STORE_AVATARS = config.URL_GOOGLE_STORE_AVATARS
+    })
+    .catch(error => console.error('Error fetching config:', error));
 
 function formatDate(date) {
     const DD = String(date.getDate()).padStart(2, '0');
@@ -198,7 +205,6 @@ area.addEventListener('change', ()=>{
 })
 
 var inputsDeTexto = document.querySelectorAll('input[type="text"]')
-
     // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
         if (input) {
@@ -213,20 +219,14 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
                 if (forbiddenChars.test(key)) {
                     // Cancelar el evento para evitar que se ingrese el carácter
                     event.preventDefault()
-                    input.classList.add("border")
-                    input.classList.add("border-danger")
-                    input.classList.add("border-2")
+                    input.classList.add("border", "border-danger", "border-2")
                 } else {
-                    input.classList.remove("border")
-                    input.classList.remove("border-danger")
-                    input.classList.remove("border-2")
+                    input.classList.remove("border", "border-danger", "border-2")
                 }
             })
             input.addEventListener('input', (event) => {
                 event.preventDefault()
-                input.classList.add("border-primary")
-                input.classList.add("border-2")
-                input.classList.add("shadow")
+                input.classList.add("border-primary", "border-2", "shadow")
                 btnUpdate.removeAttribute('disabled')
                 btnUpdate.style = "cursor: pointer;"
             })
@@ -261,11 +261,9 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
         if (input) {
             input.addEventListener('input', (event) => {
                 event.preventDefault()
-                input.classList.add("border-primary")
-                input.classList.add("border-2")
-                input.classList.add("shadow")
-                btnUpdateTool.removeAttribute('disabled')
-                btnUpdateTool.style = "cursor: pointer;"
+                input.classList.add("border-primary", "border-2", "shadow")
+                btnUpdate.removeAttribute('disabled')
+                btnUpdate.style = "cursor: pointer;"
             })
         }
     })

@@ -1,4 +1,12 @@
-let URL_GOOGLE_STORE_TOOLIMAGE = 'https://storage.googleapis.com/imagenesproyectosingenieria/upload/ToolsImages/'
+const socket = io.connect()
+let URL_GOOGLE_STORE_TOOLIMAGE
+
+fetch('/api/config')
+    .then(response => response.json())
+    .then(config => {
+        URL_GOOGLE_STORE_TOOLIMAGE = config.URL_GOOGLE_STORE_TOOLIMAGE
+    })
+    .catch(error => console.error('Error fetching config:', error));
 
 function formatDate(date) {
     const DD = String(date.getDate()).padStart(2, '0');
@@ -10,14 +18,55 @@ function formatDate(date) {
     return DD + MM + YY + "_" + hh + mm + ss
 }
 
+function message(designation) {
+    Swal.fire({
+    title: 'Esta seguro?',
+    text: `La máquina ${designation} será modificada!`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Si, modificala!'
+    
+}).then((result) => {
+    if (result.isConfirmed) {
+        document.getElementById("formUpdateTool").submit()
+        setTimeout(() => {
+            Swal.fire(
+                'Modificada!',
+                `La máquina ${designation}, ha sido modificada exitosamente.`,
+                'success'
+            )
+        }, 500)
+        
+    } else {
+        Swal.fire(
+            'No modificado!',
+            `La máquina ${designation}, no ha sido modificada.`,
+            'info'
+        )
+        return false
+    }
+})
+}
+
+const btnUpdateTool = document.getElementById('btnUpdateTool')
+if (btnUpdateTool) {
+btnUpdateTool.addEventListener('click', (event)=>{
+    event.preventDefault()
+    const desigantion = document.getElementById('designation').value
+    message(desigantion)
+})
+}
+
 // --------------- Update Tool ------------------------
 // ----------- Tool  Image behavior ---------------
 const dropAreaToolUpdate = document.getElementById('drop-areaToolUpdate')
-const fileInputToolUpdate = document.getElementById('fileInputImageToolUpdate')
+const fileInputToolUpdate = document.getElementById('fileInputToolUpdate')
 const fileImputTextToolUpdate = document.getElementById('fileInputTextImageToolUpdate')
 const removeImageButtonToolUpdate = document.getElementById('removeImageToolUpdate')
-const alertToolUpdate = document.getElementById('alertToolUpdate')
-const alertToolSize = document.getElementById('alertToolSize')
+const alertToolUpdate = document.getElementById('alertImageToolUpdate')
+const alertToolSize = document.getElementById('alertSizeImageToolUpdate')
 
 dropAreaToolUpdate.style.width = "70%"
 dropAreaToolUpdate.style.height = "200px"
@@ -85,7 +134,7 @@ dropAreaToolUpdate.addEventListener('click', () => {
 fileInputToolUpdate.addEventListener('change', (e) => {
     e.preventDefault()
     const file = fileInputToolUpdate.files[0]
-    
+    console.log('file: ', file)
     if (file && file.type.startsWith('image/')) {
         dropAreaToolUpdate.style.border = '3px dashed #2d2'
         dropAreaToolUpdate.style.backgroundColor = '#22dd2210'
@@ -108,6 +157,7 @@ function handleFileUploadToolUpdate(file) {
         const name = file.name.substring(0, dotIndex);
         const extension = file.name.substring(dotIndex);
         fileImputTextToolUpdate.value = pathToImage + name.replace(/[^a-zA-Z0-9./_ ]/g, '-') + "-" + formatDate(new Date()) + extension
+        //console.log('fileImputTextToolUpdate: ', fileImputTextToolUpdate.value)
         removeImageButtonToolUpdate.style.display = 'flex'
         
         const reader = new FileReader()
@@ -132,49 +182,18 @@ removeImageButtonToolUpdate.addEventListener('click', (e)=> {
     e.stopPropagation()
 })
 
-function message(designation) {
-        Swal.fire({
-        title: 'Esta seguro?',
-        text: `La máquina ${designation} será modificada!`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Si, modificala!'
-        
-    }).then((result) => {
-        if (result.isConfirmed) {
-            setTimeout(() => {
-                Swal.fire(
-                    'Modificada!',
-                    `La máquina ${designation}, ha sido modificada exitosamente.`,
-                    'success'
-                )
-            }, 500)
-            document.getElementById("formUpdateTool").submit()
-            
-        } else {
-            Swal.fire(
-                'No modificado!',
-                `La máquina ${designation}, no ha sido modificada.`,
-                'info'
-            )
-            return false
-        }
-    })
-}
+const typeHidden = document.getElementById('typeHidden')
+const type = document.getElementById('type')
 
-const btnUpdateTool = document.getElementById('btnUpdateTool')
-if (btnUpdateTool) {
-    btnUpdateTool.addEventListener('click', (event)=>{
-        event.preventDefault()
-        const desigantion = document.getElementById('designation').value
-        message(desigantion)
-    })
-}
+document.addEventListener('DOMContentLoaded', ()=> {
+    typeHidden.value = type.value
+})
+
+type.addEventListener('change', ()=>{
+    typeHidden.value = type.value
+})
 
 let inputsDeTexto = document.querySelectorAll('input[type="text"], textarea, input[type="file"], input[type="hidden"]')
-
     // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
         if (input) {

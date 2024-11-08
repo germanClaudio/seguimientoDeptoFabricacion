@@ -110,6 +110,7 @@ class ToolsController {
         //------ Storage New Tool Image in Google Store --------        
         uploadMulterSingleImageTool(req, res, async (err) => {
             try {
+                console.log('req.file: ', req.file)
                 if (req.file) {
                     await uploadToGCS(req, res, next)
                 }
@@ -176,10 +177,12 @@ class ToolsController {
 
         uploadMulterSingleImageTool(req, res, async (err) => {
             try {
+                // console.log('req.body: ', req.body)
+                // console.log('req.file: ', req.file)
                 if (req.file) {
                     await uploadToGCS(req, res, next)
                 }
-                
+
                 const toolId = id
                 const toolToModify = await this.tools.getToolById(toolId)
 
@@ -222,15 +225,16 @@ class ToolsController {
                 let updatedTool = {
                     designation: req.body.designation,
                     code: req.body.code,
-                    type: req.body.type,
+                    type: req.body.typeHidden,
                     characteristics: req.body.characteristics,
-                    imageTool: req.body.imageTextImageToolUpdate,
+                    imageTool: req.body.imageTextImageTool,
                     status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
                     modificator: dataUserModificatorNotEmpty(userLogged),
                     modifiedOn: formatDate()
                 }
 
                 const maquina = await this.tools.updateTool(toolId, updatedTool, dataUserModificatorNotEmpty(userLogged))
+                // console.log('maquina: ', maquina)
                 !maquina ? catchError400_3(req, res, next) : null
                         
                 const csrfToken = csrfTokens.create(req.csrfSecret);

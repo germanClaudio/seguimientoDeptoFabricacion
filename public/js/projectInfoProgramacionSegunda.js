@@ -436,12 +436,12 @@ spanResProgramacionSegunda.forEach(function(spanElement) {
                 
         for (let y=0; arrayFromSpotRevision.length > y; y++) {
             if (inputSpotIndex == y) {
-                spanSpot.setAttribute("valueRevision", arrayFromSpotRevision[y])
-                spanSpot.setAttribute("valueEstado", changeIconEstadoFromSingle(arrayFromSpotEstado[y]))
-                spanSpot.setAttribute("valueCreador", arrayFromSpotCreador[y])
-                spanSpot.setAttribute("valueFecha", arrayFromSpotFecha[y])
-                spanSpot.setAttribute("valueModificador", arrayFromSpotModificador[y])
-                spanSpot.setAttribute("valueFechaMod", arrayFromSpotFechaModificacion[y])
+                spanSpot.setAttribute("valuerevision", arrayFromSpotRevision[y])
+                spanSpot.setAttribute("valueestado", changeIconEstadoFromSingle(arrayFromSpotEstado[y]))
+                spanSpot.setAttribute("valuecreador", arrayFromSpotCreador[y])
+                spanSpot.setAttribute("valuefecha", arrayFromSpotFecha[y])
+                spanSpot.setAttribute("valuemodificador", arrayFromSpotModificador[y])
+                spanSpot.setAttribute("valuefechamod", arrayFromSpotFechaModificacion[y])
             }
 
             tippy(spanSpot, {
@@ -470,6 +470,7 @@ let spanResProgramacionSegundaNotas = Array.from(document.querySelectorAll('span
 
 spanResProgramacionSegundaNotas.forEach(function(spanElement) {
     spanElement.addEventListener("mouseover", (event) => {
+        event.preventDefault()
         let spanSpot = document.getElementById(`${spanElement.id}`)
         let idSpotSelected = spanSpot.id
 
@@ -503,31 +504,37 @@ spanResProgramacionSegundaNotas.forEach(function(spanElement) {
         let arrayFromSpotFechaModificacion = inputSpotFechaModificacion.split(",")
                 
         for (let y=0; arrayFromSpotRevision.length > y; y++) {
+            // console.log('inputSpotIndex: ', inputSpotIndex, ' - y: ', y)
             if (inputSpotIndex == y) {
-                spanSpot.setAttribute("valueNota", arrayFromSpotNota[y])
-                spanSpot.setAttribute("valueRevision", arrayFromSpotRevision[y])
-                spanSpot.setAttribute("valueCreador", arrayFromSpotCreador[y])
-                spanSpot.setAttribute("valueFecha", arrayFromSpotFecha[y])
-                spanSpot.setAttribute("valueModificador", arrayFromSpotModificador[y])
-                spanSpot.setAttribute("valueFechaMod", arrayFromSpotFechaModificacion[y])
+                spanSpot.setAttribute("valuenota", arrayFromSpotNota[y])
+                spanSpot.setAttribute("valuerevision", arrayFromSpotRevision[y])
+                spanSpot.setAttribute("valuecreador", arrayFromSpotCreador[y])
+                spanSpot.setAttribute("valuefecha", arrayFromSpotFecha[y])
+                spanSpot.setAttribute("valuemodificador", arrayFromSpotModificador[y])
+                spanSpot.setAttribute("valuefechamod", arrayFromSpotFechaModificacion[y])
             }
-
+        }
             tippy(spanSpot, {
-                content: `Revision: ${spanSpot.getAttribute("valueRevision")}<br>
-                            Nota: ${spanSpot.getAttribute("valueNota")}<br>
-                            Creado por: ${spanSpot.getAttribute("valueCreador")}<br>
-                            Fecha creac.: ${spanSpot.getAttribute("valueFecha")}<br>
-                            Modificado por: ${spanSpot.getAttribute("valueModificador")}<br>
-                            Fecha mod.: ${spanSpot.getAttribute("valueFechaMod")}`,
+                content: `Revision: ${spanSpot.getAttribute("valuerevision")}<br>
+                            Nota: ${spanSpot.getAttribute("valuenota")}<br>
+                            Creado por: ${spanSpot.getAttribute("valuecreador")}<br>
+                            Fecha creac.: ${spanSpot.getAttribute("valuefecha")}<br>
+                            Modificado por: ${spanSpot.getAttribute("valuemodificador")}<br>
+                            Fecha mod.: ${spanSpot.getAttribute("valuefechamod")}`,
                 allowHTML: true,
                 maxWidth: 350,
                 arrow: true,
-                animation: 'shift-away',
+                animation: 'scale-extreme', //'shift-away',
                 theme: 'material',
-                interactive: false,
+                interactive: true,
                 hideOnClick: true, // Oculta el tooltip al hacer clic en cualquier lugar fuera de él
+                appendTo: () => document.body,
+                onUntrigger(instance, event) {
+                    instance.setContent('...');
+                },
             })
-        }
+            
+        
     })
 })
 //************ End ToolTip btn-Arrows anterior/Siguiente -----------

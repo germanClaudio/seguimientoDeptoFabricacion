@@ -173,12 +173,16 @@
                         <div class="card-body">
                             <div class="media d-flex mx-2">
                                 <div class="media-body text-left">
-                                    <% let maquinasVisibles = [];
+                                    <% let maquinasVisibles = [], maquinasEnMantenimiento = [];
                                         for (let h=0; maquinas.length > h ; h++) {
-                                            maquinas[h].visible ? maquinasVisibles.push(maquinas[h]) : null
+                                            maquinas[h].status ? maquinasVisibles.push(maquinas[h]) : maquinasEnMantenimiento.push(maquinas[h])
                                         } %>
-                                    <h3 class="font-medium"><%= parseInt(maquinasVisibles.length) %>/<span style="font-size: 0.95rem;" ><%= parseInt(maquinas.length) %></span></h3>
-                                    <span>Maquinas Activas</span>
+                                        <h3 class="font-medium"><%= parseInt(maquinasVisibles.length) %>/<span style="font-size: 0.95rem;" ><%= parseInt(maquinas.length) %></span></h3>
+                                        <% if ( maquinasEnMantenimiento.length != 0 ) { %>
+                                            <span><%= parseInt(maquinasVisibles.length) %> Maquinas Activas</span> / <span class="badge rounded-pill text-bg-danger"><%= maquinasEnMantenimiento.length %> en Mantenimiento</span>
+                                        <% } else { %>
+                                            <span class="badge rounded-pill text-bg-success">Maquinas Activas</span>
+                                        <% } %>
                                 </div>
                                 <div class="align-self-center ms-auto">
                                     <i class="icon-wrench success font-large-2 float-right"></i>
@@ -282,22 +286,34 @@
                 </div>
             </div>
         </div>
-
+        <!-- Tools Rate -->
         <div class="col-xl-3 col-sm-6 col-12">
             <div class="card rounded-3 card_dashboard">
                 <div class="card-content">
                     <div class="card-body">
                         <div class="media d-flex mx-2">
                             <div class="media-body text-left">
-                                <h3 class="success">50.00%</h3>
-                                <span>Bounce Rate</span>
+                                <% let countActiveTools = 0; let countVisibleTools = 0
+                                for (let i=0; maquinas.length>i; i++ ) {
+                                    maquinas[i].status ? maquinas[i].visible ? countActiveTools++ : null : null
+                                    countVisibleTools++
+                                } 
+                                let valueRateTool = parseFloat((countActiveTools / countVisibleTools)*100).toFixed(2) %>
+                                <h3 class="success"><%= valueRateTool %>%</h3>
+                                <span>Tools Rate</span>
                             </div>
                             <div class="align-self-center ms-auto">
                                 <i class="icon-cup success font-large-2 float-right"></i>
                             </div>
                         </div>
                         <div class="progress mt-1 mb-0" style="height: 7px;">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                            <% if (valueRateTool > 90 ) { %>
+                                <div class="progress-bar bg-success" role="progressbar" style="width: <%= valueRateTool %>%" aria-valuenow="<%= valueRateTool %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <% } else if (90 > valueRateTool && valueRateTool > 80) { %>
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: <%= valueRateTool %>%" aria-valuenow="<%= valueRateTool %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <% } else { %>
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: <%= valueRateTool %>%" aria-valuenow="<%= valueRateTool %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <% } %>
                         </div>
                     </div>
                 </div>
@@ -310,15 +326,29 @@
                     <div class="card-body">
                         <div class="media d-flex mx-2">
                             <div class="media-body text-left">
-                                <h3 class="danger"><%= visits %></h3>
-                                <span>Total Visitas</span>
+                                <% const usersVisitsQty = [];
+                                    let porcentaje = 0;
+                                function sumarNumeros(array) {
+                                    return array.reduce((acumulador, valorActual) => acumulador + valorActual, 0);
+                                }
+
+                                for(let v=0; usuarios.length>v; v++) {
+                                    if (usuarios[v].visible && parseInt(usuarios[v].visits) > 0) {
+                                        usersVisitsQty.push(parseInt(usuarios[v].visits))
+                                    }
+                                }
+                                let totalVisitas = sumarNumeros(usersVisitsQty); 
+                                porcentaje = parseInt((userInfo.visits/totalVisitas)*100)%>
+                                <h3 class="danger"><%= userInfo.visits %>/<span style="font-size: 0.95rem;" ><%= parseInt(totalVisitas) %></span></h3>
+                                <span>Total Visitas Usuario: <%= userInfo.username %></span>
                             </div>
                             <div class="align-self-center ms-auto">
                                 <i class="icon-directions danger font-large-2 float-right"></i>
                             </div>
                         </div>
+
                         <div class="progress mt-1 mb-0" style="height: 7px;">
-                            <div class="progress-bar bg-danger" role="progressbar" style="width: <%= visits %>%" aria-valuenow="<%= visits %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: <%= porcentaje %>%" aria-valuenow="<%= userInfo.visits %>" aria-valuemin="0" aria-valuemax="<%= parseInt(totalVisitas) %>"></div>
                         </div>
                     </div>
                 </div>

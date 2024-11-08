@@ -4,9 +4,8 @@ const showPasswordBtn = document.getElementById('show-password-btn')
 showPasswordBtn.addEventListener('click', () => {
     const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password'
     passwordInput.setAttribute('type', type)
-    showPasswordBtn.innerHTML = type === 'password' ? '<i class="fa-solid fa-eye"></i>'
-														: 
-													  '<i class="fa-solid fa-eye-slash"></i>'
+    showPasswordBtn.innerHTML = type === 'password' ?
+		'<i class="fa-solid fa-eye"></i>' : '<i class="fa-solid fa-eye-slash"></i>'
 })
 
 function inputMissing() {

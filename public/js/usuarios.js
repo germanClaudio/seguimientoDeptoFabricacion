@@ -1,5 +1,12 @@
 const socket = io.connect()
-let URL_GOOGLE_STORE_AVATARS='https://storage.googleapis.com/imagenesproyectosingenieria/upload/AvatarUsersImages/'
+let URL_GOOGLE_STORE_AVATARS
+
+fetch('/api/config')
+    .then(response => response.json())
+    .then(config => {
+        URL_GOOGLE_STORE_AVATARS = config.URL_GOOGLE_STORE_AVATARS
+    })
+    .catch(error => console.error('Error fetching config:', error));
 
 function formatDate(date) {
     const DD = String(date.getDate()).padStart(2, '0');
@@ -41,6 +48,7 @@ const renderUser = (arrUsers) => {
     const html = arrUsers.map((element) => {
         let optionStatus = element.status ? green : red
         let optionAdmin = element.admin ? dark : grey
+        let optionVisits = element.visits == 0 ? red : green
         //var optionPermiso = element.permiso ? grey : red
         //let optionArea = element.area ? cian : green
         let showStatus = element.status ? active : inactive
@@ -97,6 +105,7 @@ const renderUser = (arrUsers) => {
                         </td>
                         <td class="text-center"><span class="badge rounded-pill bg-${optionArea} text-${optionTextArea}">${showArea}</span></td>
                         <td class="text-center"><span class="badge text-bg-${optionPermiso} text-${optionTextPermsiso}">${showPermiso}</span></td>
+                        <td class="text-center" id="visits_${element._id}"><span class="badge rounded-pill bg-${optionVisits} text-white">${element.visits}</span></td>
                         <td class="text-center">
                             <div class="d-block align-items-center text-center">
                                 <a href="/api/usuarios/${element._id}" class="btn btn-primary btn-sm me-1"><i class="fa-solid fa-user-pen"></i></a>
@@ -118,6 +127,7 @@ const renderUser = (arrUsers) => {
                         <td class="text-center"><span class="badge rounded-pill bg-${optionAdmin}"> ${showAdmin} </span></td>
                         <td class="text-center"><span class="badge rounded-pill bg-${optionArea} text-${optionTextArea}">${showArea}</span></td>
                         <td class="text-center"><span class="badge text-bg-${optionPermiso} text-${optionTextPermsiso}">${showPermiso}</span></td>
+                        <td class="text-center" id="visits_${element._id}"><span class="badge rounded-pill bg-${optionVisits} text-white">${element.visits}</span></td>
                         <td class="text-center">
                             <div class="d-block align-items-center text-center">
                                 <a href="/api/usuarios/${element._id}" class="btn btn-primary btn-sm me-1"><i class="fa-solid fa-user-pen"></i></a>
@@ -137,9 +147,23 @@ const renderUser = (arrUsers) => {
         }
     }
 
+    const usersVisitsQty = []
+    for(let v=0; v<arrayUser.length; v++) {
+        if (arrayUser[v].visible && parseInt(arrayUser[v].visits) > 0) {
+            usersVisitsQty.push(parseInt(arrayUser[v].visits))
+        }
+    }
+
+    function sumarNumeros(array) {
+        return array.reduce((acumulador, valorActual) => acumulador + valorActual, 0);
+    }
+    
+    let totalVisitas = sumarNumeros(usersVisitsQty);
+
     const htmlUserList = 
         ( `<caption id="capUserList">Cantidad de Usuarios: ${parseInt(usersActiveQty.length)}</caption><br>
-        <caption id="capDeleteUserList">Cantidad de Usuarios Eliminados: ${parseInt(arrayUser.length - usersActiveQty.length)}</caption>`)
+        <caption id="capDeleteUserList">Cantidad de Usuarios Eliminados: ${parseInt(arrayUser.length - usersActiveQty.length)}</caption><br>
+        <caption id="capDeleteUserList">Cantidad de Visitas Totales: ${parseInt(totalVisitas)}</caption>`)
 
     document.getElementById('capUserList').innerHTML = htmlUserList
 
@@ -580,7 +604,6 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
     })
 
 var inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
-
     inpuntDeNumeros.forEach(function(input) {
         input.addEventListener('input', function(event) {
             // Obtener el valor actual del input

@@ -85,6 +85,11 @@ class UserService {
         return await this.usuarios.updateUser(id, updatedUser, userLogged)
     }
 
+    // update one user by user Id
+    async updateUserVisits(id, updatedUser) {
+        return await this.usuarios.updateUserVisits(id, updatedUser)
+    }
+
     // update one user Preferences by user Id
     async updateUserPreferences(id, updatedUser, userLogged) {
         return await this.usuarios.updateUserPreferences(id, updatedUser, userLogged)

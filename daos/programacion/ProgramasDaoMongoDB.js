@@ -520,167 +520,165 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
                     
                         // console.log('0.2-Dao-arrayStructureTreeExists----> ',arrayStructureTreeExists)
 
-                        // for (let i = 0; i < quantityDetalle; i++) {
-                            // Si no existe la extructura del arbol, se crea la estructura a agregar --
-                            if (!arrayStructureTreeExists[i]) {
-                                let estructuraACrear = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}`]:
-                                    {
-                                        otProgramacionPrimera: []
-                                    }
+                        // Si no existe la extructura del arbol, se crea la estructura a agregar --
+                        if (!arrayStructureTreeExists[i]) {
+                            let estructuraACrear = {
+                                [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}`]:
+                                {
+                                    otProgramacionPrimera: []
                                 }
-                                //console.log('0.3-Dao-estructuraACrear: ', i,' - ', estructuraACrear)
-                                if (estructuraACrear) {
-                                    arrayStructureTree.push(estructuraACrear)
+                            }
+                            //console.log('0.3-Dao-estructuraACrear: ', i,' - ', estructuraACrear)
+                            if (estructuraACrear) {
+                                arrayStructureTree.push(estructuraACrear)
+                            }
+                            //console.log('1-Dao-arrayStructureTree-- ', i,' - ', arrayStructureTree[i])
+
+                            // Se agrega la estructura al arbol de MongoDB ---
+                            const treeInfoOtAddedToOt = await Proyectos.updateOne(
+                                { _id: itemMongoDB._id },
+                                {
+                                    $set: arrayStructureTree[i] || estructuraACrear
+                                },
+                                { upsert: true }
+                            )
+                            arrayTreeCreation.push(treeInfoOtAddedToOt)
+                            //console.log('2-Dao-Estructura arbol creada: ', i,' - ', arrayTreeCreation)
+
+                            // Se crea el array de datos a agregar ---
+                            let updateQuery = {
+                                [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}.otProgramacionPrimera`]:
+                                {
+                                    rt: infoAddedToDetail[i].rt,
+                                    estadoRt: infoAddedToDetail[i].estadoRt,
+                                    revisionRt: parseInt(infoAddedToDetail[i].revisionRt+1),
+                                    preparacionGeo: infoAddedToDetail[i].preparacionGeo,
+                                    estadoPreparacionGeo: infoAddedToDetail[i].estadoPreparacionGeo,
+                                    revisionPreparacionGeo: parseInt(infoAddedToDetail[i].revisionPreparacionGeo+1),
+                                    programa2d: infoAddedToDetail[i].programa2d,
+                                    estadoPrograma2d: infoAddedToDetail[i].estadoPrograma2d,
+                                    revisionPrograma2d: parseInt(infoAddedToDetail[i].revisionPrograma2d+1),
+                                    creator: infoAddedToDetail[i].creator,
+                                    timestamp: formatDate(),
+                                    modificator: infoAddedToDetail[i].modificator,
+                                    modifiedOn: ''
                                 }
-                                //console.log('1-Dao-arrayStructureTree-- ', i,' - ', arrayStructureTree[i])
+                            }
+                                arrayQuantity.push(updateQuery)
 
-                                // Se agrega la estructura al arbol de MongoDB ---
-                                const treeInfoOtAddedToOt = await Proyectos.updateOne(
-                                    { _id: itemMongoDB._id },
-                                    {
-                                        $set: arrayStructureTree[i] || estructuraACrear
-                                    },
-                                    { upsert: true }
-                                )
-                                arrayTreeCreation.push(treeInfoOtAddedToOt)
-                                //console.log('2-Dao-Estructura arbol creada: ', i,' - ', arrayTreeCreation)
-
-                                // Se crea el array de datos a agregar ---
-                                let updateQuery = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}.otProgramacionPrimera`]:
-                                    {
-                                        rt: infoAddedToDetail[i].rt,
-                                        estadoRt: infoAddedToDetail[i].estadoRt,
-                                        revisionRt: parseInt(infoAddedToDetail[i].revisionRt+1),
-                                        preparacionGeo: infoAddedToDetail[i].preparacionGeo,
-                                        estadoPreparacionGeo: infoAddedToDetail[i].estadoPreparacionGeo,
-                                        revisionPreparacionGeo: parseInt(infoAddedToDetail[i].revisionPreparacionGeo+1),
-                                        programa2d: infoAddedToDetail[i].programa2d,
-                                        estadoPrograma2d: infoAddedToDetail[i].estadoPrograma2d,
-                                        revisionPrograma2d: parseInt(infoAddedToDetail[i].revisionPrograma2d+1),
-                                        creator: infoAddedToDetail[i].creator,
-                                        timestamp: formatDate(),
-                                        modificator: infoAddedToDetail[i].modificator,
-                                        modifiedOn: ''
-                                    }
-                                }
-                                    arrayQuantity.push(updateQuery)
-
-                                    // Si arrayTreeCreation.modifiedCount es = 1 ---
-                                    if (arrayTreeCreation[i].modifiedCount===1) {
-                
-                                        var infoProgramacionPrimeraAddedToOt = await Proyectos.updateOne(
-                                            { _id: itemMongoDB._id },
-                                            {
-                                                $push: arrayQuantity[i]
-                                            },
-                                            { new: true }
-                                        )
-                                        countTreeCreation++
-                                    }
-                                    // console.log('3-Dao-Ot agregada: ', i,' - ', infoProgramacionPrimeraAddedToOt)
-                
-                            } else {
-                                // Recupero el creador y la fecha inicial, ya que solo se modifica
-                                let pathToDetalle = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otDetalles[iDetalleKParseInt]
-                                let creatorInitial = pathToDetalle.creator[0]
-                                // console.log('creatorInitial: ', creatorInitial)
-                                let timestampInitial = pathToDetalle.timestamp
-
-                                // Recupero los datos originales y comparo, ya que solo el dato que se modifica cambia su Revision
-                                let otProgramacionPrimeraLength = parseInt(pathToDetalle.otProgramacionPrimera.length) || 0
-                                let pathToOtProgramacionPrimera = pathToDetalle.otProgramacionPrimera[otProgramacionPrimeraLength-1]
-                                
-                                if (otProgramacionPrimeraLength > 0) {
-                                    var rtInitial = pathToOtProgramacionPrimera.rt,
-                                        estadoRtInitial = pathToOtProgramacionPrimera.estadoRt,
-                                        revisionRtInitial = parseInt(pathToOtProgramacionPrimera.revisionRt),
-                                        preparacionGeoInitial = pathToOtProgramacionPrimera.preparacionGeo,
-                                        estadoPreparacionGeoInitial = pathToOtProgramacionPrimera.estadoPreparacionGeo,
-                                        revisionPreparacionGeoInitial = parseInt(pathToOtProgramacionPrimera.revisionPreparacionGeo),
-                                        programa2dInitial = pathToOtProgramacionPrimera.programa2d,
-                                        estadoPrograma2dInitial = pathToOtProgramacionPrimera.estadoPrograma2d,
-                                        revisionPrograma2dInitial = parseInt(pathToOtProgramacionPrimera.revisionPrograma2d)
-
-                                } else {
-                                    var rtInitial = 'sinDato', estadoRtInitial = 'sinDato', revisionRtInitial = 0,
-                                        preparacionGeoInitial = 'sinDato', estadoPreparacionGeoInitial = 'sinDato', revisionPreparacionGeoInitial = 0,
-                                        programa2dInitial = 'sinDato', estadoPrograma2dInitial = 'sinDato', revisionPrograma2dInitial = 0
-                                }
-
-                                // console.log('----infoAddedToDetail[i].mecanizado2dCompleto: ', infoAddedToDetail[i].mecanizado2dCompleto)
-                                // console.log('----infoAddedToDetail[i].revisionMecanizado2dCompleto: ', infoAddedToDetail[i].revisionMecanizado2dCompleto)
-
-                                infoAddedToDetail[i].rt == rtInitial && infoAddedToDetail[i].estadoRt == estadoRtInitial ?                            
-                                    infoAddedToDetail[i].revisionRt = parseInt(revisionRtInitial)
-                                :
-                                    infoAddedToDetail[i].revisionRt = parseInt(revisionRtInitial+1)
-                                
-                                infoAddedToDetail[i].preparacionGeo == preparacionGeoInitial && infoAddedToDetail[i].estadoPreparacionGeo == estadoPreparacionGeoInitial ?                                    
-                                    infoAddedToDetail[i].revisionPreparacionGeo = parseInt(revisionPreparacionGeoInitial)
-                                :
-                                    infoAddedToDetail[i].revisionPreparacionGeo = parseInt(revisionPreparacionGeoInitial+1)
-
-                                infoAddedToDetail[i].programa2d == programa2dInitial && infoAddedToDetail[i].estadoPrograma2d == estadoPrograma2dInitial ?                                    
-                                    infoAddedToDetail[i].revisionPrograma2d = parseInt(revisionPrograma2dInitial)
-                                :
-                                    infoAddedToDetail[i].revisionPrograma2d = parseInt(revisionPrograma2dInitial+1)
-                                
-                                // Si existe la extructura del arbol, se crea el array de datos a agregar --
-                                let updateQuery = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}.otProgramacionPrimera`]:
-                                    {
-                                        rt: infoAddedToDetail[i].rt,
-                                        estadoRt: infoAddedToDetail[i].estadoRt,
-                                        revisionRt: parseInt(infoAddedToDetail[i].revisionRt),
-                                        preparacionGeo: infoAddedToDetail[i].preparacionGeo,
-                                        estadoPreparacionGeo: infoAddedToDetail[i].estadoPreparacionGeo,
-                                        revisionPreparacionGeo: parseInt(infoAddedToDetail[i].revisionPreparacionGeo),
-                                        programa2d: infoAddedToDetail[i].programa2d,
-                                        estadoPrograma2d: infoAddedToDetail[i].estadoPrograma2d,
-                                        revisionPrograma2d: parseInt(infoAddedToDetail[i].revisionPrograma2d),
-                                        creator: creatorInitial,
-                                        timestamp: timestampInitial,
-                                        modificator: infoAddedToDetail[i].creator,
-                                        modifiedOn: formatDate()
-                                    }
-                                }
-                                    arrayQuantity.push(updateQuery)
-                                    // console.log('5-Dao-arrayQuantity-- ', i,' - ', arrayQuantity)
-                
-                                    await Proyectos.updateOne(
+                                // Si arrayTreeCreation.modifiedCount es = 1 ---
+                                if (arrayTreeCreation[i].modifiedCount===1) {
+            
+                                    var infoProgramacionPrimeraAddedToOt = await Proyectos.updateOne(
                                         { _id: itemMongoDB._id },
                                         {
                                             $push: arrayQuantity[i]
                                         },
                                         { new: true }
                                     )
-                                    countInfoAdded++
+                                    countTreeCreation++
+                                }
+                                // console.log('3-Dao-Ot agregada: ', i,' - ', infoProgramacionPrimeraAddedToOt)
+            
+                        } else {
+                            // Recupero el creador y la fecha inicial, ya que solo se modifica
+                            let pathToDetalle = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otDetalles[iDetalleKParseInt]
+                            let creatorInitial = pathToDetalle.creator[0]
+                            // console.log('creatorInitial: ', creatorInitial)
+                            let timestampInitial = pathToDetalle.timestamp
+
+                            // Recupero los datos originales y comparo, ya que solo el dato que se modifica cambia su Revision
+                            let otProgramacionPrimeraLength = parseInt(pathToDetalle.otProgramacionPrimera.length) || 0
+                            let pathToOtProgramacionPrimera = pathToDetalle.otProgramacionPrimera[otProgramacionPrimeraLength-1]
+                            
+                            if (otProgramacionPrimeraLength > 0) {
+                                var rtInitial = pathToOtProgramacionPrimera.rt,
+                                    estadoRtInitial = pathToOtProgramacionPrimera.estadoRt,
+                                    revisionRtInitial = parseInt(pathToOtProgramacionPrimera.revisionRt),
+                                    preparacionGeoInitial = pathToOtProgramacionPrimera.preparacionGeo,
+                                    estadoPreparacionGeoInitial = pathToOtProgramacionPrimera.estadoPreparacionGeo,
+                                    revisionPreparacionGeoInitial = parseInt(pathToOtProgramacionPrimera.revisionPreparacionGeo),
+                                    programa2dInitial = pathToOtProgramacionPrimera.programa2d,
+                                    estadoPrograma2dInitial = pathToOtProgramacionPrimera.estadoPrograma2d,
+                                    revisionPrograma2dInitial = parseInt(pathToOtProgramacionPrimera.revisionPrograma2d)
+
+                            } else {
+                                var rtInitial = 'sinDato', estadoRtInitial = 'sinDato', revisionRtInitial = 0,
+                                    preparacionGeoInitial = 'sinDato', estadoPreparacionGeoInitial = 'sinDato', revisionPreparacionGeoInitial = 0,
+                                    programa2dInitial = 'sinDato', estadoPrograma2dInitial = 'sinDato', revisionPrograma2dInitial = 0
                             }
+
+                            // console.log('----infoAddedToDetail[i].mecanizado2dCompleto: ', infoAddedToDetail[i].mecanizado2dCompleto)
+                            // console.log('----infoAddedToDetail[i].revisionMecanizado2dCompleto: ', infoAddedToDetail[i].revisionMecanizado2dCompleto)
+
+                            infoAddedToDetail[i].rt == rtInitial && infoAddedToDetail[i].estadoRt == estadoRtInitial ?                            
+                                infoAddedToDetail[i].revisionRt = parseInt(revisionRtInitial)
+                            :
+                                infoAddedToDetail[i].revisionRt = parseInt(revisionRtInitial+1)
+                            
+                            infoAddedToDetail[i].preparacionGeo == preparacionGeoInitial && infoAddedToDetail[i].estadoPreparacionGeo == estadoPreparacionGeoInitial ?                                    
+                                infoAddedToDetail[i].revisionPreparacionGeo = parseInt(revisionPreparacionGeoInitial)
+                            :
+                                infoAddedToDetail[i].revisionPreparacionGeo = parseInt(revisionPreparacionGeoInitial+1)
+
+                            infoAddedToDetail[i].programa2d == programa2dInitial && infoAddedToDetail[i].estadoPrograma2d == estadoPrograma2dInitial ?                                    
+                                infoAddedToDetail[i].revisionPrograma2d = parseInt(revisionPrograma2dInitial)
+                            :
+                                infoAddedToDetail[i].revisionPrograma2d = parseInt(revisionPrograma2dInitial+1)
+                            
+                            // Si existe la extructura del arbol, se crea el array de datos a agregar --
+                            let updateQuery = {
+                                [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}.otProgramacionPrimera`]:
+                                {
+                                    rt: infoAddedToDetail[i].rt,
+                                    estadoRt: infoAddedToDetail[i].estadoRt,
+                                    revisionRt: parseInt(infoAddedToDetail[i].revisionRt),
+                                    preparacionGeo: infoAddedToDetail[i].preparacionGeo,
+                                    estadoPreparacionGeo: infoAddedToDetail[i].estadoPreparacionGeo,
+                                    revisionPreparacionGeo: parseInt(infoAddedToDetail[i].revisionPreparacionGeo),
+                                    programa2d: infoAddedToDetail[i].programa2d,
+                                    estadoPrograma2d: infoAddedToDetail[i].estadoPrograma2d,
+                                    revisionPrograma2d: parseInt(infoAddedToDetail[i].revisionPrograma2d),
+                                    creator: creatorInitial,
+                                    timestamp: timestampInitial,
+                                    modificator: infoAddedToDetail[i].creator,
+                                    modifiedOn: formatDate()
+                                }
+                            }
+                                arrayQuantity.push(updateQuery)
+                                // console.log('5-Dao-arrayQuantity-- ', i,' - ', arrayQuantity)
+            
+                                await Proyectos.updateOne(
+                                    { _id: itemMongoDB._id },
+                                    {
+                                        $push: arrayQuantity[i]
+                                    },
+                                    { new: true }
+                                )
+                                countInfoAdded++
+                        }
                     }
                         
-                        // Si el recuento de info agregada o creacion de arbol es mayor a 0
-                        if (countInfoAdded > 0 || countTreeCreation > 0 ) {
-                            const itemUpdated = await Proyectos.findById({ _id: idProjectTarget }) 
-                            // console.log('5.1-Dao-proyecto----otDetalles0: ', itemUpdated.project[0].oci[0].otProject[0].otDetalles[0])
-                            return itemUpdated
+                    // Si el recuento de info agregada o creacion de arbol es mayor a 0
+                    if (countInfoAdded > 0 || countTreeCreation > 0 ) {
+                        const itemUpdated = await Proyectos.findById({ _id: idProjectTarget }) 
+                        // console.log('5.1-Dao-proyecto----otDetalles0: ', itemUpdated.project[0].oci[0].otProject[0].otDetalles[0])
+                        return itemUpdated
 
-                        } else {
-                            return new Error(`No se agregó la info de OT en el item: ${itemMongoDB._id}`)
-                        }
-                    // }
+                    } else {
+                        return new Error(`No se agregó la info de OT en el item: ${itemMongoDB._id}`)
+                    }
                     
                 } else {
                     return new Error(`No se encontró el Proyecto id#`)
                 }
 
             } catch (error) {
-                console.error("Error MongoDB adding info Distribution to Detail: ", error)
+                console.error("Error MongoDB adding info Programacion Primera to Detail: ", error)
             }
 
         } else {
-            return new Error(`No se pudo agregar la info Distribution a Detalle de OT!`)
+            return new Error(`No se pudo agregar la info Programacion Primera a ítem de OT!`)
         }
     }
 
@@ -730,367 +728,570 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
                     
                         // console.log('0.2-Dao-arrayStructureTreeExists----> ',arrayStructureTreeExists)
 
-                        // for (let i = 0; i < quantityDetalle; i++) {
-                            // Si no existe la extructura del arbol, se crea la estructura a agregar --
-                            if (!arrayStructureTreeExists[i]) {
-                                let estructuraACrear = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}`]:
-                                    {
-                                        otProgramacionSegunda: []
-                                    }
+                        // Si no existe la extructura del arbol, se crea la estructura a agregar --
+                        if (!arrayStructureTreeExists[i]) {
+                            let estructuraACrear = {
+                                [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}`]:
+                                {
+                                    otProgramacionSegunda: []
                                 }
-                                //console.log('0.3-Dao-estructuraACrear: ', i,' - ', estructuraACrear)
-                                if (estructuraACrear) {
-                                    arrayStructureTree.push(estructuraACrear)
+                            }
+                            //console.log('0.3-Dao-estructuraACrear: ', i,' - ', estructuraACrear)
+                            if (estructuraACrear) {
+                                arrayStructureTree.push(estructuraACrear)
+                            }
+                            //console.log('1-Dao-arrayStructureTree-- ', i,' - ', arrayStructureTree[i])
+
+                            // Se agrega la estructura al arbol de MongoDB ---
+                            const treeInfoOtAddedToOt = await Proyectos.updateOne(
+                                { _id: itemMongoDB._id },
+                                {
+                                    $set: arrayStructureTree[i] || estructuraACrear
+                                },
+                                { upsert: true }
+                            )
+                            arrayTreeCreation.push(treeInfoOtAddedToOt)
+                            //console.log('2-Dao-Estructura arbol creada: ', i,' - ', arrayTreeCreation)
+
+                            // Se crea el array de datos a agregar ---
+                            let updateQuery = {
+                                [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}.otProgramacionSegunda`]:
+                                {
+                                    programa3d2F: infoAddedToDetail[i].programa3d2F,
+                                    estadoPrograma3d2F: infoAddedToDetail[i].estadoPrograma3d2F,
+                                    revisionPrograma3d2F: parseInt(infoAddedToDetail[i].revisionPrograma3d2F+1),
+                                    programa3d4F: infoAddedToDetail[i].programa3d4F,
+                                    estadoPrograma3d4F: infoAddedToDetail[i].estadoPrograma3d4F,
+                                    revisionPrograma3d4F: parseInt(infoAddedToDetail[i].revisionPrograma3d4F+1),
+                                    notasProgramacion: infoAddedToDetail[i].notasProgramacion,
+                                    revisionNotasProgramacion: parseInt(infoAddedToDetail[i].revisionNotasProgramacion+1),
+                                    creator: infoAddedToDetail[i].creator,
+                                    timestamp: formatDate(),
+                                    modificator: infoAddedToDetail[i].modificator,
+                                    modifiedOn: ''
                                 }
-                                //console.log('1-Dao-arrayStructureTree-- ', i,' - ', arrayStructureTree[i])
+                            }
+                                arrayQuantity.push(updateQuery)
 
-                                // Se agrega la estructura al arbol de MongoDB ---
-                                const treeInfoOtAddedToOt = await Proyectos.updateOne(
-                                    { _id: itemMongoDB._id },
-                                    {
-                                        $set: arrayStructureTree[i] || estructuraACrear
-                                    },
-                                    { upsert: true }
-                                )
-                                arrayTreeCreation.push(treeInfoOtAddedToOt)
-                                //console.log('2-Dao-Estructura arbol creada: ', i,' - ', arrayTreeCreation)
-
-                                // Se crea el array de datos a agregar ---
-                                let updateQuery = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}.otProgramacionSegunda`]:
-                                    {
-                                        programa3d2F: infoAddedToDetail[i].programa3d2F,
-                                        estadoPrograma3d2F: infoAddedToDetail[i].estadoPrograma3d2F,
-                                        revisionPrograma3d2F: parseInt(infoAddedToDetail[i].revisionPrograma3d2F+1),
-                                        programa3d4F: infoAddedToDetail[i].programa3d4F,
-                                        estadoPrograma3d4F: infoAddedToDetail[i].estadoPrograma3d4F,
-                                        revisionPrograma3d4F: parseInt(infoAddedToDetail[i].revisionPrograma3d4F+1),
-                                        notasProgramacion: infoAddedToDetail[i].notasProgramacion,
-                                        revisionNotasProgramacion: parseInt(infoAddedToDetail[i].revisionNotasProgramacion+1),
-                                        creator: infoAddedToDetail[i].creator,
-                                        timestamp: formatDate(),
-                                        modificator: infoAddedToDetail[i].modificator,
-                                        modifiedOn: ''
-                                    }
-                                }
-                                    arrayQuantity.push(updateQuery)
-
-                                    // Si arrayTreeCreation.modifiedCount es = 1 ---
-                                    if (arrayTreeCreation[i].modifiedCount===1) {
-                
-                                        var infoProgramacionSegundaAddedToOt = await Proyectos.updateOne(
-                                            { _id: itemMongoDB._id },
-                                            {
-                                                $push: arrayQuantity[i]
-                                            },
-                                            { new: true }
-                                        )
-                                        countTreeCreation++
-                                    }
-                                    // console.log('3-Dao-Ot agregada: ', i,' - ', infoProgramacionSegundaAddedToOt)
-                
-                            } else {
-                                // Recupero el creador y la fecha inicial, ya que solo se modifica
-                                let pathToDetalle = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otDetalles[iDetalleKParseInt]
-                                let creatorInitial = pathToDetalle.creator[0]
-                                // console.log('creatorInitial: ', creatorInitial)
-                                let timestampInitial = pathToDetalle.timestamp
-
-                                // Recupero los datos originales y comparo, ya que solo el dato que se modifica cambia su Revision
-                                let otProgramacionSegundaLength = parseInt(pathToDetalle.otProgramacionSegunda.length) || 0
-                                let pathToOtProgramacionSegunda = pathToDetalle.otProgramacionSegunda[otProgramacionSegundaLength-1]
-                                
-                                if (otProgramacionSegundaLength > 0) {
-                                    var programa3d2FInitial = pathToOtProgramacionSegunda.programa3d2F,
-                                        estadoPrograma3d2FInitial = pathToOtProgramacionSegunda.estadoPrograma3d2F,
-                                        revisionPrograma3d2FInitial = parseInt(pathToOtProgramacionSegunda.revisionPrograma3d2F),
-                                        programa3d4FInitial = pathToOtProgramacionSegunda.programa3d4F,
-                                        estadoPrograma3d4FInitial = pathToOtProgramacionSegunda.estadoPrograma3d4F,
-                                        revisionPrograma3d4FInitial = parseInt(pathToOtProgramacionSegunda.revisionPrograma3d4F),
-                                        notasProgramacionInitial = pathToOtProgramacionSegunda.notasProgramacion,
-                                        revisionNotasProgramacionInitial = parseInt(pathToOtProgramacionSegunda.revisionNotasProgramacion)
-
-                                } else {
-                                    var programa3d2FInitial = 'sinDato', estadoPrograma3d2FInitial = 'sinDato', revisionPrograma3d2FInitial = 0,
-                                        programa3d4FInitial = 'sinDato', estadoPrograma3d4FInitial = 'sinDato', revisionPrograma3d4FInitial = 0,
-                                        notasProgramacionInitial = 'sinDato', revisionNotasProgramacionInitial = 0
-                                }
-
-                                // console.log('----infoAddedToDetail[i].mecanizado2dCompleto: ', infoAddedToDetail[i].mecanizado2dCompleto)
-                                // console.log('----infoAddedToDetail[i].revisionMecanizado2dCompleto: ', infoAddedToDetail[i].revisionMecanizado2dCompleto)
-
-                                infoAddedToDetail[i].programa3d2F == programa3d2FInitial && infoAddedToDetail[i].estadoPrograma3d2F == estadoPrograma3d2FInitial ?                            
-                                    infoAddedToDetail[i].revisionPrograma3d2F = parseInt(revisionPrograma3d2FInitial)
-                                :
-                                    infoAddedToDetail[i].revisionPrograma3d2F = parseInt(revisionPrograma3d2FInitial+1)
-                                
-                                infoAddedToDetail[i].programa3d4F == programa3d4FInitial && infoAddedToDetail[i].estadoPrograma3d4F == estadoPrograma3d4FInitial ?                                    
-                                    infoAddedToDetail[i].revisionPrograma3d4F = parseInt(revisionPrograma3d4FInitial)
-                                :
-                                    infoAddedToDetail[i].revisionPrograma3d4F = parseInt(revisionPrograma3d4FInitial+1)
-
-                                infoAddedToDetail[i].notasProgramacion == notasProgramacionInitial ?                                    
-                                    infoAddedToDetail[i].revisionNotasProgramacion = parseInt(revisionNotasProgramacionInitial)
-                                :
-                                    infoAddedToDetail[i].revisionNotasProgramacion = parseInt(revisionNotasProgramacionInitial+1)
-                                
-                                // Si existe la extructura del arbol, se crea el array de datos a agregar --
-                                let updateQuery = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}.otProgramacionSegunda`]:
-                                    {
-                                        programa3d2F: infoAddedToDetail[i].programa3d2F,
-                                        estadoPrograma3d2F: infoAddedToDetail[i].estadoPrograma3d2F,
-                                        revisionPrograma3d2F: parseInt(infoAddedToDetail[i].revisionPrograma3d2F),
-                                        programa3d4F: infoAddedToDetail[i].programa3d4F,
-                                        estadoPrograma3d4F: infoAddedToDetail[i].estadoPrograma3d4F,
-                                        revisionPrograma3d4F: parseInt(infoAddedToDetail[i].revisionPrograma3d4F),
-                                        notasProgramacion: infoAddedToDetail[i].notasProgramacion,
-                                        revisionNotasProgramacion: parseInt(infoAddedToDetail[i].revisionNotasProgramacion),
-                                        creator: creatorInitial,
-                                        timestamp: timestampInitial,
-                                        modificator: infoAddedToDetail[i].creator,
-                                        modifiedOn: formatDate()
-                                    }
-                                }
-                                    arrayQuantity.push(updateQuery)
-                                    // console.log('5-Dao-arrayQuantity-- ', i,' - ', arrayQuantity)
-                
-                                    await Proyectos.updateOne(
+                                // Si arrayTreeCreation.modifiedCount es = 1 ---
+                                if (arrayTreeCreation[i].modifiedCount===1) {
+            
+                                    var infoProgramacionSegundaAddedToOt = await Proyectos.updateOne(
                                         { _id: itemMongoDB._id },
                                         {
                                             $push: arrayQuantity[i]
                                         },
                                         { new: true }
                                     )
-                                    countInfoAdded++
-                            }
-                    }
-                        
-                        // Si el recuento de info agregada o creacion de arbol es mayor a 0
-                        if (countInfoAdded > 0 || countTreeCreation > 0 ) {
-                            const itemUpdated = await Proyectos.findById({ _id: idProjectTarget }) 
-                            // console.log('5.1-Dao-proyecto----otDetalles0: ', itemUpdated.project[0].oci[0].otProject[0].otDetalles[0])
-                            return itemUpdated
-
+                                    countTreeCreation++
+                                }
+                                // console.log('3-Dao-Ot agregada: ', i,' - ', infoProgramacionSegundaAddedToOt)
+            
                         } else {
-                            return new Error(`No se agregó la info de OT en el item: ${itemMongoDB._id}`)
+                            // Recupero el creador y la fecha inicial, ya que solo se modifica
+                            let pathToDetalle = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otDetalles[iDetalleKParseInt]
+                            let creatorInitial = pathToDetalle.creator[0]
+                            // console.log('creatorInitial: ', creatorInitial)
+                            let timestampInitial = pathToDetalle.timestamp
+
+                            // Recupero los datos originales y comparo, ya que solo el dato que se modifica cambia su Revision
+                            let otProgramacionSegundaLength = parseInt(pathToDetalle.otProgramacionSegunda.length) || 0
+                            let pathToOtProgramacionSegunda = pathToDetalle.otProgramacionSegunda[otProgramacionSegundaLength-1]
+                            
+                            if (otProgramacionSegundaLength > 0) {
+                                var programa3d2FInitial = pathToOtProgramacionSegunda.programa3d2F,
+                                    estadoPrograma3d2FInitial = pathToOtProgramacionSegunda.estadoPrograma3d2F,
+                                    revisionPrograma3d2FInitial = parseInt(pathToOtProgramacionSegunda.revisionPrograma3d2F),
+                                    programa3d4FInitial = pathToOtProgramacionSegunda.programa3d4F,
+                                    estadoPrograma3d4FInitial = pathToOtProgramacionSegunda.estadoPrograma3d4F,
+                                    revisionPrograma3d4FInitial = parseInt(pathToOtProgramacionSegunda.revisionPrograma3d4F),
+                                    notasProgramacionInitial = pathToOtProgramacionSegunda.notasProgramacion,
+                                    revisionNotasProgramacionInitial = parseInt(pathToOtProgramacionSegunda.revisionNotasProgramacion)
+
+                            } else {
+                                var programa3d2FInitial = 'sinDato', estadoPrograma3d2FInitial = 'sinDato', revisionPrograma3d2FInitial = 0,
+                                    programa3d4FInitial = 'sinDato', estadoPrograma3d4FInitial = 'sinDato', revisionPrograma3d4FInitial = 0,
+                                    notasProgramacionInitial = 'sinDato', revisionNotasProgramacionInitial = 0
+                            }
+
+                            // console.log('----infoAddedToDetail[i].mecanizado2dCompleto: ', infoAddedToDetail[i].mecanizado2dCompleto)
+                            // console.log('----infoAddedToDetail[i].revisionMecanizado2dCompleto: ', infoAddedToDetail[i].revisionMecanizado2dCompleto)
+
+                            infoAddedToDetail[i].programa3d2F == programa3d2FInitial && infoAddedToDetail[i].estadoPrograma3d2F == estadoPrograma3d2FInitial ?                            
+                                infoAddedToDetail[i].revisionPrograma3d2F = parseInt(revisionPrograma3d2FInitial)
+                            :
+                                infoAddedToDetail[i].revisionPrograma3d2F = parseInt(revisionPrograma3d2FInitial+1)
+                            
+                            infoAddedToDetail[i].programa3d4F == programa3d4FInitial && infoAddedToDetail[i].estadoPrograma3d4F == estadoPrograma3d4FInitial ?                                    
+                                infoAddedToDetail[i].revisionPrograma3d4F = parseInt(revisionPrograma3d4FInitial)
+                            :
+                                infoAddedToDetail[i].revisionPrograma3d4F = parseInt(revisionPrograma3d4FInitial+1)
+
+                            infoAddedToDetail[i].notasProgramacion == notasProgramacionInitial ?                                    
+                                infoAddedToDetail[i].revisionNotasProgramacion = parseInt(revisionNotasProgramacionInitial)
+                            :
+                                infoAddedToDetail[i].revisionNotasProgramacion = parseInt(revisionNotasProgramacionInitial+1)
+                            
+                            // Si existe la extructura del arbol, se crea el array de datos a agregar --
+                            let updateQuery = {
+                                [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}.otProgramacionSegunda`]:
+                                {
+                                    programa3d2F: infoAddedToDetail[i].programa3d2F,
+                                    estadoPrograma3d2F: infoAddedToDetail[i].estadoPrograma3d2F,
+                                    revisionPrograma3d2F: parseInt(infoAddedToDetail[i].revisionPrograma3d2F),
+                                    programa3d4F: infoAddedToDetail[i].programa3d4F,
+                                    estadoPrograma3d4F: infoAddedToDetail[i].estadoPrograma3d4F,
+                                    revisionPrograma3d4F: parseInt(infoAddedToDetail[i].revisionPrograma3d4F),
+                                    notasProgramacion: infoAddedToDetail[i].notasProgramacion,
+                                    revisionNotasProgramacion: parseInt(infoAddedToDetail[i].revisionNotasProgramacion),
+                                    creator: creatorInitial,
+                                    timestamp: timestampInitial,
+                                    modificator: infoAddedToDetail[i].creator,
+                                    modifiedOn: formatDate()
+                                }
+                            }
+                                arrayQuantity.push(updateQuery)
+                                // console.log('5-Dao-arrayQuantity-- ', i,' - ', arrayQuantity)
+            
+                                await Proyectos.updateOne(
+                                    { _id: itemMongoDB._id },
+                                    {
+                                        $push: arrayQuantity[i]
+                                    },
+                                    { new: true }
+                                )
+                                countInfoAdded++
                         }
-                    // }
+                    }
+                    // Si el recuento de info agregada o creacion de arbol es mayor a 0
+                    if (countInfoAdded > 0 || countTreeCreation > 0 ) {
+                        const itemUpdated = await Proyectos.findById({ _id: idProjectTarget }) 
+                        // console.log('5.1-Dao-proyecto----otDetalles0: ', itemUpdated.project[0].oci[0].otProject[0].otDetalles[0])
+                        return itemUpdated
+
+                    } else {
+                        return new Error(`No se agregó la info de OT en el item: ${itemMongoDB._id}`)
+                    }
                     
                 } else {
                     return new Error(`No se encontró el Proyecto id#`)
                 }
 
             } catch (error) {
-                console.error("Error MongoDB adding info Distribution to Detail: ", error)
+                console.error("Error MongoDB adding info Programacion Segunda to Detail: ", error)
             }
 
         } else {
-            return new Error(`No se pudo agregar la info Distribution a Detalle de OT!`)
+            return new Error(`No se pudo agregar la info Programacion Segunda a ítem de OT!`)
         }
     }
 
-
-    // ***************** Add Info 80% to Ot's ----------------
-    async addInfo80ToOtProject(idProjectTarget, otQuantity, ociNumberK, infoAddedToOt) {
+    // Add Info addInfoOtMecanizadoPrimera----------------
+    async addInfoMecanizadoPrimera(
+        idProjectTarget,
+        otQuantity,
+        ociNumberK,
+        arrayOtNumberK,
+        arrayDetalleNumberK,
+        detallesQuantity,
+        totalDetallesQuantity,
+        arrayInfoAddedToDetail
+    ){
 
         const ociKNumber = parseInt(ociNumberK) || 0
-        const quantityOt = parseInt(otQuantity)
+        const quantityDetalle = parseInt(detallesQuantity)
+        const infoAddedToDetail = arrayInfoAddedToDetail
 
+        // console.log('1-otQuantity-Dao:', quantityOt)
+        // console.log('2-ociNumberK-Dao: ', ociNumberK)
+        // console.log('A-arrayOtNumberK-Dao:', arrayOtNumberK)
+        // console.log('B-arrayDetalleNumberK-Dao: ', arrayDetalleNumberK)
+        // console.log('C-detallesQuantity-Dao:', detallesQuantity)
+        // console.log('6-totalDetallesQuantity-Dao: ', totalDetallesQuantity)
+        // console.log('D-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail)
+        
         // compara si el proyecto existe --------
         if (idProjectTarget) {
             try {
                 const itemMongoDB = await Proyectos.findById({ _id: idProjectTarget })
-                // console.log('itemMongoDB', itemMongoDB.project[0].oci[0])
+                //console.log('itemMongoDB', itemMongoDB)
                 
-                // Si encontro el proyecto en la BBDD ----- 
+                //Si encontro el proyecto en la BBDD ----- 
                 if (itemMongoDB) {
-                    let arrayQuantity = []
-                    let arrayStructureTree = []
-                    let arrayTreeCreation = []
-                    let countInfoAdded = 0
-                    let countTreeCreation = 0
+                    let arrayQuantity = [], arrayStructureTree = [], arrayTreeCreation = [], countInfoAdded = 0, countTreeCreation = 0
 
                     //Se verifica si la estructura del arbol existe en la BBDD -----
                     let arrayStructureTreeExists = []
-                    for (let i = 0; i < quantityOt; i++) {
-                        const treeOtInformation = itemMongoDB.project[0].oci[`${ociKNumber}`].otProject[`${i}`].otInformation
-                        // console.log('0.1-Dao-treeOtInformation----> ',treeOtInformation, ' i=',i)
-                        treeOtInformation ? arrayStructureTreeExists.push(true) : arrayStructureTreeExists.push(false)
-                    }
+                    for (let i=0; i < quantityDetalle; i++) {
+                        const iOtKParseInt = parseInt(arrayOtNumberK[i])
+                        const iDetalleKParseInt = parseInt(arrayDetalleNumberK[i])
+                        // console.log('0-If/iOtKParseInt: ', iOtKParseInt, ' - If/iDetalleKParseInt: ', iDetalleKParseInt)
+                        const treeDetailInformation = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otDetalles[iDetalleKParseInt].otMecanizadoPrimera
+                        // console.log('0.1-Dao-treeDetailInformation----> ',treeDetailInformation, ' i=',i)
+                        treeDetailInformation ? arrayStructureTreeExists.push(true) : arrayStructureTreeExists.push(false)
+                    
                         // console.log('0.2-Dao-arrayStructureTreeExists----> ',arrayStructureTreeExists)
 
-                        for (let i = 0; i < quantityOt; i++) {
-                            // Si no existe la extructura del arbol, se crea la estructura a agregar --
-                            if (!arrayStructureTreeExists[i]) {
-                                let estructuraACrear = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation`]:
-                                    {
-                                        otInfoInfo80: []
-                                    }
+                        
+                        // Si no existe la extructura del arbol, se crea la estructura a agregar --
+                        if (!arrayStructureTreeExists[i]) {
+                            let estructuraACrear = {
+                                [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}`]:
+                                {
+                                    otMecanizadoPrimera: []
                                 }
-                                // console.log('0.3-Dao-estructuraACrear: ', i,' - ', estructuraACrear)
-                                if (estructuraACrear) {
-                                    arrayStructureTree.push(estructuraACrear)
+                            }
+                            //console.log('0.3-Dao-estructuraACrear: ', i,' - ', estructuraACrear)
+                            if (estructuraACrear) {
+                                arrayStructureTree.push(estructuraACrear)
+                            }
+                            //console.log('1-Dao-arrayStructureTree-- ', i,' - ', arrayStructureTree[i])
+
+                            // Se agrega la estructura al arbol de MongoDB ---
+                            const treeInfoOtAddedToOt = await Proyectos.updateOne(
+                                { _id: itemMongoDB._id },
+                                {
+                                    $set: arrayStructureTree[i] || estructuraACrear
+                                },
+                                { upsert: true }
+                            )
+                            arrayTreeCreation.push(treeInfoOtAddedToOt)
+                            //console.log('2-Dao-Estructura arbol creada: ', i,' - ', arrayTreeCreation)
+
+                            // Se crea el array de datos a agregar ---
+                            let updateQuery = {
+                                [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}.otMecanizadoPrimera`]:
+                                {
+                                    fCero: infoAddedToDetail[i].fCero,
+                                    estadoFCero: infoAddedToDetail[i].estadoFCero,
+                                    revisionFCero: parseInt(infoAddedToDetail[i].revisionFCero+1),
+                                    fUno: infoAddedToDetail[i].fUno,
+                                    estadoFUno: infoAddedToDetail[i].estadoFUno,
+                                    revisionFUno: parseInt(infoAddedToDetail[i].revisionFUno+1),
+                                    fDos: infoAddedToDetail[i].fDos,
+                                    estadoFDos: infoAddedToDetail[i].estadoFDos,
+                                    revisionFDos: parseInt(infoAddedToDetail[i].revisionFDos+1),
+                                    creator: infoAddedToDetail[i].creator,
+                                    timestamp: formatDate(),
+                                    modificator: infoAddedToDetail[i].modificator,
+                                    modifiedOn: ''
                                 }
+                            }
+                                arrayQuantity.push(updateQuery)
 
-                                // console.log('1-Dao-arrayStructureTree-- ', i,' - ', arrayStructureTree[i])
-
-                                // Se agrega la estructura al arbol de MongoDB ---
-                                const treeInfoOtAddedToOt = await Proyectos.updateOne(
-                                    { _id: itemMongoDB._id },
-                                    {
-                                        $set: arrayStructureTree[i] || estructuraACrear
-                                    },
-                                    { upsert: true }
-                                )
-                                arrayTreeCreation.push(treeInfoOtAddedToOt)
-                            
-                                // console.log('2-Dao-Estructura arbol creada: ', i,' - ', arrayTreeCreation)
-
-                                // Se crea el array de datos a agregar --
-                                let updateQuery = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.OtInfoInfo80`]:
-                                    {
-                                        ldmAvanceCG: infoAddedToOt[i].ldmAvanceCG,
-                                        revisionLdmAvanceCG: infoAddedToOt[i].revisionLdmAvanceCG+1,
-                                        ldmAvanceTD2: infoAddedToOt[i].ldmAvanceTD2,
-                                        revisionLdmAvanceTD2: infoAddedToOt[i].revisionLdmAvanceTD2+1,
-                                        ldm80: infoAddedToOt[i].ldm80,
-                                        revisionLdm80: infoAddedToOt[i].revisionLdm80+1,
-                                        infoModelo: infoAddedToOt[i].infoModelo,
-                                        revisionInfoModelo: infoAddedToOt[i].revisionInfoModelo+1,
-                                        
-                                        creator: infoAddedToOt[i].creator,
-                                        timestamp: formatDate(),
-                                        modificator: infoAddedToOt[i].modificator,
-                                        modifiedOn: ''
-                                    }
-                                }
-                                    arrayQuantity.push(updateQuery)
-
-                                    // Si arrayTreeCreation.modifiedCount es = a 1 ---
-                                    if (arrayTreeCreation[i].modifiedCount===1) {
-                    
-                                        var info80AddedToOt = await Proyectos.updateOne(
-                                            { _id: itemMongoDB._id },
-                                            {
-                                                $push: arrayQuantity[i]
-                                            },
-                                            { new: true }
-                                        )
-                                        countTreeCreation++
-                                    }
-                                    // console.log('3-Dao-Ot agregada: ', i,' - ', info80AddedToOt)
-                            
-                            } else {
-
-                                // Recupero el creador y la fecha inicial, ya que solo se modifica
-                                let creatorInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].creator[0]
-                                let timestampInitial = itemMongoDB.project[0].oci[ociKNumber].otProject[i].timestamp
-                                
-                                // Recupero los datos originales y comparo, ya que solo el dato que se modifica cambia su Revision
-                                let otInfoInfo80Length = parseInt(itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoInfo80.length)
-                                
-                                let pathToMongoDB = itemMongoDB.project[0].oci[ociKNumber].otProject[i].otInformation[0].otInfoInfo80[otInfoInfo80Length-1]
-
-                                if (otInfoInfo80Length > 0) {
-                                    var ldmAvanceCGInitial = pathToMongoDB.ldmAvanceCG
-                                    var revisionLdmAvanceCGInitial = pathToMongoDB.revisionLdmAvanceCG
-                                    var ldmAvanceTD2Initial = pathToMongoDB.ldmAvanceTD2
-                                    var revisionLdmAvanceTD2Initial = pathToMongoDB.revisionLdmAvanceTD2
-                                    var ldm80Initial = pathToMongoDB.ldm80
-                                    var revisionLdm80Initial = pathToMongoDB.revisionLdm80
-                                    var infoModeloInitial = pathToMongoDB.infoModelo
-                                    var revisionInfoModeloInitial = pathToMongoDB.revisionInfoModelo
-                                } else {
-                                    var ldmAvanceCGInitial = 'noAplica'
-                                    var revisionLdmAvanceCGInitial = 0
-                                    var ldmAvanceTD2Initial = 'noAplica'
-                                    var revisionLdmAvanceTD2Initial = 0
-                                    var ldm80Initial = 0
-                                    var revisionLdm80Initial = 0
-                                    var infoModeloInitial = 0
-                                    var revisionInfoModeloInitial = 0
-                                }
-
-                                infoAddedToOt[i].ldmAvanceCG == ldmAvanceCGInitial ?                            
-                                    infoAddedToOt[i].revisionLdmAvanceCG = parseInt(revisionLdmAvanceCGInitial)
-                                :
-                                    infoAddedToOt[i].revisionLdmAvanceCG = parseInt(revisionLdmAvanceCGInitial)+1
-                                
-                                infoAddedToOt[i].ldmAvanceTD2 == ldmAvanceTD2Initial ?                                    
-                                    infoAddedToOt[i].revisionLdmAvanceTD2 = parseInt(revisionLdmAvanceTD2Initial)
-                                :
-                                    infoAddedToOt[i].revisionLdmAvanceTD2 = parseInt(revisionLdmAvanceTD2Initial)+1
-
-                                infoAddedToOt[i].ldm80 == ldm80Initial ?                                    
-                                    infoAddedToOt[i].revisionLdm80 = parseInt(revisionLdm80Initial)
-                                :
-                                    infoAddedToOt[i].revisionLdm80 = parseInt(revisionLdm80Initial)+1
-
-                                infoAddedToOt[i].infoModelo == infoModeloInitial ?                                    
-                                    infoAddedToOt[i].revisionInfoModelo = parseInt(revisionInfoModeloInitial)
-                                :
-                                    infoAddedToOt[i].revisionInfoModelo = parseInt(revisionInfoModeloInitial)+1
-
-
-                                // Si existe la extructura del arbol, se crea el array de datos a agregar --
-                                let updateQuery = {
-                                    [`project.0.oci.${ociKNumber}.otProject.${i}.otInformation.0.otInfoInfo80`]:
-                                    {
-                                        ldmAvanceCG: infoAddedToOt[i].ldmAvanceCG,
-                                        revisionLdmAvanceCG: infoAddedToOt[i].revisionLdmAvanceCG,
-                                        ldmAvanceTD2: infoAddedToOt[i].ldmAvanceTD2,
-                                        revisionLdmAvanceTD2: infoAddedToOt[i].revisionLdmAvanceTD2,
-                                        ldm80: infoAddedToOt[i].ldm80,
-                                        revisionLdm80: infoAddedToOt[i].revisionLdm80,
-                                        infoModelo: infoAddedToOt[i].infoModelo,
-                                        revisionInfoModelo: infoAddedToOt[i].revisionInfoModelo,
-                                        
-                                        creator: creatorInitial,
-                                        timestamp: timestampInitial,
-                                        modificator: infoAddedToOt[i].creator,
-                                        modifiedOn: formatDate()
-                                    }
-                                }
-                                    arrayQuantity.push(updateQuery)
-                                    //console.log('5-Dao-arrayQuantity-- ', i,' - ', arrayQuantity)
-                    
-                                    await Proyectos.updateOne(
+                                // Si arrayTreeCreation.modifiedCount es = 1 ---
+                                if (arrayTreeCreation[i].modifiedCount===1) {
+            
+                                    var infoMecanizadoPrimeraAddedToOt = await Proyectos.updateOne(
                                         { _id: itemMongoDB._id },
                                         {
                                             $push: arrayQuantity[i]
                                         },
                                         { new: true }
                                     )
-                                    countInfoAdded++
-                            }
-                        }
-
-                        // Si el recuento de info agregada o creacion de arbol es mayor a 0
-                        if (countInfoAdded > 0 || countTreeCreation > 0 ) {
-                            
-                            const itemUpdated = await Proyectos.findById({ _id: idProjectTarget })
-                            // console.log('5.1-Dao-proyecto: ', itemUpdated.project[0].oci)
-                            return itemUpdated
-
+                                    countTreeCreation++
+                                }
+                                // console.log('3-Dao-Ot agregada: ', i,' - ', infoMecanizadoPrimeraAddedToOt)
+            
                         } else {
-                            return new Error(`No se agregó la info de OT en el item: ${itemMongoDB._id}`)
-                        }
+                            // Recupero el creador y la fecha inicial, ya que solo se modifica
+                            let pathToDetalle = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otDetalles[iDetalleKParseInt]
+                            let creatorInitial = pathToDetalle.creator[0]
+                            // console.log('creatorInitial: ', creatorInitial)
+                            let timestampInitial = pathToDetalle.timestamp
 
+                            // Recupero los datos originales y comparo, ya que solo el dato que se modifica cambia su Revision
+                            let otMecanizadoPrimeraLength = parseInt(pathToDetalle.otMecanizadoPrimera.length) || 0
+                            let pathToOtMecanizadoPrimera = pathToDetalle.otMecanizadoPrimera[otMecanizadoPrimeraLength-1]
+                            
+                            if (otMecanizadoPrimeraLength > 0) {
+                                var fCeroInitial = pathToOtMecanizadoPrimera.fCero,
+                                    estadoFCeroInitial = pathToOtMecanizadoPrimera.estadoFCero,
+                                    revisionFCeroInitial = parseInt(pathToOtMecanizadoPrimera.revisionFCero),
+                                    fUnoInitial = pathToOtMecanizadoPrimera.fUno,
+                                    estadoFUnoInitial = pathToOtMecanizadoPrimera.estadoFUno,
+                                    revisionFUnoInitial = parseInt(pathToOtMecanizadoPrimera.revisionFUno),
+                                    fDosInitial = pathToOtMecanizadoPrimera.fDos,
+                                    estadoFDosInitial = pathToOtMecanizadoPrimera.estadoFDos,
+                                    revisionFDosInitial = parseInt(pathToOtMecanizadoPrimera.revisionFDos)
+
+                            } else {
+                                var fCeroInitial = 'sinDato', estadoFCeroInitial = 'sinDato', revisionFCeroInitial = 0,
+                                    fUnoInitial = 'sinDato', estadoFUnoInitial = 'sinDato', revisionFUnoInitial = 0,
+                                    fDosInitial = 'sinDato', estadoFDosInitial = 'sinDato', revisionFDosInitial = 0
+                            }
+
+                            infoAddedToDetail[i].fCero == fCeroInitial && infoAddedToDetail[i].estadoFCero == estadoFCeroInitial ?                            
+                                infoAddedToDetail[i].revisionFCero = parseInt(revisionFCeroInitial)
+                            :
+                                infoAddedToDetail[i].revisionFCero = parseInt(revisionFCeroInitial+1)
+                            
+                            infoAddedToDetail[i].fUno == fUnoInitial && infoAddedToDetail[i].estadoFUno == estadoFUnoInitial ?                                    
+                                infoAddedToDetail[i].revisionFUno = parseInt(revisionFUnoInitial)
+                            :
+                                infoAddedToDetail[i].revisionFUno = parseInt(revisionFUnoInitial+1)
+
+                            infoAddedToDetail[i].fDos == fDosInitial && infoAddedToDetail[i].estadoFDos == estadoFDosInitial ?                                    
+                                infoAddedToDetail[i].revisionFDos = parseInt(revisionFDosInitial)
+                            :
+                                infoAddedToDetail[i].revisionFDos = parseInt(revisionFDosInitial+1)
+                            
+                            // Si existe la extructura del arbol, se crea el array de datos a agregar --
+                            let updateQuery = {
+                                [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}.otMecanizadoPrimera`]:
+                                {
+                                    fCero: infoAddedToDetail[i].fCero,
+                                    estadoFCero: infoAddedToDetail[i].estadoFCero,
+                                    revisionFCero: parseInt(infoAddedToDetail[i].revisionFCero),
+                                    fUno: infoAddedToDetail[i].fUno,
+                                    estadoFUno: infoAddedToDetail[i].estadoFUno,
+                                    revisionFUno: parseInt(infoAddedToDetail[i].revisionFUno),
+                                    fDos: infoAddedToDetail[i].fDos,
+                                    estadoFDos: infoAddedToDetail[i].estadoFDos,
+                                    revisionFDos: parseInt(infoAddedToDetail[i].revisionFDos),
+                                    creator: creatorInitial,
+                                    timestamp: timestampInitial,
+                                    modificator: infoAddedToDetail[i].creator,
+                                    modifiedOn: formatDate()
+                                }
+                            }
+                                arrayQuantity.push(updateQuery)
+                                // console.log('5-Dao-arrayQuantity-- ', i,' - ', arrayQuantity)
+            
+                                await Proyectos.updateOne(
+                                    { _id: itemMongoDB._id },
+                                    {
+                                        $push: arrayQuantity[i]
+                                    },
+                                    { new: true }
+                                )
+                                countInfoAdded++
+                        }
+                    }
+                    // Si el recuento de info agregada o creacion de arbol es mayor a 0
+                    if (countInfoAdded > 0 || countTreeCreation > 0 ) {
+                        const itemUpdated = await Proyectos.findById({ _id: idProjectTarget }) 
+                        // console.log('5.1-Dao-proyecto----otDetalles0: ', itemUpdated.project[0].oci[0].otProject[0].otDetalles[0])
+                        return itemUpdated
+
+                    } else {
+                        return new Error(`No se agregó la info de OT en el item: ${itemMongoDB._id}`)
+                    }
+                    
                 } else {
                     return new Error(`No se encontró el Proyecto id#`)
                 }
 
             } catch (error) {
-                //console.log("Error MongoDB adding info 80% to OT: ", error)
-                console.error("Error MongoDB adding info 80% to OT: ", error)
+                console.error("Error MongoDB adding info Mecanizado Primera to Detail: ", error)
             }
 
         } else {
-            return new Error(`No se pudo agregar la info 80% a la OT del Proyecto!`)
+            return new Error(`No se pudo agregar la info Mecanizado Primera a ítem de OT!`)
+        }
+    }
+
+    // Add Info addInfoOtMecanizadoSegunda----------------
+    async addInfoMecanizadoSegunda(
+        idProjectTarget,
+        otQuantity,
+        ociNumberK,
+        arrayOtNumberK,
+        arrayDetalleNumberK,
+        detallesQuantity,
+        totalDetallesQuantity,
+        arrayInfoAddedToDetail
+    ){
+
+        const ociKNumber = parseInt(ociNumberK) || 0
+        const quantityDetalle = parseInt(detallesQuantity)
+        const infoAddedToDetail = arrayInfoAddedToDetail
+
+        // console.log('1-otQuantity-Dao:', quantityOt)
+        // console.log('2-ociNumberK-Dao: ', ociNumberK)
+        // console.log('A-arrayOtNumberK-Dao:', arrayOtNumberK)
+        // console.log('B-arrayDetalleNumberK-Dao: ', arrayDetalleNumberK)
+        // console.log('C-detallesQuantity-Dao:', detallesQuantity)
+        // console.log('6-totalDetallesQuantity-Dao: ', totalDetallesQuantity)
+        // console.log('D-arrayInfoAddedToDetail-Dao: ', arrayInfoAddedToDetail)
+        
+        // compara si el proyecto existe --------
+        if (idProjectTarget) {
+            try {
+                const itemMongoDB = await Proyectos.findById({ _id: idProjectTarget })
+                //console.log('itemMongoDB', itemMongoDB)
+                
+                //Si encontro el proyecto en la BBDD ----- 
+                if (itemMongoDB) {
+                    let arrayQuantity = [], arrayStructureTree = [], arrayTreeCreation = [], countInfoAdded = 0, countTreeCreation = 0
+
+                    //Se verifica si la estructura del arbol existe en la BBDD -----
+                    let arrayStructureTreeExists = []
+                    for (let i=0; i < quantityDetalle; i++) {
+                        const iOtKParseInt = parseInt(arrayOtNumberK[i])
+                        const iDetalleKParseInt = parseInt(arrayDetalleNumberK[i])
+                        // console.log('0-If/iOtKParseInt: ', iOtKParseInt, ' - If/iDetalleKParseInt: ', iDetalleKParseInt)
+                        const treeDetailInformation = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otDetalles[iDetalleKParseInt].otMecanizadoSegunda
+                        // console.log('0.1-Dao-treeDetailInformation----> ',treeDetailInformation, ' i=',i)
+                        treeDetailInformation ? arrayStructureTreeExists.push(true) : arrayStructureTreeExists.push(false)
+                    
+                        // console.log('0.2-Dao-arrayStructureTreeExists----> ',arrayStructureTreeExists)
+
+                        // Si no existe la extructura del arbol, se crea la estructura a agregar --
+                        if (!arrayStructureTreeExists[i]) {
+                            let estructuraACrear = {
+                                [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}`]:
+                                {
+                                    otMecanizadoSegunda: []
+                                }
+                            }
+                            //console.log('0.3-Dao-estructuraACrear: ', i,' - ', estructuraACrear)
+                            if (estructuraACrear) {
+                                arrayStructureTree.push(estructuraACrear)
+                            }
+                            //console.log('1-Dao-arrayStructureTree-- ', i,' - ', arrayStructureTree[i])
+
+                            // Se agrega la estructura al arbol de MongoDB ---
+                            const treeInfoOtAddedToOt = await Proyectos.updateOne(
+                                { _id: itemMongoDB._id },
+                                {
+                                    $set: arrayStructureTree[i] || estructuraACrear
+                                },
+                                { upsert: true }
+                            )
+                            arrayTreeCreation.push(treeInfoOtAddedToOt)
+                            //console.log('2-Dao-Estructura arbol creada: ', i,' - ', arrayTreeCreation)
+
+                            // Se crea el array de datos a agregar ---
+                            let updateQuery = {
+                                [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}.otMecanizadoSegunda`]:
+                                {
+                                    fTres: infoAddedToDetail[i].fTres,
+                                    estadoFTres: infoAddedToDetail[i].estadoFTres,
+                                    revisionFTres: parseInt(infoAddedToDetail[i].revisionFTres+1),
+                                    fCuatro: infoAddedToDetail[i].fCuatro,
+                                    estadoFCuatro: infoAddedToDetail[i].estadoFCuatro,
+                                    revisionFCuatro: parseInt(infoAddedToDetail[i].revisionFCuatro+1),
+                                    notasMecanizado: infoAddedToDetail[i].notasMecanizado,
+                                    revisionNotasMecanizado: parseInt(infoAddedToDetail[i].revisionNotasMecanizado+1),
+                                    creator: infoAddedToDetail[i].creator,
+                                    timestamp: formatDate(),
+                                    modificator: infoAddedToDetail[i].modificator,
+                                    modifiedOn: ''
+                                }
+                            }
+                                arrayQuantity.push(updateQuery)
+
+                                // Si arrayTreeCreation.modifiedCount es = 1 ---
+                                if (arrayTreeCreation[i].modifiedCount===1) {
+            
+                                    var infoMecanizadoSegundaAddedToOt = await Proyectos.updateOne(
+                                        { _id: itemMongoDB._id },
+                                        {
+                                            $push: arrayQuantity[i]
+                                        },
+                                        { new: true }
+                                    )
+                                    countTreeCreation++
+                                }
+                                // console.log('3-Dao-Ot agregada: ', i,' - ', infoMecanizadoSegundaAddedToOt)
+            
+                        } else {
+                            // Recupero el creador y la fecha inicial, ya que solo se modifica
+                            let pathToDetalle = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otDetalles[iDetalleKParseInt]
+                            let creatorInitial = pathToDetalle.creator[0]
+                            // console.log('creatorInitial: ', creatorInitial)
+                            let timestampInitial = pathToDetalle.timestamp
+
+                            // Recupero los datos originales y comparo, ya que solo el dato que se modifica cambia su Revision
+                            let otMecanizadoSegundaLength = parseInt(pathToDetalle.otMecanizadoSegunda.length) || 0
+                            let pathToOtMecanizadoSegunda = pathToDetalle.otMecanizadoSegunda[otMecanizadoSegundaLength-1]
+                            
+                            if (otMecanizadoSegundaLength > 0) {
+                                var fTresInitial = pathToOtMecanizadoSegunda.fTres,
+                                    estadoFTresInitial = pathToOtMecanizadoSegunda.estadoFTres,
+                                    revisionFTresInitial = parseInt(pathToOtMecanizadoSegunda.revisionFTres),
+                                    fCuatroInitial = pathToOtMecanizadoSegunda.fCuatro,
+                                    estadoFCuatroInitial = pathToOtMecanizadoSegunda.estadoFCuatro,
+                                    revisionFCuatroInitial = parseInt(pathToOtMecanizadoSegunda.revisionFCuatro),
+                                    notasMecanizadoInitial = pathToOtMecanizadoSegunda.notasMecanizado,
+                                    revisionNotasMecanizadoInitial = parseInt(pathToOtMecanizadoSegunda.revisionNotasMecanizado)
+
+                            } else {
+                                var fTresInitial = 'sinDato', estadoFTresInitial = 'sinDato', revisionFTresInitial = 0,
+                                    fCuatroInitial = 'sinDato', estadoFCuatroInitial = 'sinDato', revisionFCuatroInitial = 0,
+                                    notasMecanizadoInitial = 'sinDato', revisionNotasMecanizadoInitial = 0
+                            }
+
+                            // console.log('----infoAddedToDetail[i].mecanizado2dCompleto: ', infoAddedToDetail[i].mecanizado2dCompleto)
+                            // console.log('----infoAddedToDetail[i].revisionMecanizado2dCompleto: ', infoAddedToDetail[i].revisionMecanizado2dCompleto)
+
+                            infoAddedToDetail[i].fTres == fTresInitial && infoAddedToDetail[i].estadoFTres == estadoFTresInitial ?                            
+                                infoAddedToDetail[i].revisionFTres = parseInt(revisionFTresInitial)
+                            :
+                                infoAddedToDetail[i].revisionFTres = parseInt(revisionFTresInitial+1)
+                            
+                            infoAddedToDetail[i].fCuatro == fCuatroInitial && infoAddedToDetail[i].estadoFCuatro == estadoFCuatroInitial ?                                    
+                                infoAddedToDetail[i].revisionFCuatro = parseInt(revisionFCuatroInitial)
+                            :
+                                infoAddedToDetail[i].revisionFCuatro = parseInt(revisionFCuatroInitial+1)
+
+                            infoAddedToDetail[i].notasMecanizado == notasMecanizadoInitial ?                                    
+                                infoAddedToDetail[i].revisionNotasMecanizado = parseInt(revisionNotasMecanizadoInitial)
+                            :
+                                infoAddedToDetail[i].revisionNotasMecanizado = parseInt(revisionNotasMecanizadoInitial+1)
+                            
+                            // Si existe la extructura del arbol, se crea el array de datos a agregar --
+                            let updateQuery = {
+                                [`project.0.oci.${ociKNumber}.otProject.${iOtKParseInt}.otDetalles.${iDetalleKParseInt}.otMecanizadoSegunda`]:
+                                {
+                                    fTres: infoAddedToDetail[i].fTres,
+                                    estadoFTres: infoAddedToDetail[i].estadoFTres,
+                                    revisionFTres: parseInt(infoAddedToDetail[i].revisionFTres),
+                                    fCuatro: infoAddedToDetail[i].fCuatro,
+                                    estadoFCuatro: infoAddedToDetail[i].estadoFCuatro,
+                                    revisionFCuatro: parseInt(infoAddedToDetail[i].revisionFCuatro),
+                                    notasMecanizado: infoAddedToDetail[i].notasMecanizado,
+                                    revisionNotasMecanizado: parseInt(infoAddedToDetail[i].revisionNotasMecanizado),
+                                    creator: creatorInitial,
+                                    timestamp: timestampInitial,
+                                    modificator: infoAddedToDetail[i].creator,
+                                    modifiedOn: formatDate()
+                                }
+                            }
+                                arrayQuantity.push(updateQuery)
+                                // console.log('5-Dao-arrayQuantity-- ', i,' - ', arrayQuantity)
+            
+                                await Proyectos.updateOne(
+                                    { _id: itemMongoDB._id },
+                                    {
+                                        $push: arrayQuantity[i]
+                                    },
+                                    { new: true }
+                                )
+                                countInfoAdded++
+                        }
+                    }
+                    // Si el recuento de info agregada o creacion de arbol es mayor a 0
+                    if (countInfoAdded > 0 || countTreeCreation > 0 ) {
+                        const itemUpdated = await Proyectos.findById({ _id: idProjectTarget }) 
+                        // console.log('5.1-Dao-proyecto----otDetalles0: ', itemUpdated.project[0].oci[0].otProject[0].otDetalles[0])
+                        return itemUpdated
+
+                    } else {
+                        return new Error(`No se agregó la info de OT en el item: ${itemMongoDB._id}`)
+                    }
+                    
+                } else {
+                    return new Error(`No se encontró el Proyecto id#`)
+                }
+
+            } catch (error) {
+                console.error("Error MongoDB adding info Mecanizado Segunda to Detail: ", error)
+            }
+
+        } else {
+            return new Error(`No se pudo agregar la info Mecanizado Segunda a ítem de OT!`)
         }
     }
 

@@ -69,7 +69,7 @@
                         placeholder="Apellido" required>
                 </div>
                 <br>
-                <div class="col">
+                <div class="col-auto">
                     <label for="email">Em@il</label>
                     <input type="email" name="email" id="email" class="form-control" value="<%=usuario.email%>"
                         placeholder="Ejemplo@dominio.com" required>
@@ -86,7 +86,13 @@
                     <% } %>
                 </div>
                 <br>
+                <div class="col-1">
+                    <label for="visitas">Visitas</label>
+                    <input type="number" name="visitas" id="visitas" class="form-control" value="<%=usuario.visits%>" disabled>
+                </div>
+                <br>
             </div>
+
             <div class="row justify-content-between align-items-center my-3 mx-auto">
                 <div class="col-7">
                     <label for="fileInputAvatarUser" class="form-label">
@@ -144,7 +150,6 @@
                                 <option value="<%= opcion.value %>" <%= opcion.value === usuario.permiso ? 'selected disabled' : '' %> > <%= opcion.text %> </option>
                             <% }) %>
                         </select>
-                        
                         <input type="hidden" id="permisoHidden" name="permisoHidden" value="" style="display: none;">
                     </div>
                     
@@ -239,6 +244,7 @@
                 <button id="btnUpdateUser" class="btn btn-success mx-auto my-2" disabled>Actualizar Usuario <i class="fa-solid fa-save"></i></button>
                 <a class="btn btn-primary mx-auto my-2" href="/api/usuarios"> Volver <i class="fa-solid fa-arrow-left"></i></a>
             </div>
+            <input type="hidden" name="visits" value="<%= userInfo.visits %>">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         </fieldset>
     </form>

@@ -30,6 +30,20 @@ for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de p
     }
 }
 
+function changeIconEstadoFromArray(arrayFromEstadoValues) {
+    // console.log('arrayFromEstadoValues(): ', arrayFromEstadoValues)
+    const valueEstadoMap = {
+        'enProceso': '<i class="fa-solid fa-arrows-spin fa-spin fa-lg" style="color: #b09b12;"></i>', // 'En Proceso',
+        'terminado': '<i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i>', //'Terminado',
+        'suspendido': '<i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i>', // 'Suspendido',
+        'noAplica': '<i class="fa-solid fa-ban fa-lg"></i>', // 'N/A',
+        'sinDato': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>', //'S/D',
+        'S/D': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>',
+        '': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>'
+    };
+    return arrayFromEstadoValues.map(value => valueEstadoMap[value] || value);
+}
+
 //*********** Evento btn's anterior y siguiente ************* */
 if(arrBtnAnteriorFCero !=[]) {
     let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorFCero"]')
@@ -45,7 +59,7 @@ if(arrBtnAnteriorFCero !=[]) {
                 let actualEstadoValue = arrayEstadoActual.value
                 let arrayFromEstadoValues = actualEstadoValue.split(",")
                 //console.log('kValue. ', kValue)
-                mostrarAnteriorMecanizadoPrimera(changeValueFromArray(arrayFromValues), changeValueEstadoFromArray(arrayFromEstadoValues), kValue)
+                mostrarAnteriorMecanizadoPrimera(arrayFromValues, changeIconEstadoFromArray(arrayFromEstadoValues), kValue)
             })
         }
     })
@@ -65,7 +79,7 @@ if(arrBtnSiguienteFCero !=[]) {
                 let actualEstadoValue = arrayEstadoActual.value
                 let arrayFromEstadoValues = actualEstadoValue.split(",")
                 // console.log('kValue. ', kValue)
-                mostrarSiguienteMecanizadoPrimera(changeValueFromArray(arrayFromValues), changeValueEstadoFromArray(arrayFromEstadoValues), kValue)
+                mostrarSiguienteMecanizadoPrimera(arrayFromValues, changeIconEstadoFromArray(arrayFromEstadoValues), kValue)
             })
         }
     })
@@ -85,7 +99,7 @@ if(arrBtnAnteriorFUno !=[]) {
                 let actualEstadoValue = arrayEstadoActual.value
                 let arrayFromEstadoValues = actualEstadoValue.split(",")
                 // console.log('kValue. ', kValue)
-                mostrarAnteriorMecanizadoPrimera(changeValueFromArray(arrayFromValues), changeValueEstadoFromArray(arrayFromEstadoValues), kValue)
+                mostrarAnteriorMecanizadoPrimera(arrayFromValues, changeIconEstadoFromArray(arrayFromEstadoValues), kValue)
             })
         }
     })
@@ -105,7 +119,7 @@ if(arrBtnSiguienteFUno !=[]) {
                 let actualEstadoValue = arrayEstadoActual.value
                 let arrayFromEstadoValues = actualEstadoValue.split(",")
                 // console.log('kValue. ', kValue)
-                mostrarSiguienteMecanizadoPrimera(changeValueFromArray(arrayFromValues), changeValueEstadoFromArray(arrayFromEstadoValues), kValue)
+                mostrarSiguienteMecanizadoPrimera(arrayFromValues, changeIconEstadoFromArray(arrayFromEstadoValues), kValue)
             })
         }
     })
@@ -125,7 +139,7 @@ if(arrBtnAnteriorFDos !=[]) {
                 let actualEstadoValue = arrayEstadoActual.value
                 let arrayFromEstadoValues = actualEstadoValue.split(",")
                 // console.log('kValue. ', kValue)
-                mostrarAnteriorMecanizadoPrimera(changeValueFromArray(arrayFromValues), changeValueEstadoFromArray(arrayFromEstadoValues), kValue)
+                mostrarAnteriorMecanizadoPrimera(arrayFromValues, changeIconEstadoFromArray(arrayFromEstadoValues), kValue)
             })
         }
     })
@@ -145,7 +159,7 @@ if(arrBtnSiguienteFDos !=[]) {
                 let actualEstadoValue = arrayEstadoActual.value
                 let arrayFromEstadoValues = actualEstadoValue.split(",")
                 // console.log('kValue. ', kValue)
-                mostrarSiguienteMecanizadoPrimera(changeValueFromArray(arrayFromValues), changeValueEstadoFromArray(arrayFromEstadoValues), kValue)
+                mostrarSiguienteMecanizadoPrimera(arrayFromValues, changeIconEstadoFromArray(arrayFromEstadoValues), kValue)
             })
         }
     })
@@ -156,69 +170,76 @@ if(arrBtnSiguienteFDos !=[]) {
 function mostrarElementoMecanizadoPrimera(
     arrayFromValues,
     arrayFromEstadoValues,
+    arrValuesRevisionMark,
     indiceAMostrar,
     kValue,
     resDatoFCero,
-    resFUno,
-    resFDos)
+    resDatoFUno,
+    resDatoFDos)
     {
     // console.log('resFCero: ', resFCero, 'resAprobadoFCero: ', resAprobadoFCero)
     // console.log('kValue', kValue)
     // console.log('arrayFromValues', arrayFromValues)
+
+    let btnAnteriorFCero, btnSiguienteFCero, containerBtnAnteriorSiguienteFCero;
+    let btnAnteriorFUno, btnSiguienteFUno, containerBtnAnteriorSiguienteFUno;
+    let btnAnteriorFDos, btnSiguienteFDos, containerBtnAnteriorSiguienteFDos;
     
     if (resDatoFCero) {
         let spanFCero = document.getElementById(`resDatoFCero${kValue}`)
         let spanEstadoFCero = document.getElementById(`resEstadoFCero${kValue}`)
         let spanRevisionFCero = document.getElementById(`resRevisionFCero${kValue}`)
         spanFCero.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanEstadoFCero.innerText = arrayFromEstadoValues[parseInt(indiceAMostrar)]
-        spanRevisionFCero.innerText = parseInt(indiceAMostrar+1)
+        spanEstadoFCero.innerHTML = arrayFromEstadoValues[parseInt(indiceAMostrar)]
+        spanRevisionFCero.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorFCero = document.getElementById(`btnAnteriorFCero${kValue}`)
+        btnSiguienteFCero = document.getElementById(`btnSiguienteFCero${kValue}`)
+        containerBtnAnteriorSiguienteFCero = document.getElementById(`btnAnteriorSiguienteFCero${kValue}`)
         
-    } else if (resFUno) {
-        let spanFUno = document.getElementById(`resFUno${kValue}`)
+    } else if (resDatoFUno) {
+        let spanFUno = document.getElementById(`resDatoFUno${kValue}`)
         let spanEstadoFUno = document.getElementById(`resEstadoFUno${kValue}`)
         let spanRevisionFUno = document.getElementById(`resRevisionFUno${kValue}`)
         spanFUno.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanEstadoFUno.innerText = arrayFromEstadoValues[parseInt(indiceAMostrar)]
-        spanRevisionFUno.innerText = parseInt(indiceAMostrar+1)
+        spanEstadoFUno.innerHTML = arrayFromEstadoValues[parseInt(indiceAMostrar)]
+        spanRevisionFUno.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorFUno = document.getElementById(`btnAnteriorFUno${kValue}`)
+        btnSiguienteFUno = document.getElementById(`btnSiguienteFUno${kValue}`)
+        containerBtnAnteriorSiguienteFUno = document.getElementById(`btnAnteriorSiguienteFUno${kValue}`)
         
-    } else if (resFDos) {
-        let spanFDos = document.getElementById(`resFDos${kValue}`)
+    } else if (resDatoFDos) {
+        let spanFDos = document.getElementById(`resDatoFDos${kValue}`)
         let spanEstadoFDos = document.getElementById(`resEstadoFDos${kValue}`)
         let spanRevisionFDos = document.getElementById(`resRevisionFDos${kValue}`)
         spanFDos.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanEstadoFDos.innerText = arrayFromEstadoValues[parseInt(indiceAMostrar)]
-        spanRevisionFDos.innerText = parseInt(indiceAMostrar+1)
+        spanEstadoFDos.innerHTML = arrayFromEstadoValues[parseInt(indiceAMostrar)]
+        spanRevisionFDos.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorFDos = document.getElementById(`btnAnteriorFDos${kValue}`)
+        btnSiguienteFDos = document.getElementById(`btnSiguienteFDos${kValue}`)
+        containerBtnAnteriorSiguienteFDos = document.getElementById(`btnAnteriorSiguienteFDos${kValue}`)
     }
     
-    let btnAnteriorFCero = document.getElementById(`btnAnteriorFCero${kValue}`)
-    let btnSiguienteFCero = document.getElementById(`btnSiguienteFCero${kValue}`)
-    let containerBtnAnteriorSiguienteFCero = document.getElementById(`btnAnteriorSiguienteFCero${kValue}`)
     
-    let btnAnteriorFUno = document.getElementById(`btnAnteriorFUno${kValue}`)
-    let btnSiguienteFUno = document.getElementById(`btnSiguienteFUno${kValue}`)
-    let containerBtnAnteriorSiguienteFUno = document.getElementById(`btnAnteriorSiguienteFUno${kValue}`)
-
-    let btnAnteriorFDos = document.getElementById(`btnAnteriorFDos${kValue}`)
-    let btnSiguienteFDos = document.getElementById(`btnSiguienteFDos${kValue}`)
-    let containerBtnAnteriorSiguienteFDos = document.getElementById(`btnAnteriorSiguienteFDos${kValue}`)
-
-
     function colorSpanMecanizadoPrimera(spanElementMecanizadoPrimera) {
         const classMap = {
-            "terminado": { bgClass: "bg-success", textClass: "text-white" },
-            "enProceso": { bgClass: "bg-warning", textClass: "text-dark" },
-            "suspendido": { bgClass: "bg-danger", textClass: "text-white" },
-            "sinDato": { bgClass: "bg-secondary", textClass: "text-white" },
-            "noAplica": { bgClass: "bg-info", textClass: "text-dark" }
+            "Terminado": { bgClass: "bg-success" },
+            "En Proceso": { bgClass: "bg-warning" },
+            "Suspendido": { bgClass: "bg-danger" },
+            "S/D": { bgClass: "bg-secondary" },
+            "N/A": { bgClass: "bg-info" }
         };
     
-        const defaultClasses = ["bg-success", "bg-danger", "bg-warning", "bg-secondary", "bg-info", "text-white", "text-dark"];
-        spanElementMecanizadoPrimera.classList.remove(...defaultClasses);
-    
-        const text = spanElementMecanizadoPrimera.innerText;
-        if (classMap[text]) {
-            spanElementMecanizadoPrimera.classList.add(classMap[text].bgClass, classMap[text].textClass);
+        const defaultClasses = ["bg-success", "bg-danger", "bg-warning", "bg-secondary", "bg-info"];
+        if (spanElementMecanizadoPrimera) {
+            spanElementMecanizadoPrimera.classList.remove(...defaultClasses)
+            
+            const text = spanElementMecanizadoPrimera.innerText;
+            if (classMap[text]) {
+                spanElementMecanizadoPrimera.classList.add(classMap[text].bgClass);
+            } 
         }
     }
     
@@ -231,61 +252,79 @@ function mostrarElementoMecanizadoPrimera(
         containerBtnAnteriorSiguienteMecanizadoPrimera.classList.remove("bg-secondary", "bg-gradient", "bg-opacity-25")
     }
     
-    let spanElementFCero
-    let spanElementFUno
-    let spanElementFDos
-    
+    let spanElementFCero, spanElementFUno, spanElementFDos    
     resDatoFCero ? spanElementFCero = resDatoFCero : null
-    resFUno ? spanElementFUno = resFUno : null
-    resFDos ? spanElementFDos = resFDos : null
+    resDatoFUno ? spanElementFUno = resDatoFUno : null
+    resDatoFDos ? spanElementFDos = resDatoFDos : null
 
     // console.log('spanElementFCero:', spanElementFCero)
     // console.log('indiceaMostar:', indiceAMostrar)
 
     if (indiceAMostrar === 0) {
-        colorSpanMecanizadoPrimera(spanElementFCero)
-        btnAnteriorFCero.disabled = true
-        btnSiguienteFCero.removeAttribute('disabled')
+        if (btnAnteriorFCero && btnSiguienteFCero) {
+            colorSpanMecanizadoPrimera(spanElementFCero)
+            btnAnteriorFCero.disabled = true
+            btnSiguienteFCero.removeAttribute('disabled')
+            agregarEstiloRevPasadasMecanizadoPrimera(containerBtnAnteriorSiguienteFCero)
+        }
 
-        colorSpanMecanizadoPrimera(spanElementFUno)
-        btnAnteriorFUno.disabled = true
-        btnSiguienteFUno.removeAttribute('disabled')
+        if (btnAnteriorFUno && btnSiguienteFUno) {
+            colorSpanMecanizadoPrimera(spanElementFUno)
+            btnAnteriorFUno.disabled = true
+            btnSiguienteFUno.removeAttribute('disabled')
+            agregarEstiloRevPasadasMecanizadoPrimera(containerBtnAnteriorSiguienteFUno)
+        }
 
-        colorSpanMecanizadoPrimera(spanElementFDos)
-        btnAnteriorFDos.disabled = true
-        btnSiguienteFDos.removeAttribute('disabled')
+        if (btnAnteriorFDos && btnSiguienteFDos) {
+            colorSpanMecanizadoPrimera(spanElementFDos)
+            btnAnteriorFDos.disabled = true
+            btnSiguienteFDos.removeAttribute('disabled')
+            agregarEstiloRevPasadasMecanizadoPrimera(containerBtnAnteriorSiguienteFDos)
+        }
 
     } else if (indiceAMostrar === arrayFromValues.length-1) {
-        colorSpanMecanizadoPrimera(spanElementFCero)
-        btnAnteriorFCero.removeAttribute('disabled')
-        btnSiguienteFCero.disabled = true
-        eliminarEstiloRevPasadasMecanizadoPrimera(containerBtnAnteriorSiguienteFCero)
+        if (btnAnteriorFCero && btnSiguienteFCero) {
+            colorSpanMecanizadoPrimera(spanElementFCero)
+            btnAnteriorFCero.removeAttribute('disabled')
+            btnSiguienteFCero.disabled = true
+            eliminarEstiloRevPasadasMecanizadoPrimera(containerBtnAnteriorSiguienteFCero)
+        }
 
-        colorSpanMecanizadoPrimera(spanElementFUno)
-        btnAnteriorFUno.removeAttribute('disabled')
-        btnSiguienteFUno.disabled = true
-        eliminarEstiloRevPasadasMecanizadoPrimera(containerBtnAnteriorSiguienteFUno)
+        if (btnAnteriorFUno && btnSiguienteFUno) {
+            colorSpanMecanizadoPrimera(spanElementFUno)
+            btnAnteriorFUno.removeAttribute('disabled')
+            btnSiguienteFUno.disabled = true
+            eliminarEstiloRevPasadasMecanizadoPrimera(containerBtnAnteriorSiguienteFUno)
+        }
 
-        colorSpanMecanizadoPrimera(spanElementFDos)
-        btnAnteriorFDos.removeAttribute('disabled')
-        btnSiguienteFDos.disabled = true
-        eliminarEstiloRevPasadasMecanizadoPrimera(containerBtnAnteriorSiguienteFDos)
+        if (btnAnteriorFDos && btnSiguienteFDos) {
+            colorSpanMecanizadoPrimera(spanElementFDos)
+            btnAnteriorFDos.removeAttribute('disabled')
+            btnSiguienteFDos.disabled = true
+            eliminarEstiloRevPasadasMecanizadoPrimera(containerBtnAnteriorSiguienteFDos)
+        }
 
     } else {
-        colorSpanMecanizadoPrimera(spanElementFCero)
-        btnAnteriorFCero.removeAttribute('disabled')
-        btnSiguienteFCero.removeAttribute('disabled')
-        agregarEstiloRevPasadasMecanizadoPrimera(containerBtnAnteriorSiguienteFCero)
+        if (btnAnteriorFCero && btnSiguienteFCero) {
+            colorSpanMecanizadoPrimera(spanElementFCero)
+            btnAnteriorFCero.removeAttribute('disabled')
+            btnSiguienteFCero.removeAttribute('disabled')
+            agregarEstiloRevPasadasMecanizadoPrimera(containerBtnAnteriorSiguienteFCero)
+        }
 
-        colorSpanMecanizadoPrimera(spanElementFUno)
-        btnAnteriorFUno.removeAttribute('disabled')
-        btnSiguienteFUno.removeAttribute('disabled')
-        agregarEstiloRevPasadasMecanizadoPrimera(containerBtnAnteriorSiguienteFUno)
+        if (btnAnteriorFUno && btnSiguienteFUno) {
+            colorSpanMecanizadoPrimera(spanElementFUno)
+            btnAnteriorFUno.removeAttribute('disabled')
+            btnSiguienteFUno.removeAttribute('disabled')
+            agregarEstiloRevPasadasMecanizadoPrimera(containerBtnAnteriorSiguienteFUno)
+        }
 
-        colorSpanMecanizadoPrimera(spanElementFDos)
-        btnAnteriorFDos.removeAttribute('disabled')
-        btnSiguienteFDos.removeAttribute('disabled')
-        agregarEstiloRevPasadasMecanizadoPrimera(containerBtnAnteriorSiguienteFDos)
+        if (btnAnteriorFDos && btnSiguienteFDos) {
+            colorSpanMecanizadoPrimera(spanElementFDos)
+            btnAnteriorFDos.removeAttribute('disabled')
+            btnSiguienteFDos.removeAttribute('disabled')
+            agregarEstiloRevPasadasMecanizadoPrimera(containerBtnAnteriorSiguienteFDos)
+        }
     }
 }
 
@@ -293,23 +332,30 @@ function mostrarElementoMecanizadoPrimera(
 // Función para mostrar el elemento anterior
 function mostrarAnteriorMecanizadoPrimera(arrayFromValues, arrayFromEstadoValues, kValue) {
     let inputSpotIndex = document.getElementById(`resIndexHidden${kValue}`)
+    // console.log('inputSpotIndex: ', inputSpotIndex)
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
-
+    // console.log('lastIndexArrayFromValues: ', lastIndexArrayFromValues)
     let indiceAMostrar = parseInt(lastIndexArrayFromValues-1)
     inputSpotIndex.value = parseInt(indiceAMostrar)
 
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
+    // console.log('arrValuesRevisionMark: ', arrValuesRevisionMark)
+
     let resDatoFCero = document.getElementById(`resDatoFCero${kValue}`)
-    let resFUno = document.getElementById(`resFUno${kValue}`)
-    let resFDos = document.getElementById(`resFDos${kValue}`)
+    let resDatoFUno = document.getElementById(`resDatoFUno${kValue}`)
+    let resDatoFDos = document.getElementById(`resDatoFDos${kValue}`)
 
     mostrarElementoMecanizadoPrimera(
         arrayFromValues,
         arrayFromEstadoValues,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resDatoFCero,
-        resFUno,
-        resFDos
+        resDatoFUno,
+        resDatoFDos
     )
 }
 
@@ -321,18 +367,23 @@ function mostrarSiguienteMecanizadoPrimera(arrayFromValues, arrayFromEstadoValue
     let indiceAMostrar = parseInt(lastIndexArrayFromValues+1)
     inputSpotIndex.value =  parseInt(indiceAMostrar)
 
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
+
     let resDatoFCero = document.getElementById(`resDatoFCero${kValue}`)
-    let resFUno = document.getElementById(`resFUno${kValue}`)
-    let resFDos = document.getElementById(`resFDos${kValue}`)    
+    let resDatoFUno = document.getElementById(`resDatoFUno${kValue}`)
+    let resDatoFDos = document.getElementById(`resDatoFDos${kValue}`)    
 
     mostrarElementoMecanizadoPrimera(
         arrayFromValues,
         arrayFromEstadoValues,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resDatoFCero,
-        resFUno,
-        resFDos
+        resDatoFUno,
+        resDatoFDos
     )
 }
 //*********** End Evento btn anterior y siguiente ********* */
@@ -380,24 +431,37 @@ spanResMecanizadoPrimera.forEach(function(spanElement) {
         let arrayFromSpotModificador = inputSpotModificador.split(",")
         let arrayFromSpotFecha = inputSpotFecha.split(",")
         let arrayFromSpotFechaModificacion = inputSpotFechaModificacion.split(",")
+
+        function changeIconEstadoFromSingle(value) {
+            const valueEstadoMap = {
+                'enProceso': '<i class="fa-solid fa-arrows-spin fa-lg" style="color: #b09b12;"></i>', // 'En Proceso',
+                'terminado': '<i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i>', //'Terminado',
+                'suspendido': '<i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i>', // 'Suspendido',
+                'noAplica': '<i class="fa-solid fa-ban fa-lg"></i>', // 'N/A',
+                'sinDato': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>', //'S/D',
+                'S/D': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>',
+                '': '<i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i>'
+            };
+            return valueEstadoMap[value];
+        }
                 
         for (let y=0; arrayFromSpotRevision.length > y; y++) {
             if (inputSpotIndex == y) {
-                spanSpot.setAttribute("valueEstado", arrayFromSpotEstado[y])
-                spanSpot.setAttribute("valueRevision", arrayFromSpotRevision[y])
-                spanSpot.setAttribute("valueCreador", arrayFromSpotCreador[y])
-                spanSpot.setAttribute("valueFecha", arrayFromSpotFecha[y])
-                spanSpot.setAttribute("valueModificador", arrayFromSpotModificador[y])
-                spanSpot.setAttribute("valueFechaMod", arrayFromSpotFechaModificacion[y])
+                spanSpot.setAttribute("valuerevision", arrayFromSpotRevision[y])
+                spanSpot.setAttribute("valueestado", changeIconEstadoFromSingle(arrayFromSpotEstado[y]))
+                spanSpot.setAttribute("valuecreador", arrayFromSpotCreador[y])
+                spanSpot.setAttribute("valuefecha", arrayFromSpotFecha[y])
+                spanSpot.setAttribute("valuemodificador", arrayFromSpotModificador[y])
+                spanSpot.setAttribute("valuefechamod", arrayFromSpotFechaModificacion[y])
             }
 
             tippy(spanSpot, {
-                content: `Revision: ${spanSpot.getAttribute("valueRevision")}<br>
-                        Estado: ${spanSpot.getAttribute("valueEstado")}<br>
-                        Creado por: ${spanSpot.getAttribute("valueCreador")}<br>
-                        Fecha creac.: ${spanSpot.getAttribute("valueFecha")}<br>
-                        Modificado por: ${spanSpot.getAttribute("valueModificador")}<br>
-                        Fecha mod.: ${spanSpot.getAttribute("valueFechaMod")}`,
+                content: `Revision: ${spanSpot.getAttribute("valuerevision")}<br>
+                        Estado: ${spanSpot.getAttribute("valueestado")}<br>
+                        Creado por: ${spanSpot.getAttribute("valuecreador")}<br>
+                        Fecha creac.: ${spanSpot.getAttribute("valuefecha")}<br>
+                        Modificado por: ${spanSpot.getAttribute("valuemodificador")}<br>
+                        Fecha mod.: ${spanSpot.getAttribute("valuefechamod")}`,
                 allowHTML: true,
                 maxWidth: 350,
                 arrow: true,

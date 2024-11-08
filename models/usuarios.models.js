@@ -77,6 +77,10 @@ const userSchema = new Schema({
     visible: {
         type: Boolean,
         default: true
+    },
+    visits: {
+        type: Number,
+        default: 0
     }
 })
 

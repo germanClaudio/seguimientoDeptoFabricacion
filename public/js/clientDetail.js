@@ -1,4 +1,11 @@
-let URL_GOOGLE_STORE_LOGOCLIENTS = 'https://storage.googleapis.com/imagenesproyectosingenieria/upload/LogoClientImages/'
+let URL_GOOGLE_STORE_LOGOCLIENTS
+
+fetch('/api/config')
+    .then(response => response.json())
+    .then(config => {
+        URL_GOOGLE_STORE_LOGOCLIENTS = config.URL_GOOGLE_STORE_LOGOCLIENTS
+    })
+    .catch(error => console.error('Error fetching config:', error));
 
 function formatDate(date) {
     const DD = String(date.getDate()).padStart(2, '0');

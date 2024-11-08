@@ -29,11 +29,11 @@ routerProgramas.post('/otInfoProgramacionPrimera/:id', checkAuthentication, prog
 // -------------------  Agregar informacion Programacion 2° Parte a Detalle ------------------------ 
 routerProgramas.post('/otInfoProgramacionSegunda/:id', checkAuthentication, programation.addInfoProgramacionSegunda)
 
-// // -------------------  Agregar informacion Mecanizado 1° Parte a Detalle ------------------------ 
+// -------------------  Agregar informacion Mecanizado 1° Parte a Detalle ------------------------ 
+routerProgramas.post('/otInfoMecanizadoPrimera/:id', checkAuthentication, programation.addInfoMecanizadoPrimera)
 
-
-// // -------------------  Agregar informacion Mecanizado 2° Parte a Detalle ------------------------ 
-
+// -------------------  Agregar informacion Mecanizado 2° Parte a Detalle ------------------------ 
+routerProgramas.post('/otInfoMecanizadoSegunda/:id', checkAuthentication, programation.addInfoMecanizadoSegunda)
 
 
 // -------------------  Agregar Nuevo Detalle a OCI por Id Proyecto ------------------ 

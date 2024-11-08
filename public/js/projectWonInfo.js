@@ -3767,20 +3767,24 @@ function addDatoToMecanizadoPrimera(i, idTabla, qInicial, qFinal) {
                 arrayOtKNumber.push(res.arrayNnumber[y])
                 arrayItemsSelected.push(res.arrayOtDetalle[y])
                 arrayItemsDescriptionSelected.push(res.arrayDescripcionDetalle[y])
-        
                 let getToolsNames = cargarMaquina(res.arrayOtNumber[y]+'_'+res.arrayOtDetalle[y])
                 
+                let hiddenSelectedFCero, hiddenSelectedFUno, hiddenSelectedFDos
+                getValues.arrayFCero[y] != 'S/D' ? hiddenSelectedFCero = getValues.arrayFCero[y] : hiddenSelectedFCero = (switchOptionSelected(getValues.arrayFCero[y])).variableValue
+                getValues.arrayFUno[y] != 'S/D' ? hiddenSelectedFUno = getValues.arrayFUno[y] : hiddenSelectedFUno = (switchOptionSelected(getValues.arrayFUno[y])).variableValue
+                getValues.arrayFDos[y] != 'S/D' ? hiddenSelectedFDos = getValues.arrayFDos[y] : hiddenSelectedFDos = (switchOptionSelected(getValues.arrayFDos[y])).variableValue
+
                 const dataEnArrayBloque = `
                     <div class="col my-auto">
                         <select id="fCero${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="fCero${y}"
-                            class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
+                            oninput="updateInputsSelect()" class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
                             <option selected value="${getValues.arrayFCero[y]}" disabled>
                                 ${getValues.arrayFCero[y]}
                             </option>
                                 ${getToolsNames}
                         </select>
                         <input type="hidden" id="fCeroHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
-                            name="fCeroHidden${[y]}" value="${(switchOptionSelected(getValues.arrayFCero[y])).variableValue}">
+                            name="fCeroHidden${[y]}" value="${hiddenSelectedFCero}">
                     </div>
 
                     <div class="col my-auto" style="width: 7vw;">
@@ -3804,6 +3808,7 @@ function addDatoToMecanizadoPrimera(i, idTabla, qInicial, qFinal) {
 
                     <div class="col my-auto">
                         <select id="fUno${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="fUno${y}"
+                            oninput="updateInputsSelect()"
                             class="form-select" ${colorStatusOt(res.arrayOtDetalleStatus[y]).disabled}>
                             <option selected value="${getValues.arrayFUno[y]}" disabled>
                                 ${getValues.arrayFUno[y]}
@@ -3811,7 +3816,7 @@ function addDatoToMecanizadoPrimera(i, idTabla, qInicial, qFinal) {
                                 ${getToolsNames}
                         </select>
                         <input type="hidden" id="fUnoHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
-                            name="fUnoHidden${[y]}" value="${(switchOptionSelected(getValues.arrayFUno[y])).variableValue}">
+                            name="fUnoHidden${[y]}" value="${hiddenSelectedFUno}">
                     </div>
 
                     <div class="col my-auto" style="width: 7vw;">
@@ -3843,7 +3848,7 @@ function addDatoToMecanizadoPrimera(i, idTabla, qInicial, qFinal) {
                                 ${getToolsNames}
                         </select>
                         <input type="hidden" id="fDosHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
-                            name="fDosHidden${[y]}" value="${(switchOptionSelected(getValues.arrayFDos[y])).variableValue}">
+                            name="fDosHidden${[y]}" value="${hiddenSelectedFDos}">
                     </div>
 
                     <div class="col my-auto" style="width: 7vw;">
@@ -3882,8 +3887,7 @@ function addDatoToMecanizadoPrimera(i, idTabla, qInicial, qFinal) {
             }
         });
 
-        const html = `
-                <form id="formMecanizadoPrimeraValues" action="/api/programas/otInfoMecanizadoPrimera/${projectNumberId}" method="post" style="font-size: 10pt">
+        const html = `<form id="formMecanizadoPrimeraValues" action="/api/programas/otInfoMecanizadoPrimera/${projectNumberId}" method="post" style="font-size: 10pt">
                     <fieldset>
                         <div class="row mx-auto">
                             ${cabeceraFormulario}
@@ -3922,7 +3926,7 @@ function addDatoToMecanizadoPrimera(i, idTabla, qInicial, qFinal) {
                 </form>`
 
         const titulo = "Mecanizado (1° Parte)"
-        const ancho = 1850
+        const ancho = 1880
         const background = '#efefff'
         const formulario = 'formMecanizadoPrimeraValues'
         const arrayDeOtNumber = arrayOtSelected
@@ -3960,6 +3964,10 @@ function addDatoToMecanizadoSegunda(i, idTabla, qInicial, qFinal) {
                 arrayItemsDescriptionSelected.push(res.arrayDescripcionDetalle[y])
                 let getToolsNames = cargarMaquina(res.arrayOtNumber[y]+'_'+res.arrayOtDetalle[y])
             
+                let hiddenSelectedFTres, hiddenSelectedFCuatro
+                getValues.arrayFTres[y] != 'S/D' ? hiddenSelectedFTres = getValues.arrayFTres[y] : hiddenSelectedFTres = (switchOptionSelected(getValues.arrayFTres[y])).variableValue
+                getValues.arrayFCuatro[y] != 'S/D' ? hiddenSelectedFCuatro = getValues.arrayFCuatro[y] : hiddenSelectedFCuatro = (switchOptionSelected(getValues.arrayFCuatro[y])).variableValue
+
                 const dataEnArrayBloque = `
                     <div class="col my-auto">
                         <select id="fTres${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="fTres${y}"
@@ -3970,7 +3978,7 @@ function addDatoToMecanizadoSegunda(i, idTabla, qInicial, qFinal) {
                                 ${getToolsNames}
                         </select>
                         <input type="hidden" id="fTresHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
-                            name="fTresHidden${[y]}" value="${(switchOptionSelected(getValues.arrayFTres[y])).variableValue}">
+                            name="fTresHidden${[y]}" value="${hiddenSelectedFTres}">
                     </div>
 
                     <div class="col-1 my-auto" style="width: 9vw;">
@@ -4001,7 +4009,7 @@ function addDatoToMecanizadoSegunda(i, idTabla, qInicial, qFinal) {
                                 ${getToolsNames}
                         </select>
                         <input type="hidden" id="fCuatroHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
-                            name="fCuatroHidden${[y]}" value="${(switchOptionSelected(getValues.arrayFCuatro[y])).variableValue}">
+                            name="fCuatroHidden${[y]}" value="${hiddenSelectedFCuatro}">
                     </div>
 
                     <div class="col-1 my-auto" style="width: 9vw;">
@@ -4025,7 +4033,7 @@ function addDatoToMecanizadoSegunda(i, idTabla, qInicial, qFinal) {
                     </div>
 
                     <div class="col-1 my-auto" style="width: 13vw;">
-                        <textarea class="form-control" id="notasMecanizado${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="notasMecanizado${y}" rows="1">${getValues.arrayNotasMecanizado[y].trim()}</textarea>
+                        <textarea oninput="updateInputsTextarea()" class="form-control" id="notasMecanizado${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="notasMecanizado${y}" rows="1">${getValues.arrayNotasMecanizado[y].trim()}</textarea>
                         <input type="hidden" id="notasMecanizadoHidden${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}"
                             name="notasMecanizadoHidden${[y]}" value="${getValues.arrayNotasMecanizado[y]}">
                     </div>
@@ -4052,8 +4060,7 @@ function addDatoToMecanizadoSegunda(i, idTabla, qInicial, qFinal) {
             }
         });
 
-        const html = `
-                <form id="formMecanizadoSegundaValues" action="/api/programas/otInfoMecanizadoSegunda/${projectNumberId}" method="post" style="font-size: 10pt">
+        const html = `<form id="formMecanizadoSegundaValues" action="/api/programas/otInfoMecanizadoSegunda/${projectNumberId}" method="post" style="font-size: 10pt">
                     <fieldset>
                         <div class="row mx-auto">
                             ${cabeceraFormulario}
@@ -4089,7 +4096,7 @@ function addDatoToMecanizadoSegunda(i, idTabla, qInicial, qFinal) {
                 </form>`
 
         const titulo = "Mecanizado (2° Parte)"
-        const ancho = 1850
+        const ancho = 1880
         const background = '#efefff'
         const formulario = 'formMecanizadoSegundaValues'
         const arrayDeOtNumber = arrayOtSelected

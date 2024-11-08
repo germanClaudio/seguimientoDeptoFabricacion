@@ -1,4 +1,11 @@
-let URL_GOOGLE_STORE_IMGPROJECTS = 'https://storage.googleapis.com/imagenesproyectosingenieria/upload/projectImages/'
+let URL_GOOGLE_STORE_IMGPROJECTS
+
+fetch('/api/config')
+    .then(response => response.json())
+    .then(config => {
+        URL_GOOGLE_STORE_IMGPROJECTS = config.URL_GOOGLE_STORE_IMGPROJECTS
+    })
+    .catch(error => console.error('Error fetching config:', error));
 
 // Manejador de eventos de tablas Oci con Ot y sin Ot -------
 const tablaOciConOt = document.getElementById(`tablaOciConOt`)
@@ -15,19 +22,14 @@ const titleOciSinOt = document.getElementById(`titleOciSinOt`)
 function showHiddeTablaOciConOt() {
     if (nestable2.style.display === 'none') {
         nestable2.style.display = ''
-        tablaOciConOt.classList.remove("col-md-11")
-        tablaOciConOt.classList.remove("col-sm-11")
-        tablaOciConOt.classList.remove("col-11")
-
-        tablaOciSinOt.classList.remove("col-xl-1")
-        tablaOciSinOt.classList.remove("col-lg-1")
-
-        tablaOciConOt.classList.add("col-xl-6")
-        tablaOciConOt.classList.add("col-lg-6")
-
-        tablaOciSinOt.classList.add("col-xl-6")
-        tablaOciSinOt.classList.add("col-lg-6")
-
+        tablaOciConOt.classList.remove("col-md-11", "col-sm-11", "col-11")
+        
+        tablaOciSinOt.classList.remove("col-xl-1", "col-lg-1")
+        
+        tablaOciConOt.classList.add("col-xl-6", "col-lg-6")
+        
+        tablaOciSinOt.classList.add("col-xl-6", "col-lg-6")
+        
         btnShowTablaOciConOt.innerHTML = '<i class="fa-solid fa-circle-arrow-right fa-xl"></i>'
         btnShowTablaOciSinOt.style.display = ''
         btnShowTablaOciSinOt.innerHTML = '<i class="fa-solid fa-circle-arrow-left fa-xl"></i>'
@@ -39,18 +41,13 @@ function showHiddeTablaOciConOt() {
                 
     } else {
         nestable2.style.display = 'none'
-        tablaOciConOt.classList.add("col-md-11")
-        tablaOciConOt.classList.add("col-sm-11")
-        tablaOciConOt.classList.add("col-11")
+        tablaOciConOt.classList.add("col-md-11", "col-sm-11","col-11")
+        
+        tablaOciSinOt.classList.add("col-xl-1", "col-lg-1")
 
-        tablaOciSinOt.classList.add("col-xl-1")
-        tablaOciSinOt.classList.add("col-lg-1")
+        tablaOciConOt.classList.remove("col-xl-6", "col-lg-6")
 
-        tablaOciConOt.classList.remove("col-xl-6")
-        tablaOciConOt.classList.remove("col-lg-6")
-
-        tablaOciSinOt.classList.remove("col-xl-6")
-        tablaOciSinOt.classList.remove("col-lg-6")
+        tablaOciSinOt.classList.remove("col-xl-6", "col-lg-6")
 
         btnShowTablaOciConOt.innerHTML = '<i class="fa-solid fa-circle-arrow-left fa-xl"></i>'
         btnShowTablaOciSinOt.style.display = 'none'
@@ -65,18 +62,13 @@ function showHiddeTablaOciConOt() {
 function showHiddeTablaOciSinOt() {
     if (nestable.style.display === 'none') {
         nestable.style.display = ''
-        tablaOciSinOt.classList.remove("col-md-11")
-        tablaOciSinOt.classList.remove("col-sm-11")
-        tablaOciSinOt.classList.remove("col-11")
+        tablaOciSinOt.classList.remove("col-md-11", "col-sm-11","col-11")
 
-        tablaOciConOt.classList.remove("col-xl-1")
-        tablaOciConOt.classList.remove("col-lg-1")
+        tablaOciConOt.classList.remove("col-xl-1", "col-lg-1")
 
-        tablaOciSinOt.classList.add("col-xl-6")
-        tablaOciSinOt.classList.add("col-lg-6")
+        tablaOciSinOt.classList.add("col-xl-6", "col-lg-6")
 
-        tablaOciConOt.classList.add("col-xl-6")
-        tablaOciConOt.classList.add("col-lg-6")
+        tablaOciConOt.classList.add("col-xl-6", "col-lg-6")
 
         btnShowTablaOciSinOt.innerHTML = '<i class="fa-solid fa-circle-arrow-left fa-xl"></i>'
         btnShowTablaOciConOt.style.display = ''
@@ -89,18 +81,14 @@ function showHiddeTablaOciSinOt() {
                 
     } else {
         nestable.style.display = 'none'
-        tablaOciSinOt.classList.add("col-md-11")
-        tablaOciSinOt.classList.add("col-sm-11")
-        tablaOciSinOt.classList.add("col-11")
+        tablaOciSinOt.classList.add("col-md-11", "col-sm-11","col-11")
 
         tablaOciConOt.classList.add("col-xl-1")
         tablaOciConOt.classList.add("col-lg-1")
 
-        tablaOciSinOt.classList.remove("col-xl-6")
-        tablaOciSinOt.classList.remove("col-lg-6")
+        tablaOciSinOt.classList.remove("col-xl-6", "col-lg-6")
 
-        tablaOciConOt.classList.remove("col-xl-6")
-        tablaOciConOt.classList.remove("col-lg-6")
+        tablaOciConOt.classList.remove("col-xl-6", "col-lg-6")
 
         btnShowTablaOciSinOt.innerHTML = '<i class="fa-solid fa-circle-arrow-right fa-xl"></i>'
         btnShowTablaOciConOt.style.display = 'none'
@@ -143,49 +131,28 @@ function extractNumbers(str) {
 
 
 // Manejador de eventos para ocultar OCI u OT de tablas ----------
-const arrBtnHiddeOciConOt = []
-const arrBtnHiddeOciSinOt = []
-const arrBtnHiddeOt = []
+const arrBtnHiddeOciConOt = [], arrBtnHiddeOciSinOt = [], arrBtnHiddeOt = []
 
 for (let i = 0; i<999; i++) { //ver limite maximo de OCI
-    if (document.getElementById(`btnHiddeOciConOt${i}`)) {
-        arrBtnHiddeOciConOt.push(i)
-    }
-
-    if (document.getElementById(`btnHiddeOciSinOt${i}`)) {
-        arrBtnHiddeOciSinOt.push(i)
-    }
-
-    if (document.getElementById(`btnHiddeOt${i}`)) {
-        arrBtnHiddeOt.push(i)
-    }
+    document.getElementById(`btnHiddeOciConOt${i}`) ? arrBtnHiddeOciConOt.push(i) : null
+    document.getElementById(`btnHiddeOciSinOt${i}`) ? arrBtnHiddeOciSinOt.push(i) : null
+    document.getElementById(`btnHiddeOt${i}`) ? arrBtnHiddeOt.push(i) : null
 }
-
 
 function hiddeOciConOt(k) {
     const ociConOtList = document.getElementById(`ociConOtList${k}`)
-
-    if (ociConOtList.style.display === '') {
-        ociConOtList.style.display = 'none'
-    }
+    ociConOtList.style.display === '' ? ociConOtList.style.display = 'none' : null
 }
 
 function hiddeOciSinOt(k) {
     const ociSinOtList = document.getElementById(`ociSinOtList${k}`)
-
-    if (ociSinOtList.style.display === '') {
-        ociSinOtList.style.display = 'none'
-    }
+    ociSinOtList.style.display === '' ? ociSinOtList.style.display = 'none' : null
 }
 
 function hiddeOt(k) {
     const otList = document.getElementById(`otList${k}`)
-
-    if (otList.style.display === '') {
-        otList.style.display = 'none'
-    }
+    otList.style.display === '' ? otList.style.display = 'none' : null
 }
-
 
 if(arrBtnHiddeOciConOt !=[] || arrBtnHiddeOciSinOt !=[] || arrBtnHiddeOt !=[]) {
     let allBtnsHiddeOciConOt = document.querySelectorAll('button[name="btnHiddeOciConOt"]')
@@ -548,9 +515,7 @@ function disabledBtnAceptar () {
         if (input) {
             input.addEventListener('change', (event) => {
                 event.preventDefault()
-                input.classList.add("border-primary")
-                input.classList.add("border-2")
-                input.classList.add("shadow")
+                input.classList.add("border-primary", "border-2", "shadow")
                 btnAceptarModal[0].removeAttribute('disabled')
                 btnAceptarModal[0].style = "cursor: pointer;"
             })    
@@ -561,9 +526,7 @@ function disabledBtnAceptar () {
         if (input) {
             input.addEventListener('input', (event) => {
                 event.preventDefault()
-                input.classList.add("border-primary")
-                input.classList.add("border-2")
-                input.classList.add("shadow")
+                input.classList.add("border-primary", "border-2", "shadow")
                 btnAceptarModal[0].removeAttribute('disabled')
                 btnAceptarModal[0].style = "cursor: pointer;"
             })    
@@ -572,10 +535,8 @@ function disabledBtnAceptar () {
 
     allInputsCheck.forEach(function(input) {
         if (input.value) {
-            // const toggle = () => input.classList.toggle("bg-danger");
             input.addEventListener('change', (event) => {
                 event.preventDefault()
-                // input.classList.add("bg-danger")
                 input.classList.toggle("bg-danger")
                 btnAceptarModal[0].removeAttribute('disabled')
                 btnAceptarModal[0].style = "cursor: pointer;"

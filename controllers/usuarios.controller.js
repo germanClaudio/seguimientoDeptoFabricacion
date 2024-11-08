@@ -199,7 +199,8 @@ class UsersController {
                         timestamp: formatDate(),
                         modificator: dataUserModificatorEmpty(),
                         modifiedOn: '',
-                        visible: true
+                        visible: true,
+                        visits: 0
                     };
 
                     const usuario = await this.users.addNewUser(newUser);
@@ -309,7 +310,8 @@ class UsersController {
                             status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
                             permiso: selectFieldPermiso,
                             modificator: dataUserModificatorNotEmpty(userLogged),
-                            modifiedOn: formatDate()
+                            modifiedOn: formatDate(),
+                            visits: parseInt(userToModify.visits)
                         }
 
                     } else {
@@ -322,7 +324,8 @@ class UsersController {
                             status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
                             permiso: selectFieldPermiso,
                             modificator: dataUserModificatorNotEmpty(),
-                            modifiedOn: formatDate()
+                            modifiedOn: formatDate(),
+                            visits: parseInt(userToModify.visits)
                         }
                     }
 
@@ -482,8 +485,7 @@ class UsersController {
 
     login = async (req, res, next) => {
         const { username, password, sessionStarted } = req.body
-        let visits = req.session.visits
-    
+            
         const cookie = req.session.cookie
         const time = cookie.expires
         let expires = new Date(time)
@@ -511,7 +513,7 @@ class UsersController {
 
             boolean = isValidPassword(user, password)
             if (boolean) {
-                const usuario = await this.users.getUserByUsernameAndPassword(user.username, user.password)
+                const usuarioUandP = await this.users.getUserByUsernameAndPassword(user.username, user.password)
                 const userInfo = await this.users.getUserByUsername(user.username)
 
                 const clientes = await this.clients.getAllClients()
@@ -523,7 +525,7 @@ class UsersController {
                 
                 const sessions = parseInt(sessionLogin.length+1)
 
-                if (!usuario) {
+                if (!usuarioUandP) {
                     const csrfToken = csrfTokens.create(req.csrfSecret);
                     return res.render('login', {
                         flag: false,
@@ -531,18 +533,20 @@ class UsersController {
                         csrfToken
                     })
 
-                } else if (usuario && userInfo.status ) {
-                    const access_token = generateToken(usuario)
+                } else if (usuarioUandP && userInfo.status ) {
+                    const access_token = generateToken(usuarioUandP)
                     
                     req.session.admin = userInfo.admin
                     req.session.username = userInfo.username
-                    
+
+                    await this.users.updateUserVisits(userInfo._id, usuarioUandP)
+                    const usuario = await this.users.getUserById(userInfo._id)
+                    // console.log('usuario: ', usuario)
                     setTimeout(() => {
                         return res.render('index', {
                             usuario,
                             username,
                             userInfo,
-                            visits,
                             expires,
                             clientes,
                             usuarios,
@@ -559,7 +563,6 @@ class UsersController {
                         return res.render('notAuthorizated', {
                             userInfo,
                             username,
-                            visits,
                             expires
                         })
                     }, 1000)
@@ -745,7 +748,6 @@ class UsersController {
         const expires = cookie(req)
         
         try {
-            const visits = req.session.visits
             const clientes = await this.clients.getAllClients()
             const usuarios = await this.users.getAllUsers()
             const maquinas = await this.tools.getAllTools()
@@ -779,7 +781,6 @@ class UsersController {
                     return res.render('index', {
                         userInfo,
                         username,
-                        visits,
                         flag,
                         fail,
                         expires,
@@ -799,7 +800,6 @@ class UsersController {
                     return res.render('notAuthorizated', {
                         userInfo,
                         username,
-                        visits,
                         flag,
                         expires
                     })

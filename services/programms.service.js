@@ -83,10 +83,30 @@ class ProgramasService {
     }
 
     // add Info Machinned 1° to Detail - Project
-    
+    async addInfoMecanizadoPrimera(projectId, otQuantity, ociNumberK, arrayOtNumberK, arrayDetalleNumberK, detallesQuantity, totalDetallesQuantity, arrayInfoAddedToDetail) {
+        return this.programas.addInfoMecanizadoPrimera(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            arrayDetalleNumberK,
+            detallesQuantity,
+            totalDetallesQuantity,
+            arrayInfoAddedToDetail)
+    }
 
     // add Info Machinned 2° to Detail - Project
-    
+    async addInfoMecanizadoSegunda(projectId, otQuantity, ociNumberK, arrayOtNumberK, arrayDetalleNumberK, detallesQuantity, totalDetallesQuantity, arrayInfoAddedToDetail) {
+        return this.programas.addInfoMecanizadoSegunda(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            arrayDetalleNumberK,
+            detallesQuantity,
+            totalDetallesQuantity,
+            arrayInfoAddedToDetail)
+    }
 
 
     // Select OCI - Project

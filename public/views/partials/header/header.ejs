@@ -61,9 +61,12 @@
                 <button type="button" title="Preferencias Usuario" class="btn btn-link rounded-circle my-auto mx-2 shadow" name="btnPreferences" id="btnPreferences">
                     <i class="fa-regular fa-star"></i>
                 </button>
-                <a title="Settings <%= userInfo.name %> <%= userInfo.lastName %>" href="/api/usuarios/getUserSettings/<%= userInfo._id %>" name="btnSetting" id="btnSetting">
-                    <img id="avatarUser" class="img rounded-circle me-3 d-none d-lg-inline shadow" alt="Avatar <%= userInfo.name %> <%= userInfo.lastName %>"
-                        src="<%= userInfo.avatar %>" width="55px" height="55px">
+                <a class="position-relative me-3" title="Settings <%= userInfo.name %> <%= userInfo.lastName %>" href="/api/usuarios/getUserSettings/<%= userInfo._id %>" name="btnSetting" id="btnSetting">
+                    <img id="avatarUser" class="img rounded-circle mx-auto d-none d-lg-inline shadow" alt="Avatar <%= userInfo.name %> <%= userInfo.lastName %>"
+                        src="<%= userInfo.avatar %>" width="60px" height="60px">
+                        <span title="Visitas <%= userInfo.visits %>" class="badge rounded-pill bg-succes position-absolute top-0 start-100 translate-middle">
+                            <%= userInfo.visits %>
+                        </span>
                 </a>
 
                 <div class="vr mx-2 d-none d-xl-inline" style="color: white;"></div>

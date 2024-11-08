@@ -251,7 +251,8 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
             try {
                 const toolMongoDB = await Maquinas.findById( { _id: id } )
                 let imageUrl = '', designation = '', characteristics = '', code = '', type = ''
-
+                // console.log('updatedTool: ', updatedTool)
+                // console.log('toolMongoDB: ', toolMongoDB)
                 updatedTool.imageTool !== '' ? imageUrl = updatedTool.imageTool : imageUrl = toolMongoDB.imageTool
                 updatedTool.designation !== '' ? designation = updatedTool.designation : designation = toolMongoDB.designation
                 updatedTool.characteristics !== '' ? characteristics = updatedTool.characteristics : characteristics = toolMongoDB.characteristics
@@ -276,9 +277,10 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
                         { new: true }
                     )
 
-                    return updatedFinalTool.acknowledged 
-                    ? await Maquinas.findById({ _id: id }) 
-                    : new Error(`No se actualizó el item: ${itemUpdated._id}`);
+                    return updatedFinalTool.acknowledged ?
+                        await Maquinas.findById({ _id: id }) 
+                        :
+                        new Error(`No se actualizó el item: ${itemUpdated._id}`);
 
                 } else {
                     return new Error(`No existe el item Maquina con este id: ${itemUpdated._id} `)

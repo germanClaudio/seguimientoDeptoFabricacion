@@ -2,6 +2,7 @@ const ProyectosService = require("../services/projects.service.js")
 const ClientesService = require("../services/clients.service.js")
 const UserService = require("../services/users.service.js")
 const ProgramasService = require("../services/programms.service.js")
+const ToolService = require("../services/tools.service.js")
 
 const { uploadToGCS, uploadToGCSingleFile } = require("../utils/uploadFilesToGSC.js")
 const { uploadMulterMultiImages, uploadMulterSingleImageProject, uploadMulterSingleImageOci } = require("../utils/uploadMulter.js")
@@ -41,6 +42,7 @@ class ProgramationController {
         this.clients = new ClientesService()
         this.users = new UserService()
         this.programms = new ProgramasService()
+        this.tools = new ToolService()
     }
 
     getAllProjectsWon = async (req, res, next) => {
@@ -1022,20 +1024,12 @@ class ProgramationController {
             const otQuantity = parseInt(req.body.otQuantity)
             const detallesQuantity = parseInt(req.body.detallesQuantity)
             const totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
-// console.log('totalDetallesQuantity: ', totalDetallesQuantity)           
-// console.log('req.body: ', req.body)
-            let arrayIdDetalle=[],
-                arrayOtNumber=[],
-                arrayOtStatus=[],
-                arrayDetalleNumber=[],
-                arrayMecanizado2dCompleto=[],
-                arrayRevisionMecanizado2dCompleto=[],
-                arrayMecanizado3dPrefinal=[],
-                arrayRevisionMecanizado3dPrefinal=[],
-                arrayMecanizado3dFinal=[],
-                arrayRevisionMecanizado3dFinal=[],
-                arrayBancoArmado=[],
-                arrayRevisionBancoArmado=[]
+
+            let arrayIdDetalle=[], arrayOtNumber=[], arrayOtStatus=[], arrayDetalleNumber=[],
+                arrayMecanizado2dCompleto=[], arrayRevisionMecanizado2dCompleto=[],
+                arrayMecanizado3dPrefinal=[], arrayRevisionMecanizado3dPrefinal=[],
+                arrayMecanizado3dFinal=[], arrayRevisionMecanizado3dFinal=[],
+                arrayBancoArmado=[], arrayRevisionBancoArmado=[]
 
             const prefixes = [
                 { prefix: 'detalleIdHidden', array: arrayIdDetalle },
@@ -1163,21 +1157,11 @@ class ProgramationController {
             const otQuantity = parseInt(req.body.otQuantity)
             const detallesQuantity = parseInt(req.body.detallesQuantity)
             const totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
-// console.log('totalDetallesQuantity: ', totalDetallesQuantity)           
-// console.log('req.body: ', req.body)
-            let arrayIdDetalle=[],
-                arrayOtNumber=[],
-                arrayOtStatus=[],
-                arrayDetalleNumber=[],
-                arrayRt=[],
-                arrayEstadoRt=[],
-                arrayRevisionRt=[],
-                arrayPreparacionGeo=[],
-                arrayEstadoPreparacionGeo=[],
-                arrayRevisionPreparacionGeo=[],
-                arrayPrograma2d=[],
-                arrayEstadoPrograma2d=[],
-                arrayRevisionPrograma2d=[]
+
+            let arrayIdDetalle=[], arrayOtNumber=[], arrayOtStatus=[], arrayDetalleNumber=[],
+                arrayRt=[], arrayEstadoRt=[], arrayRevisionRt=[],
+                arrayPreparacionGeo=[], arrayEstadoPreparacionGeo=[], arrayRevisionPreparacionGeo=[],
+                arrayPrograma2d=[], arrayEstadoPrograma2d=[], arrayRevisionPrograma2d=[]
 
             const prefixes = [
                 { prefix: 'detalleIdHidden', array: arrayIdDetalle },
@@ -1286,7 +1270,7 @@ class ProgramationController {
         }
     }
 
-    //TODO:
+
     // -----------------------------------------------------------
     addInfoProgramacionSegunda = async (req, res, next) => {
         const id = req.params.id
@@ -1330,20 +1314,11 @@ class ProgramationController {
             const otQuantity = parseInt(req.body.otQuantity)
             const detallesQuantity = parseInt(req.body.detallesQuantity)
             const totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
-// console.log('totalDetallesQuantity: ', totalDetallesQuantity)           
-// console.log('req.body: ', req.body)
-            let arrayIdDetalle=[],
-                arrayOtNumber=[],
-                arrayOtStatus=[],
-                arrayDetalleNumber=[],
-                arrayPrograma3d2F=[],
-                arrayEstadoPrograma3d2F=[],
-                arrayRevisionPrograma3d2F=[],
-                arrayPrograma3d4F=[],
-                arrayEstadoPrograma3d4F=[],
-                arrayRevisionPrograma3d4F=[],
-                arrayNotasProgramacion=[],
-                arrayRevisionNotasProgramacion=[]
+
+            let arrayIdDetalle=[], arrayOtNumber=[], arrayOtStatus=[], arrayDetalleNumber=[],
+                arrayPrograma3d2F=[], arrayEstadoPrograma3d2F=[], arrayRevisionPrograma3d2F=[],
+                arrayPrograma3d4F=[], arrayEstadoPrograma3d4F=[], arrayRevisionPrograma3d4F=[],
+                arrayNotasProgramacion=[], arrayRevisionNotasProgramacion=[]
 
             const prefixes = [
                 { prefix: 'detalleIdHidden', array: arrayIdDetalle },
@@ -1444,157 +1419,309 @@ class ProgramationController {
         }
     }
 
-    //TODO:
+    // -----------------------------------------------------------
     addInfoMecanizadoPrimera = async (req, res, next) => {
-        const clientId = req.body.clientIdHidden
-        const cliente = await this.clients.selectClientById(clientId)
-        
-        const ociNumberK = req.body.ociNumberK
-        const projectId = req.body.projectIdHidden
-        const otQuantity = parseInt(req.body.otQuantity)
-
+        const id = req.params.id
         let username = res.locals.username
         let userInfo = res.locals.userInfo
-        const userId = userInfo.id
-
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
-
-        const userCreator = await this.users.getUserById(userId)
-
-        const user = [{
-            name: userCreator.name,
-            lastName: userCreator.lastName,
-            username: userCreator.username,
-            email: userCreator.email
-        }]
-
-        const modificator = [{
-            name: "",
-            lastName: "",
-            username: "",
-            email: ""
-        }]
-
-        let arrayOtNumber=[],
-            arrayOtStatus=[],
-            arrayAvDiseno=[],
-            arrayRevisionAvDiseno=[],
-            arrayAv50Diseno=[],
-            arrayRevisionAv50Diseno=[],
-            arrayAv80Diseno=[],
-            arrayRevisionAv80Diseno=[],
-            arrayEnvioCliente=[],
-            arrayRevisionEnvioCliente=[]
-
-        for (const key in req.body) {
-
-            if (key.startsWith('otNumberHidden')) {
-                arrayOtNumber.push(req.body[key])
-            }
-            else if (key.startsWith('otStatusHidden')) {
-                arrayOtStatus.push(req.body[key])
-            }
-            else if (key.startsWith('avDisenoHidden')) {
-                arrayAvDiseno.push(req.body[key]) 
-            }
-            else if (key.startsWith('revisionAvDiseno')) {
-                arrayRevisionAvDiseno.push(req.body[key])
-            }
-            else if (key.startsWith('av50DisenoHidden')) {
-                arrayAv50Diseno.push(req.body[key])
-            }
-            else if (key.startsWith('revisionAv50Diseno')) {
-                arrayRevisionAv50Diseno.push(req.body[key])
-            }
-            else if (key.startsWith('av80DisenoHidden')) {
-                arrayAv80Diseno.push(req.body[key])
-            }
-            else if (key.startsWith('revisionAv80Diseno')) {
-                arrayRevisionAv80Diseno.push(req.body[key])
-            }
-            else if (key.startsWith('envioClienteHidden')) {
-                arrayEnvioCliente.push(req.body[key])
-            }
-            else if (key.startsWith('revisionEnvioCliente')) {
-                arrayRevisionEnvioCliente.push(req.body[key])
-            }
-        }
-
-// console.log('arrayOtNmber', arrayOtNumber)        
-// console.log('arrayOtStatus', arrayOtStatus)
-// console.log('arrayAvDiseno', arrayAvDiseno)
-// console.log('arrayRevisionAvDiseno', arrayRevisionAvDiseno)
-// console.log('arrayAvDiseno50Hidden', arrayAv50Diseno)
-// console.log('arrayRevisionAvDiseno50', arrayRevisionAv50Diseno)
-// console.log('arrayAvDiseno80Hidden', arrayAv80Diseno)
-// console.log('arrayRevisionAvDiseno80Hidden', arrayRevisionAv80Diseno)
-// console.log('arrayEnvioCliente', arrayEnvioCliente)
-// console.log('arrayRevisionEnvioCliente', arrayRevisionEnvioCliente)
-
-        let arrayInfoAddedToOt = []
-        for (let i=0; i<otQuantity; i++ ) {
-            var infoAddedToOt = {
-                otStatus: arrayOtStatus[i],
-                otNumber: parseInt(arrayOtNumber[i]),
-                avDiseno: parseInt(arrayAvDiseno[i]) || 0,
-                revisionAvDiseno: parseInt(arrayRevisionAvDiseno[i]) || 0,
-                avDiseno50: arrayAv50Diseno[i] || 'sinDato',
-                revisionAvDiseno50: parseInt(arrayRevisionAv50Diseno[i]) || 0,
-                avDiseno80: arrayAv80Diseno[i] || 'sinDato',
-                revisionAvDiseno80: parseInt(arrayRevisionAv80Diseno[i]) || 0,
-                envioCliente: arrayEnvioCliente[i] || 'sinDato',
-                revisionEnvioCliente: parseInt(arrayRevisionEnvioCliente[i]) || 0,
-                timestamp: formatDate(),
-                creator: user,
-                modificator: modificator,
-                modifiedOn: "",
-            }
-            arrayInfoAddedToOt.push(infoAddedToOt)
-        }
-        //console.log('arrayInfoAddedToOt_Controller: ', arrayInfoAddedToOt)
-        //const itemUpdated = 
-        await this.projects.addInfoDisenoPrimeraToOtProject(
-            projectId,
-            otQuantity,
-            ociNumberK,
-            arrayInfoAddedToOt
-        )
-        //console.log('itemUpdated_Controller: ', itemUpdated.project)    
-        const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
-
-        const data = { // Inicializar variables en servidor
-            k: 0, 
-            m: 0,
-            j: 0,
-            slide: 2
-        }
+        const expires = cookie(req)
         
         try {
-            if (!proyecto) return res.status(404).json({ msg: 'Proyecto, OCI u OT no encontrada' })
-            res.render('projectSelectedDetail', {
-                username,
-                userInfo,
-                expires,
-                cliente,
-                proyecto,
-                data
-            })
+            const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
+            !mainProyecto ? catchError400(req, res, next) : null
 
-        } catch (error) {
-            const errorInfo = {
-                errorNumber: 795,
-                status: false,
-                msg: 'controllerError - Adding Info Diseno Primera to OT - Proyect'
+            const clientId = req.body.clientIdHidden
+            const cliente = await this.clients.selectClientById(clientId)     
+            if (!cliente) {
+                catchError401(req, res, next)
             }
-            res.render('errorPages', {
-                error,
-                errorInfo
-            })
+            
+            const projectId = req.body.projectIdHidden
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_1(req, res, next)
+            }
+
+            const userId = userInfo.id
+            const userCreator = await this.users.getUserById(userId)
+            if (!userCreator) {
+                catchError401_3(req, res, next)
+            }
+            
+            const ociNumberK = parseInt(req.body.ociNumberK)
+            const resultado = req.body.detalleNumberK.split(",")
+
+            const arrayDetalleKNumber = resultado.map(item => {
+                const partes = item.split('_'); // Dividir la cadena por "_"
+                return parseInt(partes[partes.length - 1]); // Obtener el último número y convertirlo a entero
+            });
+            const arrayDetalleNumberK = arrayDetalleKNumber //.map(Number)
+
+            const arrayOtKNumber = req.body.otNumberK.split(",")
+            const arrayOtNumberK = arrayOtKNumber.map(Number) 
+            const otQuantity = parseInt(req.body.otQuantity)
+            const detallesQuantity = parseInt(req.body.detallesQuantity)
+            const totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
+
+            let arrayIdDetalle=[], arrayOtNumber=[], arrayOtStatus=[], arrayDetalleNumber=[],
+                arrayFCero=[], arrayEstadoFCero=[], arrayRevisionFCero=[],
+                arrayFUno=[], arrayEstadoFUno=[], arrayRevisionFUno=[],
+                arrayFDos=[], arrayEstadoFDos=[], arrayRevisionFDos=[]
+
+            const prefixes = [
+                { prefix: 'detalleIdHidden', array: arrayIdDetalle },
+                { prefix: 'otNumberHidden', array: arrayOtNumber },
+                { prefix: 'otStatusHidden', array: arrayOtStatus },
+                { prefix: 'detalleNumberHidden', array: arrayDetalleNumber },
+                { prefix: 'fCeroHidden', array: arrayFCero },
+                { prefix: 'estadoFCeroHidden', array: arrayEstadoFCero },
+                { prefix: 'revisionFCeroHidden', array: arrayRevisionFCero },
+                { prefix: 'fUnoHidden', array: arrayFUno },
+                { prefix: 'estadoFUnoHidden', array: arrayEstadoFUno },
+                { prefix: 'revisionFUnoHidden', array: arrayRevisionFUno },
+                { prefix: 'fDosHidden', array: arrayFDos },
+                { prefix: 'estadoFDosHidden', array: arrayEstadoFDos },
+                { prefix: 'revisionFDosHidden', array: arrayRevisionFDos }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayInfoAddedToDetail = []
+            for (let i=0; i<detallesQuantity; i++ ) {
+
+                let fCeroTool, fUnoTool, fDosTool
+                let fCeroToolToShow, fUnoToolToShow, fDosToolToShow
+                arrayFCero[i] == 'sinDato' || arrayFCero[i] == 'S/D' ?
+                    fCeroTool = 'sinDato'
+                :
+                    tieneNumeros(arrayFCero[i]) ? fCeroTool = await this.tools.getToolById(arrayFCero[i]) : fCeroTool = arrayFCero[i]
+                
+                arrayFUno[i] == 'sinDato' || arrayFUno[i] == 'S/D' ?
+                    fUnoTool = 'sinDato'
+                :    
+                    tieneNumeros(arrayFUno[i]) ? fUnoTool = await this.tools.getToolById(arrayFUno[i]) : fUnoTool = arrayFUno[i]
+                
+                arrayFDos[i] == 'sinDato' || arrayFDos[i] == 'S/D' ?
+                    fDosTool = 'sinDato'
+                :        
+                    tieneNumeros(arrayFDos[i]) ? fDosTool = await this.tools.getToolById(arrayFDos[i]) : fDosTool = arrayFDos[i]
+
+                fCeroTool == 'sinDato' ? fCeroToolToShow = 'sinDato' : esStringUObjeto(fCeroTool) ? fCeroToolToShow = `${fCeroTool.designation}` : fCeroToolToShow = fCeroTool
+                fUnoTool == 'sinDato' ? fUnoToolToShow = 'sinDato' : esStringUObjeto(fUnoTool) ? fUnoToolToShow = `${fUnoTool.designation}` : fUnoToolToShow = fUnoTool
+                fDosTool == 'sinDato' ? fDosToolToShow = 'sinDato' : esStringUObjeto(fDosTool) ? fDosToolToShow = `${fDosTool.designation}` : fDosToolToShow = fDosTool
+
+                var infoAddedToOt = {
+                    idDetalle: arrayIdDetalle[i],
+                    otStatus: arrayOtStatus[i],
+                    otNumber: parseInt(arrayOtNumber[i]),
+                    detalleNumber: arrayDetalleNumber[i],
+                    fCero: fCeroToolToShow || "sinDato",
+                    estadoFCero: arrayEstadoFCero[i] || "sinDato",
+                    revisionFCero: parseInt(arrayRevisionFCero[i]) || 0,
+                    fUno: fUnoToolToShow || "sinDato",
+                    estadoFUno: arrayEstadoFUno[i] || "sinDato",
+                    revisionFUno: parseInt(arrayRevisionFUno[i]) || 0,
+                    fDos: fDosToolToShow || "sinDato",
+                    estadoFDos: arrayEstadoFDos[i] || "sinDato",
+                    revisionFDos: parseInt(arrayRevisionFDos[i]) || 0,
+                    timestamp: formatDate(),
+                    creator: dataUserCreator(userCreator),
+                    modificator: dataUserModificatorEmpty(),
+                    modifiedOn: "",
+                }
+                arrayInfoAddedToDetail.push(infoAddedToOt)
+            }
+            // console.log('arrayInfoAddedToDetail-controller', arrayInfoAddedToDetail)
+
+            const itemUpdated = await this.programms.addInfoMecanizadoPrimera(
+                projectId,
+                otQuantity,
+                ociNumberK,
+                arrayOtNumberK,
+                arrayDetalleNumberK,
+                detallesQuantity,
+                totalDetallesQuantity,
+                arrayInfoAddedToDetail
+            )
+    
+            if (!itemUpdated) {
+                catchError400_3(req, res, next)
+            }
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_1(req, res, next)
+            }
+
+            data.slide = 3
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectWonSelectedDetail', {
+                    proyecto,
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    data,
+                    csrfToken
+                })
+            }, 1000)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
         }
     }
+
     // -----------------------------------------------------------
+    addInfoMecanizadoSegunda = async (req, res, next) => {
+        const id = req.params.id
+        let username = res.locals.username
+        let userInfo = res.locals.userInfo
+        const expires = cookie(req)
+        
+        try {
+            const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
+            !mainProyecto ? catchError400(req, res, next) : null
+
+            const clientId = req.body.clientIdHidden
+            const cliente = await this.clients.selectClientById(clientId)     
+            if (!cliente) {
+                catchError401(req, res, next)
+            }
+            
+            const projectId = req.body.projectIdHidden
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_1(req, res, next)
+            }
+
+            const userId = userInfo.id
+            const userCreator = await this.users.getUserById(userId)
+            if (!userCreator) {
+                catchError401_3(req, res, next)
+            }
+            
+            const ociNumberK = parseInt(req.body.ociNumberK)
+            const resultado = req.body.detalleNumberK.split(",")
+
+            const arrayDetalleKNumber = resultado.map(item => {
+                const partes = item.split('_'); // Dividir la cadena por "_"
+                return parseInt(partes[partes.length - 1]); // Obtener el último número y convertirlo a entero
+            });
+            const arrayDetalleNumberK = arrayDetalleKNumber //.map(Number)
+
+            const arrayOtKNumber = req.body.otNumberK.split(",")
+            const arrayOtNumberK = arrayOtKNumber.map(Number) 
+            const otQuantity = parseInt(req.body.otQuantity)
+            const detallesQuantity = parseInt(req.body.detallesQuantity)
+            const totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
+
+            let arrayIdDetalle=[], arrayOtNumber=[], arrayOtStatus=[], arrayDetalleNumber=[],
+                arrayFTres=[], arrayEstadoFTres=[], arrayRevisionFTres=[],
+                arrayFCuatro=[], arrayEstadoFCuatro=[], arrayRevisionFCuatro=[],
+                arrayNotasMecanizado=[], arrayRevisionNotasMecanizado=[]
+
+            const prefixes = [
+                { prefix: 'detalleIdHidden', array: arrayIdDetalle },
+                { prefix: 'otNumberHidden', array: arrayOtNumber },
+                { prefix: 'otStatusHidden', array: arrayOtStatus },
+                { prefix: 'detalleNumberHidden', array: arrayDetalleNumber },
+                { prefix: 'fTresHidden', array: arrayFTres },
+                { prefix: 'estadoFTresHidden', array: arrayEstadoFTres },
+                { prefix: 'revisionFTresHidden', array: arrayRevisionFTres },
+                { prefix: 'fCuatroHidden', array: arrayFCuatro },
+                { prefix: 'estadoFCuatroHidden', array: arrayEstadoFCuatro },
+                { prefix: 'revisionFCuatroHidden', array: arrayRevisionFCuatro },
+                { prefix: 'notasMecanizadoHidden', array: arrayNotasMecanizado },
+                { prefix: 'revisionNotasMecanizadoHidden', array: arrayRevisionNotasMecanizado }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayInfoAddedToDetail = []
+            for (let i=0; i<detallesQuantity; i++ ) {
+
+                let fTresTool, fCuatroTool
+                let fTresToolToShow, fCuatroToolToShow
+                arrayFTres[i] == 'sinDato' || arrayFTres[i] == 'S/D' ?
+                    fTresTool = 'sinDato'
+                :
+                    tieneNumeros(arrayFTres[i]) ? fTresTool = await this.tools.getToolById(arrayFTres[i]) : fTresTool = arrayFTres[i]
+                
+                arrayFCuatro[i] == 'sinDato' || arrayFCuatro[i] == 'S/D' ?
+                    fCuatroTool = 'sinDato'
+                :    
+                    tieneNumeros(arrayFCuatro[i]) ? fCuatroTool = await this.tools.getToolById(arrayFCuatro[i]) : fCuatroTool = arrayFCuatro[i]
+                
+                fTresTool == 'sinDato' ? fTresToolToShow = 'sinDato' : esStringUObjeto(fTresTool) ? fTresToolToShow = `${fTresTool.designation}` : fTresToolToShow = fTresTool
+                fCuatroTool == 'sinDato' ? fCuatroToolToShow = 'sinDato' : esStringUObjeto(fCuatroTool) ? fCuatroToolToShow = `${fCuatroTool.designation}` : fCuatroToolToShow = fCuatroTool
+                
+                var infoAddedToOt = {
+                    idDetalle: arrayIdDetalle[i],
+                    otStatus: arrayOtStatus[i],
+                    otNumber: parseInt(arrayOtNumber[i]),
+                    detalleNumber: arrayDetalleNumber[i],
+                    fTres: fTresToolToShow || "sinDato",
+                    estadoFTres: arrayEstadoFTres[i] || "sinDato",
+                    revisionFTres: parseInt(arrayRevisionFTres[i]) || 0,
+                    fCuatro: fCuatroToolToShow || "sinDato",
+                    estadoFCuatro: arrayEstadoFCuatro[i] || "sinDato",
+                    revisionFCuatro: parseInt(arrayRevisionFCuatro[i]) || 0,
+                    notasMecanizado: arrayNotasMecanizado[i] || "sinDato",
+                    revisionNotasMecanizado: parseInt(arrayRevisionNotasMecanizado[i]) || 0,
+                    timestamp: formatDate(),
+                    creator: dataUserCreator(userCreator),
+                    modificator: dataUserModificatorEmpty(),
+                    modifiedOn: "",
+                }
+                arrayInfoAddedToDetail.push(infoAddedToOt)
+            }
+            console.log('arrayInfoAddedToDetail-controller', arrayInfoAddedToDetail)
+
+            const itemUpdated = await this.programms.addInfoMecanizadoSegunda(
+                projectId,
+                otQuantity,
+                ociNumberK,
+                arrayOtNumberK,
+                arrayDetalleNumberK,
+                detallesQuantity,
+                totalDetallesQuantity,
+                arrayInfoAddedToDetail
+            )
+    
+            if (!itemUpdated) {
+                catchError400_3(req, res, next)
+            }
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_1(req, res, next)
+            }
+
+            data.slide = 4
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectWonSelectedDetail', {
+                    proyecto,
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    data,
+                    csrfToken
+                })
+            }, 1000)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
 }
 
 module.exports = {

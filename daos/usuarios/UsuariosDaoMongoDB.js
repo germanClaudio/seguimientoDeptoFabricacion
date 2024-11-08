@@ -305,7 +305,8 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                         timestamp: newUser.timestamp,
                         modificator: newUser.modificator,
                         modifiedOn: '',
-                        visible: newUser.visible
+                        visible: newUser.visible,
+                        visits: 0
                     }             
 
                     const newUserCreated = new Usuarios(nuevoUsuario)
@@ -317,7 +318,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                     let avatarFileName = sectionString[sectionString.length - 1]
 
                     const loginAppLink =  `https://seguimientoproyectosing.up.railway.app/api/auth/login`
-                               
+                    
                     //////////////////// gmail to User && Administrator //////////////////////
                     const { createTransport } = require('nodemailer')
                     const TEST_EMAIL = process.env.TEST_EMAIL
@@ -655,6 +656,45 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
         } else {
             console.info('El Ususario no existe! ', updatedUser)
             return new Error (`No se pudo actualizar el Usuario!`)
+        }
+    }
+
+    async updateUserVisits(id, updatedUser) {
+        if (updatedUser) {
+            try {
+                const userMongoDB = await Usuarios.findById( { _id: id } ) //`${id}`
+                
+                if(userMongoDB) {
+                    var updatedVisitsUser = await Usuarios.updateOne(
+                        { _id: userMongoDB._id  },
+                        {
+                            $set: {
+                                visits: parseInt(userMongoDB.visits+1)
+                            }
+                        },
+                        { new: true }
+                    )
+
+                    if(updatedVisitsUser.acknowledged) {
+                        const itemUpdated = await Usuarios.findById({ _id: id })
+                        return itemUpdated
+
+                    } else {
+                        return new Error(`No se actualizó el # de visitas: ${itemUpdated._id}`)
+                    }
+
+                } else {
+                    return new Error(`No existe el Usuario con este id: ${itemUpdated._id} `)
+                }
+
+            } catch (error) {
+                console.error("Error MongoDB updateVisitsUser: ", error)
+                return new Error (`No se pudo actualizar las visitas del Usuario!`)
+            }
+
+        } else {
+            console.info('El Ususario no existe! ', updatedUser)
+            return new Error (`No se pudo actualizar las visitas del Usuario!`)
         }
     }
 

@@ -178,7 +178,7 @@
                                                 
                                                     arrResCreadorFCuatro.push(pathToMongoOtMecanizadoSegunda[i].creator[0].username)
                                                     arrResModificadorFCuatro.push(pathToMongoOtMecanizadoSegunda[i].modificator[0].username)
-                                                    arrResFechaOtFCuatro.push(pathToMongoOtMecanizadoSegunda[i].timestamp)
+                                                    arrResFechaFCuatro.push(pathToMongoOtMecanizadoSegunda[i].timestamp)
                                                     arrResFechaModFCuatro.push(pathToMongoOtMecanizadoSegunda[i].modifiedOn)
                                                     
                                                 } else {
@@ -187,7 +187,7 @@
                                                     resRevisionFCuatro = 0
                                                 }
                                             }
-                                            valueArrayResFCuatro = parseInt(arrResDatoFCuatro[i].length-1)
+                                            valueArrayResFCuatro = parseInt(arrResDatoFCuatro.length-1)
 
                                             if (arrResDatoFCuatro.length == 1 ) {
                                                 anteriorDisabled = "disabled"
@@ -433,7 +433,7 @@
                                             <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFCuatro %>">
                                             <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFCuatro %>">
                                         
-                                            <span id="resDatoFCuatro<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2">
+                                            <span id="resDatoFCuatro<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
                                                 <%= resDatoFCuatro %>
                                             </span> |
 
