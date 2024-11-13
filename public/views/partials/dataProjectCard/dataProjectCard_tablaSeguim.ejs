@@ -9,52 +9,54 @@
             <th colspan="1" class="text-center pb-1"> <div class="mb-3">EXTERNO</div></th>
         </tr>
         <tr>
-            <th style="width:30vw" scope="col-1" class="text-center pb-1">Diseño</th>
-            <th style="width:30vw" scope="col-1" class="text-center pb-1">Simulación</th>
-            <th style="width:30vw" scope="col-1" class="text-center pb-1">Proveedor</th>
+            <th style="width:30vw" scope="col-1" class="text-center pb-1">Diseño <i class="fa-solid fa-compass-drafting"></i></th>
+            <th style="width:30vw" scope="col-1" class="text-center pb-1">Simulación <i class="fa-solid fa-chart-area"></i></th>
+            <th style="width:30vw" scope="col-1" class="text-center pb-1">Proveedor <i class="fa-solid fa-truck-field-un"></i></th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
-        <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length> n; n++) { 
-            if (proyecto[m].project[j].oci[k].otProject[n].visible) {
-                if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
-                    <tr name="rowSelected<%=k%>_<%=n%>" class="border-bottom fw-semibold fs-6" style="height: 7vh;">
-                        <td class="text-center align-middle overflow-ellipsis">
-                            <small id="otDesign<%=k%>_<%=n%>" class="text-dark align-middle">
-                                <%= proyecto[m].project[j].oci[k].otProject[n].otDesign %>
-                            </small>
-                        </td>
-                        <td class="text-center align-middle overflow-ellipsis">
-                            <small id="otSimulation<%=k%>_<%=n%>" class="text-dark">
-                                <%= proyecto[m].project[j].oci[k].otProject[n].otSimulation %>
-                            </small>
-                        </td>
-                        <td class="text-center align-middle overflow-ellipsis">
-                            <small id="otSupplier<%=k%>_<%=n%>" class="text-dark">
-                                <%= proyecto[m].project[j].oci[k].otProject[n].otSupplier %>
-                            </small>
-                        </td>
-                    </tr>   
-                <% } else { %>
-                    <tr class="border-bottom fw-semibold fs-6" style="height: 7vh; background-color: #dedede;">
-                        <td class="text-center">
-                            <small id="otDesign<%=k%>_<%=n%>" class="text-dark align-middle">
-                                <%= proyecto[m].project[j].oci[k].otProject[n].otDesign %>
-                            </small>
-                        </td>
-                        <td class="text-center align-middle">
-                            <small id="otSimulation<%=k%>_<%=n%>" class="text-dark">
-                                <%= proyecto[m].project[j].oci[k].otProject[n].otSimulation %>
-                            </small>
-                        </td>
-                        <td class="text-center align-middle">
-                            <small id="otSupplier<%=k%>_<%=n%>" class="text-dark">
-                                <%= proyecto[m].project[j].oci[k].otProject[n].otSupplier %>
-                            </small>
-                        </td>
-                    </tr>
-                <% }
-            }
-        } %>
+        <% let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject
+            proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => { 
+                if (pathMongoOtProject[n].visible) {
+                    if (pathMongoOtProject[n].otStatus) { %>
+                        <tr name="rowSelected<%=k%>_<%=n%>" class="border-bottom fw-semibold fs-6" style="height: 7vh;">
+                            <td class="text-center align-middle overflow-ellipsis">
+                                <small id="otDesign<%=k%>_<%=n%>" class="text-dark align-middle">
+                                    <%= pathMongoOtProject[n].otDesign %>
+                                </small>
+                            </td>
+                            <td class="text-center align-middle overflow-ellipsis">
+                                <small id="otSimulation<%=k%>_<%=n%>" class="text-dark">
+                                    <%= pathMongoOtProject[n].otSimulation %>
+                                </small>
+                            </td>
+                            <td class="text-center align-middle overflow-ellipsis">
+                                <small id="otSupplier<%=k%>_<%=n%>" class="text-dark">
+                                    <%= pathMongoOtProject[n].otSupplier %>
+                                </small>
+                            </td>
+                        </tr>
+
+                    <% } else { %>
+                        <tr class="border-bottom fw-semibold fs-6" style="height: 7vh; background-color: #dedede;">
+                            <td class="text-center">
+                                <small id="otDesign<%=k%>_<%=n%>" class="text-dark align-middle">
+                                    <%= pathMongoOtProject[n].otDesign %>
+                                </small>
+                            </td>
+                            <td class="text-center align-middle">
+                                <small id="otSimulation<%=k%>_<%=n%>" class="text-dark">
+                                    <%= pathMongoOtProject[n].otSimulation %>
+                                </small>
+                            </td>
+                            <td class="text-center align-middle">
+                                <small id="otSupplier<%=k%>_<%=n%>" class="text-dark">
+                                    <%= pathMongoOtProject[n].otSupplier %>
+                                </small>
+                            </td>
+                        </tr>
+                    <% }
+                }
+            }) %>
     </tbody>
 </table>

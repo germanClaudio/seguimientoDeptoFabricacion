@@ -26,8 +26,7 @@
                             <td class="text-center align-middle">
                                 <% if ( userInfo.admin || userInfo.superAdmin ) { %>
                                     <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
-                                        <input id="checkSelect<%=k%>_<%=n%>_<%=o%>"
-                                            title="Checkbox Ítem OT#<%= pathMongoOtProject.otNumber %>.<%= pathMongoOtProject.otDetalles[o].numeroDetalle %>"
+                                        <input id="checkSelect<%=k%>_<%=n%>_<%=o%>" title="Checkbox Ítem OT#<%= pathMongoOtProject.otNumber %>.<%= pathMongoOtProject.otDetalles[o].numeroDetalle %>"
                                             class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect">
                                         <button id="btnEditOtDetalle<%=k%>_<%=n%>_<%=o%>" type="button" class="btn btn-sm btn-light shadow" value="edit" name="btnEditOtDetalle"
                                             title="Editar ítem OT#<%= pathMongoOtProject.otNumber %>.<%= pathMongoOtProject.otDetalles[o].numeroDetalle %>"
@@ -45,6 +44,7 @@
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </div>
+
                                 <% } else { %>
                                     <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
                                         <input id="checkSelect<%=k%>_<%=n%>_<%=o%>" class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect">
@@ -79,39 +79,36 @@
                             <!-- status OT -->
                             <td class="text-center align-middle">
                                 <% if (pathMongoOtProject.otStatus) { %>
-                                    <span id="lastOtDetalleStatus<%=k%>_<%=n%>_<%=o%>"
-                                        class="badge rounded-pill bg-success text-white my-2">
+                                    <span id="lastOtDetalleStatus<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2">
                                         Activo
                                     </span>
+
                                 <% } else { %>
-                                    <span id="lastOtDetalleStatus<%=k%>_<%=n%>_<%=o%>"
-                                        class="badge rounded-pill bg-danger text-white my-2">
+                                    <span id="lastOtDetalleStatus<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">
                                         Inactivo
                                     </span>
                                 <% } %>
                             </td>
                             <!-- OT Number -->
                             <td class="text-center align-middle">
-                                <span id="lastOtNumber<%=k%>_<%=n%>_<%=o%>"
-                                    class="badge rounded-pill bg-dark text-white my-2">
+                                <span id="lastOtNumber<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-dark text-white my-2">
                                     <%= pathMongoOtProject.otNumber %>
                                 </span>
                             </td>
                             <!-- OP Number -->
                             <td class="text-center align-middle">
-                                <span id="lastOpNumber<%=k%>_<%=n%>_<%=o%>"
-                                    class="badge rounded-pill bg-secondary text-white my-2">
+                                <span id="lastOpNumber<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">
                                     <%= pathMongoOtProject.opNumber %>
                                 </span>
                             </td>
                             <!-- op Description -->
                             <td class="text-center align-middle overflow-ellipsis">
-                                <small id="lastOpDescription<%=k%>_<%=n%>_<%=o%>"
-                                    class="text-dark my-2">
+                                <small id="lastOpDescription<%=k%>_<%=n%>_<%=o%>" class="text-dark my-2">
                                     <%= pathMongoOtProject.opDescription %>
                                 </small>
                             </td>
                         </tr>
+
                     <% } else { %>
                         <tr id="rowSelected<%=k%>_<%=n%>_<%=o%>" name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh; background-color: #dedede;">
                             <td class="text-center align-middle">
@@ -137,6 +134,7 @@
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </div>
+
                                 <% } else { %>
                                     <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
                                         <input id="checkSelect<%=k%>_<%=n%>_<%=o%>" class="form-check-input my-auto me-2" type="checkbox"
@@ -162,31 +160,31 @@
                             <!-- status OT -->
                             <td class="text-center align-middle">
                                 <% if (pathMongoOtProject.otStatus) { %>
-                                    <span id="lastOtStatus<%=k%>_<%=n%>_<%=o%>"
-                                        class="badge rounded-pill bg-success text-white my-2">Activo</span>
+                                    <span id="lastOtStatus<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-success text-white my-2">
+                                        Activo
+                                    </span>
+                                
                                 <% } else { %>
-                                    <span id="lastOtStatus<%=k%>_<%=n%>_<%=o%>"
-                                        class="badge rounded-pill bg-danger text-white my-2">Inactivo</span>
+                                    <span id="lastOtStatus<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-danger text-white my-2">
+                                        Inactivo
+                                    </span>
                                 <% } %>
                             </td>
                             <!-- OT Number -->
                             <td class="text-center align-middle">
-                                <span id="lastOtNumber<%=k%>_<%=n%>_<%=o%>"
-                                    class="badge rounded-pill bg-dark text-white my-2">
+                                <span id="lastOtNumber<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-dark text-white my-2">
                                     <%= pathMongoOtProject.otNumber %>
                                 </span>
                             </td>
                             <!-- OP Number -->
                             <td class="text-center align-middle">
-                                <span id="lastOpNumber<%=k%>_<%=n%>_<%=o%>"
-                                    class="badge rounded-pill bg-secondary text-white my-2">
+                                <span id="lastOpNumber<%=k%>_<%=n%>_<%=o%>" class="badge rounded-pill bg-secondary text-white my-2">
                                     <%= pathMongoOtProject.opNumber %>
                                 </span>
                             </td>
                             <!-- op Description -->
                             <td class="text-center align-middle overflow-ellipsis">
-                                <small id="lastOpDescription<%=k%>_<%=n%>_<%=o%>"
-                                    class="text-dark my-2">
+                                <small id="lastOpDescription<%=k%>_<%=n%>_<%=o%>" class="text-dark my-2">
                                     <%= pathMongoOtProject.opDescription %>
                                 </small>
                             </td>

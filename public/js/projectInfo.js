@@ -162,7 +162,6 @@ for (let m = 0; m < ociTotalQty; m++) {
                 arrayCheckBoxSelect.push(checkBoxSelect);
                 if (checkBoxSelect.checked) arrayCheckBoxNotNull.push(checkBoxSelect);
             }
-
             addElementIfExists(`lastOtStatus${m}_${n}`, arrayStatusOt);
     }
 }
@@ -1776,18 +1775,18 @@ function getOtList(i) {
 
     // Arrays para almacenar los datos
     let arrayOtNumber = [], arrayOpNumber = [], arrayOtStatus = [], arrayDescripcionOt = [],
-    arrayOnumber = [], arraySelectedCheck = [], arrayONumberSelect = [];
+    arrayOnumber = [], arrayNnumber = [], arraySelectedCheck = [], arrayONumberSelect = [];
     
     // Configuración de mapeo de IDs a arrays
     const mappings = [
-        { prefix: 'lastOtNumber', array: arrayOtNumber },
+        { prefix: 'lastOtNumber', array: arrayOtNumber, isOt: true  },
         { prefix: 'lastOpNumber', array: arrayOpNumber },
         { prefix: 'lastOtStatus', array: arrayOtStatus },
         { prefix: 'lastOpDescription', array: arrayDescripcionOt },
     ];
 
     for (let n=0; n < lastChild; n++) {
-            mappings.forEach(({ prefix, array }) => {
+            mappings.forEach(({ prefix, array, isOt }) => {
                 const id = `${prefix}${k}_${n}`;
                 const text = getElementText(id);
                 const checkId = `checkSelect${k}_${n}`;
@@ -1798,6 +1797,7 @@ function getOtList(i) {
                 if (text) {
                     array.push(text);
                     arrayOnumber.push(`${k}_${n}`);
+                    if (isOt) arrayNnumber.push(`${n}`);
                 }
         });
     }
@@ -1816,6 +1816,7 @@ function getOtList(i) {
             arrayOtStatus,
             arrayDescripcionOt,
             arrayOnumber,
+            arrayNnumber,
             lastChild: uniqueSelectedCheck.length,
             arraySelectedCheck: uniqueSelectedCheck,
             indicesSelected,
@@ -2093,17 +2094,12 @@ function datosCabeceraFormulario (
     return datosCabecera                    
 }
 
-function footerFormularioHidden (
-            projectNumberId, 
-            clientId, 
-            i, 
-            arrayBloqueLength)
-    {
-    
+function footerFormularioHidden (projectNumberId, clientId, i, arrayBloqueLength, arrayOtKNumber) {
     let footerFormulario = `<input type="hidden" name="projectIdHidden" value="${projectNumberId}">
                             <input type="hidden" name="clientIdHidden" value="${clientId}">
-                            <input type="hidden" name="ociNumberK" value="${parseInt(i)}"> 
-                            <input type="hidden" name="otQuantity" value="${parseInt(arrayBloqueLength)}">`
+                            <input type="hidden" name="ociNumberK" value="${parseInt(i)}">
+                            <input type="hidden" name="otNumberK" value="${arrayOtKNumber}">
+                            <input type="hidden" name="otQuantity" value="${parseInt(arrayOtKNumber.length)}">`
 
     return footerFormulario                            
 }
@@ -2188,13 +2184,14 @@ function addDatoToR14(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal, getOtList(i)) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-        let arrayBloque = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtDescriptionSelected = []
+        let arrayBloque = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
 
         res.arraySelectedCheck.forEach(selected => {
             let index = res.arrayONumberSelect.indexOf(selected);  // Encontrar el índice del valor en arrayONumberSelect
             if (index !== -1) {  // Si el elemento se encuentra, agregar el índice al array de resultados
                 let y = index
                 arrayOtSelected.push(res.arrayOtNumber[y])
+                arrayOtKNumber.push(res.arrayNnumber[y])
                 arrayOpDescriptionSelected.push(res.arrayOpNumber[y])
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
 
@@ -2270,7 +2267,7 @@ function addDatoToR14(i, idTabla, qInicial, qFinal) {
                             <hr>
                                 ${arrayBloque.join("<br>")}
                             <hr>
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloque.length)}
+                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloque.length, arrayOtKNumber )}
                         </fieldset>
                     </form>`
 
@@ -2297,19 +2294,46 @@ function addDatoToR14(i, idTabla, qInicial, qFinal) {
 }
 //***** End addDatoToR14 ******
 
+// Función para actualizar el valor del campo total
+function updateTotal(i) {
+    let iFromi = parseInt(i)
+    if (!isNaN(iFromi)) {
+        let res = getOtList(iFromi)
+        let arrayTotalHorasProceso3d = []
+        let inputDisabled = document.getElementById("totalHsProceso3d")
+        inputDisabled.removeAttribute('disabled')
+        // console.log('res.arrayOtNumber: ', res.arrayOtNumber)    
+        for (let y=0; y < res.arrayOtNumber.length; y++) {    
+            let input1 = document.getElementById(`hsProceso${res.arrayOtNumber[y]}`)
+            input1 ? arrayTotalHorasProceso3d.push(input1.value) : 0
+        }
+        
+        // Usamos el método map para convertir los strings a números enteros
+        const arrayDeNumeros = arrayTotalHorasProceso3d.map(str => parseInt(str, 10));
+
+        let total = arrayDeNumeros.reduce(function(acumulador, valorActual) {
+            return acumulador + valorActual;
+        }, 0);
+        // console.log('total: ', total)
+        !isNaN(total) ? inputDisabled.value = total : inputDisabled.value = 0;
+        inputDisabled.setAttribute('disabled', true)
+    }
+}
+// -----------------------------------------------
+
 //***** addDatoToProceso3d ******
 function addDatoToProceso3d(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal, getOtList(i)) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-        
-        var arrayBloqueProceso3d = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtDescriptionSelected = []
-        
+        var arrayBloqueProceso3d = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
+
         res.arraySelectedCheck.forEach(selected => {
             let index = res.arrayONumberSelect.indexOf(selected);  // Encontrar el índice del valor en arrayONumberSelect
             if (index !== -1) {  // Si el elemento se encuentra, agregar el índice al array de resultados
                 let y = index
                 arrayOtSelected.push(res.arrayOtNumber[y])
+                arrayOtKNumber.push(res.arrayNnumber[y])
                 arrayOpDescriptionSelected.push(res.arrayOpNumber[y])
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
 
@@ -2332,11 +2356,10 @@ function addDatoToProceso3d(i, idTabla, qInicial, qFinal) {
                             </div>
 
                             <div class="col my-auto">
-                                <input value="${parseInt(getValues.arrayHorasProceso3d[y])}" type="number"
+                                <input value="${parseInt(getValues.arrayHorasProceso3d[y])}" type="number" oninput="updateTotal(${i})"
                                     id="hsProceso${res.arrayOtNumber[y]}" name="horasProceso3d${y}"
                                     class="form-control" min="0" max="9999"
-                                    style="text-align: center;" ${colorStatusOt(res.arrayOtStatus[y]).disabled}
-                                    oninput="updateTotal(${i})">
+                                    style="text-align: center;" ${colorStatusOt(res.arrayOtStatus[y]).disabled}>
                             </div>
                             <div class="col-1 my-auto">    
                                 <input type="text" value="${getValues.arrayRevisionHorasProceso3d[y]}" class="form-control"
@@ -2393,7 +2416,7 @@ function addDatoToProceso3d(i, idTabla, qInicial, qFinal) {
                             <hr>
                                 ${inputTotalHorasProceso3d}
                             <hr>
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueProceso3d.length)}
+                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueProceso3d.length, arrayOtKNumber)}
                         </fieldset>
                     </form>`
     
@@ -2418,32 +2441,6 @@ function addDatoToProceso3d(i, idTabla, qInicial, qFinal) {
         disabledBtnAceptar()
     }
 }
-
-// Función para actualizar el valor del campo total
-function updateTotal(i) {
-    if (i) {
-        let res = getOtList(i)
-        let arrayTotalHorasProceso3d = []
-        let inputDisabled = document.getElementById("totalHsProceso3d")
-        inputDisabled.removeAttribute('disabled')
-        
-        for (let y=0; y < res.arrayOtNumber.length; y++) {    
-            let input1 = document.getElementById(`hsProceso${res.arrayOtNumber[y]}`)
-            input1 ? arrayTotalHorasProceso3d.push(input1.value) : 0
-        }
-        
-        // Usamos el método map para convertir los strings a números enteros
-        const arrayDeNumeros = arrayTotalHorasProceso3d.map(str => parseInt(str, 10));
-
-        let total = arrayDeNumeros.reduce(function(acumulador, valorActual) {
-            return acumulador + valorActual;
-        }, 0);
-
-        !isNaN(total) ? inputDisabled.value = total : inputDisabled.value = 0;
-        inputDisabled.setAttribute('disabled', true)
-    }
-}
-// ------------------------------------------------  
 //***** End addDatoToProceso3d ******
 
 //***** addDatoToDisenoPrimera ******
@@ -2451,14 +2448,14 @@ function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal, getOtList(i)) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-    
-        let arrayBloqueDisenoPrimera = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtDescriptionSelected = []
+        let arrayBloqueDisenoPrimera = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
     
         res.arraySelectedCheck.forEach(selected => {
             let index = res.arrayONumberSelect.indexOf(selected);  // Encontrar el índice del valor en arrayONumberSelect
             if (index !== -1) {  // Si el elemento se encuentra, agregar el índice al array de resultados
                 let y = index
                 arrayOtSelected.push(res.arrayOtNumber[y])
+                arrayOtKNumber.push(res.arrayNnumber[y])
                 arrayOpDescriptionSelected.push(res.arrayOpNumber[y])
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
     
@@ -2564,19 +2561,19 @@ function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
                                 <div class="col my-auto">
                                     <label for="avDiseno"><strong>Av. Diseño</strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
+                                <div class="col-1 my-auto align-self-start border-end border-dark">
                                     <label for="revisionAvDiseno"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
                                     <label for="primerRev50"><strong>1° Rev 50%</strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
+                                <div class="col-1 my-auto align-self-start border-end border-dark">
                                     <label for="revisionPrimerRev50"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
                                     <label for="segundaRev80"><strong>2° Rev 80%</strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
+                                <div class="col-1 my-auto align-self-start border-end border-dark">
                                     <label for="revisionSegundaRev80"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
@@ -2588,12 +2585,12 @@ function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
                             </div>
                             <hr>
                                 ${arrayBloqueDisenoPrimera.join("<br>")}
-                                ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueDisenoPrimera.length)}    
+                                ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueDisenoPrimera.length, arrayOtKNumber)}    
                         </fieldset>
                     </form>`  
     
             const titulo = "Diseño Primera Parte"
-            const ancho = 1350
+            const ancho = 1375
             const background = '#dfefff'
             const formulario = 'formDisenoPrimeraValues'
             const arrayDeOtNumber = arrayOtSelected
@@ -2620,14 +2617,14 @@ function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal, getOtList(i)) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-
-        let arrayBloqueDisenoSegunda = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtDescriptionSelected = []
+        let arrayBloqueDisenoSegunda = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
 
         res.arraySelectedCheck.forEach(selected => {
             let index = res.arrayONumberSelect.indexOf(selected);  // Encontrar el índice del valor en arrayONumberSelect
             if (index !== -1) {  // Si el elemento se encuentra, agregar el índice al array de resultados
                 let y = index
                 arrayOtSelected.push(res.arrayOtNumber[y])
+                arrayOtKNumber.push(res.arrayNnumber[y])
                 arrayOpDescriptionSelected.push(res.arrayOpNumber[y])
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
 
@@ -2733,19 +2730,19 @@ function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
                             <div class="col my-auto">
                                 <label for="revisionCliente"><strong>Rev. Cliente</strong></label>
                             </div>
-                            <div class="col-1 my-auto align-self-start">
+                            <div class="col-1 my-auto align-self-start border-end border-dark">
                                 <label for="revisionRevisionCliente"><strong>Rev</strong></label>
                             </div>
                             <div class="col my-auto">
                                 <label for="ldmProvisoria"><strong>LDM Provisoria</strong></label>
                             </div>
-                            <div class="col-1 my-auto align-self-start">
+                            <div class="col-1 my-auto align-self-start border-end border-dark">
                                 <label for="revisionLdmProvisoria"><strong>Rev</strong></label>
                             </div>
                             <div class="col my-auto">
                                 <label for="av100Diseno"><strong>Av. Diseño 100%</strong></label>
                             </div>
-                            <div class="col-1 my-auto align-self-start">
+                            <div class="col-1 my-auto align-self-start border-end border-dark">
                                 <label for="revisionAv100Diseno"><strong>Rev</strong></label>
                             </div>
                             <div class="col my-auto">
@@ -2757,12 +2754,12 @@ function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
                         </div>
                         <hr>
                             ${arrayBloqueDisenoSegunda.join("<br>")}
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueDisenoSegunda.length)}    
+                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueDisenoSegunda.length, arrayOtKNumber)}    
                     </fieldset>
                 </form>`  
     
             const titulo = "Diseño Segunda Parte"
-            const ancho = 1350
+            const ancho = 1450
             const background = '#dedede'
             const formulario = 'formDisenoSegundaValues'
             const arrayDeOtNumber = arrayOtSelected
@@ -2789,14 +2786,14 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal, getOtList(i)) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-    
-        let arrayBloqueInfo80 = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtDescriptionSelected = []
+        let arrayBloqueInfo80 = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
     
         res.arraySelectedCheck.forEach(selected => {
             let index = res.arrayONumberSelect.indexOf(selected);  // Encontrar el índice del valor en arrayONumberSelect
             if (index !== -1) {  // Si el elemento se encuentra, agregar el índice al array de resultados
                 let y = index
                 arrayOtSelected.push(res.arrayOtNumber[y])
+                arrayOtKNumber.push(res.arrayNnumber[y])
                 arrayOpDescriptionSelected.push(res.arrayOpNumber[y])
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
 
@@ -2850,7 +2847,7 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                         </div>
                         <div class="row justify-content-center">
                             <div class="col my-auto">
-                                <input type="range" class="form-range" min="0" max="100" step="5" id="ldm80${res.arrayOtNumber[y]}"
+                                <input type="range" class="form-range" min="${getValues.arrayLdm80[y]}" max="100" step="5" id="ldm80${res.arrayOtNumber[y]}"
                                     name="ldm80Range" value="${getValues.arrayLdm80[y]}" oninput="updateInputsText()">
                                 <input type="hidden" class="form-control" id="ldm80Hidden${res.arrayOtNumber[y]}"
                                     name="ldm80Hidden${[y]}" value="${getValues.arrayLdm80[y]}">
@@ -2867,7 +2864,7 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                     <div class="col m-auto">
                         <div class="row justify-content-center">
                             <div class="col-7 my-auto">
-                                <input type="text" class="form-control" min="0" max="100" step="5" id="infoModeloDisabled${res.arrayOtNumber[y]}"
+                                <input type="text" class="form-control" min="${getValues.arrayInfoModelo[y]}" max="100" step="5" id="infoModeloDisabled${res.arrayOtNumber[y]}"
                                     name="infoModeloDisabled" value="${getValues.arrayInfoModelo[y]}"
                                     style="text-align: center; width: 4.25rem;" disabled>
                             </div>
@@ -2911,19 +2908,19 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                                 <div class="col my-auto">
                                     <label for="ldmAvanceCG"><strong>LDM Avan. (Cilindros/Guias)</strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
+                                <div class="col-1 my-auto align-self-start border-end border-dark">
                                     <label for="revisionLdmAvanceCG"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
                                     <label for="ldmAvanceTD2"><strong>LDM Avan. (Tacos D2)</strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
+                                <div class="col-1 my-auto align-self-start border-end border-dark">
                                     <label for="revisionLdmAvanceTD2"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
                                     <label for="ldm80"><strong>LDM 80%</strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
+                                <div class="col-1 my-auto align-self-start border-end border-dark">
                                     <label for="revisionLdm80"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
@@ -2935,12 +2932,12 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                             </div>
                             <hr>
                                 ${arrayBloqueInfo80.join("<br>")}
-                                ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfo80.length)}    
+                                ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfo80.length, arrayOtKNumber)}    
                         </fieldset>
                     </form>`  
     
             const titulo = "Info 80%"
-            const ancho = 1350
+            const ancho = 1550
             const background = '#cedede'
             const formulario = 'formInfo80Values'
             const arrayDeOtNumber = arrayOtSelected
@@ -2967,14 +2964,14 @@ function addDatoToInfo100(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal, getOtList(i)) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-    
-        let arrayBloqueInfo100 = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtDescriptionSelected = []
+        let arrayBloqueInfo100 = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
     
         res.arraySelectedCheck.forEach(selected => {
             let index = res.arrayONumberSelect.indexOf(selected);  // Encontrar el índice del valor en arrayONumberSelect
             if (index !== -1) {  // Si el elemento se encuentra, agregar el índice al array de resultados
                 let y = index
                 arrayOtSelected.push(res.arrayOtNumber[y])
+                arrayOtKNumber.push(res.arrayNnumber[y])
                 arrayOpDescriptionSelected.push(res.arrayOpNumber[y])
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
 
@@ -3052,7 +3049,7 @@ function addDatoToInfo100(i, idTabla, qInicial, qFinal) {
                             <div class="col my-auto">
                                 <label for="ldm100"><strong>LDM 100%</strong></label>
                             </div>
-                            <div class="col-1 my-auto align-self-start">
+                            <div class="col-1 my-auto align-self-start border-end border-dark">
                                 <label for="revisionLdm100"><strong>Rev</strong></label>
                             </div>
                             <div class="col my-auto">
@@ -3064,7 +3061,7 @@ function addDatoToInfo100(i, idTabla, qInicial, qFinal) {
                         </div>
                         <hr>
                             ${arrayBloqueInfo100.join("<br>")}
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfo100.length)}    
+                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfo100.length, arrayOtKNumber)}    
                     </fieldset>
                 </form>`  
     
@@ -3096,13 +3093,14 @@ function addDatoToInfoSim0(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal, getOtList(i)) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-        let arrayBloqueInfoSim0 = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtDescriptionSelected = []
+        let arrayBloqueInfoSim0 = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
 
         res.arraySelectedCheck.forEach(selected => {
             let index = res.arrayONumberSelect.indexOf(selected);  // Encontrar el índice del valor en arrayONumberSelect
             if (index !== -1) {  // Si el elemento se encuentra, agregar el índice al array de resultados
                 let y = index
                 arrayOtSelected.push(res.arrayOtNumber[y])
+                arrayOtKNumber.push(res.arrayNnumber[y])
                 arrayOpDescriptionSelected.push(res.arrayOpNumber[y])
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
 
@@ -3163,7 +3161,7 @@ function addDatoToInfoSim0(i, idTabla, qInicial, qFinal) {
                                 <div class="col my-auto">
                                     <label for="0Sim"><strong>Sim 0</strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
+                                <div class="col-1 my-auto align-self-start border-end border-dark">
                                     <label for="revision0Sim"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
@@ -3176,7 +3174,7 @@ function addDatoToInfoSim0(i, idTabla, qInicial, qFinal) {
                             <hr>
                                 ${arrayBloqueInfoSim0.join("<br>")}
                             <hr>
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfoSim0.length)}
+                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfoSim0.length, arrayOtKNumber)}
                         </fieldset>
                     </form>`
     
@@ -3208,13 +3206,14 @@ function addDatoToInfoSim1(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal, getOtList(i)) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-        var arrayBloqueInfoSim1 = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtDescriptionSelected = []
+        var arrayBloqueInfoSim1 = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
         
         res.arraySelectedCheck.forEach(selected => {
             let index = res.arrayONumberSelect.indexOf(selected);  // Encontrar el índice del valor en arrayONumberSelect
             if (index !== -1) {  // Si el elemento se encuentra, agregar el índice al array de resultados
                 let y = index
                 arrayOtSelected.push(res.arrayOtNumber[y])
+                arrayOtKNumber.push(res.arrayNnumber[y])
                 arrayOpDescriptionSelected.push(res.arrayOpNumber[y])
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
 
@@ -3329,25 +3328,25 @@ function addDatoToInfoSim1(i, idTabla, qInicial, qFinal) {
                                 <div class="col-1 my-auto">
                                     <label for="1Sim"><strong>Sim 1</strong></label>
                                 </div>
-                                <div class="col my-auto align-self-start">
+                                <div class="col my-auto align-self-start border-end border-dark">
                                     <label for="revision1Sim"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col-1 my-auto">
                                     <label for="video"><strong>Video</strong> <i class="fa-solid fa-video"></i></label>
                                 </div>
-                                <div class="col my-auto align-self-start">
+                                <div class="col my-auto align-self-start border-end border-dark">
                                     <label for="revisionVideo"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col-1 my-auto">
                                     <label for="informe"><strong>Informe</strong></label>
                                 </div>
-                                <div class="col my-auto align-self-start">
+                                <div class="col my-auto align-self-start border-end border-dark">
                                     <label for="revisionInforme"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col-1 my-auto">
                                     <label for="ppt"><strong>PPT</strong></label>
                                 </div>
-                                <div class="col my-auto align-self-start">
+                                <div class="col my-auto align-self-start border-end border-dark">
                                     <label for="revisionPpt"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col-1 my-auto">
@@ -3360,12 +3359,12 @@ function addDatoToInfoSim1(i, idTabla, qInicial, qFinal) {
                             <hr>
                                 ${arrayBloqueInfoSim1.join("<br>")}
                             <hr>
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfoSim1.length)}
+                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfoSim1.length, arrayOtKNumber)}
                         </fieldset>
                     </form>`
     
         const titulo = "Simulación 1"
-        const ancho = 1650
+        const ancho = 1700
         const background = '#ffffff'
         const formulario = 'formSim1Values'
         const arrayDeOtNumber = arrayOtSelected
@@ -3392,13 +3391,14 @@ function addDatoToInfoSim2_3(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-        let arrayBloqueInfoSim2_3 = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtDescriptionSelected = []
+        let arrayBloqueInfoSim2_3 = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
         
         res.arraySelectedCheck.forEach(selected => {
             let index = res.arrayONumberSelect.indexOf(selected);  // Encontrar el índice del valor en arrayONumberSelect
             if (index !== -1) {  // Si el elemento se encuentra, agregar el índice al array de resultados
                 let y = index
                 arrayOtSelected.push(res.arrayOtNumber[y])
+                arrayOtKNumber.push(res.arrayNnumber[y])
                 arrayOpDescriptionSelected.push(res.arrayOpNumber[y])
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
 
@@ -3450,7 +3450,7 @@ function addDatoToInfoSim2_3(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="dfnProdismoHidden${res.arrayOtNumber[y]}" name="dfnProdismoHidden${[y]}"
                                 value="${(switchOptionSelected(getValues.arrayDfnProdismo[y])).variableValue}">
                         </div>    
-                        <div class="col-1 my-auto me-2 border-dark border-end">  
+                        <div class="col-1 my-auto me-2 border-dark border-end border-3">  
                             <input type="text" value="${getValues.arrayRevisionDfnProdismo[y]}" class="form-control mx-auto"
                                 style="text-align: center; width: 3.6rem;" disabled readonly">
                             <input type="hidden" id="revisionDfnProdismo${res.arrayOtNumber[y]}"
@@ -3495,19 +3495,19 @@ function addDatoToInfoSim2_3(i, idTabla, qInicial, qFinal) {
                                 <div class="col my-auto">
                                     <label for="2Sim"><strong>Sim 2</strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
+                                <div class="col-1 my-auto align-self-start border-end border-dark">
                                     <label for="revision2Sim"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
                                     <label for="reporte"><strong>Reporte</strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
+                                <div class="col-1 my-auto align-self-start border-end border-dark">
                                     <label for="revisionReporte"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
                                     <label for="dfnProdismo"><strong>DFN Prodismo</strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start me-2 border-dark border-end">
+                                <div class="col-1 my-auto align-self-start me-2 border-dark border-end border-3">
                                     <label for="revisionDfnProdismo"><strong>Rev</strong></label>
                                 </div>
 
@@ -3521,7 +3521,7 @@ function addDatoToInfoSim2_3(i, idTabla, qInicial, qFinal) {
                             <hr>
                                 ${arrayBloqueInfoSim2_3.join("<br>")}
                             <hr>
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfoSim2_3.length)}
+                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfoSim2_3.length, arrayOtKNumber)}
                         </fieldset>
                     </form>`
     
@@ -3553,13 +3553,14 @@ function addDatoToInfoSim4Primera(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal, getOtList(i)) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-        let arrayBloqueInfoSim4Prima = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtDescriptionSelected = []
+        let arrayBloqueInfoSim4Prima = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
 
         res.arraySelectedCheck.forEach(selected => {
             let index = res.arrayONumberSelect.indexOf(selected);  // Encontrar el índice del valor en arrayONumberSelect
             if (index !== -1) {  // Si el elemento se encuentra, agregar el índice al array de resultados
                 let y = index
                 arrayOtSelected.push(res.arrayOtNumber[y])
+                arrayOtKNumber.push(res.arrayNnumber[y])
                 arrayOpDescriptionSelected.push(res.arrayOpNumber[y])
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
                                                     
@@ -3656,19 +3657,19 @@ function addDatoToInfoSim4Primera(i, idTabla, qInicial, qFinal) {
                                 <div class="col my-auto">
                                     <label for="matEnsayo"><strong>Mat Ensayo</strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
+                                <div class="col-1 my-auto align-self-start border-end border-dark">
                                     <label for="revisionMatEnsayo"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
                                     <label for="masMenos10"><strong><i class="fa-solid fa-plus-minus"></i>10%</strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
+                                <div class="col-1 my-auto align-self-start border-end border-dark">
                                     <label for="revisionMasMenos10"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
                                     <label for="mpAlternativo"><strong>MP <i class="fa-solid fa-shapes"></i></strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
+                                <div class="col-1 my-auto align-self-start border-end border-dark">
                                     <label for="revisionMpAlternativo"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto ms-2">
@@ -3681,7 +3682,7 @@ function addDatoToInfoSim4Primera(i, idTabla, qInicial, qFinal) {
                             <hr>
                                 ${arrayBloqueInfoSim4Prima.join("<br>")}
                             <hr>
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfoSim4Prima.length)}
+                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfoSim4Prima.length, arrayOtKNumber)}
                         </fieldset>
                     </form>`
     
@@ -3713,14 +3714,14 @@ function addDatoToInfoSim4Segunda(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal, getOtList(i)) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-        
-        let arrayBloqueInfoSim4Seg = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtDescriptionSelected = []
+        let arrayBloqueInfoSim4Seg = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
         
         res.arraySelectedCheck.forEach(selected => {
             let index = res.arrayONumberSelect.indexOf(selected);  // Encontrar el índice del valor en arrayONumberSelect
             if (index !== -1) {  // Si el elemento se encuentra, agregar el índice al array de resultados
                 let y = index
                 arrayOtSelected.push(res.arrayOtNumber[y])
+                arrayOtKNumber.push(res.arrayNnumber[y])
                 arrayOpDescriptionSelected.push(res.arrayOpNumber[y])
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
                                                     
@@ -3822,19 +3823,19 @@ function addDatoToInfoSim4Segunda(i, idTabla, qInicial, qFinal) {
                                 <div class="col my-auto">
                                     <label for="informe4Sim"><strong>Informe</strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
+                                <div class="col-1 my-auto align-self-start border-end border-dark">
                                     <label for="revisionInforme4Sim"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
                                     <label for="geo1Copiado"><strong>Geo Copiado #1</strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
+                                <div class="col-1 my-auto align-self-start border-end border-dark">
                                     <label for="revisionGeoCopiado1"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
                                     <label for="geo2Copiado"><strong>Geo Copiado #2</strong></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
+                                <div class="col-1 my-auto align-self-start border-end border-dark">
                                     <label for="revisionGeo2Copiado"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto ms-2">
@@ -3849,7 +3850,7 @@ function addDatoToInfoSim4Segunda(i, idTabla, qInicial, qFinal) {
                             <hr>
                                 ${inputTotalHorasSim}
                             <hr>
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfoSim4Seg.length)}
+                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfoSim4Seg.length, arrayOtKNumber)}
                         </fieldset>
                     </form>`
     
@@ -3877,20 +3878,27 @@ function addDatoToInfoSim4Segunda(i, idTabla, qInicial, qFinal) {
 
 // Función para actualizar el valor del campo total
 function updateHsSimTotal(i) {
-    if (i) {
-        let res = getOtList(i)
-        var arrayTotalHorasSim = []
+    let iFromi = parseInt(i)
+    if (!isNaN(iFromi)) {
+        let res = getOtList(iFromi)
+        let arrayTotalHorasSim = []
+        let inputDisabled = document.getElementById("totalHsSim")
+        inputDisabled.removeAttribute('disabled')
     
         for (let y=0; y < res.arrayOtNumber.length; y++) {    
             var input1 = document.getElementById(`horasSim${res.arrayOtNumber[y]}`).value
             input1 ? arrayTotalHorasSim.push(input1) : null
         }
-            // Usamos el método map para convertir los strings a números enteros
-            const arrayDeNumeros = arrayTotalHorasSim.map(str => parseInt(str, 10));
-            var total = arrayDeNumeros.reduce(function(acumulador, valorActual) {
-                return acumulador + valorActual;
-            }, 0);
-            document.getElementById("totalHsSim").value = isNaN(total) ? '' : total;
+
+        // Usamos el método map para convertir los strings a números enteros
+        const arrayDeNumeros = arrayTotalHorasSim.map(str => parseInt(str, 10));
+
+        let total = arrayDeNumeros.reduce(function(acumulador, valorActual) {
+            return acumulador + valorActual;
+        }, 0);
+        // console.log('total: ', total)
+        !isNaN(total) ? inputDisabled.value = total : inputDisabled.value = 0;
+        inputDisabled.setAttribute('disabled', true)
     }
 }
 //***** End addDatoToInfoSim4 Segunda ******
@@ -3900,13 +3908,14 @@ function addDatoToInfoSim5(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal, getOtList(i)) {
         let res = getOtList(i)
         let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-        let arrayBloqueInfoSim5 = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtDescriptionSelected = []
+        let arrayBloqueInfoSim5 = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
 
         res.arraySelectedCheck.forEach(selected => {
             let index = res.arrayONumberSelect.indexOf(selected);  // Encontrar el índice del valor en arrayONumberSelect
             if (index !== -1) {  // Si el elemento se encuentra, agregar el índice al array de resultados
                 let y = index
                 arrayOtSelected.push(res.arrayOtNumber[y])
+                arrayOtKNumber.push(res.arrayNnumber[y])
                 arrayOpDescriptionSelected.push(res.arrayOpNumber[y])
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
                                                     
@@ -3968,7 +3977,7 @@ function addDatoToInfoSim5(i, idTabla, qInicial, qFinal) {
                                 <div class="col my-auto">
                                     <label for="grillado"><strong>Grillado</strong> <i class="fa-solid fa-table-cells fa-lg"></i></label>
                                 </div>
-                                <div class="col-1 my-auto align-self-start">
+                                <div class="col-1 my-auto align-self-start border-end border-dark">
                                     <label for="revisionGrillado"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
@@ -3981,7 +3990,7 @@ function addDatoToInfoSim5(i, idTabla, qInicial, qFinal) {
                             <hr>
                                 ${arrayBloqueInfoSim5.join("<br>")}
                             <hr>
-                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfoSim5.length)}
+                            ${footerFormularioHidden(projectNumberId, clientId.value, i, arrayBloqueInfoSim5.length, arrayOtKNumber)}
                         </fieldset>
                     </form>`
     
@@ -4006,7 +4015,7 @@ function addDatoToInfoSim5(i, idTabla, qInicial, qFinal) {
         disabledBtnAceptar()
     }
 }
-//***** End addDatoToInfoSim4 Primera ******
+//***** End addDatoToInfoSim5 ******
 
 // Función para actualizar el valor del campo Text
 function updateInputsText() {
@@ -4252,9 +4261,9 @@ let inputsDeTexto = document.querySelectorAll('input[type="text"]')
             // Verificar si la tecla presionada es un carácter especial
             if (forbiddenChars.test(key)) {
                 event.preventDefault() // Cancelar el evento para evitar que se ingrese el carácter
-                input.classList.toggle("border")
-                input.classList.toggle("border-danger")
-                input.classList.toggle("border-2")
+                input.classList.toggle("border", "border-danger", "border-2")
+                // input.classList.toggle("border-danger")
+                // input.classList.toggle("border-2")
             }
         })
     }) 

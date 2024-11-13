@@ -26,8 +26,8 @@ class ProjectService {
         return await this.proyectos.selectProjectsByMainProjectId(idProject)
     }
 
-     // returns a project from a Name Project
-     async getExistingProject(project, code) {
+    // returns a project from a Name Project
+    async getExistingProject(project, code) {
         return await this.proyectos.getExistingProject(project, code)
     }
 
@@ -57,113 +57,124 @@ class ProjectService {
     }
 
     // add Info R14 to Ot - Project
-    async addInfoR14ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
+    async addInfoR14ToOtProject(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return await this.proyectos.addInfoR14ToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
+            arrayOtNumberK,
             infoAddedToOt)
     }
 
     // add Info Proceso 3D to Ot - Project
-    async addInfoProceso3dToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
+    async addInfoProceso3dToOtProject(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return await this.proyectos.addInfoProceso3dToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
+            arrayOtNumberK,
             infoAddedToOt)
     }
 
      // add Info Avance Diseno Priemra Parte to Ot - Project
-     async addInfoDisenoPrimeraToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
+    async addInfoDisenoPrimeraToOtProject(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return await this.proyectos.addInfoDisenoPrimeraToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
+            arrayOtNumberK,
             infoAddedToOt)
     }
 
     // add Info Avance Diseno Segunda Parte to Ot - Project
-     async addInfoDisenoSegundaToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
+    async addInfoDisenoSegundaToOtProject(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return await this.proyectos.addInfoDisenoSegundaToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
+            arrayOtNumberK,
             infoAddedToOt)
     }
 
      // add Info 80% to Ot - Project
-     async addInfo80ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
+    async addInfo80ToOtProject(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return await this.proyectos.addInfo80ToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
+            arrayOtNumberK,
             infoAddedToOt)
     }
 
     // add Info 100% to Ot - Project
-    async addInfo100ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
+    async addInfo100ToOtProject(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return await this.proyectos.addInfo100ToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
+            arrayOtNumberK,
             infoAddedToOt)
     }
 
     // add Info Simulacion 0 to Ot - Project
-    async addInfoSim0ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
+    async addInfoSim0ToOtProject(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return await this.proyectos.addInfoSim0ToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
+            arrayOtNumberK,
             infoAddedToOt)
     }
 
     // add Info Simulacion 1 to Ot - Project
-    async addInfoSim1ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
+    async addInfoSim1ToOtProject(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return await this.proyectos.addInfoSim1ToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
+            arrayOtNumberK,
             infoAddedToOt)
     }
 
     // add Info Simulacion 2_3 to Ot - Project
-    async addInfoSim2_3ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
+    async addInfoSim2_3ToOtProject(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return await this.proyectos.addInfoSim2_3ToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
+            arrayOtNumberK,
             infoAddedToOt)
     }
 
     // add Info Simulacion 4 Priemra to Ot - Project
-    async addInfoSim4PrimeraToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
+    async addInfoSim4PrimeraToOtProject(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return await this.proyectos.addInfoSim4PrimeraToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
+            arrayOtNumberK,
             infoAddedToOt)
     }
 
     // add Info Simulacion 4 Segunda to Ot - Project
-    async addInfoSim4SegundaToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
+    async addInfoSim4SegundaToOtProject(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return await this.proyectos.addInfoSim4SegundaToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
+            arrayOtNumberK,
             infoAddedToOt)
     }
 
     // add Info Simulacion 5 to Ot - Project
-    async addInfoSim5ToOtProject(projectId, otQuantity, ociNumberK, infoAddedToOt) {
+    async addInfoSim5ToOtProject(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return await this.proyectos.addInfoSim5ToOtProject(
             projectId,
             otQuantity,
             ociNumberK,
+            arrayOtNumberK,
             infoAddedToOt)
     }
-
 
     
     // Select OCI - Project

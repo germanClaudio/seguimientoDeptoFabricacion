@@ -13,150 +13,155 @@
         </tr>
     </thead>
     <tbody class="table-group-divider">
-        
-        <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length > n; n++) {
-                if (proyecto[m].project[j].oci[k].otProject[n].visible) {
-                    if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
-                        <tr id="rowSelected<%=k%>_<%=n%>" name="rowSelected<%=k%>_<%=n%>" class="border-bottom" style="height: 7vh;">
-                            <td class="text-center align-middle">
-                                <% if ( userInfo.admin && userInfo.superAdmin ) { %>
-                                    <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
-                                        <input id="checkSelect<%=k%>_<%=n%>"
-                                            title="Checkbox  OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
-                                            class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect">
+        <% let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject;
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => { 
+            if (pathMongoOtProject[n].visible) {
+                if (pathMongoOtProject[n].otStatus) { %>
+                    <tr id="rowSelected<%=k%>_<%=n%>" name="rowSelected<%=k%>_<%=n%>" class="border-bottom" style="height: 7vh;">
+                        <td class="text-center align-middle">
+                            <% if ( userInfo.admin && userInfo.superAdmin ) { %>
+                                <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
+                                    <input id="checkSelect<%=k%>_<%=n%>" title="Checkbox  OT#<%= pathMongoOtProject[n].otNumber %>"
+                                        class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect">
+                                    <button id="btnEditOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="edit" name="btnEditOt"
+                                        title="Editar OT#<%= pathMongoOtProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button id="btnStatusOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="changeStatus" name="btnStatusOt"
+                                        title="Cambiar status OT#<%= pathMongoOtProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
+                                        <i class="fa-solid fa-power-off"></i>
+                                    </button>
+                                    <button id="btnDeleteOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="delete" name="btnDeleteOt"
+                                        title="Eliminar OT#<%= pathMongoOtProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            <% } else { %>
+                                <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
+                                    <input id="checkSelect<%=k%>_<%=n%>" class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect">
+                                    <% if ( userInfo.area === 'ingenieria' ) { %>
                                         <button id="btnEditOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="edit" name="btnEditOt"
-                                            title="Editar OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
+                                            title="Editar OT#<%= pathMongoOtProject[n].otNumber %>"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
                                         <button id="btnStatusOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="changeStatus" name="btnStatusOt"
-                                            title="Cambiar status OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
+                                            title="Cambiar status OT#<%= pathMongoOtProject[n].otNumber %>"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
                                             <i class="fa-solid fa-power-off"></i>
                                         </button>
-                                        <button id="btnDeleteOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="delete" name="btnDeleteOt"
-                                            title="Eliminar OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
-                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
-                                            <i class="fa-solid fa-trash"></i>
+
+                                    <% } else { %>
+                                        <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;"">
+                                            <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
-                                    </div>
-                                <% } else { %>
-                                    <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
-                                        <input id="checkSelect<%=k%>_<%=n%>" class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect">
-                                        <% if ( userInfo.area === 'ingenieria' ) { %>
-                                            <button id="btnEditOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="edit" name="btnEditOt"
-                                                title="Editar OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                            </button>
-                                            <button id="btnStatusOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="changeStatus" name="btnStatusOt"
-                                                title="Cambiar status OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
-                                                <i class="fa-solid fa-power-off"></i>
-                                            </button>
-                                        <% } else { %>
-                                            <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;"">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;">
-                                                <i class="fa-solid fa-power-off"></i>
-                                            </button>
-                                        <% } %>
                                         <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;">
-                                            <i class="fa-solid fa-trash"></i>
+                                            <i class="fa-solid fa-power-off"></i>
                                         </button>
-                                    </div>
-                                <% } %>
-                            </td>
-                            <!-- status OT -->
-                            <td class="text-center align-middle">
-                                <% if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
-                                    <span id="lastOtStatus<%=k%>_<%=n%>" class="badge rounded-pill bg-success text-white my-2">Activo</span>
-                                <% } else { %>
-                                    <span id="lastOtStatus<%=k%>_<%=n%>" class="badge rounded-pill bg-danger text-white my-2">Inactivo</span>
-                                <% } %>
-                            </td>
-                            <!-- OT Number -->
-                            <td class="text-center align-middle">
-                                <span id="lastOtNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-dark text-white my-2"><%= proyecto[m].project[j].oci[k].otProject[n].otNumber %></span>
-                            </td>
-                            <!-- OP Number -->
-                            <td class="text-center align-middle">
-                                <span id="lastOpNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-secondary text-white my-2"><%= proyecto[m].project[j].oci[k].otProject[n].opNumber %></span>
-                            </td>
-                            <!-- op Description -->
-                            <td class="text-center align-middle overflow-ellipsis">
-                                <small id="lastOpDescription<%=k%>_<%=n%>" class="text-dark my-2"><%= proyecto[m].project[j].oci[k].otProject[n].opDescription %></small>
-                            </td>
-                        </tr>
-                    <% } else { %>
-                        <tr style="height: 7vh; background-color: #dedede;" >
-                            <td class="text-center align-middle">
-                                <% if ( userInfo.admin && userInfo.superAdmin ) { %>
-                                    <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
-                                        <input id="checkSelect<%=k%>_<%=n%>" class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect" disabled>
+                                    <% } %>
+
+                                    <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            <% } %>
+                        </td>
+                        <!-- status OT -->
+                        <td class="text-center align-middle">
+                            <% if (pathMongoOtProject[n].otStatus) { %>
+                                <span id="lastOtStatus<%=k%>_<%=n%>" class="badge rounded-pill bg-success text-white my-2">Activo</span>
+
+                            <% } else { %>
+                                <span id="lastOtStatus<%=k%>_<%=n%>" class="badge rounded-pill bg-danger text-white my-2">Inactivo</span>
+                            <% } %>
+                        </td>
+                        <!-- OT Number -->
+                        <td class="text-center align-middle">
+                            <span id="lastOtNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-dark text-white my-2"><%= pathMongoOtProject[n].otNumber %></span>
+                        </td>
+                        <!-- OP Number -->
+                        <td class="text-center align-middle">
+                            <span id="lastOpNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-secondary text-white my-2"><%= pathMongoOtProject[n].opNumber %></span>
+                        </td>
+                        <!-- op Description -->
+                        <td class="text-center align-middle overflow-ellipsis">
+                            <small id="lastOpDescription<%=k%>_<%=n%>" class="text-dark my-2"><%= pathMongoOtProject[n].opDescription %></small>
+                        </td>
+                    </tr>
+
+                <% } else { %>
+                    <tr style="height: 7vh; background-color: #dedede;">
+                        <td class="text-center align-middle">
+                            <% if ( userInfo.admin && userInfo.superAdmin ) { %>
+                                <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
+                                    <input id="checkSelect<%=k%>_<%=n%>" class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect" disabled>
+                                    <button id="btnEditOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="edit" name="btnEditOt"
+                                        title="Editar OT#<%= pathMongoOtProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button id="btnStatusOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="changeStatus" name="btnStatusOt"
+                                        title="Cambiar status OT#<%= pathMongoOtProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
+                                        <i class="fa-solid fa-power-off"></i>
+                                    </button>
+                                    <button id="btnDeleteOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="delete" name="btnDeleteOt"
+                                        title="Eliminar OT#<%= pathMongoOtProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+
+                            <% } else { %>
+                                <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
+                                    <input id="checkSelect<%=k%>_<%=n%>" class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect" style="background-color: #575757;" disabled>
+                                    <% if ( userInfo.area === 'ingenieria' ) { %>
                                         <button id="btnEditOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="edit" name="btnEditOt"
-                                            title="Editar OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
+                                            title="Solo Admin puede Editar OT#<%= pathMongoOtProject[n].otNumber %>"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
-                                        <button id="btnStatusOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="changeStatus" name="btnStatusOt"
-                                            title="Cambiar status OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
-                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
-                                            <i class="fa-solid fa-power-off"></i>
+                                    <% } else { %>
+                                        <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;"">
+                                            <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
-                                        <button id="btnDeleteOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="delete" name="btnDeleteOt"
-                                            title="Eliminar OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
-                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </div>
-                                <% } else { %>
-                                    <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
-                                        <input id="checkSelect<%=k%>_<%=n%>" class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect" style="background-color: #575757;" disabled>
-                                        <% if ( userInfo.area === 'ingenieria' ) { %>
-                                            <button id="btnEditOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="edit" name="btnEditOt"
-                                                title="Solo Admin puede Editar OT#<%= proyecto[m].project[j].oci[k].otProject[n].otNumber %>"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                            </button>
-                                        <% } else { %>
-                                            <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;"">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                            </button>
-                                        <% } %>
-                                        <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
-                                            <i class="fa-solid fa-power-off"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </div>
-                                <% } %>
-                            </td>
-                            <!-- status OT -->
-                            <td class="text-center align-middle">
-                                <% if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
-                                    <span id="lastOtStatus<%=k%>_<%=n%>" class="badge rounded-pill bg-success text-white my-2">Activo</span>
-                                <% } else { %>
-                                    <span id="lastOtStatus<%=k%>_<%=n%>" class="badge rounded-pill bg-danger text-white my-2">Inactivo</span>
-                                <% } %>
-                            </td>
-                            <!-- OT Number -->
-                            <td class="text-center align-middle">
-                                <span id="lastOtNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-dark text-white my-2"><%= proyecto[m].project[j].oci[k].otProject[n].otNumber %></span>
-                            </td>
-                            <!-- OP Number -->
-                            <td class="text-center align-middle">
-                                <span id="lastOpNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-secondary text-white my-2"><%= proyecto[m].project[j].oci[k].otProject[n].opNumber %></span>
-                            </td>
-                            <!-- op Description -->
-                            <td class="text-center align-middle overflow-ellipsis">
-                                <small id="lastOpDescription<%=k%>_<%=n%>" class="text-dark my-2"><%= proyecto[m].project[j].oci[k].otProject[n].opDescription %></small>
-                            </td>
-                        </tr>
-                    <% }
-                }
-        } %>    
+                                    <% } %>
+                                    <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
+                                        <i class="fa-solid fa-power-off"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            <% } %>
+                        </td>
+                        <!-- status OT -->
+                        <td class="text-center align-middle">
+                            <% if (pathMongoOtProject[n].otStatus) { %>
+                                <span id="lastOtStatus<%=k%>_<%=n%>" class="badge rounded-pill bg-success text-white my-2">Activo</span>
+                                
+                            <% } else { %>
+                                <span id="lastOtStatus<%=k%>_<%=n%>" class="badge rounded-pill bg-danger text-white my-2">Inactivo</span>
+                            <% } %>
+                        </td>
+                        <!-- OT Number -->
+                        <td class="text-center align-middle">
+                            <span id="lastOtNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-dark text-white my-2"><%= pathMongoOtProject[n].otNumber %></span>
+                        </td>
+                        <!-- OP Number -->
+                        <td class="text-center align-middle">
+                            <span id="lastOpNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-secondary text-white my-2"><%= pathMongoOtProject[n].opNumber %></span>
+                        </td>
+                        <!-- op Description -->
+                        <td class="text-center align-middle overflow-ellipsis">
+                            <small id="lastOpDescription<%=k%>_<%=n%>" class="text-dark my-2"><%= pathMongoOtProject[n].opDescription %></small>
+                        </td>
+                    </tr>
+                <% }
+            }
+        }) %>    
     </tbody>
 </table>

@@ -3,8 +3,7 @@
     class="table-responsive align-middle col-2 border-end border-dark" style="font-size: 10pt; width: 100%">
     <thead class="align-middle" style="background-color: #88c">
         <tr>
-            <th colspan="4" class="text-center">
-                Sim 4 (Primera Parte)
+            <th colspan="4" class="text-center">Sim 4 (Primera Parte)
                 <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
                     <button id="posBtnAddDataS4Primera<%=k%>" type="button" name="btn4PrimeraSim" class="btn btn-small btn-success shadow m-1 position-relative"
                         style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
@@ -31,847 +30,390 @@
     </thead>
     <tbody class="table-group-divider">
         
-        <% for ( let n=0; proyecto[m].project[j].oci[k].otProject.length > n; n++) {
-            if (proyecto[m].project[j].oci[k].otProject[n].visible) {
+        <% let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+            resMatEnsayo = 'sinDato', resRevisionMatEnsayo = 0,
+            resMas10Menos  = 'sinDato', resRevisionMas10Menos = 0,
+            resMpAlternativo = 'sinDato', resRevisionMpAlternativo = 0,
+            resReunionSim = 'sinDato', resRevisionReunionSim = 0
 
-                var arrResMatEnsayo = []; var valueArrayResMatEnsayo = 0; var arrResRevisionMatEnsayo = []; var arrResCreadorMatEnsayo = [];
-                var arrResModificadorMatEnsayo = []; var arrResFechaMatEnsayo = []; var arrResFechaModMatEnsayo = [];
+        const sim4PrimeraConfig = {
+            ok: { text: "OK", classes: "bg-success text-white" },
+            noOk: { text: "No OK", classes: "bg-danger text-white" },
+            pendiente: { text: "Pendiente", classes: "bg-warning text-dark" },
+            noAplica: { text: "N/A", classes: "bg-info text-dark" },
+            default: { text: "S/D", classes: "bg-secondary text-white" }
+        };
 
-                var arrResMas10Menos = []; var valueArrayResMas10Menos = 0; var arrResRevisionMas10Menos = []; var arrResCreadorMas10Menos = [];
-                var arrResModificadorMas10Menos = []; var arrResFechaMas10Menos = []; var arrResFechaModMas10Menos = [];
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => { 
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+            largoArrayOtProject = parseInt(pathMongoOtProject.length),
+            pathMongoOtInformation = pathMongoOtProject[n].otInformation
+        
+            if (pathMongoOtProject[n].visible) {
+                let pathMongoOtSim4Primera = pathMongoOtInformation[0].otInfoSim4Primera || [],
+                largoArraySim4Primera = parseInt(pathMongoOtSim4Primera.length);
 
-                var arrResMpAlternativo = []; var valueArrayResMpAlternativo = 0; var arrResRevisionMpAlternativo = []; var arrResCreadorMpAlternativo = [];
-                var arrResModificadorMpAlternativo = []; var arrResFechaMpAlternativo = []; var arrResFechaModMpAlternativo = [];
+                let arrResMatEnsayo = [], valueArrayResMatEnsayo = 0, arrResRevisionMatEnsayo = [], arrResCreadorMatEnsayo = [],
+                arrResModificadorMatEnsayo = [], arrResFechaMatEnsayo = [], arrResFechaModMatEnsayo = [];
 
-                var arrResReunionSim = []; var valueArrayResReunionSim = 0; var arrResRevisionReunionSim = []; var arrResCreadorReunionSim = [];
-                var arrResModificadorReunionSim = []; var arrResFechaReunionSim = []; var arrResFechaModReunionSim = [];
+                let arrResMas10Menos = [], valueArrayResMas10Menos = 0, arrResRevisionMas10Menos = [], arrResCreadorMas10Menos = [],
+                arrResModificadorMas10Menos = [], arrResFechaMas10Menos = [], arrResFechaModMas10Menos = [];
 
-                if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
+                let arrResMpAlternativo = [], valueArrayResMpAlternativo = 0, arrResRevisionMpAlternativo = [], arrResCreadorMpAlternativo = [],
+                arrResModificadorMpAlternativo = [], arrResFechaMpAlternativo = [], arrResFechaModMpAlternativo = [];
+
+                let arrResReunionSim = [], valueArrayResReunionSim = 0, arrResRevisionReunionSim = [], arrResCreadorReunionSim = [],
+                arrResModificadorReunionSim = [], arrResFechaReunionSim = [], arrResFechaModReunionSim = [];
+
+                if (pathMongoOtProject[n].otStatus) { %>
                     <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
                         <% for (let q = 29; totalColDataSim4Primera > q; q++) {
-                            
                             if (q==29) { %>
                                 <!-- Mat Ensayo data Activo--> 
                                 <td class="text-center align-middle">
-                                    
-                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
-                                            proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length > 0) {
+                                    <% if (largoArraySim4Primera > 0) {
                                                 
-                                                for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length > i; i++) {
-                                                    var pathToMongoDBOtInfoSim4Primera = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[i]
+                                        for (let i = 0; largoArraySim4Primera > i; i++) {
+                                            if (pathMongoOtSim4Primera[i]) {
+                                                let largoArray = parseInt(largoArraySim4Primera)
+                                                resMatEnsayo = pathMongoOtSim4Primera[largoArray-1].matEnsayo || 'sinDato'
+                                                resRevisionMatEnsayo = parseInt(pathMongoOtSim4Primera[largoArray-1].revisionMatEnsayo) || 'sinDato'
+                                                
+                                                arrResMatEnsayo.push(pathMongoOtSim4Primera[i].matEnsayo)
+                                                arrResRevisionMatEnsayo.push(pathMongoOtSim4Primera[i].revisionMatEnsayo)
                                             
-                                                    if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera) {
-                                                        let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length)
-                                                        var resMatEnsayo = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[largoArray-1].matEnsayo
-                                                        var resRevisionMatEnsayo = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[largoArray-1].revisionMatEnsayo
-                                                        
-                                                        if (i == 0) {
-                                                            arrResMatEnsayo.push(pathToMongoDBOtInfoSim4Primera.matEnsayo)
-                                                            arrResRevisionMatEnsayo.push(pathToMongoDBOtInfoSim4Primera.revisionMatEnsayo)
-                                                        }
-                                                        else if (i >= 1 && pathToMongoDBOtInfoSim4Primera.revisionMatEnsayo != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[i-1].revisionMatEnsayo) {
-                                                            arrResMatEnsayo.push(pathToMongoDBOtInfoSim4Primera.matEnsayo)
-                                                            arrResRevisionMatEnsayo.push(pathToMongoDBOtInfoSim4Primera.revisionMatEnsayo)
-                                                        }
-                                                            arrResCreadorMatEnsayo.push(pathToMongoDBOtInfoSim4Primera.creator[0].username)
-                                                            arrResModificadorMatEnsayo.push(pathToMongoDBOtInfoSim4Primera.modificator[0].username)
-                                                            arrResFechaMatEnsayo.push(pathToMongoDBOtInfoSim4Primera.timestamp)
-                                                            arrResFechaModMatEnsayo.push(pathToMongoDBOtInfoSim4Primera.modifiedOn)
-                                                            valueArrayResMatEnsayo = parseInt(arrResMatEnsayo.length-1)
-                                                                                                    
-                                                    } else {
-                                                        var resMatEnsayo = 'S/D'
-                                                        var resRevisionMatEnsayo = 0
-                                                    }
-                                                }
+                                                arrResCreadorMatEnsayo.push(pathMongoOtSim4Primera[i].creator[0].username)
+                                                arrResModificadorMatEnsayo.push(pathMongoOtSim4Primera[i].modificator[0].username)
+                                                arrResFechaMatEnsayo.push(pathMongoOtSim4Primera[i].timestamp)
+                                                arrResFechaModMatEnsayo.push(pathMongoOtSim4Primera[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResMatEnsayo = parseInt(arrResMatEnsayo.length-1)
                                                 
-                                                if (arrResMatEnsayo.length == 1 ) {
-                                                    var anteriorDisabled = "disabled"
-                                                    var siguienteDisabled = "disabled"
-                                                } else if (arrResMatEnsayo.length == arrResRevisionMatEnsayo.length) {
-                                                    var anteriorDisabled = ""
-                                                    var siguienteDisabled = "disabled"
-                                                } else {
-                                                    var anteriorDisabled = ""
-                                                    var siguienteDisabled = "disabled"
-                                                }
-                                                
+                                        if (arrResMatEnsayo.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResMatEnsayo.length == arrResRevisionMatEnsayo.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
                                         } else {
-                                            var anteriorDisabled = "disabled"
-                                            var siguienteDisabled = "disabled"
-                                            var resMatEnsayo = "S/D"
-                                            var resRevisionMatEnsayo = 0
-                                            arrResMatEnsayo.push(resMatEnsayo)
-                                            arrResRevisionMatEnsayo.push(resRevisionMatEnsayo)
-                                            valueArrayResMatEnsayo = 0
-                                        } %>
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
                                     
-                                        <div id="btnAnteriorSiguiente4PrimeraSim<%=k%>_<%=n%>_<%=q%>">
-                                            <button id="btnAnterior4PrimeraSim<%=k%>_<%=n%>_<%=q%>"
-                                                name="btnAnterior4PrimeraSim"
-                                                value="<%=k%>_<%=n%>_<%=q%>"
-                                                class="btn btn-light btn-sm me-2"
-                                                title="Ver anterior"
-                                                type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= anteriorDisabled %>
-                                                >
-                                                    <i class="fa-solid fa-arrow-left"></i>
-                                            </button>
-                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMatEnsayo %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMatEnsayo %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMatEnsayo %>">
-                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorMatEnsayo %>">
-                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorMatEnsayo %>">
-                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMatEnsayo %>">
-                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModMatEnsayo %>">
-            
-                                            <% switch (resMatEnsayo) { 
-                                                case "ok": { %>
-                                                        <span id="resMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
-                                                            OK
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionMatEnsayo<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionMatEnsayo"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueRevision=""
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionMatEnsayo %>
-                                                        </span>
-                                                <% break; }        
-                                                case "noOk": { %>
-                                                        <span id="resMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
-                                                            No OK
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionMatEnsayo<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionMatEnsayo"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionMatEnsayo %>
-                                                        </span>
-                                                <% break; }        
-                                                case "pendiente": { %>
-                                                        <span id="resMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
-                                                            Pendiente
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionMatEnsayo<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionMatEnsayo"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionMatEnsayo %>
-                                                        </span>
-                                                <% break; }
-                                                case "noAplica": { %>
-                                                        <span id="resMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
-                                                            N/A
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionMatEnsayo<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionMatEnsayo"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionMatEnsayo %>
-                                                        </span>
-                                                <% break; }
-                                                default: { %>
-                                                        <span id="resMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
-                                                            S/D
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionMatEnsayo<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionMatEnsayo"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionMatEnsayo %>
-                                                        </span>
-                                                <% break; }
-                                            } %>
-            
-                                            <button id="btnSiguiente4PrimeraSim<%=k%>_<%=n%>_<%=q%>"
-                                                name="btnSiguiente4PrimeraSim"
-                                                value="<%=k%>_<%=n%>_<%=q%>"
-                                                class="btn btn-light btn-sm ms-2"
-                                                title="Ver siguiente"
-                                                type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= siguienteDisabled %>
-                                                >
-                                                    <i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
+                                    } else {
+                                        arrResMatEnsayo.push(resMatEnsayo)
+                                        arrResRevisionMatEnsayo.push(resRevisionMatEnsayo)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteMatEnsayo<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorMatEnsayo<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorMatEnsayo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMatEnsayo %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMatEnsayo %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMatEnsayo %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorMatEnsayo %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorMatEnsayo %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMatEnsayo %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModMatEnsayo %>">
+        
+                                        <% const config = sim4PrimeraConfig[resMatEnsayo] || sim4PrimeraConfig.default; %>
+                                        <span id="resMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionMatEnsayo<%=k%>_<%=n%>_<%=q%>" name="resRevisionMatEnsayo" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionMatEnsayo %>
+                                        </span>
+                                            
+                                        <button id="btnSiguienteMatEnsayo<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteMatEnsayo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
                                 </td>
+
                             <% } else if (q==30) { %>
                                 <!-- MasMenos10 data Activo-->
                                 <td class="text-center align-middle">
-                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
-                                            proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length > 0) {
+                                    <% if (largoArraySim4Primera > 0) {
                                         
-                                                for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length > i; i++) {
-                                                    var pathToMongoDBOtInfoSim4Primera = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[i]
-                                                    
-                                                    if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera) {
-                                                        
-                                                        let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length)
-                                                        var resMas10Menos = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[largoArray-1].masMenos10
-                                                        var resRevisionMas10Menos = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[largoArray-1].revisionMasMenos10
-                                                        
-                                                        if (i == 0) {
-                                                            arrResMas10Menos.push(pathToMongoDBOtInfoSim4Primera.masMenos10)
-                                                            arrResRevisionMas10Menos.push(pathToMongoDBOtInfoSim4Primera.revisionMasMenos10)
-                                                        }
-                                                        else if (i >= 1 && pathToMongoDBOtInfoSim4Primera.revisionMasMenos10 != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[i-1].revisionMasMenos10) {
-                                                            arrResMas10Menos.push(pathToMongoDBOtInfoSim4Primera.masMenos10)
-                                                            arrResRevisionMas10Menos.push(pathToMongoDBOtInfoSim4Primera.revisionMasMenos10)
-                                                        }
-                                                            arrResCreadorMas10Menos.push(pathToMongoDBOtInfoSim4Primera.creator[0].username)
-                                                            arrResModificadorMas10Menos.push(pathToMongoDBOtInfoSim4Primera.modificator[0].username)
-                                                            arrResFechaMas10Menos.push(pathToMongoDBOtInfoSim4Primera.timestamp)
-                                                            arrResFechaModMas10Menos.push(pathToMongoDBOtInfoSim4Primera.modifiedOn)
-                                                            valueArrayResMas10Menos = parseInt(arrResMas10Menos.length-1)
-                                                                                                    
-                                                    } else {
-                                                        var resMas10Menos = 'S/D'
-                                                        var resRevisionMas10Menos = 0
-                                                    }
-                                                }
+                                        for (let i = 0; largoArraySim4Primera > i; i++) {
+                                            if (pathMongoOtSim4Primera[i]) {
+                                                let largoArray = parseInt(largoArraySim4Primera)
+                                                resMas10Menos = pathMongoOtSim4Primera[largoArray-1].masMenos10 || 'sinDato'
+                                                resRevisionMas10Menos = parseInt(pathMongoOtSim4Primera[largoArray-1].revisionMasMenos10) || 0
                                                 
-                                                if (arrResMas10Menos.length == 1 ) {
-                                                    var siguienteDisabled = "disabled"
-                                                    var anteriorDisabled = "disabled"
-                                                } else if (arrResMas10Menos.length == arrResRevisionMas10Menos.length) {
-                                                    var anteriorDisabled = ""
-                                                    var siguienteDisabled = "disabled"
-                                                } else {
-                                                    var anteriorDisabled = ""
-                                                    var siguienteDisabled = "disabled"
-                                                }
+                                                arrResMas10Menos.push(pathMongoOtSim4Primera[i].masMenos10)
+                                                arrResRevisionMas10Menos.push(pathMongoOtSim4Primera[i].revisionMasMenos10)
                                                 
-                                            } else {
-                                                var anteriorDisabled = "disabled"
-                                                var siguienteDisabled = "disabled"
-                                                var resMas10Menos = ""
-                                                var resRevisionMas10Menos = 0
-                                                arrResMas10Menos.push(resMas10Menos)
-                                                arrResRevisionMas10Menos.push(resRevisionMas10Menos)
-                                                valueArrayResMas10Menos = 0
-                                                
-                                        } %>
+                                                arrResCreadorMas10Menos.push(pathMongoOtSim4Primera[i].creator[0].username)
+                                                arrResModificadorMas10Menos.push(pathMongoOtSim4Primera[i].modificator[0].username)
+                                                arrResFechaMas10Menos.push(pathMongoOtSim4Primera[i].timestamp)
+                                                arrResFechaModMas10Menos.push(pathMongoOtSim4Primera[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResMas10Menos = parseInt(arrResMas10Menos.length-1)
+                                        
+                                        if (arrResMas10Menos.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResMas10Menos.length == arrResRevisionMas10Menos.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResMas10Menos.push(resMas10Menos)
+                                        arrResRevisionMas10Menos.push(resRevisionMas10Menos)
+                                    } %>
                                     
-                                        <div id="btnAnteriorSiguiente4PrimeraSim<%=k%>_<%=n%>_<%=q%>">
-                                            <button id="btnAnterior4PrimeraSim<%=k%>_<%=n%>_<%=q%>"
-                                                name="btnAnterior4PrimeraSim"
-                                                value="<%=k%>_<%=n%>_<%=q%>"
-                                                class="btn btn-light btn-sm me-2"
-                                                title="Ver anterior"
-                                                type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= anteriorDisabled %>
-                                                >
-                                                    <i class="fa-solid fa-arrow-left"></i>
-                                            </button>
-                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMas10Menos %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMas10Menos %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMas10Menos %>">
-                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorMas10Menos %>">
-                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorMas10Menos %>">
-                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMas10Menos %>">
-                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModMas10Menos %>">
-            
-                                            <% switch (resMas10Menos) { 
-                                                case "ok": { %>
-                                                        <span id="resMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
-                                                            OK
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionMas10Menos<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionMas10Menos"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueRevision=""
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionMas10Menos %>
-                                                        </span>
-                                                <% break; }        
-                                                case "noOk": { %>
-                                                        <span id="resMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
-                                                            No OK
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionMas10Menos<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionMas10Menos"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionMas10Menos %>
-                                                        </span>
-                                                <% break; }        
-                                                case "pendiente": { %>
-                                                        <span id="resMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
-                                                            Pendiente
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionMas10Menos<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionMas10Menos"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionMas10Menos %>
-                                                        </span>
-                                                <% break; }
-                                                case "noAplica": { %>
-                                                        <span id="resMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
-                                                            N/A
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionMas10Menos<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionMas10Menos"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionMas10Menos %>
-                                                        </span>
-                                                <% break; }
-                                                default: { %>
-                                                        <span id="resMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
-                                                            S/D
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionMas10Menos<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionMas10Menos"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionMas10Menos %>
-                                                        </span>
-                                                <% break; }
-                                            } %>
-            
-                                            <button id="btnSiguiente4PrimeraSim<%=k%>_<%=n%>_<%=q%>"
-                                                name="btnSiguiente4PrimeraSim"
-                                                value="<%=k%>_<%=n%>_<%=q%>"
-                                                class="btn btn-light btn-sm ms-2"
-                                                title="Ver siguiente"
-                                                type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= siguienteDisabled %>
-                                                >
-                                                    <i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
+                                    <div id="btnAnteriorSiguienteMas10Menos<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorMas10Menos<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorMas10Menos" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMas10Menos %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMas10Menos %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMas10Menos %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorMas10Menos %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorMas10Menos %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMas10Menos %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModMas10Menos %>">
+        
+                                        <% const config = sim4PrimeraConfig[resMas10Menos] || sim4PrimeraConfig.default; %>
+                                        <span id="resMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionMas10Menos<%=k%>_<%=n%>_<%=q%>" name="resRevisionMas10Menos" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionMas10Menos %>
+                                        </span>
+                                        
+                                        <button id="btnSiguienteMas10Menos<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteMas10Menos" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
                                 </td>
 
                             <% } else if (q==31) { %>
                                 <!-- MpAlternativo Sim1 data Activo-->
                                 <td class="text-center align-middle">
-                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
-                                            proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length > 0) {
+                                    <% if (largoArraySim4Primera > 0) {
                                         
-                                                for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length > i; i++) {
-                                                    var pathToMongoDBOtInfoSim4Primera = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[i]
-                                                    
-                                                    if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera) {
-                                                        
-                                                        let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length)
-                                                        var resMpAlternativo = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[largoArray-1].mpAlternativo
-                                                        var resRevisionMpAlternativo = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[largoArray-1].revisionMpAlternativo
-                                                        
-                                                        if (i == 0) {
-                                                            arrResMpAlternativo.push(pathToMongoDBOtInfoSim4Primera.mpAlternativo)
-                                                            arrResRevisionMpAlternativo.push(pathToMongoDBOtInfoSim4Primera.revisionMpAlternativo)
-                                                        }
-                                                        else if (i >= 1 && pathToMongoDBOtInfoSim4Primera.revisionMpAlternativo != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[i-1].revisionMpAlternativo) {
-                                                            arrResMpAlternativo.push(pathToMongoDBOtInfoSim4Primera.mpAlternativo)
-                                                            arrResRevisionMpAlternativo.push(pathToMongoDBOtInfoSim4Primera.revisionMpAlternativo)
-                                                        }
-                                                            arrResCreadorMpAlternativo.push(pathToMongoDBOtInfoSim4Primera.creator[0].username)
-                                                            arrResModificadorMpAlternativo.push(pathToMongoDBOtInfoSim4Primera.modificator[0].username)
-                                                            arrResFechaMpAlternativo.push(pathToMongoDBOtInfoSim4Primera.timestamp)
-                                                            arrResFechaModMpAlternativo.push(pathToMongoDBOtInfoSim4Primera.modifiedOn)
-                                                            valueArrayResMpAlternativo = parseInt(arrResMpAlternativo.length-1)
-                                                                                                    
-                                                    } else {
-                                                        var resMpAlternativo = 'S/D'
-                                                        var resRevisionMpAlternativo = 0
-                                                    }
-                                                }
+                                        for (let i = 0; largoArraySim4Primera > i; i++) {
+                                            if (pathMongoOtSim4Primera[i]) {
+                                                let largoArray = parseInt(largoArraySim4Primera)
+                                                resMpAlternativo = pathMongoOtSim4Primera[largoArray-1].mpAlternativo || 'sinDato'
+                                                resRevisionMpAlternativo = parseInt(pathMongoOtSim4Primera[largoArray-1].revisionMpAlternativo) || 0
                                                 
-                                                if (arrResMpAlternativo.length == 1 ) {
-                                                    var siguienteDisabled = "disabled"
-                                                    var anteriorDisabled = "disabled"
-                                                } else if (arrResMpAlternativo.length == arrResRevisionMpAlternativo.length) {
-                                                    var anteriorDisabled = ""
-                                                    var siguienteDisabled = "disabled"
-                                                } else {
-                                                    var anteriorDisabled = ""
-                                                    var siguienteDisabled = "disabled"
-                                                }
-                                                
-                                            } else {
-                                                var anteriorDisabled = "disabled"
-                                                var siguienteDisabled = "disabled"
-                                                var resMpAlternativo = "S/D"
-                                                var resRevisionMpAlternativo = 0
-                                                arrResMpAlternativo.push(resMpAlternativo)
-                                                arrResRevisionMpAlternativo.push(resRevisionMpAlternativo)
-                                                valueArrayResMpAlternativo = 0
-                                        } %>
+                                                arrResMpAlternativo.push(pathMongoOtSim4Primera[i].mpAlternativo)
+                                                arrResRevisionMpAlternativo.push(pathMongoOtSim4Primera[i].revisionMpAlternativo)
+                                            
+                                                arrResCreadorMpAlternativo.push(pathMongoOtSim4Primera[i].creator[0].username)
+                                                arrResModificadorMpAlternativo.push(pathMongoOtSim4Primera[i].modificator[0].username)
+                                                arrResFechaMpAlternativo.push(pathMongoOtSim4Primera[i].timestamp)
+                                                arrResFechaModMpAlternativo.push(pathMongoOtSim4Primera[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResMpAlternativo = parseInt(arrResMpAlternativo.length-1)
+                                        
+                                        if (arrResMpAlternativo.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResMpAlternativo.length == arrResRevisionMpAlternativo.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResMpAlternativo.push(resMpAlternativo)
+                                        arrResRevisionMpAlternativo.push(resRevisionMpAlternativo)
+                                    } %>
                                     
-                                        <div id="btnAnteriorSiguiente4PrimeraSim<%=k%>_<%=n%>_<%=q%>">
-                                            <button id="btnAnterior4PrimeraSim<%=k%>_<%=n%>_<%=q%>"
-                                                name="btnAnterior4PrimeraSim"
-                                                value="<%=k%>_<%=n%>_<%=q%>"
-                                                class="btn btn-light btn-sm me-2"
-                                                title="Ver anterior"
-                                                type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= anteriorDisabled %>
-                                                >
-                                                    <i class="fa-solid fa-arrow-left"></i>
-                                            </button>
-                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMpAlternativo %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMpAlternativo %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMpAlternativo %>">
-                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorMpAlternativo %>">
-                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorMpAlternativo %>">
-                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMpAlternativo %>">
-                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModMpAlternativo %>">
-            
-                                            <% switch (resMpAlternativo) { 
-                                                case "ok": { %>
-                                                        <span id="resMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
-                                                            OK
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionMpAlternativo<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionMpAlternativo"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueRevision=""
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionMpAlternativo %>
-                                                        </span>
-                                                <% break; }        
-                                                case "noOk": { %>
-                                                        <span id="resMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
-                                                            No OK
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionMpAlternativo<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionMpAlternativo"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionMpAlternativo %>
-                                                        </span>
-                                                <% break; }        
-                                                case "pendiente": { %>
-                                                        <span id="resMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
-                                                            Pendiente
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionMpAlternativo<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionMpAlternativo"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionMpAlternativo %>
-                                                        </span>
-                                                <% break; }
-                                                case "noAplica": { %>
-                                                        <span id="resMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
-                                                            N/A
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionMpAlternativo<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionMpAlternativo"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionMpAlternativo %>
-                                                        </span>
-                                                <% break; }
-                                                default: { %>
-                                                        <span id="resMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
-                                                            S/D
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionMpAlternativo<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionMpAlternativo"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionMpAlternativo %>
-                                                        </span>
-                                                <% break; }
-                                            } %>
-            
-                                            <button id="btnSiguiente4PrimeraSim<%=k%>_<%=n%>_<%=q%>"
-                                                name="btnSiguiente4PrimeraSim"
-                                                value="<%=k%>_<%=n%>_<%=q%>"
-                                                class="btn btn-light btn-sm ms-2"
-                                                title="Ver siguiente"
-                                                type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= siguienteDisabled %>
-                                                >
-                                                    <i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
+                                    <div id="btnAnteriorSiguienteMpAlternativo<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorMpAlternativo<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorMpAlternativo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMpAlternativo %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMpAlternativo %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMpAlternativo %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorMpAlternativo %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorMpAlternativo %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMpAlternativo %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModMpAlternativo %>">
+        
+                                        <% const config = sim4PrimeraConfig[resMpAlternativo] || sim4PrimeraConfig.default; %>
+                                        <span id="resMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionMpAlternativo<%=k%>_<%=n%>_<%=q%>" name="resRevisionMpAlternativo" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionMpAlternativo %>
+                                        </span>
+                                                    
+                                        <button id="btnSiguienteMpAlternativo<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteMpAlternativo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
                                 </td>
 
                             <% } else { %>
                                 <!-- ReunionSim data Activo-->
                                 <td class="text-center align-middle">
-                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
-                                            proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length > 0) {
-                                                 
-                                                for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length > i; i++) {
-                                                    var pathToMongoDBOtInfoSim4Primera = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[i]
-                                                    
-                                                    if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera) {
-                                                        
-                                                        let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length)
-                                                        var resReunionSim = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[largoArray-1].reunionSim
-                                                        var resRevisionReunionSim = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[largoArray-1].revisionReunionSim
-                                                        
-                                                        if (i == 0) {
-                                                            arrResReunionSim.push(pathToMongoDBOtInfoSim4Primera.reunionSim)
-                                                            arrResRevisionReunionSim.push(pathToMongoDBOtInfoSim4Primera.revisionReunionSim)
-                                                        }
-                                                        else if (i >= 1 && pathToMongoDBOtInfoSim4Primera.revisionReunionSim != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[i-1].revisionReunionSim) {
-                                                            arrResReunionSim.push(pathToMongoDBOtInfoSim4Primera.reunionSim)
-                                                            arrResRevisionReunionSim.push(pathToMongoDBOtInfoSim4Primera.revisionReunionSim)
-                                                        }                                                        
-                                                        arrResCreadorReunionSim.push(pathToMongoDBOtInfoSim4Primera.creator[0].username)
-                                                        arrResModificadorReunionSim.push(pathToMongoDBOtInfoSim4Primera.modificator[0].username)
-                                                        arrResFechaReunionSim.push(pathToMongoDBOtInfoSim4Primera.timestamp)
-                                                        arrResFechaModReunionSim.push(pathToMongoDBOtInfoSim4Primera.modifiedOn)
-                                                        valueArrayResReunionSim = parseInt(arrResReunionSim.length-1)
-                                                                                         
-                                                    } else {
-                                                        var resReunionSim = 'S/D'
-                                                        var resRevisionReunionSim = 0
-                                                    }
-                                                }
+                                    <% if (largoArraySim4Primera > 0) {
                                                 
-                                                if (arrResReunionSim.length == 1 ) {
-                                                    var siguienteDisabled = "disabled"
-                                                    var anteriorDisabled = "disabled"
-                                                } else if (arrResReunionSim.length == arrResRevisionReunionSim.length) {
-                                                    var anteriorDisabled = ""
-                                                    var siguienteDisabled = "disabled"
-                                                } else {
-                                                    var anteriorDisabled = ""
-                                                    var siguienteDisabled = "disabled"
-                                                }
+                                        for (let i = 0; largoArraySim4Primera > i; i++) {
+                                            if (pathMongoOtSim4Primera[i]) {
+                                                let largoArray = parseInt(largoArraySim4Primera)
+                                                resReunionSim = pathMongoOtSim4Primera[largoArray-1].reunionSim
+                                                resRevisionReunionSim = pathMongoOtSim4Primera[largoArray-1].revisionReunionSim
                                                 
-                                            } else {
-                                                var anteriorDisabled = "disabled"
-                                                var siguienteDisabled = "disabled"
-                                                var resReunionSim = "S/D"
-                                                var resRevisionReunionSim = 0
-                                                arrResReunionSim.push(resReunionSim)
-                                                arrResRevisionReunionSim.push(resRevisionReunionSim)
-                                                valueArrayResReunionSim = 0
-                                        } %>
+                                                arrResReunionSim.push(pathMongoOtSim4Primera[i].reunionSim)
+                                                arrResRevisionReunionSim.push(pathMongoOtSim4Primera[i].revisionReunionSim)
+                                                
+                                                arrResCreadorReunionSim.push(pathMongoOtSim4Primera[i].creator[0].username)
+                                                arrResModificadorReunionSim.push(pathMongoOtSim4Primera[i].modificator[0].username)
+                                                arrResFechaReunionSim.push(pathMongoOtSim4Primera[i].timestamp)
+                                                arrResFechaModReunionSim.push(pathMongoOtSim4Primera[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResReunionSim = parseInt(arrResReunionSim.length-1)
+                                        
+                                        if (arrResReunionSim.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResReunionSim.length == arrResRevisionReunionSim.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResReunionSim.push(resReunionSim)
+                                        arrResRevisionReunionSim.push(resRevisionReunionSim)
+                                    } %>
                                     
-                                        <div id="btnAnteriorSiguiente4PrimeraSim<%=k%>_<%=n%>_<%=q%>">
-                                            <button id="btnAnterior4PrimeraSim<%=k%>_<%=n%>_<%=q%>"
-                                                name="btnAnterior4PrimeraSim"
-                                                value="<%=k%>_<%=n%>_<%=q%>"
-                                                class="btn btn-light btn-sm me-2"
-                                                title="Ver anterior"
-                                                type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= anteriorDisabled %>
-                                                >
-                                                    <i class="fa-solid fa-arrow-left"></i>
-                                            </button>
-                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResReunionSim %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResReunionSim %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionReunionSim %>">
-                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorReunionSim %>">
-                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorReunionSim %>">
-                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaReunionSim %>">
-                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModReunionSim %>">
-            
-                                            <% switch (resReunionSim) { 
-                                                case "ok": { %>
-                                                        <span id="resReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
-                                                            OK
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionReunionSim<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionReunionSim"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueRevision=""
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionReunionSim %>
-                                                        </span>
-                                                <% break; }        
-                                                case "noOk": { %>
-                                                        <span id="resReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
-                                                            No OK
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionReunionSim<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionReunionSim"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionReunionSim %>
-                                                        </span>
-                                                <% break; }        
-                                                case "pendiente": { %>
-                                                        <span id="resReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
-                                                            Pendiente
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionReunionSim<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionReunionSim"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionReunionSim %>
-                                                        </span>
-                                                <% break; }
-                                                case "noAplica": { %>
-                                                        <span id="resReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-dark my-2">
-                                                            N/A
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionReunionSim<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionReunionSim"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionReunionSim %>
-                                                        </span>
-                                                <% break; }
-                                                default: { %>
-                                                        <span id="resReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-white my-2">
-                                                            S/D
-                                                        </span>
-                                                        |
-                                                        <span id="resRevisionReunionSim<%=k%>_<%=n%>_<%=q%>"
-                                                            name="resRevisionReunionSim"
-                                                            class="badge text-dark my-2"
-                                                            style="cursor: help;"
-                                                            valueCreador=""
-                                                            valueFecha=""
-                                                            valueModificador=""
-                                                            valueFechaMod="">
-                                                            <%= resRevisionReunionSim %>
-                                                        </span>
-                                                <% break; }
-                                            } %>
-            
-                                            <button id="btnSiguiente4PrimeraSim<%=k%>_<%=n%>_<%=q%>"
-                                                name="btnSiguiente4PrimeraSim"
-                                                value="<%=k%>_<%=n%>_<%=q%>"
-                                                class="btn btn-light btn-sm ms-2"
-                                                title="Ver siguiente"
-                                                type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= siguienteDisabled %>
-                                                >
-                                                    <i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
+                                    <div id="btnAnteriorSiguienteReunionSim<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorReunionSim<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorReunionSim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResReunionSim %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResReunionSim %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionReunionSim %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorReunionSim %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorReunionSim %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaReunionSim %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModReunionSim %>">
+        
+                                        <% const config = sim4PrimeraConfig[resMpAlternativo] || sim4PrimeraConfig.default; %>
+                                        <span id="resReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionReunionSim<%=k%>_<%=n%>_<%=q%>" name="resRevisionReunionSim" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionReunionSim %>
+                                        </span>
+                                        
+                                        <button id="btnSiguienteReunionSim<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteReunionSim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             <% }
                         } %>
                         
                     </tr>
+                    
                 <% } else { %>
                     <tr class="pe-none" name="rowSelected<%=k%>_<%=n%>" style="height: 7vh; background-color: #dedede;">
                         <% for (let q = 29; totalColDataSim4Primera > q; q++) {
                             if (q==29) { %>
                                 <!-- Mat Ensayo data Inactivo -->
                                 <td class="text-center align-middle">
-                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
-                                        proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length > 0) {
+                                    <% if (largoArraySim4Primera > 0) {
                                     
-                                            for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length > i; i++) {
-                                                if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera) {
-                                                    let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length)
-                                                    var resMatEnsayo = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[largoArray-1].matEnsayo
-                                                    var resRevisionMatEnsayo = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[largoArray-1].revisionMatEnsayo
-                                                    
-                                                    if (i == 0) {
-                                                        arrResMatEnsayo.push(pathToMongoDBOtInfoSim4Primera.matEnsayo)
-                                                        arrResRevisionMatEnsayo.push(pathToMongoDBOtInfoSim4Primera.revisionMatEnsayo)
-                                                    }
-                                                    else if (i >= 1 && pathToMongoDBOtInfoSim4Primera.revisionMatEnsayo != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[i-1].revisionMatEnsayo) {
-                                                        arrResMatEnsayo.push(pathToMongoDBOtInfoSim4Primera.matEnsayo)
-                                                        arrResRevisionMatEnsayo.push(pathToMongoDBOtInfoSim4Primera.revisionMatEnsayo)
-                                                    }
-                                                    valueArrayRes1Sim = parseInt(arrResMatEnsayo.length-1)
-                                                                                                
-                                                } else {
-                                                    var resMatEnsayo = 'S/D'
-                                                    var resRevisionMatEnsayo = 0
-                                                }
+                                        for (let i = 0; largoArraySim4Primera > i; i++) {
+                                            if (pathMongoOtSim4Primera[i]) {
+                                                let largoArray = parseInt(largoArraySim4Primera)
+                                                resMatEnsayo = pathMongoOtSim4Primera[largoArray-1].matEnsayo || 'sinDato'
+                                                resRevisionMatEnsayo = parseInt(pathMongoOtSim4Primera[largoArray-1].revisionMatEnsayo) || 0
+                                                
+                                                arrResMatEnsayo.push(pathMongoOtSim4Primera[i].matEnsayo)
+                                                arrResRevisionMatEnsayo.push(pathMongoOtSim4Primera[i].revisionMatEnsayo)
                                             }
-                                            var resMatEnsayo = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[0].matEnsayo
+                                        }
+                                        valueArrayRes1Sim = parseInt(arrResMatEnsayo.length-1)
+                                        resMatEnsayo = pathMongoOtSim4Primera[0].matEnsayo
+
                                     } else {
-                                        var resMatEnsayo = "S/D"
-                                        var resRevisionMatEnsayo = 0
                                         arrResMatEnsayo.push(resMatEnsayo)
                                         arrResRevisionMatEnsayo.push(resRevisionMatEnsayo)
                                     } %>
-                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMatEnsayo %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes1Sim %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMatEnsayo %>">
-                                    
-                                    <% switch (resMatEnsayo) { 
-                                        case "ok": { %>
-                                                <span id="resMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2" >
-                                                    OK
-                                                </span>
-                                                |
-                                                <span id="resRevisionMatEnsayo<%=k%>_<%=n%>_<%=q%>"class="badge text-dark my-2" >
-                                                    <%= resRevisionMatEnsayo %>
-                                                </span>
-                                        <% break; }        
-                                        case "noOk": { %>
-                                                <span id="resMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
-                                                    No OK
-                                                </span>
-                                                |
-                                                <span id="resRevisionMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionMatEnsayo %>
-                                                </span>
-                                        <% break; }        
-                                        case "pendiente": { %>
-                                                <span id="resMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
-                                                    Pendiente
-                                                </span>
-                                                |
-                                                <span id="resRevisionMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionMatEnsayo %>
-                                                </span>
-                                        <% break; }
-                                        case "noAplica": { %>
-                                                <span id="resMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-white my-2">
-                                                    N/A
-                                                </span>
-                                                |
-                                                <span id="resRevisionMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionMatEnsayo %>
-                                                </span>
-                                        <% break; }
-                                        default: { %>
-                                                <span id="resMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-dark my-2">
-                                                    S/D
-                                                </span>
-                                                |
-                                                <span id="resRevisionMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionMatEnsayo %>
-                                                </span>
-                                        <% break; }
-                                    } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMatEnsayo %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes1Sim %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMatEnsayo %>">
+                                
+                                    <% const config = sim4PrimeraConfig[resMatEnsayo] || sim4PrimeraConfig.default; %>
+                                    <span id="resMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionMatEnsayo<%=k%>_<%=n%>_<%=q%>" name="resRevisionMatEnsayo" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionMatEnsayo %>
+                                    </span>
                                 </td>
 
                             <% } else if (q==30) { %>
                                 <!-- MasMenos10 data Inactivo -->
                                 <td class="text-center align-middle">
-                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
-                                        proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length > 0) {
+                                    <% if (largoArraySim4Primera > 0) {
                                     
-                                            for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length > i; i++) {
-                                                if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera) {
-                                                    let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length)
-                                                    var resMas10Menos = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[largoArray-1].masMenos10
-                                                    var resRevisionMas10Menos = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[largoArray-1].revisionMasMenos10
-                                                    
-                                                    if (i == 0) {
-                                                        arrResMas10Menos.push(pathToMongoDBOtInfoSim4Primera.masMenos10)
-                                                        arrResRevisionMas10Menos.push(pathToMongoDBOtInfoSim4Primera.revisionMasMenos10)
-                                                    }
-                                                    else if (i >= 1 && pathToMongoDBOtInfoSim4Primera.revisionMasMenos10 != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[i-1].revisionMasMenos10) {
-                                                        arrResMas10Menos.push(pathToMongoDBOtInfoSim4Primera.masMenos10)
-                                                        arrResRevisionMas10Menos.push(pathToMongoDBOtInfoSim4Primera.revisionMasMenos10)
-                                                    }
-                                                    valueArrayResMas10Menos = parseInt(arrResMas10Menos.length-1)
-                                                                                                
-                                                } else {
-                                                    var resMas10Menos = 'S/D'
-                                                    var resRevisionMas10Menos = 0
-                                                }
+                                        for (let i = 0; largoArraySim4Primera > i; i++) {
+                                            if (pathMongoOtSim4Primera[i]) {
+                                                let largoArray = parseInt(largoArraySim4Primera)
+                                                resMas10Menos = pathMongoOtSim4Primera[largoArray-1].masMenos10 || 'sinDato'
+                                                resRevisionMas10Menos = parseInt(pathMongoOtSim4Primera[largoArray-1].revisionMasMenos10) || 0
+                                                
+                                                arrResMas10Menos.push(pathMongoOtSim4Primera[i].masMenos10)
+                                                arrResRevisionMas10Menos.push(pathMongoOtSim4Primera[i].revisionMasMenos10)
                                             }
-
-                                            var resMas10Menos = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[0].masMenos10
-                                   
+                                        }
+                                        valueArrayResMas10Menos = parseInt(arrResMas10Menos.length-1)
+                                            resMas10Menos = pathMongoOtSim4Primera[0].masMenos10
+                                    
                                     } else {
-                                        var resMas10Menos = "S/D"
-                                        var resRevisionMas10Menos = 0
                                         arrResMas10Menos.push(resMas10Menos)
                                         arrResRevisionMas10Menos.push(resRevisionMas10Menos)
                                     } %>
@@ -880,88 +422,35 @@
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMas10Menos %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMas10Menos %>">
 
-                                    <% switch (resMas10Menos) { 
-                                        case "ok": { %>
-                                            <span id="resMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">
-                                                OK
-                                            </span>
-                                            |
-                                            <span id="resRevisionMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                <%= resRevisionMas10Menos %>
-                                            </span>
-                                        <% break; }        
-                                        case "noOk": { %>
-                                                <span id="resMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
-                                                    No OK
-                                                </span>
-                                                |
-                                                <span id="resRevisionMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionMas10Menos %>
-                                                </span>
-                                        <% break; }        
-                                        case "pendiente": { %>
-                                                <span id="resMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
-                                                    Pendiente
-                                                </span>
-                                                |
-                                                <span id="resRevisionMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionMas10Menos %>
-                                                </span>
-                                        <% break; }
-                                        case "noAplica": { %>
-                                                <span id="resMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-withe my-2">
-                                                    N/A
-                                                </span>
-                                                |
-                                                <span id="resRevisionMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionMas10Menos %>
-                                                </span>
-                                        <% break; }
-                                        default: { %>
-                                                <span id="resMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-dark my-2">
-                                                    S/D
-                                                </span>
-                                                |
-                                                <span id="resRevisionMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionMas10Menos %>
-                                                </span>
-                                        <% break; }
-                                    } %>
+                                    <% const config = sim4PrimeraConfig[resMas10Menos] || sim4PrimeraConfig.default; %>
+                                    <span id="resMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionMas10Menos<%=k%>_<%=n%>_<%=q%>" name="resRevisionMas10Menos" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionMas10Menos %>
+                                    </span>
                                 </td>
 
                             <% } else if (q==31) { %>
                                 <!-- Mp Alternativo data Inactivo -->
                                 <td class="text-center align-middle">
-                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
-                                        proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length > 0) {
+                                    <% if (largoArraySim4Primera > 0) {
                                     
-                                            for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length > i; i++) {
-                                                if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera) {
-                                                    let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length)
-                                                    var resMpAlternativo = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[largoArray-1].mpAlternativo
-                                                    var resRevisionMpAlternativo = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[largoArray-1].revisionMpAlternativo
-                                                    
-                                                    if (i == 0) {
-                                                        arrResMpAlternativo.push(pathToMongoDBOtInfoSim4Primera.mpAlternativo)
-                                                        arrResRevisionMpAlternativo.push(pathToMongoDBOtInfoSim4Primera.revisionMpAlternativo)
-                                                    }
-                                                    else if (i >= 1 && pathToMongoDBOtInfoSim4Primera.revisionMpAlternativo != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[i-1].revisionMpAlternativo) {
-                                                        arrResMpAlternativo.push(pathToMongoDBOtInfoSim4Primera.mpAlternativo)
-                                                        arrResRevisionMpAlternativo.push(pathToMongoDBOtInfoSim4Primera.revisionMpAlternativo)
-                                                    }
-                                                    valueArrayResMpAlternativo = parseInt(arrResMpAlternativo.length-1)
-                                                                                                
-                                                } else {
-                                                    var resMpAlternativo = 'S/D'
-                                                    var resRevisionMpAlternativo = 0
-                                                }
+                                        for (let i = 0; largoArraySim4Primera > i; i++) {
+                                            if (pathMongoOtSim4Primera) {
+                                                let largoArray = parseInt(largoArraySim4Primera)
+                                                resMpAlternativo = pathMongoOtSim4Primera[largoArray-1].mpAlternativo || 'sinDato'
+                                                resRevisionMpAlternativo = parseInt(pathMongoOtSim4Primera[largoArray-1].revisionMpAlternativo) || 0
+                                                
+                                                arrResMpAlternativo.push(pathMongoOtSim4Primera[i].mpAlternativo)
+                                                arrResRevisionMpAlternativo.push(pathMongoOtSim4Primera[i].revisionMpAlternativo)
                                             }
-
-                                            var resMpAlternativo = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[0].mpAlternativo
+                                        }
+                                        valueArrayResMpAlternativo = parseInt(arrResMpAlternativo.length-1)
+                                        resMpAlternativo = pathMongoOtSim4Primera[0].mpAlternativo
                                     
                                     } else {
-                                        var resMpAlternativo = "S/D"
-                                        var resRevisionMpAlternativo = 0
                                         arrResMpAlternativo.push(resMpAlternativo)
                                         arrResRevisionMpAlternativo.push(resRevisionMpAlternativo)
                                     } %>
@@ -970,88 +459,36 @@
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMpAlternativo %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMpAlternativo %>">
 
-                                    <% switch (resMpAlternativo) { 
-                                        case "ok": { %>
-                                            <span id="resMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">
-                                                OK
-                                            </span>
-                                            |
-                                            <span id="resRevisionMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                <%= resRevisionMpAlternativo %>
-                                            </span>
-                                        <% break; }        
-                                        case "noOk": { %>
-                                                <span id="resMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
-                                                    No OK
-                                                </span>
-                                                |
-                                                <span id="resRevisionMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionMpAlternativo %>
-                                                </span>
-                                        <% break; }        
-                                        case "pendiente": { %>
-                                                <span id="resMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
-                                                    Pendiente
-                                                </span>
-                                                |
-                                                <span id="resRevisionMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionMpAlternativo %>
-                                                </span>
-                                        <% break; }
-                                        case "noAplica": { %>
-                                                <span id="resMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-withe my-2">
-                                                    N/A
-                                                </span>
-                                                |
-                                                <span id="resRevisionMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionMpAlternativo %>
-                                                </span>
-                                        <% break; }
-                                        default: { %>
-                                                <span id="resMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-dark my-2">
-                                                    S/D
-                                                </span>
-                                                |
-                                                <span id="resRevisionMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionMpAlternativo %>
-                                                </span>
-                                        <% break; }
-                                    } %>
+                                    <% const config = sim4PrimeraConfig[resMpAlternativo] || sim4PrimeraConfig.default; %>
+                                    <span id="resMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionMpAlternativo<%=k%>_<%=n%>_<%=q%>" name="resRevisionMpAlternativo" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionMpAlternativo %>
+                                    </span>
                                 </td>
 
                             <% } else { %>
                                 <!-- ReunionSim data Inactivo -->
                                 <td class="text-center align-middle">
-                                    <% if (proyecto[m].project[j].oci[k].otProject[n].otInformation.length > 0 &&
-                                        proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length > 0) {
+                                    <% if (largoArraySim4Primera > 0) {
                                     
-                                            for (let i = 0; proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length > i; i++) {
-                                                if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera) {
-                                                    let largoArray = parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera.length)
-                                                    var resReunionSim = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[largoArray-1].reunionSim
-                                                    var resRevisionReunionSim = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[largoArray-1].revisionReunionSim
-                                                    
-                                                    if (i == 0) {
-                                                        arrResReunionSim.push(pathToMongoDBOtInfoSim4Primera.reunionSim)
-                                                        arrResRevisionReunionSim.push(pathToMongoDBOtInfoSim4Primera.revisionReunionSim)
-                                                    }
-                                                    else if (i >= 1 && pathToMongoDBOtInfoSim4Primera.revisionReunionSim != proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[i-1].revisionReunionSim) {
-                                                        arrResReunionSim.push(pathToMongoDBOtInfoSim4Primera.reunionSim)
-                                                        arrResRevisionReunionSim.push(pathToMongoDBOtInfoSim4Primera.revisionReunionSim)
-                                                    }
-                                                    valueArrayResReunionSim = parseInt(arrResReunionSim.length-1)
-                                                                                                
-                                                } else {
-                                                    var resReunionSim = 'S/D'
-                                                    var resRevisionReunionSim = 0
-                                                }
+                                        for (let i = 0; largoArraySim4Primera > i; i++) {
+                                            if (pathMongoOtSim4Primera[i]) {
+                                                let largoArray = parseInt(largoArraySim4Primera)
+                                                resReunionSim = pathMongoOtSim4Primera[largoArray-1].reunionSim
+                                                resRevisionReunionSim = pathMongoOtSim4Primera[largoArray-1].revisionReunionSim
+                                                
+                                                arrResReunionSim.push(pathMongoOtSim4Primera[i].reunionSim)
+                                                arrResRevisionReunionSim.push(pathMongoOtSim4Primera[i].revisionReunionSim)
+                                                
                                             }
-
-                                            var resReunionSim = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoSim4Primera[0].reunionSim
+                                        }
+                                        valueArrayResReunionSim = parseInt(arrResReunionSim.length-1)
+                                        resReunionSim = pathMongoOtSim4Primera[0].reunionSim
                                     
                                     } else {
-                                        var resReunionSim = "S/D"
-                                        var resRevisionReunionSim = 0
                                         arrResReunionSim.push(resReunionSim)
                                         arrResRevisionReunionSim.push(resRevisionReunionSim)
                                     } %>
@@ -1060,53 +497,14 @@
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResReunionSim %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionReunionSim %>">
 
-                                    <% switch (resReunionSim) { 
-                                        case "ok": { %>
-                                            <span id="resReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-success text-white my-2">
-                                                OK
-                                            </span>
-                                            |
-                                            <span id="resRevisionReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                <%= resRevisionReunionSim %>
-                                            </span>
-                                        <% break; }        
-                                        case "noOk": { %>
-                                                <span id="resReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-danger text-white my-2">
-                                                    No OK
-                                                </span>
-                                                |
-                                                <span id="resRevisionReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionReunionSim %>
-                                                </span>
-                                        <% break; }        
-                                        case "pendiente": { %>
-                                                <span id="resReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-warning text-dark my-2">
-                                                    Pendiente
-                                                </span>
-                                                |
-                                                <span id="resRevisionReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionReunionSim %>
-                                                </span>
-                                        <% break; }
-                                        case "noAplica": { %>
-                                                <span id="resReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-info text-withe my-2">
-                                                    N/A
-                                                </span>
-                                                |
-                                                <span id="resRevisionReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionReunionSim %>
-                                                </span>
-                                        <% break; }
-                                        default: { %>
-                                                <span id="resReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill bg-secondary text-dark my-2">
-                                                    S/D
-                                                </span>
-                                                |
-                                                <span id="resRevisionReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" >
-                                                    <%= resRevisionReunionSim %>
-                                                </span>
-                                        <% break; }
-                                    } %>
+                                    <% const config = sim4PrimeraConfig[resMpAlternativo] || sim4PrimeraConfig.default; %>
+                                    <span id="resReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionReunionSim<%=k%>_<%=n%>_<%=q%>" name="resRevisionReunionSim" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionReunionSim %>
+                                    </span>
                                 </td>
 
                             <% }
@@ -1114,6 +512,6 @@
                     </tr>
                 <% }
             }
-        } %>
+        }) %>
     </tbody>
 </table>

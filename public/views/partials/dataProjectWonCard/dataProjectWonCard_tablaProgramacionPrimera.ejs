@@ -32,9 +32,9 @@
     <tbody class="table-group-divider">
         
         <% let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-            resDatoRt = 'S/D', resEstadoRt = 'S/D', resRevisionRt = 0,
-            resDatoPreparacionGeo = 'S/D', resEstadoPreparacionGeo = 'S/D', resRevisionPreparacionGeo = 0,
-            resDatoPrograma2d = 'S/D', resEstadoPrograma2d = 'S/D', resRevisionPrograma2d = 0;
+            resDatoRt = "S/D", resEstadoRt = 'sinDato', resRevisionRt = 0,
+            resDatoPreparacionGeo = "S/D", resEstadoPreparacionGeo = 'sinDato', resRevisionPreparacionGeo = 0,
+            resDatoPrograma2d = "S/D", resEstadoPrograma2d = 'sinDato', resRevisionPrograma2d = 0;
 
             const programacionPrimeraConfig = {
                 enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
@@ -77,7 +77,7 @@
                                                     let largoArray = parseInt(largoArrayProgramacion)
                                                     resDatoRt = pathToMongoOtProgramacion[largoArray-1].rt == 'sinDato' ? "S/D" : pathToMongoOtProgramacion[largoArray-1].rt
                                                     resEstadoRt = pathToMongoOtProgramacion[largoArray-1].estadoRt == 'sinDato' ? "S/D" : pathToMongoOtProgramacion[largoArray-1].estadoRt
-                                                    resRevisionRt = pathToMongoOtProgramacion[largoArray-1].revisionRt
+                                                    resRevisionRt = parseInt(pathToMongoOtProgramacion[largoArray-1].revisionRt) || 0
                                                     
                                                     pathToMongoOtProgramacion[i].rt == 'sinDato' ? arrResDatoRt.push("S/D") : arrResDatoRt.push(pathToMongoOtProgramacion[i].rt)
                                                     pathToMongoOtProgramacion[i].estadoRt == 'sinDato' ? arrResEstadoRt.push("S/D") : arrResEstadoRt.push(pathToMongoOtProgramacion[i].estadoRt)
@@ -87,11 +87,6 @@
                                                     arrResModificadorRt.push(pathToMongoOtProgramacion[i].modificator[0].username)
                                                     arrResFechaRt.push(pathToMongoOtProgramacion[i].timestamp)
                                                     arrResFechaModRt.push(pathToMongoOtProgramacion[i].modifiedOn)
-
-                                                } else {
-                                                    resDatoRt = 'S/D'
-                                                    resEstadoRt = 'S/D'
-                                                    resRevisionRt = 0
                                                 }
                                             }
                                             valueArrayResRt = parseInt(arrResDatoRt.length-1)
@@ -108,55 +103,49 @@
                                             }
                                             
                                         } else {
-                                            anteriorDisabled = "disabled"
-                                            siguienteDisabled = "disabled"
-                                            resDatoRt = 'S/D'
-                                            resEstadoRt = 'S/D'
-                                            resRevisionRt = 0
                                             arrResDatoRt.push(resDatoRt)
                                             arrResEstadoRt.push(resEstadoRt)
                                             arrResRevisionRt.push(resRevisionRt)
-                                            valueArrayResRt = 0
-
+                                            
                                             arrResCreadorRt.push(pathMongoOtDetalles[o].creator[0].username)
                                             arrResModificadorRt = ""
                                             arrResFechaRt.push(pathMongoOtDetalles[o].timestamp)
                                             arrResFechaModRt = ""
                                         } %>
                                         
-                                            <div id="btnAnteriorSiguienteRt<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                                <button id="btnAnteriorRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorRt" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= anteriorDisabled %>
-                                                    ><i class="fa-solid fa-arrow-left"></i>
-                                                </button>
-                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoRt %>">
-                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoRt %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResRt %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionRt %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorRt %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorRt %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaRt %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModRt %>">
+                                        <div id="btnAnteriorSiguienteRt<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorRt" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoRt %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoRt %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResRt %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionRt %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorRt %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorRt %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaRt %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModRt %>">
 
-                                                <span id="resDatoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                                    <%= resDatoRt %>
-                                                </span> |
-                                                
-                                                <% const config = programacionPrimeraConfig[resEstadoRt] || programacionPrimeraConfig.default; %>
-                                                <span id="resEstadoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoRt%>">
-                                                    <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                                </span> |
+                                            <span id="resDatoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                <%= resDatoRt %>
+                                            </span> |
+                                            
+                                            <% const config = programacionPrimeraConfig[resEstadoRt] || programacionPrimeraConfig.default; %>
+                                            <span id="resEstadoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoRt%>">
+                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                            </span> |
 
-                                                <span id="resRevisionRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionRt" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                    <%= resRevisionRt %>
-                                                </span>
+                                            <span id="resRevisionRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionRt" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                <%= resRevisionRt %>
+                                            </span>
 
-                                                <button id="btnSiguienteRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteRt" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
-                                                    ><i class="fa-solid fa-arrow-right"></i>
-                                                </button>
-                                            </div>
+                                            <button id="btnSiguienteRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteRt" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
                                     </td>
 
                                 <% } else if (q==5) { %>
@@ -169,7 +158,7 @@
                                                     let largoArray = parseInt(largoArrayProgramacion)
                                                     resDatoPreparacionGeo = pathToMongoOtProgramacion[largoArray-1].preparacionGeo == 'sinDato' ? "S/D" :  pathToMongoOtProgramacion[largoArray-1].preparacionGeo
                                                     resEstadoPreparacionGeo = pathToMongoOtProgramacion[largoArray-1].estadoPreparacionGeo == 'sinDato' ? "S/D" : pathToMongoOtProgramacion[largoArray-1].estadoPreparacionGeo
-                                                    resRevisionPreparacionGeo = pathToMongoOtProgramacion[largoArray-1].revisionPreparacionGeo
+                                                    resRevisionPreparacionGeo = parseInt(pathToMongoOtProgramacion[largoArray-1].revisionPreparacionGeo) || 0
                                                     
                                                     pathToMongoOtProgramacion[i].preparacionGeo == 'sinDato' ? arrResDatoPreparacionGeo.push("S/D") : arrResDatoPreparacionGeo.push(pathToMongoOtProgramacion[i].preparacionGeo)
                                                     pathToMongoOtProgramacion[i].estadoPreparacionGeo == 'sinDato' ? arrResEstadoPreparacionGeo.push("S/D") : arrResEstadoPreparacionGeo.push(pathToMongoOtProgramacion[i].estadoPreparacionGeo)
@@ -179,11 +168,6 @@
                                                     arrResModificadorPreparacionGeo.push(pathToMongoOtProgramacion[i].modificator[0].username)
                                                     arrResFechaPreparacionGeo.push(pathToMongoOtProgramacion[i].timestamp)
                                                     arrResFechaModPreparacionGeo.push(pathToMongoOtProgramacion[i].modifiedOn)
-                                                    
-                                                } else {
-                                                    resDatoPreparacionGeo = 'S/D'
-                                                    resEstadoPreparacionGeo = 'S/D'
-                                                    resRevisionPreparacionGeo = 0
                                                 }
                                             }
                                             valueArrayResPreparacionGeo = parseInt(arrResEstadoPreparacionGeo.length-1)
@@ -200,56 +184,50 @@
                                             }
                                             
                                         } else {
-                                            anteriorDisabled = "disabled"
-                                            siguienteDisabled = "disabled"
-                                            resDatoPreparacionGeo = "S/D"
-                                            resEstadoPreparacionGeo = "S/D"
-                                            resRevisionPreparacionGeo = 0
                                             arrResDatoPreparacionGeo.push(resDatoPreparacionGeo)
                                             arrResEstadoPreparacionGeo.push(resEstadoPreparacionGeo)
                                             arrResRevisionPreparacionGeo.push(resRevisionPreparacionGeo)
-                                            valueArrayResPreparacionGeo = 0
-
+                                            
                                             arrResCreadorPreparacionGeo.push(pathMongoOtDetalles[o].creator[0].username)
                                             arrResModificadorPreparacionGeo = ""
                                             arrResFechaPreparacionGeo.push(pathMongoOtDetalles[o].timestamp)
                                             arrResFechaModPreparacionGeo = ""
                                         } %>
                                         
-                                            <div id="btnAnteriorSiguientePreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                                <button id="btnAnteriorPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorPreparacionGeo" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= anteriorDisabled %>
-                                                    ><i class="fa-solid fa-arrow-left"></i>
-                                                </button>
-                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPreparacionGeo %>">
-                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPreparacionGeo %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPreparacionGeo %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPreparacionGeo %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorPreparacionGeo %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorPreparacionGeo %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaPreparacionGeo %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModPreparacionGeo %>">
+                                        <div id="btnAnteriorSiguientePreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorPreparacionGeo" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPreparacionGeo %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPreparacionGeo %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPreparacionGeo %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPreparacionGeo %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorPreparacionGeo %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorPreparacionGeo %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaPreparacionGeo %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModPreparacionGeo %>">
 
-                                                <span id="resDatoPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                                    <%= resDatoPreparacionGeo %>
-                                                </span> |
+                                            <span id="resDatoPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                <%= resDatoPreparacionGeo %>
+                                            </span> |
 
-                                                <% const config = programacionPrimeraConfig[resEstadoPreparacionGeo] || programacionPrimeraConfig.default; %>
-                                                <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPreparacionGeo%>">
-                                                    <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                                </span> |
+                                            <% const config = programacionPrimeraConfig[resEstadoPreparacionGeo] || programacionPrimeraConfig.default; %>
+                                            <span id="resEstadoPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPreparacionGeo%>">
+                                                <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                            </span> |
 
-                                                <span id="resRevisionPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPreparacionGeo" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                    <%= resRevisionPreparacionGeo %>
-                                                </span>
+                                            <span id="resRevisionPreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPreparacionGeo" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                <%= resRevisionPreparacionGeo %>
+                                            </span>
 
-                                                <button id="btnSiguientePreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguientePreparacionGeo" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= siguienteDisabled %>
-                                                    ><i class="fa-solid fa-arrow-right"></i>
-                                                </button>
-                                            </div>
+                                            <button id="btnSiguientePreparacionGeo<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguientePreparacionGeo" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
                                     </td>
 
                                 <% } else { %>
@@ -257,93 +235,82 @@
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayProgramacion > 0) {
 
-                                                    for (let i = 0; largoArrayProgramacion > i; i++) {
-                                                        if (pathToMongoOtProgramacion[i]) {
-                                                            let largoArray = parseInt(largoArrayProgramacion)
-                                                            resDatoPrograma2d = pathToMongoOtProgramacion[largoArray-1].programa2d == 'sinDato' ? 'S/D' : pathToMongoOtProgramacion[largoArray-1].programa2d
-                                                            resEstadoPrograma2d = pathToMongoOtProgramacion[largoArray-1].estadoPrograma2d == 'sinDato' ? 'S/D' : pathToMongoOtProgramacion[largoArray-1].estadoPrograma2d
-                                                            resRevisionPrograma2d = pathToMongoOtProgramacion[largoArray-1].revisionPrograma2d
-                                                            
-                                                            pathToMongoOtProgramacion[i].programa2d == 'sinDato' ? arrResDatoPrograma2d.push('S/D') : arrResDatoPrograma2d.push(pathToMongoOtProgramacion[i].programa2d)
-                                                            pathToMongoOtProgramacion[i].estadoPrograma2d == 'sinDato' ? arrResEstadoPrograma2d.push('S/D') : arrResEstadoPrograma2d.push(pathToMongoOtProgramacion[i].estadoPrograma2d)
-                                                            arrResRevisionPrograma2d.push(pathToMongoOtProgramacion[i].revisionPrograma2d)
-                                                        
-                                                            arrResCreadorPrograma2d.push(pathToMongoOtProgramacion[i].creator[0].username)
-                                                            arrResModificadorPrograma2d.push(pathToMongoOtProgramacion[i].modificator[0].username)
-                                                            arrResFechaPrograma2d.push(pathToMongoOtProgramacion[i].timestamp)
-                                                            arrResFechaModPrograma2d.push(pathToMongoOtProgramacion[i].modifiedOn)
-                                                            
-                                                        } else {
-                                                            resDatoPrograma2d = 'S/D'
-                                                            resEstadoPrograma2d = 'S/D'
-                                                            resRevisionPrograma2d = 0
-                                                        }
-                                                    }
-                                                    valueArrayResPrograma2d = parseInt(arrResEstadoPrograma2d.length-1)
+                                            for (let i = 0; largoArrayProgramacion > i; i++) {
+                                                if (pathToMongoOtProgramacion[i]) {
+                                                    let largoArray = parseInt(largoArrayProgramacion)
+                                                    resDatoPrograma2d = pathToMongoOtProgramacion[largoArray-1].programa2d == 'sinDato' ? "S/D" : pathToMongoOtProgramacion[largoArray-1].programa2d
+                                                    resEstadoPrograma2d = pathToMongoOtProgramacion[largoArray-1].estadoPrograma2d == 'sinDato' ? 'sinDato' : pathToMongoOtProgramacion[largoArray-1].estadoPrograma2d
+                                                    resRevisionPrograma2d = parseInt(pathToMongoOtProgramacion[largoArray-1].revisionPrograma2d) || 0
                                                     
-                                                    if (arrResDatoPrograma2d.length == 1 ) {
-                                                        siguienteDisabled = "disabled"
-                                                        anteriorDisabled = "disabled"
-                                                    } else if (arrResDatoPrograma2d.length == arrResRevisionPrograma2d.length) {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    } else {
-                                                        anteriorDisabled = ""
-                                                        siguienteDisabled = "disabled"
-                                                    }
+                                                    pathToMongoOtProgramacion[i].programa2d == 'sinDato' ? arrResDatoPrograma2d.push('S/D') : arrResDatoPrograma2d.push(pathToMongoOtProgramacion[i].programa2d)
+                                                    pathToMongoOtProgramacion[i].estadoPrograma2d == 'sinDato' ? arrResEstadoPrograma2d.push('S/D') : arrResEstadoPrograma2d.push(pathToMongoOtProgramacion[i].estadoPrograma2d)
+                                                    arrResRevisionPrograma2d.push(pathToMongoOtProgramacion[i].revisionPrograma2d)
+                                                
+                                                    arrResCreadorPrograma2d.push(pathToMongoOtProgramacion[i].creator[0].username)
+                                                    arrResModificadorPrograma2d.push(pathToMongoOtProgramacion[i].modificator[0].username)
+                                                    arrResFechaPrograma2d.push(pathToMongoOtProgramacion[i].timestamp)
+                                                    arrResFechaModPrograma2d.push(pathToMongoOtProgramacion[i].modifiedOn)
+                                                }
+                                            }
+                                            valueArrayResPrograma2d = parseInt(arrResEstadoPrograma2d.length-1)
                                                     
-                                                } else {
-                                                    anteriorDisabled = "disabled"
-                                                    siguienteDisabled = "disabled"
-                                                    resDatoPrograma2d = "S/D"
-                                                    resEstadoPrograma2d = "S/D"
-                                                    resRevisionPrograma2d = 0
-                                                    arrResDatoPrograma2d.push(resDatoPrograma2d)
-                                                    arrResEstadoPrograma2d.push(resEstadoPrograma2d)
-                                                    arrResRevisionPrograma2d.push(resRevisionPrograma2d)
-                                                    valueArrayResPrograma2d = 0
+                                            if (arrResDatoPrograma2d.length == 1 ) {
+                                                siguienteDisabled = "disabled"
+                                                anteriorDisabled = "disabled"
+                                            } else if (arrResDatoPrograma2d.length == arrResRevisionPrograma2d.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                                    
+                                        } else {
+                                            arrResDatoPrograma2d.push(resDatoPrograma2d)
+                                            arrResEstadoPrograma2d.push(resEstadoPrograma2d)
+                                            arrResRevisionPrograma2d.push(resRevisionPrograma2d)
+                                            
+                                            arrResCreadorPrograma2d.push(pathMongoOtDetalles[o].creator[0].username)
+                                            arrResModificadorPrograma2d = ""
+                                            arrResFechaPrograma2d.push(pathMongoOtDetalles[o].timestamp)
+                                            arrResFechaModPrograma2d = ""
+                                        } %>
 
-                                                    arrResCreadorPrograma2d.push(pathMongoOtDetalles[o].creator[0].username)
-                                                    arrResModificadorPrograma2d = ""
-                                                    arrResFechaPrograma2d.push(pathMongoOtDetalles[o].timestamp)
-                                                    arrResFechaModPrograma2d = ""
-                                            } %>
+                                    <div id="btnAnteriorSiguientePrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                        <button id="btnAnteriorPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorPrograma2d" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPrograma2d %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPrograma2d %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPrograma2d %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPrograma2d %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorPrograma2d %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorPrograma2d %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaPrograma2d %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModPrograma2d %>">
 
-                                            <div id="btnAnteriorSiguientePrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                                <button id="btnAnteriorPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorPrograma2d" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= anteriorDisabled %>
-                                                    ><i class="fa-solid fa-arrow-left"></i>
-                                                </button>
-                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPrograma2d %>">
-                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPrograma2d %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPrograma2d %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPrograma2d %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorPrograma2d %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorPrograma2d %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaPrograma2d %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModPrograma2d %>">
+                                        <span id="resDatoPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                            <%= resDatoPrograma2d %>
+                                        </span> |
 
-                                                <span id="resDatoPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                                    <%= resDatoPrograma2d %>
-                                                </span> |
+                                        <% const config = programacionPrimeraConfig[resEstadoPrograma2d] || programacionPrimeraConfig.default; %>
+                                        <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma2d%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
 
-                                                <% const config = programacionPrimeraConfig[resEstadoPrograma2d] || programacionPrimeraConfig.default; %>
-                                                <span id="resEstadoPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma2d%>">
-                                                    <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                                </span> |
+                                        <span id="resRevisionPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma2d" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionPrograma2d %>
+                                        </span>
 
-                                                <span id="resRevisionPrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma2d" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                    <%= resRevisionPrograma2d %>
-                                                </span>
-
-                                                <button id="btnSiguientePrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguientePrograma2d" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= siguienteDisabled %>
-                                                    ><i class="fa-solid fa-arrow-right"></i>
-                                                </button>
-                                            </div>
-                                    </td>
+                                        <button id="btnSiguientePrograma2d<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguientePrograma2d" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
                                 <% }
                             } %>
                         </tr>
@@ -360,18 +327,13 @@
 
                                                 if (pathToMongoOtProgramacion[i]) {
                                                     let largoArray = parseInt(largoArrayProgramacion)
-                                                    resDatoRt = pathToMongoOtProgramacion[largoArray-1].rt || 'sinDato'
+                                                    resDatoRt = pathToMongoOtProgramacion[largoArray-1].rt || 'S/D'
                                                     resEstadoRt = pathToMongoOtProgramacion[largoArray-1].estadoRt || 'sinDato'
-                                                    resRevisionRt = pathToMongoOtProgramacion[largoArray-1].revisionRt
+                                                    resRevisionRt = parseInt(pathToMongoOtProgramacion[largoArray-1].revisionRt) || 0
                                                     
                                                     arrResDatoRt.push(pathToMongoOtProgramacion[i].rt)
                                                     arrResEstadoRt.push(pathToMongoOtProgramacion[i].estadoRt)
                                                     arrResRevisionRt.push(pathToMongoOtProgramacion[i].revisionRt)
-                                                    
-                                                } else {
-                                                    resDatoRt = 'S/D'
-                                                    resEstadoRt = 'S/D'
-                                                    resRevisionRt = 0
                                                 }
                                             }
                                             valueArrayResRt = parseInt(arrResEstadoRt.length-1)
@@ -379,67 +341,55 @@
                                             resEstadoRt = pathToMongoOtProgramacion[0].estadoRt
 
                                         } else {
-                                            resDatoRt = 'S/D'
-                                            resEstadoRt = 'S/D'
-                                            resRevisionRt = 0
                                             arrResDatoRt.push(resDatoRt)
                                             arrResEstadoRt.push(resEstadoRt)
-                                            arrResRevisionRt.push(0)
+                                            arrResRevisionRt.push(resRevisionRt)
                                         } %>
-                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoRt %>">
-                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoRt %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResRt %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionRt %>">
-                                        
-                                            <span id="resDatoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                                <%= resDatoRt %>
-                                            </span> |
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoRt %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoRt %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResRt %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionRt %>">
+                                    
+                                        <span id="resDatoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                            <%= resDatoRt %>
+                                        </span> |
 
-                                            <% const config = programacionPrimeraConfig[resEstadoRt] || programacionPrimeraConfig.default; %>
-                                            <span id="resEstadoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoRt%>">
-                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                            </span> |
+                                        <% const config = programacionPrimeraConfig[resEstadoRt] || programacionPrimeraConfig.default; %>
+                                        <span id="resEstadoRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoRt%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
 
-                                            <span id="resRevisionRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionRt" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                <%= resRevisionRt %>
-                                            </span>
+                                        <span id="resRevisionRt<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionRt" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionRt %>
+                                        </span>
                                     </td>
 
                                 <% } else if (q==5) { %>
                                     <!-- Preparacion GEO data Inactivo -->
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayProgramacion > 0) {
-                                                for (let i = 0; largoArrayProgramacion > i; i++) {
+                                            for (let i = 0; largoArrayProgramacion > i; i++) {
+                                                
+                                                if (pathToMongoOtProgramacion[i]) {
+                                                    let largoArray = parseInt(largoArrayProgramacion)
+                                                    resDatoPreparacionGeo = pathToMongoOtProgramacion[largoArray-1].preparacionGeo || 'S/D'
+                                                    resEstadoPreparacionGeo = pathToMongoOtProgramacion[largoArray-1].preparacionGeo || 'sinDato'
+                                                    resRevisionPreparacionGeo = parseInt(pathToMongoOtProgramacion[largoArray-1].revisionPreparacionGeo) || 0
                                                     
-                                                    if (pathToMongoOtProgramacion[i]) {
-                                                        let largoArray = parseInt(largoArrayProgramacion)
-                                                        resDatoPreparacionGeo = pathToMongoOtProgramacion[largoArray-1].preparacionGeo || 'sinDato'
-                                                        resEstadoPreparacionGeo = pathToMongoOtProgramacion[largoArray-1].preparacionGeo || 'sinDato'
-                                                        resRevisionPreparacionGeo = pathToMongoOtProgramacion[largoArray-1].revisionPreparacionGeo
-                                                        
-                                                        arrResDatoPreparacionGeo.push(pathToMongoOtProgramacion[i].preparacionGeo)
-                                                        arrResEstadoPreparacionGeo.push(pathToMongoOtProgramacion[i].preparacionGeo)
-                                                        arrResRevisionPreparacionGeo.push(pathToMongoOtProgramacion[i].revisionPreparacionGeo)
-                                                    
-                                                    } else {
-                                                        resDatoPreparacionGeo = 'S/D'
-                                                        resEstadoPreparacionGeo = 'S/D'
-                                                        resRevisionPreparacionGeo = 0
-                                                    }
+                                                    arrResDatoPreparacionGeo.push(pathToMongoOtProgramacion[i].preparacionGeo)
+                                                    arrResEstadoPreparacionGeo.push(pathToMongoOtProgramacion[i].preparacionGeo)
+                                                    arrResRevisionPreparacionGeo.push(pathToMongoOtProgramacion[i].revisionPreparacionGeo)
                                                 }
-                                                valueArrayResPreparacionGeo = parseInt(arrResEstadoPreparacionGeo.length-1)
-                                                resDatoPreparacionGeo = pathToMongoOtProgramacion[0].preparacionGeo
-                                                resEstadoPreparacionGeo = pathToMongoOtProgramacion[0].estadoPreparacionGeo
+                                            }
+                                            valueArrayResPreparacionGeo = parseInt(arrResEstadoPreparacionGeo.length-1)
+                                            resDatoPreparacionGeo = pathToMongoOtProgramacion[0].preparacionGeo
+                                            resEstadoPreparacionGeo = pathToMongoOtProgramacion[0].estadoPreparacionGeo
                                         
                                         } else {
-                                            resDatoPreparacionGeo = 'S/D'
-                                            resEstadoPreparacionGeo = 'S/D'
-                                            resRevisionPreparacionGeo = 0
                                             arrResDatoPreparacionGeo.push(resDatoPreparacionGeo)
                                             arrResEstadoPreparacionGeo.push(resEstadoPreparacionGeo)
-                                            arrResRevisionPreparacionGeo.push(0)
+                                            arrResRevisionPreparacionGeo.push(resRevisionPreparacionGeo)
                                         } %>
-
                                         <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPreparacionGeo %>">
                                         <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPreparacionGeo %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPreparacionGeo %>">
@@ -463,35 +413,27 @@
                                     <!-- Programa2d data Inactivo -->
                                     <td class="text-center align-middle">
                                         <% if (largoArrayOtDetalles > 0 && largoArrayProgramacion > 0) {
-                                                for (let i = 0; largoArrayProgramacion > i; i++) {
+                                            for (let i = 0; largoArrayProgramacion > i; i++) {
+                                                
+                                                if (pathToMongoOtProgramacion[i]) {
+                                                    let largoArray = parseInt(largoArrayProgramacion)
+                                                    resDatoPrograma2d = pathToMongoOtProgramacion[largoArray-1].programa2d || "S/D"
+                                                    resEstadoPrograma2d = pathToMongoOtProgramacion[largoArray-1].estadoPrograma2d || 'sinDato'
+                                                    resRevisionPrograma2d = parseInt(pathToMongoOtProgramacion[largoArray-1].revisionPrograma2d) || 0
                                                     
-                                                    if (pathToMongoOtProgramacion[i]) {
-                                                        let largoArray = parseInt(largoArrayProgramacion)
-                                                        resDatoPrograma2d = pathToMongoOtProgramacion[largoArray-1].programa2d || 'sinDato'
-                                                        resEstadoPrograma2d = pathToMongoOtProgramacion[largoArray-1].estadoPrograma2d || 'sinDato'
-                                                        resRevisionPrograma2d = pathToMongoOtProgramacion[largoArray-1].revisionPrograma2d
-                                                        
-                                                        arrResDatoPrograma2d.push(pathToMongoOtProgramacion[i].programa2d)
-                                                        arrResEstadoPrograma2d.push(pathToMongoOtProgramacion[i].estadoPrograma2d)
-                                                        arrResRevisionPrograma2d.push(pathToMongoOtProgramacion[i].revisionPrograma2d)
-                                                        
-                                                    } else {
-                                                        resDatoPrograma2d = 'S/D'
-                                                        resEstadoPrograma2d = 'S/D'
-                                                        resRevisionPrograma2d = 0
-                                                    }
+                                                    arrResDatoPrograma2d.push(pathToMongoOtProgramacion[i].programa2d)
+                                                    arrResEstadoPrograma2d.push(pathToMongoOtProgramacion[i].estadoPrograma2d)
+                                                    arrResRevisionPrograma2d.push(pathToMongoOtProgramacion[i].revisionPrograma2d)
                                                 }
-                                                valueArrayResPrograma2d = parseInt(arrResEstadoPrograma2d.length-1)
-                                                resDatoPrograma2d = pathToMongoOtProgramacion[0].programa2d
-                                                resEstadoPrograma2d = pathToMongoOtProgramacion[0].estadoPrograma2d
+                                            }
+                                            valueArrayResPrograma2d = parseInt(arrResEstadoPrograma2d.length-1)
+                                            resDatoPrograma2d = pathToMongoOtProgramacion[0].programa2d
+                                            resEstadoPrograma2d = pathToMongoOtProgramacion[0].estadoPrograma2d
                                         
                                         } else {
-                                            resDatoPrograma2d = 'S/D'
-                                            resEstadoPrograma2d = 'S/D'
-                                            resRevisionPrograma2d = 0
                                             arrResDatoPrograma2d.push(resDatoPrograma2d)
                                             arrResEstadoPrograma2d.push(resEstadoPrograma2d)
-                                            arrResRevisionPrograma2d.push(0)
+                                            arrResRevisionPrograma2d.push(resRevisionPrograma2d)
                                         } %>
                                         <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPrograma2d %>">
                                         <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPrograma2d %>">

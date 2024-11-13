@@ -1,22 +1,80 @@
-let arrBtnAnteriorDisenoPrimera = []
-let arrBtnSiguienteDisenoPrimera = []
+let arrBtnAnteriorAvDiseno = [], arrBtnSiguienteAvDiseno = [],
+arrBtnAnteriorPrimerRev50 = [], arrBtnSiguientePrimerRev50 = [],
+arrBtnAnteriorSegundaRev80 = [], arrBtnSiguienteSegundaRev80 = [],
+arrBtnAnteriorEnvCliente = [], arrBtnSiguienteEnvCliente = []
 
 for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de proyectos por Cliente
-
     for (let p = 0; p<varLimMaxOtProyecto; p++) { //variable limite maximo de Ot por proyecto
-        
         for (let q = 0; q<varLimMaxOtProyecto; q++) {
-            if (document.getElementById(`btnAnteriorSiguienteDisenoPrimera${i}_${p}_${q}`)) {
-                arrBtnAnteriorDisenoPrimera.push(i)
-                arrBtnSiguienteDisenoPrimera.push(i)
+            const btnIdAvDiseno = `btnAnteriorSiguienteAvDiseno${i}_${p}_${q}`;
+            const btnIdPrimerRev50 = `btnAnteriorSiguientePrimerRev50${i}_${p}_${q}`;
+            const btnIdSegundaRev80 = `btnAnteriorSiguienteSegundaRev80${i}_${p}_${q}`;
+            const btnIdEnvCliente = `btnAnteriorSiguienteEnvCliente${i}_${p}_${q}`;
+
+            const btnElementAvDiseno = document.getElementById(btnIdAvDiseno);
+            if (btnElementAvDiseno) {
+                arrBtnAnteriorAvDiseno.push(i)
+                arrBtnSiguienteAvDiseno.push(i)
+            }
+
+            const btnElementPrimerRev50 = document.getElementById(btnIdPrimerRev50);
+            if (btnElementPrimerRev50) {
+                arrBtnAnteriorPrimerRev50.push(i)
+                arrBtnSiguientePrimerRev50.push(i)
+            }
+
+            const btnElementSegundaRev80 = document.getElementById(btnIdSegundaRev80);
+            if (btnElementSegundaRev80) {
+                arrBtnAnteriorSegundaRev80.push(i)
+                arrBtnSiguienteSegundaRev80.push(i)
+            }
+
+            const btnElementEnvCliente = document.getElementById(btnIdEnvCliente);
+            if (btnElementEnvCliente) {
+                arrBtnAnteriorEnvCliente.push(i)
+                arrBtnSiguienteEnvCliente.push(i)
             }
         }
     }
 }
 
 //*********** Evento btn's anterior y siguiente ************* */
-if(arrBtnAnteriorDisenoPrimera !=[]) {
-    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorDisenoPrimera"]')
+if(arrBtnAnteriorAvDiseno !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorAvDiseno"]')
+    
+    allBtnAnterior.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                //console.log('kValue. ', kValue)
+                mostrarAnteriorDisenoPrimera(arrayFromValues, kValue) //changeValueFromArrayDisenoPrimera
+            })
+        }
+    })
+}
+
+if(arrBtnSiguienteAvDiseno !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteAvDiseno"]')
+    
+    allBtnSiguiente.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                //console.log('kValue. ', kValue)
+                mostrarSiguienteDisenoPrimera(arrayFromValues, kValue) //changeValueFromArrayDisenoPrimera
+            })
+        }
+    })
+}
+
+if(arrBtnAnteriorPrimerRev50 !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorPrimerRev50"]')
     
     allBtnAnterior.forEach(function(btn){
         if (btn.value) {
@@ -32,8 +90,76 @@ if(arrBtnAnteriorDisenoPrimera !=[]) {
     })
 }
 
-if(arrBtnSiguienteDisenoPrimera !=[]) {    
-    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteDisenoPrimera"]')
+if(arrBtnSiguientePrimerRev50 !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguientePrimerRev50"]')
+    
+    allBtnSiguiente.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                //console.log('kValue. ', kValue)
+                mostrarSiguienteDisenoPrimera(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArrayDisenoPrimera
+            })
+        }
+    })
+}
+
+if(arrBtnAnteriorSegundaRev80 !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorSegundaRev80"]')
+    
+    allBtnAnterior.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                //console.log('kValue. ', kValue)
+                mostrarAnteriorDisenoPrimera(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArrayDisenoPrimera
+            })
+        }
+    })
+}
+
+if(arrBtnSiguienteSegundaRev80 !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteSegundaRev80"]')
+    
+    allBtnSiguiente.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                //console.log('kValue. ', kValue)
+                mostrarSiguienteDisenoPrimera(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArrayDisenoPrimera
+            })
+        }
+    })
+}
+
+if(arrBtnAnteriorEnvCliente !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorEnvCliente"]')
+    
+    allBtnAnterior.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                //console.log('kValue. ', kValue)
+                mostrarAnteriorDisenoPrimera(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArrayDisenoPrimera
+            })
+        }
+    })
+}
+
+if(arrBtnSiguienteEnvCliente !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteEnvCliente"]')
     
     allBtnSiguiente.forEach(function(btn){
         if (btn.value) {
@@ -52,6 +178,7 @@ if(arrBtnSiguienteDisenoPrimera !=[]) {
 // Mostrar el elemento actual en la página
 function mostrarElementoDisenoPrimera(
     arrayFromValues,
+    arrValuesRevisionMark,
     indiceAMostrar,
     kValue,
     resAvDiseno,
@@ -60,113 +187,188 @@ function mostrarElementoDisenoPrimera(
     resEnvioCliente) {
     // console.log('resProcesoDisenoPrimera: ', resProcesoDisenoPrimera, 'resHorasProcesoDisenoPrimera: ', resHorasProcesoDisenoPrimera)
     // console.log('kValue', kValue)
+
+    let btnAnteriorAvDiseno, btnSiguienteAvDiseno, containerBtnAnteriorSiguienteAvDiseno
+    let btnAnteriorPrimerRev50, btnSiguientePrimerRev50, containerBtnAnteriorSiguientePrimerRev50
+    let btnAnteriorSegundaRev80, btnSiguienteSegundaRev80, containerBtnAnteriorSiguienteSegundaRev80
+    let btnAnteriorEnvCliente, btnSiguienteEnvCliente, containerBtnAnteriorSiguienteEnvCliente
     
     if (resAvDiseno) {
         let spanAvDiseno = document.getElementById(`resAvDiseno${kValue}`)
         let spanRevisionAvDiseno = document.getElementById(`resRevisionAvDiseno${kValue}`)
         spanAvDiseno.innerText = arrayFromValues[parseInt(indiceAMostrar)]+'%'
-        spanRevisionAvDiseno.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionAvDiseno.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorAvDiseno = document.getElementById(`btnAnteriorAvDiseno${kValue}`)
+        btnSiguienteAvDiseno = document.getElementById(`btnSiguienteAvDiseno${kValue}`)
+        containerBtnAnteriorSiguienteAvDiseno = document.getElementById(`containerBtnAnteriorSiguienteAvDiseno${kValue}`)
+
     } else if (resPrimerRevision50) {
         let spanPrimerRevision50 = document.getElementById(`resPrimerRev50${kValue}`)
         let spanRevisionPrimerRevision50 = document.getElementById(`resRevisionPrimerRev50${kValue}`)
         spanPrimerRevision50.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionPrimerRevision50.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionPrimerRevision50.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorPrimerRev50 = document.getElementById(`btnAnteriorPrimerRev50${kValue}`)
+        btnSiguientePrimerRev50 = document.getElementById(`btnSiguientePrimerRev50${kValue}`)
+        containerBtnAnteriorSiguientePrimerRev50 = document.getElementById(`containerBtnAnteriorSiguientePrimerRev50${kValue}`)
+
     } else if (resSegundaRevision80) {
         let spanSegundaRevision80 = document.getElementById(`resSegundaRev80${kValue}`)
         let spanRevisionSegundaRevision80 = document.getElementById(`resRevisionSegundaRev80${kValue}`)
         spanSegundaRevision80.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionSegundaRevision80.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionSegundaRevision80.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorSegundaRev80 = document.getElementById(`btnAnteriorSegundaRev80${kValue}`)
+        btnSiguienteSegundaRev80 = document.getElementById(`btnSiguienteSegundaRev80${kValue}`)
+        containerBtnAnteriorSiguienteSegundaRev80 = document.getElementById(`containerBtnAnteriorSiguienteSegundaRev80${kValue}`)
+
     } else if (resEnvioCliente) {
         let spanEnvCliente = document.getElementById(`resEnvCliente${kValue}`)
         let spanRevisionEnvCliente = document.getElementById(`resRevisionEnvCliente${kValue}`)
         spanEnvCliente.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionEnvCliente.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionEnvCliente.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorEnvCliente = document.getElementById(`btnAnteriorEnvCliente${kValue}`)
+        btnSiguienteEnvCliente = document.getElementById(`btnSiguienteEnvCliente${kValue}`)
+        containerBtnAnteriorSiguienteEnvCliente = document.getElementById(`containerBtnAnteriorSiguienteEnvCliente${kValue}`)
     }
     
-
-    let btnAnteriorDisenoPrimera = document.getElementById(`btnAnteriorDisenoPrimera${kValue}`)
-    let btnSiguienteDisenoPrimera = document.getElementById(`btnSiguienteDisenoPrimera${kValue}`)
-    let containerBtnAnteriorSiguienteDisenoPrimera = document.getElementById(`btnAnteriorSiguienteDisenoPrimera${kValue}`)
-    
     function colorSpanDisenoPrimera(spanElementDisenoPrimera) {
-        let resultColor
-        let resultTextColor
-        spanElementDisenoPrimera.classList.remove("bg-success")
-        spanElementDisenoPrimera.classList.remove("bg-danger")
-        spanElementDisenoPrimera.classList.remove("bg-warning")
-        spanElementDisenoPrimera.classList.remove("bg-secondary")
-        spanElementDisenoPrimera.classList.remove("bg-info")
-        spanElementDisenoPrimera.classList.remove("text-white")
-        spanElementDisenoPrimera.classList.remove("text-dark")
-
-        if (spanElementDisenoPrimera.innerText == "OK") {
-           resultColor = spanElementDisenoPrimera.classList.add("bg-success")
-           resultTextColor = spanElementDisenoPrimera.classList.add("text-white")
-        } else if (spanElementDisenoPrimera.innerText == "No OK") {
-           resultColor = spanElementDisenoPrimera.classList.add("bg-danger")
-           resultTextColor = spanElementDisenoPrimera.classList.add("text-white")
-        } else if (spanElementDisenoPrimera.innerText == "S/D") {
-           resultColor = spanElementDisenoPrimera.classList.add("bg-secondary")
-           resultTextColor = spanElementDisenoPrimera.classList.add("text-white")
-        } else if (spanElementDisenoPrimera.innerText == "Pendiente") {
-           resultColor = spanElementDisenoPrimera.classList.add("bg-warning")
-           resultTextColor = spanElementDisenoPrimera.classList.add("text-dark")
-        } else if (spanElementDisenoPrimera.innerText == "N/A") {
-            resultColor = spanElementDisenoPrimera.classList.add("bg-info")
-            resultTextColor = spanElementDisenoPrimera.classList.add("text-dark")
-         }
-        return resultColor, resultTextColor
+        const classMap = {
+            "OK": { bgClass: "bg-success", textClass: "text-white" },
+            "No OK": { bgClass: "bg-danger", textClass: "text-white" },
+            "Pendiente": { bgClass: "bg-warning", textClass: "text-dark" },
+            "S/D": { bgClass: "bg-secondary", textClass: "text-white" },
+            "N/A": { bgClass: "bg-info", textClass: "text-dark" }
+        };
+    
+        const defaultClasses = ["bg-success", "bg-danger", "bg-warning", "bg-secondary", "bg-info", "text-white", "text-dark"];
+        if (spanElementDisenoPrimera) {
+            spanElementDisenoPrimera.classList.remove(...defaultClasses);
+        }
+    
+        const text = spanElementDisenoPrimera.innerText;
+        if (classMap[text]) {
+            spanElementDisenoPrimera.classList.add(classMap[text].bgClass, classMap[text].textClass);
+        }
     }
 
     function agregarEstiloRevPasadasDisenoPrimera (containerBtnAnteriorSiguienteDisenoPrimera) {
-        containerBtnAnteriorSiguienteDisenoPrimera.classList.add("bg-secondary")
-        containerBtnAnteriorSiguienteDisenoPrimera.classList.add("bg-gradient")
-        containerBtnAnteriorSiguienteDisenoPrimera.classList.add("bg-opacity-25")
+        containerBtnAnteriorSiguienteDisenoPrimera.classList.add("bg-secondary", "bg-gradient", "bg-opacity-25")
     }
 
     function eliminarEstiloRevPasadasDisenoPrimera (containerBtnAnteriorSiguienteDisenoPrimera) {
-        containerBtnAnteriorSiguienteDisenoPrimera.classList.remove("bg-secondary")
-        containerBtnAnteriorSiguienteDisenoPrimera.classList.remove("bg-gradient")
-        containerBtnAnteriorSiguienteDisenoPrimera.classList.remove("bg-opacity-25")
+        containerBtnAnteriorSiguienteDisenoPrimera.classList.remove("bg-secondary", "bg-gradient", "bg-opacity-25")
     }
     
-    let spanElementDisenoPrimera
-    if (resAvDiseno) {
-        spanElementDisenoPrimera = resAvDiseno
-    } else if (resPrimerRevision50) {
-        spanElementDisenoPrimera = resPrimerRevision50
-    } else if (resSegundaRevision80) {
-        spanElementDisenoPrimera = resSegundaRevision80
-    } else if (resEnvioCliente) {
-        spanElementDisenoPrimera = resEnvioCliente
-    }
+    let spanElementAvDiseno, spanElementPrimerRev50, spanElementSegundaRev80, spanElementEnvCliente
+    resAvDiseno ? spanElementAvDiseno = resAvDiseno : null
+    resPrimerRevision50 ? spanElementPrimerRev50 = resPrimerRevision50 : null
+    resSegundaRevision80 ? spanElementSegundaRev80 = resSegundaRevision80 : null
+    resEnvioCliente ? spanElementEnvCliente = resEnvioCliente : null
     
     if (indiceAMostrar == 0) {
-        colorSpanDisenoPrimera(spanElementDisenoPrimera)
-        btnAnteriorDisenoPrimera.disabled = 'true'
-        btnSiguienteDisenoPrimera.removeAttribute('disabled')
-        agregarEstiloRevPasadasDisenoPrimera(containerBtnAnteriorSiguienteDisenoPrimera)
+        if (btnAnteriorAvDiseno && btnSiguienteAvDiseno) {
+            colorSpanDisenoPrimera(spanElementAvDiseno)
+            btnAnteriorAvDiseno.disabled = 'true'
+            btnSiguienteAvDiseno.removeAttribute('disabled')
+            agregarEstiloRevPasadasDisenoPrimera(containerBtnAnteriorSiguienteAvDiseno)
+        }
+
+        if (btnAnteriorPrimerRev50 && btnSiguientePrimerRev50) {
+            colorSpanDisenoPrimera(spanElementPrimerRev50)
+            btnAnteriorPrimerRev50.disabled = 'true'
+            btnSiguientePrimerRev50.removeAttribute('disabled')
+            agregarEstiloRevPasadasDisenoPrimera(containerBtnAnteriorSiguientePrimerRev50)
+        }
+
+        if (btnAnteriorSegundaRev80 && btnSiguienteSegundaRev80) {
+            colorSpanDisenoPrimera(spanElementSegundaRev80)
+            btnAnteriorSegundaRev80.disabled = 'true'
+            btnSiguienteSegundaRev80.removeAttribute('disabled')
+            agregarEstiloRevPasadasDisenoPrimera(containerBtnAnteriorSiguienteSegundaRev80)
+        }
+
+        if (btnAnteriorEnvCliente && btnSiguienteEnvCliente) {
+            colorSpanDisenoPrimera(spanElementEnvCliente)
+            btnAnteriorEnvCliente.disabled = 'true'
+            btnSiguienteEnvCliente.removeAttribute('disabled')
+            agregarEstiloRevPasadasDisenoPrimera(containerBtnAnteriorSiguienteEnvCliente)
+        }
+
     } else if (indiceAMostrar == arrayFromValues.length-1) {
-        colorSpanDisenoPrimera(spanElementDisenoPrimera)
-        btnAnteriorDisenoPrimera.removeAttribute('disabled')
-        btnSiguienteDisenoPrimera.disabled = true
-        eliminarEstiloRevPasadasDisenoPrimera(containerBtnAnteriorSiguienteDisenoPrimera)
+        if (btnAnteriorAvDiseno && btnSiguienteAvDiseno) {
+            colorSpanDisenoPrimera(spanElementAvDiseno)
+            btnAnteriorAvDiseno.removeAttribute('disabled')
+            btnSiguienteAvDiseno.disabled = true
+            eliminarEstiloRevPasadasDisenoPrimera(containerBtnAnteriorSiguienteAvDiseno)
+        }
+
+        if (btnAnteriorPrimerRev50 && btnSiguientePrimerRev50) {
+            colorSpanDisenoPrimera(spanElementPrimerRev50)
+            btnAnteriorPrimerRev50.removeAttribute('disabled')
+            btnSiguientePrimerRev50.disabled = true
+            eliminarEstiloRevPasadasDisenoPrimera(containerBtnAnteriorSiguientePrimerRev50)
+        }
+        
+        if (btnAnteriorSegundaRev80 && btnSiguienteSegundaRev80) {
+            colorSpanDisenoPrimera(spanElementSegundaRev80)
+            btnAnteriorSegundaRev80.removeAttribute('disabled')
+            btnSiguienteSegundaRev80.disabled = true
+            eliminarEstiloRevPasadasDisenoPrimera(containerBtnAnteriorSiguienteSegundaRev80)
+        }
+
+        if (btnAnteriorEnvCliente && btnSiguienteEnvCliente) {
+            colorSpanDisenoPrimera(spanElementEnvCliente)
+            btnAnteriorEnvCliente.removeAttribute('disabled')
+            btnSiguienteEnvCliente.disabled = true
+            eliminarEstiloRevPasadasDisenoPrimera(containerBtnAnteriorSiguienteEnvCliente)
+        }
+
     } else {
-        colorSpanDisenoPrimera(spanElementDisenoPrimera)
-        btnAnteriorDisenoPrimera.removeAttribute('disabled')
-        btnSiguienteDisenoPrimera.removeAttribute('disabled')
-        agregarEstiloRevPasadasDisenoPrimera(containerBtnAnteriorSiguienteDisenoPrimera)
+        if (btnAnteriorAvDiseno && btnSiguienteAvDiseno) {
+            colorSpanDisenoPrimera(spanElementAvDiseno)
+            btnAnteriorAvDiseno.removeAttribute('disabled')
+            btnSiguienteAvDiseno.removeAttribute('disabled')
+            agregarEstiloRevPasadasDisenoPrimera(containerBtnAnteriorSiguienteAvDiseno)
+        }
+        
+        if (btnAnteriorPrimerRev50 && btnSiguientePrimerRev50) {
+            colorSpanDisenoPrimera(spanElementPrimerRev50)
+            btnAnteriorPrimerRev50.removeAttribute('disabled')
+            btnSiguientePrimerRev50.removeAttribute('disabled')
+            agregarEstiloRevPasadasDisenoPrimera(containerBtnAnteriorSiguientePrimerRev50)
+        }
+                
+        if (btnAnteriorSegundaRev80 && btnSiguienteSegundaRev80) {
+            colorSpanDisenoPrimera(spanElementSegundaRev80)
+            btnAnteriorSegundaRev80.removeAttribute('disabled')
+            btnSiguienteSegundaRev80.removeAttribute('disabled')
+            agregarEstiloRevPasadasDisenoPrimera(containerBtnAnteriorSiguienteSegundaRev80)
+        }
+        
+        if (btnAnteriorEnvCliente && btnSiguienteEnvCliente) {
+            colorSpanDisenoPrimera(spanElementEnvCliente)
+            btnAnteriorEnvCliente.removeAttribute('disabled')
+            btnSiguienteEnvCliente.removeAttribute('disabled')
+            agregarEstiloRevPasadasDisenoPrimera(containerBtnAnteriorSiguienteEnvCliente)
+        }
     }
 }
 
 // Función para mostrar el elemento anterior
 function mostrarAnteriorDisenoPrimera(arrayFromValues, kValue) {
-    
     let inputSpotIndex = document.getElementById(`resIndexHidden${kValue}`)
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
     
     let indiceAMostrar = parseInt(lastIndexArrayFromValues - 1)
     inputSpotIndex.value = parseInt(indiceAMostrar)
+
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
+    // console.log('arrValuesRevisionMark: ', arrValuesRevisionMark)
 
     let resAvDiseno = document.getElementById(`resAvDiseno${kValue}`)
     let resPrimerRev50 = document.getElementById(`resPrimerRev50${kValue}`)
@@ -175,6 +377,7 @@ function mostrarAnteriorDisenoPrimera(arrayFromValues, kValue) {
 
     mostrarElementoDisenoPrimera(
         arrayFromValues,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resAvDiseno,
@@ -185,12 +388,16 @@ function mostrarAnteriorDisenoPrimera(arrayFromValues, kValue) {
 
 // Función para mostrar el elemento siguiente
 function mostrarSiguienteDisenoPrimera(arrayFromValues, kValue) {
-
     let inputSpotIndex = document.getElementById(`resIndexHidden${kValue}`)
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
     
     let indiceAMostrar = parseInt(lastIndexArrayFromValues + 1)
     inputSpotIndex.value = parseInt(indiceAMostrar)
+
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
+    // console.log('arrValuesRevisionMark: ', arrValuesRevisionMark)
     
     let resAvDiseno = document.getElementById(`resAvDiseno${kValue}`)
     let resPrimerRev50 = document.getElementById(`resPrimerRev50${kValue}`)
@@ -199,6 +406,7 @@ function mostrarSiguienteDisenoPrimera(arrayFromValues, kValue) {
 
     mostrarElementoDisenoPrimera(
         arrayFromValues,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resAvDiseno,

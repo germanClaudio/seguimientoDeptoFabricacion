@@ -2,16 +2,12 @@
 <div class="carousel-indicators position-absolute top-100 start-0 pb-5">
     <% if (proyecto[0].project[0].levelProject == 'paraCotizar') { %>
         <button type="button" name="btnInferiorCarousel"
-            data-bs-target="#carouselExampleControls<%=k%>"
-            data-bs-slide-to="0" class="bg-dark"
-            aria-current="true" aria-label="Slide 1"
-            title="Simulacion 0">
+            data-bs-target="#carouselExampleControls<%=k%>" data-bs-slide-to="0" class="bg-dark"
+            aria-current="true" aria-label="Slide 1" title="Simulacion 0">
         </button>
         <button type="button" name="btnInferiorCarousel"
-            data-bs-target="#carouselExampleControls<%=k%>"
-            data-bs-slide-to="1" class="bg-dark"
-            aria-label="Slide 2"
-            title="Proceso 3D">
+            data-bs-target="#carouselExampleControls<%=k%>" data-bs-slide-to="1" class="bg-dark"
+            aria-label="Slide 2" title="Proceso 3D">
         </button>
 
     <% } else if (proyecto[0].project[0].levelProject == 'aRiesgo') { %>                                            

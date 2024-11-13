@@ -77,7 +77,7 @@
                                                     let largoArray = parseInt(largoArrayProgramacionSegunda)
                                                     resDatoPrograma3d2F = pathMongoOtProgramacionSegunda[largoArray-1].programa3d2F == 'sinDato' ? "S/D" : pathMongoOtProgramacionSegunda[largoArray-1].programa3d2F
                                                     resEstadoPrograma3d2F = pathMongoOtProgramacionSegunda[largoArray-1].estadoPrograma3d2F == 'sinDato' ? "S/D" : pathMongoOtProgramacionSegunda[largoArray-1].estadoPrograma3d2F
-                                                    resRevisionPrograma3d2F = pathMongoOtProgramacionSegunda[largoArray-1].revisionPrograma3d2F
+                                                    resRevisionPrograma3d2F = parseInt(pathMongoOtProgramacionSegunda[largoArray-1].revisionPrograma3d2F) || 0
                                                     
                                                     pathMongoOtProgramacionSegunda[i].programa3d2F == 'sinDato' ? arrResDatoPrograma3d2F.push("S/D") : arrResDatoPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].programa3d2F)
                                                     pathMongoOtProgramacionSegunda[i].estadoPrograma3d2F == 'sinDato' ? arrResEstadoPrograma3d2F.push("S/D") : arrResEstadoPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].estadoPrograma3d2F)
@@ -87,11 +87,6 @@
                                                     arrResModificadorPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].modificator[0].username)
                                                     arrResFechaPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].timestamp)
                                                     arrResFechaModPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].modifiedOn)
-                                                    
-                                                } else {
-                                                    resDatoPrograma3d2F = 'S/D'
-                                                    resEstadoPrograma3d2F = 'S/D'
-                                                    resRevisionPrograma3d2F = 0
                                                 }
                                             }
                                             valueArrayResPrograma3d2F = parseInt(arrResDatoPrograma3d2F.length-1)
@@ -108,55 +103,49 @@
                                             }
                                                     
                                         } else {
-                                            anteriorDisabled = "disabled"
-                                            siguienteDisabled = "disabled"
-                                            resDatoPrograma3d2F = 'S/D'
-                                            resEstadoPrograma3d2F = "S/D"
-                                            resRevisionPrograma3d2F = 0
                                             arrResDatoPrograma3d2F.push(resDatoPrograma3d2F)
                                             arrResEstadoPrograma3d2F.push(resEstadoPrograma3d2F)
                                             arrResRevisionPrograma3d2F.push(resRevisionPrograma3d2F)
-                                            valueArrayResPrograma3d2F = 0
-
+                                            
                                             arrResCreadorPrograma3d2F.push(pathMongoOtDetalles[o].creator[0].username)
                                             arrResModificadorPrograma3d2F = ""
                                             arrResFechaPrograma3d2F.push(pathMongoOtDetalles[o].timestamp)
                                             arrResFechaModPrograma3d2F = ""
                                         } %>
                                         
-                                            <div id="btnAnteriorSiguientePrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                                <button id="btnAnteriorPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorPrograma3d2F" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= anteriorDisabled %>
-                                                    ><i class="fa-solid fa-arrow-left"></i>
-                                                </button>
-                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPrograma3d2F %>">
-                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPrograma3d2F %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPrograma3d2F %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPrograma3d2F %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorPrograma3d2F %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorPrograma3d2F %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaPrograma3d2F %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModPrograma3d2F %>">
+                                        <div id="btnAnteriorSiguientePrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorPrograma3d2F" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPrograma3d2F %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPrograma3d2F %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPrograma3d2F %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPrograma3d2F %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorPrograma3d2F %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorPrograma3d2F %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaPrograma3d2F %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModPrograma3d2F %>">
 
-                                                <span id="resDatoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                                    <%= resDatoPrograma3d2F %>
-                                                </span> |
+                                            <span id="resDatoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                <%= resDatoPrograma3d2F %>
+                                            </span> |
 
-                                                <% const config = programacionSegundaConfig[resEstadoPrograma3d2F] || programacionSegundaConfig.default; %>
-                                                <span id="resEstadoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma3d2F%>">
-                                                    <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                                </span> |
+                                            <% const config = programacionSegundaConfig[resEstadoPrograma3d2F] || programacionSegundaConfig.default; %>
+                                            <span id="resEstadoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma3d2F%>">
+                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                            </span> |
 
-                                                <span id="resRevisionPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma3d2F" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                    <%= resRevisionPrograma3d2F %>
-                                                </span>
+                                            <span id="resRevisionPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma3d2F" class="badge text-dark my-2" style="cursor: help;">
+                                                <%= resRevisionPrograma3d2F %>
+                                            </span>
 
-                                                <button id="btnSiguientePrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguientePrograma3d2F" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
-                                                    ><i class="fa-solid fa-arrow-right"></i>
-                                                </button>
-                                            </div>
+                                            <button id="btnSiguientePrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguientePrograma3d2F" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
                                     </td>
 
                                 <% } else if (q==8) { %>
@@ -169,7 +158,7 @@
                                                     let largoArray = parseInt(largoArrayProgramacionSegunda)
                                                     resDatoPrograma3d4F = pathMongoOtProgramacionSegunda[largoArray-1].programa3d4F == 'sinDato' ? "S/D" : pathMongoOtProgramacionSegunda[largoArray-1].programa3d4F
                                                     resEstadoPrograma3d4F = pathMongoOtProgramacionSegunda[largoArray-1].estadoPrograma3d4F == 'sinDato' ? "S/D" : pathMongoOtProgramacionSegunda[largoArray-1].estadoPrograma3d4F
-                                                    resRevisionPrograma3d4F = pathMongoOtProgramacionSegunda[largoArray-1].revisionPrograma3d4F
+                                                    resRevisionPrograma3d4F = parseInt(pathMongoOtProgramacionSegunda[largoArray-1].revisionPrograma3d4F) || 0
                                                     
                                                     pathMongoOtProgramacionSegunda[i].programa3d4F == 'sinDato' ? arrResDatoPrograma3d4F.push("S/D") : arrResDatoPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].programa3d4F)
                                                     pathMongoOtProgramacionSegunda[i].estadoPrograma3d4F == 'sinDato' ? arrResEstadoPrograma3d4F.push("S/D") : arrResEstadoPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].estadoPrograma3d4F)
@@ -179,11 +168,6 @@
                                                     arrResModificadorPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].modificator[0].username)
                                                     arrResFechaPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].timestamp)
                                                     arrResFechaModPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].modifiedOn)
-                                                    
-                                                } else {
-                                                    resDatoPrograma3d4F = 'S/D'
-                                                    resEstadoPrograma3d4F = 'S/D'
-                                                    resRevisionPrograma3d4F = 0
                                                 }
                                             }
                                             valueArrayResPrograma3d4F = parseInt(arrResEstadoPrograma3d4F.length-1)
@@ -200,56 +184,50 @@
                                             }
                                             
                                         } else {
-                                            anteriorDisabled = "disabled"
-                                            siguienteDisabled = "disabled"
-                                            resDatoPrograma3d4F = "S/D"
-                                            resEstadoPrograma3d4F = "S/D"
-                                            resRevisionPrograma3d4F = 0
                                             arrResDatoPrograma3d4F.push(resDatoPrograma3d4F)
                                             arrResEstadoPrograma3d4F.push(resEstadoPrograma3d4F)
                                             arrResRevisionPrograma3d4F.push(resRevisionPrograma3d4F)
-                                            valueArrayResPrograma3d4F = 0
-
+                                            
                                             arrResCreadorPrograma3d4F.push(pathMongoOtDetalles[o].creator[0].username)
                                             arrResModificadorPrograma3d4F = ""
                                             arrResFechaPrograma3d4F.push(pathMongoOtDetalles[o].timestamp)
                                             arrResFechaModPrograma3d4F = ""
                                         } %>
                                         
-                                            <div id="btnAnteriorSiguientePrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                                <button id="btnAnteriorPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorPrograma3d4F" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= anteriorDisabled %>
-                                                    ><i class="fa-solid fa-arrow-left"></i>
-                                                </button>
-                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPrograma3d4F %>">
-                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPrograma3d4F %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPrograma3d4F %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPrograma3d4F %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorPrograma3d4F %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorPrograma3d4F %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaPrograma3d4F %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModPrograma3d4F %>">
+                                        <div id="btnAnteriorSiguientePrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorPrograma3d4F" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPrograma3d4F %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPrograma3d4F %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPrograma3d4F %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPrograma3d4F %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorPrograma3d4F %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorPrograma3d4F %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaPrograma3d4F %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModPrograma3d4F %>">
 
-                                                <span id="resDatoPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                                    <%= resDatoPrograma3d4F %>
-                                                </span> |
+                                            <span id="resDatoPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                <%= resDatoPrograma3d4F %>
+                                            </span> |
 
-                                                <% const config = programacionSegundaConfig[resEstadoPrograma3d4F] || programacionSegundaConfig.default; %>
-                                                <span id="resEstadoPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma3d4F%>">
-                                                    <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                                </span> |
+                                            <% const config = programacionSegundaConfig[resEstadoPrograma3d4F] || programacionSegundaConfig.default; %>
+                                            <span id="resEstadoPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma3d4F%>">
+                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                            </span> |
 
-                                                <span id="resRevisionPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma3d4F" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                    <%= resRevisionPrograma3d4F %>
-                                                </span>
+                                            <span id="resRevisionPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma3d4F" class="badge text-dark my-2" style="cursor: help;">
+                                                <%= resRevisionPrograma3d4F %>
+                                            </span>
 
-                                                <button id="btnSiguientePrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguientePrograma3d4F" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= siguienteDisabled %>
-                                                    ><i class="fa-solid fa-arrow-right"></i>
-                                                </button>
-                                            </div>
+                                            <button id="btnSiguientePrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguientePrograma3d4F" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
                                     </td>
 
                                 <% } else { %>
@@ -261,7 +239,7 @@
                                                 if (pathMongoOtProgramacionSegunda[i]) {
                                                     let largoArray = parseInt(largoArrayProgramacionSegunda)
                                                     resDatoNotasProgramacion = pathMongoOtProgramacionSegunda[largoArray-1].notasProgramacion == 'sinDato' ? "S/D" : pathMongoOtProgramacionSegunda[largoArray-1].notasProgramacion
-                                                    resRevisionNotasProgramacion = pathMongoOtProgramacionSegunda[largoArray-1].revisionNotasProgramacion == 'sinDato' ? "S/D" : pathMongoOtProgramacionSegunda[largoArray-1].revisionNotasProgramacion
+                                                    resRevisionNotasProgramacion = pathMongoOtProgramacionSegunda[largoArray-1].revisionNotasProgramacion == 0 ? 0 : parseInt(pathMongoOtProgramacionSegunda[largoArray-1].revisionNotasProgramacion)
                                                     
                                                     arrResDatoNotasProgramacion.push(pathMongoOtProgramacionSegunda[i].notasProgramacion)
                                                     arrResRevisionNotasProgramacion.push(pathMongoOtProgramacionSegunda[i].revisionNotasProgramacion)
@@ -270,10 +248,6 @@
                                                     arrResModificadorNotasProgramacion.push(pathMongoOtProgramacionSegunda[i].modificator[0].username)
                                                     arrResFechaNotasProgramacion.push(pathMongoOtProgramacionSegunda[i].timestamp)
                                                     arrResFechaModNotasProgramacion.push(pathMongoOtProgramacionSegunda[i].modifiedOn)
-                                                    
-                                                } else {
-                                                    resDatoNotasProgramacion = 'S/D'
-                                                    resRevisionNotasProgramacion = 0
                                                 }
                                             }
                                             valueArrayResNotasProgramacion = parseInt(arrResDatoNotasProgramacion.length-1)
@@ -290,48 +264,43 @@
                                             }
                                             
                                         } else {
-                                            anteriorDisabled = "disabled"
-                                            siguienteDisabled = "disabled"
-                                            resDatoNotasProgramacion = "S/D"
-                                            resRevisionNotasProgramacion = 0
                                             arrResDatoNotasProgramacion.push(resDatoNotasProgramacion)
                                             arrResRevisionNotasProgramacion.push(resRevisionNotasProgramacion)
-                                            valueArrayResNotasProgramacion = 0
-
+                                            
                                             arrResCreadorNotasProgramacion.push(pathMongoOtDetalles[o].creator[0].username)
                                             arrResModificadorNotasProgramacion = ""
                                             arrResFechaNotasProgramacion.push(pathMongoOtDetalles[o].timestamp)
                                             arrResFechaModNotasProgramacion = ""
-                                    } %>
+                                        } %>
 
-                                            <div id="btnAnteriorSiguienteNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                                <button id="btnAnteriorNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorNotasProgramacion" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= anteriorDisabled %>
-                                                    ><i class="fa-solid fa-arrow-left"></i>
-                                                </button>
-                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoNotasProgramacion %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResNotasProgramacion %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionNotasProgramacion %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorNotasProgramacion %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorNotasProgramacion %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaNotasProgramacion %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModNotasProgramacion %>">
+                                        <div id="btnAnteriorSiguienteNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorNotasProgramacion" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoNotasProgramacion %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResNotasProgramacion %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionNotasProgramacion %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorNotasProgramacion %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorNotasProgramacion %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaNotasProgramacion %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModNotasProgramacion %>">
 
+                                            
+                                                <span id="resDatoNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="d-inline-block text-truncate align-middle text-dark" style="max-width: 13vw;">
+                                                    <%= resDatoNotasProgramacion %>
+                                                </span> |                                                
+                                                <span id="resRevisionNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionNotasProgramacion" class="badge text-dark align-middle" style="cursor: help;">
+                                                    <%= resRevisionNotasProgramacion %>
+                                                </span>
                                                 
-                                                    <span id="resDatoNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="d-inline-block text-truncate align-middle text-dark" style="max-width: 13vw;">
-                                                        <%= resDatoNotasProgramacion %>
-                                                    </span> |                                                
-                                                    <span id="resRevisionNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionNotasProgramacion" class="badge text-dark align-middle" style="cursor: help;" valuerevision="" valuenota="" valuecreador="" valuefecha="" valuemodificador="" valuefechamod="">
-                                                        <%= resRevisionNotasProgramacion %>
-                                                    </span>
-                                                    
-                                                <button id="btnSiguienteNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteNotasProgramacion" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= siguienteDisabled %>
-                                                    ><i class="fa-solid fa-arrow-right"></i>
-                                                </button>
-                                            </div>
+                                            <button id="btnSiguienteNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteNotasProgramacion" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 <% }
                             } %>
@@ -349,18 +318,13 @@
                                                 
                                                 if (pathMongoOtProgramacionSegunda[i]) {
                                                     let largoArray = parseInt(largoArrayProgramacionSegunda)
-                                                    resDatoPrograma3d2F = pathMongoOtProgramacionSegunda[largoArray-1].programa3d2F || 'sinDato'
-                                                    resEstadoPrograma3d2F = pathMongoOtProgramacionSegunda[largoArray-1].estadoPrograma3d2F
-                                                    resRevisionPrograma3d2F = pathMongoOtProgramacionSegunda[largoArray-1].revisionPrograma3d2F
+                                                    resDatoPrograma3d2F = pathMongoOtProgramacionSegunda[largoArray-1].programa3d2F || 'S/D'
+                                                    resEstadoPrograma3d2F = pathMongoOtProgramacionSegunda[largoArray-1].estadoPrograma3d2F || 'sinDato'
+                                                    resRevisionPrograma3d2F = parseInt(pathMongoOtProgramacionSegunda[largoArray-1].revisionPrograma3d2F) || 0
                                                     
                                                     arrResDatoPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].programa3d2F)
                                                     arrResEstadoPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].estadoPrograma3d2F)
                                                     arrResRevisionPrograma3d2F.push(pathMongoOtProgramacionSegunda[i].revisionPrograma3d2F)
-                                                    
-                                                } else {
-                                                    resDatoPrograma3d2F = 'S/D'
-                                                    resEstadoPrograma3d2F = ''
-                                                    resRevisionPrograma3d2F = 0
                                                 }
                                             }
                                             valueArrayResPrograma3d2F = parseInt(arrResEstadoPrograma3d2F.length-1)
@@ -368,30 +332,27 @@
                                             resEstadoPrograma3d2F = pathMongoOtProgramacionSegunda[0].estadoPrograma3d2F
 
                                         } else {
-                                            resDatoPrograma3d2F = 'S/D'
-                                            resEstadoPrograma3d2F = ''
-                                            resRevisionPrograma3d2F = 0
                                             arrResDatoPrograma3d2F.push(resDatoPrograma3d2F)
                                             arrResEstadoPrograma3d2F.push(resEstadoPrograma3d2F)
-                                            arrResRevisionPrograma3d2F.push(0)
+                                            arrResRevisionPrograma3d2F.push(resRevisionPrograma3d2F)
                                         } %>
-                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPrograma3d2F %>">
-                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPrograma3d2F %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPrograma3d2F %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPrograma3d2F %>">
-                                        
-                                            <span id="resDatoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2">
-                                                <%= resDatoPrograma3d2F %>
-                                            </span> |
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPrograma3d2F %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPrograma3d2F %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPrograma3d2F %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPrograma3d2F %>">
+                                    
+                                        <span id="resDatoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2">
+                                            <%= resDatoPrograma3d2F %>
+                                        </span> |
 
-                                            <% const config = programacionSegundaConfig[resEstadoPrograma3d2F] || programacionSegundaConfig.default; %>
-                                            <span id="resEstadoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma3d2F%>">
-                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                            </span> |
+                                        <% const config = programacionSegundaConfig[resEstadoPrograma3d2F] || programacionSegundaConfig.default; %>
+                                        <span id="resEstadoPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPrograma3d2F%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
 
-                                            <span id="resRevisionPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma3d2F" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                <%= resRevisionPrograma3d2F %>
-                                            </span>
+                                        <span id="resRevisionPrograma3d2F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma3d2F" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionPrograma3d2F %>
+                                        </span>
                                     </td>
 
                                 <% } else if (q==8) { %>
@@ -402,19 +363,13 @@
                                                 
                                                 if (pathMongoOtProgramacionSegunda[i]) {
                                                     let largoArray = parseInt(largoArrayProgramacionSegunda)
-                                                    resDatoPrograma3d4F = pathMongoOtProgramacionSegunda[largoArray-1].programa3d4F || 'sinDato'
-                                                    resEstadoPrograma3d4F = pathMongoOtProgramacionSegunda[largoArray-1].programa3d4F
-                                                    resRevisionPrograma3d4F = pathMongoOtProgramacionSegunda[largoArray-1].revisionPrograma3d4F
+                                                    resDatoPrograma3d4F = pathMongoOtProgramacionSegunda[largoArray-1].programa3d4F || 'S/D'
+                                                    resEstadoPrograma3d4F = pathMongoOtProgramacionSegunda[largoArray-1].programa3d4F || 'sinDato'
+                                                    resRevisionPrograma3d4F = parseInt(pathMongoOtProgramacionSegunda[largoArray-1].revisionPrograma3d4F) || 0
                                                     
                                                     arrResDatoPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].programa3d4F)
                                                     arrResEstadoPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].programa3d4F)
                                                     arrResRevisionPrograma3d4F.push(pathMongoOtProgramacionSegunda[i].revisionPrograma3d4F)
-                                                    
-                                                    
-                                                } else {
-                                                    resDatoPrograma3d4F = 'S/D'
-                                                    resEstadoPrograma3d4F = ''
-                                                    resRevisionPrograma3d4F = 0
                                                 }
                                             }
                                             valueArrayResPrograma3d4F = parseInt(arrResEstadoPrograma3d4F.length-1)
@@ -422,14 +377,10 @@
                                             resEstadoPrograma3d4F = pathMongoOtProgramacionSegunda[0].estadoPrograma3d4F
                                         
                                         } else {
-                                            resDatoPrograma3d4F = 'S/D'
-                                            resEstadoPrograma3d4F = ""
-                                            resRevisionPrograma3d4F = 0
                                             arrResDatoPrograma3d4F.push(resDatoPrograma3d4F)
                                             arrResEstadoPrograma3d4F.push(resEstadoPrograma3d4F)
-                                            arrResRevisionPrograma3d4F.push(0)
+                                            arrResRevisionPrograma3d4F.push(resRevisionPrograma3d4F)
                                         } %>
-
                                         <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPrograma3d4F %>">
                                         <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPrograma3d4F %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPrograma3d4F %>">
@@ -444,7 +395,7 @@
                                             <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
 
-                                        <span id="resRevisionPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma3d4F" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                        <span id="resRevisionPrograma3d4F<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPrograma3d4F" class="badge text-dark my-2" style="cursor: help;">
                                             <%= resRevisionPrograma3d4F %>
                                         </span>
                                     </td>
@@ -457,32 +408,30 @@
                                                     
                                                     if (pathMongoOtProgramacionSegunda[i]) {
                                                         let largoArray = parseInt(largoArrayProgramacionSegunda)
-                                                        resDatoNotasProgramacion = pathMongoOtProgramacionSegunda[largoArray-1].notasProgramacion || 'sinDato'
-                                                        resRevisionNotasProgramacion = pathMongoOtProgramacionSegunda[largoArray-1].revisionNotasProgramacion
+                                                        resDatoNotasProgramacion = pathMongoOtProgramacionSegunda[largoArray-1].notasProgramacion || 'S/D'
+                                                        resRevisionNotasProgramacion = parseInt(pathMongoOtProgramacionSegunda[largoArray-1].revisionNotasProgramacion) || 0
                                                         
                                                         arrResDatoNotasProgramacion.push(pathMongoOtProgramacionSegunda[i].notasProgramacion)
                                                         arrResRevisionNotasProgramacion.push(pathMongoOtProgramacionSegunda[i].revisionNotasProgramacion)
-                                                                                                                
-                                                    } else {
-                                                        resDatoNotasProgramacion = 'S/D'
-                                                        resRevisionNotasProgramacion = 0
                                                     }
                                                 }
                                                 valueArrayResNotasProgramacion = parseInt(arrResDatoNotasProgramacion.length-1)
                                                 resDatoNotasProgramacion = pathMongoOtProgramacionSegunda[0].notasProgramacion || 'sinDato'
                                                 
                                         } else {
-                                            resDatoNotasProgramacion = 'S/D'
-                                            resRevisionNotasProgramacion = 0
                                             arrResDatoNotasProgramacion.push(resDatoNotasProgramacion)
-                                            arrResRevisionNotasProgramacion.push(0)
+                                            arrResRevisionNotasProgramacion.push(resRevisionNotasProgramacion)
                                         } %>
                                         <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoNotasProgramacion %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResNotasProgramacion %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionNotasProgramacion %>">
 
-                                        <span id="resDatoNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="d-inline-block text-truncate align-middle text-dark" style="max-width: 13vw;"><%= resDatoNotasProgramacion %></span> |
-                                        <span id="resRevisionNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionNotasProgramacion" class="badge text-dark align-middle" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod=""><%= resRevisionNotasProgramacion %></span>
+                                        <span id="resDatoNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="d-inline-block text-truncate align-middle text-dark" style="max-width: 13vw;">
+                                            <%= resDatoNotasProgramacion %>
+                                        </span> |
+                                        <span id="resRevisionNotasProgramacion<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionNotasProgramacion" class="badge text-dark align-middle" style="cursor: help;">
+                                            <%= resRevisionNotasProgramacion %>
+                                        </span>
                                     </td>
                                 <% }
                             } %>

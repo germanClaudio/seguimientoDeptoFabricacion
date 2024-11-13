@@ -457,6 +457,9 @@ html body .display-7 {
 
 .card-figure:hover .img-link {
   opacity: 1;
+  transform: scale(1.01);
+  box-shadow: 10px 10px 15px rgba(0, 7, 71, 0.402);
+  border-radius: 6px;
 }
 
 .figure-img .img-link .tile {

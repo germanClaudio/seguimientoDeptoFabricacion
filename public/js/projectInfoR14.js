@@ -1,22 +1,30 @@
-let arrBtnAnteriorR14 = [], arrBtnSiguienteR14 = []
+let arrBtnAnteriorProcesoR14 = [], arrBtnSiguienteProcesoR14 = [],
+    arrBtnAnteriorAprobadoR14 = [], arrBtnSiguienteAprobadoR14 = []
 
 for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de proyectos por Cliente
     for (let p = 0; p<varLimMaxOtProyecto; p++) { //variable limite maximo de Ot por proyecto
         for (let q = 0; q<varLimMaxOtProyecto; q++) {
-            const btnId = `btnAnteriorSiguienteR14${i}_${p}_${q}`;
-            const btnElement = document.getElementById(btnId);
-            if ( btnElement) {
-                arrBtnAnteriorR14.push(i)
-                arrBtnSiguienteR14.push(i)
+            const btnIdProcesoR14 = `btnAnteriorSiguienteProcesoR14${i}_${p}_${q}`;
+            const btnIdAprobadoR14 = `btnAnteriorSiguienteAprobadoR14${i}_${p}_${q}`;
+            
+            const btnElementProcesoR14 = document.getElementById(btnIdProcesoR14);
+            if ( btnElementProcesoR14) {
+                arrBtnAnteriorProcesoR14.push(i)
+                arrBtnSiguienteProcesoR14.push(i)
+            }
+
+            const btnElementAprobadoR14 = document.getElementById(btnIdAprobadoR14);
+            if ( btnElementAprobadoR14) {
+                arrBtnAnteriorAprobadoR14.push(i)
+                arrBtnSiguienteAprobadoR14.push(i)
             }
         }
     }
 }
 
 //*********** Evento btn's anterior y siguiente ************* */
-if(arrBtnAnteriorR14 !=[]) {
-    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorR14"]')
-    
+if(arrBtnAnteriorProcesoR14 !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorProcesoR14"]')
     allBtnAnterior.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -31,9 +39,40 @@ if(arrBtnAnteriorR14 !=[]) {
     })
 }
 
-if(arrBtnSiguienteR14 !=[]) {    
-    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteR14"]')
-    
+if(arrBtnSiguienteProcesoR14 !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteProcesoR14"]')
+    allBtnSiguiente.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                // console.log('kValue. ', kValue)
+                mostrarSiguienteR14(changeValueFromArray(arrayFromValues), kValue)
+            })
+        }
+    })
+}
+
+if(arrBtnAnteriorAprobadoR14 !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorAprobadoR14"]')
+    allBtnAnterior.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                //console.log('kValue. ', kValue)
+                mostrarAnteriorR14(changeValueFromArray(arrayFromValues), kValue)
+            })
+        }
+    })
+}
+
+if(arrBtnSiguienteAprobadoR14 !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteAprobadoR14"]')
     allBtnSiguiente.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -51,6 +90,7 @@ if(arrBtnSiguienteR14 !=[]) {
 // Mostrar el elemento actual en la página
 function mostrarElementoR14(
     arrayFromValues,
+    arrValuesRevisionMark,
     indiceAMostrar,
     kValue,
     resProcesoR14,
@@ -60,33 +100,43 @@ function mostrarElementoR14(
     // console.log('kValue', kValue)
     // console.log('arrayFromValues', arrayFromValues)
     
+    let btnAnteriorProcesoR14, btnSiguienteProcesoR14, containerBtnAnteriorSiguienteProcesoR14
+    let btnAnteriorAprobadoR14, btnSiguienteAprobadoR14, containerBtnAnteriorSiguienteAprobadoR14
+
     if (resProcesoR14) {
         let spanProcesoR14 = document.getElementById(`resProcesoR14${kValue}`)
         let spanRevisionProcesoR14 = document.getElementById(`resRevisionProcesoR14${kValue}`)
         spanProcesoR14.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionProcesoR14.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionProcesoR14.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorProcesoR14 = document.getElementById(`btnAnteriorProcesoR14${kValue}`)
+        btnSiguienteProcesoR14 = document.getElementById(`btnSiguienteProcesoR14${kValue}`)
+        containerBtnAnteriorSiguienteProcesoR14 = document.getElementById(`btnAnteriorSiguienteProcesoR14${kValue}`)
+    
     } else if (resAprobadoR14) {
         let spanAprobadoR14 = document.getElementById(`resAprobadoR14${kValue}`)
         let spanRevisionAprobadoR14 = document.getElementById(`resRevisionAprobadoR14${kValue}`)
         spanAprobadoR14.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionAprobadoR14.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionAprobadoR14.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorAprobadoR14 = document.getElementById(`btnAnteriorAprobadoR14${kValue}`)
+        btnSiguienteAprobadoR14 = document.getElementById(`btnSiguienteAprobadoR14${kValue}`)
+        containerBtnAnteriorSiguienteAprobadoR14 = document.getElementById(`btnAnteriorSiguienteAprobadoR14${kValue}`)
     }
-    
-    let btnAnteriorR14 = document.getElementById(`btnAnteriorR14${kValue}`)
-    let btnSiguienteR14 = document.getElementById(`btnSiguienteR14${kValue}`)
-    let containerBtnAnteriorSiguienteR14 = document.getElementById(`btnAnteriorSiguienteR14${kValue}`)
     
     function colorSpanR14(spanElementR14) {
         const classMap = {
             "OK": { bgClass: "bg-success", textClass: "text-white" },
             "No OK": { bgClass: "bg-danger", textClass: "text-white" },
-            "S/D": { bgClass: "bg-secondary", textClass: "text-white" },
             "Pendiente": { bgClass: "bg-warning", textClass: "text-dark" },
+            "S/D": { bgClass: "bg-secondary", textClass: "text-white" },
             "N/A": { bgClass: "bg-info", textClass: "text-dark" }
         };
     
         const defaultClasses = ["bg-success", "bg-danger", "bg-warning", "bg-secondary", "bg-info", "text-white", "text-dark"];
-        spanElementR14.classList.remove(...defaultClasses);
+        if (spanElementR14) {
+            spanElementR14.classList.remove(...defaultClasses);
+        }
     
         const text = spanElementR14.innerText;
         if (classMap[text]) {
@@ -103,27 +153,57 @@ function mostrarElementoR14(
         containerBtnAnteriorSiguienteR14.classList.remove("bg-secondary", "bg-gradient", "bg-opacity-25")
     }
     
-    let spanElementR14
-    resProcesoR14 ? spanElementR14 = resProcesoR14 : null
-    resAprobadoR14 ? spanElementR14 = resAprobadoR14 : null
+    let spanElementProcesoR14, spanElementAprobadoR14
+    resProcesoR14 ? spanElementProcesoR14 = resProcesoR14 : null
+    resAprobadoR14 ? spanElementAprobadoR14 = resAprobadoR14 : null
 
     // console.log('spanElementR14:', spanElementR14)
     // console.log('indiceaMostar:', indiceAMostrar)
 
     if (indiceAMostrar === 0) {
-        colorSpanR14(spanElementR14)
-        btnAnteriorR14.disabled = true
-        btnSiguienteR14.removeAttribute('disabled')
+        if (btnAnteriorProcesoR14 && btnSiguienteProcesoR14) {
+            colorSpanR14(spanElementProcesoR14)
+            btnAnteriorProcesoR14.disabled = true
+            btnSiguienteProcesoR14.removeAttribute('disabled')
+            agregarEstiloRevPasadasR14 (containerBtnAnteriorSiguienteProcesoR14)
+        }
+
+        if (btnAnteriorAprobadoR14 && btnSiguienteAprobadoR14) {
+            colorSpanR14(spanElementAprobadoR14)
+            btnAnteriorAprobadoR14.disabled = true
+            btnSiguienteAprobadoR14.removeAttribute('disabled')
+            agregarEstiloRevPasadasR14 (containerBtnAnteriorSiguienteAprobadoR14)
+        }
+
     } else if (indiceAMostrar === arrayFromValues.length-1) {
-        colorSpanR14(spanElementR14)
-        btnAnteriorR14.removeAttribute('disabled')
-        btnSiguienteR14.disabled = true
-        eliminarEstiloRevPasadasR14(containerBtnAnteriorSiguienteR14)
+        if (btnAnteriorProcesoR14 && btnSiguienteProcesoR14) {
+            colorSpanR14(spanElementProcesoR14)
+            btnAnteriorProcesoR14.removeAttribute('disabled')
+            btnSiguienteProcesoR14.disabled = true
+            eliminarEstiloRevPasadasR14(containerBtnAnteriorSiguienteProcesoR14)
+        }
+        
+        if (btnAnteriorAprobadoR14 && btnSiguienteAprobadoR14) {
+            colorSpanR14(spanElementAprobadoR14)
+            btnAnteriorAprobadoR14.removeAttribute('disabled')
+            btnSiguienteAprobadoR14.disabled = true
+            eliminarEstiloRevPasadasR14(containerBtnAnteriorSiguienteAprobadoR14)
+        }
+
     } else {
-        colorSpanR14(spanElementR14)
-        btnAnteriorR14.removeAttribute('disabled')
-        btnSiguienteR14.removeAttribute('disabled')
-        agregarEstiloRevPasadasR14(containerBtnAnteriorSiguienteR14)
+        if (btnAnteriorProcesoR14 && btnSiguienteProcesoR14) {
+            colorSpanR14(spanElementProcesoR14)
+            btnAnteriorProcesoR14.removeAttribute('disabled')
+            btnSiguienteProcesoR14.removeAttribute('disabled')
+            agregarEstiloRevPasadasR14(containerBtnAnteriorSiguienteProcesoR14)
+        }
+        
+        if (btnAnteriorAprobadoR14 && btnSiguienteAprobadoR14) {
+            colorSpanR14(spanElementAprobadoR14)
+            btnAnteriorAprobadoR14.removeAttribute('disabled')
+            btnSiguienteAprobadoR14.removeAttribute('disabled')
+            agregarEstiloRevPasadasR14(containerBtnAnteriorSiguienteAprobadoR14)
+        }
     }
 }
 
@@ -135,11 +215,17 @@ function mostrarAnteriorR14(arrayFromValues, kValue) {
     let indiceAMostrar = parseInt(lastIndexArrayFromValues-1)
     inputSpotIndex.value = parseInt(indiceAMostrar)
 
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
+    // console.log('arrValuesRevisionMark: ', arrValuesRevisionMark)
+
     let resProcesoR14 = document.getElementById(`resProcesoR14${kValue}`)
     let resAprobadoR14 = document.getElementById(`resAprobadoR14${kValue}`)
 
     mostrarElementoR14(
         arrayFromValues,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resProcesoR14,
@@ -155,11 +241,16 @@ function mostrarSiguienteR14(arrayFromValues, kValue) {
     let indiceAMostrar = parseInt(lastIndexArrayFromValues+1)
     inputSpotIndex.value =  parseInt(indiceAMostrar)
 
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
+
     let resProcesoR14 = document.getElementById(`resProcesoR14${kValue}`)
     let resAprobadoR14 = document.getElementById(`resAprobadoR14${kValue}`)
 
     mostrarElementoR14(
         arrayFromValues,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resProcesoR14,

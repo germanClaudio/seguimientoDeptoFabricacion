@@ -1,6 +1,6 @@
 const ContenedorMongoDB = require('../../contenedores/containerMongoDB.js')
 const mongoose = require('mongoose')
-const { ObjectId } = require('mongodb');
+// const { ObjectId } = require('mongodb');
 const Proyectos = require('../../models/proyectos.models.js')
 const Clientes = require('../../models/clientes.models.js')
 const Programas = require('../../models/programas.models.js')
@@ -316,11 +316,11 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
                                         otDistribucion: []
                                     }
                                 }
-                                console.log('0.3-Dao-estructuraACrear: ', i,' - ', estructuraACrear)
+                                // console.log('0.3-Dao-estructuraACrear: ', i,' - ', estructuraACrear)
                                 if (estructuraACrear) {
                                     arrayStructureTree.push(estructuraACrear)
                                 }
-                                console.log('1-Dao-arrayStructureTree-- ', i,' - ', arrayStructureTree[i])
+                                // console.log('1-Dao-arrayStructureTree-- ', i,' - ', arrayStructureTree[i])
 
                                 // Se agrega la estructura al arbol de MongoDB ---
                                 const treeInfoOtAddedToOt = await Proyectos.updateOne(
@@ -331,7 +331,7 @@ class ProgramacionDaoMongoDB extends ContenedorMongoDB {
                                     { upsert: true }
                                 )
                                 arrayTreeCreation.push(treeInfoOtAddedToOt)
-                                console.log('2-Dao-Estructura arbol creada: ', i,' - ', arrayTreeCreation)
+                                //console.log('2-Dao-Estructura arbol creada: ', i,' - ', arrayTreeCreation)
 
                                 // Se crea el array de datos a agregar ---
                                 let updateQuery = {

@@ -1,22 +1,30 @@
-let arrBtnAnterior3d = []
-let arrBtnSiguiente3d = []
+let arrBtnAnteriorProceso3d = [], arrBtnSiguienteProceso3d = [],
+    arrBtnAnteriorHorasProceso3d = [], arrBtnSiguienteHorasProceso3d = []
 
 for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de proyectos por Cliente
-
     for (let p = 0; p<varLimMaxOtProyecto; p++) { //variable limite maximo de Ot por proyecto
-        
         for (let q = 0; q<varLimMaxOtProyecto; q++) {
-            if (document.getElementById(`btnAnteriorSiguiente3d${i}_${p}_${q}`)) {
-                arrBtnAnterior3d.push(i)
-                arrBtnSiguiente3d.push(i)
+            const btnIdProceso3d = `btnAnteriorSiguienteProceso3d${i}_${p}_${q}`;
+            const btnIdHorasProceso3d = `btnAnteriorSiguienteHorasProceso3d${i}_${p}_${q}`;
+            
+            const btnElementProceso3d = document.getElementById(btnIdProceso3d);
+            if (document.getElementById(`btnAnteriorSiguienteProceso3d${i}_${p}_${q}`)) {
+                arrBtnAnteriorProceso3d.push(i)
+                arrBtnSiguienteProceso3d.push(i)
+            }
+
+            const btnElementHorasProceso3d = document.getElementById(btnIdHorasProceso3d);
+            if (document.getElementById(`btnAnteriorSiguienteHorasProceso3d${i}_${p}_${q}`)) {
+                arrBtnAnteriorHorasProceso3d.push(i)
+                arrBtnSiguienteHorasProceso3d.push(i)
             }
         }
     }
 }
 
 //*********** Evento btn's anterior y siguiente ************* */
-if(arrBtnAnterior3d !=[]) {
-    let allBtnAnterior = document.querySelectorAll('[name="btnAnterior3d"]')
+if(arrBtnAnteriorProceso3d !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorProceso3d"]')
     
     allBtnAnterior.forEach(function(btn){
         if (btn.value) {
@@ -32,8 +40,42 @@ if(arrBtnAnterior3d !=[]) {
     })
 }
 
-if(arrBtnSiguiente3d !=[]) {    
-    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguiente3d"]')
+if(arrBtnSiguienteProceso3d !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteProceso3d"]')
+    
+    allBtnSiguiente.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                //console.log('kValue. ', kValue)
+                mostrarSiguiente3d(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArray3d
+            })
+        }
+    })
+}
+
+if(arrBtnAnteriorHorasProceso3d !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorHorasProceso3d"]')
+    
+    allBtnAnterior.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                //console.log('kValue. ', kValue)
+                mostrarAnterior3d(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArray3d
+            })
+        }
+    })
+}
+
+if(arrBtnSiguienteHorasProceso3d !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteHorasProceso3d"]')
     
     allBtnSiguiente.forEach(function(btn){
         if (btn.value) {
@@ -52,93 +94,114 @@ if(arrBtnSiguiente3d !=[]) {
 // Mostrar el elemento actual en la página
 function mostrarElemento3d(
     arrayFromValues,
+    arrValuesRevisionMark,
     indiceAMostrar,
     kValue,
     resProceso3d,
     resHorasProceso3d) {
     // console.log('resProceso3d: ', resProceso3d, 'resHorasProceso3d: ', resHorasProceso3d)
     // console.log('kValue', kValue)
+
+    let btnAnteriorProceso3d, btnSiguienteProceso3d, containerBtnAnteriorSiguienteProceso3d
+    let btnAnteriorHorasProceso3d, btnSiguienteHorasProceso3d, containerBtnAnteriorSiguienteHorasProceso3d
     
     if (resProceso3d) {
         let spanProceso3d = document.getElementById(`resProceso3d${kValue}`)
         let spanRevisionProceso3d = document.getElementById(`resRevisionProceso3d${kValue}`)
         spanProceso3d.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionProceso3d.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionProceso3d.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorProceso3d = document.getElementById(`btnAnteriorProceso3d${kValue}`)
+        btnSiguienteProceso3d = document.getElementById(`btnSiguienteProceso3d${kValue}`)
+        containerBtnAnteriorSiguienteProceso3d = document.getElementById(`btnAnteriorSiguienteProceso3d${kValue}`)
+
     } else if (resHorasProceso3d) {
         let spanHorasProceso3d = document.getElementById(`resHorasProceso3d${kValue}`)
         let spanRevisionHorasProceso3d = document.getElementById(`resRevisionHorasProceso3d${kValue}`)
         spanHorasProceso3d.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionHorasProceso3d.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionHorasProceso3d.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorHorasProceso3d = document.getElementById(`btnAnteriorHorasProceso3d${kValue}`)
+        btnSiguienteHorasProceso3d = document.getElementById(`btnSiguienteHorasProceso3d${kValue}`)
+        containerBtnAnteriorSiguienteHorasProceso3d = document.getElementById(`btnAnteriorSiguienteHorasProceso3d${kValue}`)
     }
     
-    let btnAnterior3d = document.getElementById(`btnAnterior3d${kValue}`)
-    let btnSiguiente3d = document.getElementById(`btnSiguiente3d${kValue}`)
-    let containerBtnAnteriorSiguiente3d = document.getElementById(`btnAnteriorSiguiente3d${kValue}`)
-    
     function colorSpan3d(spanElement3d) {
-        let resultColor
-        let resultTextColor
-        spanElement3d.classList.remove("bg-success")
-        spanElement3d.classList.remove("bg-danger")
-        spanElement3d.classList.remove("bg-warning")
-        spanElement3d.classList.remove("bg-secondary")
-        spanElement3d.classList.remove("bg-info")
-        spanElement3d.classList.remove("text-white")
-        spanElement3d.classList.remove("text-dark")
-
-        if (spanElement3d.innerText == "OK") {
-           resultColor = spanElement3d.classList.add("bg-success")
-           resultTextColor = spanElement3d.classList.add("text-white")
-        } else if (spanElement3d.innerText == "No OK") {
-           resultColor = spanElement3d.classList.add("bg-danger")
-           resultTextColor = spanElement3d.classList.add("text-white")
-        } else if (spanElement3d.innerText == "S/D") {
-           resultColor = spanElement3d.classList.add("bg-secondary")
-           resultTextColor = spanElement3d.classList.add("text-white")
-        } else if (spanElement3d.innerText == "Pendiente") {
-           resultColor = spanElement3d.classList.add("bg-warning")
-           resultTextColor = spanElement3d.classList.add("text-dark")
-        } else if (spanElement3d.innerText == "N/A") {
-            resultColor = spanElement3d.classList.add("bg-info")
-            resultTextColor = spanElement3d.classList.add("text-dark")
-         }
-        return resultColor, resultTextColor
+        const classMap = {
+            "OK": { bgClass: "bg-success", textClass: "text-white" },
+            "No OK": { bgClass: "bg-danger", textClass: "text-white" },
+            "Pendiente": { bgClass: "bg-warning", textClass: "text-dark" },
+            "S/D": { bgClass: "bg-secondary", textClass: "text-white" },
+            "N/A": { bgClass: "bg-info", textClass: "text-dark" }
+        };
+    
+        const defaultClasses = ["bg-success", "bg-danger", "bg-warning", "bg-secondary", "bg-info", "text-white", "text-dark"];
+        if (spanElement3d) {
+            spanElement3d.classList.remove(...defaultClasses);
+        }
+    
+        const text = spanElement3d.innerText;
+        if (classMap[text]) {
+            spanElement3d.classList.add(classMap[text].bgClass, classMap[text].textClass);
+        }
     }
 
     function agregarEstiloRevPasadas3d (containerBtnAnteriorSiguiente3d) {
-        containerBtnAnteriorSiguiente3d.classList.add("bg-secondary")
-        containerBtnAnteriorSiguiente3d.classList.add("bg-gradient")
-        containerBtnAnteriorSiguiente3d.classList.add("bg-opacity-25")
+        containerBtnAnteriorSiguiente3d.classList.add("bg-secondary","bg-gradient","bg-opacity-25")
     }
 
     function eliminarEstiloRevPasadas3d (containerBtnAnteriorSiguiente3d) {
-        containerBtnAnteriorSiguiente3d.classList.remove("bg-secondary")
-        containerBtnAnteriorSiguiente3d.classList.remove("bg-gradient")
-        containerBtnAnteriorSiguiente3d.classList.remove("bg-opacity-25")
+        containerBtnAnteriorSiguiente3d.classList.remove("bg-secondary","bg-gradient","bg-opacity-25")
     }
     
-    let spanElement3d
-    if (resProceso3d) {
-        spanElement3d = resProceso3d
-    } else if (resHorasProceso3d) {
-        spanElement3d = resHorasProceso3d
-    }
+    let spanElementProceso3d, spanElementHorasProceso3d 
+    resProceso3d ? spanElementProceso3d = resProceso3d : null
+    resHorasProceso3d ? spanElementHorasProceso3d = resHorasProceso3d: null
     
     if (indiceAMostrar == 0) {
-        colorSpan3d(spanElement3d)
-        btnAnterior3d.disabled = 'true'
-        btnSiguiente3d.removeAttribute('disabled')
-        agregarEstiloRevPasadas3d(containerBtnAnteriorSiguiente3d)
+        if (btnAnteriorProceso3d && btnSiguienteProceso3d) {
+            colorSpan3d(spanElementProceso3d)
+            btnAnteriorProceso3d.disabled = 'true'
+            btnSiguienteProceso3d.removeAttribute('disabled')
+            agregarEstiloRevPasadas3d(containerBtnAnteriorSiguienteProceso3d)
+        }
+
+        if (btnAnteriorHorasProceso3d && btnSiguienteHorasProceso3d) {
+            colorSpan3d(spanElementHorasProceso3d)
+            btnAnteriorHorasProceso3d.disabled = 'true'
+            btnSiguienteHorasProceso3d.removeAttribute('disabled')
+            agregarEstiloRevPasadas3d(containerBtnAnteriorSiguienteHorasProceso3d)
+        }
+
     } else if (indiceAMostrar == arrayFromValues.length-1) {
-        colorSpan3d(spanElement3d)
-        btnAnterior3d.removeAttribute('disabled')
-        btnSiguiente3d.disabled = true
-        eliminarEstiloRevPasadas3d(containerBtnAnteriorSiguiente3d)
+        if (btnAnteriorProceso3d && btnSiguienteProceso3d) {
+            colorSpan3d(spanElementProceso3d)
+            btnAnteriorProceso3d.removeAttribute('disabled')
+            btnSiguienteProceso3d.disabled = true
+            eliminarEstiloRevPasadas3d(containerBtnAnteriorSiguienteProceso3d)
+        }
+
+        if (btnAnteriorHorasProceso3d && btnSiguienteHorasProceso3d) {
+            colorSpan3d(spanElementHorasProceso3d)
+            btnAnteriorHorasProceso3d.removeAttribute('disabled')
+            btnSiguienteHorasProceso3d.disabled = true
+            eliminarEstiloRevPasadas3d(containerBtnAnteriorSiguienteHorasProceso3d)
+        }
+
     } else {
-        colorSpan3d(spanElement3d)
-        btnAnterior3d.removeAttribute('disabled')
-        btnSiguiente3d.removeAttribute('disabled')
-        agregarEstiloRevPasadas3d(containerBtnAnteriorSiguiente3d)
+        if (btnAnteriorProceso3d && btnSiguienteProceso3d) {
+            colorSpan3d(spanElementProceso3d)
+            btnAnteriorProceso3d.removeAttribute('disabled')
+            btnSiguienteProceso3d.removeAttribute('disabled')
+            agregarEstiloRevPasadas3d(containerBtnAnteriorSiguienteProceso3d)
+        }
+
+        if (btnAnteriorHorasProceso3d && btnSiguienteHorasProceso3d) {
+            colorSpan3d(spanElementHorasProceso3d)
+            btnAnteriorHorasProceso3d.removeAttribute('disabled')
+            btnSiguienteHorasProceso3d.removeAttribute('disabled')
+            agregarEstiloRevPasadas3d(containerBtnAnteriorSiguienteHorasProceso3d)
+        }
     }
 }
 
@@ -147,14 +210,20 @@ function mostrarAnterior3d(arrayFromValues, kValue) {
     let inputSpotIndex = document.getElementById(`resIndexHidden${kValue}`)
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
     
-    let indiceAMostrar = parseInt(lastIndexArrayFromValues - 1)
+    let indiceAMostrar = parseInt(lastIndexArrayFromValues-1)
     inputSpotIndex.value = parseInt(indiceAMostrar)
+
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
+    // console.log('arrValuesRevisionMark: ', arrValuesRevisionMark)
 
     let resProceso3d = document.getElementById(`resProceso3d${kValue}`)
     let resHorasProceso3d = document.getElementById(`resHorasProceso3d${kValue}`)
 
     mostrarElemento3d(
         arrayFromValues,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resProceso3d,
@@ -167,14 +236,19 @@ function mostrarSiguiente3d(arrayFromValues, kValue) {
     let inputSpotIndex = document.getElementById(`resIndexHidden${kValue}`)
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
     
-    let indiceAMostrar = parseInt(lastIndexArrayFromValues + 1)
+    let indiceAMostrar = parseInt(lastIndexArrayFromValues+1)
     inputSpotIndex.value = parseInt(indiceAMostrar)
+
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
 
     let resProceso3d = document.getElementById(`resProceso3d${kValue}`)
     let resHorasProceso3d = document.getElementById(`resHorasProceso3d${kValue}`)
 
     mostrarElemento3d(
         arrayFromValues,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resProceso3d,

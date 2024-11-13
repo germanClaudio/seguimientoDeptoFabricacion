@@ -1,41 +1,43 @@
         <!-- columna #1 datos de proyecto -->
+        <% let pathToProject = proyecto[0].project[0],
+            pathToClient = proyecto[0].client[0] %>
         <div class="col-1 mx-auto my-2">
             <div class="top-0 start-100">
-                <img src="<%= proyecto[0].client[0].logo %>" class="img-fluid rounded mb-2"
-                alt="Logo Cliente" width="85px">
-                <div id="projectIdHidden" value="<%= proyecto[0].project[0].id %>" style="display: none;"></div>
+                <img src="<%= pathToClient.logo %>" class="img-fluid rounded mb-2"
+                    alt="Logo Cliente" width="85px">
+                <div id="projectIdHidden" value="<%= pathToProject.id %>" style="display: none;"></div>
             </div>
             <h6 class="card-title">
-                <%= proyecto[0].project[0].projectName %>
+                <%= pathToProject.projectName %>
             </h6>
             <br>
-            <a href="/api/clientes/<%= proyecto[0].client[0].id %>">
-                <img src="<%= proyecto[0].project[0].imageProject %>" class="img-fluid rounded mb-2"
+            <a href="/api/clientes/<%= pathToClient.id %>">
+                <img src="<%= pathToProject.imageProject %>" class="img-fluid rounded mb-2"
                     alt="Imagen Proyecto" width="120px">
             </a>
             <p class="card-text">
                 <small>
                     <strong class="mx-2">
-                        <%= proyecto[0].project[0].projectDescription %>
+                        <%= pathToProject.projectDescription %>
                     </strong>
                 </small>
             </p>
-            <% if (proyecto[0].project[0].levelProject == 'ganado') { %>
+            <% if (pathToProject.levelProject == 'ganado') { %>
                 <span class="badge rounded-pill bg-success text-white">Ganado</span>
-            <% } else if (proyecto[0].project[0].levelProject == 'paraCotizar') { %>
+
+            <% } else if (pathToProject.levelProject == 'paraCotizar') { %>
                 <span class="badge rounded-pill bg-secondary text-warning">Para Cotizar</span>
+
             <% } else { %>
                 <span class="badge rounded-pill bg-danger text-white">A riesgo</span>
             <% } %>
                 <p class="card-text my-3">
                     <small class="text-muted"> Prio:
-                        <span class="badge bg-dark text-white mx-2">
-                        <%= proyecto[0].project[0].prioProject %>
-                        </span>
+                        <span class="badge bg-dark text-white mx-2"><%= pathToProject.prioProject %></span>
                     </small>
                 </p>
 
-            <% if (proyecto[0].project[0].statusProject) {
+            <% if (pathToProject.statusProject) {
                 const status="Activo" %>
                 <span id="statusProjectBoolean" class="badge rounded-pill bg-primary text-white mx-2">
                     <%= status %>
@@ -47,15 +49,13 @@
                 </span>
             <% } %>
                 <br>
-                <p class="card-text my-3">
-                    <%= proyecto[0].project[0].codeProject %>
-                </p>
+                <p class="card-text my-3"><%= pathToProject.codeProject %></p>
                 <br>
                 <p class="card-text">
                     Cantidad de OCI's
                         <% let ociTotalCount = 0 
-                            for ( let k=0; proyecto[0].project[0].oci.length> k; k++) {
-                                if (proyecto[0].project[0].oci[k].visible) {
+                            for ( let k=0; pathToProject.oci.length> k; k++) {
+                                if (pathToProject.oci[k].visible) {
                                     ociTotalCount++
                                 }
                             } %>

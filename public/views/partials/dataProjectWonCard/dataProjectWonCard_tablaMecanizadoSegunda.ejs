@@ -4,7 +4,8 @@
         <tr>
             <th colspan="4" class="text-center">MECANIZADO (2° Parte)
                 <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
-                    <button id="posBtnAddDataOtMecanizadoSegunda<%=k%>" type="button" name="btnOtMecanizadoSegunda" class="btn btn-small btn-success shadow m-1 me-5 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                    <button id="posBtnAddDataOtMecanizadoSegunda<%=k%>" type="button" name="btnOtMecanizadoSegunda" class="btn btn-small btn-success shadow m-1 me-5 position-relative"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
                         <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
                         <span id="spanCheckSelecMasiveMecaSeg<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
                             0
@@ -32,9 +33,9 @@
     <tbody class="table-group-divider">
         
         <% let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-        resDatoFTres = 'S/D', resEstadoFTres = 'S/D', resRevisionFTres = 0,
-        resDatoFCuatro = 'S/D', resEstadoFCuatro = 'S/D', resRevisionFCuatro = 0,
-        resDatoNotasMecanizado = 'S/D', resEstadoNotasMecanizado = 'S/D', resRevisionNotasMecanizado = 0;
+            resDatoFTres = 'S/D', resEstadoFTres = 'S/D', resRevisionFTres = 0,
+            resDatoFCuatro = 'S/D', resEstadoFCuatro = 'S/D', resRevisionFCuatro = 0,
+            resDatoNotasMecanizado = 'S/D', resRevisionNotasMecanizado = 0;
 
         const mecanizadoSegundaConfig = {
             enProceso: { icon: "fa-arrows-spin", iconColor: "color:#b09b12" },
@@ -77,7 +78,7 @@
                                                     let largoArray = parseInt(largoArrayMecanizado)
                                                     resDatoFTres = pathToMongoOtMecanizadoSegunda[largoArray-1].fTres || 'sinDato'
                                                     resEstadoFTres = pathToMongoOtMecanizadoSegunda[largoArray-1].estadoFTres || 'sinDato'
-                                                    resRevisionFTres = pathToMongoOtMecanizadoSegunda[largoArray-1].revisionFTres
+                                                    resRevisionFTres = parseInt(pathToMongoOtMecanizadoSegunda[largoArray-1].revisionFTres) || 0
                                                     
                                                     arrResDatoFTres.push(pathToMongoOtMecanizadoSegunda[i].fTres)
                                                     arrResEstadoFTres.push(pathToMongoOtMecanizadoSegunda[i].estadoFTres)
@@ -87,11 +88,6 @@
                                                     arrResModificadorFTres.push(pathToMongoOtMecanizadoSegunda[i].modificator[0].username)
                                                     arrResFechaFTres.push(pathToMongoOtMecanizadoSegunda[i].timestamp)
                                                     arrResFechaModFTres.push(pathToMongoOtMecanizadoSegunda[i].modifiedOn)
-                                                    
-                                                } else {
-                                                    resDatoFTres = 'S/D'
-                                                    resEstadoFTres = 'S/D'
-                                                    resRevisionFTres = 0
                                                 }
                                             }
                                             valueArrayResFTres = parseInt(arrResDatoFTres.length-1)
@@ -108,16 +104,10 @@
                                             }
                                                 
                                         } else {
-                                            anteriorDisabled = "disabled"
-                                            siguienteDisabled = "disabled"
-                                            resDatoFTres = "S/D"
-                                            resEstadoFTres = "S/D"
-                                            resRevisionFTres = 0
                                             arrResDatoFTres.push(resDatoFTres)
                                             arrResEstadoFTres.push(resEstadoFTres)
                                             arrResRevisionFTres.push(resRevisionFTres)
-                                            valueArrayResFTres = 0
-
+                                            
                                             arrResCreadorFTres.push(pathMongoOtDetalles[o].creator[0].username)
                                             arrResModificadorFTres = ""
                                             arrResFechaFTres.push(pathMongoOtDetalles[o].timestamp)
@@ -139,7 +129,7 @@
                                             <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaFTres %>">
                                             <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModFTres %>">
 
-                                            <span id="resDatoFTres<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2">
+                                            <span id="resDatoFTres<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="text-dark my-2">
                                                 <%= resDatoFTres %>
                                             </span> |
 
@@ -148,7 +138,7 @@
                                                 <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                             </span> |
 
-                                            <span id="resRevisionFTres<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFTres" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <span id="resRevisionFTres<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFTres" class="badge text-dark my-2" style="cursor: help;">
                                                 <%= resRevisionFTres %>
                                             </span>
 
@@ -170,7 +160,7 @@
                                                     let largoArray = parseInt(largoArrayMecanizado)
                                                     resDatoFCuatro = pathToMongoOtMecanizadoSegunda[largoArray-1].fCuatro || 'sinDato'
                                                     resEstadoFCuatro = pathToMongoOtMecanizadoSegunda[largoArray-1].estadoFCuatro || 'sinDato'
-                                                    resRevisionFCuatro = pathToMongoOtMecanizadoSegunda[largoArray-1].revisionFCuatro
+                                                    resRevisionFCuatro = parseInt(pathToMongoOtMecanizadoSegunda[largoArray-1].revisionFCuatro) || 0
                                                     
                                                     arrResDatoFCuatro.push(pathToMongoOtMecanizadoSegunda[i].fCuatro)
                                                     arrResEstadoFCuatro.push(pathToMongoOtMecanizadoSegunda[i].estadoFCuatro)
@@ -180,11 +170,6 @@
                                                     arrResModificadorFCuatro.push(pathToMongoOtMecanizadoSegunda[i].modificator[0].username)
                                                     arrResFechaFCuatro.push(pathToMongoOtMecanizadoSegunda[i].timestamp)
                                                     arrResFechaModFCuatro.push(pathToMongoOtMecanizadoSegunda[i].modifiedOn)
-                                                    
-                                                } else {
-                                                    resDatoFCuatro = 'S/D'
-                                                    resEstadoFCuatro = 'S/D'
-                                                    resRevisionFCuatro = 0
                                                 }
                                             }
                                             valueArrayResFCuatro = parseInt(arrResDatoFCuatro.length-1)
@@ -201,16 +186,10 @@
                                             }
                                             
                                         } else {
-                                            anteriorDisabled = "disabled"
-                                            siguienteDisabled = "disabled"
-                                            resDatoFCuatro = 'S/D'
-                                            resEstadoFCuatro = "S/D"
-                                            resRevisionFCuatro = 0
                                             arrResDatoFCuatro.push(resDatoFCuatro)
                                             arrResEstadoFCuatro.push(resEstadoFCuatro)
                                             arrResRevisionFCuatro.push(resRevisionFCuatro)
-                                            valueArrayResFCuatro = 0
-
+                                            
                                             arrResCreadorFCuatro.push(pathMongoOtDetalles[o].creator[0].username)
                                             arrResModificadorFCuatro = ""
                                             arrResFechaFCuatro.push(pathMongoOtDetalles[o].timestamp)
@@ -232,7 +211,7 @@
                                             <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaFCuatro %>">
                                             <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModFCuatro %>">
 
-                                            <span id="resDatoFCuatro<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2">
+                                            <span id="resDatoFCuatro<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="text-dark my-2">
                                                 <%= resDatoFCuatro %>
                                             </span> |
 
@@ -241,7 +220,7 @@
                                                 <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                             </span> |
 
-                                            <span id="resRevisionFCuatro<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFCuatro" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <span id="resRevisionFCuatro<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFCuatro" class="badge text-dark my-2" style="cursor: help;">
                                                 <%= resRevisionFCuatro %>
                                             </span>
 
@@ -261,7 +240,7 @@
                                                 if (pathToMongoOtMecanizadoSegunda[i]) {
                                                     let largoArray = parseInt(largoArrayMecanizado)
                                                     resDatoNotasMecanizado = pathToMongoOtMecanizadoSegunda[largoArray-1].notasMecanizado || 'sinDato'
-                                                    resRevisionNotasMecanizado = pathToMongoOtMecanizadoSegunda[largoArray-1].revisionNotasMecanizado || 'sinDato'
+                                                    resRevisionNotasMecanizado = parseInt(pathToMongoOtMecanizadoSegunda[largoArray-1].revisionNotasMecanizado) || 0
                                                     
                                                     arrResDatoNotasMecanizado.push(pathToMongoOtMecanizadoSegunda[i].notasMecanizado)
                                                     arrResRevisionNotasMecanizado.push(pathToMongoOtMecanizadoSegunda[i].revisionNotasMecanizado)
@@ -270,10 +249,6 @@
                                                     arrResModificadorNotasMecanizado.push(pathToMongoOtMecanizadoSegunda[i].modificator[0].username)
                                                     arrResFechaNotasMecanizado.push(pathToMongoOtMecanizadoSegunda[i].timestamp)
                                                     arrResFechaModNotasMecanizado.push(pathToMongoOtMecanizadoSegunda[i].modifiedOn)
-                                                    
-                                                } else {
-                                                    resDatoNotasMecanizado = 'S/D'
-                                                    resRevisionNotasMecanizado = 0
                                                 }
                                             }
                                             valueArrayResNotasMecanizado = parseInt(arrResDatoNotasMecanizado.length-1)
@@ -290,48 +265,43 @@
                                             }
                                             
                                         } else {
-                                            anteriorDisabled = "disabled"
-                                            siguienteDisabled = "disabled"
-                                            resDatoNotasMecanizado = "S/D"
-                                            resRevisionNotasMecanizado = 0
                                             arrResDatoNotasMecanizado.push(resDatoNotasMecanizado)
                                             arrResRevisionNotasMecanizado.push(resRevisionNotasMecanizado)
-                                            valueArrayResNotasMecanizado = 0
-
+                                            
                                             arrResCreadorNotasMecanizado.push(pathMongoOtDetalles[o].creator[0].username)
                                             arrResModificadorNotasMecanizado = ""
                                             arrResFechaNotasMecanizado.push(pathMongoOtDetalles[o].timestamp)
                                             arrResFechaModNotasMecanizado = ""
                                         } %>
 
-                                            <div id="btnAnteriorSiguienteNotasMecanizado<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                                <button id="btnAnteriorNotasMecanizado<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorNotasMecanizado" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= anteriorDisabled %>
-                                                    ><i class="fa-solid fa-arrow-left"></i>
-                                                </button>
-                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoNotasMecanizado %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResNotasMecanizado %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionNotasMecanizado %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorNotasMecanizado %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorNotasMecanizado %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaNotasMecanizado %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModNotasMecanizado %>">
+                                        <div id="btnAnteriorSiguienteNotasMecanizado<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorNotasMecanizado<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorNotasMecanizado" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoNotasMecanizado %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResNotasMecanizado %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionNotasMecanizado %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorNotasMecanizado %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorNotasMecanizado %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaNotasMecanizado %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModNotasMecanizado %>">
 
-                                                <span id="resDatoNotasMecanizado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="text-dark my-2">
-                                                    <%= resDatoNotasMecanizado %>
-                                                </span> |
+                                            <span id="resDatoNotasMecanizado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="text-dark my-2">
+                                                <%= resDatoNotasMecanizado %>
+                                            </span> |
 
-                                                <span id="resRevisionNotasMecanizado<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionNotasMecanizado" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                    <%= resRevisionNotasMecanizado %>
-                                                </span>
+                                            <span id="resRevisionNotasMecanizado<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionNotasMecanizado" class="badge text-dark my-2" style="cursor: help;">
+                                                <%= resRevisionNotasMecanizado %>
+                                            </span>
 
-                                                <button id="btnSiguienteNotasMecanizado<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteNotasMecanizado" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= siguienteDisabled %>
-                                                    ><i class="fa-solid fa-arrow-right"></i>
-                                                </button>
-                                            </div>
+                                            <button id="btnSiguienteNotasMecanizado<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteNotasMecanizado" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 <% }
                             } %>
@@ -351,16 +321,11 @@
                                                     let largoArray = parseInt(largoArrayMecanizado)
                                                     resDatoFTres = pathToMongoOtMecanizadoSegunda[largoArray-1].fTres || 'sinDato'
                                                     resEstadoFTres = pathToMongoOtMecanizadoSegunda[largoArray-1].estadoFTres || 'sinDato'
-                                                    resRevisionFTres = pathToMongoOtMecanizadoSegunda[largoArray-1].revisionFTres
+                                                    resRevisionFTres = parseInt(pathToMongoOtMecanizadoSegunda[largoArray-1].revisionFTres) || 0
                                                     
                                                     arrResDatoFTres.push(pathToMongoOtMecanizadoSegunda[i].fTres)
                                                     arrResEstadoFTres.push(pathToMongoOtMecanizadoSegunda[i].estadoFTres)
                                                     arrResRevisionFTres.push(pathToMongoOtMecanizadoSegunda[i].revisionFTres)
-                                                    
-                                                } else {
-                                                    resDatoFTres = 'S/D'
-                                                    resEstadoFTres = 'S/D'
-                                                    resRevisionFTres = 0
                                                 }
                                             }
                                             valueArrayResFTres = parseInt(arrResDatoFTres.length-1)
@@ -368,12 +333,9 @@
                                             resEstadoFTres = pathToMongoOtMecanizadoSegunda[0].estadoFTres
                                         
                                         } else {
-                                            resDatoFTres = 'S/D'
-                                            resEstadoFTres = 'S/D'
-                                            resRevisionFTres = 0
                                             arrResDatoFTres.push(resDatoFTres)
                                             arrResEstadoFTres.push(resEstadoFTres)
-                                            arrResRevisionFTres.push(0)
+                                            arrResRevisionFTres.push(resRevisionFTres)
                                         } %>
                                         <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFTres %>">
                                         <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFTres %>">
@@ -389,7 +351,7 @@
                                             <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
 
-                                        <span id="resRevisionFTres<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFTres" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                        <span id="resRevisionFTres<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFTres" class="badge text-dark my-2" style="cursor: help;">
                                             <%= resRevisionFTres %>
                                         </span>
                                     </td>
@@ -404,16 +366,11 @@
                                                     let largoArray = parseInt(largoArrayMecanizado)
                                                     resDatoFCuatro = pathToMongoOtMecanizadoSegunda[largoArray-1].fCuatro || 'sinDato'
                                                     resEstadoFCuatro = pathToMongoOtMecanizadoSegunda[largoArray-1].estadoFCuatro || 'sinDato'
-                                                    resRevisionFCuatro = pathToMongoOtMecanizadoSegunda[largoArray-1].revisionFCuatro
+                                                    resRevisionFCuatro = parseInt(pathToMongoOtMecanizadoSegunda[largoArray-1].revisionFCuatro) || 0
                                                     
                                                     arrResDatoFCuatro.push(pathToMongoOtMecanizadoSegunda[i].fCuatro)
                                                     arrResEstadoFCuatro.push(pathToMongoOtMecanizadoSegunda[i].estadoFCuatro)
                                                     arrResRevisionFCuatro.push(pathToMongoOtMecanizadoSegunda[i].revisionFCuatro)
-                                                    
-                                                } else {
-                                                    resDatoFCuatro = 'S/D'
-                                                    resEstadoFCuatro = 'S/D'
-                                                    resRevisionFCuatro = 0
                                                 }
                                             }
                                             valueArrayResFCuatro = parseInt(arrResDatoFCuatro.length-1)
@@ -421,30 +378,27 @@
                                             resEstadoFCuatro = pathToMongoOtMecanizadoSegunda[0].estadoFCuatro
 
                                         } else {
-                                            resDatoFCuatro = 'S/D'
-                                            resEstadoFCuatro = 'S/D'
-                                            resRevisionFCuatro = 0
                                             arrResDatoFCuatro.push(resDatoFCuatro)
                                             arrResEstadoFCuatro.push(resEstadoFCuatro)
-                                            arrResRevisionFCuatro.push(0)
+                                            arrResRevisionFCuatro.push(resRevisionFCuatro)
                                         } %>
-                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFCuatro %>">
-                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFCuatro %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFCuatro %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFCuatro %>">
-                                        
-                                            <span id="resDatoFCuatro<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                                <%= resDatoFCuatro %>
-                                            </span> |
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFCuatro %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFCuatro %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFCuatro %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFCuatro %>">
+                                    
+                                        <span id="resDatoFCuatro<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                            <%= resDatoFCuatro %>
+                                        </span> |
 
-                                            <% const config = mecanizadoSegundaConfig[resEstadoFCuatro] || mecanizadoSegundaConfig.default; %>
-                                            <span id="resEstadoFCuatro<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFCuatro%>">
-                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                            </span> |
+                                        <% const config = mecanizadoSegundaConfig[resEstadoFCuatro] || mecanizadoSegundaConfig.default; %>
+                                        <span id="resEstadoFCuatro<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFCuatro%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
 
-                                            <span id="resRevisionFCuatro<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFCuatro" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                <%= resRevisionFCuatro %>
-                                            </span>
+                                        <span id="resRevisionFCuatro<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFCuatro" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionFCuatro %>
+                                        </span>
                                     </td>
 
                                 <% } else { %>
@@ -456,24 +410,18 @@
                                                 if (pathToMongoOtMecanizadoSegunda[i]) {
                                                     let largoArray = parseInt(largoArrayMecanizado)
                                                     resDatoNotasMecanizado = pathToMongoOtMecanizadoSegunda[largoArray-1].notasMecanizado || 'sinDato'
-                                                    resRevisionNotasMecanizado = pathToMongoOtMecanizadoSegunda[largoArray-1].revisionNotasMecanizado || 'sinDato'
+                                                    resRevisionNotasMecanizado = parseInt(pathToMongoOtMecanizadoSegunda[largoArray-1].revisionNotasMecanizado) || 0
                                                     
                                                     arrResDatoNotasMecanizado.push(pathToMongoOtMecanizadoSegunda[i].notasMecanizado)
                                                     arrResRevisionNotasMecanizado.push(pathToMongoOtMecanizadoSegunda[i].revisionNotasMecanizado)
-                                                    
-                                                } else {
-                                                    resDatoNotasMecanizado = 'S/D'
-                                                    resRevisionNotasMecanizado = 0
                                                 }
                                             }
                                             valueArrayResNotasMecanizado = parseInt(arrResDatoNotasMecanizado.length-1)
                                             resDatoNotasMecanizado = pathToMongoOtMecanizadoSegunda[0].notasMecanizado
                                             
                                         } else {
-                                            resDatoNotasMecanizado = 'S/D'
-                                            resRevisionNotasMecanizado = 0
                                             arrResDatoNotasMecanizado.push(resDatoNotasMecanizado)
-                                            arrResRevisionNotasMecanizado.push(0)
+                                            arrResRevisionNotasMecanizado.push(resRevisionNotasMecanizado)
                                         } %>
                                         <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoNotasMecanizado %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResNotasMecanizado %>">

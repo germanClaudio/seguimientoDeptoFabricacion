@@ -78,7 +78,7 @@
                                                     let largoArray = parseInt(largoArrayMecanizado)
                                                     resDatoFCero = pathToMongoOtMecanizado[largoArray-1].fCero == 'sinDato' ? "S/D" : pathToMongoOtMecanizado[largoArray-1].fCero
                                                     resEstadoFCero = pathToMongoOtMecanizado[largoArray-1].estadoFCero == 'sinDato' ? "S/D" : pathToMongoOtMecanizado[largoArray-1].estadoFCero
-                                                    resRevisionFCero = pathToMongoOtMecanizado[largoArray-1].revisionFCero
+                                                    resRevisionFCero = parseInt(pathToMongoOtMecanizado[largoArray-1].revisionFCero) || 0
                                                     
                                                     pathToMongoOtMecanizado[i].fCero == 'sinDato' ? arrResDatoFCero.push("S/D") : arrResDatoFCero.push(pathToMongoOtMecanizado[i].fCero)
                                                     pathToMongoOtMecanizado[i].estadoFCero == 'sinDato' ? arrResEstadoFCero.push("S/D") : arrResEstadoFCero.push(pathToMongoOtMecanizado[i].estadoFCero)
@@ -88,11 +88,6 @@
                                                     arrResModificadorFCero.push(pathToMongoOtMecanizado[i].modificator[0].username)
                                                     arrResFechaFCero.push(pathToMongoOtMecanizado[i].timestamp)
                                                     arrResFechaModFCero.push(pathToMongoOtMecanizado[i].modifiedOn)
-                                                    
-                                                } else {
-                                                    resDatoFCero = 'S/D'
-                                                    resEstadoFCero = 'S/D'
-                                                    resRevisionFCero = 0
                                                 }
                                             }
                                             valueArrayResFCero = parseInt(arrResDatoFCero.length-1)
@@ -109,55 +104,49 @@
                                             }
                                                     
                                         } else {
-                                            anteriorDisabled = "disabled"
-                                            siguienteDisabled = "disabled"
-                                            resDatoFCero = 'S/D'
-                                            resEstadoFCero = "S/D"
-                                            resRevisionFCero = 0
                                             arrResDatoFCero.push(resDatoFCero)
                                             arrResEstadoFCero.push(resEstadoFCero)
                                             arrResRevisionFCero.push(resRevisionFCero)
-                                            valueArrayResFCero = 0
-
+                                            
                                             arrResCreadorFCero.push(pathMongoOtDetalles[o].creator[0].username)
                                             arrResModificadorFCero = ""
                                             arrResFechaFCero.push(pathMongoOtDetalles[o].timestamp)
                                             arrResFechaModFCero = ""
                                         } %>
                                         
-                                            <div id="btnAnteriorSiguienteFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                                <button id="btnAnteriorFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorFCero" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= anteriorDisabled %>
-                                                    ><i class="fa-solid fa-arrow-left"></i>
-                                                </button>
-                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFCero %>">
-                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFCero %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFCero %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFCero %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorFCero %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorFCero %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaFCero %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModFCero %>">
+                                        <div id="btnAnteriorSiguienteFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorFCero" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFCero %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFCero %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFCero %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFCero %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorFCero %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorFCero %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaFCero %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModFCero %>">
 
-                                                <span id="resDatoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                                    <%= resDatoFCero %>
-                                                </span> |
+                                            <span id="resDatoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                <%= resDatoFCero %>
+                                            </span> |
 
-                                                <% const config = mecanizadoPrimeraConfig[resEstadoFCero] || mecanizadoPrimeraConfig.default; %>
-                                                <span id="resEstadoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFCero%>">
-                                                    <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                                </span> |
+                                            <% const config = mecanizadoPrimeraConfig[resEstadoFCero] || mecanizadoPrimeraConfig.default; %>
+                                            <span id="resEstadoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFCero%>">
+                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                            </span> |
 
-                                                <span id="resRevisionFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFCero" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                    <%= resRevisionFCero %>
-                                                </span>
+                                            <span id="resRevisionFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFCero" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                <%= resRevisionFCero %>
+                                            </span>
 
-                                                <button id="btnSiguienteFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteFCero" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
-                                                    ><i class="fa-solid fa-arrow-right"></i>
-                                                </button>
-                                            </div>
+                                            <button id="btnSiguienteFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteFCero" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
                                     </td>
 
                                 <% } else if (q==11) { %>
@@ -170,7 +159,7 @@
                                                     let largoArray = parseInt(largoArrayMecanizado)
                                                     resDatoFUno = pathToMongoOtMecanizado[largoArray-1].fUno == 'sinDato' ? "S/D" : pathToMongoOtMecanizado[largoArray-1].fUno
                                                     resEstadoFUno = pathToMongoOtMecanizado[largoArray-1].estadoFUno == 'sinDato' ? "S/D" : pathToMongoOtMecanizado[largoArray-1].estadoFUno
-                                                    resRevisionFUno = pathToMongoOtMecanizado[largoArray-1].revisionFUno
+                                                    resRevisionFUno = parseInt(pathToMongoOtMecanizado[largoArray-1].revisionFUno) || 0
                                                     
                                                     pathToMongoOtMecanizado[i].fUno == 'sinDato' ? arrResDatoFUno.push("S/D") : arrResDatoFUno.push(pathToMongoOtMecanizado[i].fUno)
                                                     pathToMongoOtMecanizado[i].estadoFUno == 'sinDato' ? arrResEstadoFUno.push("S/D") : arrResEstadoFUno.push(pathToMongoOtMecanizado[i].estadoFUno)
@@ -180,11 +169,6 @@
                                                     arrResModificadorFUno.push(pathToMongoOtMecanizado[i].modificator[0].username)
                                                     arrResFechaFUno.push(pathToMongoOtMecanizado[i].timestamp)
                                                     arrResFechaModFUno.push(pathToMongoOtMecanizado[i].modifiedOn)
-                                                    
-                                                } else {
-                                                    resDatoFUno = 'S/D'
-                                                    resEstadoFUno = 'S/D'
-                                                    resRevisionFUno = 0
                                                 }
                                             }
                                             valueArrayResFUno = parseInt(arrResDatoFUno.length-1)
@@ -201,56 +185,50 @@
                                             }
                                                     
                                         } else {
-                                            anteriorDisabled = "disabled"
-                                            siguienteDisabled = "disabled"
-                                            resDatoFUno = "S/D"
-                                            resEstadoFUno = "S/D"
-                                            resRevisionFUno = 0
                                             arrResDatoFUno.push(resDatoFUno)
                                             arrResEstadoFUno.push(resEstadoFUno)
                                             arrResRevisionFUno.push(resRevisionFUno)
-                                            valueArrayResFUno = 0
-
+                                            
                                             arrResCreadorFUno.push(pathMongoOtDetalles[o].creator[0].username)
                                             arrResModificadorFUno = ""
                                             arrResFechaFUno.push(pathMongoOtDetalles[o].timestamp)
                                             arrResFechaModFUno = ""
                                         } %>
                                         
-                                            <div id="btnAnteriorSiguienteFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                                <button id="btnAnteriorFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorFUno" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= anteriorDisabled %>
-                                                    ><i class="fa-solid fa-arrow-left"></i>
-                                                </button>
-                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFUno %>">
-                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFUno %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFUno %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFUno %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorFUno %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorFUno %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaFUno %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModFUno %>">
+                                        <div id="btnAnteriorSiguienteFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorFUno" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFUno %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFUno %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFUno %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFUno %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorFUno %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorFUno %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaFUno %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModFUno %>">
 
-                                                <span id="resDatoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                                    <%= resDatoFUno %>
-                                                </span> |
+                                            <span id="resDatoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                <%= resDatoFUno %>
+                                            </span> |
 
-                                                <% const config = mecanizadoPrimeraConfig[resEstadoFUno] || mecanizadoPrimeraConfig.default; %>
-                                                <span id="resEstadoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFUno%>">
-                                                    <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                                </span> |
+                                            <% const config = mecanizadoPrimeraConfig[resEstadoFUno] || mecanizadoPrimeraConfig.default; %>
+                                            <span id="resEstadoFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFUno%>">
+                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                            </span> |
 
-                                                <span id="resRevisionFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFUno" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                    <%= resRevisionFUno %>
-                                                </span>
+                                            <span id="resRevisionFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFUno" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                <%= resRevisionFUno %>
+                                            </span>
 
-                                                <button id="btnSiguienteFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteFUno" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= siguienteDisabled %>
-                                                    ><i class="fa-solid fa-arrow-right"></i>
-                                                </button>
-                                            </div>
+                                            <button id="btnSiguienteFUno<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteFUno" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
                                     </td>
 
                                 <% } else { %>
@@ -263,7 +241,7 @@
                                                     let largoArray = parseInt(largoArrayMecanizado)
                                                     resDatoFDos = pathToMongoOtMecanizado[largoArray-1].fDos == 'sinDato' ? "S/D" : pathToMongoOtMecanizado[largoArray-1].fDos
                                                     resEstadoFDos = pathToMongoOtMecanizado[largoArray-1].estadoFDos == 'sinDato' ? "S/D" : pathToMongoOtMecanizado[largoArray-1].estadoFDos
-                                                    resRevisionFDos = pathToMongoOtMecanizado[largoArray-1].revisionFDos
+                                                    resRevisionFDos = parseInt(pathToMongoOtMecanizado[largoArray-1].revisionFDos) || 0
                                                     
                                                     pathToMongoOtMecanizado[i].fDos == 'sinDato' ? arrResDatoFDos.push("S/D") : arrResDatoFDos.push(pathToMongoOtMecanizado[i].fDos)
                                                     pathToMongoOtMecanizado[i].estadoFDos == 'sinDato' ? arrResEstadoFDos.push("S/D") : arrResEstadoFDos.push(pathToMongoOtMecanizado[i].estadoFDos)
@@ -273,11 +251,6 @@
                                                     arrResModificadorFDos.push(pathToMongoOtMecanizado[i].modificator[0].username)
                                                     arrResFechaFDos.push(pathToMongoOtMecanizado[i].timestamp)
                                                     arrResFechaModFDos.push(pathToMongoOtMecanizado[i].modifiedOn)
-                                                        
-                                                } else {
-                                                    resDatoFDos = 'S/D'
-                                                    resEstadoFDos = 'S/D'
-                                                    resRevisionFDos = 0
                                                 }
                                             }
                                             valueArrayResFDos = parseInt(arrResDatoFDos.length-1)
@@ -294,56 +267,50 @@
                                             }
                                                 
                                         } else {
-                                            anteriorDisabled = "disabled"
-                                            siguienteDisabled = "disabled"
-                                            resDatoFDos = "S/D"
-                                            resEstadoFDos = "S/D"
-                                            resRevisionFDos = 0
                                             arrResDatoFDos.push(resDatoFDos)
                                             arrResEstadoFDos.push(resEstadoFDos)
                                             arrResRevisionFDos.push(resRevisionFDos)
-                                            valueArrayResFDos = 0
-
+                                            
                                             arrResCreadorFDos.push(pathMongoOtDetalles[o].creator[0].username)
                                             arrResModificadorFDos = ""
                                             arrResFechaFDos.push(pathMongoOtDetalles[o].timestamp)
                                             arrResFechaModFDos = ""
                                         } %>
 
-                                            <div id="btnAnteriorSiguienteFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                                <button id="btnAnteriorFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorFDos" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= anteriorDisabled %>
-                                                    ><i class="fa-solid fa-arrow-left"></i>
-                                                </button>
-                                                <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFDos %>">
-                                                <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFDos %>">
-                                                <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFDos %>">
-                                                <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFDos %>">
-                                                <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorFDos %>">
-                                                <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorFDos %>">
-                                                <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaFDos %>">
-                                                <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModFDos %>">
+                                        <div id="btnAnteriorSiguienteFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorFDos" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFDos %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFDos %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFDos %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFDos %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorFDos %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorFDos %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaFDos %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModFDos %>">
 
-                                                <span id="resDatoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                                    <%= resDatoFDos %>
-                                                </span> |
+                                            <span id="resDatoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                <%= resDatoFDos %>
+                                            </span> |
 
-                                                <% const config = mecanizadoPrimeraConfig[resEstadoFDos] || mecanizadoPrimeraConfig.default; %>
-                                                <span id="resEstadoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFDos%>">
-                                                    <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                                </span> |
+                                            <% const config = mecanizadoPrimeraConfig[resEstadoFDos] || mecanizadoPrimeraConfig.default; %>
+                                            <span id="resEstadoFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFDos%>">
+                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                            </span> |
 
-                                                <span id="resRevisionFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFDos" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                    <%= resRevisionFDos %>
-                                                </span>
+                                            <span id="resRevisionFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFDos" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                <%= resRevisionFDos %>
+                                            </span>
 
-                                                <button id="btnSiguienteFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteFDos" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                    <%= siguienteDisabled %>
-                                                    ><i class="fa-solid fa-arrow-right"></i>
-                                                </button>
-                                            </div>
+                                            <button id="btnSiguienteFDos<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteFDos" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 <% }
                             } %>
@@ -363,16 +330,11 @@
                                                     let largoArray = parseInt(largoArrayMecanizado)
                                                     resDatoFCero = pathToMongoOtMecanizado[largoArray-1].fCero || 'sinDato'
                                                     resEstadoFCero = pathToMongoOtMecanizado[largoArray-1].estadoFCero || 'sinDato'
-                                                    resRevisionFCero = pathToMongoOtMecanizado[largoArray-1].revisionFCero
+                                                    resRevisionFCero = parseInt(pathToMongoOtMecanizado[largoArray-1].revisionFCero) || 0
                                                                                                             
                                                     arrResDatoFCero.push(pathToMongoOtMecanizado[i].fCero)
                                                     arrResEstadoFCero.push(pathToMongoOtMecanizado[i].estadoFCero)
                                                     arrResRevisionFCero.push(pathToMongoOtMecanizado[i].revisionFCero)
-                                                    
-                                                } else {
-                                                    resDatoFCero = 'S/D'
-                                                    resEstadoFCero = 'S/D'
-                                                    resRevisionFCero = 0
                                                 }
                                             }
                                             valueArrayResFCero = parseInt(arrResDatoFCero.length-1)
@@ -380,30 +342,27 @@
                                             resEstadoFCero = pathToMongoOtMecanizado[0].estadoFCero
 
                                         } else {
-                                            resDatoFCero = 'S/D'
-                                            resEstadoFCero = 'S/D'
-                                            resRevisionFCero = 0
                                             arrResDatoFCero.push(resDatoFCero)
                                             arrResEstadoFCero.push(resEstadoFCero)
-                                            arrResRevisionFCero.push(0)
+                                            arrResRevisionFCero.push(resRevisionFCero)
                                         } %>
-                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFCero %>">
-                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFCero %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFCero %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFCero %>">
-                                        
-                                            <span id="resDatoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2">
-                                                <%= resDatoFCero %>
-                                            </span> |
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFCero %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFCero %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFCero %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFCero %>">
+                                    
+                                        <span id="resDatoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2">
+                                            <%= resDatoFCero %>
+                                        </span> |
 
-                                            <% const config = mecanizadoPrimeraConfig[resEstadoFCero] || mecanizadoPrimeraConfig.default; %>
-                                            <span id="resEstadoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFCero%>">
-                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                            </span> |
+                                        <% const config = mecanizadoPrimeraConfig[resEstadoFCero] || mecanizadoPrimeraConfig.default; %>
+                                        <span id="resEstadoFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoFCero%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
 
-                                            <span id="resRevisionFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFCero" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                <%= resRevisionFCero %>
-                                            </span>
+                                        <span id="resRevisionFCero<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionFCero" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionFCero %>
+                                        </span>
                                     </td>
                                 <% } else if (q==11) { %>
                                     <!-- Fase 1 data Inactivo -->
@@ -415,16 +374,11 @@
                                                     let largoArray = parseInt(largoArrayMecanizado)
                                                     resDatoFUno = pathToMongoOtMecanizado[largoArray-1].fUno || 'sinDato'
                                                     resEstadoFUno = pathToMongoOtMecanizado[largoArray-1].fUno || 'sinDato'
-                                                    resRevisionFUno = pathToMongoOtMecanizado[largoArray-1].revisionFUno
+                                                    resRevisionFUno = parseInt(pathToMongoOtMecanizado[largoArray-1].revisionFUno) || 0
                                                     
                                                     arrResDatoFUno.push(pathToMongoOtMecanizado[i].fUno)
                                                     arrResEstadoFUno.push(pathToMongoOtMecanizado[i].fUno)
                                                     arrResRevisionFUno.push(pathToMongoOtMecanizado[i].revisionFUno)
-                                                    
-                                                } else {
-                                                    resDatoFUno = 'S/D'
-                                                    resEstadoFUno = 'S/D'
-                                                    resRevisionFUno = 0
                                                 }
                                             }
                                             valueArrayResFUno = parseInt(arrResDatoFUno.length-1)
@@ -432,14 +386,10 @@
                                             resEstadoFUno = pathToMongoOtMecanizado[0].estadoFUno
                                     
                                         } else {
-                                            resDatoFUno = "S/D"
-                                            resEstadoFUno = "S/D"
-                                            resRevisionFUno = 0
                                             arrResDatoFUno.push(resDatoFUno)
                                             arrResEstadoFUno.push(resEstadoFUno)
-                                            arrResRevisionFUno.push(0)
+                                            arrResRevisionFUno.push(resRevisionFUno)
                                         } %>
-
                                         <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFUno %>">
                                         <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFUno %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFUno %>">
@@ -469,16 +419,11 @@
                                                     let largoArray = parseInt(largoArrayMecanizado)
                                                     resDatoFDos = pathToMongoOtMecanizado[largoArray-1].fDos || 'sinDato'
                                                     resEstadoFDos = pathToMongoOtMecanizado[largoArray-1].estadoFDos || 'sinDato'
-                                                    resRevisionFDos = pathToMongoOtMecanizado[largoArray-1].revisionFDos
+                                                    resRevisionFDos = parseInt(pathToMongoOtMecanizado[largoArray-1].revisionFDos) || 0
                                                     
                                                     arrResDatoFDos.push(pathToMongoOtMecanizado[i].fDos)
                                                     arrResEstadoFDos.push(pathToMongoOtMecanizado[i].estadoFDos)
                                                     arrResRevisionFDos.push(pathToMongoOtMecanizado[i].revisionFDos)
-                                                    
-                                                } else {
-                                                    resDatoFDos = 'S/D'
-                                                    resEstadoFDos = 'S/D'
-                                                    resRevisionFDos = 0
                                                 }
                                             }
                                             valueArrayResFDos = parseInt(arrResDatoFDos.length-1)
@@ -486,12 +431,9 @@
                                             resEstadoFDos = pathToMongoOtMecanizado[0].estadoFDos
                                         
                                         } else {
-                                            resDatoFDos = 'S/D'
-                                            resEstadoFDos = 'S/D'
-                                            resRevisionFDos = 0
                                             arrResDatoFDos.push(resDatoFDos)
                                             arrResEstadoFDos.push(resEstadoFDos)
-                                            arrResRevisionFDos.push(0)
+                                            arrResRevisionFDos.push(resRevisionFDos)
                                         } %>
                                         <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoFDos %>">
                                         <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoFDos %>">

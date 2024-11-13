@@ -6,7 +6,8 @@ const { uploadToGCS, uploadToGCSingleFile } = require("../utils/uploadFilesToGSC
 const { uploadMulterMultiImages, uploadMulterSingleImageProject, uploadMulterSingleImageOci } = require("../utils/uploadMulter.js")
 
 let formatDate = require('../utils/formatDate.js')
-
+let tieneNumeros = require('../utils/gotNumbers.js')
+let esStringUObjeto = require('../utils/isNumberOrObject.js')
 const csrf = require('csrf');
 const csrfTokens = csrf();
 
@@ -197,7 +198,7 @@ class ProjectsController {
                 if (req.files && req.files.length != 0) {
                     await uploadToGCSingleFile(req, res, next)
                 }
-console.log('req.body: ', req.body)
+// console.log('req.body: ', req.body)
                 let arrayOciNumber=[],
                     arrayOciDescription=[],
                     arrayOciAlias=[],
@@ -222,12 +223,12 @@ console.log('req.body: ', req.body)
                 let indexArrayOciNumber = 0
                 for (let h=0; h<arrayOciNumber.length; h++) {
                     const ociNumberValid = await this.projects.selectOciByOciNumber(arrayOciNumber[h], ociKNumber)
-        console.log('ociNumberValid: ', ociNumberValid)            
+        // console.log('ociNumberValid: ', ociNumberValid)            
                     if (!ociNumberValid) {
                         let projects = await this.projects.getAllProjects()
                         for (let x=0; x<parseInt(projects.length); x++) {
                             const otherOciNumbers = projects[0].project[0].oci.map(oci => oci.ociNumber);
-        console.log('otherOciNumbers ', otherOciNumbers)
+        // console.log('otherOciNumbers ', otherOciNumbers)
                             if (otherOciNumbers.includes(parseInt(ociNumberValid))) {
                                 invalidOciNumber = false
                                 indexArrayOciNumber = h
@@ -301,7 +302,7 @@ console.log('req.body: ', req.body)
                         modifiedOn: "",
                         visible: true
                     }
-    console.log('newProject:', newProject)
+    // console.log('newProject:', newProject)
                     const newProjectCreated = await this.projects.createNewProject(newProject)
                     if (!newProjectCreated) {
                         catchError401_1(req, res, next)
@@ -328,7 +329,7 @@ console.log('req.body: ', req.body)
                             data,
                             csrfToken
                         })
-                    }, 1000)
+                    }, 400)
 
                 } else {
                     catchError400_3(req, res, next)
@@ -421,7 +422,7 @@ console.log('req.body: ', req.body)
                 { prefix: 'internoSimulacion', array: arrayOtSimulation },
                 { prefix: 'externoDiseno', array: arrayOtSupplier }
             ];
-        console.log('req.body: ', req.body)
+        // console.log('req.body: ', req.body)
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
                 match ? match.array.push(req.body[key]) : null
@@ -432,8 +433,7 @@ console.log('req.body: ', req.body)
                 otInfoDisenoPrimera: [], otInfoDisenoSegunda: [],
                 otInfoInfo80: [], otInfoInfo100: [],
                 otInfoSim0: [], otInfoSim1: [], otInfoSim2_3: [],
-                otInfoSim4Primera: [], otInfoSim4Segunda: [],
-                otInfoSim5: []
+                otInfoSim4Primera: [], otInfoSim4Segunda: [], otInfoSim5: []
             }]
 
             // const otDetallesEmpty = [{
@@ -496,7 +496,7 @@ console.log('req.body: ', req.body)
                     data,
                     csrfToken
                 })
-            }, 500)
+            }, 400)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -558,7 +558,7 @@ console.log('req.body: ', req.body)
                         data,
                         csrfToken
                     })
-                }, 1000)
+                }, 400)
 
             } else {
                 catchError400_3(req, res, next)
@@ -630,7 +630,7 @@ console.log('req.body: ', req.body)
                         proyectos,
                         csrfToken
                     })
-                }, 1000)
+                }, 400)
 
             } else {
                 catchError400_3(req, res, next)
@@ -705,7 +705,7 @@ console.log('req.body: ', req.body)
                         data,
                         csrfToken
                     })
-                }, 1000)
+                }, 400)
 
             } else {
                 catchError400_3(req, res, next)
@@ -781,7 +781,7 @@ console.log('req.body: ', req.body)
                         data,
                         csrfToken
                     })
-                }, 1000)
+                }, 400)
 
             } else {
                 catchError400_3(req, res, next)
@@ -925,7 +925,7 @@ console.log('req.body: ', req.body)
                         data,
                         csrfToken
                     })
-                }, 1000)
+                }, 400)
     
             } catch (err) {
                 catchError500(err, req, res, next)
@@ -938,39 +938,39 @@ console.log('req.body: ', req.body)
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
-
-        const proyecto = await this.projects.selectProjectByProjectId(id)
-        if (!proyecto) {
-            catchError401_1(req, res, next)
-        }
-        
-        const clientId = proyecto[0].client[0]._id
-        const cliente = await this.clients.selectClientById(clientId)
-        if (!cliente) {
-            catchError401(req, res, next)
-        }
-        
-        const userId = userInfo.id
-        const userCreator = await this.users.getUserById(userId)
-        if (!userCreator) {
-            catchError401_3(req, res, next)
-        }
         
         //------ Storage Project Image in Google Store --------
         uploadMulterSingleImageProject(req, res, async (err) => {
-            if (req.file) {
-                await uploadToGCS(req, res, next)
-            }
-
-            const statusProject = req.body.statusProjectForm
-            const projectName = req.body.projectName
-            const projectDescription = req.body.projectDescription
-            const prioProject = req.body.prioProject
-            const levelProject = req.body.levelProject
-            const codeProject = req.body.codeProject
-            const imageProjectText = req.body.imageProjectFileName
-                        
             try{
+                if (req.file) {
+                    await uploadToGCS(req, res, next)
+                }
+
+                const proyecto = await this.projects.selectProjectByProjectId(id)
+                if (!proyecto) {
+                    catchError401_1(req, res, next)
+                }
+                
+                const clientId = proyecto[0].client[0]._id
+                const cliente = await this.clients.selectClientById(clientId)
+                if (!cliente) {
+                    catchError401(req, res, next)
+                }
+                
+                const userId = userInfo.id
+                const userCreator = await this.users.getUserById(userId)
+                if (!userCreator) {
+                    catchError401_3(req, res, next)
+                }
+        
+                const statusProject = req.body.statusProjectForm
+                const projectName = req.body.projectName
+                const projectDescription = req.body.projectDescription
+                const prioProject = req.body.prioProject
+                const levelProject = req.body.levelProject
+                const codeProject = req.body.codeProject
+                const imageProjectText = req.body.imageProjectFileName
+                        
                 await this.projects.updateProject(
                     id,
                     proyecto,
@@ -1006,7 +1006,7 @@ console.log('req.body: ', req.body)
                         data,
                         csrfToken
                     })
-                }, 1000)
+                }, 400)
 
             } catch (err) {
                 catchError500(err, req, res, next)
@@ -1020,54 +1020,54 @@ console.log('req.body: ', req.body)
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
 
-        const proyecto = await this.projects.selectProjectByProjectId(id)
-        if (!proyecto) {
-            catchError401_1(req, res, next)
-        }
-        
-        const clientId = proyecto[0].client[0]._id
-        const cliente = await this.clients.selectClientById(clientId)
-        if (!cliente) {
-            catchError401(req, res, next)
-        }
-        
-        const userId = userInfo.id
-        const userCreator = await this.users.getUserById(userId)
-        if (!userCreator) {
-            catchError401_3(req, res, next)
-        }
-
-        uploadMulterSingleImageOci(req, res, async (err) => {
-            if (req.file) {
-                uploadToGCS(req, res, next)
-            }
-
-            const ociNumberInput = parseInt(req.body.numberOci)
-            const numberOciHidden = parseInt(req.body.numberOciHidden)
-            const ociKNumber = parseInt(req.body.ociKNumberHidden)
-            const confirmationNumberOci = Boolean(req.body.confirmationNumberOci)
-            let ociNumberValid = 1
-
-            if (!confirmationNumberOci) {
-                ociNumberValid = numberOciHidden
-
-            } else {
-                ociNumberValid = await this.projects.selectOciByOciNumber(ociNumberInput, ociKNumber)         
-                const otherOciNumbers = proyecto[0].project[0].oci.map(oci => oci.ociNumber);
-            
-                if (otherOciNumbers.includes(ociNumberValid)) {
-                    const err = new Error (`Ya existe una OCI# ${ociNumberInput} o Numero de OCI inválido!`)
-                    err.dirNumber = 400
-                    return next(err);
+        try{
+            uploadMulterSingleImageOci(req, res, async (err) => {
+                if (req.file) {
+                    uploadToGCS(req, res, next)
                 }
-            }    
 
-            const statusOci = req.body.statusOciForm
-            const ociDescription = req.body.descriptionOci
-            const ociAlias = req.body.aliasOci
-            const ociImageText = req.body.imageOciFileName
+                const proyecto = await this.projects.selectProjectByProjectId(id)
+                if (!proyecto) {
+                    catchError401_1(req, res, next)
+                }
+                
+                const clientId = proyecto[0].client[0]._id
+                const cliente = await this.clients.selectClientById(clientId)
+                if (!cliente) {
+                    catchError401(req, res, next)
+                }
+        
+                const userId = userInfo.id
+                const userCreator = await this.users.getUserById(userId)
+                if (!userCreator) {
+                    catchError401_3(req, res, next)
+                }
 
-            try{
+                const ociNumberInput = parseInt(req.body.numberOci)
+                const numberOciHidden = parseInt(req.body.numberOciHidden)
+                const ociKNumber = parseInt(req.body.ociKNumberHidden)
+                const confirmationNumberOci = Boolean(req.body.confirmationNumberOci)
+                let ociNumberValid = 1
+
+                if (!confirmationNumberOci) {
+                    ociNumberValid = numberOciHidden
+
+                } else {
+                    ociNumberValid = await this.projects.selectOciByOciNumber(ociNumberInput, ociKNumber)         
+                    const otherOciNumbers = proyecto[0].project[0].oci.map(oci => oci.ociNumber);
+                
+                    if (otherOciNumbers.includes(ociNumberValid)) {
+                        const err = new Error (`Ya existe una OCI# ${ociNumberInput} o Numero de OCI inválido!`)
+                        err.dirNumber = 400
+                        return next(err);
+                    }
+                }    
+
+                const statusOci = req.body.statusOciForm
+                const ociDescription = req.body.descriptionOci
+                const ociAlias = req.body.aliasOci
+                const ociImageText = req.body.imageOciFileName
+
                 await this.projects.updateOci(
                     id,
                     proyecto,
@@ -1102,12 +1102,12 @@ console.log('req.body: ', req.body)
                         data,
                         csrfToken
                     })
-                }, 1000)
-            
-            } catch (err) {
-                catchError500(err, req, res, next)
-            }
-        })
+                }, 400)
+            })
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
     }
 
     updateOt = async (req, res, next) => {
@@ -1206,7 +1206,7 @@ console.log('req.body: ', req.body)
                     data,
                     csrfToken
                 })
-            }, 1000)
+            }, 400)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -1244,7 +1244,7 @@ console.log('req.body: ', req.body)
                 ociKNumber,
                 dataUserModificatorNotEmpty(userCreator)
             )
-                                
+            
             const cliente = await this.clients.updateClient(
                 clientId, 
                 clienteSeleccionado, 
@@ -1270,7 +1270,7 @@ console.log('req.body: ', req.body)
                         data,
                         csrfToken
                 })
-            }, 1000)
+            }, 400)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -1337,7 +1337,7 @@ console.log('req.body: ', req.body)
                         data,
                         csrfToken
                 })
-            }, 1000)
+            }, 400)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -1396,7 +1396,7 @@ console.log('req.body: ', req.body)
                     data,
                     csrfToken
                 })
-            }, 1000)
+            }, 400)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -1417,7 +1417,7 @@ console.log('req.body: ', req.body)
             }
             
             const projectId = req.body.projectIdHidden
-            const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             if (!proyecto) {
                 catchError401_1(req, res, next)
             }
@@ -1430,13 +1430,12 @@ console.log('req.body: ', req.body)
             
             const ociNumberK = parseInt(req.body.ociNumberK)
             const otQuantity = parseInt(req.body.otQuantity)
+            const arrayOtKNumber = req.body.otNumberK.split(",")
+            const arrayOtNumberK = arrayOtKNumber.map(Number) 
 
-            let arrayOtNumber=[],
-                arrayOtStatus=[],
-                arrayProcesoR14=[],
-                arrayRevisionProcesoR14=[],
-                arrayAprobadoR14=[],
-                arrayRevisionAprobadoR14=[]
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayProcesoR14=[], arrayRevisionProcesoR14=[],
+                arrayAprobadoR14=[], arrayRevisionAprobadoR14=[]
 
             const prefixes = [
                 { prefix: 'otNumberHidden', array: arrayOtNumber },
@@ -1468,16 +1467,23 @@ console.log('req.body: ', req.body)
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
             }
+            // console.log(arrayInfoAddedToOt)
 
             const itemUpdated = await this.projects.addInfoR14ToOtProject(
                 projectId,
                 otQuantity,
                 ociNumberK,
+                arrayOtNumberK,
                 arrayInfoAddedToOt
             )
     
             if (!itemUpdated) {
                 catchError400_3(req, res, next)
+            }
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_4(req, res, next)
             }
             
             data.slide = 0
@@ -1492,14 +1498,14 @@ console.log('req.body: ', req.body)
                     data,
                     csrfToken
                 })
-            }, 500)
+            }, 1000)
 
         } catch (err) {
             catchError500(err, req, res, next)
         }
     }
 
-    addInfoProceso3dToOtProject = async (req, res) => {
+    addInfoProceso3dToOtProject = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
@@ -1512,7 +1518,7 @@ console.log('req.body: ', req.body)
             }
             
             const projectId = req.body.projectIdHidden
-            const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             if (!proyecto) {
                 catchError401_4(req, res, next)
             }
@@ -1525,13 +1531,12 @@ console.log('req.body: ', req.body)
 
             const ociNumberK = parseInt(req.body.ociNumberK)
             const otQuantity = parseInt(req.body.otQuantity)
+            const arrayOtKNumber = req.body.otNumberK.split(",")
+            const arrayOtNumberK = arrayOtKNumber.map(Number)
 
-            let arrayOtNumber=[],
-                arrayOtStatus=[],
-                arrayProceso3d=[],
-                arrayRevisionProceso3d=[],
-                arrayHorasProceso3d=[],
-                arrayRevisionHorasProceso3d=[]
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayProceso3d=[], arrayRevisionProceso3d=[],
+                arrayHorasProceso3d=[], arrayRevisionHorasProceso3d=[]
 
             const prefixes = [
                 { prefix: 'otNumberHidden', array: arrayOtNumber },
@@ -1568,10 +1573,16 @@ console.log('req.body: ', req.body)
                 projectId,
                 otQuantity,
                 ociNumberK,
+                arrayOtNumberK,
                 arrayInfoAddedToOt
             )
             if (!itemUpdated) {
                 catchError400_3(req, res, next)
+            }
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_4(req, res, next)
             }
 
             data.slide = 1
@@ -1586,14 +1597,14 @@ console.log('req.body: ', req.body)
                     data,
                     csrfToken
                 })
-            }, 500)
+            }, 1000)
 
         } catch (err) {
             catchError500(err, req, res, next)
         }
     }
 
-    addInfoDisenoPrimeraToOtProject = async (req, res) => {
+    addInfoDisenoPrimeraToOtProject = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
@@ -1606,7 +1617,7 @@ console.log('req.body: ', req.body)
             }
         
             const projectId = req.body.projectIdHidden
-            const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             if (!proyecto) {
                 catchError401_4(req, res, next)
             }
@@ -1619,17 +1630,14 @@ console.log('req.body: ', req.body)
 
             const ociNumberK = parseInt(req.body.ociNumberK)
             const otQuantity = parseInt(req.body.otQuantity)
+            const arrayOtKNumber = req.body.otNumberK.split(",")
+            const arrayOtNumberK = arrayOtKNumber.map(Number)
 
-            let arrayOtNumber=[],
-                arrayOtStatus=[],
-                arrayAvDiseno=[],
-                arrayRevisionAvDiseno=[],
-                arrayAv50Diseno=[],
-                arrayRevisionAv50Diseno=[],
-                arrayAv80Diseno=[],
-                arrayRevisionAv80Diseno=[],
-                arrayEnvioCliente=[],
-                arrayRevisionEnvioCliente=[]
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayAvDiseno=[], arrayRevisionAvDiseno=[],
+                arrayAv50Diseno=[], arrayRevisionAv50Diseno=[],
+                arrayAv80Diseno=[], arrayRevisionAv80Diseno=[],
+                arrayEnvioCliente=[], arrayRevisionEnvioCliente=[]
 
             const prefixes = [
                 { prefix: 'otNumberHidden', array: arrayOtNumber },
@@ -1674,10 +1682,16 @@ console.log('req.body: ', req.body)
                 projectId,
                 otQuantity,
                 ociNumberK,
+                arrayOtNumberK,
                 arrayInfoAddedToOt
             )
             if (!itemUpdated) {
                 catchError400_3(req, res, next)
+            }
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_4(req, res, next)
             }
 
             data.slide = 2
@@ -1699,7 +1713,7 @@ console.log('req.body: ', req.body)
         }
     }
 
-    addInfoDisenoSegundaToOtProject = async (req, res) => {
+    addInfoDisenoSegundaToOtProject = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
@@ -1712,7 +1726,7 @@ console.log('req.body: ', req.body)
             }
             
             const projectId = req.body.projectIdHidden
-            const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             if (!proyecto) {
                 catchError401_4(req, res, next)
             }
@@ -1725,17 +1739,14 @@ console.log('req.body: ', req.body)
 
             const ociNumberK = parseInt(req.body.ociNumberK)
             const otQuantity = parseInt(req.body.otQuantity)
+            const arrayOtKNumber = req.body.otNumberK.split(",")
+            const arrayOtNumberK = arrayOtKNumber.map(Number)
 
-            let arrayOtNumber=[],
-                arrayOtStatus=[],
-                arrayAv100Diseno=[],
-                arrayRevisionAv100Diseno=[],
-                arrayRevisionCliente=[],
-                arrayRevisionRevisionCliente=[],
-                arrayLdmProvisoria=[],
-                arrayRevisionLdmProvisoria=[],
-                arrayAprobadoCliente=[],
-                arrayRevisionAprobadoCliente=[]
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayAv100Diseno=[], arrayRevisionAv100Diseno=[],
+                arrayRevisionCliente=[], arrayRevisionRevisionCliente=[],
+                arrayLdmProvisoria=[], arrayRevisionLdmProvisoria=[],
+                arrayAprobadoCliente=[], arrayRevisionAprobadoCliente=[]
 
             const prefixes = [
                 { prefix: 'otNumberHidden', array: arrayOtNumber },
@@ -1780,10 +1791,16 @@ console.log('req.body: ', req.body)
                 projectId,
                 otQuantity,
                 ociNumberK,
+                arrayOtNumberK,
                 arrayInfoAddedToOt
             )
             if (!itemUpdated) {
                 catchError400_3(req, res, next)
+            }
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_4(req, res, next)
             }
             
             data.slide = 3
@@ -1805,7 +1822,7 @@ console.log('req.body: ', req.body)
         }
     }
 
-    addInfo80ToOtProject = async (req, res) => {
+    addInfo80ToOtProject = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
@@ -1818,7 +1835,7 @@ console.log('req.body: ', req.body)
             }
         
             const projectId = req.body.projectIdHidden
-            const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             if (!proyecto) {
                 catchError401_4(req, res, next)
             }
@@ -1831,17 +1848,14 @@ console.log('req.body: ', req.body)
 
             const ociNumberK = parseInt(req.body.ociNumberK)
             const otQuantity = parseInt(req.body.otQuantity)
+            const arrayOtKNumber = req.body.otNumberK.split(",")
+            const arrayOtNumberK = arrayOtKNumber.map(Number)
 
-            let arrayOtNumber=[],
-                arrayOtStatus=[],
-                arrayLdmAvanceCG=[],
-                arrayRevisionLdmAvanceCG=[],
-                arrayLdmAvanceTD2=[],
-                arrayRevisionLdmAvanceTD2=[],
-                arrayLdm80=[],
-                arrayRevisionLdm80=[],
-                arrayInfoModelo=[],
-                arrayRevisionInfoModelo=[]
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayLdmAvanceCG=[], arrayRevisionLdmAvanceCG=[],
+                arrayLdmAvanceTD2=[], arrayRevisionLdmAvanceTD2=[],
+                arrayLdm80=[], arrayRevisionLdm80=[],
+                arrayInfoModelo=[], arrayRevisionInfoModelo=[]
                         
             const prefixes = [
                 { prefix: 'otNumberHidden', array: arrayOtNumber },
@@ -1886,10 +1900,16 @@ console.log('req.body: ', req.body)
                 projectId,
                 otQuantity,
                 ociNumberK,
+                arrayOtNumberK,
                 arrayInfoAddedToOt
             )
             if (!itemUpdated) {
                 catchError400_3(req, res, next)
+            }
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_4(req, res, next)
             }
 
             data.slide = 4  
@@ -1904,14 +1924,14 @@ console.log('req.body: ', req.body)
                     data,
                     csrfToken
                 })
-            }, 500)
+            }, 1000)
 
         } catch (err) {
             catchError500(err, req, res, next)
         }
     }
 
-    addInfo100ToOtProject = async (req, res) => {
+    addInfo100ToOtProject = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
@@ -1924,7 +1944,7 @@ console.log('req.body: ', req.body)
             }
         
             const projectId = req.body.projectIdHidden
-            const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             if (!proyecto) {
                 catchError401_4(req, res, next)
             }
@@ -1937,13 +1957,12 @@ console.log('req.body: ', req.body)
 
             const ociNumberK = parseInt(req.body.ociNumberK)
             const otQuantity = parseInt(req.body.otQuantity)
+            const arrayOtKNumber = req.body.otNumberK.split(",")
+            const arrayOtNumberK = arrayOtKNumber.map(Number)
 
-            let arrayOtNumber=[],
-                arrayOtStatus=[],
-                arrayLdm100=[],
-                arrayRevisionLdm100=[],
-                arrayInfo100=[],
-                arrayRevisionInfo100=[]
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayLdm100=[], arrayRevisionLdm100=[],
+                arrayInfo100=[], arrayRevisionInfo100=[]
 
             const prefixes = [
                 { prefix: 'otNumberHidden', array: arrayOtNumber },
@@ -1980,10 +1999,16 @@ console.log('req.body: ', req.body)
                 projectId,
                 otQuantity,
                 ociNumberK,
+                arrayOtNumberK,
                 arrayInfoAddedToOt
             )
             if (!itemUpdated) {
                 catchError400_3(req, res, next)
+            }
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_4(req, res, next)
             }
             
             data.slide = 5
@@ -2005,7 +2030,7 @@ console.log('req.body: ', req.body)
         }
     }
 
-    addInfoSim0ToOtProject = async (req, res) => {
+    addInfoSim0ToOtProject = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
@@ -2018,7 +2043,7 @@ console.log('req.body: ', req.body)
             }
         
             const projectId = req.body.projectIdHidden
-            const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             if (!proyecto) {
                 catchError401_4(req, res, next)
             }
@@ -2031,13 +2056,12 @@ console.log('req.body: ', req.body)
 
             const ociNumberK = parseInt(req.body.ociNumberK)
             const otQuantity = parseInt(req.body.otQuantity)
+            const arrayOtKNumber = req.body.otNumberK.split(",")
+            const arrayOtNumberK = arrayOtKNumber.map(Number)
 
-            let arrayOtNumber=[],
-                arrayOtStatus=[],
-                arraySim0=[],
-                arrayRevisionSim0=[],
-                arrayDocuSim0=[],
-                arrayRevisionDocuSim0=[]
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arraySim0=[], arrayRevisionSim0=[],
+                arrayDocuSim0=[], arrayRevisionDocuSim0=[]
             
             const prefixes = [
                 { prefix: 'otNumberHidden', array: arrayOtNumber },
@@ -2074,10 +2098,16 @@ console.log('req.body: ', req.body)
                 projectId,
                 otQuantity,
                 ociNumberK,
+                arrayOtNumberK,
                 arrayInfoAddedToOt
             )
             if (!itemUpdated) {
                 catchError400_3(req, res, next)
+            }
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_4(req, res, next)
             }
         
             data.slide = 6
@@ -2099,7 +2129,7 @@ console.log('req.body: ', req.body)
         }
     }
 
-    addInfoSim1ToOtProject = async (req, res) => {
+    addInfoSim1ToOtProject = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
@@ -2112,7 +2142,7 @@ console.log('req.body: ', req.body)
             }
         
             const projectId = req.body.projectIdHidden
-            const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             if (!proyecto) {
                 catchError401_4(req, res, next)
             }
@@ -2125,19 +2155,15 @@ console.log('req.body: ', req.body)
 
             const ociNumberK = parseInt(req.body.ociNumberK)
             const otQuantity = parseInt(req.body.otQuantity)
+            const arrayOtKNumber = req.body.otNumberK.split(",")
+            const arrayOtNumberK = arrayOtKNumber.map(Number)
 
-            let arrayOtNumber=[],
-                arrayOtStatus=[],
-                arraySim1=[],
-                arrayRevisionSim1=[],
-                arrayVideo=[],
-                arrayRevisionVideo=[],
-                arrayInforme=[],
-                arrayRevisionInforme=[],
-                arrayPpt=[],
-                arrayRevisionPpt=[],
-                arrayS1pOp20=[],
-                arrayRevisionS1pOp20=[]
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arraySim1=[], arrayRevisionSim1=[],
+                arrayVideo=[], arrayRevisionVideo=[],
+                arrayInforme=[], arrayRevisionInforme=[],
+                arrayPpt=[], arrayRevisionPpt=[],
+                arrayS1pOp20=[], arrayRevisionS1pOp20=[]
 
             const prefixes = [
                 { prefix: 'otNumberHidden', array: arrayOtNumber },
@@ -2186,10 +2212,16 @@ console.log('req.body: ', req.body)
                 projectId,
                 otQuantity,
                 ociNumberK,
+                arrayOtNumberK,
                 arrayInfoAddedToOt
             )
             if (!itemUpdated) {
                 catchError400_3(req, res, next)
+            }
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_4(req, res, next)
             }
         
             data.slide = 7
@@ -2211,7 +2243,7 @@ console.log('req.body: ', req.body)
         }
     }
 
-    addInfoSim2_3ToOtProject = async (req, res) => {
+    addInfoSim2_3ToOtProject = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
@@ -2224,7 +2256,7 @@ console.log('req.body: ', req.body)
             }
         
             const projectId = req.body.projectIdHidden
-            const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
                 if (!proyecto) {
                     catchError401_4(req, res, next)
                 }
@@ -2237,17 +2269,14 @@ console.log('req.body: ', req.body)
 
             const ociNumberK = req.body.ociNumberK
             const otQuantity = parseInt(req.body.otQuantity)
+            const arrayOtKNumber = req.body.otNumberK.split(",")
+            const arrayOtNumberK = arrayOtKNumber.map(Number)
 
-            let arrayOtNumber=[],
-                arrayOtStatus=[],
-                arraySim2=[],
-                arrayRevisionSim2=[],
-                arrayReporte=[],
-                arrayRevisionReporte=[],
-                arrayDfnProdismo=[],
-                arrayRevisionDfnProdismo=[],
-                arraySim3=[],
-                arrayRevisionSim3=[]
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arraySim2=[], arrayRevisionSim2=[],
+                arrayReporte=[], arrayRevisionReporte=[],
+                arrayDfnProdismo=[], arrayRevisionDfnProdismo=[],
+                arraySim3=[], arrayRevisionSim3=[]
         
             const prefixes = [
                 { prefix: 'otNumberHidden', array: arrayOtNumber },
@@ -2292,11 +2321,17 @@ console.log('req.body: ', req.body)
                 projectId,
                 otQuantity,
                 ociNumberK,
+                arrayOtNumberK,
                 arrayInfoAddedToOt
             )
             if (!itemUpdated) {
                 catchError400_3(req, res, next)
-            }        
+            }
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_4(req, res, next)
+            }
 
             data.slide = 8
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -2317,7 +2352,7 @@ console.log('req.body: ', req.body)
         }
     }
 
-    addInfoSim4PrimeraToOtProject = async (req, res) => {
+    addInfoSim4PrimeraToOtProject = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
@@ -2330,7 +2365,7 @@ console.log('req.body: ', req.body)
             }
         
             const projectId = req.body.projectIdHidden
-            const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             if (!proyecto) {
                 catchError401_4(req, res, next)
             }
@@ -2343,17 +2378,14 @@ console.log('req.body: ', req.body)
             
             const ociNumberK = req.body.ociNumberK
             const otQuantity = parseInt(req.body.otQuantity)
+            const arrayOtKNumber = req.body.otNumberK.split(",")
+            const arrayOtNumberK = arrayOtKNumber.map(Number)
 
-            let arrayOtNumber=[],
-                arrayOtStatus=[],
-                arrayMatEnsayo=[],
-                arrayRevisionMatEnsayo=[],
-                arrayMasMenos10=[],
-                arrayRevisionMasMenos10=[],
-                arrayMpAlternativo=[],
-                arrayRevisionMpAlternativo=[],
-                arrayReunionSim=[],
-                arrayRevisionReunionSim=[]
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayMatEnsayo=[], arrayRevisionMatEnsayo=[],
+                arrayMasMenos10=[], arrayRevisionMasMenos10=[],
+                arrayMpAlternativo=[], arrayRevisionMpAlternativo=[],
+                arrayReunionSim=[], arrayRevisionReunionSim=[]
             
             const prefixes = [
                 { prefix: 'otNumberHidden', array: arrayOtNumber },
@@ -2398,10 +2430,16 @@ console.log('req.body: ', req.body)
                 projectId,
                 otQuantity,
                 ociNumberK,
+                arrayOtNumberK,
                 arrayInfoAddedToOt
             )
             if (!itemUpdated) {
                 catchError400_3(req, res, next)
+            }
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_4(req, res, next)
             }
         
             data.slide = 9
@@ -2423,7 +2461,7 @@ console.log('req.body: ', req.body)
         }
     }
 
-    addInfoSim4SegundaToOtProject = async (req, res) => {
+    addInfoSim4SegundaToOtProject = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
@@ -2436,7 +2474,7 @@ console.log('req.body: ', req.body)
             }
         
             const projectId = req.body.projectIdHidden
-            const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             if (!proyecto) {
                 catchError401_4(req, res, next)
             }
@@ -2449,17 +2487,14 @@ console.log('req.body: ', req.body)
 
             const ociNumberK = req.body.ociNumberK
             const otQuantity = parseInt(req.body.otQuantity)
+            const arrayOtKNumber = req.body.otNumberK.split(",")
+            const arrayOtNumberK = arrayOtKNumber.map(Number)
 
-            let arrayOtNumber=[],
-                arrayOtStatus=[],
-                arrayInformeSim4=[],
-                arrayRevisionInformeSim4=[],
-                arrayGeoCopiado1=[],
-                arrayRevisionGeoCopiado1=[],
-                arrayGeoCopiado2=[],
-                arrayRevisionGeoCopiado2=[],
-                arrayHorasSim=[],
-                arrayRevisionHorasSim=[]
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayInformeSim4=[], arrayRevisionInformeSim4=[],
+                arrayGeoCopiado1=[], arrayRevisionGeoCopiado1=[],
+                arrayGeoCopiado2=[], arrayRevisionGeoCopiado2=[],
+                arrayHorasSim=[], arrayRevisionHorasSim=[]
 
             const prefixes = [
                 { prefix: 'otNumberHidden', array: arrayOtNumber },
@@ -2504,10 +2539,16 @@ console.log('req.body: ', req.body)
                 projectId,
                 otQuantity,
                 ociNumberK,
+                arrayOtNumberK,
                 arrayInfoAddedToOt
             )
             if (!itemUpdated) {
                 catchError400_3(req, res, next)
+            }
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_4(req, res, next)
             }
         
             data.slide = 10
@@ -2529,7 +2570,7 @@ console.log('req.body: ', req.body)
         }
     }
 
-    addInfoSim5ToOtProject = async (req, res) => {
+    addInfoSim5ToOtProject = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
@@ -2542,7 +2583,7 @@ console.log('req.body: ', req.body)
             }
         
             const projectId = req.body.projectIdHidden
-            const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             if (!proyecto) {
                 catchError401_4(req, res, next)
             }
@@ -2555,13 +2596,12 @@ console.log('req.body: ', req.body)
 
             const ociNumberK = req.body.ociNumberK
             const otQuantity = parseInt(req.body.otQuantity)
+            const arrayOtKNumber = req.body.otNumberK.split(",")
+            const arrayOtNumberK = arrayOtKNumber.map(Number)
 
-            let arrayOtNumber=[],
-                arrayOtStatus=[],
-                arrayGrillado=[],
-                arrayRevisionGrillado=[],
-                arrayMpEnsayada=[],
-                arrayRevisionMpEnsayada=[]
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayGrillado=[], arrayRevisionGrillado=[],
+                arrayMpEnsayada=[], arrayRevisionMpEnsayada=[]
 
             const prefixes = [
                 { prefix: 'otNumberHidden', array: arrayOtNumber },
@@ -2598,10 +2638,16 @@ console.log('req.body: ', req.body)
                 projectId,
                 otQuantity,
                 ociNumberK,
+                arrayOtNumberK,
                 arrayInfoAddedToOt
             )
             if (!itemUpdated) {
                 catchError400_3(req, res, next)
+            }
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            if (!proyecto) {
+                catchError401_4(req, res, next)
             }
         
             data.slide = 11
