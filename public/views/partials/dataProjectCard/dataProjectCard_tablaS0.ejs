@@ -94,6 +94,11 @@
                                     } else {
                                         arrRes0Sim.push(res0Sim)
                                         arrResRevision0Sim.push(resRevision0Sim)
+
+                                        arrResCreador0Sim.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificador0Sim.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFecha0Sim.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaMod0Sim.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
                                     
                                     <div id="btnAnteriorSiguiente0Sim<%=k%>_<%=n%>_<%=q%>">
@@ -165,6 +170,11 @@
                                     } else {
                                         arrResDocu0Sim.push(resDocu0Sim)
                                         arrResRevisionDocu0Sim.push(resRevisionDocu0Sim)
+
+                                        arrResCreadorDocu0Sim.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorDocu0Sim.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaDocu0Sim.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModDocu0Sim.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
                                     
                                     <div id="btnAnteriorSiguienteDocu0Sim<%=k%>_<%=n%>_<%=q%>">

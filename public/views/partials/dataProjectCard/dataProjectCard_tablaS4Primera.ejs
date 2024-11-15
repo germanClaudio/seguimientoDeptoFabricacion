@@ -104,6 +104,11 @@
                                     } else {
                                         arrResMatEnsayo.push(resMatEnsayo)
                                         arrResRevisionMatEnsayo.push(resRevisionMatEnsayo)
+
+                                        arrResCreadorMatEnsayo.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorMatEnsayo.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaMatEnsayo.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModMatEnsayo.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
                                     
                                     <div id="btnAnteriorSiguienteMatEnsayo<%=k%>_<%=n%>_<%=q%>">
@@ -175,6 +180,11 @@
                                     } else {
                                         arrResMas10Menos.push(resMas10Menos)
                                         arrResRevisionMas10Menos.push(resRevisionMas10Menos)
+
+                                        arrResCreadorMas10Menos.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorMas10Menos.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaMas10Menos.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModMas10Menos.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
                                     
                                     <div id="btnAnteriorSiguienteMas10Menos<%=k%>_<%=n%>_<%=q%>">
@@ -246,6 +256,11 @@
                                     } else {
                                         arrResMpAlternativo.push(resMpAlternativo)
                                         arrResRevisionMpAlternativo.push(resRevisionMpAlternativo)
+
+                                        arrResCreadorMpAlternativo.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorMpAlternativo.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaMpAlternativo.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModMpAlternativo.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
                                     
                                     <div id="btnAnteriorSiguienteMpAlternativo<%=k%>_<%=n%>_<%=q%>">
@@ -317,6 +332,11 @@
                                     } else {
                                         arrResReunionSim.push(resReunionSim)
                                         arrResRevisionReunionSim.push(resRevisionReunionSim)
+
+                                        arrResCreadorReunionSim.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorReunionSim.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaReunionSim.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModReunionSim.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
                                     
                                     <div id="btnAnteriorSiguienteReunionSim<%=k%>_<%=n%>_<%=q%>">

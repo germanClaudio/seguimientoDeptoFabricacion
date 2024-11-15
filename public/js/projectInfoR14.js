@@ -165,14 +165,14 @@ function mostrarElementoR14(
             colorSpanR14(spanElementProcesoR14)
             btnAnteriorProcesoR14.disabled = true
             btnSiguienteProcesoR14.removeAttribute('disabled')
-            agregarEstiloRevPasadasR14 (containerBtnAnteriorSiguienteProcesoR14)
+            agregarEstiloRevPasadasR14(containerBtnAnteriorSiguienteProcesoR14)
         }
 
         if (btnAnteriorAprobadoR14 && btnSiguienteAprobadoR14) {
             colorSpanR14(spanElementAprobadoR14)
             btnAnteriorAprobadoR14.disabled = true
             btnSiguienteAprobadoR14.removeAttribute('disabled')
-            agregarEstiloRevPasadasR14 (containerBtnAnteriorSiguienteAprobadoR14)
+            agregarEstiloRevPasadasR14(containerBtnAnteriorSiguienteAprobadoR14)
         }
 
     } else if (indiceAMostrar === arrayFromValues.length-1) {

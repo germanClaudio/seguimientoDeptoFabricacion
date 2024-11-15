@@ -96,9 +96,9 @@
                                         arrResRevisionProcesoR14.push(resRevisionProcesoR14)
                                         
                                         arrResCreadorProcesoR14.push(pathMongoOtProject[n].creator[0].username)
-                                        arrResModificadorProcesoR14 = ""
+                                        arrResModificadorProcesoR14.push(pathMongoOtProject[n].modificator[0].username)
                                         arrResFechaProcesoR14.push(pathMongoOtProject[n].timestamp)
-                                        arrResFechaModProcesoR14 = ""
+                                        arrResFechaModProcesoR14.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
                                     
                                     <div id="btnAnteriorSiguienteProcesoR14<%=k%>_<%=n%>_<%=q%>">
@@ -171,9 +171,9 @@
                                         arrResRevisionAprobadoR14.push(resRevisionAprobadoR14)
                                         
                                         arrResCreadorAprobadoR14.push(pathMongoOtProject[n].creator[0].username)
-                                        arrResModificadorAprobadoR14 = ""
+                                        arrResModificadorAprobadoR14.push(pathMongoOtProject[n].modificator[0].username)
                                         arrResFechaAprobadoR14.push(pathMongoOtProject[n].timestamp)
-                                        arrResFechaModAprobadoR14 = ""
+                                        arrResFechaModAprobadoR14.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
                                     
                                     <div id="btnAnteriorSiguienteAprobadoR14<%=k%>_<%=n%>_<%=q%>">

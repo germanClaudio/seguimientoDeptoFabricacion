@@ -98,9 +98,9 @@
                                         arrResRevisionGrillado.push(resRevisionGrillado)
 
                                         arrResCreadorGrillado.push(pathMongoOtProject[n].creator[0].username)
-                                        arrResModificadorGrillado = ""
+                                        arrResModificadorGrillado.push(pathMongoOtProject[n].modificator[0].username)
                                         arrResFechaGrillado.push(pathMongoOtProject[n].timestamp)
-                                        arrResFechaModGrillado = ""
+                                        arrResFechaModGrillado.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
                                     
                                     <div id="btnAnteriorSiguienteGrillado<%=k%>_<%=n%>_<%=q%>">
@@ -174,9 +174,9 @@
                                         arrResRevisionMpEnsayada.push(resRevisionMpEnsayada)
 
                                         arrResCreadorMpEnsayada.push(pathMongoOtProject[n].creator[0].username)
-                                        arrResModificadorMpEnsayada = ""
+                                        arrResModificadorMpEnsayada.push(pathMongoOtProject[n].modificator[0].username)
                                         arrResFechaMpEnsayada.push(pathMongoOtProject[n].timestamp)
-                                        arrResFechaModMpEnsayada = ""
+                                        arrResFechaModMpEnsayada.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
                                     
                                     <div id="btnAnteriorSiguienteMpEnsayada<%=k%>_<%=n%>_<%=q%>">

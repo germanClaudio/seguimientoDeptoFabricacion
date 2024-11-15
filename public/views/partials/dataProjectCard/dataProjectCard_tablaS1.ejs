@@ -110,6 +110,11 @@
                                     } else {
                                         arrRes1Sim.push(res1Sim)
                                         arrResRevision1Sim.push(resRevision1Sim)
+
+                                        arrResCreador1Sim.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificador1Sim.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFecha1Sim.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaMod1Sim.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
                                     
                                     <div id="btnAnteriorSiguiente1Sim<%=k%>_<%=n%>_<%=q%>">
@@ -180,7 +185,12 @@
                                                 
                                     } else {
                                         arrResVideo.push(resVideo)
-                                        arrResRevisionVideo.push(resRevisionVideo)                           
+                                        arrResRevisionVideo.push(resRevisionVideo)
+                                        
+                                        arrResCreadorVideo.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorVideo.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaVideo.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModVideo.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
                                     
                                     <div id="btnAnteriorSiguienteVideo<%=k%>_<%=n%>_<%=q%>">
@@ -253,6 +263,11 @@
                                     } else {
                                         arrResInforme.push(resInforme)
                                         arrResRevisionInforme.push(resRevisionInforme)
+
+                                        arrResCreadorInforme.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorInforme.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaInforme.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModInforme.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
                                     
                                     <div id="btnAnteriorSiguienteInforme<%=k%>_<%=n%>_<%=q%>">
@@ -306,9 +321,9 @@
                                                 arrResModificadorPpt.push(pathMongoOtSim1[i].modificator[0].username)
                                                 arrResFechaPpt.push(pathMongoOtSim1[i].timestamp)
                                                 arrResFechaModPpt.push(pathMongoOtSim1[i].modifiedOn)
-                                                valueArrayResPpt = parseInt(arrResPpt.length-1)
                                             }
                                         }
+                                        valueArrayResPpt = parseInt(arrResPpt.length-1)
                                                 
                                         if (arrResPpt.length == 1 ) {
                                             siguienteDisabled = "disabled"
@@ -324,6 +339,11 @@
                                     } else {
                                         arrResPpt.push(resPpt)
                                         arrResRevisionPpt.push(resRevisionPpt)
+
+                                        arrResCreadorPpt.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorPpt.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaPpt.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModPpt.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
                                     
                                     <div id="btnAnteriorSiguientePpt<%=k%>_<%=n%>_<%=q%>">
@@ -395,6 +415,11 @@
                                     } else {
                                         arrResS1p20Op.push(resS1p20Op)
                                         arrResRevisionS1p20Op.push(resRevisionS1p20Op)
+
+                                        arrResCreadorS1p20Op.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorS1p20Op.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaS1p20Op.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModS1p20Op.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
                                     
                                     <div id="btnAnteriorSiguienteS1p20Op<%=k%>_<%=n%>_<%=q%>">

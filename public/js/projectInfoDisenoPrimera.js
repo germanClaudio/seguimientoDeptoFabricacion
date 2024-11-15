@@ -7,8 +7,8 @@ for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de p
     for (let p = 0; p<varLimMaxOtProyecto; p++) { //variable limite maximo de Ot por proyecto
         for (let q = 0; q<varLimMaxOtProyecto; q++) {
             const btnIdAvDiseno = `btnAnteriorSiguienteAvDiseno${i}_${p}_${q}`;
-            const btnIdPrimerRev50 = `btnAnteriorSiguientePrimerRev50${i}_${p}_${q}`;
-            const btnIdSegundaRev80 = `btnAnteriorSiguienteSegundaRev80${i}_${p}_${q}`;
+            const btnIdPrimerRev50 = `btnAnteriorSiguientePrimer50Rev${i}_${p}_${q}`;
+            const btnIdSegundaRev80 = `btnAnteriorSiguienteSegunda80Rev${i}_${p}_${q}`;
             const btnIdEnvCliente = `btnAnteriorSiguienteEnvCliente${i}_${p}_${q}`;
 
             const btnElementAvDiseno = document.getElementById(btnIdAvDiseno);
@@ -38,10 +38,18 @@ for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de p
     }
 }
 
+function changeIconAvanceFromArray(arrayFromValues) {
+    let defaultValue = '<i class="fa-solid fa-person-digging fa-lg" style="color: #1c21ac;"></i>'
+    const valueEstadoMap = {
+        100 : '<i class="fa-solid fa-circle-check fa-lg" style="color: #067e00;"></i>',
+        0 : '<i class="fa-solid fa-spinner fa-lg fa-spin-pulse"style="color: #ff0000f5;"></i>', 
+    };
+    return arrayFromValues.map(value => valueEstadoMap[value] || defaultValue);
+}
+
 //*********** Evento btn's anterior y siguiente ************* */
 if(arrBtnAnteriorAvDiseno !=[]) {
     let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorAvDiseno"]')
-    
     allBtnAnterior.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -50,7 +58,7 @@ if(arrBtnAnteriorAvDiseno !=[]) {
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
                 //console.log('kValue. ', kValue)
-                mostrarAnteriorDisenoPrimera(arrayFromValues, kValue) //changeValueFromArrayDisenoPrimera
+                mostrarAnteriorDisenoPrimera(arrayFromValues, changeIconAvanceFromArray(arrayFromValues), kValue)
             })
         }
     })
@@ -58,7 +66,6 @@ if(arrBtnAnteriorAvDiseno !=[]) {
 
 if(arrBtnSiguienteAvDiseno !=[]) {    
     let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteAvDiseno"]')
-    
     allBtnSiguiente.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -67,15 +74,14 @@ if(arrBtnSiguienteAvDiseno !=[]) {
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
                 //console.log('kValue. ', kValue)
-                mostrarSiguienteDisenoPrimera(arrayFromValues, kValue) //changeValueFromArrayDisenoPrimera
+                mostrarSiguienteDisenoPrimera(arrayFromValues, changeIconAvanceFromArray(arrayFromValues), kValue)
             })
         }
     })
 }
 
 if(arrBtnAnteriorPrimerRev50 !=[]) {
-    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorPrimerRev50"]')
-    
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorPrimer50Rev"]')
     allBtnAnterior.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -84,15 +90,14 @@ if(arrBtnAnteriorPrimerRev50 !=[]) {
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
                 //console.log('kValue. ', kValue)
-                mostrarAnteriorDisenoPrimera(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArrayDisenoPrimera
+                mostrarAnteriorDisenoPrimera(changeValueFromArray(arrayFromValues), '', kValue)
             })
         }
     })
 }
 
 if(arrBtnSiguientePrimerRev50 !=[]) {    
-    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguientePrimerRev50"]')
-    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguientePrimer50Rev"]')    
     allBtnSiguiente.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -101,15 +106,14 @@ if(arrBtnSiguientePrimerRev50 !=[]) {
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
                 //console.log('kValue. ', kValue)
-                mostrarSiguienteDisenoPrimera(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArrayDisenoPrimera
+                mostrarSiguienteDisenoPrimera(changeValueFromArray(arrayFromValues), '', kValue)
             })
         }
     })
 }
 
 if(arrBtnAnteriorSegundaRev80 !=[]) {
-    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorSegundaRev80"]')
-    
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorSegunda80Rev"]')    
     allBtnAnterior.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -118,15 +122,14 @@ if(arrBtnAnteriorSegundaRev80 !=[]) {
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
                 //console.log('kValue. ', kValue)
-                mostrarAnteriorDisenoPrimera(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArrayDisenoPrimera
+                mostrarAnteriorDisenoPrimera(changeValueFromArray(arrayFromValues), '', kValue)
             })
         }
     })
 }
 
 if(arrBtnSiguienteSegundaRev80 !=[]) {    
-    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteSegundaRev80"]')
-    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteSegunda80Rev"]')    
     allBtnSiguiente.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -135,15 +138,14 @@ if(arrBtnSiguienteSegundaRev80 !=[]) {
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
                 //console.log('kValue. ', kValue)
-                mostrarSiguienteDisenoPrimera(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArrayDisenoPrimera
+                mostrarSiguienteDisenoPrimera(changeValueFromArray(arrayFromValues), '', kValue)
             })
         }
     })
 }
 
 if(arrBtnAnteriorEnvCliente !=[]) {
-    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorEnvCliente"]')
-    
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorEnvCliente"]')    
     allBtnAnterior.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -152,15 +154,14 @@ if(arrBtnAnteriorEnvCliente !=[]) {
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
                 //console.log('kValue. ', kValue)
-                mostrarAnteriorDisenoPrimera(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArrayDisenoPrimera
+                mostrarAnteriorDisenoPrimera(changeValueFromArray(arrayFromValues), '', kValue)
             })
         }
     })
 }
 
 if(arrBtnSiguienteEnvCliente !=[]) {    
-    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteEnvCliente"]')
-    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteEnvCliente"]')    
     allBtnSiguiente.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -169,7 +170,7 @@ if(arrBtnSiguienteEnvCliente !=[]) {
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
                 //console.log('kValue. ', kValue)
-                mostrarSiguienteDisenoPrimera(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArrayDisenoPrimera
+                mostrarSiguienteDisenoPrimera(changeValueFromArray(arrayFromValues), '', kValue)
             })
         }
     })
@@ -178,6 +179,7 @@ if(arrBtnSiguienteEnvCliente !=[]) {
 // Mostrar el elemento actual en la página
 function mostrarElementoDisenoPrimera(
     arrayFromValues,
+    arrayFromValuesIcon,
     arrValuesRevisionMark,
     indiceAMostrar,
     kValue,
@@ -196,32 +198,33 @@ function mostrarElementoDisenoPrimera(
     if (resAvDiseno) {
         let spanAvDiseno = document.getElementById(`resAvDiseno${kValue}`)
         let spanRevisionAvDiseno = document.getElementById(`resRevisionAvDiseno${kValue}`)
-        spanAvDiseno.innerText = arrayFromValues[parseInt(indiceAMostrar)]+'%'
+        spanAvDiseno.innerHTML = ''
+        spanAvDiseno.innerHTML = arrayFromValues[parseInt(indiceAMostrar)]+'% '+ arrayFromValuesIcon[parseInt(indiceAMostrar)]
         spanRevisionAvDiseno.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
 
         btnAnteriorAvDiseno = document.getElementById(`btnAnteriorAvDiseno${kValue}`)
         btnSiguienteAvDiseno = document.getElementById(`btnSiguienteAvDiseno${kValue}`)
-        containerBtnAnteriorSiguienteAvDiseno = document.getElementById(`containerBtnAnteriorSiguienteAvDiseno${kValue}`)
+        containerBtnAnteriorSiguienteAvDiseno = document.getElementById(`btnAnteriorSiguienteAvDiseno${kValue}`)
 
     } else if (resPrimerRevision50) {
-        let spanPrimerRevision50 = document.getElementById(`resPrimerRev50${kValue}`)
-        let spanRevisionPrimerRevision50 = document.getElementById(`resRevisionPrimerRev50${kValue}`)
+        let spanPrimerRevision50 = document.getElementById(`resPrimer50Rev${kValue}`)
+        let spanRevisionPrimerRevision50 = document.getElementById(`resRevisionPrimer50Rev${kValue}`)
         spanPrimerRevision50.innerText = arrayFromValues[parseInt(indiceAMostrar)]
         spanRevisionPrimerRevision50.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
 
-        btnAnteriorPrimerRev50 = document.getElementById(`btnAnteriorPrimerRev50${kValue}`)
-        btnSiguientePrimerRev50 = document.getElementById(`btnSiguientePrimerRev50${kValue}`)
-        containerBtnAnteriorSiguientePrimerRev50 = document.getElementById(`containerBtnAnteriorSiguientePrimerRev50${kValue}`)
+        btnAnteriorPrimerRev50 = document.getElementById(`btnAnteriorPrimer50Rev${kValue}`)
+        btnSiguientePrimerRev50 = document.getElementById(`btnSiguientePrimer50Rev${kValue}`)
+        containerBtnAnteriorSiguientePrimerRev50 = document.getElementById(`btnAnteriorSiguientePrimer50Rev${kValue}`)
 
     } else if (resSegundaRevision80) {
-        let spanSegundaRevision80 = document.getElementById(`resSegundaRev80${kValue}`)
-        let spanRevisionSegundaRevision80 = document.getElementById(`resRevisionSegundaRev80${kValue}`)
+        let spanSegundaRevision80 = document.getElementById(`resSegunda80Rev${kValue}`)
+        let spanRevisionSegundaRevision80 = document.getElementById(`resRevisionSegunda80Rev${kValue}`)
         spanSegundaRevision80.innerText = arrayFromValues[parseInt(indiceAMostrar)]
         spanRevisionSegundaRevision80.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
 
-        btnAnteriorSegundaRev80 = document.getElementById(`btnAnteriorSegundaRev80${kValue}`)
-        btnSiguienteSegundaRev80 = document.getElementById(`btnSiguienteSegundaRev80${kValue}`)
-        containerBtnAnteriorSiguienteSegundaRev80 = document.getElementById(`containerBtnAnteriorSiguienteSegundaRev80${kValue}`)
+        btnAnteriorSegundaRev80 = document.getElementById(`btnAnteriorSegunda80Rev${kValue}`)
+        btnSiguienteSegundaRev80 = document.getElementById(`btnSiguienteSegunda80Rev${kValue}`)
+        containerBtnAnteriorSiguienteSegundaRev80 = document.getElementById(`btnAnteriorSiguienteSegunda80Rev${kValue}`)
 
     } else if (resEnvioCliente) {
         let spanEnvCliente = document.getElementById(`resEnvCliente${kValue}`)
@@ -231,7 +234,7 @@ function mostrarElementoDisenoPrimera(
 
         btnAnteriorEnvCliente = document.getElementById(`btnAnteriorEnvCliente${kValue}`)
         btnSiguienteEnvCliente = document.getElementById(`btnSiguienteEnvCliente${kValue}`)
-        containerBtnAnteriorSiguienteEnvCliente = document.getElementById(`containerBtnAnteriorSiguienteEnvCliente${kValue}`)
+        containerBtnAnteriorSiguienteEnvCliente = document.getElementById(`btnAnteriorSiguienteEnvCliente${kValue}`)
     }
     
     function colorSpanDisenoPrimera(spanElementDisenoPrimera) {
@@ -358,7 +361,7 @@ function mostrarElementoDisenoPrimera(
 }
 
 // Función para mostrar el elemento anterior
-function mostrarAnteriorDisenoPrimera(arrayFromValues, kValue) {
+function mostrarAnteriorDisenoPrimera(arrayFromValues, arrayFromValuesIcon, kValue) {
     let inputSpotIndex = document.getElementById(`resIndexHidden${kValue}`)
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
     
@@ -371,12 +374,13 @@ function mostrarAnteriorDisenoPrimera(arrayFromValues, kValue) {
     // console.log('arrValuesRevisionMark: ', arrValuesRevisionMark)
 
     let resAvDiseno = document.getElementById(`resAvDiseno${kValue}`)
-    let resPrimerRev50 = document.getElementById(`resPrimerRev50${kValue}`)
-    let resSegundaRev80 = document.getElementById(`resSegundaRev80${kValue}`)
+    let resPrimerRev50 = document.getElementById(`resPrimer50Rev${kValue}`)
+    let resSegundaRev80 = document.getElementById(`resSegunda80Rev${kValue}`)
     let resEnvioCliente = document.getElementById(`resEnvCliente${kValue}`)
 
     mostrarElementoDisenoPrimera(
         arrayFromValues,
+        arrayFromValuesIcon,
         arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
@@ -387,7 +391,7 @@ function mostrarAnteriorDisenoPrimera(arrayFromValues, kValue) {
     }
 
 // Función para mostrar el elemento siguiente
-function mostrarSiguienteDisenoPrimera(arrayFromValues, kValue) {
+function mostrarSiguienteDisenoPrimera(arrayFromValues, arrayFromValuesIcon, kValue) {
     let inputSpotIndex = document.getElementById(`resIndexHidden${kValue}`)
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
     
@@ -400,12 +404,13 @@ function mostrarSiguienteDisenoPrimera(arrayFromValues, kValue) {
     // console.log('arrValuesRevisionMark: ', arrValuesRevisionMark)
     
     let resAvDiseno = document.getElementById(`resAvDiseno${kValue}`)
-    let resPrimerRev50 = document.getElementById(`resPrimerRev50${kValue}`)
-    let resSegundaRev80 = document.getElementById(`resSegundaRev80${kValue}`)
+    let resPrimerRev50 = document.getElementById(`resPrimer50Rev${kValue}`)
+    let resSegundaRev80 = document.getElementById(`resSegunda80Rev${kValue}`)
     let resEnvioCliente = document.getElementById(`resEnvCliente${kValue}`)
 
     mostrarElementoDisenoPrimera(
         arrayFromValues,
+        arrayFromValuesIcon,
         arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
@@ -418,10 +423,9 @@ function mostrarSiguienteDisenoPrimera(arrayFromValues, kValue) {
 
 
 //************ ToolTip btn-Arrows anterior/Siguiente -----------
-//******Av Diseño + Rev50 + Rev80 + Env Cliente ***** */
-let spanResDisenoPrimera = Array.from(document.querySelectorAll('span[name="resRevisionAvDiseno"],span[name="resRevisionPrimerRev50"],span[name="resRevisionSegundaRev80"],span[name="resRevisionEnvCliente"]'))
+let spanResDisenoPrimeraAvDiseno = Array.from(document.querySelectorAll('span[name="resRevisionAvDiseno"]'))
 
-spanResDisenoPrimera.forEach(function(spanElement) {
+spanResDisenoPrimeraAvDiseno.forEach(function(spanElement) {
     spanElement.addEventListener("mouseover", (event) => {
         let spanSpot = document.getElementById(`${spanElement.id}`)
         let idSpotSelected = spanSpot.id
@@ -432,11 +436,86 @@ spanResDisenoPrimera.forEach(function(spanElement) {
             case 'resRevisionAvDiseno':
                 regex = /^resRevisionAvDiseno/;
             break;
-            case 'resRevisionPrimerRev50':
-                regex = /^resRevisionPrimerRev50/;
+            default:
+                break;
+        }
+
+        // Eliminar el texto inicial de la cadena
+        var idFinalInputs = idSpotSelected.replace(regex, '');
+        
+        let inputSpotEstado = document.getElementById(`resHidden${idFinalInputs}`).value
+        let inputSpotIndex = document.getElementById(`resIndexHidden${idFinalInputs}`).value
+        let inputSpotRevision = document.getElementById(`resRevisionHidden${idFinalInputs}`).value
+        let inputSpotCreador = document.getElementById(`arrResCreadorHidden${idFinalInputs}`).value
+        let inputSpotModificador = document.getElementById(`arrResModificadorHidden${idFinalInputs}`).value
+        let inputSpotFecha = document.getElementById(`arrResFechaHidden${idFinalInputs}`).value
+        let inputSpotFechaModificacion = document.getElementById(`arrResFechaModificacionHidden${idFinalInputs}`).value
+        
+        let arrayFromSpotEstado = inputSpotEstado.split(",")
+        let arrayFromSpotRevision = inputSpotRevision.split(",")
+        let arrayFromSpotCreador = inputSpotCreador.split(",")
+        let arrayFromSpotModificador = inputSpotModificador.split(",")
+        let arrayFromSpotFecha = inputSpotFecha.split(",")
+        let arrayFromSpotFechaModificacion = inputSpotFechaModificacion.split(",")
+
+        function changeIconAvanceFromSingle(value) {
+            value > 0 && value < 100 ? value = 'default' : null
+
+            const valueEstadoMap = {
+                100 : '<i class="fa-solid fa-circle-check fa-lg" style="color: #06ae00;"></i>',
+                0 : '<i class="fa-solid fa-spinner fa-lg fa-spin-pulse"style="color: #ff0000f5;"></i>', 
+                'default' : '<i class="fa-solid fa-person-digging fa-lg" style="color: #b09b12;"></i>'
+            };
+            return valueEstadoMap[value];
+        }
+                
+        for (let y=0; arrayFromSpotRevision.length > y; y++) {
+            if (inputSpotIndex == y) {
+                spanSpot.setAttribute("valueEstadoNumber", arrayFromSpotEstado[y])
+                spanSpot.setAttribute("valueEstadoIcon", changeIconAvanceFromSingle(arrayFromSpotEstado[y]))
+                spanSpot.setAttribute("valueRevision", arrayFromSpotRevision[y])
+                spanSpot.setAttribute("valueCreador", arrayFromSpotCreador[y])
+                spanSpot.setAttribute("valueFecha", arrayFromSpotFecha[y])
+                spanSpot.setAttribute("valueModificador", arrayFromSpotModificador[y])
+                spanSpot.setAttribute("valueFechaMod", arrayFromSpotFechaModificacion[y])
+            }
+
+            tippy(spanSpot, {
+                content: `Revision: ${spanSpot.getAttribute("valueRevision")}<br>
+                        Estado: ${spanSpot.getAttribute("valueEstadoNumber")}% / ${spanSpot.getAttribute("valueEstadoIcon")}<br>
+                        Creado por: ${spanSpot.getAttribute("valueCreador")}<br>
+                        Fecha creac.: ${spanSpot.getAttribute("valueFecha")}<br>
+                        Modificado por: ${spanSpot.getAttribute("valueModificador")}<br>
+                        Fecha mod.: ${spanSpot.getAttribute("valueFechaMod")}`,
+                allowHTML: true,
+                maxWidth: 350,
+                arrow: true,
+                animation: 'scale-extreme',
+                theme: 'material',
+                interactive: false,
+                hideOnClick: true, // Oculta el tooltip al hacer clic en cualquier lugar fuera de él
+            })
+        }
+    })
+})
+//************ End ToolTip btn-Arrows anterior/Siguiente -----------
+
+//************ ToolTip btn-Arrows anterior/Siguiente -----------
+let spanResDisenoPrimera = Array.from(document.querySelectorAll('span[name="resRevisionPrimer50Rev"],span[name="resRevisionSegunda80Rev"],span[name="resRevisionEnvCliente"]'))
+
+spanResDisenoPrimera.forEach(function(spanElement) {
+    spanElement.addEventListener("mouseover", (event) => {
+        let spanSpot = document.getElementById(`${spanElement.id}`)
+        let idSpotSelected = spanSpot.id
+
+        // Expresión regular para eliminar el texto inicial
+        var regex
+        switch (`${spanSpot.getAttribute('name')}`) {
+            case 'resRevisionPrimer50Rev':
+                regex = /^resRevisionPrimer50Rev/;
             break;
-            case 'resRevisionSegundaRev80':
-                regex = /^resRevisionSegundaRev80/;
+            case 'resRevisionSegunda80Rev':
+                regex = /^resRevisionSegunda80Rev/;
             break;
             case 'resRevisionEnvCliente':
                 regex = /^resRevisionEnvCliente/;

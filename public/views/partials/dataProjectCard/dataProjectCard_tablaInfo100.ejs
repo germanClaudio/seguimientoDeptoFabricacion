@@ -41,7 +41,7 @@
             pathMongoOtInformation = pathMongoOtProject[n].otInformation
             
             if (pathMongoOtProject[n].visible) {
-                let pathMongoOtInfo100 = pathMongoOtInformation[0].otInfo100 || [],
+                let pathMongoOtInfo100 = pathMongoOtInformation[0].otInfoInfo100 || [],
                 largoArrayInfo100 = parseInt(pathMongoOtInfo100.length);
 
                 let arrRes100Ldm = [], valueArrayRes100Ldm = 0, arrResRevision100Ldm = [], arrResCreador100Ldm = [],
@@ -89,6 +89,11 @@
                                     } else {
                                         arrRes100Ldm.push(res100Ldm)
                                         arrResRevision100Ldm.push(resRevision100Ldm)
+
+                                        arrResCreador100Ldm.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificador100Ldm.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFecha100Ldm.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaMod100Ldm.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
 
                                     <div id="btnAnteriorSiguiente100Ldm<%=k%>_<%=n%>_<%=q%>">
@@ -106,15 +111,15 @@
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMod100Ldm %>">
 
                                         <span id="res100Ldm<%=k%>_<%=n%>_<%=q%>" name="res100Ldm" class="text-dark" style="font-size: .9rem;">
-                                            <%= res100Ldm %>%
+                                            <%= res100Ldm %>% 
+                                            <% if (res100Ldm == 100) { %>
+                                                <i class="fa-solid fa-circle-check fa-lg" style="color: #067e00;"></i>
+                                            <% } else if (res100Ldm == 0) { %>
+                                                <i class="fa-solid fa-spinner fa-lg fa-spin-pulse" style="color: #970000f5;"></i>
+                                            <% } else { %>
+                                                <i class="fa-solid fa-person-digging fa-lg" style="color: #080183;"></i>
+                                            <% } %>
                                         </span>
-                                        <% if (res100Ldm == 100) { %>
-                                            <i class="fa-solid fa-circle-check fa-lg" style="color: #067e00;"></i>
-                                        <% } else if (res100Ldm == 0) { %>
-                                            <i class="fa-solid fa-spinner fa-lg fa-spin-pulse" style="color: #970000f5;"></i>
-                                        <% } else { %>
-                                            <i class="fa-solid fa-person-digging fa-lg" style="color: #080183;"></i>
-                                        <% } %>
                                         |
                                         <span id="resRevision100Ldm<%=k%>_<%=n%>_<%=q%>" name="resRevision100Ldm" class="badge text-dark my-2" style="cursor: help;">
                                             <%= resRevision100Ldm %>
@@ -165,6 +170,11 @@
                                     } else {
                                         arrRes100Info.push(res100Info)
                                         arrResRevision100Info.push(resRevision100Info)
+
+                                        arrResCreador100Info.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificador100Info.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFecha100Info.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaMod100Info.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
 
                                     <div id="btnAnteriorSiguiente100Info<%=k%>_<%=n%>_<%=q%>">
@@ -183,15 +193,15 @@
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMod100Info %>">
 
                                         <span id="res100Info<%=k%>_<%=n%>_<%=q%>" name="res100Info" class="text-dark" style="font-size: .9rem;">
-                                            <%= res100Info %>%
+                                            <%= res100Info %>% 
+                                            <% if (res100Info == 100) { %>
+                                                <i class="fa-solid fa-circle-check fa-lg" style="color: #067e00;"></i>
+                                            <% } else if (res100Info == 0) { %>
+                                                <i class="fa-solid fa-spinner fa-lg fa-spin-pulse" style="color: #970000f5;"></i>
+                                            <% } else { %>
+                                                <i class="fa-solid fa-person-digging fa-lg" style="color: #080183;"></i>
+                                            <% } %>
                                         </span>
-                                        <% if (res100Info == 100) { %>
-                                            <i class="fa-solid fa-circle-check fa-lg" style="color: #067e00;"></i>
-                                        <% } else if (res100Info == 0) { %>
-                                            <i class="fa-solid fa-spinner fa-lg fa-spin-pulse" style="color: #970000f5;"></i>
-                                        <% } else { %>
-                                            <i class="fa-solid fa-person-digging fa-lg" style="color: #080183;"></i>
-                                        <% } %>
                                         |
                                         <span id="resRevision100Info<%=k%>_<%=n%>_<%=q%>" name="resRevision100Info" class="badge text-dark my-2" style="cursor: help;">
                                             <%= resRevision100Info %>
@@ -240,15 +250,15 @@
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision100Ldm %>">
                                     
                                     <span id="res100Ldm<%=k%>_<%=n%>_<%=q%>" name="res100Ldm" class="text-dark" style="font-size: .9rem;">
-                                        <%= res100Ldm %>%
+                                        <%= res100Ldm %>% 
+                                        <% if (res100Ldm == 100) { %>
+                                            <i class="fa-solid fa-circle-check fa-lg" style="color: #067e00;"></i>
+                                        <% } else if (res100Ldm == 0) { %>
+                                            <i class="fa-solid fa-spinner fa-lg fa-spin-pulse" style="color: #970000f5;"></i>
+                                        <% } else { %>
+                                            <i class="fa-solid fa-person-digging fa-lg" style="color: #080183;"></i>
+                                        <% } %>
                                     </span>
-                                    <% if (res100Ldm == 100) { %>
-                                        <i class="fa-solid fa-circle-check fa-lg" style="color: #067e00;"></i>
-                                    <% } else if (res100Ldm == 0) { %>
-                                        <i class="fa-solid fa-spinner fa-lg fa-spin-pulse" style="color: #970000f5;"></i>
-                                    <% } else { %>
-                                        <i class="fa-solid fa-person-digging fa-lg" style="color: #080183;"></i>
-                                    <% } %>
                                     |
                                     <span id="resRevision100Ldm<%=k%>_<%=n%>_<%=q%>" name="resRevision100Ldm" class="badge text-dark my-2" style="cursor: help;">
                                         <%= resRevision100Ldm %>
@@ -283,15 +293,15 @@
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision100Info %>">
                                     
                                     <span id="res100Info<%=k%>_<%=n%>_<%=q%>" name="res100Info" class="text-dark" style="font-size: .9rem;">
-                                        <%= res100Info %>%
+                                        <%= res100Info %>% 
+                                        <% if (res100Info == 100) { %>
+                                            <i class="fa-solid fa-circle-check fa-lg" style="color: #067e00;"></i>
+                                        <% } else if (res100Info == 0) { %>
+                                            <i class="fa-solid fa-spinner fa-lg fa-spin-pulse" style="color: #970000f5;"></i>
+                                        <% } else { %>
+                                            <i class="fa-solid fa-person-digging fa-lg" style="color: #080183;"></i>
+                                        <% } %>
                                     </span>
-                                    <% if (res100Info == 100) { %>
-                                        <i class="fa-solid fa-circle-check fa-lg" style="color: #067e00;"></i>
-                                    <% } else if (res100Info == 0) { %>
-                                        <i class="fa-solid fa-spinner fa-lg fa-spin-pulse" style="color: #970000f5;"></i>
-                                    <% } else { %>
-                                        <i class="fa-solid fa-person-digging fa-lg" style="color: #080183;"></i>
-                                    <% } %>
                                     |
                                     <span id="resRevision100Info<%=k%>_<%=n%>_<%=q%>" name="resRevision100Info" class="badge text-dark my-2" style="cursor: help;">
                                         <%= resRevision100Info %>

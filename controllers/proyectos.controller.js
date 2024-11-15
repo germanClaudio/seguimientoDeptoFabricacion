@@ -1403,7 +1403,7 @@ class ProjectsController {
         }
     }
 
-    // -----------------------------------------------------------
+    // FIXME: MODIFICAR NUMERO FINAL----------------------------------------------------
     addInfoR14ToOtProject = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
@@ -1693,7 +1693,7 @@ class ProjectsController {
             if (!proyecto) {
                 catchError401_4(req, res, next)
             }
-
+            
             data.slide = 2
             const csrfToken = csrfTokens.create(req.csrfSecret);
             setTimeout(() => {
@@ -1706,7 +1706,7 @@ class ProjectsController {
                     data,
                     csrfToken
                 })
-            }, 500)
+            }, 1000)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -1863,9 +1863,9 @@ class ProjectsController {
                 { prefix: 'ldmAvanceCGHidden', array: arrayLdmAvanceCG },
                 { prefix: 'revisionLdmAvanceCG', array: arrayRevisionLdmAvanceCG },
                 { prefix: 'ldmAvanceTD2Hidden', array: arrayLdmAvanceTD2 },
-                { prefix: 'revisionLdmAvanceTD2', array: arrayRevisionLdmAvanceTD2 },
+                { prefix: 'revisionLdmAvance2TD', array: arrayRevisionLdmAvanceTD2 },
                 { prefix: 'ldm80Hidden', array: arrayLdm80 },
-                { prefix: 'revisionLdm80', array: arrayRevisionLdm80 },
+                { prefix: 'revision80Ldm', array: arrayRevisionLdm80 },
                 { prefix: 'infoModeloHidden', array: arrayInfoModelo },
                 { prefix: 'revisionInfoModelo', array: arrayRevisionInfoModelo }
             ];
@@ -1895,7 +1895,8 @@ class ProjectsController {
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
             }
-            
+            // console.log('arrayInfoAddedToOt: ', arrayInfoAddedToOt)
+
             const itemUpdated = await this.projects.addInfo80ToOtProject(
                 projectId,
                 otQuantity,
@@ -1967,10 +1968,10 @@ class ProjectsController {
             const prefixes = [
                 { prefix: 'otNumberHidden', array: arrayOtNumber },
                 { prefix: 'otStatusHidden', array: arrayOtStatus },
-                { prefix: 'ldm100Hidden', array: arrayLdm100 },
-                { prefix: 'revisionLdm100', array: arrayRevisionLdm100 },
-                { prefix: 'info100Hidden', array: arrayInfo100 },
-                { prefix: 'revisionInfo100', array: arrayRevisionInfo100 }
+                { prefix: '100ldmHidden', array: arrayLdm100 },
+                { prefix: '100revisionLdm', array: arrayRevisionLdm100 },
+                { prefix: '100infoHidden', array: arrayInfo100 },
+                { prefix: '100revisionInfo', array: arrayRevisionInfo100 }
             ];
             
             for (const key in req.body) {

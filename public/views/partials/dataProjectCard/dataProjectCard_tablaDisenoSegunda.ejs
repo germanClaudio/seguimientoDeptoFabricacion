@@ -34,16 +34,17 @@
     <tbody class="table-group-divider">
 
         <% let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-            resRevisionCliente = 'sinDato', resRevisionRevisionCliente = 0,
-            resLdmProvisoria = 'sinDato', resRevisionLdmProvisoria = 0,
+            resRevisionCliente = 'S/D', resRevisionRevisionCliente = 0,
+            resLdmProvisoria = 'S/D', resRevisionLdmProvisoria = 0,
             resAv100Diseno = 0, resRevisionAv100Diseno = 0,
-            resAprobadoCliente = 'sinDato', resRevisionAprobadoCliente = 0
+            resAprobadoCliente = 'S/D', resRevisionAprobadoCliente = 0
         
         const DisenoSegundaConfig = {
             ok: { text: "OK", classes: "bg-success text-white" },
             noOk: { text: "No OK", classes: "bg-danger text-white" },
             pendiente: { text: "Pendiente", classes: "bg-warning text-dark" },
             noAplica: { text: "N/A", classes: "bg-info text-dark" },
+            sinDato: { text: "S/D", classes: "bg-secondary text-white" },
             default: { text: "S/D", classes: "bg-secondary text-white" }
         };
         
@@ -53,17 +54,17 @@
             pathMongoOtInformation = pathMongoOtProject[n].otInformation
 
             if (pathMongoOtProject[n].visible) {
-                let pathMongoOtDiseñoSegunda = pathMongoOtInformation[0].otInfoDiseñoSegunda || [],
-                largoArrayDiseñoSegunda = parseInt(pathMongoOtDiseñoSegunda.length);
-
-                let arrResAv100Diseno = [], valueArrayResAv100Diseno = 0, arrResRevisionAv100Diseno = [], arrResCreadorAv100Diseno = [],
-                arrResModificadorAv100Diseno = [], arrResFechaAv100Diseno = [], arrResFechaModAv100Diseno = [];
-
+                let pathMongoOtDisenoSegunda = pathMongoOtInformation[0].otInfoDisenoSegunda || [],
+                largoArrayDisenoSegunda = parseInt(pathMongoOtDisenoSegunda.length);
+                
                 let arrResRevisionCliente = [], valueArrayResRevisionCliente = 0, arrResRevisionRevisionCliente = [], arrResCreadorRevisionCliente = [],
                 arrResModificadorRevisionCliente = [], arrResFechaRevisionCliente = [], arrResFechaModRevisionCliente = [];
-
+                
                 let arrResLdmProvisoria = [], valueArrayResLdmProvisoria = 0, arrResRevisionLdmProvisoria = [], arrResCreadorLdmProvisoria = [],
                 arrResModificadorLdmProvisoria = [], arrResFechaLdmProvisoria = [], arrResFechaModLdmProvisoria = [];
+                
+                let arrResAv100Diseno = [], valueArrayResAv100Diseno = 0, arrResRevisionAv100Diseno = [], arrResCreadorAv100Diseno = [],
+                arrResModificadorAv100Diseno = [], arrResFechaAv100Diseno = [], arrResFechaModAv100Diseno = [];
 
                 let arrResAprobadoCliente = [], valueArrayResAprobadoCliente = 0, arrResRevisionAprobadoCliente = [], arrResCreadorAprobadoCliente = [],
                 arrResModificadorAprobadoCliente = [], arrResFechaAprobadoCliente = [], arrResFechaModAprobadoCliente = [];
@@ -74,21 +75,20 @@
                             if (q==8) { %>
                                 <!-- Revision Cliente data Activo-->
                                 <td class="text-center align-middle">
-                                    <% if (largoArrayDiseñoSegunda > 0) {
-
-                                        for (let i = 0; largoArrayDiseñoSegunda > i; i++) {
-                                            if (pathMongoOtDiseñoSegunda[i]) {
-                                                let largoArray = parseInt(largoArrayDiseñoSegunda)
-                                                resRevisionCliente = pathMongoOtDiseñoSegunda[largoArray-1].revisionCliente || "sinDato"
-                                                resRevisionRevisionCliente = pathMongoOtDiseñoSegunda[largoArray-1].revisionRevisionCliente || 0
+                                    <% if (largoArrayDisenoSegunda > 0) {
+                                        for (let i = 0; largoArrayDisenoSegunda > i; i++) {
+                                            if (pathMongoOtDisenoSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayDisenoSegunda)
+                                                resRevisionCliente = pathMongoOtDisenoSegunda[largoArray-1].revisionCliente || "S/D"
+                                                resRevisionRevisionCliente = parseInt(pathMongoOtDisenoSegunda[largoArray-1].revisionRevisionCliente) || 0
                                                 
-                                                arrResRevisionCliente.push(pathMongoOtDiseñoSegunda[i].revisionCliente)
-                                                arrResRevisionRevisionCliente.push(pathMongoOtDiseñoSegunda[i].revisionRevisionCliente)
+                                                arrResRevisionCliente.push(pathMongoOtDisenoSegunda[i].revisionCliente)
+                                                arrResRevisionRevisionCliente.push(pathMongoOtDisenoSegunda[i].revisionRevisionCliente)
                                                 
-                                                arrResCreadorRevisionCliente.push(pathMongoOtDiseñoSegunda[i].creator[0].username)
-                                                arrResModificadorRevisionCliente.push(pathMongoOtDiseñoSegunda[i].modificator[0].username)
-                                                arrResFechaRevisionCliente.push(pathMongoOtDiseñoSegunda[i].timestamp)
-                                                arrResFechaModRevisionCliente.push(pathMongoOtDiseñoSegunda[i].modifiedOn)
+                                                arrResCreadorRevisionCliente.push(pathMongoOtDisenoSegunda[i].creator[0].username)
+                                                arrResModificadorRevisionCliente.push(pathMongoOtDisenoSegunda[i].modificator[0].username)
+                                                arrResFechaRevisionCliente.push(pathMongoOtDisenoSegunda[i].timestamp)
+                                                arrResFechaModRevisionCliente.push(pathMongoOtDisenoSegunda[i].modifiedOn)
                                             }
                                         }
                                         valueArrayResRevisionCliente = parseInt(arrResRevisionCliente.length-1)
@@ -109,9 +109,9 @@
                                         arrResRevisionRevisionCliente.push(resRevisionRevisionCliente)
                                         
                                         arrResCreadorRevisionCliente.push(pathMongoOtProject[n].creator[0].username)
-                                        arrResModificadorRevisionCliente = ""
+                                        arrResModificadorRevisionCliente.push(pathMongoOtProject[n].modificator[0].username)
                                         arrResFechaRevisionCliente.push(pathMongoOtProject[n].timestamp)
-                                        arrResFechaModRevisionCliente = ""
+                                        arrResFechaModRevisionCliente.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
 
                                     <div id="btnAnteriorSiguienteRevisionCliente<%=k%>_<%=n%>_<%=q%>">
@@ -149,21 +149,21 @@
                             <% } else if (q==9) { %>
                                 <!-- LDM Provisoria data Activo-->
                                 <td class="text-center align-middle">
-                                    <% if (largoArrayDiseñoSegunda > 0) {
+                                    <% if (largoArrayDisenoSegunda > 0) {
 
-                                        for (let i = 0; largoArrayDiseñoSegunda > i; i++) {
-                                            if (pathMongoOtDiseñoSegunda[i]) {
-                                                let largoArray = parseInt(largoArrayDiseñoSegunda)
-                                                resLdmProvisoria = pathMongoOtDiseñoSegunda[largoArray-1].ldmProvisoria || 'sinDato'
-                                                resRevisionLdmProvisoria = pathMongoOtDiseñoSegunda[largoArray-1].revisionLdmProvisoria || 0
+                                        for (let i = 0; largoArrayDisenoSegunda > i; i++) {
+                                            if (pathMongoOtDisenoSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayDisenoSegunda)
+                                                resLdmProvisoria = pathMongoOtDisenoSegunda[largoArray-1].ldmProvisoria || 'S/D'
+                                                resRevisionLdmProvisoria = parseInt(pathMongoOtDisenoSegunda[largoArray-1].revisionLdmProvisoria) || 0
                                                 
-                                                arrResLdmProvisoria.push(pathMongoOtDiseñoSegunda[i].ldmProvisoria)
-                                                arrResRevisionLdmProvisoria.push(pathMongoOtDiseñoSegunda[i].revisionLdmProvisoria)
-                                            
-                                                arrResCreadorLdmProvisoria.push(pathMongoOtDiseñoSegunda[i].creator[0].username)
-                                                arrResModificadorLdmProvisoria.push(pathMongoOtDiseñoSegunda[i].modificator[0].username)
-                                                arrResFechaLdmProvisoria.push(pathMongoOtDiseñoSegunda[i].timestamp)
-                                                arrResFechaModLdmProvisoria.push(pathMongoOtDiseñoSegunda[i].modifiedOn)
+                                                arrResLdmProvisoria.push(pathMongoOtDisenoSegunda[i].ldmProvisoria)
+                                                arrResRevisionLdmProvisoria.push(pathMongoOtDisenoSegunda[i].revisionLdmProvisoria)
+                                                
+                                                arrResCreadorLdmProvisoria.push(pathMongoOtDisenoSegunda[i].creator[0].username)
+                                                arrResModificadorLdmProvisoria.push(pathMongoOtDisenoSegunda[i].modificator[0].username)
+                                                arrResFechaLdmProvisoria.push(pathMongoOtDisenoSegunda[i].timestamp)
+                                                arrResFechaModLdmProvisoria.push(pathMongoOtDisenoSegunda[i].modifiedOn)
                                             }
                                         }
                                         valueArrayResLdmProvisoria = parseInt(arrResLdmProvisoria.length-1)
@@ -221,23 +221,23 @@
                                     </div>
                                 </td>
                             <% } else if (q==10) { %>
-                                <!-- Diseño 100% data Activo-->
+                                <!-- Diseno 100% data Activo-->
                                 <td class="text-center align-middle">
-                                    <% if (largoArrayDiseñoSegunda > 0) {
+                                    <% if (largoArrayDisenoSegunda > 0) {
 
-                                        for (let i = 0; largoArrayDiseñoSegunda > i; i++) {
-                                            if (pathMongoOtDiseñoSegunda[i]) {
-                                                let largoArray = parseInt(largoArrayDiseñoSegunda)
-                                                resAv100Diseno = parseInt(pathMongoOtDiseñoSegunda[largoArray-1].avDiseno100) || 0
-                                                resRevisionAv100Diseno = pathMongoOtDiseñoSegunda[largoArray-1].revisionAvDiseno100 || 0
+                                        for (let i = 0; largoArrayDisenoSegunda > i; i++) {
+                                            if (pathMongoOtDisenoSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayDisenoSegunda)
+                                                resAv100Diseno = parseInt(pathMongoOtDisenoSegunda[largoArray-1].avDiseno100) || 0
+                                                resRevisionAv100Diseno = parseInt(pathMongoOtDisenoSegunda[largoArray-1].revisionAvDiseno100) || 0
                                                 
-                                                arrResAv100Diseno.push(pathMongoOtDiseñoSegunda[i].avDiseno100)
-                                                arrResRevisionAv100Diseno.push(pathMongoOtDiseñoSegunda[i].revisionAvDiseno100)
+                                                arrResAv100Diseno.push(pathMongoOtDisenoSegunda[i].avDiseno100)
+                                                arrResRevisionAv100Diseno.push(pathMongoOtDisenoSegunda[i].revisionAvDiseno100)
                                                 
-                                                arrResCreadorAv100Diseno.push(pathMongoOtDiseñoSegunda[i].creator[0].username)
-                                                arrResModificadorAv100Diseno.push(pathMongoOtDiseñoSegunda[i].modificator[0].username)
-                                                arrResFechaAv100Diseno.push(pathMongoOtDiseñoSegunda[i].timestamp)
-                                                arrResFechaModAv100Diseno.push(pathMongoOtDiseñoSegunda[i].modifiedOn)
+                                                arrResCreadorAv100Diseno.push(pathMongoOtDisenoSegunda[i].creator[0].username)
+                                                arrResModificadorAv100Diseno.push(pathMongoOtDisenoSegunda[i].modificator[0].username)
+                                                arrResFechaAv100Diseno.push(pathMongoOtDisenoSegunda[i].timestamp)
+                                                arrResFechaModAv100Diseno.push(pathMongoOtDisenoSegunda[i].modifiedOn)
                                             }
                                         }
                                         valueArrayResAv100Diseno = parseInt(arrResAv100Diseno.length-1)
@@ -263,9 +263,9 @@
                                         arrResFechaModAv100Diseno.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
 
-                                    <div id="btnAnteriorSiguienteLdmProvisoria<%=k%>_<%=n%>_<%=q%>">
-                                        <button id="btnAnteriorLdmProvisoria<%=k%>_<%=n%>_<%=q%>"
-                                            name="btnAnteriorLdmProvisoria" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-1" title="Ver anterior" type="button"
+                                    <div id="btnAnteriorSiguienteAv100Diseno<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorAv100Diseno<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorAv100Diseno" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-1" title="Ver anterior" type="button"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                             <%= anteriorDisabled %>
                                             ><i class="fa-solid fa-arrow-left"></i>
@@ -279,22 +279,22 @@
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModAv100Diseno %>">
 
                                         <span id="resAv100Diseno<%=k%>_<%=n%>_<%=q%>" name="resAv100Diseno" class="text-dark" style="font-size: .9rem;">
-                                            <%= resAv100Diseno %>%
+                                            <%= resAv100Diseno %>% 
+                                            <% if (resAv100Diseno == 100) { %>
+                                                <i class="fa-solid fa-circle-check fa-lg" style="color: #067e00;"></i>
+                                            <% } else if (resAv100Diseno == 0) { %>
+                                                <i class="fa-solid fa-spinner fa-lg fa-spin-pulse" style="color: #970000f5;"></i>
+                                            <% } else { %>
+                                                <i class="fa-solid fa-person-digging fa-lg" style="color: #080183;"></i>
+                                            <% } %>
                                         </span>
-                                        <% if (resAv100Diseno == 100) { %>
-                                            <i class="fa-solid fa-circle-check fa-lg" style="color: #067e00;"></i>
-                                        <% } else if (resAv100Diseno == 0) { %>
-                                            <i class="fa-solid fa-spinner fa-lg fa-spin-pulse" style="color: #970000f5;"></i>
-                                        <% } else { %>
-                                            <i class="fa-solid fa-person-digging fa-lg" style="color: #080183;"></i>
-                                        <% } %>
                                         |
                                         <span id="resRevisionAv100Diseno<%=k%>_<%=n%>_<%=q%>" name="resRevisionAv100Diseno" class="badge text-dark my-2" style="cursor: help;">
                                             <%= resRevisionAv100Diseno %>
                                         </span>
                                         
-                                        <button id="btnSiguienteLdmProvisoria<%=k%>_<%=n%>_<%=q%>"
-                                            name="btnSiguienteLdmProvisoria" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-1" title="Ver siguiente" type="button"
+                                        <button id="btnSiguienteAv100Diseno<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteAv100Diseno" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-1" title="Ver siguiente" type="button"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                             <%= siguienteDisabled %>
                                             ><i class="fa-solid fa-arrow-right"></i>
@@ -305,21 +305,21 @@
                             <% } else { %>
                                 <!-- Aprobado Cliente data Activo-->
                                 <td class="text-center align-middle">
-                                    <% if (largoArrayDiseñoSegunda > 0) {
+                                    <% if (largoArrayDisenoSegunda > 0) {
 
-                                        for (let i = 0; largoArrayDiseñoSegunda > i; i++) {
-                                            if (pathMongoOtDiseñoSegunda[i]) {
-                                                let largoArray = parseInt(largoArrayDiseñoSegunda)
-                                                resAprobadoCliente = pathMongoOtDiseñoSegunda[largoArray-1].aprobadoCliente || "sinDato"
-                                                resRevisionAprobadoCliente = pathMongoOtDiseñoSegunda[largoArray-1].revisionAprobadoCliente || 0
+                                        for (let i = 0; largoArrayDisenoSegunda > i; i++) {
+                                            if (pathMongoOtDisenoSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayDisenoSegunda)
+                                                resAprobadoCliente = pathMongoOtDisenoSegunda[largoArray-1].aprobadoCliente || "S/D"
+                                                resRevisionAprobadoCliente = parseInt(pathMongoOtDisenoSegunda[largoArray-1].revisionAprobadoCliente) || 0
                                                 
-                                                arrResAprobadoCliente.push(pathMongoOtDiseñoSegunda[i].AprobadoCliente)
-                                                arrResRevisionAprobadoCliente.push(pathMongoOtDiseñoSegunda[i].revisionAprobadoCliente)
+                                                arrResAprobadoCliente.push(pathMongoOtDisenoSegunda[i].aprobadoCliente)
+                                                arrResRevisionAprobadoCliente.push(pathMongoOtDisenoSegunda[i].revisionAprobadoCliente)
                                             
-                                                arrResCreadorAprobadoCliente.push(pathMongoOtDiseñoSegunda[i].creator[0].username)
-                                                arrResModificadorAprobadoCliente.push(pathMongoOtDiseñoSegunda[i].modificator[0].username)
-                                                arrResFechaAprobadoCliente.push(pathMongoOtDiseñoSegunda[i].timestamp)
-                                                arrResFechaModAprobadoCliente.push(pathMongoOtDiseñoSegunda[i].modifiedOn)
+                                                arrResCreadorAprobadoCliente.push(pathMongoOtDisenoSegunda[i].creator[0].username)
+                                                arrResModificadorAprobadoCliente.push(pathMongoOtDisenoSegunda[i].modificator[0].username)
+                                                arrResFechaAprobadoCliente.push(pathMongoOtDisenoSegunda[i].timestamp)
+                                                arrResFechaModAprobadoCliente.push(pathMongoOtDisenoSegunda[i].modifiedOn)
                                             }
                                         }
                                         valueArrayResAprobadoCliente = parseInt(arrResAprobadoCliente.length-1)
@@ -340,9 +340,9 @@
                                         arrResRevisionAprobadoCliente.push(resRevisionAprobadoCliente)
                                         
                                         arrResCreadorAprobadoCliente.push(pathMongoOtProject[n].creator[0].username)
-                                        arrResModificadorAprobadoCliente = ""
+                                        arrResModificadorAprobadoCliente.push(pathMongoOtProject[n].modificator[0].username)
                                         arrResFechaAprobadoCliente.push(pathMongoOtProject[n].timestamp)
-                                        arrResFechaModAprobadoCliente = ""
+                                        arrResFechaModAprobadoCliente.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
 
                                     <div id="btnAnteriorSiguienteAprobadoCliente<%=k%>_<%=n%>_<%=q%>">
@@ -386,20 +386,20 @@
                             if (q==8) { %>
                                 <!-- Revision Cliente data Inactivo-->
                                 <td class="text-center align-middle">
-                                    <% if (largoArrayDiseñoSegunda > 0) {
+                                    <% if (largoArrayDisenoSegunda > 0) {
 
-                                        for (let i = 0; largoArrayDiseñoSegunda > i; i++) {
-                                            if (pathMongoOtDiseñoSegunda[i]) {
-                                                let largoArray = parseInt(largoArrayDiseñoSegunda)
-                                                resRevisionCliente = pathMongoOtDiseñoSegunda[largoArray-1].revisionCliente  || 'sinDato'
-                                                resRevisionRevisionCliente = pathMongoOtDiseñoSegunda[largoArray-1].revisionRevisionCliente || 0
+                                        for (let i = 0; largoArrayDisenoSegunda > i; i++) {
+                                            if (pathMongoOtDisenoSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayDisenoSegunda)
+                                                resRevisionCliente = pathMongoOtDisenoSegunda[largoArray-1].revisionCliente  || 'S/D'
+                                                resRevisionRevisionCliente = parseInt(pathMongoOtDisenoSegunda[largoArray-1].revisionRevisionCliente) || 0
                                                 
-                                                arrResRevisionCliente.push(pathMongoOtDiseñoSegunda[i].RevisionCliente)
-                                                arrResRevisionRevisionCliente.push(pathMongoOtDiseñoSegunda[i].revisionRevisionCliente)
+                                                arrResRevisionCliente.push(pathMongoOtDisenoSegunda[i].RevisionCliente)
+                                                arrResRevisionRevisionCliente.push(pathMongoOtDisenoSegunda[i].revisionRevisionCliente)
                                             }
                                         }
                                         valueArrayResRevisionCliente = parseInt(arrResRevisionCliente.length-1)
-                                        resRevisionCliente = pathMongoOtDiseñoSegunda[0].revisionCliente
+                                        resRevisionCliente = pathMongoOtDisenoSegunda[0].revisionCliente
 
                                     } else {
                                         arrResRevisionCliente.push(resRevisionCliente)
@@ -422,20 +422,20 @@
                             <% } else if (q==9) { %>
                                 <!-- LDM Provisoria data Inactivo-->
                                 <td class="text-center align-middle">
-                                    <% if (largoArrayDiseñoSegunda > 0) {
+                                    <% if (largoArrayDisenoSegunda > 0) {
 
-                                        for (let i = 0; largoArrayDiseñoSegunda > i; i++) {
-                                            if (pathMongoOtDiseñoSegunda[i]) {
-                                                let largoArray = parseInt(largoArrayDiseñoSegunda)
-                                                resLdmProvisoria = pathMongoOtDiseñoSegunda[largoArray-1].ldmProvisoria || 'sinDato'
-                                                resRevisionLdmProvisoria = pathMongoOtDiseñoSegunda[largoArray-1].revisionLdmProvisoria || 0
+                                        for (let i = 0; largoArrayDisenoSegunda > i; i++) {
+                                            if (pathMongoOtDisenoSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayDisenoSegunda)
+                                                resLdmProvisoria = pathMongoOtDisenoSegunda[largoArray-1].ldmProvisoria || 'S/D'
+                                                resRevisionLdmProvisoria = parseInt(pathMongoOtDisenoSegunda[largoArray-1].revisionLdmProvisoria) || 0
                                                 
-                                                arrResLdmProvisoria.push(pathMongoOtDiseñoSegunda[i].ldmProvisoria)
-                                                arrResRevisionLdmProvisoria.push(pathMongoOtDiseñoSegunda[i].revisionLdmProvisoria)
+                                                arrResLdmProvisoria.push(pathMongoOtDisenoSegunda[i].ldmProvisoria)
+                                                arrResRevisionLdmProvisoria.push(pathMongoOtDisenoSegunda[i].revisionLdmProvisoria)
                                             }
                                         }
                                         valueArrayResLdmProvisoria = parseInt(arrResLdmProvisoria.length-1)
-                                        resLdmProvisoria = pathMongoOtDiseñoSegunda[0].ldmProvisoria
+                                        resLdmProvisoria = pathMongoOtDisenoSegunda[0].ldmProvisoria
 
                                     } else {
                                         arrResLdmProvisoria.push(resLdmProvisoria)
@@ -456,22 +456,22 @@
                                 </td>
 
                             <% } else if (q==10) { %>
-                                <!-- Diseño 100% data Inactivo-->
+                                <!-- Diseno 100% data Inactivo-->
                                 <td class="text-center align-middle">
-                                    <% if (largoArrayDiseñoSegunda > 0) {
+                                    <% if (largoArrayDisenoSegunda > 0) {
     
-                                        for (let i = 0; largoArrayDiseñoSegunda > i; i++) {
-                                            if (pathMongoOtDiseñoSegunda[i]) {
-                                                let largoArray = parseInt(largoArrayDiseñoSegunda)
-                                                resAv100Diseno = parseInt(pathMongoOtDiseñoSegunda[largoArray-1].avDiseno100) || 0
-                                                resRevisionAv100Diseno = pathMongoOtDiseñoSegunda[largoArray-1].revisionAvDiseno100 || 0
+                                        for (let i = 0; largoArrayDisenoSegunda > i; i++) {
+                                            if (pathMongoOtDisenoSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayDisenoSegunda)
+                                                resAv100Diseno = parseInt(pathMongoOtDisenoSegunda[largoArray-1].avDiseno100) || 0
+                                                resRevisionAv100Diseno = parseInt(pathMongoOtDisenoSegunda[largoArray-1].revisionAvDiseno100) || 0
                                                 
-                                                arrResAv100Diseno.push(pathMongoOtDiseñoSegunda[i].avDiseno100)
-                                                arrResRevisionAv100Diseno.push(pathMongoOtDiseñoSegunda[i].revisionAvDiseno100)
+                                                arrResAv100Diseno.push(pathMongoOtDisenoSegunda[i].avDiseno100)
+                                                arrResRevisionAv100Diseno.push(pathMongoOtDisenoSegunda[i].revisionAvDiseno100)
                                             }
                                         }
                                         valueArrayResAv100Diseno = parseInt(arrResAv100Diseno.length-1)
-                                        resAv100Diseno = pathMongoOtDiseñoSegunda[0].avDiseno100
+                                        resAv100Diseno = pathMongoOtDisenoSegunda[0].avDiseno100
     
                                     } else {
                                         arrResAv100Diseno.push(resAv100Diseno)
@@ -483,15 +483,15 @@
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAv100Diseno %>">
                                     
                                     <span id="resAv100Diseno<%=k%>_<%=n%>_<%=q%>" name="resAv100Diseno" class="text-dark" style="font-size: .9rem;">
-                                        <%= resAv100Diseno %>%
+                                        <%= resAv100Diseno %>% 
+                                        <% if (resAv100Diseno == 100) { %>
+                                            <i class="fa-solid fa-circle-check fa-lg" style="color: #067e00;"></i>
+                                        <% } else if (resAv100Diseno == 0) { %>
+                                            <i class="fa-solid fa-spinner fa-lg fa-spin-pulse" style="color: #970000f5;"></i>
+                                        <% } else { %>
+                                            <i class="fa-solid fa-person-digging fa-lg" style="color: #080183;"></i>
+                                        <% } %>
                                     </span>
-                                    <% if (resAv100Diseno == 100) { %>
-                                        <i class="fa-solid fa-circle-check fa-lg" style="color: #067e00;"></i>
-                                    <% } else if (resAv100Diseno == 0) { %>
-                                        <i class="fa-solid fa-spinner fa-lg fa-spin-pulse" style="color: #970000f5;"></i>
-                                    <% } else { %>
-                                        <i class="fa-solid fa-person-digging fa-lg" style="color: #080183;"></i>
-                                    <% } %>
                                     |
                                     <span id="resRevisionAv100Diseno<%=k%>_<%=n%>_<%=q%>" name="resRevisionAv100Diseno" class="badge text-dark my-2" style="cursor: help;">
                                         <%= resRevisionAv100Diseno %>
@@ -501,20 +501,20 @@
                             <% } else { %>
                                 <!-- Aprobado Cliente data Inactivo-->
                                 <td class="text-center align-middle">
-                                    <% if (largoArrayDiseñoSegunda > 0) {
+                                    <% if (largoArrayDisenoSegunda > 0) {
 
-                                        for (let i = 0; largoArrayDiseñoSegunda > i; i++) {
-                                            if (pathMongoOtDiseñoSegunda[i]) {
-                                                let largoArray = parseInt(largoArrayDiseñoSegunda)
-                                                resAprobadoCliente = pathMongoOtDiseñoSegunda[largoArray-1].aprobadoCliente || 'sinDato'
-                                                resRevisionAprobadoCliente = pathMongoOtDiseñoSegunda[largoArray-1].revisionAprobadoCliente || 0
+                                        for (let i = 0; largoArrayDisenoSegunda > i; i++) {
+                                            if (pathMongoOtDisenoSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayDisenoSegunda)
+                                                resAprobadoCliente = pathMongoOtDisenoSegunda[largoArray-1].aprobadoCliente || 'S/D'
+                                                resRevisionAprobadoCliente = parseInt(pathMongoOtDisenoSegunda[largoArray-1].revisionAprobadoCliente) || 0
                                                 
-                                                arrResAprobadoCliente.push(pathMongoOtDiseñoSegunda[i].aprobadoCliente)
-                                                arrResRevisionAprobadoCliente.push(pathMongoOtDiseñoSegunda[i].revisionAprobadoCliente)
+                                                arrResAprobadoCliente.push(pathMongoOtDisenoSegunda[i].aprobadoCliente)
+                                                arrResRevisionAprobadoCliente.push(pathMongoOtDisenoSegunda[i].revisionAprobadoCliente)
                                             }
                                         }
                                         valueArrayResAprobadoCliente = parseInt(arrResAprobadoCliente.length-1)
-                                        resAprobadoCliente = pathMongoOtDiseñoSegunda[0].aprobadoCliente
+                                        resAprobadoCliente = pathMongoOtDisenoSegunda[0].aprobadoCliente
 
                                     } else {
                                         arrResAprobadoCliente.push(resAprobadoCliente)

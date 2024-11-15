@@ -1,23 +1,55 @@
-let arrBtnAnteriorInfo80 = []
-let arrBtnSiguienteInfo80 = []
+let arrBtnAnteriorLdmAvanceCG = [], arrBtnSiguienteLdmAvanceCG = [], 
+arrBtnAnteriorLdmAvanceTD2 = [], arrBtnSiguienteLdmAvanceTD2 = [],
+arrBtnAnterior80Ldm = [], arrBtnSiguiente80Ldm = [],
+arrBtnAnteriorInfoModelo = [], arrBtnSiguienteInfoModelo = []
 
 for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de proyectos por Cliente
-
     for (let p = 0; p<varLimMaxOtProyecto; p++) { //variable limite maximo de Ot por proyecto
-        
         for (let q = 0; q<varLimMaxOtProyecto; q++) {
-            if (document.getElementById(`btnAnteriorSiguiente80Info${i}_${p}_${q}`)) {
-                arrBtnAnteriorInfo80.push(i)
-                arrBtnSiguienteInfo80.push(i)
+            const btnIdLdmAvanceCG = `btnAnteriorSiguienteLdmAvanceCG${i}_${p}_${q}`;
+            const btnIdLdmAvanceTD2 = `btnAnteriorSiguienteLdmAvance2TD${i}_${p}_${q}`;
+            const btnId80Ldm = `btnAnteriorSiguiente80Ldm${i}_${p}_${q}`;
+            const btnIdInfoModelo = `btnAnteriorSiguienteInfoModelo${i}_${p}_${q}`;
+
+            const btnElementLdmAvanceCG = document.getElementById(btnIdLdmAvanceCG);
+            if ( btnElementLdmAvanceCG) {
+                arrBtnAnteriorLdmAvanceCG.push(i)
+                arrBtnSiguienteLdmAvanceCG.push(i)
+            }
+
+            const btnElementLdmAvanceTD2 = document.getElementById(btnIdLdmAvanceTD2);
+            if ( btnElementLdmAvanceTD2) {
+                arrBtnAnteriorLdmAvanceTD2.push(i)
+                arrBtnSiguienteLdmAvanceTD2.push(i)
+            }
+
+            const btnElement80Ldm = document.getElementById(btnId80Ldm);
+            if ( btnElement80Ldm) {
+                arrBtnAnterior80Ldm.push(i)
+                arrBtnSiguiente80Ldm.push(i)
+            }
+
+            const btnElementInfoModelo = document.getElementById(btnIdInfoModelo);
+            if ( btnElementInfoModelo) {
+                arrBtnAnteriorInfoModelo.push(i)
+                arrBtnSiguienteInfoModelo.push(i)
             }
         }
     }
 }
 
+function changeIconAvanceFromArray(arrayFromValues) {
+    let defaultValue = '<i class="fa-solid fa-person-digging fa-lg" style="color: #1c21ac;"></i>'
+    const valueEstadoMap = {
+        100 : '<i class="fa-solid fa-circle-check fa-lg" style="color: #067e00;"></i>',
+        0 : '<i class="fa-solid fa-spinner fa-lg fa-spin-pulse"style="color: #ff0000f5;"></i>', 
+    };
+    return arrayFromValues.map(value => valueEstadoMap[value] || defaultValue);
+}
+
 //*********** Evento btn's anterior y siguiente ************* */
-if(arrBtnAnteriorInfo80 !=[]) {
-    let allBtnAnterior = document.querySelectorAll('[name="btnAnterior80Info"]')
-    
+if(arrBtnAnteriorLdmAvanceCG !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorLdmAvanceCG"]')
     allBtnAnterior.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -26,15 +58,14 @@ if(arrBtnAnteriorInfo80 !=[]) {
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
                 //console.log('kValue. ', kValue)
-                mostrarAnteriorInfo80(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArrayInfo80
+                mostrarAnteriorInfo80(changeValueFromArray(arrayFromValues), '', kValue)
             })
         }
     })
 }
 
-if(arrBtnSiguienteInfo80 !=[]) {    
-    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguiente80Info"]')
-    
+if(arrBtnSiguienteLdmAvanceCG !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteLdmAvanceCG"]')
     allBtnSiguiente.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -43,7 +74,103 @@ if(arrBtnSiguienteInfo80 !=[]) {
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
                 //console.log('kValue. ', kValue)
-                mostrarSiguienteInfo80(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArrayInfo80
+                mostrarSiguienteInfo80(changeValueFromArray(arrayFromValues), '', kValue) //changeValueFromArrayInfo80
+            })
+        }
+    })
+}
+
+if(arrBtnAnteriorLdmAvanceTD2 !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorLdmAvance2TD"]')
+    allBtnAnterior.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                //console.log('kValue. ', kValue)
+                mostrarAnteriorInfo80(changeValueFromArray(arrayFromValues), '', kValue) //changeValueFromArrayInfo80
+            })
+        }
+    })
+}
+
+if(arrBtnSiguienteLdmAvanceTD2 !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteLdmAvance2TD"]')
+    allBtnSiguiente.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                //console.log('kValue. ', kValue)
+                mostrarSiguienteInfo80(changeValueFromArray(arrayFromValues), '', kValue) //changeValueFromArrayInfo80
+            })
+        }
+    })
+}
+
+if(arrBtnAnterior80Ldm !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnterior80Ldm"]')
+    allBtnAnterior.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                //console.log('kValue. ', kValue)
+                mostrarAnteriorInfo80(arrayFromValues, changeIconAvanceFromArray(arrayFromValues), kValue)
+            })
+        }
+    })
+}
+
+if(arrBtnSiguiente80Ldm !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguiente80Ldm"]')
+    allBtnSiguiente.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                //console.log('kValue. ', kValue)
+                mostrarSiguienteInfo80(arrayFromValues, changeIconAvanceFromArray(arrayFromValues), kValue) //changeValueFromArrayInfo80
+            })
+        }
+    })
+}
+
+if(arrBtnAnteriorInfoModelo !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorInfoModelo"]')
+    allBtnAnterior.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                //console.log('kValue. ', kValue)
+                mostrarAnteriorInfo80(arrayFromValues, changeIconAvanceFromArray(arrayFromValues), kValue) //changeValueFromArrayInfo80
+            })
+        }
+    })
+}
+
+if(arrBtnSiguienteInfoModelo !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteInfoModelo"]')
+    allBtnSiguiente.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                //console.log('kValue. ', kValue)
+                mostrarSiguienteInfo80(arrayFromValues, changeIconAvanceFromArray(arrayFromValues), kValue)
             })
         }
     })
@@ -52,6 +179,8 @@ if(arrBtnSiguienteInfo80 !=[]) {
 // Mostrar el elemento actual en la página
 function mostrarElementoInfo80(
     arrayFromValues,
+    arrayFromValuesIcon,
+    arrValuesRevisionMark,
     indiceAMostrar,
     kValue,
     resLdmAvanceCG,
@@ -60,120 +189,199 @@ function mostrarElementoInfo80(
     resInfoModelo) {
     
     // console.log('kValue', kValue)
+    let btnAnteriorLdmAvanceCG, btnSiguienteLdmAvanceCG, containerBtnAnteriorSiguienteLdmAvanceCG
+    let btnAnteriorLdmAvanceTD2, btnSiguienteLdmAvanceTD2, containerBtnAnteriorSiguienteLdmAvanceTD2
+    let btnAnterior80Ldm, btnSiguiente80Ldm, containerBtnAnteriorSiguiente80Ldm
+    let btnAnteriorInfoModelo, btnSiguienteInfoModelo, containerBtnAnteriorSiguienteInfoModelo
 
     if (resLdmAvanceCG) {
         let spanLdmAvanceCG = document.getElementById(`resLdmAvanceCG${kValue}`)
         let spanRevisionLdmAvanceCG = document.getElementById(`resRevisionLdmAvanceCG${kValue}`)
         spanLdmAvanceCG.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionLdmAvanceCG.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionLdmAvanceCG.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorLdmAvanceCG = document.getElementById(`btnAnteriorLdmAvanceCG${kValue}`)
+        btnSiguienteLdmAvanceCG = document.getElementById(`btnSiguienteLdmAvanceCG${kValue}`)
+        containerBtnAnteriorSiguienteLdmAvanceCG = document.getElementById(`btnAnteriorSiguienteLdmAvanceCG${kValue}`)
+
     } else if (resLdmAvanceTD2) {
-        let spanLdmAvanceTD2 = document.getElementById(`resLdmAvanceTD2${kValue}`)
-        let spanRevisionLdmAvanceTD2 = document.getElementById(`resRevisionLdmAvanceTD2${kValue}`)
+        let spanLdmAvanceTD2 = document.getElementById(`resLdmAvance2TD${kValue}`)
+        let spanRevisionLdmAvanceTD2 = document.getElementById(`resRevisionLdmAvance2TD${kValue}`)
         spanLdmAvanceTD2.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionLdmAvanceTD2.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionLdmAvanceTD2.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorLdmAvanceTD2 = document.getElementById(`btnAnteriorLdmAvance2TD${kValue}`)
+        btnSiguienteLdmAvanceTD2 = document.getElementById(`btnSiguienteLdmAvance2TD${kValue}`)
+        containerBtnAnteriorSiguienteLdmAvanceTD2 = document.getElementById(`btnAnteriorSiguienteLdmAvance2TD${kValue}`)
+
     } else if (res80Ldm) {
         let spanLdm80 = document.getElementById(`res80Ldm${kValue}`)
         let spanRevisionLdm80 = document.getElementById(`resRevision80Ldm${kValue}`)
-        spanLdm80.innerText = arrayFromValues[parseInt(indiceAMostrar)]+'%'
-        spanRevisionLdm80.innerText = parseInt(indiceAMostrar+1)
+        spanLdm80.innerHTML = ''
+        spanLdm80.innerHTML = arrayFromValues[parseInt(indiceAMostrar)]+'% '+ arrayFromValuesIcon[parseInt(indiceAMostrar)]
+        spanRevisionLdm80.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnterior80Ldm = document.getElementById(`btnAnterior80Ldm${kValue}`)
+        btnSiguiente80Ldm = document.getElementById(`btnSiguiente80Ldm${kValue}`)
+        containerBtnAnteriorSiguiente80Ldm = document.getElementById(`btnAnteriorSiguiente80Ldm${kValue}`)
+
     } else if (resInfoModelo) {
         let spanInfoModelo = document.getElementById(`resInfoModelo${kValue}`)
         let spanRevisionInfoModelo = document.getElementById(`resRevisionInfoModelo${kValue}`)
-        spanInfoModelo.innerText = arrayFromValues[parseInt(indiceAMostrar)]+'%'
-        spanRevisionInfoModelo.innerText = parseInt(indiceAMostrar+1)
+        spanInfoModelo.innerHTML = ''
+        spanInfoModelo.innerHTML = arrayFromValues[parseInt(indiceAMostrar)]+'% '+ arrayFromValuesIcon[parseInt(indiceAMostrar)]
+        spanRevisionInfoModelo.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorInfoModelo = document.getElementById(`btnAnteriorInfoModelo${kValue}`)
+        btnSiguienteInfoModelo = document.getElementById(`btnSiguienteInfoModelo${kValue}`)
+        containerBtnAnteriorSiguienteInfoModelo = document.getElementById(`btnAnteriorSiguienteInfoModelo${kValue}`)
     }
     
-
-    let btnAnterior80Info = document.getElementById(`btnAnterior80Info${kValue}`)
-    let btnSiguiente80Info = document.getElementById(`btnSiguiente80Info${kValue}`)
-    let containerBtnAnteriorSiguienteInfo80 = document.getElementById(`btnAnteriorSiguiente80Info${kValue}`)
-    
     function colorSpanInfo80(spanElementInfo80) {
-        let resultColor
-        let resultTextColor
-        spanElementInfo80.classList.remove("bg-success")
-        spanElementInfo80.classList.remove("bg-danger")
-        spanElementInfo80.classList.remove("bg-warning")
-        spanElementInfo80.classList.remove("bg-secondary")
-        spanElementInfo80.classList.remove("bg-info")
-        spanElementInfo80.classList.remove("text-white")
-        spanElementInfo80.classList.remove("text-dark")
-
-        if (spanElementInfo80.innerText == "OK") {
-           resultColor = spanElementInfo80.classList.add("bg-success")
-           resultTextColor = spanElementInfo80.classList.add("text-white")
-        } else if (spanElementInfo80.innerText == "No OK") {
-           resultColor = spanElementInfo80.classList.add("bg-danger")
-           resultTextColor = spanElementInfo80.classList.add("text-white")
-        } else if (spanElementInfo80.innerText == "S/D") {
-           resultColor = spanElementInfo80.classList.add("bg-secondary")
-           resultTextColor = spanElementInfo80.classList.add("text-white")
-        } else if (spanElementInfo80.innerText == "Pendiente") {
-           resultColor = spanElementInfo80.classList.add("bg-warning")
-           resultTextColor = spanElementInfo80.classList.add("text-dark")
-        } else if (spanElementInfo80.innerText == "N/A") {
-            resultColor = spanElementInfo80.classList.add("bg-info")
-            resultTextColor = spanElementInfo80.classList.add("text-dark")
-         }
-        return resultColor, resultTextColor
+        const classMap = {
+            "OK": { bgClass: "bg-success", textClass: "text-white" },
+            "No OK": { bgClass: "bg-danger", textClass: "text-white" },
+            "Pendiente": { bgClass: "bg-warning", textClass: "text-dark" },
+            "S/D": { bgClass: "bg-secondary", textClass: "text-white" },
+            "N/A": { bgClass: "bg-info", textClass: "text-dark" }
+        };
+    
+        const defaultClasses = ["bg-success", "bg-danger", "bg-warning", "bg-secondary", "bg-info", "text-white", "text-dark"];
+        if (spanElementInfo80) {
+            spanElementInfo80.classList.remove(...defaultClasses);
+        }
+    
+        const text = spanElementInfo80.innerText;
+        if (classMap[text]) {
+            spanElementInfo80.classList.add(classMap[text].bgClass, classMap[text].textClass);
+        }
     }
 
     function agregarEstiloRevPasadasInfo80 (containerBtnAnteriorSiguienteInfo80) {
-        containerBtnAnteriorSiguienteInfo80.classList.add("bg-secondary")
-        containerBtnAnteriorSiguienteInfo80.classList.add("bg-gradient")
-        containerBtnAnteriorSiguienteInfo80.classList.add("bg-opacity-25")
+        containerBtnAnteriorSiguienteInfo80.classList.add("bg-secondary", "bg-gradient", "bg-opacity-25")
     }
 
     function eliminarEstiloRevPasadasInfo80 (containerBtnAnteriorSiguienteInfo80) {
-        containerBtnAnteriorSiguienteInfo80.classList.remove("bg-secondary")
-        containerBtnAnteriorSiguienteInfo80.classList.remove("bg-gradient")
-        containerBtnAnteriorSiguienteInfo80.classList.remove("bg-opacity-25")
+        containerBtnAnteriorSiguienteInfo80.classList.remove("bg-secondary", "bg-gradient", "bg-opacity-25")
     }
     
-    let spanElementInfo80
-    if (resLdmAvanceCG) {
-        spanElementInfo80 = resLdmAvanceCG
-    } else if (resLdmAvanceTD2) {
-        spanElementInfo80 = resLdmAvanceTD2
-    } else if (res80Ldm) {
-        spanElementInfo80 = res80Ldm
-    } else if (resInfoModelo) {
-        spanElementInfo80 = resInfoModelo
-    }
+    let spanElementLdmAvanceCG, spanElementLdmAvanceTD2, spanElement80Ldm, spanElementInfoModelo
+    resLdmAvanceCG ? spanElementLdmAvanceCG = resLdmAvanceCG : null
+    resLdmAvanceTD2 ? spanElementLdmAvanceTD2 = resLdmAvanceTD2 : null
+    res80Ldm ? spanElement80Ldm = res80Ldm : null
+    resInfoModelo ? spanElementInfoModelo = resInfoModelo : null
     
     if (indiceAMostrar == 0) {
-        colorSpanInfo80(spanElementInfo80)
-        btnAnterior80Info.disabled = 'true'
-        btnSiguiente80Info.removeAttribute('disabled')
-        agregarEstiloRevPasadasInfo80(containerBtnAnteriorSiguienteInfo80)
+        if (btnAnteriorLdmAvanceCG && btnSiguienteLdmAvanceCG) {
+            colorSpanInfo80(spanElementLdmAvanceCG)
+            btnAnteriorLdmAvanceCG.disabled = true
+            btnSiguienteLdmAvanceCG.removeAttribute('disabled')
+            agregarEstiloRevPasadasInfo80(containerBtnAnteriorSiguienteLdmAvanceCG)
+        }
+
+        if (btnAnteriorLdmAvanceTD2 && btnSiguienteLdmAvanceTD2) {
+            colorSpanInfo80(spanElementLdmAvanceTD2)
+            btnAnteriorLdmAvanceTD2.disabled = true
+            btnSiguienteLdmAvanceTD2.removeAttribute('disabled')
+            agregarEstiloRevPasadasInfo80(containerBtnAnteriorSiguienteLdmAvanceTD2)
+        }
+
+        if (btnAnterior80Ldm && btnSiguiente80Ldm) {
+            colorSpanInfo80(spanElement80Ldm)
+            btnAnterior80Ldm.disabled = true
+            btnSiguiente80Ldm.removeAttribute('disabled')
+            agregarEstiloRevPasadasInfo80(containerBtnAnteriorSiguiente80Ldm)
+        }
+
+        if (btnAnteriorInfoModelo && btnSiguienteInfoModelo) {
+            colorSpanInfo80(spanElementInfoModelo)
+            btnAnteriorInfoModelo.disabled = true
+            btnSiguienteInfoModelo.removeAttribute('disabled')
+            agregarEstiloRevPasadasInfo80(containerBtnAnteriorSiguienteInfoModelo)
+        }
+
     } else if (indiceAMostrar == arrayFromValues.length-1) {
-        colorSpanInfo80(spanElementInfo80)
-        btnAnterior80Info.removeAttribute('disabled')
-        btnSiguiente80Info.disabled = true
-        eliminarEstiloRevPasadasInfo80(containerBtnAnteriorSiguienteInfo80)
+        if (btnAnteriorLdmAvanceCG && btnSiguienteLdmAvanceCG) {
+            colorSpanInfo80(spanElementLdmAvanceCG)
+            btnAnteriorLdmAvanceCG.removeAttribute('disabled')
+            btnSiguienteLdmAvanceCG.disabled = true
+            eliminarEstiloRevPasadasInfo80(containerBtnAnteriorSiguienteLdmAvanceCG)
+        }
+
+        if (btnAnteriorLdmAvanceTD2 && btnSiguienteLdmAvanceTD2) {
+            colorSpanInfo80(spanElementLdmAvanceTD2)
+            btnAnteriorLdmAvanceTD2.removeAttribute('disabled')
+            btnSiguienteLdmAvanceTD2.disabled = true
+            eliminarEstiloRevPasadasInfo80(containerBtnAnteriorSiguienteLdmAvanceTD2)
+        }
+
+        if (btnAnterior80Ldm && btnSiguiente80Ldm) {
+            colorSpanInfo80(spanElement80Ldm)
+            btnAnterior80Ldm.removeAttribute('disabled')
+            btnSiguiente80Ldm.disabled = true
+            eliminarEstiloRevPasadasInfo80(containerBtnAnteriorSiguiente80Ldm)
+        }
+
+        if (btnAnteriorInfoModelo && btnSiguienteInfoModelo) {
+            colorSpanInfo80(spanElementInfoModelo)
+            btnAnteriorInfoModelo.removeAttribute('disabled')
+            btnSiguienteInfoModelo.disabled = true
+            eliminarEstiloRevPasadasInfo80(containerBtnAnteriorSiguienteInfoModelo)
+        }
+
     } else {
-        colorSpanInfo80(spanElementInfo80)
-        btnAnterior80Info.removeAttribute('disabled')
-        btnSiguiente80Info.removeAttribute('disabled')
-        agregarEstiloRevPasadasInfo80(containerBtnAnteriorSiguienteInfo80)
+        if (btnAnteriorLdmAvanceCG && btnSiguienteLdmAvanceCG) {
+            colorSpanInfo80(spanElementLdmAvanceCG)
+            btnAnteriorLdmAvanceCG.removeAttribute('disabled')
+            btnSiguienteLdmAvanceCG.removeAttribute('disabled')
+            agregarEstiloRevPasadasInfo80(containerBtnAnteriorSiguienteLdmAvanceCG)
+        }
+
+        if (btnAnteriorLdmAvanceTD2 && btnSiguienteLdmAvanceTD2) {
+            colorSpanInfo80(spanElementLdmAvanceTD2)
+            btnAnteriorLdmAvanceTD2.removeAttribute('disabled')
+            btnSiguienteLdmAvanceTD2.removeAttribute('disabled')
+            agregarEstiloRevPasadasInfo80(containerBtnAnteriorSiguienteLdmAvanceTD2)
+        }
+
+        if (btnAnterior80Ldm && btnSiguiente80Ldm) {
+            colorSpanInfo80(spanElement80Ldm)
+            btnAnterior80Ldm.removeAttribute('disabled')
+            btnSiguiente80Ldm.removeAttribute('disabled')
+            agregarEstiloRevPasadasInfo80(containerBtnAnteriorSiguiente80Ldm)
+        }
+
+        if (btnAnteriorInfoModelo && btnSiguienteInfoModelo) {
+            colorSpanInfo80(spanElementInfoModelo)
+            btnAnteriorInfoModelo.removeAttribute('disabled')
+            btnSiguienteInfoModelo.removeAttribute('disabled')
+            agregarEstiloRevPasadasInfo80(containerBtnAnteriorSiguienteInfoModelo)
+        }
     }
 }
 
 // Función para mostrar el elemento anterior
-function mostrarAnteriorInfo80(arrayFromValues, kValue) {
+function mostrarAnteriorInfo80(arrayFromValues, arrayFromValuesIcon, kValue) {
     let inputSpotIndex = document.getElementById(`resIndexHidden${kValue}`)
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
 
     let indiceAMostrar = parseInt(lastIndexArrayFromValues - 1)
     inputSpotIndex.value = parseInt(indiceAMostrar)
 
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
+    // console.log('arrValuesRevisionMark: ', arrValuesRevisionMark)
+
     let resLdmAvanceCG = document.getElementById(`resLdmAvanceCG${kValue}`)
-    let resLdmAvanceTD2 = document.getElementById(`resLdmAvanceTD2${kValue}`)
+    let resLdmAvanceTD2 = document.getElementById(`resLdmAvance2TD${kValue}`)
     let res80Ldm = document.getElementById(`res80Ldm${kValue}`)
     let resInfoModelo = document.getElementById(`resInfoModelo${kValue}`)
 
     mostrarElementoInfo80(
         arrayFromValues,
+        arrayFromValuesIcon,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resLdmAvanceCG,
@@ -183,20 +391,27 @@ function mostrarAnteriorInfo80(arrayFromValues, kValue) {
     }
 
 // Función para mostrar el elemento siguiente
-function mostrarSiguienteInfo80(arrayFromValues, kValue) {
+function mostrarSiguienteInfo80(arrayFromValues, arrayFromValuesIcon, kValue) {
     let inputSpotIndex = document.getElementById(`resIndexHidden${kValue}`)
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
     
     let indiceAMostrar = parseInt(lastIndexArrayFromValues + 1)
     inputSpotIndex.value = parseInt(indiceAMostrar)
 
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
+    // console.log('arrValuesRevisionMark: ', arrValuesRevisionMark)
+
     let resLdmAvanceCG = document.getElementById(`resLdmAvanceCG${kValue}`)
-    let resLdmAvanceTD2 = document.getElementById(`resLdmAvanceTD2${kValue}`)
+    let resLdmAvanceTD2 = document.getElementById(`resLdmAvance2TD${kValue}`)
     let res80Ldm = document.getElementById(`res80Ldm${kValue}`)
     let resInfoModelo = document.getElementById(`resInfoModelo${kValue}`)
 
     mostrarElementoInfo80(
         arrayFromValues,
+        arrayFromValuesIcon,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resLdmAvanceCG,
@@ -208,11 +423,11 @@ function mostrarSiguienteInfo80(arrayFromValues, kValue) {
 //*********** End Evento btn anterior y siguiente ********* */
 
 //************ ToolTip btn-Arrows anterior/Siguiente -----------
-//******LdmAvanceCG + LdmAvanceTD2 + Ldm80 + InfoModelo ***** */
-let spanResInfo80 = Array.from(document.querySelectorAll('span[name="resRevisionLdmAvanceCG"],span[name="resRevisionLdmAvanceTD2"],span[name="resRevision80Ldm"],span[name="resRevisionInfoModelo"]'))
+//******LdmAvanceCG + LdmAvanceTD2 ***** */
+let spanResInfo80Ldm = Array.from(document.querySelectorAll('span[name="resRevisionLdmAvanceCG"],span[name="resRevisionLdmAvance2TD"]'))
 
 
-spanResInfo80.forEach(function(spanElement) {
+spanResInfo80Ldm.forEach(function(spanElement) {
     spanElement.addEventListener("mouseover", (event) => {
         let spanSpot = document.getElementById(`${spanElement.id}`)
         let idSpotSelected = spanSpot.id
@@ -223,14 +438,8 @@ spanResInfo80.forEach(function(spanElement) {
             case 'resRevisionLdmAvanceCG':
                 regex = /^resRevisionLdmAvanceCG/;
             break;
-            case 'resRevisionLdmAvanceTD2':
-                regex = /^resRevisionLdmAvanceTD2/;
-            break;
-            case 'resRevision80Ldm':
-                regex = /^resRevision80Ldm/;
-            break;
-            case 'resRevisionInfoModelo':
-                regex = /^resRevisionInfoModelo/;
+            case 'resRevisionLdmAvance2TD':
+                regex = /^resRevisionLdmAvance2TD/;
             break;
             default:
                 break;
@@ -251,7 +460,7 @@ spanResInfo80.forEach(function(spanElement) {
         let arrayFromSpotModificador = inputSpotModificador.split(",")
         let arrayFromSpotFecha = inputSpotFecha.split(",")
         let arrayFromSpotFechaModificacion = inputSpotFechaModificacion.split(",")
-                
+
         for (let y=0; arrayFromSpotRevision.length > y; y++) {
             if (inputSpotIndex == y) {
                 spanSpot.setAttribute("valueRevision", arrayFromSpotRevision[y])
@@ -271,6 +480,88 @@ spanResInfo80.forEach(function(spanElement) {
                 maxWidth: 350,
                 arrow: true,
                 animation: 'shift-away',
+                theme: 'material',
+                interactive: false,
+                hideOnClick: true, // Oculta el tooltip al hacer clic en cualquier lugar fuera de él
+            })
+        }
+    })
+})
+//************ End ToolTip btn-Arrows Anterior/Siguiente -----------
+
+//************ ToolTip btn-Arrows anterior/Siguiente -----------
+//****** Ldm80 + InfoModelo ***** */
+let spanResInfo80Avance = Array.from(document.querySelectorAll('span[name="resRevision80Ldm"],span[name="resRevisionInfoModelo"]'))
+
+spanResInfo80Avance.forEach(function(spanElement) {
+    spanElement.addEventListener("mouseover", (event) => {
+        let spanSpot = document.getElementById(`${spanElement.id}`)
+        let idSpotSelected = spanSpot.id
+
+        // Expresión regular para eliminar el texto inicial
+        var regex
+        switch (`${spanSpot.getAttribute('name')}`) {
+            case 'resRevision80Ldm':
+                regex = /^resRevision80Ldm/;
+            break;
+            case 'resRevisionInfoModelo':
+                regex = /^resRevisionInfoModelo/;
+            break;
+            default:
+            break;
+        }
+
+        // Eliminar el texto inicial de la cadena
+        var idFinalInputs = idSpotSelected.replace(regex, '');
+        
+        let inputSpotEstado = document.getElementById(`resHidden${idFinalInputs}`).value
+        let inputSpotIndex = document.getElementById(`resIndexHidden${idFinalInputs}`).value
+        let inputSpotRevision = document.getElementById(`resRevisionHidden${idFinalInputs}`).value
+        let inputSpotCreador = document.getElementById(`arrResCreadorHidden${idFinalInputs}`).value
+        let inputSpotModificador = document.getElementById(`arrResModificadorHidden${idFinalInputs}`).value
+        let inputSpotFecha = document.getElementById(`arrResFechaHidden${idFinalInputs}`).value
+        let inputSpotFechaModificacion = document.getElementById(`arrResFechaModificacionHidden${idFinalInputs}`).value
+        
+        let arrayFromSpotEstado = inputSpotEstado.split(",")
+        let arrayFromSpotRevision = inputSpotRevision.split(",")
+        let arrayFromSpotCreador = inputSpotCreador.split(",")
+        let arrayFromSpotModificador = inputSpotModificador.split(",")
+        let arrayFromSpotFecha = inputSpotFecha.split(",")
+        let arrayFromSpotFechaModificacion = inputSpotFechaModificacion.split(",")
+
+        function changeIconAvanceFromSingle(value) {
+            value > 0 && value < 100 ? value = 'default' : null
+
+            const valueEstadoMap = {
+                100 : '<i class="fa-solid fa-circle-check fa-lg" style="color: #06ae00;"></i>',
+                0 : '<i class="fa-solid fa-spinner fa-lg fa-spin-pulse"style="color: #ff0000f5;"></i>', 
+                'default' : '<i class="fa-solid fa-person-digging fa-lg" style="color: #b09b12;"></i>'
+            };
+            return valueEstadoMap[value];
+        }
+                
+        for (let y=0; arrayFromSpotRevision.length > y; y++) {
+            if (inputSpotIndex == y) {
+                spanSpot.setAttribute("valueEstadoNumber", arrayFromSpotEstado[y])
+                spanSpot.setAttribute("valueEstadoIcon", changeIconAvanceFromSingle(arrayFromSpotEstado[y]))
+                spanSpot.setAttribute("valueRevision", arrayFromSpotRevision[y])
+                spanSpot.setAttribute("valueCreador", arrayFromSpotCreador[y])
+                spanSpot.setAttribute("valueFecha", arrayFromSpotFecha[y])
+                spanSpot.setAttribute("valueModificador", arrayFromSpotModificador[y])
+                spanSpot.setAttribute("valueFechaMod", arrayFromSpotFechaModificacion[y])
+            }
+
+            tippy(spanSpot, {
+                content: `Revision: ${spanSpot.getAttribute("valueRevision")}<br>
+                        Estado: ${spanSpot.getAttribute("valueEstadoNumber")}% / ${spanSpot.getAttribute("valueEstadoIcon")}<br>
+                        Creado por: ${spanSpot.getAttribute("valueCreador")}<br>
+                        Fecha creac.: ${spanSpot.getAttribute("valueFecha")}<br>
+                        Modificado por: ${spanSpot.getAttribute("valueModificador")}<br>
+                        Fecha mod.: ${spanSpot.getAttribute("valueFechaMod")}`,
+                allowHTML: true,
+                maxWidth: 350,
+                arrow: true,
+                animation: 'scale-extreme',
                 theme: 'material',
                 interactive: false,
                 hideOnClick: true, // Oculta el tooltip al hacer clic en cualquier lugar fuera de él

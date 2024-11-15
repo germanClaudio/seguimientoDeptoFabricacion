@@ -117,9 +117,9 @@
                                         arrResRevisionProceso3d.push(resRevisionProceso3d)
                                         
                                         arrResCreadorProceso3d.push(pathMongoOtProject[n].creator[0].username)
-                                        arrResModificadorProceso3d = ""
+                                        arrResModificadorProceso3d.push(pathMongoOtProject[n].modificator[0].username)
                                         arrResFechaProceso3d.push(pathMongoOtProject[n].timestamp)
-                                        arrResFechaModProceso3d = ""
+                                        arrResFechaModProceso3d.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
 
                                     <div id="btnAnteriorSiguienteProceso3d<%=k%>_<%=n%>_<%=q%>">
@@ -193,9 +193,9 @@
                                         arrResRevisionHorasProceso3d.push(resRevisionHorasProceso3d)
                                         
                                         arrResCreadorHorasProceso3d.push(pathMongoOtProject[n].creator[0].username)
-                                        arrResModificadorHorasProceso3d = ""
+                                        arrResModificadorHorasProceso3d.push(pathMongoOtProject[n].modificator[0].username)
                                         arrResFechaHorasProceso3d.push(pathMongoOtProject[n].timestamp)
-                                        arrResFechaModHorasProceso3d = ""
+                                        arrResFechaModHorasProceso3d.push(pathMongoOtProject[n].modifiedOn)
                                     } %>
         
                                     <div id="btnAnteriorSiguienteHorasProceso3d<%=k%>_<%=n%>_<%=q%>">

@@ -1,5 +1,4 @@
-let arrBtnAnterior4PrimeraSim = []
-let arrBtnSiguiente4PrimeraSim = []
+let arrBtnAnterior4PrimeraSim = [], arrBtnSiguiente4PrimeraSim = []
 
 for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de proyectos por Cliente
 

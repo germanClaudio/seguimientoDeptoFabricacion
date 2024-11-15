@@ -2458,12 +2458,15 @@ function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
                 arrayOtKNumber.push(res.arrayNnumber[y])
                 arrayOpDescriptionSelected.push(res.arrayOpNumber[y])
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
-    
+
+                let disabledInputRange = ''
+                parseInt(getValues.arrayAvDiseno[y]) === 100 ? disabledInputRange = 'disabled' : null
+
                 const dataEnArrayBloque = `
                     <div class="col m-auto">
                         <div class="row justify-content-center">
                             <div class="col-7 my-auto">
-                                <input type="text" class="form-control" min="0" max="100" step="5"
+                                <input type="text" class="form-control ms-3" min="${parseInt(getValues.arrayAvDiseno[y])}" max="100" step="5"
                                     id="avDisenoDisabled${res.arrayOtNumber[y]}" name="avDisenoDisabled"
                                     value="${getValues.arrayAvDiseno[y]}" style="text-align: center; width: 4.25rem;" disabled>
                             </div>
@@ -2473,9 +2476,9 @@ function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
                         </div>
                         <div class="row justify-content-center">
                             <div class="col my-auto">
-                                <input type="range" class="form-range" min="0" max="100" step="5"
+                                <input type="range" class="form-range" min="${parseInt(getValues.arrayAvDiseno[y])}" max="100" step="5"
                                     id="avDiseno${res.arrayOtNumber[y]}" name="avDisenoRange"
-                                    value="${getValues.arrayAvDiseno[y]}" oninput="updateInputsText()">
+                                    value="${getValues.arrayAvDiseno[y]}" oninput="updateInputsText()" ${disabledInputRange}>
                                 <input type="hidden" class="form-control" id="avDisenoHidden${res.arrayOtNumber[y]}"
                                     name="avDisenoHidden${[y]}" value="${getValues.arrayAvDiseno[y]}">
                             </div>
@@ -2565,16 +2568,16 @@ function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
                                     <label for="revisionAvDiseno"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
-                                    <label for="primerRev50"><strong>1° Rev 50%</strong></label>
+                                    <label for="primer50Rev"><strong>1° Rev 50%</strong></label>
                                 </div>
                                 <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revisionPrimerRev50"><strong>Rev</strong></label>
+                                    <label for="revisionPrimer50Rev"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
-                                    <label for="segundaRev80"><strong>2° Rev 80%</strong></label>
+                                    <label for="segunda80Rev"><strong>2° Rev 80%</strong></label>
                                 </div>
                                 <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revisionSegundaRev80"><strong>Rev</strong></label>
+                                    <label for="revisionSegunda80Rev"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
                                     <label for="envCliente"><strong>Env a Cliente</strong></label>
@@ -2628,6 +2631,9 @@ function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
                 arrayOpDescriptionSelected.push(res.arrayOpNumber[y])
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
 
+                let disabledInputRange = ''
+                parseInt(getValues.arrayAv100Diseno[y]) === 100 ? disabledInputRange = 'disabled' : null
+
                 const dataEnArrayBloque = `
                     <div class="col my-auto">
                         <select id="revisionCliente${res.arrayOtNumber[y]}" name="revisionCliente${[y]}" oninput="updateInputsSelect()"
@@ -2668,7 +2674,7 @@ function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
                     <div class="col m-auto">
                         <div class="row justify-content-center">
                             <div class="col-7 my-auto">
-                                <input type="text" class="form-control" min="0" max="100" step="5" id="av100DisenoDisabled${res.arrayOtNumber[y]}"
+                                <input type="text" class="form-control ms-3" min="${parseInt(getValues.arrayAv100Diseno[y])}" max="100" step="5" id="av100DisenoDisabled${res.arrayOtNumber[y]}"
                                     name="av100DisenoDisabled" value="${getValues.arrayAv100Diseno[y]}"
                                     style="text-align: center; width: 4.25rem;" disabled>
                             </div>
@@ -2678,8 +2684,8 @@ function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
                         </div>
                         <div class="row justify-content-center">
                             <div class="col my-auto">
-                                <input type="range" class="form-range" min="0" max="100" step="5" id="av100Diseno${res.arrayOtNumber[y]}"
-                                    name="av100DisenoRange" value="${getValues.arrayAv100Diseno[y]}" oninput="updateInputsText();">
+                                <input type="range" class="form-range" min="${parseInt(getValues.arrayAv100Diseno[y])}" max="100" step="5" id="av100Diseno${res.arrayOtNumber[y]}"
+                                    name="av100DisenoRange" value="${getValues.arrayAv100Diseno[y]}" oninput="updateInputsText();" ${disabledInputRange}>
                                 <input type="hidden" class="form-control" id="av100DisenoHidden${res.arrayOtNumber[y]}"
                                     name="av100DisenoHidden${[y]}" value="${getValues.arrayAv100Diseno[y]}">
                             </div>
@@ -2797,6 +2803,10 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                 arrayOpDescriptionSelected.push(res.arrayOpNumber[y])
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
 
+                let disabledInputRangeLdm = '', disabledInputRangeInfo = '' 
+                parseInt(getValues.arrayLdm80[y]) === 100 ? disabledInputRangeLdm = 'disabled' : null
+                parseInt(getValues.arrayInfoModelo[y]) === 100 ? disabledInputRangeInfo = 'disabled' : null
+
                 const dataEnArrayBloque = `
                     <div class="col my-auto">
                         <select id="ldmAvanceCG${res.arrayOtNumber[y]}" name="ldmAvanceCG${[y]}" oninput="updateInputsSelect()"
@@ -2817,29 +2827,28 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                     </div>
         
                     <div class="col my-auto">
-                        <select id="ldmAvanceTD2${res.arrayOtNumber[y]}" name="ldmAvanceTD2${[y]}" oninput="updateInputsSelect()"    
+                        <select id="ldmAvance2TD${res.arrayOtNumber[y]}" name="ldmAvance2TD${[y]}" oninput="updateInputsSelect()"    
                         class="form-select" ${colorStatusOt(res.arrayOtStatus[y]).disabled}>
                             <option selected value="${(switchOptionSelected(getValues.arrayLdmAvanceTD2[y])).variableValue}" disabled>
                             ${(switchOptionSelected(getValues.arrayLdmAvanceTD2[y])).getValueArrayDato}
                             </option>
                                 ${(switchOptionSelected(getValues.arrayLdmAvanceTD2[y])).optionDefined}
                         </select>
-                        <input type="hidden" id="ldmAvanceTD2Hidden${res.arrayOtNumber[y]}" name="ldmAvanceTD2Hidden${[y]}"
+                        <input type="hidden" id="ldmAvance2TDHidden${res.arrayOtNumber[y]}" name="ldmAvance2TDHidden${[y]}"
                             value="${(switchOptionSelected(getValues.arrayLdmAvanceTD2[y])).variableValue}">
                     </div>
                     <div class="col-1 my-auto">
                         <input type="text" value="${getValues.arrayRevisionLdmAvanceTD2[y]}" class="form-control mx-auto"
                             style="text-align: center; width: 3.5rem;" disabled readonly>
-                        <input type="hidden" id="revisionLdmAvanceTD2${res.arrayOtNumber[y]}"
-                            name="revisionLdmAvanceTD2${[y]}" value="${getValues.arrayRevisionLdmAvanceTD2[y]}">
+                        <input type="hidden" id="revisionLdmAvance2TD${res.arrayOtNumber[y]}"
+                            name="revisionLdmAvance2TD${[y]}" value="${getValues.arrayRevisionLdmAvanceTD2[y]}">
                     </div>
         
                     <div class="col m-auto">
                         <div class="row justify-content-center">
                             <div class="col-7 my-auto">
-                                <input type="text" class="form-control" min="0" max="100" step="5" id="ldm80Disabled${res.arrayOtNumber[y]}"
-                                    name="ldm80Disabled" value="${getValues.arrayLdm80[y]}"
-                                    style="text-align: center; width: 4.25rem;" disabled>
+                                <input type="text" class="form-control ms-3" min="${getValues.arrayLdm80[y]}" max="100" step="5" id="ldm80Disabled${res.arrayOtNumber[y]}"
+                                    name="ldm80Disabled" value="${getValues.arrayLdm80[y]}" style="text-align: center; width: 4.25rem;" disabled>
                             </div>
                             <div class="col my-auto">
                                 <strong>%</strong>
@@ -2848,7 +2857,7 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                         <div class="row justify-content-center">
                             <div class="col my-auto">
                                 <input type="range" class="form-range" min="${getValues.arrayLdm80[y]}" max="100" step="5" id="ldm80${res.arrayOtNumber[y]}"
-                                    name="ldm80Range" value="${getValues.arrayLdm80[y]}" oninput="updateInputsText()">
+                                    name="ldm80Range" value="${getValues.arrayLdm80[y]}" oninput="updateInputsText()" ${disabledInputRangeLdm}>
                                 <input type="hidden" class="form-control" id="ldm80Hidden${res.arrayOtNumber[y]}"
                                     name="ldm80Hidden${[y]}" value="${getValues.arrayLdm80[y]}">
                             </div>
@@ -2857,14 +2866,14 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                     <div class="col-1 my-auto">    
                         <input type="text" value="${getValues.arrayRevisionLdm80[y]}" class="form-control mx-auto"
                             style="text-align: center; width: 3.5rem;" disabled readonly>
-                        <input type="hidden" id="revisionLdm80${res.arrayOtNumber[y]}"
-                            name="revisionLdm80${[y]}" value="${getValues.arrayRevisionLdm80[y]}">
+                        <input type="hidden" id="revision80Ldm${res.arrayOtNumber[y]}"
+                            name="revision80Ldm${[y]}" value="${getValues.arrayRevisionLdm80[y]}">
                     </div>
         
                     <div class="col m-auto">
                         <div class="row justify-content-center">
                             <div class="col-7 my-auto">
-                                <input type="text" class="form-control" min="${getValues.arrayInfoModelo[y]}" max="100" step="5" id="infoModeloDisabled${res.arrayOtNumber[y]}"
+                                <input type="text" class="form-control ms-3" min="${getValues.arrayInfoModelo[y]}" max="100" step="5" id="infoModeloDisabled${res.arrayOtNumber[y]}"
                                     name="infoModeloDisabled" value="${getValues.arrayInfoModelo[y]}"
                                     style="text-align: center; width: 4.25rem;" disabled>
                             </div>
@@ -2874,8 +2883,8 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                         </div>
                         <div class="row justify-content-center">
                             <div class="col my-auto">
-                                <input type="range" class="form-range" min="0" max="100" step="5" id="infoModelo${res.arrayOtNumber[y]}"
-                                    name="infoModelo" value="${getValues.arrayInfoModelo[y]}" oninput="updateInputsText()">
+                                <input type="range" class="form-range" min="${getValues.arrayInfoModelo[y]}" max="100" step="5" id="infoModelo${res.arrayOtNumber[y]}"
+                                    name="infoModelo" value="${getValues.arrayInfoModelo[y]}" oninput="updateInputsText()" ${disabledInputRangeInfo}>
                                 <input type="hidden" class="form-control" id="infoModeloHidden${res.arrayOtNumber[y]}"
                                     name="infoModeloHidden${[y]}" value="${getValues.arrayLdm80[y]}">
                             </div>
@@ -2906,22 +2915,22 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                             <div class="row mx-auto justify-content-center">
                                 ${cabeceraFormulario}
                                 <div class="col my-auto">
-                                    <label for="ldmAvanceCG"><strong>LDM Avan. (Cilindros/Guias)</strong></label>
+                                    <label for="ldmAvanceCG"><strong>LDM Avanzada (Cilindros/Guias)</strong></label>
                                 </div>
                                 <div class="col-1 my-auto align-self-start border-end border-dark">
                                     <label for="revisionLdmAvanceCG"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
-                                    <label for="ldmAvanceTD2"><strong>LDM Avan. (Tacos D2)</strong></label>
+                                    <label for="ldmAvance2TD"><strong>LDM Avanzada (Tacos D2)</strong></label>
                                 </div>
                                 <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revisionLdmAvanceTD2"><strong>Rev</strong></label>
+                                    <label for="revisionLdmAvance2TD"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
-                                    <label for="ldm80"><strong>LDM 80%</strong></label>
+                                    <label for="80Ldm"><strong>LDM 80%</strong></label>
                                 </div>
                                 <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revisionLdm80"><strong>Rev</strong></label>
+                                    <label for="revision80Ldm"><strong>Rev</strong></label>
                                 </div>
                                 <div class="col my-auto">
                                     <label for="infoModelo"><strong>Info Modelo</strong></label>
@@ -2975,11 +2984,15 @@ function addDatoToInfo100(i, idTabla, qInicial, qFinal) {
                 arrayOpDescriptionSelected.push(res.arrayOpNumber[y])
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
 
+                let disabledInputRangeLdm100 = '', disabledInputRangeInfo100 = '' 
+                parseInt(getValues.arrayLdm100[y]) === 100 ? disabledInputRangeLdm100 = 'disabled' : null
+                parseInt(getValues.arrayInfo100[y]) === 100 ? disabledInputRangeInfo100 = 'disabled' : null
+
                 const dataEnArrayBloque = `
                 <div class="col m-auto">
                     <div class="row justify-content-center">
                         <div class="col-7 my-auto ms-5">
-                            <input type="text" class="form-control" min="0" max="100" step="5" id="ldm100Disabled${res.arrayOtNumber[y]}"
+                            <input type="text" class="form-control ms-3" min="${getValues.arrayLdm100[y]}" max="100" step="5" id="100ldmDisabled${res.arrayOtNumber[y]}"
                                 name="ldm100Disabled" value="${getValues.arrayLdm100[y]}" style="text-align: center; width: 4.25rem;" disabled>
                         </div>
                         <div class="col my-auto">
@@ -2988,24 +3001,24 @@ function addDatoToInfo100(i, idTabla, qInicial, qFinal) {
                     </div>
                     <div class="row justify-content-center">
                         <div class="col my-auto">
-                            <input type="range" class="form-range" min="0" max="100" step="5" id="ldm100${res.arrayOtNumber[y]}"
-                                name="ldm100Range" value="${getValues.arrayLdm100[y]}" oninput="updateInputsText()">
-                            <input type="hidden" class="form-control" id="ldm100Hidden${res.arrayOtNumber[y]}"
-                                name="ldm100Hidden${[y]}" value="${getValues.arrayLdm100[y]}">
+                            <input type="range" class="form-range" min="${getValues.arrayLdm100[y]}" max="100" step="5" id="100ldm${res.arrayOtNumber[y]}"
+                                name="ldm100Range" value="${getValues.arrayLdm100[y]}" oninput="updateInputsText()" ${disabledInputRangeLdm100}>
+                            <input type="hidden" class="form-control" id="100ldmHidden${res.arrayOtNumber[y]}"
+                                name="100ldmHidden${[y]}" value="${getValues.arrayLdm100[y]}">
                         </div>
                     </div>
                 </div>
                 <div class="col-1 my-auto">    
                     <input type="text" value="${getValues.arrayRevisionLdm100[y]}" class="form-control mx-auto"
                         style="text-align: center; width: 3.5rem;" disabled readonly>
-                    <input type="hidden" id="revisionLdm100${res.arrayOtNumber[y]}"
-                        name="revisionLdm100${[y]}" value="${getValues.arrayRevisionLdm100[y]}">
+                    <input type="hidden" id="revision100Ldm${res.arrayOtNumber[y]}"
+                        name="100revisionLdm${[y]}" value="${getValues.arrayRevisionLdm100[y]}">
                 </div>
 
                 <div class="col m-auto">
                     <div class="row justify-content-center">
                         <div class="col-7 my-auto ms-5">
-                            <input type="text" class="form-control" min="0" max="100" step="5" id="info100Disabled${res.arrayOtNumber[y]}"
+                            <input type="text" class="form-control ms-3" min="${getValues.arrayInfo100[y]}" max="100" step="5" id="100infoDisabled${res.arrayOtNumber[y]}"
                                 name="info100Disabled" value="${getValues.arrayInfo100[y]}" style="text-align: center; width: 4.25rem;" disabled>
                         </div>
                         <div class="col my-auto">
@@ -3014,19 +3027,18 @@ function addDatoToInfo100(i, idTabla, qInicial, qFinal) {
                     </div>
                     <div class="row justify-content-center">
                         <div class="col my-auto">
-                            <input type="range" class="form-range" min="0" max="100" step="5" id="info100${res.arrayOtNumber[y]}"
-                                name="info100" value="${getValues.arrayInfo100[y]}" oninput="updateInputsText()">
-                            <input type="hidden" class="form-control" id="info100Hidden${res.arrayOtNumber[y]}"
-                                name="info100Hidden${[y]}" value="${getValues.arrayLdm100[y]}">
+                            <input type="range" class="form-range" min="${getValues.arrayInfo100[y]}" max="100" step="5" id="100info${res.arrayOtNumber[y]}"
+                                name="info100Range" value="${getValues.arrayInfo100[y]}" oninput="updateInputsText()" ${disabledInputRangeInfo100}>
+                            <input type="hidden" class="form-control" id="100infoHidden${res.arrayOtNumber[y]}"
+                                name="100infoHidden${[y]}" value="${getValues.arrayLdm100[y]}">
                         </div>
                     </div>
                 </div>
                 <div class="col-1 my-auto">    
-                    <input type="text"
-                        value="${getValues.arrayRevisionInfo100[y]}" class="form-control mx-auto"
+                    <input type="text" value="${getValues.arrayRevisionInfo100[y]}" class="form-control mx-auto"
                         style="text-align: center; width: 3.5rem;" disabled readonly>
-                    <input type="hidden" id="revisionInfo100${res.arrayOtNumber[y]}"
-                        name="revisionInfo100${[y]}" value="${getValues.arrayRevisionInfo100[y]}">
+                    <input type="hidden" id="revision100Info${res.arrayOtNumber[y]}"
+                        name="100revisionInfo${[y]}" value="${getValues.arrayRevisionInfo100[y]}">
                 </div>`
     
                 const isInactive = res.arrayOtStatus[y] === 'Inactivo';
@@ -3047,16 +3059,16 @@ function addDatoToInfo100(i, idTabla, qInicial, qFinal) {
                         <div class="row mx-auto justify-content-center">
                             ${cabeceraFormulario}
                             <div class="col my-auto">
-                                <label for="ldm100"><strong>LDM 100%</strong></label>
+                                <label for="ldm100Range"><strong>LDM 100%</strong></label>
                             </div>
                             <div class="col-1 my-auto align-self-start border-end border-dark">
-                                <label for="revisionLdm100"><strong>Rev</strong></label>
+                                <label for="revision100Ldm"><strong>Rev</strong></label>
                             </div>
                             <div class="col my-auto">
-                                <label for="info100"><strong>Info 100%</strong></label>
+                                <label for="info100Range"><strong>Info 100%</strong></label>
                             </div>
                             <div class="col-1 my-auto align-self-start">
-                                <label for="revisionInfo100"><strong>Rev</strong></label>
+                                <label for="revision100Info"><strong>Rev</strong></label>
                             </div>
                         </div>
                         <hr>
@@ -4032,6 +4044,7 @@ function updateInputsText() {
         const idInputTextToChange = allInputsRange[y].id.substring(0, allInputsRange[y].id.length - 4) + 'Disabled' + allInputsRange[y].id.substring(allInputsRange[y].id.length - 4)
         const idInputRangeHidden = allInputsRange[y].id.substring(0, allInputsRange[y].id.length - 4) + 'Hidden' + allInputsRange[y].id.substring(allInputsRange[y].id.length - 4)
         // console.log('idInputTextToChange: ',idInputTextToChange)
+        // console.log('idInputRangeHidden: ',idInputRangeHidden)
         // Obtener el valor del slider   
         var valorSlider = document.getElementById(`${idInputRange}`).value
 
@@ -4045,8 +4058,7 @@ function updateInputsText() {
 
 // Función para actualizar el valor del campo Text hidden con los Select's
 function updateInputsSelect () {
-    let arrayInputSelectHidden = []
-    let allInputsSelect = []
+    let arrayInputSelectHidden = [], allInputsSelect = []
 
     for (let i = 0; i<varLimMaxOtProyecto; i++) { //variable limite maximo de OT por proyecto
         document.getElementById(`tablaGeneral${i}`) ? arrayInputSelectHidden.push(i) : null
@@ -4057,8 +4069,9 @@ function updateInputsSelect () {
     let largoArrayInputsSelect = parseInt((allInputsSelect.length)-1)
     for (let y=0; y < largoArrayInputsSelect; y++) {
         const idInputSelectHidden = allInputsSelect[y].id.substring(0, allInputsSelect[y].id.length - 4) + 'Hidden' + allInputsSelect[y].id.substring(allInputsSelect[y].id.length - 4)
+console.log('idInputSelectHidden: ', idInputSelectHidden)
         let inputSelectHidden = document.getElementById(`${idInputSelectHidden}`)
-
+console.log('inputSelectHidden: ', inputSelectHidden)
         inputSelectHidden ? inputSelectHidden.value = document.getElementById(`${allInputsSelect[y].id}`).value : null
     }
 }
