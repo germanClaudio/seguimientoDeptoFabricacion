@@ -28,11 +28,7 @@
     </thead>
     <tbody class="table-group-divider">
         
-        <% let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-            res0Sim = 'sinDato', resRevision0Sim = 0
-            resDocu0Sim = 'sinDato', resRevisionDocu0Sim = 0
-
-        const sim0Config = {
+        <% const sim0Config = {
             ok: { text: "OK", classes: "bg-success text-white" },
             noOk: { text: "No OK", classes: "bg-danger text-white" },
             pendiente: { text: "Pendiente", classes: "bg-warning text-dark" },
@@ -44,6 +40,10 @@
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
             largoArrayOtProject = parseInt(pathMongoOtProject.length),
             pathMongoOtInformation = pathMongoOtProject[n].otInformation
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                res0Sim = 'sinDato', resRevision0Sim = 0,
+                resDocu0Sim = 'sinDato', resRevisionDocu0Sim = 0
 
             if (pathMongoOtProject[n].visible) {
                 let pathMongoOtInfoSim0 = pathMongoOtInformation[0].otInfoSim0 || [],
@@ -61,7 +61,6 @@
                             if (q==18) { %>
                                 <!-- Simulacion 0 data Activo--> 
                                 <td class="text-center align-middle">
-
                                     <% if (largoArrayInfoSim0 > 0) {
                                         for (let i = 0; largoArrayInfoSim0 > i; i++) {
                                             if (pathMongoOtInfoSim0[i]) {

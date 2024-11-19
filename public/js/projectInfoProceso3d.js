@@ -8,13 +8,13 @@ for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de p
             const btnIdHorasProceso3d = `btnAnteriorSiguienteHorasProceso3d${i}_${p}_${q}`;
             
             const btnElementProceso3d = document.getElementById(btnIdProceso3d);
-            if (document.getElementById(`btnAnteriorSiguienteProceso3d${i}_${p}_${q}`)) {
+            if (btnElementProceso3d) {
                 arrBtnAnteriorProceso3d.push(i)
                 arrBtnSiguienteProceso3d.push(i)
             }
 
             const btnElementHorasProceso3d = document.getElementById(btnIdHorasProceso3d);
-            if (document.getElementById(`btnAnteriorSiguienteHorasProceso3d${i}_${p}_${q}`)) {
+            if (btnElementHorasProceso3d) {
                 arrBtnAnteriorHorasProceso3d.push(i)
                 arrBtnSiguienteHorasProceso3d.push(i)
             }
@@ -25,7 +25,6 @@ for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de p
 //*********** Evento btn's anterior y siguiente ************* */
 if(arrBtnAnteriorProceso3d !=[]) {
     let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorProceso3d"]')
-    
     allBtnAnterior.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -33,8 +32,7 @@ if(arrBtnAnteriorProceso3d !=[]) {
                 let arrayActual = document.getElementById(`resHidden${kValue}`)
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
-                //console.log('kValue. ', kValue)
-                mostrarAnterior3d(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArray3d
+                mostrarAnterior3d(changeValueFromArray(arrayFromValues), kValue)
             })
         }
     })
@@ -42,7 +40,6 @@ if(arrBtnAnteriorProceso3d !=[]) {
 
 if(arrBtnSiguienteProceso3d !=[]) {    
     let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteProceso3d"]')
-    
     allBtnSiguiente.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -50,8 +47,7 @@ if(arrBtnSiguienteProceso3d !=[]) {
                 let arrayActual = document.getElementById(`resHidden${kValue}`)
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
-                //console.log('kValue. ', kValue)
-                mostrarSiguiente3d(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArray3d
+                mostrarSiguiente3d(changeValueFromArray(arrayFromValues), kValue)
             })
         }
     })
@@ -59,7 +55,6 @@ if(arrBtnSiguienteProceso3d !=[]) {
 
 if(arrBtnAnteriorHorasProceso3d !=[]) {
     let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorHorasProceso3d"]')
-    
     allBtnAnterior.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -67,8 +62,7 @@ if(arrBtnAnteriorHorasProceso3d !=[]) {
                 let arrayActual = document.getElementById(`resHidden${kValue}`)
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
-                //console.log('kValue. ', kValue)
-                mostrarAnterior3d(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArray3d
+                mostrarAnterior3d(arrayFromValues, kValue)
             })
         }
     })
@@ -76,7 +70,6 @@ if(arrBtnAnteriorHorasProceso3d !=[]) {
 
 if(arrBtnSiguienteHorasProceso3d !=[]) {    
     let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteHorasProceso3d"]')
-    
     allBtnSiguiente.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -84,8 +77,7 @@ if(arrBtnSiguienteHorasProceso3d !=[]) {
                 let arrayActual = document.getElementById(`resHidden${kValue}`)
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
-                //console.log('kValue. ', kValue)
-                mostrarSiguiente3d(changeValueFromArray(arrayFromValues), kValue) //changeValueFromArray3d
+                mostrarSiguiente3d(arrayFromValues, kValue)
             })
         }
     })

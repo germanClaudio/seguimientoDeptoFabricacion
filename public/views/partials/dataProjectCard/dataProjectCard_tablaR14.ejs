@@ -27,11 +27,7 @@
         </tr>
     </thead>
     <tbody class="table-group-divider">
-        <% let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-            resProcesoR14 = "sinDato", resRevisionProcesoR14 = 0,
-            resAprobadoR14 = "sinDato", resRevisionAprobadoR14 = 0;
-
-            const procesoR14Config = {
+        <% const procesoR14Config = {
                 ok: { text: "OK", classes: "bg-success text-white" },
                 noOk: { text: "No OK", classes: "bg-danger text-white" },
                 pendiente: { text: "Pendiente", classes: "bg-warning text-dark" },
@@ -43,6 +39,10 @@
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
             largoArrayOtProject = parseInt(pathMongoOtProject.length),
             pathMongoOtInformation = pathMongoOtProject[n].otInformation
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                resProcesoR14 = "sinDato", resRevisionProcesoR14 = 0,
+                resAprobadoR14 = "sinDato", resRevisionAprobadoR14 = 0;
 
             if (pathMongoOtProject[n].visible) {
                 let pathMongoOtInfoR14 = pathMongoOtInformation[0].otInfoR14 || [],

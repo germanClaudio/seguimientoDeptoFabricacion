@@ -30,13 +30,7 @@
     </thead>
     <tbody class="table-group-divider">
         
-        <% let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-            resMatEnsayo = 'sinDato', resRevisionMatEnsayo = 0,
-            resMas10Menos  = 'sinDato', resRevisionMas10Menos = 0,
-            resMpAlternativo = 'sinDato', resRevisionMpAlternativo = 0,
-            resReunionSim = 'sinDato', resRevisionReunionSim = 0
-
-        const sim4PrimeraConfig = {
+        <% const sim4PrimeraConfig = {
             ok: { text: "OK", classes: "bg-success text-white" },
             noOk: { text: "No OK", classes: "bg-danger text-white" },
             pendiente: { text: "Pendiente", classes: "bg-warning text-dark" },
@@ -48,6 +42,12 @@
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
             largoArrayOtProject = parseInt(pathMongoOtProject.length),
             pathMongoOtInformation = pathMongoOtProject[n].otInformation
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                resMatEnsayo = 'sinDato', resRevisionMatEnsayo = 0,
+                resMas10Menos  = 'sinDato', resRevisionMas10Menos = 0,
+                resMpAlternativo = 'sinDato', resRevisionMpAlternativo = 0,
+                resReunionSim = 'sinDato', resRevisionReunionSim = 0
         
             if (pathMongoOtProject[n].visible) {
                 let pathMongoOtSim4Primera = pathMongoOtInformation[0].otInfoSim4Primera || [],

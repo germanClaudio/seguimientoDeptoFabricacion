@@ -1529,7 +1529,6 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                     revisionSim0: infoAddedToOt[i].revisionSim0+1,
                                     docuSim0: infoAddedToOt[i].docuSim0,
                                     revisionDocuSim0: infoAddedToOt[i].revisionDocuSim0+1,
-                                    
                                     creator: infoAddedToOt[i].creator,
                                     timestamp: formatDate(),
                                     modificator: infoAddedToOt[i].modificator,

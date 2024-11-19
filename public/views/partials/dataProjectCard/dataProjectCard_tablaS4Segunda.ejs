@@ -49,13 +49,7 @@
     </thead>
     <tbody class="table-group-divider">
         
-        <% let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-            resInforme4Sim = 'sinDato', resRevisionInforme4Sim = 0,
-            resGeo1Copiado = 'sinDato', resRevisionGeo1Copiado = 0,
-            resGeo2Copiado = 'sinDato', resRevisionGeo2Copiado = 0,
-            resHorasSim = 0, resRevisionHorasSim = 0
-
-        const sim4SegundaConfig = {
+        <% const sim4SegundaConfig = {
             ok: { text: "OK", classes: "bg-success text-white" },
             noOk: { text: "No OK", classes: "bg-danger text-white" },
             pendiente: { text: "Pendiente", classes: "bg-warning text-dark" },
@@ -65,6 +59,12 @@
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtInformation = pathMongoOtProject[n].otInformation;
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                resInforme4Sim = 'sinDato', resRevisionInforme4Sim = 0,
+                resGeo1Copiado = 'sinDato', resRevisionGeo1Copiado = 0,
+                resGeo2Copiado = 'sinDato', resRevisionGeo2Copiado = 0,
+                resHorasSim = 0, resRevisionHorasSim = 0
 
             if (pathMongoOtProject[n].visible) {
                 let pathMongoOtSim4Segunda = pathMongoOtInformation[0].otInfoSim4Segunda || [],

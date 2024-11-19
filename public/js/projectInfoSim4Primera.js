@@ -1,22 +1,46 @@
-let arrBtnAnterior4PrimeraSim = [], arrBtnSiguiente4PrimeraSim = []
+let arrBtnAnteriorMatEnsayo = [], arrBtnSiguienteMatEnsayo = [],
+    arrBtnAnteriorMas10Menos = [], arrBtnSiguienteMas10Menos = [],
+    arrBtnAnteriorMpAlternativo = [], arrBtnSiguienteMpAlternativo = [],
+    arrBtnAnteriorReunionSim = [], arrBtnSiguienteReunionSim = []
 
 for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de proyectos por Cliente
-
     for (let p = 0; p<varLimMaxOtProyecto; p++) { //variable limite maximo de Ot por proyecto
-        
         for (let q = 0; q<varLimMaxOtProyecto; q++) {
-            if (document.getElementById(`btnAnteriorSiguiente4PrimeraSim${i}_${p}_${q}`)) {
-                arrBtnAnterior4PrimeraSim.push(i)
-                arrBtnSiguiente4PrimeraSim.push(i)
+            const btnIdMatEnsayo = `btnAnteriorSiguienteMatEnsayo${i}_${p}_${q}`;
+            const btnIdMas10Menos = `btnAnteriorSiguienteMas10Menos${i}_${p}_${q}`;
+            const btnIdMpAlternativo = `btnAnteriorSiguienteMpAlternativo${i}_${p}_${q}`;
+            const btnIdReunionSim = `btnAnteriorSiguienteReunionSim${i}_${p}_${q}`;
+
+            const btnElementMatEnsayo = document.getElementById(btnIdMatEnsayo);
+            if (btnElementMatEnsayo) {
+                arrBtnAnteriorMatEnsayo.push(i)
+                arrBtnSiguienteMatEnsayo.push(i)
+            }
+
+            const btnElementMas10Menos = document.getElementById(btnIdMas10Menos);
+            if (btnElementMas10Menos) {
+                arrBtnAnteriorMas10Menos.push(i)
+                arrBtnSiguienteMas10Menos.push(i)
+            }
+
+            const btnElementMpAlternativo = document.getElementById(btnIdMpAlternativo);
+            if (btnElementMpAlternativo) {
+                arrBtnAnteriorMpAlternativo.push(i)
+                arrBtnSiguienteMpAlternativo.push(i)
+            }
+
+            const btnElementReunionSim = document.getElementById(btnIdReunionSim);
+            if (btnElementReunionSim) {
+                arrBtnAnteriorReunionSim.push(i)
+                arrBtnSiguienteReunionSim.push(i)
             }
         }
     }
 }
 
 //*********** Evento btn's anterior y siguiente ************* */
-if(arrBtnAnterior4PrimeraSim !=[]) {
-    let allBtnAnterior = document.querySelectorAll('[name="btnAnterior4PrimeraSim"]')
-    
+if(arrBtnAnteriorMatEnsayo !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorMatEnsayo"]')
     allBtnAnterior.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -24,16 +48,14 @@ if(arrBtnAnterior4PrimeraSim !=[]) {
                 let arrayActual = document.getElementById(`resHidden${kValue}`)
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
-                //console.log('kValue. ', kValue)
                 mostrarAnterior4PrimeraSim(changeValueFromArray(arrayFromValues), kValue)
             })
         }
     })
 }
 
-if(arrBtnSiguiente4PrimeraSim !=[]) {    
-    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguiente4PrimeraSim"]')
-    
+if(arrBtnSiguienteMatEnsayo !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteMatEnsayo"]')
     allBtnSiguiente.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -41,7 +63,96 @@ if(arrBtnSiguiente4PrimeraSim !=[]) {
                 let arrayActual = document.getElementById(`resHidden${kValue}`)
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
-                // console.log('kValue. ', kValue)
+                mostrarSiguiente4PrimeraSim(changeValueFromArray(arrayFromValues), kValue)
+            })
+        }
+    })
+}
+
+if(arrBtnAnteriorMas10Menos !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorMas10Menos"]')
+    allBtnAnterior.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                mostrarAnterior4PrimeraSim(changeValueFromArray(arrayFromValues), kValue)
+            })
+        }
+    })
+}
+
+if(arrBtnSiguienteMas10Menos !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteMas10Menos"]')
+    allBtnSiguiente.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                mostrarSiguiente4PrimeraSim(changeValueFromArray(arrayFromValues), kValue)
+            })
+        }
+    })
+}
+
+if(arrBtnAnteriorMpAlternativo !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorMpAlternativo"]')
+    allBtnAnterior.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                mostrarAnterior4PrimeraSim(changeValueFromArray(arrayFromValues), kValue)
+            })
+        }
+    })
+}
+
+if(arrBtnSiguienteMpAlternativo !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteMpAlternativo"]')
+    allBtnSiguiente.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                mostrarSiguiente4PrimeraSim(changeValueFromArray(arrayFromValues), kValue)
+            })
+        }
+    })
+}
+
+if(arrBtnAnteriorReunionSim !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorReunionSim"]')
+    allBtnAnterior.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                mostrarAnterior4PrimeraSim(changeValueFromArray(arrayFromValues), kValue)
+            })
+        }
+    })
+}
+
+if(arrBtnSiguienteReunionSim !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteReunionSim"]')
+    allBtnSiguiente.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
                 mostrarSiguiente4PrimeraSim(changeValueFromArray(arrayFromValues), kValue)
             })
         }
@@ -51,6 +162,7 @@ if(arrBtnSiguiente4PrimeraSim !=[]) {
 // Mostrar el elemento actual en la página
 function mostrarElemento4PrimeraSim(
     arrayFromValues,
+    arrValuesRevisionMark,
     indiceAMostrar,
     kValue,
     resMatEnsayo,
@@ -61,113 +173,192 @@ function mostrarElemento4PrimeraSim(
     // console.log('res4PrimeraSim: ', res4PrimeraSim)
     // console.log('kValue', kValue)
     // console.log('arrayFromValues', arrayFromValues)
+
+    let btnAnteriorMatEnsayo, btnSiguienteMatEnsayo, containerBtnAnteriorSiguienteMatEnsayo
+    let btnAnteriorMas10Menos, btnSiguienteMas10Menos, containerBtnAnteriorSiguienteMas10Menos
+    let btnAnteriorMpAlternativo, btnSiguienteMpAlternativo, containerBtnAnteriorSiguienteMpAlternativo
+    let btnAnteriorReunionSim, btnSiguienteReunionSim, containerBtnAnteriorSiguienteReunionSim
     
     if (resMatEnsayo) {
         let spanMatEnsayo = document.getElementById(`resMatEnsayo${kValue}`)
         let spanRevisionMatEnsayo = document.getElementById(`resRevisionMatEnsayo${kValue}`)
         spanMatEnsayo.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionMatEnsayo.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionMatEnsayo.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorMatEnsayo = document.getElementById(`btnAnteriorMatEnsayo${kValue}`)
+        btnSiguienteMatEnsayo = document.getElementById(`btnSiguienteMatEnsayo${kValue}`)
+        containerBtnAnteriorSiguienteMatEnsayo = document.getElementById(`btnAnteriorSiguienteMatEnsayo${kValue}`)
+
     } else if (resMas10Menos) {
         let spanMas10Menos = document.getElementById(`resMas10Menos${kValue}`)
         let spanRevisionMas10Menos = document.getElementById(`resRevisionMas10Menos${kValue}`)
         spanMas10Menos.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionMas10Menos.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionMas10Menos.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorMas10Menos = document.getElementById(`btnAnteriorMas10Menos${kValue}`)
+        btnSiguienteMas10Menos = document.getElementById(`btnSiguienteMas10Menos${kValue}`)
+        containerBtnAnteriorSiguienteMas10Menos = document.getElementById(`btnAnteriorSiguienteMas10Menos${kValue}`)
+
     } else if (resMpAlternativo) {
         let spanMpAlternativo = document.getElementById(`resMpAlternativo${kValue}`)
         let spanRevisionMpAlternativo = document.getElementById(`resRevisionMpAlternativo${kValue}`)
         spanMpAlternativo.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionMpAlternativo.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionMpAlternativo.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorMpAlternativo = document.getElementById(`btnAnteriorMpAlternativo${kValue}`)
+        btnSiguienteMpAlternativo = document.getElementById(`btnSiguienteMpAlternativo${kValue}`)
+        containerBtnAnteriorSiguienteMpAlternativo = document.getElementById(`btnAnteriorSiguienteMpAlternativo${kValue}`)
+
     } else if (resReunionSim) {
         let spanReunionSim = document.getElementById(`resReunionSim${kValue}`)
         let spanRevisionReunionSim = document.getElementById(`resRevisionReunionSim${kValue}`)
         spanReunionSim.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionReunionSim.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionReunionSim.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorReunionSim = document.getElementById(`btnAnteriorReunionSim${kValue}`)
+        btnSiguienteReunionSim = document.getElementById(`btnSiguienteReunionSim${kValue}`)
+        containerBtnAnteriorSiguienteReunionSim = document.getElementById(`btnAnteriorSiguienteReunionSim${kValue}`)
     }
     
-    let btnAnterior4PrimeraSim = document.getElementById(`btnAnterior4PrimeraSim${kValue}`)
-    let btnSiguiente4PrimeraSim = document.getElementById(`btnSiguiente4PrimeraSim${kValue}`)
-    let containerBtnAnteriorSiguiente4PrimeraSim = document.getElementById(`btnAnteriorSiguiente4PrimeraSim${kValue}`)
     
     function colorSpan4PrimeraSim(spanElement4PrimeraSim) {
-        let resultColor
-        let resultTextColor
-        spanElement4PrimeraSim.classList.remove("bg-success")
-        spanElement4PrimeraSim.classList.remove("bg-danger")
-        spanElement4PrimeraSim.classList.remove("bg-warning")
-        spanElement4PrimeraSim.classList.remove("bg-secondary")
-        spanElement4PrimeraSim.classList.remove("bg-info")
-        spanElement4PrimeraSim.classList.remove("text-white")
-        spanElement4PrimeraSim.classList.remove("text-dark")
-
-        if (spanElement4PrimeraSim.innerText == "OK") {
-           resultColor = spanElement4PrimeraSim.classList.add("bg-success")
-           resultTextColor = spanElement4PrimeraSim.classList.add("text-white")
-        } else if (spanElement4PrimeraSim.innerText == "No OK") {
-           resultColor = spanElement4PrimeraSim.classList.add("bg-danger")
-           resultTextColor = spanElement4PrimeraSim.classList.add("text-white")
-        } else if (spanElement4PrimeraSim.innerText == "S/D") {
-           resultColor = spanElement4PrimeraSim.classList.add("bg-secondary")
-           resultTextColor = spanElement4PrimeraSim.classList.add("text-white")
-        } else if (spanElement4PrimeraSim.innerText == "Pendiente") {
-           resultColor = spanElement4PrimeraSim.classList.add("bg-warning")
-           resultTextColor = spanElement4PrimeraSim.classList.add("text-dark")
-        } else if (spanElement4PrimeraSim.innerText == "N/A") {
-            resultColor = spanElement4PrimeraSim.classList.add("bg-info")
-            resultTextColor = spanElement4PrimeraSim.classList.add("text-dark")
-         }
-        return resultColor, resultTextColor
+        const classMap = {
+            "OK": { bgClass: "bg-success", textClass: "text-white" },
+            "No OK": { bgClass: "bg-danger", textClass: "text-white" },
+            "Pendiente": { bgClass: "bg-warning", textClass: "text-dark" },
+            "S/D": { bgClass: "bg-secondary", textClass: "text-white" },
+            "N/A": { bgClass: "bg-info", textClass: "text-dark" }
+        };
+    
+        const defaultClasses = ["bg-success", "bg-danger", "bg-warning", "bg-secondary", "bg-info", "text-white", "text-dark"];
+        if (spanElement4PrimeraSim) {
+            spanElement4PrimeraSim.classList.remove(...defaultClasses);
+        }
+    
+        const text = spanElement4PrimeraSim.innerText;
+        if (classMap[text]) {
+            spanElement4PrimeraSim.classList.add(classMap[text].bgClass, classMap[text].textClass);
+        }
     }
 
     function agregarEstiloRevPasadas4PrimeraSim (containerBtnAnteriorSiguiente4PrimeraSim) {
-        containerBtnAnteriorSiguiente4PrimeraSim.classList.add("bg-secondary")
-        containerBtnAnteriorSiguiente4PrimeraSim.classList.add("bg-gradient")
-        containerBtnAnteriorSiguiente4PrimeraSim.classList.add("bg-opacity-25")
+        containerBtnAnteriorSiguiente4PrimeraSim.classList.add("bg-secondary", "bg-gradient", "bg-opacity-25")
     }
 
     function eliminarEstiloRevPasadas4PrimeraSim (containerBtnAnteriorSiguiente4PrimeraSim) {
-        containerBtnAnteriorSiguiente4PrimeraSim.classList.remove("bg-secondary")
-        containerBtnAnteriorSiguiente4PrimeraSim.classList.remove("bg-gradient")
-        containerBtnAnteriorSiguiente4PrimeraSim.classList.remove("bg-opacity-25")
+        containerBtnAnteriorSiguiente4PrimeraSim.classList.remove("bg-secondary", "bg-gradient", "bg-opacity-25")
     }
     
-    let spanElement4PrimeraSim
-    if (resMatEnsayo) {
-        spanElement4PrimeraSim = resMatEnsayo
-    } else if (resMas10Menos) {
-        spanElement4PrimeraSim = resMas10Menos
-    } else if (resMpAlternativo) {
-        spanElement4PrimeraSim = resMpAlternativo
-    } else if (resReunionSim) {
-        spanElement4PrimeraSim = resReunionSim
-    }
+    let spanElementMatEnsayo, spanElementMas10Menos, spanElementMpAlternativo, spanElementresReunionSim
+    resMatEnsayo ? spanElementMatEnsayo = resMatEnsayo : null
+    resMas10Menos ? spanElementresMas10Menos = resMas10Menos : null
+    resMpAlternativo ? spanElementMpAlternativo = resMpAlternativo : null
+    resReunionSim ? spanElementresReunionSim = resReunionSim : null
+
     // console.log('spanElement4PrimeraSim:', spanElement4PrimeraSim)
     // console.log('indiceaMostar:', indiceAMostrar)
 
     if (indiceAMostrar === 0) {
-        colorSpan4PrimeraSim(spanElement4PrimeraSim)
-        btnAnterior4PrimeraSim.disabled = 'true'
-        btnSiguiente4PrimeraSim.removeAttribute('disabled')
+        if (btnAnteriorMatEnsayo && btnSiguienteMatEnsayo) {
+            colorSpan4PrimeraSim(spanElementMatEnsayo)
+            btnAnteriorMatEnsayo.disabled = 'true'
+            btnSiguienteMatEnsayo.removeAttribute('disabled')
+            agregarEstiloRevPasadas4PrimeraSim(containerBtnAnteriorSiguienteMatEnsayo)
+        }
+
+        if (btnAnteriorMas10Menos && btnSiguienteMas10Menos) {
+            colorSpan4PrimeraSim(spanElementMas10Menos)
+            btnAnteriorMas10Menos.disabled = 'true'
+            btnSiguienteMas10Menos.removeAttribute('disabled')
+            agregarEstiloRevPasadas4PrimeraSim(containerBtnAnteriorSiguienteMas10Menos)
+        }
+
+        if (btnAnteriorMpAlternativo && btnSiguienteMpAlternativo) {
+            colorSpan4PrimeraSim(spanElementMpAlternativo)
+            btnAnteriorMpAlternativo.disabled = 'true'
+            btnSiguienteMpAlternativo.removeAttribute('disabled')
+            agregarEstiloRevPasadas4PrimeraSim(containerBtnAnteriorSiguienteMpAlternativo)
+        }
+
+        if (btnAnteriorReunionSim && btnSiguienteReunionSim) {
+            colorSpan4PrimeraSim(spanElementReunionSim)
+            btnAnteriorReunionSim.disabled = 'true'
+            btnSiguienteReunionSim.removeAttribute('disabled')
+            agregarEstiloRevPasadas4PrimeraSim(containerBtnAnteriorSiguienteReunionSim)
+        }
+
     } else if (indiceAMostrar === arrayFromValues.length-1) {
-        colorSpan4PrimeraSim(spanElement4PrimeraSim)
-        btnAnterior4PrimeraSim.removeAttribute('disabled')
-        btnSiguiente4PrimeraSim.disabled = true
-        eliminarEstiloRevPasadas4PrimeraSim(containerBtnAnteriorSiguiente4PrimeraSim)
+        if (btnAnteriorMatEnsayo && btnSiguienteMatEnsayo) {
+            colorSpan4PrimeraSim(spanElementMatEnsayo)
+            btnAnteriorMatEnsayo.removeAttribute('disabled')
+            btnSiguienteMatEnsayo.disabled = true
+            eliminarEstiloRevPasadas4PrimeraSim(containerBtnAnteriorSiguienteMatEnsayo)
+        }
+
+        if (btnAnteriorMas10Menos && btnSiguienteMas10Menos) {
+            colorSpan4PrimeraSim(spanElementMas10Menos)
+            btnAnteriorMas10Menos.removeAttribute('disabled')
+            btnSiguienteMas10Menos.disabled = true
+            eliminarEstiloRevPasadas4PrimeraSim(containerBtnAnteriorSiguienteMas10Menos)
+        }
+
+        if (btnAnteriorMpAlternativo && btnSiguienteMpAlternativo) {
+            colorSpan4PrimeraSim(spanElementMpAlternativo)
+            btnAnteriorMpAlternativo.removeAttribute('disabled')
+            btnSiguienteMpAlternativo.disabled = true
+            eliminarEstiloRevPasadas4PrimeraSim(containerBtnAnteriorSiguienteMpAlternativo)
+        }
+
+        if (btnAnteriorReunionSim && btnSiguienteReunionSim) {
+            colorSpan4PrimeraSim(spanElementReunionSim)
+            btnAnteriorReunionSim.removeAttribute('disabled')
+            btnSiguienteReunionSim.disabled = true
+            eliminarEstiloRevPasadas4PrimeraSim(containerBtnAnteriorSiguienteReunionSim)
+        }
+
     } else {
-        colorSpan4PrimeraSim(spanElement4PrimeraSim)
-        btnAnterior4PrimeraSim.removeAttribute('disabled')
-        btnSiguiente4PrimeraSim.removeAttribute('disabled')
-        agregarEstiloRevPasadas4PrimeraSim(containerBtnAnteriorSiguiente4PrimeraSim)
+        if (btnAnteriorMatEnsayo && btnSiguienteMatEnsayo) {
+            colorSpan4PrimeraSim(spanElementMatEnsayo)
+            btnAnteriorMatEnsayo.removeAttribute('disabled')
+            btnSiguienteMatEnsayo.removeAttribute('disabled')
+            agregarEstiloRevPasadas4PrimeraSim(containerBtnAnteriorSiguienteMatEnsayo)
+        }
+
+        if (btnAnteriorMas10Menos && btnSiguienteMas10Menos) {
+            colorSpan4PrimeraSim(spanElementMas10Menos)
+            btnAnteriorMas10Menos.removeAttribute('disabled')
+            btnSiguienteMas10Menos.removeAttribute('disabled')
+            agregarEstiloRevPasadas4PrimeraSim(containerBtnAnteriorSiguienteMas10Menos)
+        }
+
+        if (btnAnteriorMpAlternativo && btnSiguienteMpAlternativo) {
+            colorSpan4PrimeraSim(spanElementMpAlternativo)
+            btnAnteriorMpAlternativo.removeAttribute('disabled')
+            btnSiguienteMpAlternativo.removeAttribute('disabled')
+            agregarEstiloRevPasadas4PrimeraSim(containerBtnAnteriorSiguienteMpAlternativo)
+        }
+
+        if (btnAnteriorReunionSim && btnSiguienteReunionSim) {
+            colorSpan4PrimeraSim(spanElementReunionSim)
+            btnAnteriorReunionSim.removeAttribute('disabled')
+            btnSiguienteReunionSim.removeAttribute('disabled')
+            agregarEstiloRevPasadas4PrimeraSim(containerBtnAnteriorSiguienteReunionSim)
+        }
     }
 }
 
 // Función para mostrar el elemento anterior
 function mostrarAnterior4PrimeraSim(arrayFromValues, kValue) {
     let inputSpotIndex = document.getElementById(`resIndexHidden${kValue}`)
-
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
 
-    let indiceAMostrar = parseInt(lastIndexArrayFromValues)-1
+    let indiceAMostrar = parseInt(lastIndexArrayFromValues-1)
     inputSpotIndex.value = parseInt(indiceAMostrar)
+
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
+    // console.log('arrValuesRevisionMark: ', arrValuesRevisionMark)
 
     let resMatEnsayo = document.getElementById(`resMatEnsayo${kValue}`)
     let resMas10Menos = document.getElementById(`resMas10Menos${kValue}`)
@@ -177,6 +368,7 @@ function mostrarAnterior4PrimeraSim(arrayFromValues, kValue) {
     mostrarElemento4PrimeraSim(
         arrayFromValues,
         indiceAMostrar,
+        arrValuesRevisionMark,
         kValue,
         resMatEnsayo,
         resMas10Menos,
@@ -190,8 +382,12 @@ function mostrarSiguiente4PrimeraSim(arrayFromValues, kValue) {
     let inputSpotIndex = document.getElementById(`resIndexHidden${kValue}`)
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
 
-    let indiceAMostrar = parseInt(lastIndexArrayFromValues)+1
+    let indiceAMostrar = parseInt(lastIndexArrayFromValues+1)
     inputSpotIndex.value =  parseInt(indiceAMostrar)
+
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
 
     let resMatEnsayo = document.getElementById(`resMatEnsayo${kValue}`)
     let resMas10Menos = document.getElementById(`resMas10Menos${kValue}`)
@@ -200,6 +396,7 @@ function mostrarSiguiente4PrimeraSim(arrayFromValues, kValue) {
 
     mostrarElemento4PrimeraSim(
         arrayFromValues,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resMatEnsayo,

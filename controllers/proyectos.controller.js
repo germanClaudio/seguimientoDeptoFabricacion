@@ -2094,6 +2094,7 @@ class ProjectsController {
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
             }
+            // console.log('arrayInfoAddedToOt: ', arrayInfoAddedToOt)
         
             const itemUpdated = await this.projects.addInfoSim0ToOtProject(
                 projectId,
@@ -2208,6 +2209,7 @@ class ProjectsController {
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
             }
+            // console.log('arrayInfoAddedToOt: ', arrayInfoAddedToOt)
         
             const itemUpdated = await this.projects.addInfoSim1ToOtProject(
                 projectId,
@@ -2317,6 +2319,7 @@ class ProjectsController {
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
             }
+            // console.log('arrayInfoAddedToOt: ', arrayInfoAddedToOt)
         
             const itemUpdated = await this.projects.addInfoSim2_3ToOtProject(
                 projectId,
@@ -2426,6 +2429,7 @@ class ProjectsController {
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
             }
+            // console.log('arrayInfoAddedToOt: ', arrayInfoAddedToOt)
             
             const itemUpdated = await this.projects.addInfoSim4PrimeraToOtProject(
                 projectId,
@@ -2535,6 +2539,7 @@ class ProjectsController {
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
             }
+            console.log('arrayInfoAddedToOt: ', arrayInfoAddedToOt)
         
             const itemUpdated = await this.projects.addInfoSim4SegundaToOtProject(
                 projectId,

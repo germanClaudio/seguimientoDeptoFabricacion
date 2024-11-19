@@ -32,13 +32,7 @@
     </thead>
     <tbody class="table-group-divider">
         
-        <% let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-            res2Sim = 'sinDato', resRevision2Sim = 0,
-            resReporte = 'sinDato', resRevisionReporte = 0,
-            resDfnProdismo = 'sinDato', resRevisionDfnProdismo = 0,
-            res3Sim = 'sinDato', resRevision3Sim = 0
-    
-        const sim2_3Config = {
+        <% const sim2_3Config = {
             ok: { text: "OK", classes: "bg-success text-white" },
             noOk: { text: "No OK", classes: "bg-danger text-white" },
             pendiente: { text: "Pendiente", classes: "bg-warning text-dark" },
@@ -50,6 +44,12 @@
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
             largoArrayOtProject = parseInt(pathMongoOtProject.length),
             pathMongoOtInformation = pathMongoOtProject[n].otInformation
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                res2Sim = 'sinDato', resRevision2Sim = 0,
+                resReporte = 'sinDato', resRevisionReporte = 0,
+                resDfnProdismo = 'sinDato', resRevisionDfnProdismo = 0,
+                res3Sim = 'sinDato', resRevision3Sim = 0
 
             if (pathMongoOtProject[n].visible) {
                 let pathMongoOtSim2_3 = pathMongoOtInformation[0].otInfoSim2_3 || [],
@@ -308,7 +308,7 @@
                                                 
                                                 let largoArray = parseInt(largoArraySim2_3)
                                                 res3Sim = pathMongoOtSim2_3[largoArray-1].sim3 || 'sinDato'
-                                                resRevision3Sim = parseINt(pathMongoOtSim2_3[largoArray-1].revisionSim3) || 0
+                                                resRevision3Sim = parseInt(pathMongoOtSim2_3[largoArray-1].revisionSim3) || 0
                                                 
                                                 arrRes3Sim.push(pathMongoOtSim2_3[i].sim3)
                                                 arrResRevision3Sim.push(pathMongoOtSim2_3[i].revisionSim3)
@@ -501,7 +501,7 @@
                                             if (pathMongoOtSim2_3[i]) {
                                                 let largoArray = parseInt(largoArraySim2_3)
                                                 res3Sim = pathMongoOtSim2_3[largoArray-1].sim3 || 'sinDato'
-                                                resRevision3Sim = parseINt(pathMongoOtSim2_3[largoArray-1].revisionSim3) || 0
+                                                resRevision3Sim = parseInt(pathMongoOtSim2_3[largoArray-1].revisionSim3) || 0
                                                 
                                                 arrRes3Sim.push(pathMongoOtSim2_3[i].sim3)
                                                 arrResRevision3Sim.push(pathMongoOtSim2_3[i].revisionSim3)

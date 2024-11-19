@@ -1,7 +1,7 @@
 let arrBtnAnteriorLdmAvanceCG = [], arrBtnSiguienteLdmAvanceCG = [], 
-arrBtnAnteriorLdmAvanceTD2 = [], arrBtnSiguienteLdmAvanceTD2 = [],
-arrBtnAnterior80Ldm = [], arrBtnSiguiente80Ldm = [],
-arrBtnAnteriorInfoModelo = [], arrBtnSiguienteInfoModelo = []
+    arrBtnAnteriorLdmAvanceTD2 = [], arrBtnSiguienteLdmAvanceTD2 = [],
+    arrBtnAnterior80Ldm = [], arrBtnSiguiente80Ldm = [],
+    arrBtnAnteriorInfoModelo = [], arrBtnSiguienteInfoModelo = []
 
 for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de proyectos por Cliente
     for (let p = 0; p<varLimMaxOtProyecto; p++) { //variable limite maximo de Ot por proyecto

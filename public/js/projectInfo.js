@@ -3376,7 +3376,7 @@ function addDatoToInfoSim1(i, idTabla, qInicial, qFinal) {
                     </form>`
     
         const titulo = "Simulación 1"
-        const ancho = 1700
+        const ancho = 1850
         const background = '#ffffff'
         const formulario = 'formSim1Values'
         const arrayDeOtNumber = arrayOtSelected
@@ -3721,6 +3721,33 @@ function addDatoToInfoSim4Primera(i, idTabla, qInicial, qFinal) {
 }
 //***** End addDatoToInfoSim4 Primera ******
 
+// Función para actualizar el valor del campo total
+function updateHsSimTotal(i) {
+    let iFromi = parseInt(i)
+    if (!isNaN(iFromi)) {
+        let res = getOtList(iFromi)
+        let arrayTotalHorasSim = []
+        let inputDisabled = document.getElementById("totalHsSim")
+        inputDisabled.removeAttribute('disabled')
+        // console.log('res.arrayOtNumber: ', res.arrayOtNumber)    
+        for (let y=0; y < res.arrayOtNumber.length; y++) {    
+            let input1 = document.getElementById(`horasSim${res.arrayOtNumber[y]}`)
+            input1 ? arrayTotalHorasSim.push(input1.value) : 0
+        }
+        
+        // Usamos el método map para convertir los strings a números enteros
+        const arrayDeNumeros = arrayTotalHorasSim.map(str => parseInt(str, 10));
+
+        let total = arrayDeNumeros.reduce(function(acumulador, valorActual) {
+            return acumulador + valorActual;
+        }, 0);
+
+        // console.log('total: ', total)
+        !isNaN(total) ? inputDisabled.value = total : inputDisabled.value = 0;
+        inputDisabled.setAttribute('disabled', true)
+    }
+}
+
 //***** addDatoToInfoSim4 Segunda ******
 function addDatoToInfoSim4Segunda(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal, getOtList(i)) {
@@ -3887,32 +3914,6 @@ function addDatoToInfoSim4Segunda(i, idTabla, qInicial, qFinal) {
         disabledBtnAceptar()
     }
 }
-
-// Función para actualizar el valor del campo total
-function updateHsSimTotal(i) {
-    let iFromi = parseInt(i)
-    if (!isNaN(iFromi)) {
-        let res = getOtList(iFromi)
-        let arrayTotalHorasSim = []
-        let inputDisabled = document.getElementById("totalHsSim")
-        inputDisabled.removeAttribute('disabled')
-    
-        for (let y=0; y < res.arrayOtNumber.length; y++) {    
-            var input1 = document.getElementById(`horasSim${res.arrayOtNumber[y]}`).value
-            input1 ? arrayTotalHorasSim.push(input1) : null
-        }
-
-        // Usamos el método map para convertir los strings a números enteros
-        const arrayDeNumeros = arrayTotalHorasSim.map(str => parseInt(str, 10));
-
-        let total = arrayDeNumeros.reduce(function(acumulador, valorActual) {
-            return acumulador + valorActual;
-        }, 0);
-        // console.log('total: ', total)
-        !isNaN(total) ? inputDisabled.value = total : inputDisabled.value = 0;
-        inputDisabled.setAttribute('disabled', true)
-    }
-}
 //***** End addDatoToInfoSim4 Segunda ******
 
 //***** addDatoToInfoSim5 ******
@@ -4069,9 +4070,9 @@ function updateInputsSelect () {
     let largoArrayInputsSelect = parseInt((allInputsSelect.length)-1)
     for (let y=0; y < largoArrayInputsSelect; y++) {
         const idInputSelectHidden = allInputsSelect[y].id.substring(0, allInputsSelect[y].id.length - 4) + 'Hidden' + allInputsSelect[y].id.substring(allInputsSelect[y].id.length - 4)
-console.log('idInputSelectHidden: ', idInputSelectHidden)
+        // console.log('idInputSelectHidden: ', idInputSelectHidden)
         let inputSelectHidden = document.getElementById(`${idInputSelectHidden}`)
-console.log('inputSelectHidden: ', inputSelectHidden)
+        // console.log('inputSelectHidden: ', inputSelectHidden)
         inputSelectHidden ? inputSelectHidden.value = document.getElementById(`${allInputsSelect[y].id}`).value : null
     }
 }

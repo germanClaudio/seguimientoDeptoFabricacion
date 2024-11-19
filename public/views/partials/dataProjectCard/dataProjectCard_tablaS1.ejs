@@ -31,17 +31,10 @@
     </thead>
     <tbody class="table-group-divider">
         
-        <% let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-            res1Sim = 'sinDato', resRevision1Sim = 0,
-            resVideo = 'sinDato', resRevisionVideo = 0,
-            resInforme = 'sinDato', resRevisionInforme = 0,
-            resPpt = 'sinDato', resRevisionPpt = 0,
-            resS1p20Op = 'sinDato', resRevisionS1p20Op = 0
-        
-        const sim1Config = {
+        <% const sim1Config = {
             ok: { text: "OK", classes: "bg-success text-white" },
             noOk: { text: "No OK", classes: "bg-danger text-white" },
-            pendiente: { text: "Pendiente", classes: "bg-warning text-dark" },
+            pendiente: { text: "Pendte.", classes: "bg-warning text-dark" },
             noAplica: { text: "N/A", classes: "bg-info text-dark" },
             default: { text: "S/D", classes: "bg-secondary text-white" }
         };
@@ -50,6 +43,13 @@
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
             largoArrayOtProject = parseInt(pathMongoOtProject.length),
             pathMongoOtInformation = pathMongoOtProject[n].otInformation
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                res1Sim = 'sinDato', resRevision1Sim = 0,
+                resVideo = 'sinDato', resRevisionVideo = 0,
+                resInforme = 'sinDato', resRevisionInforme = 0,
+                resPpt = 'sinDato', resRevisionPpt = 0,
+                resS1p20Op = 'sinDato', resRevisionS1p20Op = 0
 
             if (pathMongoOtProject[n].visible) {
                 let pathMongoOtSim1 = pathMongoOtInformation[0].otInfoSim1 || [],
@@ -76,9 +76,7 @@
                             if (q==20) { %>
                                 <!-- Simulacion 1 data Activo--> 
                                 <td class="text-center align-middle">
-
                                     <% if (largoArraySim1 > 0) {
-                                        
                                         for (let i = 0; largoArraySim1 > i; i++) {
                                             if (pathMongoOtSim1[i]) {
                                                 let largoArray = parseInt(largoArraySim1)
@@ -235,8 +233,8 @@
                                             if (pathMongoOtSim1[i]) {
                                                 
                                                 let largoArray = parseInt(largoArraySim1)
-                                                resInforme = pathMongoOtSim1[i][largoArray-1].informe || 'sinDato'
-                                                resRevisionInforme = parseInt(pathMongoOtSim1[i][largoArray-1].revisionInforme) || 0
+                                                resInforme = pathMongoOtSim1[largoArray-1].informe || 'sinDato'
+                                                resRevisionInforme = parseInt(pathMongoOtSim1[largoArray-1].revisionInforme) || 0
                                                 
                                                 arrResInforme.push(pathMongoOtSim1[i].informe)
                                                 arrResRevisionInforme.push(pathMongoOtSim1[i].revisionInforme)
@@ -455,7 +453,6 @@
                                 </td>
                             <% }
                         } %>
-                        
                     </tr>
 
                 <% } else { %>
