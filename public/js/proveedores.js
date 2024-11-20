@@ -1,10 +1,10 @@
 const socket = io.connect()
-let URL_GOOGLE_STORE_IMAGESTOOLS
+let URL_GOOGLE_STORE_IMAGESSUPPLIERS
 
 fetch('/api/config')
     .then(response => response.json())
     .then(config => {
-        URL_GOOGLE_STORE_IMAGESTOOLS = config.URL_GOOGLE_STORE_IMAGESTOOLS
+        URL_GOOGLE_STORE_IMAGESSUPPLIERS = config.URL_GOOGLE_STORE_IMAGESSUPPLIERS
     })
     .catch(error => console.error('Error fetching config:', error));
 
@@ -21,8 +21,8 @@ function formatDate(date) {
 //-------------------------------------------
 const inputName = document.getElementById('designation')
 function mostrarNombre() {
-    const titleNewTool = document.getElementById('titleNewTool')
-    titleNewTool.innerText = 'Agregar Nueva Máquina: '+ inputName.value
+    const titleNewSupplier = document.getElementById('titleNewSupplier')
+    titleNewSupplier.innerText = 'Agregar Nuevo Proveedor: '+ inputName.value
 }
 
     if(inputName) {
@@ -39,11 +39,11 @@ function mostrarNombre() {
 document.addEventListener('DOMContentLoaded', function() {
     // Mostrar el spinner y ocultar la tabla al cargar la página
     document.getElementById('loading-spinner').style.display = 'block';
-    document.getElementById('toolTable').style.display = 'none';
+    document.getElementById('supplierTable').style.display = 'none';
 });
 
-//  ----------- Tools list ----------------
-socket.on('toolsAll', (arrTools, arrUsers) => {
+//  ----------- Suppliers list ----------------
+socket.on('suppliersAll', (arrSuppliers, arrUsers) => {
     const cadena = document.getElementById('mostrarUserName').innerText
     let indice = cadena.indexOf(",");
     const name = cadena.substring(0,indice)
@@ -52,39 +52,30 @@ socket.on('toolsAll', (arrTools, arrUsers) => {
     if(index !== -1) {
         let user = arrUsers[index].admin
         let userId = arrUsers[index]._id
-        user ? renderToolsAdmin(arrTools, userId) : renderToolsUser(arrTools)
+        user ? renderSuppliersAdmin(arrSuppliers, userId) : renderSuppliersUser(arrSuppliers)
     }   
 })
 
 // --------------- Render Admin ----------------------------
-const renderToolsAdmin = (arrTools) => {
-    const arrayTool = arrTools
-    const green = 'success'
-    const red = 'danger'
-    const blue = 'primary'
-    const grey = 'secondary'
-    const black = 'dark'
-    const white = 'light'
-    const active = 'Activa'
-    const inactive = 'Mantenimiento'
-    const info = 'info'
-    const cnc = 'CNC'
-    const press = 'Prensa'
-    let textColor
-    
-    let html
-    if (arrTools.length>0) {
-        html = arrTools.map((element) => {
+const renderSuppliersAdmin = (arrSuppliers) => {
+    const arraySupplier = arrSuppliers
+    const green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', black = 'dark', white = 'light', info = 'info'
+    const active = 'Activo', inactive = 'Inactivo'
+    const diseno = 'Diseño', simulacion = 'Simulación'
+    let textColor, html
+
+    if (arrSuppliers.length>0) {
+        html = arrSuppliers.map((element) => {
             let optionStatus = element.status ? green : red
             let optionType 
             let showType
-            if(element.type === 'cnc') {
+            if(element.type === 'diseno') {
                 optionType = info
-                showType = cnc
+                showType = diseno
                 textColor = black
-            } else if(element.type === 'prensa') {
+            } else if(element.type === 'simulacion') {
                 optionType = grey
-                showType = press
+                showType = simulacion
                 textColor = white
             } else {
                 optionType = blue
@@ -92,7 +83,7 @@ const renderToolsAdmin = (arrTools) => {
                 textColor = white
             }
             let showStatus = element.status ? active : inactive
-            cnc : press
+            diseno : simulacion
             let idChain = element._id.substring(19)
 
             if (element.visible) {
@@ -101,61 +92,63 @@ const renderToolsAdmin = (arrTools) => {
                             <td class="text-center" id="codigo_${element._id}">${element.code}</td>
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
                             <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
-                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageTool}' width="150px" height="150px"></td>
+                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageSupplier}' width="150px" height="150px"></td>
                             <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
-                            <td class="text-center" id="characteristics_${element._id}">${element.characteristics}</td>
+                            <td class="text-center px-2" id="characteristics_${element._id}">${element.characteristics}</td>
                             <td class="text-center">${element.creator[0].name}, ${element.creator[0].lastName}</td>
                             <td class="text-center">${element.timestamp}</td>
                             <td class="text-center">${element.modificator[0].name} ${element.modificator[0].lastName}</td>
                             <td class="text-center">${element.modifiedOn}</td>
                             <td class="text-center">
                                 <div class="d-block align-items-center text-center">
-                                    <a href="/api/maquinas/${element._id}" class="btn btn-primary btn-sm me-1" title="Editar Máquina ${element.designation}"><i class="fa-solid fa-gears"></i></a>
-                                    <button id="${element._id}" name="btnDeleteTool" type="button" class="btn btn-danger btn-sm ms-1" title="Eliminar Máquina ${element.designation}"><i class="fa-regular fa-trash-can"></i></button>
+                                    <a href="/api/proveedores/${element._id}" class="btn btn-primary btn-sm me-1" title="Editar Proveedor ${element.designation}"><i class="fa-solid fa-truck-field"></i></a>
+                                    <button id="${element._id}" name="btnDeleteSupplier" type="button" class="btn btn-danger btn-sm ms-1" title="Eliminar Proveedor ${element.designation}"><i class="fa-regular fa-trash-can"></i></button>
                                 </div>
                             </td>
                         </tr>`)
 
             }
         }).join(" ");
-        document.getElementById('mostrarMaquinas').innerHTML = html
+        document.getElementById('mostrarProveedores').innerHTML = html
 
-        const toolsActiveQty = []
-        for(let u=0; u<arrayTool.length; u++) {
-            arrayTool[u].visible ? toolsActiveQty.push(u) : null
+        const suppliersActiveQty = []
+        for(let u=0; u<arraySupplier.length; u++) {
+            arraySupplier[u].visible ? suppliersActiveQty.push(u) : null
         }
 
-        const htmlToolList = 
-            ( `<caption id="capToolList">Cantidad de Máquinas: ${parseInt(toolsActiveQty.length)}</caption><br>
-            <caption id="capDeleteToolList">Cantidad de Máquinas Eliminadas: ${parseInt(arrayTool.length - toolsActiveQty.length)}</caption>`)
+        const htmlSupplierList = 
+            ( `<caption id="capSupplierList">Cantidad de Proveedores: ${parseInt(suppliersActiveQty.length)}</caption><br>
+            <caption id="capDeleteSupplierList">Cantidad de Proveedores Eliminados: ${parseInt(arraySupplier.length - suppliersActiveQty.length)}</caption>`)
 
-        document.getElementById('capToolList').innerHTML = htmlToolList
+        document.getElementById('capSupplierList').innerHTML = htmlSupplierList
         
     } else {
-        html = (`<tr>
-                    <th scope="row" class="text-center"><strong>No hay items cargados para mostrar</strong></th>
-                </tr>`)
+        html = (`<td colspan="12">
+                    <div class="text-center my-3 shadow p-2 mb-3 bg-body rounded">
+                        <strong>No hay items cargados para mostrar</strong>
+                    </div>
+                </td>`)
 
-        document.getElementById('mostrarMaquinas').innerHTML = html    
+        document.getElementById('mostrarProveedores').innerHTML = html    
     }
     // Ocultar el spinner y mostrar la tabla
     document.getElementById('loading-spinner').style.display = 'none';
-    document.getElementById('toolTable').style.display = 'block';
+    document.getElementById('supplierTable').style.display = 'block';
 
     // ---- mensaje confirmacion eliminar Usuario -----------
-    function messageDeleteTool(id, code, designation) {
+    function messageDeleteSupplier(id, code, designation) {
 
         const htmlForm = `
-                La maquina ${designation} - Codigo: ${code}, se eliminará completamente.<br>
+                El proveedor ${designation} - Codigo: ${code}, se eliminará completamente.<br>
                 Está seguro que desea continuar?<br>
-                <form id="formDeleteTool" action="/api/maquinas/delete/${id}" method="get">
+                <form id="formDeleteSupplier" action="/api/proveedores/delete/${id}" method="get">
                     <fieldset>
                     </fieldset>
                 </form>
                         `
     
         Swal.fire({
-            title: `Eliminar Máquina <b>${designation}</b>?`,
+            title: `Eliminar Proveedor <b>${designation}</b>?`,
             position: 'center',
             html: htmlForm,
             icon: 'warning',
@@ -163,23 +156,23 @@ const renderToolsAdmin = (arrTools) => {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             focusConfirm: false,
-            confirmButtonText: 'Eliminarla! <i class="fa-regular fa-trash-can"></i>',
+            confirmButtonText: 'Eliminarlo! <i class="fa-regular fa-trash-can"></i>',
             cancelButtonText: 'Cancelar <i class="fa-solid fa-user-shield"></i>'
     
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById("formDeleteTool").submit()
+                document.getElementById("formDeleteSupplier").submit()
                 setTimeout(() => {
                     Swal.fire(
-                        'Eliminada!',
-                        `La maquina ${designation}, ha sido eliminada exitosamente.`,
+                        'Eliminado!',
+                        `El proveedor ${designation}, ha sido eliminada exitosamente.`,
                         'success'
                     )
                 }, 1500)
             } else {
                 Swal.fire(
-                    'No eliminada!',
-                    `La maquina ${designation}, no ha sido eliminada.`,
+                    'No eliminado!',
+                    `El proveedor ${designation}, no ha sido eliminada.`,
                     'info'
                     )
                 return false
@@ -187,50 +180,41 @@ const renderToolsAdmin = (arrTools) => {
         })
     }
 
-    const nodeList = document.querySelectorAll('button[name="btnDeleteTool"]')
+    const nodeList = document.querySelectorAll('button[name="btnDeleteSupplier"]')
     nodeList.forEach(function(btn){
         if (btn.id) {
             btn.addEventListener("click", (event) => {
                 event.preventDefault()
-                const idTool = btn.id
-                const designation = document.getElementById(`designation_${idTool}`).innerText
-                const code = document.getElementById(`codigo_${idTool}`).innerText
+                const idSupplier = btn.id
+                const designation = document.getElementById(`designation_${idSupplier}`).innerText
+                const code = document.getElementById(`codigo_${idSupplier}`).innerText
 
-                idTool && designation && code ? messageDeleteTool(idTool, designation, code) : null
+                idSupplier && designation && code ? messageDeleteSupplier(idSupplier, designation, code) : null
             })
         }
     })
 }
 
 //----------------------- Render User -------------------------------
-const renderToolsUser = (arrTools) => {
-    const arrayTool = arrTools
-    const green = 'success'
-    const red = 'danger'
-    const blue = 'primary'
-    const grey = 'secondary'
-    const black = 'dark'
-    const white = 'light'
-    const active = 'Activa'
-    const inactive = 'Mantenimiento'
-    const info = 'info'
-    const cnc = 'CNC'
-    const press = 'Prensa'
-    let textColor
-    
-    let html
-    if (arrTools.length>0) {
-        html = arrTools.map((element) => {
+const renderSuppliersUser = (arrSuppliers) => {
+    const arraySupplier = arrSuppliers
+    const green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', black = 'dark', white = 'light', info = 'info'
+    const active = 'Activo', inactive = 'Inactivo'
+    const diseno = 'Diseño', simulacion = 'Simulación'
+    let textColor, html
+
+    if (arrSuppliers.length>0) {
+        html = arrSuppliers.map((element) => {
             let optionStatus = element.status ? green : red
-            let optionType 
-            let showType
-            if(element.type === 'cnc') {
+            let optionType, showType
+            
+            if(element.type === 'diseno') {
                 optionType = info
-                showType = cnc
+                showType = diseno
                 textColor = black
-            } else if(element.type === 'prensa') {
+            } else if(element.type === 'simulacion') {
                 optionType = grey
-                showType = press
+                showType = simulacion
                 textColor = white
             } else {
                 optionType = blue
@@ -238,7 +222,7 @@ const renderToolsUser = (arrTools) => {
                 textColor = white
             }
             let showStatus = element.status ? active : inactive
-            cnc : press
+            diseno : simulacion
             let idChain = element._id.substring(19)
 
             if (element.visible) {
@@ -247,16 +231,16 @@ const renderToolsUser = (arrTools) => {
                             <td class="text-center" id="codigo_${element._id}">${element.code}</td>
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
                             <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
-                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageTool}' width="150px" height="150px"></td>
+                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageSupplier}' width="150px" height="150px"></td>
                             <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
-                            <td class="text-center" id="characteristics_${element._id}">${element.characteristics}</td>
+                            <td class="text-center px-2" id="characteristics_${element._id}">${element.characteristics}</td>
                             <td class="text-center">${element.creator[0].name}, ${element.creator[0].lastName}</td>
                             <td class="text-center">${element.timestamp}</td>
                             <td class="text-center">${element.modificator[0].name} ${element.modificator[0].lastName}</td>
                             <td class="text-center">${element.modifiedOn}</td>
                             <td class="text-center">
                                 <div class="d-blck align-items-center text-center mx-1">
-                                    <a href="/api/maquinas/${element._id}" class="btn btn-primary btn-sm me-1" title="Editar Máquina ${element.designation}"><i class="fa-solid fa-gears"></i></a>
+                                    <a href="/api/proveedores/${element._id}" class="btn btn-primary btn-sm me-1" title="Editar Proveedor ${element.designation}"><i class="fa-solid fa-truck-field"></i></a>
                                     <button type="button" class="btn btn-danger btn-sm ms-1 disabled" title="Solo Admin puede modificar esto"><i class="fa-solid fa-info-circle"></i></button>
                                 </div>
                             </td>
@@ -264,44 +248,46 @@ const renderToolsUser = (arrTools) => {
 
             }
         }).join(" ");
-        document.getElementById('mostrarMaquinas').innerHTML = html
+        document.getElementById('mostrarProveedores').innerHTML = html
 
-        const toolsActiveQty = []
-        for(let u=0; u<arrayTool.length; u++) {
-            arrayTool[u].visible ? toolsActiveQty.push(u) : null
+        const suppliersActiveQty = []
+        for(let u=0; u<arraySupplier.length; u++) {
+            arraySupplier[u].visible ? suppliersActiveQty.push(u) : null
         }
 
-        const htmlToolList = 
-            ( `<caption id="capToolList">Cantidad de Máquinas: ${parseInt(toolsActiveQty.length)}</caption><br>
-            <caption id="capDeleteToolList">Cantidad de Máquinas Eliminadas: ${parseInt(arrayTool.length - toolsActiveQty.length)}</caption>`)
+        const htmlSupplierList = 
+            ( `<caption id="capSupplierList">Cantidad de Proveedores: ${parseInt(suppliersActiveQty.length)}</caption><br>
+            <caption id="capDeleteSupplierList">Cantidad de Proveedores Eliminadas: ${parseInt(arraySupplier.length - suppliersActiveQty.length)}</caption>`)
 
-        document.getElementById('capToolList').innerHTML = htmlToolList
+        document.getElementById('capSupplierList').innerHTML = htmlSupplierList
         
     } else {
-        html = (`<tr>
-                    <th scope="row" class="text-center"><strong>No hay items cargados para mostrar</strong></th>
-                </tr>`)
+        html = (`<td colspan="12">
+                    <div class="text-center my-3 shadow p-2 mb-3 bg-body rounded">
+                        <strong>No hay items cargados para mostrar</strong>
+                    </div>
+                </td>`)
 
-        document.getElementById('mostrarMaquinas').innerHTML = html    
+        document.getElementById('mostrarProveedores').innerHTML = html    
     }
     // Ocultar el spinner y mostrar la tabla
     document.getElementById('loading-spinner').style.display = 'none';
-    document.getElementById('toolTable').style.display = 'block';
+    document.getElementById('supplierTable').style.display = 'block';
 
-    // ---- mensaje confirmacion eliminar maquina -----------
-    function messageDeleteTool(id, code, designation) {
+    // ---- mensaje confirmacion eliminar proveedores -----------
+    function messageDeleteSupplier(id, code, designation) {
 
         const htmlForm = `
-                La maquina ${designation} - Codigo: ${code}, se eliminará completamente.<br>
+                El proveedor ${designation} - Codigo: ${code}, se eliminará completamente.<br>
                 Está seguro que desea continuar?<br>
-                <form id="formDeleteTool" action="/api/maquinas/delete/${id}" method="get">
+                <form id="formDeleteSupplier" action="/api/proveedores/delete/${id}" method="get">
                     <fieldset>
                     </fieldset>
                 </form>
                         `
     
         Swal.fire({
-            title: `Eliminar Máquina <b>${designation}</b>?`,
+            title: `Eliminar Proveedor <b>${designation}</b>?`,
             position: 'center',
             html: htmlForm,
             icon: 'warning',
@@ -309,23 +295,23 @@ const renderToolsUser = (arrTools) => {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             focusConfirm: false,
-            confirmButtonText: 'Eliminarla! <i class="fa-regular fa-trash-can"></i>',
+            confirmButtonText: 'Eliminarlo! <i class="fa-regular fa-trash-can"></i>',
             cancelButtonText: 'Cancelar <i class="fa-solid fa-user-shield"></i>'
     
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById("formDeleteTool").submit()
+                document.getElementById("formDeleteSupplier").submit()
                 setTimeout(() => {
                     Swal.fire(
-                        'Eliminada!',
-                        `La maquina ${designation}, ha sido eliminada exitosamente.`,
+                        'Eliminado!',
+                        `La proveedor ${designation}, ha sido eliminado exitosamente.`,
                         'success'
                     )
                 }, 1500)
             } else {
                 Swal.fire(
-                    'No eliminada!',
-                    `La maquina ${designation}, no ha sido eliminada.`,
+                    'No eliminado!',
+                    `El proveedor ${designation}, no ha sido eliminado.`,
                     'info'
                     )
                 return false
@@ -333,169 +319,169 @@ const renderToolsUser = (arrTools) => {
         })
     }
 
-    const nodeList = document.querySelectorAll('button[name="btnDeleteTool"]')
+    const nodeList = document.querySelectorAll('button[name="btnDeleteSupplier"]')
     nodeList.forEach(function(btn){
         if (btn.id) {
             btn.addEventListener("click", (event) => {
                 event.preventDefault()
-                const idTool = btn.id
-                const designation = document.getElementById(`designation_${idTool}`).innerText
-                const code = document.getElementById(`codigo_${idTool}`).innerText
+                const idSupplier = btn.id
+                const designation = document.getElementById(`designation_${idSupplier}`).innerText
+                const code = document.getElementById(`codigo_${idSupplier}`).innerText
 
-                idTool && designation && code ? messageDeleteTool(idTool, designation, code) : null
+                idSupplier && designation && code ? messageDeleteSupplier(idSupplier, designation, code) : null
             })
         }
     })
 }
 
-// ----------- Image Tool Image behavior ---------------
-const dropAreaImageTool = document.getElementById('drop-areaImageTool')
-const fileInputImageTool = document.getElementById('fileInputImageTool')
-const fileImputTextImageTool = document.getElementById('fileInputTextImageTool')
-const removeImageButtonImageTool = document.getElementById('removeImageTool')
-const alertImageTool = document.getElementById('alertImageTool')
-const alertSizeImageTool = document.getElementById('alertSizeImageTool')
+// ----------- Image Supplier Image behavior ---------------
+const dropAreaImageSupplier = document.getElementById('drop-areaImageSupplier')
+const fileInputImageSupplier = document.getElementById('fileInputImageSupplier')
+const fileImputTextImageSupplier = document.getElementById('fileInputTextImageSupplier')
+const removeImageButtonImageSupplier = document.getElementById('removeImageSupplier')
+const alertImageSupplier = document.getElementById('alertImageSupplier')
+const alertSizeImageSupplier = document.getElementById('alertSizeImageSupplier')
 
-dropAreaImageTool.style.width = "300px"
-dropAreaImageTool.style.height = "200px"
-dropAreaImageTool.style.border = "2px dashed #ccc"
-dropAreaImageTool.style.margin = "0 auto 0 50px"
-dropAreaImageTool.style.borderRadius = "5px"
-dropAreaImageTool.style.textAlign = "center"
-dropAreaImageTool.style.lineHeight = "200px"
-dropAreaImageTool.style.cursor = "pointer"
+dropAreaImageSupplier.style.width = "300px"
+dropAreaImageSupplier.style.height = "200px"
+dropAreaImageSupplier.style.border = "2px dashed #ccc"
+dropAreaImageSupplier.style.margin = "0 auto 0 50px"
+dropAreaImageSupplier.style.borderRadius = "5px"
+dropAreaImageSupplier.style.textAlign = "center"
+dropAreaImageSupplier.style.lineHeight = "200px"
+dropAreaImageSupplier.style.cursor = "pointer"
 
-dropAreaImageTool.addEventListener('dragover', (e) => {
+dropAreaImageSupplier.addEventListener('dragover', (e) => {
     e.preventDefault()
-    dropAreaImageTool.style.border = '2px dashed #77d'
-    dropAreaImageTool.style.backgroundColor = '#7777dd10'
+    dropAreaImageSupplier.style.border = '2px dashed #77d'
+    dropAreaImageSupplier.style.backgroundColor = '#7777dd10'
 })
 
-dropAreaImageTool.addEventListener('dragleave', (e) => {
+dropAreaImageSupplier.addEventListener('dragleave', (e) => {
     e.preventDefault()
-    dropAreaImageTool.style.border = '2px dashed #ccc'
-    dropAreaImageTool.style.backgroundColor = '#B6B6B6'
+    dropAreaImageSupplier.style.border = '2px dashed #ccc'
+    dropAreaImageSupplier.style.backgroundColor = '#B6B6B6'
 })
 
 function alertRefresh() {
-    removeImageButtonImageTool.style.display = 'none'
-    fileInputImageTool.value = ''
-    fileImputTextImageTool.value = ''
-    dropAreaImageTool.style.border = "2px dashed #ccc"
-    dropAreaImageTool.style.textAlign = "center"
-    dropAreaImageTool.style.backgroundColor = '#B6B6B6'
-    dropAreaImageTool.style.display = 'block'
-    dropAreaImageTool.innerHTML = 'Haz click o arrastra y suelta una imagen aquí'
+    removeImageButtonImageSupplier.style.display = 'none'
+    fileInputImageSupplier.value = ''
+    fileImputTextImageSupplier.value = ''
+    dropAreaImageSupplier.style.border = "2px dashed #ccc"
+    dropAreaImageSupplier.style.textAlign = "center"
+    dropAreaImageSupplier.style.backgroundColor = '#B6B6B6'
+    dropAreaImageSupplier.style.display = 'block'
+    dropAreaImageSupplier.innerHTML = 'Haz click o arrastra y suelta una imagen aquí'
 }
 
-function alertNotImageImageTool() {
-    alertImageTool.style.display = 'flex'
-    alertSizeImageTool.style.display = 'none'
+function alertNotImageImageSupplier() {
+    alertImageSupplier.style.display = 'flex'
+    alertSizeImageSupplier.style.display = 'none'
     alertRefresh()
 }
 
-function alertSizeImageImageTool() {
-    alertSizeImageTool.style.display = 'flex'
-    alertImageTool.style.display = 'none'
+function alertSizeImageImageSupplier() {
+    alertSizeImageSupplier.style.display = 'flex'
+    alertImageSupplier.style.display = 'none'
     alertRefresh()
 }
 
-dropAreaImageTool.addEventListener('drop', (e) => {
+dropAreaImageSupplier.addEventListener('drop', (e) => {
     e.preventDefault()
     const file = e.dataTransfer.files[0]
     
     if (file && file.type.startsWith('image/')) {
-        dropAreaImageTool.style.border = '3px dashed #2d2'
-        dropAreaImageTool.style.backgroundColor = '#22dd2210'        
-        handleFileUploadImageTool(file)
+        dropAreaImageSupplier.style.border = '3px dashed #2d2'
+        dropAreaImageSupplier.style.backgroundColor = '#22dd2210'        
+        handleFileUploadImageSupplier(file)
 
     } else {
-        alertNotImageImageTool()
+        alertNotImageImageSupplier()
     }     
 })
 
-dropAreaImageTool.addEventListener('click', () => {
-    fileInputImageTool.click()
+dropAreaImageSupplier.addEventListener('click', () => {
+    fileInputImageSupplier.click()
 })
 
-fileInputImageTool.addEventListener('change', (e) => {
+fileInputImageSupplier.addEventListener('change', (e) => {
     e.preventDefault()
-    const file = fileInputImageTool.files[0]
+    const file = fileInputImageSupplier.files[0]
     
     if (file && file.type.startsWith('image/')) { 
-        dropAreaImageTool.style.border = '3px dashed #2d2'
-        dropAreaImageTool.style.backgroundColor = '#22dd2210'
-        handleFileUploadImageTool(file)
+        dropAreaImageSupplier.style.border = '3px dashed #2d2'
+        dropAreaImageSupplier.style.backgroundColor = '#22dd2210'
+        handleFileUploadImageSupplier(file)
 
     } else {
-        alertNotImageImageTool()
+        alertNotImageImageSupplier()
     }     
 })
 
-function handleFileUploadImageTool(file) {
+function handleFileUploadImageSupplier(file) {
     const fileSize = file.size
     const fileSizeInMb = fileSize / (1024 * 1024)
 
     if (fileSizeInMb < 3) {
-        let pathToImage = URL_GOOGLE_STORE_IMAGESTOOLS
+        let pathToImage = URL_GOOGLE_STORE_IMAGESSUPPLIERS
         // Separar el nombre del archivo y la extensión
         const dotIndex = file.name.lastIndexOf('.');
         const name = file.name.substring(0, dotIndex);
         const extension = file.name.substring(dotIndex);
-        fileImputTextImageTool.value = pathToImage + name + "-" + formatDate(new Date()) + extension
-        removeImageButtonImageTool.style.display = 'flex'
+        fileImputTextImageSupplier.value = pathToImage + name + "-" + formatDate(new Date()) + extension
+        removeImageButtonImageSupplier.style.display = 'flex'
 
         const reader = new FileReader()
         reader.readAsDataURL(file)
         reader.onload = () => {
-            dropAreaImageTool.innerHTML = 
+            dropAreaImageSupplier.innerHTML = 
                 `<img class="p-2 mb-3" src="${reader.result}" style="max-width: 100%; max-height: 100%;">`
-            alertImageTool.style.display = 'none'
-            alertSizeImageTool.style.display = 'none'
+            alertImageSupplier.style.display = 'none'
+            alertSizeImageSupplier.style.display = 'none'
         }
 
     } else {
-        alertSizeImageImageTool()
+        alertSizeImageImageSupplier()
     }
 }
 
-removeImageButtonImageTool.addEventListener('click', (e)=> {
+removeImageButtonImageSupplier.addEventListener('click', (e)=> {
     e.preventDefault()
-    alertImageTool.style.display = 'none'
-    alertSizeImageTool.style.display = 'none'
+    alertImageSupplier.style.display = 'none'
+    alertSizeImageSupplier.style.display = 'none'
     alertRefresh()
     e.stopPropagation()
 })
 
 
-function messageNewTool(designation, code, type) {
+function messageNewSupplier(designation, code, type) {
     if (designation, code, type) {
         Swal.fire({
-            title: `Nueva Maquina <b>${designation}</b>`,
-            text: `La maquina ${designation}, tipo: ${type}, código: ${code} será registrada!`,
+            title: `Nuevo Proveedor <b>${designation}</b>`,
+            text: `El proveedor ${designation}, tipo: ${type}, código: ${code} será registrado!`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             focusConfirm: true,
-            confirmButtonText: 'Registrarla! <i class="fa-solid fa-user-gear"></i>',
+            confirmButtonText: 'Registrarlo! <i class="fa-solid fa-user-gear"></i>',
             cancelButtonText: 'Cancelar <i class="fa-solid fa-user-xmark"></i>'
     
         }).then((result) => {
             if (result.isConfirmed) {
                 Swal.fire(
-                    'Creada!',
-                    `La máquina ${designation} (${type}) , código #:${code}, ha sido registrada exitosamente.`,
+                    'Creado!',
+                    `El proveedor ${designation} (${type}) , código #:${code}, ha sido registrado exitosamente.`,
                     'success'
                 )
                 setTimeout(() => {
-                    document.getElementById("newToolForm").submit()
+                    document.getElementById("newSupplierForm").submit()
                 }, 1000)
                 
             } else {
                 Swal.fire(
-                    'No registrada!',
-                    `La máquina ${designation}, no ha sido registrada.`,
+                    'No registrado!',
+                    `El proveedor ${designation}, no ha sido registrado.`,
                     'info'
                 )
                 return false
@@ -507,7 +493,7 @@ function messageNewTool(designation, code, type) {
             title: 'Error',
             position: 'center',
             timer: 3500,
-            text: `La Máquina no se creó correctamente!`,
+            text: `El proveedor no se creó correctamente!`,
             icon: 'error',
             showCancelButton: true,
             showConfirmButton: false,
@@ -544,24 +530,24 @@ function messageWarningEmptyFields(designation, code) {
         })
 }
 
-const btnAddNewTool = document.getElementById('btnAddNewTool')
+const btnAddNewSupplier = document.getElementById('btnAddNewSupplier')
 
-btnAddNewTool.addEventListener('click', (event) => {
+btnAddNewSupplier.addEventListener('click', (event) => {
     event.preventDefault()
     const designation = document.getElementById('designation').value
     const code = document.getElementById('code').value
     const type = document.getElementById('type').value
 
-    designation && code && type ?  messageNewTool(designation, code, type.toUpperCase()) :  messageWarningEmptyFields(designation, code, type.toUpperCase())
+    designation && code && type ?  messageNewSupplier(designation, code, type.toUpperCase()) :  messageWarningEmptyFields(designation, code, type.toUpperCase())
 })
 
-const btnResetFormNewTool = document.getElementById('btnResetFormNewTool')
-if (btnResetFormNewTool) {
-    btnResetFormNewTool.addEventListener('click', () => {
-        btnAddNewTool.disabled = true
-        btnAddNewTool.style.opacity = (0.4)
-        alertImageTool.style.display = 'none'
-        alertSizeImageTool.style.display = 'none'
+const btnResetFormNewSupplier = document.getElementById('btnResetFormNewSupplier')
+if (btnResetFormNewSupplier) {
+    btnResetFormNewSupplier.addEventListener('click', () => {
+        btnAddNewSupplier.disabled = true
+        btnAddNewSupplier.style.opacity = (0.4)
+        alertImageSupplier.style.display = 'none'
+        alertSizeImageSupplier.style.display = 'none'
         alertRefresh()
     })
 }
@@ -610,16 +596,16 @@ var inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
     })
 
 function disabledBtnAceptar () {
-    let btnAceptarFrom = document.getElementById('btnAddNewTool');
+    let btnAceptarFrom = document.getElementById('btnAddNewSupplier');
     const allInputs = document.querySelectorAll('input[type="text"], textarea, input[type="file"], input[type="hidden"]')
     
     allInputs.forEach(function(input) {
-            input.addEventListener('change', (event) => {
-                event.preventDefault()
-                input.classList.add("border-primary", "border-2", "shadow")
-                btnAceptarFrom.removeAttribute('disabled')
-                btnAceptarFrom.style = "cursor: pointer;"
-            })        
+        input.addEventListener('change', (event) => {
+            event.preventDefault()
+            input.classList.add("border-primary", "border-2", "shadow")
+            btnAceptarFrom.removeAttribute('disabled')
+            btnAceptarFrom.style = "cursor: pointer;"
+        })
     })
 }
 disabledBtnAceptar()

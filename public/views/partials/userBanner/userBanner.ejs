@@ -1,12 +1,26 @@
-<% function capitalizarPrimeraLetra(str) {
-    return str
-        .toLowerCase()
-        .split(' ')
-        .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
-        .join(' ');
-    }
-let area = capitalizarPrimeraLetra(userInfo.area)
-let permiso = capitalizarPrimeraLetra(userInfo.permiso)
+<% const areaConfig = {
+    ingenieria: { text: "Ingeniería", classes: "bg-info text-dark" },
+    fabricacion: { text: "Fabricación", classes: "bg-warning text-dark" },
+    proyectos: { text: "Proyectos", classes: "bg-primary text-light" },
+    administracion: { text: "Administración", classes: "bg-secondary text-white" },
+    todas: { text: "Todas", classes: "bg-success text-white" },
+    default: { text: "N/A", classes: "bg-secondary text-dark" }
+};
+
+const permisoConfig = {
+    diseno: { text: "Diseño", classes: "bg-info text-dark" },
+    simulacion: { text: "Simulación", classes: "bg-warning text-dark" },
+    disenoSimulacion: { text: "Diseño/Simulación", classes: "bg-danger text-white" },
+    cadCam: { text: "Cad-Cam", classes: "bg-secondary text-dark" },
+    projectManager: { text: "PM", classes: "bg-light text-dark" },
+    mecanizado: { text: "Mecanizado", classes: "bg-warning text-dark" },
+    ajuste: { text: "Ajuste", classes: "bg-danger text-white" },
+    todos: { text: "Todos", classes: "bg-secondary text-white" },
+    default: { text: "N/A", classes: "bg-secondary text-dark" }
+};
+
+    const configArea = areaConfig[userInfo.area] || areaConfig.default;
+    const configPermiso = permisoConfig[userInfo.permiso] || permisoConfig.default;
 
     if (userInfo.superAdmin) { %>
         <div class="mx-auto small text-center">
@@ -19,8 +33,8 @@ let permiso = capitalizarPrimeraLetra(userInfo.permiso)
                 </span>
             </span>
         </div>
-        <span class="badge bg-warning text-dark my-1"> <%= area %> </span> - 
-        <span class="badge bg-light text-dark my-1"> <%= permiso %> </span>
+        <span class="badge <%= configArea.classes %> my-1"> <%= configArea.text %> </span> - 
+        <span class="badge <%= configPermiso.classes %> my-1"> <%= configPermiso.text %> </span>
         <div class="mx-auto small text-center" id="mostrarUserName">
             <%= userInfo.name %>, <%= userInfo.lastName %>
         </div>
@@ -31,7 +45,8 @@ let permiso = capitalizarPrimeraLetra(userInfo.permiso)
         <div class="mx-auto small text-center">
             <span id="mostrarRolUser" class="badge rounded-pill bg-primary">Admin</span>
         </div>
-        <span class="badge bg-warning text-dark my-1"><%= userInfo.area %></span> - <span class="badge bg-light text-dark my-1"><%= userInfo.permiso %></span>
+        <span class="badge <%= configArea.classes %> my-1"><%= configArea.text %></span> -
+        <span class="badge <%= configPermiso.classes %> my-1"><%= configPermiso.text %></span>
         <div class="mx-auto small text-center" id="mostrarUserName">
             <%= userInfo.name %>, <%= userInfo.lastName %>
         </div>
@@ -42,8 +57,8 @@ let permiso = capitalizarPrimeraLetra(userInfo.permiso)
         <div class="mx-auto small text-center">
             <span id="mostrarRolUser" class="badge rounded-pill bg-info text-dark">User</span>
         </div>
-        <span class="badge bg-warning text-dark my-1"><%= area %></span> -
-        <span class="badge bg-light text-dark my-1"><%= permiso %></span>
+        <span class="badge <%= configArea.classes %> my-1"><%= configArea.text %></span> -
+        <span class="badge <%= configPermiso.classes %> my-1"><%= configPermiso.text %></span>
         <div class="mx-auto small text-center" id="mostrarUserName">
             <%= userInfo.name %>, <%= userInfo.lastName %>
         </div>

@@ -2515,7 +2515,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                     grillado: infoAddedToOt[i].grillado,
                                     revisionGrillado: infoAddedToOt[i].revisionGrillado+1,
                                     mpEnsayada: infoAddedToOt[i].mpEnsayada,
-                                    revisionMpEnsayada: infoAddedToOt[i].revisionMpEnsayada+1,                                                                                
+                                    revisionMpEnsayada: infoAddedToOt[i].revisionMpEnsayada+1, 
                                     creator: infoAddedToOt[i].creator,
                                     timestamp: formatDate(),
                                     modificator: infoAddedToOt[i].modificator,
@@ -2553,9 +2553,9 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                 creatorInitial = pathToOtInformation.otInfoSim5[0].creator[0]
                                 timestampInitial = pathToOtInformation.otInfoSim5[0].timestamp
                                 grilladoInitial = pathToOtInfoSim5.grillado
-                                revisionGrilladoInitial = pathToOtInfoSim5.revisionGrillado
+                                revisionGrilladoInitial = parseInt(pathToOtInfoSim5.revisionGrillado)
                                 mpEnsayadaInitial = pathToOtInfoSim5.mpEnsayada
-                                revisionMpEnsayadaInitial = pathToOtInfoSim5.revisionMpEnsayada
+                                revisionMpEnsayadaInitial = parseInt(pathToOtInfoSim5.revisionMpEnsayada)
 
                             } else {
                                 creatorInitial = pathToOtProject.creator[0]
@@ -2564,15 +2564,15 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                 mpEnsayadaInitial = 'sinDato', revisionMpEnsayadaInitial = 0
                             }
 
-                            infoAddedToOt[i].grillado == grilladoInitial ?                                    
+                            infoAddedToOt[i].grillado == grilladoInitial ?
                                 infoAddedToOt[i].revisionGrillado = parseInt(revisionGrilladoInitial)
                             :
                                 infoAddedToOt[i].revisionGrillado = parseInt(revisionGrilladoInitial)+1
 
-                            infoAddedToOt[i].mpEnsayada == mpEnsayadaInitial ?                                    
-                                infoAddedToOt[i].revisionMpEnsayadaInitial = parseInt(revisionMpEnsayadaInitial)
+                            infoAddedToOt[i].mpEnsayada == mpEnsayadaInitial ?
+                                infoAddedToOt[i].revisionMpEnsayada = parseInt(revisionMpEnsayadaInitial)
                             :
-                                infoAddedToOt[i].revisionMpEnsayadaInitial = parseInt(revisionMpEnsayadaInitial)+1
+                                infoAddedToOt[i].revisionMpEnsayada = parseInt(revisionMpEnsayadaInitial)+1
 
 
                             // Si existe la extructura del arbol, se crea el array de datos a agregar --
@@ -2590,8 +2590,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                                 }
                             }
                                 arrayQuantity.push(updateQuery)
-                                //console.log('5-Dao-arrayQuantity-- ', i,' - ', arrayQuantity)
-                
+                                
                                 await Proyectos.updateOne(
                                     { _id: itemMongoDB._id },
                                     {

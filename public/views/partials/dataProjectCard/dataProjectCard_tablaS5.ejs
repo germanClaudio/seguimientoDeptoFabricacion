@@ -47,8 +47,8 @@
                 resMpEnsayada = 'sinDato', resRevisionMpEnsayada = 0
 
             if (pathMongoOtProject[n].visible) {
-                let pathMongoOtSim5 = pathMongoOtInformation[0].otInfoSim5 || [],
-                largoArraySim5 = parseInt(pathMongoOtSim5.length);
+                let pathMongoOtInfoSim5 = pathMongoOtInformation[0].otInfoSim5 || [],
+                largoArraySim5 = parseInt(pathMongoOtInfoSim5.length);
 
                 let arrResGrillado = [], valueArrayResGrillado = 0, arrResRevisionGrillado = [], arrResCreadorGrillado = [],
                 arrResModificadorGrillado = [], arrResFechaGrillado = [], arrResFechaModGrillado = [];
@@ -66,18 +66,18 @@
                                     <% if (largoArraySim5 > 0) {
                                         
                                         for (let i = 0; largoArraySim5 > i; i++) {
-                                            if (pathMongoOtSim5[i]) {
+                                            if (pathMongoOtInfoSim5[i]) {
                                                 let largoArray = parseInt(largoArraySim5)
-                                                resGrillado = pathMongoOtSim5[largoArray-1].grillado || 'sinDato'
-                                                resRevisionGrillado = parseINt(pathMongoOtSim5[largoArray-1].revisionGrillado) || 0
+                                                resGrillado = pathMongoOtInfoSim5[largoArray-1].grillado || 'sinDato'
+                                                resRevisionGrillado = parseInt(pathMongoOtInfoSim5[largoArray-1].revisionGrillado) || 0
                                                 
-                                                arrResGrillado.push(pathMongoOtSim5[i].grillado)
-                                                arrResRevisionGrillado.push(pathMongoOtSim5[i].revisionGrillado)
+                                                arrResGrillado.push(pathMongoOtInfoSim5[i].grillado)
+                                                arrResRevisionGrillado.push(pathMongoOtInfoSim5[i].revisionGrillado)
                                                 
-                                                arrResCreadorGrillado.push(pathMongoOtSim5[i].creator[0].username)
-                                                arrResModificadorGrillado.push(pathMongoOtSim5[i].modificator[0].username)
-                                                arrResFechaGrillado.push(pathMongoOtSim5[i].timestamp)
-                                                arrResFechaModGrillado.push(pathMongoOtSim5[i].modifiedOn)
+                                                arrResCreadorGrillado.push(pathMongoOtInfoSim5[i].creator[0].username)
+                                                arrResModificadorGrillado.push(pathMongoOtInfoSim5[i].modificator[0].username)
+                                                arrResFechaGrillado.push(pathMongoOtInfoSim5[i].timestamp)
+                                                arrResFechaModGrillado.push(pathMongoOtInfoSim5[i].modifiedOn)
                                             }
                                         }
                                         valueArrayResGrillado = parseInt(arrResGrillado.length-1)
@@ -142,18 +142,18 @@
                                     <% if (largoArraySim5 > 0) {
                                         
                                         for (let i = 0; largoArraySim5 > i; i++) {
-                                            if (pathMongoOtSim5[i]) {
+                                            if (pathMongoOtInfoSim5[i]) {
                                                 let largoArray = parseInt(largoArraySim5)
-                                                resMpEnsayada = pathMongoOtSim5[largoArray-1].mpEnsayada || 'sinDato'
-                                                resRevisionMpEnsayada = parseInt(pathMongoOtSim5[largoArray-1].revisionMpEnsayada) || 0
+                                                resMpEnsayada = pathMongoOtInfoSim5[largoArray-1].mpEnsayada || 'sinDato'
+                                                resRevisionMpEnsayada = parseInt(pathMongoOtInfoSim5[largoArray-1].revisionMpEnsayada) || 0
                                                 
-                                                arrResMpEnsayada.push(pathMongoOtSim5[i].mpEnsayada)
-                                                arrResRevisionMpEnsayada.push(pathMongoOtSim5[i].revisionMpEnsayada)
+                                                arrResMpEnsayada.push(pathMongoOtInfoSim5[i].mpEnsayada)
+                                                arrResRevisionMpEnsayada.push(pathMongoOtInfoSim5[i].revisionMpEnsayada)
                                                 
-                                                arrResCreadorMpEnsayada.push(pathMongoOtSim5[i].creator[0].username)
-                                                arrResModificadorMpEnsayada.push(pathMongoOtSim5[i].modificator[0].username)
-                                                arrResFechaMpEnsayada.push(pathMongoOtSim5[i].timestamp)
-                                                arrResFechaModMpEnsayada.push(pathMongoOtSim5[i].modifiedOn)
+                                                arrResCreadorMpEnsayada.push(pathMongoOtInfoSim5[i].creator[0].username)
+                                                arrResModificadorMpEnsayada.push(pathMongoOtInfoSim5[i].modificator[0].username)
+                                                arrResFechaMpEnsayada.push(pathMongoOtInfoSim5[i].timestamp)
+                                                arrResFechaModMpEnsayada.push(pathMongoOtInfoSim5[i].modifiedOn)
                                             }
                                         }
                                         valueArrayResMpEnsayada = parseInt(arrResMpEnsayada.length-1)
@@ -224,17 +224,17 @@
                                     <% if (largoArraySim5 > 0) {
                                     
                                         for (let i = 0; largoArraySim5 > i; i++) {
-                                            if (pathMongoOtSim5[i]) {
+                                            if (pathMongoOtInfoSim5[i]) {
                                                 let largoArray = parseInt(largoArraySim5)
-                                                resGrillado = pathMongoOtSim5[largoArray-1].grillado || 'sinDato'
-                                                resRevisionGrillado = parseInt(pathMongoOtSim5[largoArray-1].revisionGrillado) || 0
+                                                resGrillado = pathMongoOtInfoSim5[largoArray-1].grillado || 'sinDato'
+                                                resRevisionGrillado = parseInt(pathMongoOtInfoSim5[largoArray-1].revisionGrillado) || 0
                                                 
-                                                arrResGrillado.push(pathMongoOtSim5[i].grillado)
-                                                arrResRevisionGrillado.push(pathMongoOtSim5[i].revisionGrillado)
+                                                arrResGrillado.push(pathMongoOtInfoSim5[i].grillado)
+                                                arrResRevisionGrillado.push(pathMongoOtInfoSim5[i].revisionGrillado)
                                             }
                                         }
                                         valueArrayRes1Sim = parseInt(arrResGrillado.length-1)
-                                        resGrillado = pathMongoOtSim5[0].grillado
+                                        resGrillado = pathMongoOtInfoSim5[0].grillado
 
                                     } else {
                                         arrResGrillado.push(resGrillado)
@@ -260,17 +260,17 @@
                                     <% if (largoArraySim5 > 0) {
                                     
                                         for (let i = 0; largoArraySim5 > i; i++) {
-                                            if (pathMongoOtSim5[i]) {
+                                            if (pathMongoOtInfoSim5[i]) {
                                                 let largoArray = parseInt(largoArraySim5)
-                                                resMpEnsayada = pathMongoOtSim5[largoArray-1].mpEnsayada || 'sinDato'
-                                                resRevisionMpEnsayada =  parseInt(pathMongoOtSim5[largoArray-1].revisionMpEnsayada) || 0
+                                                resMpEnsayada = pathMongoOtInfoSim5[largoArray-1].mpEnsayada || 'sinDato'
+                                                resRevisionMpEnsayada =  parseInt(pathMongoOtInfoSim5[largoArray-1].revisionMpEnsayada) || 0
                                                 
-                                                arrResMpEnsayada.push(pathMongoOtSim5[i].mpEnsayada)
-                                                arrResRevisionMpEnsayada.push(pathMongoOtSim5[i].revisionMpEnsayada)
+                                                arrResMpEnsayada.push(pathMongoOtInfoSim5[i].mpEnsayada)
+                                                arrResRevisionMpEnsayada.push(pathMongoOtInfoSim5[i].revisionMpEnsayada)
                                             }
                                         }
                                         valueArrayResMpEnsayada = parseInt(arrResMpEnsayada.length-1)
-                                        resMpEnsayada = pathMongoOtSim5[0].mpEnsayada
+                                        resMpEnsayada = pathMongoOtInfoSim5[0].mpEnsayada
                                     
                                     } else {
                                         arrResMpEnsayada.push(resMpEnsayada)

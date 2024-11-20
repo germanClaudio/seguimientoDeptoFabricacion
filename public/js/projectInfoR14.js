@@ -282,7 +282,7 @@ spanResR14.forEach(function(spanElement) {
         // console.log('regex: ', regex)
 
         // Eliminar el texto inicial de la cadena
-        var idFinalInputs = idSpotSelected.replace(regex, '');
+        let idFinalInputs = idSpotSelected.replace(regex, '');
         // console.log('idFinalInputs: ', idFinalInputs)
 
         let inputSpotIndex = document.getElementById(`resIndexHidden${idFinalInputs}`).value

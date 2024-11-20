@@ -565,6 +565,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                 updatedUser.lastName !== '' ? updatedUser.lastName : userMongoDB.lastName
                 updatedUser.email !== '' ? updatedUser.email : userMongoDB.email
                 updatedUser.username !== '' ? updatedUser.username : userMongoDB.username
+                updatedUser.legajoId !== '' ? updatedUser.legajoId : userMongoDB.legajoId
                 
                 if(userMongoDB) {
                     var updatedFinalUser = await Usuarios.updateOne(
@@ -575,6 +576,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                                 lastName: updatedUser.lastName,
                                 email: updatedUser.email,
                                 username: updatedUser.username,
+                                legajoId: updatedUser.legajoId,
                                 avatar: updatedUser.avatar,
                                 admin: updatedUser.admin,
                                 status: updatedUser.status,

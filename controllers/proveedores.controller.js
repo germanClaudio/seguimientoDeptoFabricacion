@@ -1,15 +1,15 @@
 const UserService = require("../services/users.service.js")
-const ToolService = require("../services/tools.service.js")
+const SupplierService = require("../services/suppliers.service.js")
 
 const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
-const { uploadMulterSingleImageTool } = require("../utils/uploadMulter.js")
+const { uploadMulterSingleImageSupplier } = require("../utils/uploadMulter.js")
 
 let formatDate = require('../utils/formatDate.js')
 
 const csrf = require('csrf');
 const csrfTokens = csrf();
 
-let toolPictureNotFound = "../../../src/images/upload/ToolsImages/noImageFound.png"
+let supplierPictureNotFound = "../../../src/images/upload/SuppliersImages/noImageFound.png"
 const cookie = require('../utils/cookie.js')
 
 const data = require('../utils/variablesInicializator.js')
@@ -23,27 +23,27 @@ const {catchError400_3,
         catchError500
 } = require('../utils/catchErrors.js')
 
-class ToolsController {  
+class SuppliersController {  
     constructor(){
         this.users = new UserService()
-        this.tools = new ToolService()
+        this.suppliers = new SupplierService()
     }
 
-    getAllTools = async (req, res, next) => {
+    getAllSuppliers = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
         
         try {
-            const maquinas = await this.tools.getAllTools()
-            !maquinas ? catchError400_5(req, res, next) : null
+            const proveedores = await this.suppliers.getAllSuppliers()
+            !proveedores ? catchError400_5(req, res, next) : null
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('addNewTool', {
+            res.render('addNewSupplier', {
                 username,
                 userInfo,
                 expires,
-                maquinas,
+                proveedores,
                 data,
                 csrfToken
             })
@@ -53,22 +53,22 @@ class ToolsController {
         }
     }
 
-    getToolById = async (req, res, next) => {
+    getSupplierById = async (req, res, next) => {
         const { id } = req.params
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
         
         try {
-            const maquina = await this.tools.getToolById(id)           
-            !maquina ? catchError401_3(req, res, next) : null
+            const proveedor = await this.suppliers.getSupplierById(id)           
+            !proveedor ? catchError401_3(req, res, next) : null
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('toolDetails', {
+            res.render('supplierDetails', {
                 username,
                 userInfo,
                 expires,
-                maquina,
+                proveedor,
                 data,
                 csrfToken
             })
@@ -78,18 +78,18 @@ class ToolsController {
         }
     }
 
-    getToolByDesignation = async (req, res, next) => {
+    getSupplierByDesignation = async (req, res, next) => {
         const { designation } = req.params
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
         
         try {
-            const maquina = await this.tools.getToolByToolname(designation)
-            !maquina ? catchError401_3(req, res, next) : null
+            const proveedor = await this.suppliers.getSupplierBySuppliername(designation)
+            !proveedor ? catchError401_3(req, res, next) : null
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('toolDetails', {
-                maquina,
+            res.render('supplierDetails', {
+                proveedor,
                 username,
                 userInfo,
                 expires,
@@ -102,13 +102,13 @@ class ToolsController {
         }
     }
 
-    createNewTool = async (req, res, next) => {
+    createNewSupplier = async (req, res, next) => {
         let username = res.locals.username;
         let userInfo = res.locals.userInfo;
         const expires = cookie(req)
 
-        //------ Storage New Tool Image in Google Store --------        
-        uploadMulterSingleImageTool(req, res, async (err) => {
+        //------ Storage New Supplier Image in Google Store --------        
+        uploadMulterSingleImageSupplier(req, res, async (err) => {
             try {
                 console.log('req.file: ', req.file)
                 if (req.file) {
@@ -123,21 +123,21 @@ class ToolsController {
                 const designationInput = req.body.designation.replace(/[!@#$%^&*]/g, "");
                 const codeInput = req.body.code;
 
-                const newToolValid = {
+                const newSupplierValid = {
                     designation: designationInput,
                     code: codeInput
                 };
 
-                const toolExist = await this.tools.getExistingTool(newToolValid);
-                if (toolExist) {
+                const supplierExist = await this.suppliers.getExistingSupplier(newSupplierValid);
+                if (supplierExist) {
                     catchError400_6(req, res, next)
                 } else {
-                        const newTool = {
+                        const newSupplier = {
                         designation: designationInput,
                         code: codeInput,
                         type: req.body.type,
                         characteristics: req.body.characteristics,
-                        imageTool: req.body.imageTextImageTool || toolPictureNotFound,
+                        imageSupplier: req.body.imageTextImageSupplier || supplierPictureNotFound,
                         status: req.body.status === 'on' ? Boolean(true) : Boolean(false) || Boolean(true),
                         creator: dataUserCreator(userCreator),
                         timestamp: formatDate(),
@@ -146,20 +146,20 @@ class ToolsController {
                         visible: true
                     };
 
-                    const maquina = await this.tools.addNewTool(newTool);
-                    !maquina ? catchError400_6(req, res, next) : null
+                    const proveedor = await this.suppliers.addNewSupplier(newSupplier);
+                    !proveedor ? catchError400_6(req, res, next) : null
 
                     const usuarioLog = await this.users.getUserByUsername(username);
                     !usuarioLog.visible ? catchError401_3(req, res, next) : null
 
                     const csrfToken = csrfTokens.create(req.csrfSecret);
-                    return res.render('addNewTool', {
+                    return res.render('addNewSupplier', {
                         username,
                         userInfo,
                         expires,
                         data,
                         csrfToken,
-                        maquina
+                        proveedor
                     });
                 }
 
@@ -169,13 +169,13 @@ class ToolsController {
         })
     }
     
-    updateTool = async (req, res, next) => {
+    updateSupplier = async (req, res, next) => {
         const { id } = req.params
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
 
-        uploadMulterSingleImageTool(req, res, async (err) => {
+        uploadMulterSingleImageSupplier(req, res, async (err) => {
             try {
                 // console.log('req.body: ', req.body)
                 // console.log('req.file: ', req.file)
@@ -183,37 +183,37 @@ class ToolsController {
                     await uploadToGCS(req, res, next)
                 }
 
-                const toolId = id
-                const toolToModify = await this.tools.getToolById(toolId)
+                const supplierId = id
+                const supplierToModify = await this.suppliers.getSupplierById(supplierId)
 
-                const toolInput = req.body.designation.replace(/[!@#$%^&* ]/g, "")
-                let maquinasRestantes
-                const designationValid = await this.tools.getToolByDesignation(toolInput)
-                const otherTools = await this.tools.getAllTools()
+                const supplierInput = req.body.designation.replace(/[!@#$%^&* ]/g, "")
+                let proveedoresRestantes
+                const designationValid = await this.suppliers.getSupplierByDesignation(supplierInput)
+                const otherSuppliers = await this.suppliers.getAllSuppliers()
                 
-                // Función para eliminar una maquina de la lista si coincide con la maquina a comparar
-                function eliminarMaquina(lista, maquina) {
+                // Función para eliminar un proveedor de la lista si coincide con el proveedor a comparar
+                function eliminarProveedor(lista, proveedor) {
                     return lista.filter(h => {
-                        return h._id.toString() !== maquina._id.toString()
+                        return h._id.toString() !== proveedor._id.toString()
                     })
                 }
                 
-                // Eliminar la maquina de la lista
+                // Eliminar el proveedor de la lista
                 if (designationValid) {
-                    maquinasRestantes = eliminarMaquina(otherTools, designationValid)
+                    proveedoresRestantes = eliminarProveedor(otherSuppliers, designationValid)
 
-                    const designations = maquinasRestantes.map(maquina => maquina.designation)
-                    if (designations.includes(toolToModify.designation)) {
-                        const err = new Error (`Ya existe una Maquina con esta designación: ${toolInput}!`)
+                    const designations = proveedoresRestantes.map(proveedor => proveedor.designation)
+                    if (designations.includes(supplierToModify.designation)) {
+                        const err = new Error (`Ya existe un Proveedor con esta designación: ${supplierInput}!`)
                         err.statusCode = 400
                         return next(err);
                     }
 
                     const codeInput = req.body.code
-                    const codesId = maquinasRestantes.map(maquina => maquina.code);
+                    const codesId = proveedoresRestantes.map(proveedor => proveedor.code);
                     
-                    if (codesId.includes(toolToModify.code)) {
-                        const err = new Error (`Ya existe una Maquina con este Código #${codeInput}!`)
+                    if (codesId.includes(supplierToModify.code)) {
+                        const err = new Error (`Ya existe un Proveedor con este Código #${codeInput}!`)
                         err.statusCode = 400
                         return next(err);
                     }
@@ -222,27 +222,27 @@ class ToolsController {
                 const userLogged = await this.users.getUserByUsername(username);
                 !userLogged.visible ? catchError401_3(req, res, next) : null
 
-                let updatedTool = {
+                let updatedSupplier = {
                     designation: req.body.designation,
                     code: req.body.code,
                     type: req.body.typeHidden,
                     characteristics: req.body.characteristics,
-                    imageTool: req.body.imageTextImageTool,
+                    imageSupplier: req.body.imageTextImageSupplier,
                     status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
                     modificator: dataUserModificatorNotEmpty(userLogged),
                     modifiedOn: formatDate()
                 }
 
-                const maquina = await this.tools.updateTool(toolId, updatedTool, dataUserModificatorNotEmpty(userLogged))
-                // console.log('maquina: ', maquina)
-                !maquina ? catchError400_3(req, res, next) : null
+                const proveedor = await this.suppliers.updateSupplier(supplierId, updatedSupplier, dataUserModificatorNotEmpty(userLogged))
+                // console.log('proveedor: ', proveedor)
+                !proveedor ? catchError400_3(req, res, next) : null
                         
                 const csrfToken = csrfTokens.create(req.csrfSecret);
-                return res.render('addNewTool', {
+                return res.render('addNewSupplier', {
                     username,
                     userInfo,
                     expires,
-                    maquina,
+                    proveedor,
                     data,
                     csrfToken,
                 })
@@ -253,40 +253,40 @@ class ToolsController {
         })
     }
 
-    searchTools = async (req, res, next) => {
+    searchSuppliers = async (req, res, next) => {
         try {
-            const tools = await this.tools.getAllTools()
-            !tools ? catchError400_5(req, res, next) : null
-            res.send(tools)
+            const suppliers = await this.suppliers.getAllSuppliers()
+            !suppliers ? catchError400_5(req, res, next) : null
+            res.send(suppliers)
 
         } catch (err) {
             catchError500(err, req, res, next)
         }
     }
 
-    deleteToolById = async (req, res, next) => {
+    deleteSupplierById = async (req, res, next) => {
         const { id } = req.params
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
 
         try {
-            const toolToDelete = await this.tools.getToolById(id)
-            !toolToDelete ? catchError401_3(req, res, next) : null
+            const supplierToDelete = await this.suppliers.getSupplierById(id)
+            !supplierToDelete ? catchError401_3(req, res, next) : null
 
             const userId = userInfo.id
             const userLogged = await this.users.getUserById(userId)
             !userLogged ? catchError401_3(req, res, next) : null
 
-            const maquina = await this.tools.deleteToolById(id, dataUserModificatorNotEmpty(userLogged))
-            !maquina ? catchError401_3(req, res, next) : null
+            const proveedor = await this.suppliers.deleteSupplierById(id, dataUserModificatorNotEmpty(userLogged))
+            !proveedor ? catchError401_3(req, res, next) : null
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('addNewTool', {
+            res.render('addNewSupplier', {
                 username,
                 userInfo,
                 expires,
-                maquina,
+                proveedor,
                 data,
                 csrfToken
             })
@@ -295,7 +295,6 @@ class ToolsController {
             catchError500(err, req, res, next)
         }
     }
-
 }
 
-module.exports = { ToolsController }
+module.exports = { SuppliersController }

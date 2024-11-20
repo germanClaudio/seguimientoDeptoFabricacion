@@ -3,6 +3,7 @@ const ProyectosService = require("../services/projects.service.js")
 const ClientesService = require("../services/clients.service.js")
 const MessagesService = require("../services/messages.service.js")
 const ToolsService = require("../services/tools.service.js")
+const SuppliersService = require("../services/suppliers.service.js")
 
 const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
 const { uploadMulterSingleAvatarUser } = require("../utils/uploadMulter.js")
@@ -55,6 +56,7 @@ class UsersController {
         this.users = new UserService()
         this.messages = new MessagesService()
         this.tools = new ToolsService()
+        this.suppliers = new SuppliersService()
     }
 
     getAllUsers = async (req, res, next) => {
@@ -522,6 +524,7 @@ class UsersController {
                 const mensajes = await this.messages.getAllMessages()
                 const sessionLogin = await this.users.getAllSessions()
                 const maquinas = await this.tools.getAllTools()
+                const proveedores = await this.suppliers.getAllTools()
                 
                 const sessions = parseInt(sessionLogin.length+1)
 
@@ -554,9 +557,10 @@ class UsersController {
                             mensajes,
                             data,
                             sessions,
-                            maquinas
+                            maquinas,
+                            proveedores,
                         })
-                    }, 350)
+                    }, 250)
 
                 } else {
                     setTimeout(() => {
@@ -578,7 +582,7 @@ class UsersController {
                         fail,
                         csrfToken
                     })
-                }, 600)
+                }, 250)
             }
 
         } catch (err) {
@@ -751,6 +755,7 @@ class UsersController {
             const clientes = await this.clients.getAllClients()
             const usuarios = await this.users.getAllUsers()
             const maquinas = await this.tools.getAllTools()
+            const proveedores = await this.suppliers.getAllSuppliers()
             const proyectos = await this.projects.getAllProjects()
             const mensajes = await this.messages.getAllMessages()
             const sessionsIndex = await this.users.getAllSessions()
@@ -791,9 +796,10 @@ class UsersController {
                         data,
                         sessions,
                         maquinas,
+                        proveedores,
                         csrfToken
                     })
-                }, 350)
+                }, 150)
                 
             } else {
                 setTimeout(() => {
@@ -803,7 +809,7 @@ class UsersController {
                         flag,
                         expires
                     })
-                }, 500)
+                }, 350)
             }
 
         } catch (err) {

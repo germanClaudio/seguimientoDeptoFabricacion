@@ -2539,7 +2539,7 @@ class ProjectsController {
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
             }
-            console.log('arrayInfoAddedToOt: ', arrayInfoAddedToOt)
+            // console.log('arrayInfoAddedToOt: ', arrayInfoAddedToOt)
         
             const itemUpdated = await this.projects.addInfoSim4SegundaToOtProject(
                 projectId,
@@ -2639,6 +2639,7 @@ class ProjectsController {
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
             }
+            console.log('arrayInfoAddedToOt: ', arrayInfoAddedToOt)
             
             const itemUpdated = await this.projects.addInfoSim5ToOtProject(
                 projectId,

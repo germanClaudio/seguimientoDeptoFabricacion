@@ -181,8 +181,7 @@ const renderUser = (arrUsers) => {
                 <form id="formDeleteUser" action="/api/usuarios/delete/${id}" method="get">
                     <fieldset>
                     </fieldset>
-                </form>
-                        `
+                </form>`
     
         Swal.fire({
             title: `Eliminar Usuario <b>${username}</b>?`,
@@ -582,7 +581,7 @@ if (btnResetFormNewUser) {
     })
 }
 
-var inputsDeTexto = document.querySelectorAll('input[type="text"]')
+let inputsDeTexto = document.querySelectorAll('input[type="text"]')
     // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
         input.addEventListener('keydown', function(event) {
@@ -603,7 +602,7 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
         })
     })
 
-var inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
+let inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
     inpuntDeNumeros.forEach(function(input) {
         input.addEventListener('input', function(event) {
             // Obtener el valor actual del input
@@ -613,7 +612,7 @@ var inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
             let key = event.key;
 
             // Expresión regular para números enteros de hasta cuatro cifras (0 a 9999)
-                const regexp = /^[0-9]{1,4}$/;
+            const regexp = /^[0-9]{1,4}$/;
 
             // Verificar si el valor cumple con la expresión regular
             if (!regexp.test(value)) {
@@ -626,10 +625,9 @@ var inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
         })
     })
 
-function disabledBtnAceptar () {
+function disabledBtnAceptar() {
     let btnAceptarFrom = document.getElementById('btnAddNewUser');
-    const allInputs = document.querySelectorAll('input[type="text"],input[type="number"],select,textarea,input[type="check"], input[type="file"]')
-    
+    const allInputs = document.querySelectorAll('input[type="text"],input[type="number"],select,textarea,input[type="check"], input[type="file"],input[type="hidden"]')
     allInputs.forEach(function(input) {
             input.addEventListener('change', (event) => {
                 event.preventDefault()
@@ -639,5 +637,4 @@ function disabledBtnAceptar () {
             })
     })
 }
-
 disabledBtnAceptar()

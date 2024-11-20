@@ -284,3 +284,17 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
 
     // Configurar el observador para que observe los cambios en los nodos hijos del div
     observer.observe(inputFile, { childList: true });
+
+function disabledBtnAceptar() {
+    //let btnAceptarFrom = document.getElementById('btnAddNewUser');
+    const allInputs = document.querySelectorAll('input[type="text"],input[type="number"],select,textarea,input[type="check"], input[type="file"],input[type="hidden"]')
+    allInputs.forEach(function(input) {
+            input.addEventListener('change', (event) => {
+                event.preventDefault()
+                input.classList.add("border-primary", "border-2", "shadow")
+                btnUpdate.removeAttribute('disabled')
+                btnUpdate.style = "cursor: pointer;"
+            })
+    })
+}
+disabledBtnAceptar()

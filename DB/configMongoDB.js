@@ -15,6 +15,8 @@ module.exports = class dbConnection {
         this.clientes = mongoose.model('Clientes', ClientsSchema)
         this.usuarios = mongoose.model('Usuarios', UserSchema)
         this.sessions = mongoose.model('Sessions', SessionSchema)
+        this.proveedores = mongoose.model('Proveedores', SupplierSchema)
+        this.maquinas = mongoose.model('Maquinas', ToolSchema)
     }
     
     // -------- Conecta a la base de datos MONGO ----------
@@ -22,9 +24,9 @@ module.exports = class dbConnection {
         try {
             mongoose.connect(this.cnxStr, advancedOptions)
             console.log('Connected to MongoDB Server <-123-> configMongoDB')
-           
+        
         } catch (error) {
-           console.error('Error connection to DB: '+error)
+            console.error('Error connection to DB: '+error)
         }
     }
 
@@ -34,7 +36,7 @@ module.exports = class dbConnection {
             mongoose.disconnect()
             console.log('Disconnected from MongoDB Server <-321->')
         } catch (error) {
-           console.error('Error on disconnection from DB: '+error)
+            console.error('Error on disconnection from DB: '+error)
         }
     }
 

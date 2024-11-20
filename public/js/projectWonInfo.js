@@ -4352,9 +4352,7 @@ inputsDeTexto.forEach(function(input) {
         if (forbiddenChars.test(key)) {
             // Cancelar el evento para evitar que se ingrese el carácter
             event.preventDefault()
-            input.classList.toggle("border")
-            input.classList.toggle("border-danger")
-            input.classList.toggle("border-2")
+            input.classList.toggle("border", "border-danger", "border-2")
         }
     })
 })

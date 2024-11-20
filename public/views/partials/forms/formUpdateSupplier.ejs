@@ -1,0 +1,146 @@
+<div class="form-group col-12 mx-auto mt-2 mb-5 w-75 border px-5 py-1 text-white bg-opacity-75" style="background-color: #9a9a9a;">
+    <form id="formUpdateSupplier" enctype="multipart/form-data" action="/api/proveedores/update/<%=proveedor._id%>" method="post">
+        <fieldset>
+            <div class="row justify-content-between align-items-center mt-2">
+                <div class="col-3 mx-auto my-2">
+                    <label for="idDisable">Id#</label>
+                    <input type="text" name="idDisable" id="idDisable" class="form-control-plaintext text-white" value="<%=proveedor._id%>" disabled>
+                </div>
+                
+                <div class="col mx-auto my-1">
+                    <label for="idCreator">Creado por</label>
+                    <input type="text" name="idCreator" id="idCreator" class="form-control-plaintext text-white small" value="<%=proveedor.creator[0].name%> <%=proveedor.creator[0].lastName%>" disabled>
+                </div>
+                
+                <div class="col mx-auto my-1">
+                    <label for="timestampDisable">Fecha creación</label>
+                    <input type="text" name="timestampDisable" id="timestampDisable" class="form-control-plaintext text-white small" value="<%=proveedor.timestamp%>" disabled>
+                </div>
+                
+                <div class="col mx-auto my-1">
+                    <label for="modificatorDisable">Modificado por</label>
+                    <% if (proveedor.modificator[0].name !== "") { %>
+                        <input type="text" name="modificatorDisable" id="modificatorDisable" class="form-control-plaintext text-white small" value="<%=proveedor.modificator[0].name%> <%=proveedor.modificator[0].lastName%>" disabled>
+                    <% } else { %>
+                        <input type="text" name="modificatorDisable" id="modificatorDisable" class="form-control-plaintext text-white small" value="" disabled>
+                    <% } %>        
+                </div>
+                
+                <div class="col-auto mx-auto my-1">
+                    <label for="modifiedOnDisable">Fecha modificación</label>
+                    <input type="text" name="modifiedOnDisable" id="modifiedOnDisable" class="form-control-plaintext text-white small" value="<%=proveedor.modifiedOn%>" disabled>
+                </div>
+            </div>
+            <hr class="border my-1">
+            <div class="row justify-content-between align-items-center my-2">
+                <div class="col my-1 mx-auto">
+                    <label class="form-label" for="designation">Designación</label>
+                    <input type="text" name="designation" id="designation" class="form-control" value="<%=proveedor.designation %>" autocomplete="on" placeholder="Designación proveedor" required>
+                </div>
+                
+                <div class="col-3 my-1 mx-auto">
+                    <label class="form-label" for="code">Modelo</label>
+                    <input type="text" name="code" id="code" class="form-control" value="<%=proveedor.code%>" placeholder="Modelo" required>
+                </div>
+
+                <div class="col-2">
+                    <label class="form-check-label" for="type">Tipo</label>
+                    <select class="form-select form-select" aria-label=".form-select" name="type" id="type" required>
+                        <% 
+                        const opcionesUpdate = [
+                            { value: "diseno", text: "Diseño" },
+                            { value: "simulacion", text: "Simulación" },
+                            { value: "otros", text: "Otros" },
+                        ];
+                        opcionesUpdate.forEach(opcion => { %>
+                            <option value="<%= opcion.value %>" <%= opcion.value === proveedor.type ? 'selected disabled' : '' %> > <%= opcion.text %> </option>
+                        <% }) %>
+                    </select>
+                    <input type="hidden" id="typeHidden" name="typeHidden" value="" style="display: none;">
+                </div>
+
+                <% if(proveedor.status) { %>
+                    <div class="col-3 my-1 mx-auto" style="background-color: #55dd5560;">
+                        <label for="status">Status proveedor</label>
+                        <div class="">
+                            <label class="form-check-label" for="status">En Mantenimiento</label>
+                            <div class="form-check form-switch d-inline-block mt-2">
+                                <input id="status" class="form-check-input" type="checkbox" role="switch"
+                                    name="status" style="cursor: pointer;" checked>
+                                <label class="form-check-label" for="status">Activo</label>
+                            </div>    
+                        </div>
+                    </div>
+                <% } else { %>
+                    <div class="col-3 my-1 mx-auto" style="background-color: #ffee0085;">
+                        <label for="status">Status proveedor</label>
+                        <div class="">
+                            <label class="form-check-label" for="status">En Mantenimiento</label>
+                            <div class="form-check form-switch d-inline-block mt-2">
+                                <input id="status" class="form-check-input" type="checkbox" role="switch"
+                                    name="status" style="cursor: pointer;">
+                                <label class="form-check-label" for="status">Activa</label>
+                            </div>    
+                        </div>
+                    </div>
+                <% } %>       
+            </div>
+
+            <div class="row justify-content-between align-items-center my-2">
+                <div class="col my-1 mx-auto">
+                    <label for="characteristics">Características</label>
+                    <textarea type="text" name="characteristics" id="characteristics" class="form-control" rows="3"><%=proveedor.characteristics%></textarea>
+                </div>
+            </div>
+
+            <div class="row justify-content-between align-items-center my-2">
+                <div class="col-6">
+                    <label for="fileInputImageSupplier" class="form-label">
+                        Seleccione una nueva imagen del proveedor
+                    </label>
+                    <input type="text" id="fileInputTextImageSupplierUpdate" name="imageTextImageSupplier" value="<%=proveedor.imageSupplier %>" style="display: none;">
+                    <input type="file" id="fileInputSupplierUpdate" name="imageImageSupplier" value="" accept="image/*" style="display: none;">
+                    <div id="drop-areaSupplierUpdate" class="mb-2 mx-auto">
+                        <p>Haz click o arrastra y suelta una imagen aquí</p>
+                    </div>
+                    <button title="Eliminar Imagen"
+                        type="button" class="btn btn-danger rounded-circle mx-auto" id="removeImageSupplierUpdate" style="display: none;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    
+                    <div id="alertImageSupplierUpdate" class="alert alert-warning align-items-center mx-auto" role="alert"
+                        style="display: none; font-size: 0.85rem; height: 1.15rem; width: 26rem;">
+                        <strong class="me-2">Error!</strong> Solo puedes ingresar una imagen jpg, png, bmp o jpeg.
+                    </div>
+                    <div id="alertSizeImageSupplierUpdate" class="alert alert-warning align-items-center mx-auto" role="alert"
+                        style="display: none; font-size: 0.85rem; height: 1.15rem; width: 25rem;">
+                        <strong class="me-2">Atención!</strong> El tamaño de la imagen debe ser menor a 3Mb.
+                    </div>
+                </div>        
+                <div class="col mb-auto">
+                    <label for="fileInputSupplierUpdate">Imagen proveedor actual </label>
+                    <div class="container-fluid my-1 p-1 text-center">
+                        <img id="fileInputSupplierUpdate" src="<%=proveedor.imageSupplier%>" class="img-thumbnail rounded mx-auto" alt="Imagen proveedor" width="200px" height="200px">
+                    </div>
+                </div>
+            </div>
+            <hr class="border my-1">
+            <div class="row justify-content-between align-items-center my-2">
+                <div class="col">
+                    <% if( userInfo.admin || userInfo.area === 'ingenieria' ) { %>        
+                        <div class="d-flex justify-content-center m-2">
+                            <button id="btnUpdateSupplier" class="btn btn-success mx-auto my-2 shadow" disabled>Actualizar <i class="fa-solid fa-save"></i></button>
+                            <a class="btn btn-primary mx-auto my-2 shadow" href="/api/proveedores">Volver <i class="fa-solid fa-arrow-left"></i></a>
+                        </div>
+                    <% } else { %>
+                        <div class="d-flex justify-content-center m-2">
+                            <button id="btnUpdateSupplier" class="btn btn-success mx-auto my-2 shadow disabled" disabled>Actualizar <i class="fa-solid fa-ban"></i></button>
+                            <a class="btn btn-primary mx-auto my-2 shadow" href="/api/proveedores">Volver <i class="fa-solid fa-arrow-left"></i></a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        </fieldset>
+    </form>
+</div>

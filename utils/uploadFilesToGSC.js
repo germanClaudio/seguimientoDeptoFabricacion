@@ -31,16 +31,15 @@ async function uploadToGCS(req, res, next) {
     });
 
     let bucket = storageToGCS.bucket(process.env.STORE_BUCKET_GCS); // Nombre bucket en Google Cloud Storage
-    let folderName = 'upload'
-    let subFolderName = ''
-    let newItemOrUpdate = ''
+    let folderName = 'upload', subFolderName = '', newItemOrUpdate = ''
 
     const mapping = {
         imageTextAvatarUser: 'AvatarUsersImages',
         imageTextLogoUpdate: 'LogoClientImages',
         imageProjectFileName: 'projectImages',
         imageOciFileName: 'projectImages',
-        imageTextImageTool: 'ToolsImages'
+        imageTextImageTool: 'ToolsImages',
+        imageTextImageSupplier: 'SuppliersImages'
     };
     
     // Iterar sobre el objeto `mapping` para encontrar la coincidencia

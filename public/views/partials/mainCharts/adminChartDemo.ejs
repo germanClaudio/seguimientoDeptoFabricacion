@@ -243,7 +243,7 @@
             </div>
         </div>
         <!-- cantidad de OT -->
-        <div class="col-xl-3 col-sm-6 col-12">
+        <!-- <div class="col-xl-3 col-sm-6 col-12">
             <div class="card rounded-3 card_dashboard">
                 <div class="card-content">
                     <div class="card-body">
@@ -285,7 +285,36 @@
                     </div>
                 </div>
             </div>
+        </div> -->
+        
+        <div class="col-xl-3 col-sm-6 col-12">
+            <a href="/api/proveedores" style="text-decoration: none;">
+                <div class="card rounded-3 card_dashboard">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="media d-flex mx-2">
+                                <div class="media-body text-left">
+                                    <% let proveedoresVisibles = [], proveedoresInactivos = [];
+                                        for (let h=0; proveedores.length > h ; h++) {
+                                            proveedores[h].status ? proveedoresVisibles.push(proveedores[h]) : proveedoresInactivos.push(proveedores[h])
+                                        } %>
+                                        <h3 class="font-medium"><%= parseInt(proveedoresVisibles.length) %>/<span style="font-size: 0.95rem;" ><%= parseInt(proveedores.length) %></span></h3>
+                                        <% if ( proveedoresInactivos.length != 0 ) { %>
+                                            <span><%= parseInt(proveedoresVisibles.length) %> Proveedores Activos</span> / <span class="badge rounded-pill text-bg-danger"><%= proveedoresInactivos.length %> en Mantenimiento</span>
+                                        <% } else { %>
+                                            <span class="badge rounded-pill text-bg-success">Proveedores Activos</span>
+                                        <% } %>
+                                </div>
+                                <div class="align-self-center ms-auto">
+                                    <i class="icon-truck-field success font-large-2 float-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
         </div>
+
         <!-- Tools Rate -->
         <div class="col-xl-3 col-sm-6 col-12">
             <div class="card rounded-3 card_dashboard">

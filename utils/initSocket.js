@@ -16,6 +16,9 @@ const containerUser = ContainerUsers.getDaoUsers()
 const ContainerTools = require("../daos/maquinas/MaquinasDaoFactory.js")
 const containerTool = ContainerTools.getDaoTools()
 
+const ContainerSuppliers = require("../daos/proveedores/ProveedoresDaoFactory.js")
+const containerSupplier = ContainerSuppliers.getDaoSuppliers()
+
 const { schema } = require("normalizr")
 
 const initSocket = (io) => {
@@ -82,6 +85,16 @@ const initSocket = (io) => {
             io.sockets.emit('searchToolsAll', await containerTool.getToolsBySearching(query))
         })
 
+        //-------------------------------- Suppliers  ----------------------------------
+        socket.on('newProveedor', async (proveedor) => {
+            await containerSupplier.createNewSupplier(proveedor)
+            io.sockets.emit('suppliersAll', await containerSupplier.getAllSuppliers())
+        })
+        
+        socket.on('searchProveedorAll', async (query) => {
+            io.sockets.emit('searchSuppliersAll', await containerSupplier.getSuppliersBySearching(query))
+        })
+
         // -----------------------------  Messages ---------------------------------
         async function listarMensajesNormalizados() {
             const mensajes = await containerMsg.getAllMessages()
@@ -118,7 +131,7 @@ const initSocket = (io) => {
 
         //-------------------- maquinas ----------------------
         socket.emit('toolsAll', await containerTool.getAllTools(),
-                                await containerUser.getAllUsers()
+            await containerUser.getAllUsers()
         )
 
         socket.on('newMaquina', async (maquina) => {
@@ -132,6 +145,24 @@ const initSocket = (io) => {
 
         socket.on('searchToolNew', async (query) => {
             io.sockets.emit('searchToolsNew', await containerTool.getToolsBySearching(query))
+        })
+
+        //-------------------- proveedores ----------------------
+        socket.emit('suppliersAll', await containerSupplier.getAllSuppliers(),
+            await containerUser.getAllUsers()
+        )
+
+        socket.on('newProveedor', async (proveedor) => {
+            await containerSupplier.createNewSupplier(proveedor)
+            io.sockets.emit('suppliersAll', await containerSupplier.getAllSuppliers())
+        })
+
+        socket.on('searchSupplierAll', async (query) => {
+            io.sockets.emit('searchSuppliersAll', await containerSupplier.getSuppliersBySearching(query))
+        })
+
+        socket.on('searchSupplierNew', async (query) => {
+            io.sockets.emit('searchSuppliersNew', await containerSupplier.getSuppliersBySearching(query))
         })
 
     });

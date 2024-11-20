@@ -1,0 +1,78 @@
+<div class="form-group col-6 mx-auto my-2 w-75 border rounded p-3 text-white bg-opacity-75" style="background-color: #b6b6b6;">
+    <h3 id="titleNewSupplier" class="mx-auto my-2 text-center">Agregar Nuevo Proveedor</h3>
+    <form action="/api/proveedores/newSupplier" enctype="multipart/form-data" method="post" id="newSupplierForm">
+        <fieldset>
+            <div class="row my-2 mx-auto">
+                <div class="col-3">
+                    <label for="designation">Designación Proveedor</label>
+                    <input type="text" name="designation" id="designation" class="form-control" placeholder="Designación proveedor" required>
+                </div>
+                
+                <div class="col-2">
+                    <label for="code">Código</label>
+                    <input type="text" name="code" id="code" class="form-control" placeholder="Código" required>
+                </div>
+
+                <div class="col-2">
+                    <label class="form-check-label" for="type">Tipo</label>
+                    <select class="form-select form-select" aria-label=".form-select" name="type" id="type">
+                        <option selected value="diseno">Diseño</option>
+                        <option value="simulacion">Simulación</option>
+                        <option value="otras">Otras</option>
+                    </select>
+                </div>
+                
+                <div class="col">
+                    <label for="characteristics">Características</label>
+                    <textarea type="text" name="characteristics" id="characteristics" placeholder="Características del proveedor" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="row justify-content-start align-items-center my-3 mx-auto">
+                <div class="col">
+                    <label for="fileInputImageSupplier" class="form-label">
+                        Seleccione una imagen del Proveedor
+                    </label>
+                    <input type="text" id="fileInputTextImageSupplier" name="imageTextImageSupplier" style="display: none;" required>
+                    <input type="file" id="fileInputImageSupplier" name="imageImageSupplier" value="" accept="image/*" style="display: none;" required>
+                    <div id="drop-areaImageSupplier" class="my-3 mx-auto">
+                        Haz click o arrastra y suelta una imagen aquí
+                    </div>
+                    <button title="Eliminar Imagen" class="btn btn-danger rounded-circle mx-auto" id="removeImageSupplier" style="display: none;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    
+                    <div id="alertImageSupplier" class="alert alert-warning align-items-center w-50 mx-auto" role="alert"
+                        style="display: none; font-size: 0.85rem; height: 1.15rem;">
+                        <strong class="me-2">Error!</strong> Solo puedes ingresar una imagen jpg, png, bmp o jpeg.
+                    </div>
+                    <div id="alertSizeImageSupplier" class="alert alert-warning align-items-center mx-auto" role="alert"
+                        style="display: none; font-size: 0.85rem; height: 1.15rem; width: 25rem;">
+                        <strong class="me-2">Atención!</strong> El tamaño de la imagen debe ser menor a 3Mb.
+                    </div>
+                </div>
+            </div> 
+            
+            <div class="container-fluid my-2"><h4><strong>Status de Proveedor</strong></h4>
+                <div class="row my-3 mx-auto justify-content-between align-items-center">
+                    <div class="col-3 ms-2 my-auto" style="background-color: #00900c56;">
+                        <label class="form-check-label" for="status">Status</label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" name="status" id="status" checked disabled>
+                            <label class="form-check-label" for="status">Activo</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br>  
+            <div class="d-flex justify-content-center">
+                <button type="button" class="btn btn-primary mx-auto" id="btnAddNewSupplier" disabled>Guardar Proveedor
+                    <i class="fa-solid fa-truck-field"></i></button>
+                <button type="reset" id="btnResetFormNewSupplier" class="btn btn-danger mx-auto">Reset
+                    <i class="fa-solid fa-rotate-left"></i></button>
+            </div>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        </fieldset>
+    </form>
+</div>

@@ -1,23 +1,30 @@
-let arrBtnAnterior5Sim = []
-let arrBtnSiguiente5Sim = []
+let arrBtnAnteriorGrillado = [], arrBtnSiguienteGrillado = [],
+    arrBtnAnteriorMpEnsayada = [], arrBtnSiguienteMpEnsayada = []
 
 for (let i = 0; i<varLimMaxProyectoCliente; i++) { //variable limite maximo de proyectos por Cliente
-
     for (let p = 0; p<varLimMaxOtProyecto; p++) { //variable limite maximo de Ot por proyecto
-        
         for (let q = 0; q<varLimMaxOtProyecto; q++) {
-            if (document.getElementById(`btnAnteriorSiguiente5Sim${i}_${p}_${q}`)) {
-                arrBtnAnterior5Sim.push(i)
-                arrBtnSiguiente5Sim.push(i)
+            const btnIdGrillado = `btnAnteriorSiguienteGrillado${i}_${p}_${q}`;
+            const btnIdMpEnsayada = `btnAnteriorSiguienteMpEnsayada${i}_${p}_${q}`;
+            
+            const btnElementGrillado = document.getElementById(btnIdGrillado);
+            if ( btnElementGrillado) {
+                arrBtnAnteriorGrillado.push(i)
+                arrBtnSiguienteGrillado.push(i)
+            }
+
+            const btnElementMpEnsayada = document.getElementById(btnIdMpEnsayada);
+            if ( btnElementMpEnsayada) {
+                arrBtnAnteriorMpEnsayada.push(i)
+                arrBtnSiguienteMpEnsayada.push(i)
             }
         }
     }
 }
 
 //*********** Evento btn's anterior y siguiente ************* */
-if(arrBtnAnterior5Sim !=[]) {
-    let allBtnAnterior = document.querySelectorAll('[name="btnAnterior5Sim"]')
-    
+if(arrBtnAnteriorGrillado !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorGrillado"]')
     allBtnAnterior.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -25,16 +32,14 @@ if(arrBtnAnterior5Sim !=[]) {
                 let arrayActual = document.getElementById(`resHidden${kValue}`)
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
-                //console.log('kValue. ', kValue)
                 mostrarAnterior5Sim(changeValueFromArray(arrayFromValues), kValue)
             })
         }
     })
 }
 
-if(arrBtnSiguiente5Sim !=[]) {    
-    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguiente5Sim"]')
-    
+if(arrBtnSiguienteGrillado !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteGrillado"]')
     allBtnSiguiente.forEach(function(btn){
         if (btn.value) {
             btn.addEventListener("click", (event) => {
@@ -42,7 +47,36 @@ if(arrBtnSiguiente5Sim !=[]) {
                 let arrayActual = document.getElementById(`resHidden${kValue}`)
                 let actualValue = arrayActual.value
                 let arrayFromValues = actualValue.split(",")
-                // console.log('kValue. ', kValue)
+                mostrarSiguiente5Sim(changeValueFromArray(arrayFromValues), kValue)
+            })
+        }
+    })
+}
+
+if(arrBtnAnteriorMpEnsayada !=[]) {
+    let allBtnAnterior = document.querySelectorAll('[name="btnAnteriorMpEnsayada"]')
+    allBtnAnterior.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
+                mostrarAnterior5Sim(changeValueFromArray(arrayFromValues), kValue)
+            })
+        }
+    })
+}
+
+if(arrBtnSiguienteMpEnsayada !=[]) {    
+    let allBtnSiguiente = document.querySelectorAll('[name="btnSiguienteMpEnsayada"]')
+    allBtnSiguiente.forEach(function(btn){
+        if (btn.value) {
+            btn.addEventListener("click", (event) => {
+                let kValue = btn.value
+                let arrayActual = document.getElementById(`resHidden${kValue}`)
+                let actualValue = arrayActual.value
+                let arrayFromValues = actualValue.split(",")
                 mostrarSiguiente5Sim(changeValueFromArray(arrayFromValues), kValue)
             })
         }
@@ -52,95 +86,114 @@ if(arrBtnSiguiente5Sim !=[]) {
 // Mostrar el elemento actual en la página
 function mostrarElemento5Sim(
     arrayFromValues,
+    arrValuesRevisionMark,
     indiceAMostrar,
     kValue,
     resGrillado,
     resMpEnsayada
     ) {
-    // console.log('kValue', kValue)
-    // console.log('arrayFromValues', arrayFromValues)
+
+        let btnAnteriorGrillado, btnSiguienteGrillado, containerBtnAnteriorSiguienteGrillado
+        let btnAnteriorMpEnsayada, btnSiguienteMpEnsayada, containerBtnAnteriorSiguienteMpEnsayada
     
     if (resGrillado) {
         let spanGrillado = document.getElementById(`resGrillado${kValue}`)
         let spanRevisionGrillado = document.getElementById(`resRevisionGrillado${kValue}`)
         spanGrillado.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionGrillado.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionGrillado.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorGrillado = document.getElementById(`btnAnteriorGrillado${kValue}`)
+        btnSiguienteGrillado = document.getElementById(`btnSiguienteGrillado${kValue}`)
+        containerBtnAnteriorSiguienteGrillado = document.getElementById(`btnAnteriorSiguienteGrillado${kValue}`)
+
     } else if (resMpEnsayada) {
         let spanMpEnsayada = document.getElementById(`resMpEnsayada${kValue}`)
         let spanRevisionMpEnsayada = document.getElementById(`resRevisionMpEnsayada${kValue}`)
         spanMpEnsayada.innerText = arrayFromValues[parseInt(indiceAMostrar)]
-        spanRevisionMpEnsayada.innerText = parseInt(indiceAMostrar+1)
+        spanRevisionMpEnsayada.innerText = arrValuesRevisionMark[parseInt(indiceAMostrar)]
+
+        btnAnteriorMpEnsayada = document.getElementById(`btnAnteriorMpEnsayada${kValue}`)
+        btnSiguienteMpEnsayada = document.getElementById(`btnSiguienteMpEnsayada${kValue}`)
+        containerBtnAnteriorSiguienteMpEnsayada = document.getElementById(`btnAnteriorSiguienteMpEnsayada${kValue}`)
     }
     
-    let btnAnterior5Sim = document.getElementById(`btnAnterior5Sim${kValue}`)
-    let btnSiguiente5Sim = document.getElementById(`btnSiguiente5Sim${kValue}`)
-    let containerBtnAnteriorSiguiente5Sim = document.getElementById(`btnAnteriorSiguiente5Sim${kValue}`)
     
     function colorSpan5Sim(spanElement5Sim) {
-        let resultColor
-        let resultTextColor
-        spanElement5Sim.classList.remove("bg-success")
-        spanElement5Sim.classList.remove("bg-danger")
-        spanElement5Sim.classList.remove("bg-warning")
-        spanElement5Sim.classList.remove("bg-secondary")
-        spanElement5Sim.classList.remove("bg-info")
-        spanElement5Sim.classList.remove("text-white")
-        spanElement5Sim.classList.remove("text-dark")
-
-        if (spanElement5Sim.innerText == "OK") {
-           resultColor = spanElement5Sim.classList.add("bg-success")
-           resultTextColor = spanElement5Sim.classList.add("text-white")
-        } else if (spanElement5Sim.innerText == "No OK") {
-           resultColor = spanElement5Sim.classList.add("bg-danger")
-           resultTextColor = spanElement5Sim.classList.add("text-white")
-        } else if (spanElement5Sim.innerText == "S/D") {
-           resultColor = spanElement5Sim.classList.add("bg-secondary")
-           resultTextColor = spanElement5Sim.classList.add("text-white")
-        } else if (spanElement5Sim.innerText == "Pendiente") {
-           resultColor = spanElement5Sim.classList.add("bg-warning")
-           resultTextColor = spanElement5Sim.classList.add("text-dark")
-        } else if (spanElement5Sim.innerText == "N/A") {
-            resultColor = spanElement5Sim.classList.add("bg-info")
-            resultTextColor = spanElement5Sim.classList.add("text-dark")
-         }
-        return resultColor, resultTextColor
+        const classMap = {
+            "OK": { bgClass: "bg-success", textClass: "text-white" },
+            "No OK": { bgClass: "bg-danger", textClass: "text-white" },
+            "Pendiente": { bgClass: "bg-warning", textClass: "text-dark" },
+            "S/D": { bgClass: "bg-secondary", textClass: "text-white" },
+            "N/A": { bgClass: "bg-info", textClass: "text-dark" }
+        };
+    
+        const defaultClasses = ["bg-success", "bg-danger", "bg-warning", "bg-secondary", "bg-info", "text-white", "text-dark"];
+        if (spanElement5Sim) {
+            spanElement5Sim.classList.remove(...defaultClasses);
+        }
+    
+        const text = spanElement5Sim.innerText;
+        if (classMap[text]) {
+            spanElement5Sim.classList.add(classMap[text].bgClass, classMap[text].textClass);
+        }
     }
 
     function agregarEstiloRevPasadas5Sim (containerBtnAnteriorSiguiente5Sim) {
-        containerBtnAnteriorSiguiente5Sim.classList.add("bg-secondary")
-        containerBtnAnteriorSiguiente5Sim.classList.add("bg-gradient")
-        containerBtnAnteriorSiguiente5Sim.classList.add("bg-opacity-25")
+        containerBtnAnteriorSiguiente5Sim.classList.add("bg-secondary", "bg-gradient", "bg-opacity-25")
     }
 
     function eliminarEstiloRevPasadas5Sim (containerBtnAnteriorSiguiente5Sim) {
-        containerBtnAnteriorSiguiente5Sim.classList.remove("bg-secondary")
-        containerBtnAnteriorSiguiente5Sim.classList.remove("bg-gradient")
-        containerBtnAnteriorSiguiente5Sim.classList.remove("bg-opacity-25")
+        containerBtnAnteriorSiguiente5Sim.classList.remove("bg-secondary", "bg-gradient", "bg-opacity-25")
     }
     
-    let spanElement5Sim
-    if (resGrillado) {
-        spanElement5Sim = resGrillado
-    } else if (resMpEnsayada) {
-        spanElement5Sim = resMpEnsayada
-    }
-    // console.log('spanElement5Sim:', spanElement5Sim)
-    // console.log('indiceaMostar:', indiceAMostrar)
+    let spanElementGrillado, spanElementMpEnsayada
+    resGrillado ? spanElementGrillado = resGrillado : null
+    resMpEnsayada ? spanElementMpEnsayada = resMpEnsayada : null
 
     if (indiceAMostrar === 0) {
-        colorSpan5Sim(spanElement5Sim)
-        btnAnterior5Sim.disabled = 'true'
-        btnSiguiente5Sim.removeAttribute('disabled')
+        if (btnAnteriorGrillado && btnSiguienteGrillado) {
+            colorSpan5Sim(spanElementGrillado)
+            btnAnteriorGrillado.disabled = 'true'
+            btnSiguienteGrillado.removeAttribute('disabled')
+            agregarEstiloRevPasadas5Sim (containerBtnAnteriorSiguienteGrillado)
+        }
+
+        if (btnAnteriorMpEnsayada && btnSiguienteMpEnsayada) {
+            colorSpan5Sim(spanElementMpEnsayada)
+            btnAnteriorMpEnsayada.disabled = 'true'
+            btnSiguienteMpEnsayada.removeAttribute('disabled')
+            agregarEstiloRevPasadas5Sim (containerBtnAnteriorSiguienteMpEnsayada)
+        }
+
     } else if (indiceAMostrar === arrayFromValues.length-1) {
-        colorSpan5Sim(spanElement5Sim)
-        btnAnterior5Sim.removeAttribute('disabled')
-        btnSiguiente5Sim.disabled = true
-        eliminarEstiloRevPasadas5Sim(containerBtnAnteriorSiguiente5Sim)
+        if (btnAnteriorGrillado && btnSiguienteGrillado) {
+            colorSpan5Sim(spanElementGrillado)
+            btnAnteriorGrillado.removeAttribute('disabled')
+            btnSiguienteGrillado.disabled = true
+            eliminarEstiloRevPasadas5Sim(containerBtnAnteriorSiguienteGrillado)
+        }
+
+        if (btnAnteriorMpEnsayada && btnSiguienteMpEnsayada) {
+            colorSpan5Sim(spanElementMpEnsayada)
+            btnAnteriorMpEnsayada.removeAttribute('disabled')
+            btnSiguienteMpEnsayada.disabled = true
+            eliminarEstiloRevPasadas5Sim(containerBtnAnteriorSiguienteMpEnsayada)
+        }
+
     } else {
-        colorSpan5Sim(spanElement5Sim)
-        btnAnterior5Sim.removeAttribute('disabled')
-        btnSiguiente5Sim.removeAttribute('disabled')
-        agregarEstiloRevPasadas5Sim(containerBtnAnteriorSiguiente5Sim)
+        if (btnAnteriorGrillado && btnSiguienteGrillado) {
+            colorSpan5Sim(spanElementGrillado)
+            btnAnteriorGrillado.removeAttribute('disabled')
+            btnSiguienteGrillado.removeAttribute('disabled')
+            agregarEstiloRevPasadas5Sim(containerBtnAnteriorSiguienteGrillado)
+        }
+
+        if (btnAnteriorMpEnsayada && btnSiguienteMpEnsayada) {
+            colorSpan5Sim(spanElementMpEnsayada)
+            btnAnteriorMpEnsayada.removeAttribute('disabled')
+            btnSiguienteMpEnsayada.removeAttribute('disabled')
+            agregarEstiloRevPasadas5Sim(containerBtnAnteriorSiguienteMpEnsayada)
+        }
     }
 }
 
@@ -150,14 +203,20 @@ function mostrarAnterior5Sim(arrayFromValues, kValue) {
 
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
 
-    let indiceAMostrar = parseInt(lastIndexArrayFromValues)-1
+    let indiceAMostrar = parseInt(lastIndexArrayFromValues-1)
     inputSpotIndex.value = parseInt(indiceAMostrar)
+
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
+    // console.log('arrValuesRevisionMark: ', arrValuesRevisionMark)
 
     let resGrillado = document.getElementById(`resGrillado${kValue}`)
     let resMpEnsayada = document.getElementById(`resMpEnsayada${kValue}`)
 
     mostrarElemento5Sim(
         arrayFromValues,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resGrillado,
@@ -170,14 +229,20 @@ function mostrarSiguiente5Sim(arrayFromValues, kValue) {
     let inputSpotIndex = document.getElementById(`resIndexHidden${kValue}`)
     let lastIndexArrayFromValues = parseInt(inputSpotIndex.value)
 
-    let indiceAMostrar = parseInt(lastIndexArrayFromValues)+1
+    let indiceAMostrar = parseInt(lastIndexArrayFromValues+1)
     inputSpotIndex.value =  parseInt(indiceAMostrar)
+
+    let revisionMark = document.getElementById(`resRevisionHidden${kValue}`)
+    let valuesRevisionMark = revisionMark.value
+    let arrValuesRevisionMark = valuesRevisionMark.split(',')
+    // console.log('arrValuesRevisionMark: ', arrValuesRevisionMark)
 
     let resGrillado = document.getElementById(`resGrillado${kValue}`)
     let resMpEnsayada = document.getElementById(`resMpEnsayada${kValue}`)
 
     mostrarElemento5Sim(
         arrayFromValues,
+        arrValuesRevisionMark,
         indiceAMostrar,
         kValue,
         resGrillado,
@@ -204,13 +269,11 @@ spanRes5Sim.forEach(function(spanElement) {
                 var regex = /^resRevisionMpEnsayada/;
             break;
             default:
-                break;
+            break;
         }
-        // console.log('regex: ', regex)
 
         // Eliminar el texto inicial de la cadena
-        var idFinalInputs = idSpotSelected.replace(regex, '');
-        // console.log('idFinalInputs: ', idFinalInputs)
+        let idFinalInputs = idSpotSelected.replace(regex, '');
 
         let inputSpotIndex = document.getElementById(`resIndexHidden${idFinalInputs}`).value
         let inputSpotRevision = document.getElementById(`resRevisionHidden${idFinalInputs}`).value
