@@ -524,7 +524,7 @@ class UsersController {
                 const mensajes = await this.messages.getAllMessages()
                 const sessionLogin = await this.users.getAllSessions()
                 const maquinas = await this.tools.getAllTools()
-                const proveedores = await this.suppliers.getAllTools()
+                const proveedores = await this.suppliers.getAllSuppliers()
                 
                 const sessions = parseInt(sessionLogin.length+1)
 

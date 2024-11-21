@@ -159,4 +159,8 @@ const renderMessageUser = async (arrMensajes) => {
 
     document.getElementById('text').value = ""
     document.getElementById('messageTextLength').innerHTML = "(0/500)"
+
+    // Ocultar el spinner y mostrar la tabla
+    document.getElementById('loading-spinner').style.display = 'none';
+    document.getElementById('mostrarMensajes').style.display = 'block';
 }

@@ -1,7 +1,7 @@
 <div class="container-fluid" style="background-color: #F5F7FA;">
     <%- include('../../partials/sections/sectionMainAppTitle'); %>
     <!-- first Row -->
-    <div class="row">
+    <div class="row justify-content-evenly">
         <!-- clientes -->
         <div class="col-xl-3 col-sm-6 col-12">
             <a href="/api/clientes" style="text-decoration: none;">
@@ -35,14 +35,13 @@
                             <div class="media d-flex mx-2">
                                 <div class="media-body text-left">
                                     <% let arrayProject = []
-                                    for (let i=0; clientes.length>i; i++ ) {
-                                        arrayProject.push(clientes[i].project)
-                                    }
-                                    function sumarArray(arr) {
-                                        return arr.reduce((suma, numero) => suma + numero, 0);
-                                    }
-                                    const resultado = sumarArray(arrayProject);
-                                    %>
+                                        for (let i=0; clientes.length>i; i++ ) {
+                                            arrayProject.push(clientes[i].project)
+                                        }
+                                        function sumarArray(arr) {
+                                            return arr.reduce((suma, numero) => suma + numero, 0);
+                                        }
+                                        const resultado = sumarArray(arrayProject); %>
                                     <h3 class="font-medium"><%= resultado %></h3>
                                     <span>Proyectos</span>
                                 </div>
@@ -105,7 +104,7 @@
         </div>
     </div>
     <!-- Second Row -->
-    <div class="row">
+    <div class="row justify-content-evenly">
         <!-- Estado de Programación / Mecanizado -->
         <div class="col-xl-3 col-sm-6 col-12">
             <a href="/api/programas" style="text-decoration: none;">
@@ -213,7 +212,7 @@
         </div>
     </div>
     <!-- Thrird Row -->
-    <div class="row">
+    <div class="row justify-content-evenly">
         <!-- Tasa de Conversion -->
         <div class="col-xl-3 col-sm-6 col-12">
             <div class="card rounded-3 card_dashboard">
@@ -306,7 +305,7 @@
                                         <% } %>
                                 </div>
                                 <div class="align-self-center ms-auto">
-                                    <i class="icon-truck-field success font-large-2 float-right"></i>
+                                    <i class="icon-energy font-large-2 float-right"></i>
                                 </div>
                             </div>
                         </div>
@@ -384,5 +383,4 @@
             </div>
         </div>
     </div>
-    
 </div>

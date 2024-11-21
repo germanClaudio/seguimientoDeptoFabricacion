@@ -476,7 +476,6 @@ btnAddNewRow.addEventListener('click', () => {
     arrayBtnSearchSimulationUserClean = [...new Set(arrayBtnSearchSimulationUser)];
     arrayBtnSearchSupplierClean = [...new Set(arrayBtnSearchSupplier)];
 
-
     arrayBtnSearchDesignerUserClean.forEach(function(element) {
         if (element) {
             element.addEventListener('click', async (event) => {
@@ -546,10 +545,10 @@ btnAddNewRow.addEventListener('click', () => {
                 event.stopImmediatePropagation();
     
                 try {
-                    await cargarUsuario(idPermiso, idPermisoNumero);
+                    await cargarProveedor(idPermiso, idPermisoNumero);
     
                 } catch (error) {
-                    const titulo = 'Error al cargar los usuarios'
+                    const titulo = 'Error al cargar los proveedores'
                     const message = error
                     const icon = 'error'
                     messageAlertUser(titulo, message, icon)
@@ -1887,6 +1886,8 @@ function updateBtnCheckSelecMasive(idOci) {
     ];
 
     const spans = spansIds.map(id => document.getElementById(`${id}${idOci}`));
+    let newSpans = spans.filter(value => value !== null)
+
     const btnMasive = document.getElementById(`btnCheckSelecMasive${idOci}`);
     const btnSelectAll = document.getElementById(`btnCheckSelectionAll${idOci}`);
 
@@ -1894,7 +1895,7 @@ function updateBtnCheckSelecMasive(idOci) {
     const cantidadTotalXTabla = document.querySelectorAll(`#tablaGeneral${idOci} input[name="checkSelect"]:not(:disabled)`).length;
 
     const updateSpans = (value) => {
-        spans.forEach(span => span.innerText = value);
+        newSpans.forEach(span => span.innerText = value);
     };
 
     const updateBtnSelectAll = (title, addClass, removeClass, value) => {
@@ -2248,7 +2249,8 @@ arrayBtnCheckSelectionAll.forEach(function(element) {
                 `spanCheckSelecMasiveProgPrima`, `spanCheckSelecMasiveProgSeg`, 
                 `spanCheckSelecMasiveMecaPrima`, `spanCheckSelecMasiveMecaSeg`
             ];
-            const spans = spanIds.map(id => document.getElementById(`${id}${idOci}`));
+            const spans = spanIds.map(id => document.getElementById(`${id}${idOci}` ));
+            let newSpans = spans.filter(value => value !== null)
 
             let arrQueryRows = [];
             checkboxes.forEach(checkbox => {
@@ -2302,7 +2304,7 @@ arrayBtnCheckSelectionAll.forEach(function(element) {
 
             // Actualizar valores de los spans
             const updateSpans = (value) => {
-                spans.forEach(span => span.innerText = value);
+                newSpans.forEach(span => span.innerText = value);
             };
             updateSpans(arrQueryRows.length);
 
@@ -2459,6 +2461,128 @@ async function cargarUsuario(idPermiso, idPermisoNumero) {
     disabledBtnAceptar()
 }
 
+async function cargarProveedor(idPermiso, idPermisoNumero) {
+    const permisos = {
+        'searchSupplier': {
+            permisoProveedor: 'diseno',
+            tituloSeguimiento: 'Proveedores Diseño',
+            inputTarget: `externoDiseno${idPermisoNumero}`
+        },
+        'searchSupplierModal': {
+            permisoProveedor: 'diseno',
+            tituloSeguimiento: 'Proveedores Diseño',
+            inputTarget: `externoDiseno${idPermisoNumero}`
+        },
+        'searchSimulationSupplierModal': {
+            permisoProveedor: 'simulacion',
+            tituloSeguimiento: 'Proveedores Simulación',
+            inputTarget: `externoDiseno${idPermisoNumero}`
+        }
+    };
+    
+    const { permisoProveedor, tituloSeguimiento, inputTarget } = permisos[idPermiso] || {};
+
+    if (!permisoProveedor || !tituloSeguimiento || !inputTarget) {
+        throw new Error(`Permiso no encontrado para id:', ${idPermiso}`)
+    }
+
+    try {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        const url = `../../../api/proveedores/searchSuppliersAll`
+        const response = await fetch(url, {
+            method: "GET",
+            headers: myHeaders,
+            mode: 'cors',
+            cache: 'default',
+        });
+        
+        if(!response.ok ){
+            throw new Error(`Error en la solicitud`);
+        }
+
+        const suppliers = await response.json();
+        const arrayProveedoresEspecificos = [], arraySuppliersAll = [];
+
+        if (suppliers && suppliers.length > 0) {
+            suppliers.forEach((supplier, i) => {
+                const supplierHTML = `
+                    <label>
+                        <span id="${supplier._id}" class="badge rounded-pill ${supplier.type === `${permisoProveedor}` ? 'bg-info text-dark' : 'bg-secondary text-light'} my-2">
+                            <input id="${i}" class="form-check-input mb-1" type="radio"
+                                name="radioProveedores" value="${supplier.designation}">
+                            ${supplier.designation}
+                        </span>
+                    </label>`;
+
+                if (supplier.status) {
+                    supplier.type === `${permisoProveedor}` ? arrayProveedoresEspecificos.push(supplierHTML) : arraySuppliersAll.push(supplierHTML);
+                }    
+            });
+
+            const html = `
+                <hr>
+                <label>${tituloSeguimiento}</label>
+                <div name='container' class="container">
+                    ${arrayProveedoresEspecificos.join(' ')}
+                </div>
+                <hr>
+                <label>Proveedores Simulación</label>
+                <div name='container' class="container">
+                    ${arraySuppliersAll.join(' ')}
+                </div>
+                <hr>`;
+
+            Swal.fire({
+                title: 'Proveedores',
+                html: html,
+                width: 450,
+                background: "#eee",
+                allowOutsideClick: false,
+                showCloseButton: true,
+                focusConfirm: false,
+                confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>',
+                didOpen: () => {
+                    const btnAceptar = document.querySelector('.swal2-confirm');
+                    btnAceptar.setAttribute('id', 'btnAceptarModal');
+                    btnAceptar.style.cursor = "not-allowed";
+                    btnAceptar.disabled = true;
+
+                    const radios = document.getElementsByName('radioProveedores');
+                    radios.forEach((radio) => {
+                        radio.addEventListener('change', () => {
+                            btnAceptar.style.cursor = "pointer";
+                            btnAceptar.disabled = false;
+                        });
+                    });
+                }
+            }).then((result) => {
+                const radioSelected = document.querySelector('input[name="radioProveedores"]:checked');
+                if (result.isConfirmed && radioSelected) {
+                    const inputSupplierSelected = document.getElementById(`${inputTarget}`);
+                    inputSupplierSelected.value = radioSelected.value;
+
+                } else {
+                    const titulo = 'Proveedor no seleccionado'
+                    const message = 'No ha seleccionado ningún proveedor!'
+                    const icon = 'warning'
+                    messageAlertUser(titulo, message, icon)
+                }
+            });
+
+        } else {
+            throw new Error(`No hay proveedores que seleccionar`);
+        }
+
+    } catch (error) {
+        const titulo = 'Error'
+        const message = `${error}`
+        const icon = 'error'
+        messageAlertUser(titulo, message, icon)
+    }
+    disabledBtnAceptar()
+}
+
 arrayBtnSearchDesignerUser.forEach(function(element) {
     if (element) {
         element.addEventListener('click', async (event) => {
@@ -2528,10 +2652,10 @@ arrayBtnSearchSupplier.forEach(function(element) {
             event.stopImmediatePropagation();
 
             try {
-                await ccargarUsuario(idPermiso, idPermisoNumero);
+                await cargarProveedor(idPermiso, idPermisoNumero);
 
             } catch (error) {
-                const titulo = 'Error al cargar los usuarios'
+                const titulo = 'Error al cargar los proveedores'
                 const message = error
                 const icon = 'error'
                 messageAlertUser(titulo, message, icon)

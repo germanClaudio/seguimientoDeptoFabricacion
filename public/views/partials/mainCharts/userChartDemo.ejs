@@ -1,100 +1,98 @@
 <div class="container-fluid" style="background-color: #F5F7FA;">
-  <section id="minimal-statistics" class="mx-auto" style="width: 92%;">
-      <div class="row">
-        <div class="col-12">
-          <hr>
-          <h4 class="text-uppercase">Aplicación de Seguimiento</h4>
-          <p>Departamento de IT Prodismo</p>
-          <hr>
-        </div>
-      </div>
-
-      <div class="row justify-content-evenly">
+    <%- include('../../partials/sections/sectionMainAppTitle'); %>
+    <!-- first Row -->
+    <div class="row justify-content-evenly">
         <!-- clientes -->
         <div class="col-xl-3 col-sm-6 col-12">
-          <a href="/api/clientes" style="text-decoration: none;">
-            <div class="card rounded-3 card_dashboard">
-              <div class="card-content">
-                <div class="card-body">
-                  <div class="media d-flex mx-2">
-										<div class="media-body text-left">
-                      <% let countClient = 0 
-                        for (let i=0; clientes.length>i; i++ ) {
-                          if (clientes[i].visible) {
-                            countClient++
-                          } 
-                        } %>
-											<h3 class="font-medium"><%= parseInt(countClient) %></h3>
-											<span>Clientes</span>
-										</div>
-                    <div class="align-self-center ms-auto">
-                      <i class="fa-regular fa-handshake fa-3x primary float-right"></i>
+            <a href="/api/clientes" style="text-decoration: none;">
+                <div class="card rounded-3 card_dashboard">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="media d-flex mx-2">
+                                <div class="media-body text-left">
+                                    <% let countClient=0
+                                    for (let i=0; clientes.length>i; i++ ) {
+                                        if (clientes[i].visible) {
+                                            countClient++
+                                        }
+                                    } %>
+                                    <h3 class="font-medium">
+                                        <%= parseInt(countClient) %>
+                                    </h3>
+                                    <span>Clientes</span>
+                                </div>
+                                <div class="align-self-center ms-auto">
+                                    <i class="fa-regular fa-handshake fa-3x primary float-right"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
                 </div>
-              </div>
-            </div>
-        	</a>
+            </a>
         </div>
+
         <!-- proyectos -->
         <div class="col-xl-3 col-sm-6 col-12">
-          <a href="/api/proyectos/" style="text-decoration: none;">
-            <div class="card rounded-3 card_dashboard">
-              <div class="card-content">
-                <div class="card-body">
-                  <div class="media d-flex mx-2">
-                    <div class="media-body text-left">
-                      <% let arrayProject = []
-                        for (let i=0; clientes.length>i; i++ ) {
-                          arrayProject.push(clientes[i].project)
-                        }
-                        function sumarArray(arr) {
-                          return arr.reduce((suma, numero) => suma + numero, 0);
-                        }
-                        const resultado = sumarArray(arrayProject);
-                      %>
-                      <h3 class="font-medium"><%= resultado %></h3>
-                      <span>Proyectos</span>
+            <a href="/api/proyectos/" style="text-decoration: none;">
+                <div class="card rounded-3 card_dashboard">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="media d-flex mx-2">
+                                <div class="media-body text-left">
+                                    <% let arrayProject=[]
+                                    for (let i=0; clientes.length>i; i++ ) {
+                                        arrayProject.push(clientes[i].project)
+                                    }
+                                    function sumarArray(arr) {
+                                        return arr.reduce((suma, numero) => suma + numero, 0);
+                                    }
+                                    const resultado = sumarArray(arrayProject); %>
+                                    <h3 class="font-medium">
+                                        <%= resultado %>
+                                    </h3>
+                                    <span>Proyectos</span>
+                                </div>
+                                <div class="align-self-center ms-auto">
+                                    <i class="icon-rocket danger font-large-2 float-right"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="align-self-center ms-auto">
-                      <i class="icon-rocket danger font-large-2 float-right"></i>
-                    </div>
-                  </div>
                 </div>
-              </div>
-            </div>
-          </a>
+            </a>
         </div>
-        
+
         <!-- mensajes -->
         <div class="col-xl-3 col-sm-6 col-12">
-          <a href="/api/webchat/" style="text-decoration: none;">
-            <div class="card rounded-3 card_dashboard">
-              <div class="card-content">
-                <div class="card-body">
-                  <div class="media d-flex mx-2">
-                    <div class="media-body text-start">
-                      <% let cantMensajes=0
-                        for (let i=0; mensajes.length>i; i++) {
-                          if (mensajes[i].status) {
-                            cantMensajes++
-                          } 
-                        } %>
-                      <h3 class="font-medium"><%= parseInt(cantMensajes) %></h3>
-                      <span>Mensajes</span>
+            <a href="/api/webchat/" style="text-decoration: none;">
+                <div class="card rounded-3 card_dashboard">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="media d-flex mx-2">
+                                <div class="media-body text-start">
+                                    <% let cantMensajes=0
+                                    for (let i=0; mensajes.length>i; i++) {
+                                        if (mensajes[i].status) {
+                                            cantMensajes++
+                                        }
+                                    } %>
+                                    <h3 class="font-medium">
+                                        <%= parseInt(cantMensajes) %>
+                                    </h3>
+                                    <span>Mensajes</span>
+                                </div>
+                                <div class="align-self-center ms-auto">
+                                    <i class="icon-bubbles warning font-large-2 float-right"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="align-self-center ms-auto">
-                      <i class="icon-bubbles warning font-large-2 float-right"></i>
-                    </div>
-                  </div>
                 </div>
-              </div>
-            </div>
-          </a>
+            </a>
         </div>
-      </div>
-    	<!-- Second Row -->
-      <div class="row justify-content-evenly">
+    </div>
+    <!-- Second Row -->
+    <div class="row justify-content-evenly">
         <!-- Estado de Programación / Mecanizado -->
         <div class="col-xl-3 col-sm-6 col-12">
             <a href="/api/programas" style="text-decoration: none;">
@@ -103,11 +101,14 @@
                         <div class="card-body">
                             <div class="media d-flex mx-2">
                                 <div class="media-body text-left">
-                                    <% let arrayActiveProject = []
+                                    <% let arrayActiveProject=[]
                                     for (let i=0; proyectos.length>i; i++ ) {
-                                        proyectos[i].project[0].levelProject === 'ganado' ? arrayActiveProject.push(proyectos[i].project) : null
+                                        proyectos[i].project[0].levelProject === 'ganado' ?
+                                        arrayActiveProject.push(proyectos[i].project) : null
                                     } %>
-                                    <h3><%= arrayActiveProject.length %></h3>
+                                    <h3>
+                                        <%= arrayActiveProject.length %>
+                                    </h3>
                                     <span>Programación</span>
                                 </div>
                                 <div class="align-self-center ms-auto">
@@ -121,46 +122,50 @@
         </div>
         <!-- oci's -->
         <div class="col-xl-3 col-sm-6 col-12">
-          <a href="/api/proyectos/oci-list/all" style="text-decoration: none;">
-            <div class="card rounded-3 card_dashboard">
-              <div class="card-content">
-                <div class="card-body">
-                  <div class="media d-flex mx-2">
-                    <div class="media-body text-left">
-                      <% let arrayOci = []
-                        for (let i=0; proyectos.length>i; i++ ) {
-                          if (proyectos[i].visible) {
-                            arrayOci.push(proyectos[i].project[0])
-                          }
-                        }
+            <a href="/api/proyectos/oci-list/all" style="text-decoration: none;">
+                <div class="card rounded-3 card_dashboard">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="media d-flex mx-2">
+                                <div class="media-body text-left">
+                                    <% let arrayOci=[]
+                                    for (let i=0; proyectos.length>i; i++ ) {
+                                        if (proyectos[i].visible) {
+                                        arrayOci.push(proyectos[i].project[0])
+                                        }
+                                    }
 
-                        let arrayVisibleOci = []
-                        for (let j=0; arrayOci.length>j; j++ ) {
-                          if (arrayOci[j].visible) {
-                            arrayVisibleOci.push(arrayOci[j].oci)
-                          }
-                        }
+                                    let arrayVisibleOci = []
+                                    for (let j=0; arrayOci.length>j; j++ ) {
+                                        if (arrayOci[j].visible) {
+                                            arrayVisibleOci.push(arrayOci[j].oci)
+                                        }
+                                    }
 
-                        let arrayActiveOci = [].concat(...arrayVisibleOci)
-                        let resultArrayOci = []
-                        for (let k=0; arrayActiveOci.length>k; k++ ) {
-                          if (arrayActiveOci[k].visible) {
-                            resultArrayOci.push(arrayActiveOci[k].ociNumber)
-                          }
-                        } %>
-                      <h3 class="font-medium"><%= resultArrayOci.length %>/<span style="font-size: 0.95rem;" ><%=arrayActiveOci.length%></span></h3>
-                      <span>Cantidad de OCI's</span>
+                                    let arrayActiveOci = [].concat(...arrayVisibleOci)
+                                    let resultArrayOci = []
+                                    for (let k=0; arrayActiveOci.length>k; k++ ) {
+                                        if (arrayActiveOci[k].visible) {
+                                            resultArrayOci.push(arrayActiveOci[k].ociNumber)
+                                        }
+                                    } %>
+                                    <h3 class="font-medium">
+                                        <%= resultArrayOci.length %>/<span style="font-size: 0.95rem;">
+                                                <%=arrayActiveOci.length%>
+                                            </span>
+                                    </h3>
+                                    <span>Cantidad de OCI's</span>
+                                </div>
+                                <div class="align-self-center ms-auto">
+                                    <i class="icon-settings success font-large-2 float-right"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="align-self-center ms-auto">
-                      <i class="icon-settings success font-large-2 float-right"></i>
-                    </div>
-                  </div>
                 </div>
-              </div>
-            </div>
-          </a>
+            </a>
         </div>
-    	<!-- Maquinas -->
+        <!-- Maquinas -->
         <div class="col-xl-3 col-sm-6 col-12">
             <a href="/api/maquinas" style="text-decoration: none;">
                 <div class="card rounded-3 card_dashboard">
@@ -168,16 +173,26 @@
                         <div class="card-body">
                             <div class="media d-flex mx-2">
                                 <div class="media-body text-left">
-                                  <% let maquinasVisibles = [], maquinasEnMantenimiento = [];
-                                  for (let h=0; maquinas.length > h ; h++) {
-                                      maquinas[h].status ? maquinasVisibles.push(maquinas[h]) : maquinasEnMantenimiento.push(maquinas[h])
-                                  } %>
-                                  <h3 class="font-medium"><%= parseInt(maquinasVisibles.length) %>/<span style="font-size: 0.95rem;" ><%= parseInt(maquinas.length) %></span></h3>
-                                  <% if ( maquinasEnMantenimiento.length != 0 ) { %>
-                                      <span><%= parseInt(maquinasVisibles.length) %> Maquinas Activas</span> / <span class="badge rounded-pill text-bg-danger"><%= maquinasEnMantenimiento.length %> en Mantenimiento</span>
-                                  <% } else { %>
-                                      <span class="badge rounded-pill text-bg-success">Maquinas Activas</span>
-                                  <% } %>
+                                    <% let maquinasVisibles=[], maquinasEnMantenimiento=[];
+                                    for (let h=0; maquinas.length> h ; h++) {
+                                        maquinas[h].status ? maquinasVisibles.push(maquinas[h]) : maquinasEnMantenimiento.push(maquinas[h])
+                                    } %>
+                                    <h3 class="font-medium">
+                                        <%= parseInt(maquinasVisibles.length) %>/
+                                            <span style="font-size: 0.95rem;">
+                                                <%= parseInt(maquinas.length) %>
+                                            </span>
+                                    </h3>
+                                    <% if ( maquinasEnMantenimiento.length !=0 ) { %>
+                                        <span>
+                                            <%= parseInt(maquinasVisibles.length) %> Maquinas Activas
+                                        </span> / <span class="badge rounded-pill text-bg-danger">
+                                            <%= maquinasEnMantenimiento.length %> en Mantenimiento
+                                        </span>
+                                    <% } else { %>
+                                        <span class="badge rounded-pill text-bg-success">Maquinas
+                                            Activas</span>
+                                    <% } %>
                                 </div>
                                 <div class="align-self-center ms-auto">
                                     <i class="icon-wrench success font-large-2 float-right"></i>
@@ -188,129 +203,174 @@
                 </div>
             </a>
         </div>
-      </div>
-    
-      <div class="row justify-content-evenly">
+    </div>
+    <!-- Thrird Row -->
+    <div class="row justify-content-evenly">
         <!-- Tasa conversion -->
         <div class="col-xl-3 col-sm-6 col-12">
-          <div class="card rounded-3 card_dashboard">
-            <div class="card-content">
-              <div class="card-body">
-                <div class="media d-flex mx-2">
-                  <div class="media-body text-left">
-                    <% let countActiveProject = 0
-                       let countVisibleClient = 0
-                        for (let i=0; clientes.length>i; i++ ) {
-                          if (clientes[i].visible) {
-                            if (clientes[i].project>0) {
-                              countActiveProject++
-                            }
-                            countVisibleClient++
-                          }
-                        } 
-                          let valueRateClient = parseFloat((countActiveProject / countVisibleClient)*100).toFixed(2)
-                    %>
+            <div class="card rounded-3 card_dashboard">
+                <div class="card-content">
+                    <div class="card-body">
+                        <div class="media d-flex mx-2">
+                            <div class="media-body text-left">
+                                <% let countActiveProject=0, countVisibleClient=0
+                                for (let i=0; clientes.length> i; i++ ) {
+                                    if (clientes[i].visible) {
+                                        if (clientes[i].project>0) {
+                                            countActiveProject++
+                                        }
+                                        countVisibleClient++
+                                    }
+                                }
+                                let valueRateClient = parseFloat((countActiveProject / countVisibleClient)*100).toFixed(2) %>
 
-                    <h3 class="primary"><%= valueRateClient %> %</h3>
-                    <span>Tasa conversion</span>
-                  </div>
-                  <div class="align-self-center ms-auto">
-                    <i class="icon-badge danger font-large-2 float-right"></i>
-                  </div>
+                                <h3 class="primary">
+                                    <%= valueRateClient %> %
+                                </h3>
+                                <span>Tasa conversion</span>
+                            </div>
+                            <div class="align-self-center ms-auto">
+                                <i class="icon-badge danger font-large-2 float-right"></i>
+                            </div>
+                        </div>
+                        <div class="progress mt-1 mb-0" style="height: 7px;">
+                            <div class="progress-bar bg-primary" role="progressbar"
+                                style="width: <%= valueRateClient %>%" aria-valuenow="<%= valueRateClient %>"
+                                aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="progress mt-1 mb-0" style="height: 7px;">
-                  <div class="progress-bar bg-primary" role="progressbar" style="width: <%= valueRateClient %>%" aria-valuenow="<%= valueRateClient %>" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-              </div>
             </div>
-          </div>
         </div>
         <!-- cantidad de OT -->
-        <div class="col-xl-3 col-sm-6 col-12">
-          <div class="card rounded-3 card_dashboard">
-            <div class="card-content">
-              <div class="card-body">
-                <div class="media d-flex mx-2">
-                  <div class="media-body text-left">
-                    <% let arrayOt = []
-                      for (let i=0; proyectos.length>i; i++ ) {
-                        if (proyectos[i].visible) {
-                          arrayOt.push(proyectos[i].project[0])
-                        }
-                      }
+        <!-- <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card rounded-3 card_dashboard">
+        <div class="card-content">
+            <div class="card-body">
+            <div class="media d-flex mx-2">
+                <div class="media-body text-left">
+                <% let arrayOt = []
+                    for (let i=0; proyectos.length>i; i++ ) {
+                    if (proyectos[i].visible) {
+                        arrayOt.push(proyectos[i].project[0])
+                    }
+                    }
 
-                      let arrayVisibleOt = []
-                      for (let j=0; arrayOt.length>j; j++ ) {
-                        if (arrayOt[j].visible) {
-                          arrayVisibleOt.push(arrayOt[j].oci)
-                        }
-                      }
+                    let arrayVisibleOt = []
+                    for (let j=0; arrayOt.length>j; j++ ) {
+                    if (arrayOt[j].visible) {
+                        arrayVisibleOt.push(arrayOt[j].oci)
+                    }
+                    }
 
-                      let arrayActiveOt = [].concat(...arrayVisibleOt)
-                      let resultArrayOt = []
-                      for (let k=0; arrayActiveOt.length>k; k++ ) {
-                        if (arrayActiveOt[k].visible) {
-                          resultArrayOt.push(arrayActiveOt[k].otProject)
-                        }
-                      }
+                    let arrayActiveOt = [].concat(...arrayVisibleOt)
+                    let resultArrayOt = []
+                    for (let k=0; arrayActiveOt.length>k; k++ ) {
+                    if (arrayActiveOt[k].visible) {
+                        resultArrayOt.push(arrayActiveOt[k].otProject)
+                    }
+                    }
 
-                      const arraysNoVacios = resultArrayOt.filter(subarray => subarray.length > 0);
-                      let arrayResultOt = [].concat(...arraysNoVacios)
-                      let arrayFinalOt = []
-                      for (let p=0; arrayResultOt.length>p; p++ ) {
-                        if (arrayResultOt[p].visible) {
-                          arrayFinalOt.push(arrayResultOt[p].visible)
-                        }
-                      } %>
+                    const arraysNoVacios = resultArrayOt.filter(subarray => subarray.length > 0);
+                    let arrayResultOt = [].concat(...arraysNoVacios)
+                    let arrayFinalOt = []
+                    for (let p=0; arrayResultOt.length>p; p++ ) {
+                    if (arrayResultOt[p].visible) {
+                        arrayFinalOt.push(arrayResultOt[p].visible)
+                    }
+                    } %>
 
-                    <h3 class="font-medium"><%= arrayFinalOt.length %>/<span style="font-size: 0.95rem;" ><%=arrayResultOt.length%></span></h3>
-                    <span>Cantidad de OT's</span>
-                  </div>
-                  <div class="align-self-center ms-auto">
-                    <i class="icon-list primary font-large-2 float-right"></i>
-                  </div>
+                <h3 class="font-medium"><%= arrayFinalOt.length %>/<span style="font-size: 0.95rem;" ><%=arrayResultOt.length%></span></h3>
+                <span>Cantidad de OT's</span>
                 </div>
-                <div class="progress mt-1 mb-0" style="height: 7px;">
-                  <div class="progress-bar bg-warning" style="width: <%= arrayFinalOt.length %>%" role="progressbar" aria-valuenow="<%= arrayFinalOt.length %>" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="align-self-center ms-auto">
+                <i class="icon-list primary font-large-2 float-right"></i>
                 </div>
-              </div>
             </div>
-          </div>
+            <div class="progress mt-1 mb-0" style="height: 7px;">
+                <div class="progress-bar bg-warning" style="width: <%= arrayFinalOt.length %>%" role="progressbar" aria-valuenow="<%= arrayFinalOt.length %>" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div> -->
+        <!-- Proveedores -->
+        <div class="col-xl-3 col-sm-6 col-12">
+            <a href="/api/proveedores" style="text-decoration: none;">
+                <div class="card rounded-3 card_dashboard">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="media d-flex mx-2">
+                                <div class="media-body text-left">
+                                    <% let proveedoresVisibles=[], proveedoresInactivos=[];
+                                    for (let h=0; proveedores.length> h ; h++) {
+                                        proveedores[h].status ? proveedoresVisibles.push(proveedores[h]) :
+                                        proveedoresInactivos.push(proveedores[h])
+                                    } %>
+                                    <h3 class="font-medium">
+                                        <%= parseInt(proveedoresVisibles.length) %>/
+                                            <span style="font-size: 0.95rem;">
+                                                <%= parseInt(proveedores.length) %>
+                                            </span>
+                                    </h3>
+                                    <% if ( proveedoresInactivos.length !=0 ) { %>
+                                        <span>
+                                            <%= parseInt(proveedoresVisibles.length) %> Proveedores Activos
+                                        </span> / <span class="badge rounded-pill text-bg-danger">
+                                            <%= proveedoresInactivos.length %> en Mantenimiento
+                                        </span>
+                                    <% } else { %>
+                                        <span class="badge rounded-pill text-bg-success">Proveedores Activos</span>
+                                    <% } %>
+                                </div>
+                                <div class="align-self-center ms-auto">
+                                    <i class="icon-energy primary font-large-2 float-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
         </div>
         <!-- total visitas -->
         <div class="col-xl-3 col-sm-6 col-12">
-          <div class="card rounded-3 card_dashboard">
-            <div class="card-content">
-              <div class="card-body">
-                <div class="media d-flex mx-2">
-                  <div class="media-body text-left">
-                    <% const usersVisitsQty = [];
-                      let porcentaje = 0;
-                      function sumarNumeros(array) {
-                          return array.reduce((acumulador, valorActual) => acumulador + valorActual, 0);
-                      }
+            <div class="card rounded-3 card_dashboard">
+                <div class="card-content">
+                    <div class="card-body">
+                        <div class="media d-flex mx-2">
+                            <div class="media-body text-left">
+                                <% const usersVisitsQty=[]; let porcentaje=0; 
+                                function sumarNumeros(array) { 
+                                    return array.reduce((acumulador, valorActual)=> acumulador + valorActual, 0);
+                                }
 
-                      for(let v=0; usuarios.length>v; v++) {
-                          if (usuarios[v].visible && parseInt(usuarios[v].visits) > 0) {
-                              usersVisitsQty.push(parseInt(usuarios[v].visits))
-                          }
-                      }
-                      let totalVisitas = sumarNumeros(usersVisitsQty); 
-                      porcentaje = parseInt((userInfo.visits/totalVisitas)*100) %>
-                      <h3 class="danger"><%= userInfo.visits %>/<span style="font-size: 0.95rem;" ><%= parseInt(totalVisitas) %></span></h3>
-                    <span>Total Visitas Usuario: <%= userInfo.username %></span>
-                  </div>
-                  <div class="align-self-center ms-auto">
-                    <i class="icon-directions danger font-large-2 float-right"></i>
-                  </div>
+                                for(let v=0; usuarios.length>v; v++) {
+                                    if (usuarios[v].visible && parseInt(usuarios[v].visits) > 0) {
+                                        usersVisitsQty.push(parseInt(usuarios[v].visits))
+                                    }
+                                }
+                                let totalVisitas = sumarNumeros(usersVisitsQty);
+                                porcentaje = parseInt((userInfo.visits/totalVisitas)*100) %>
+                                <h3 class="danger">
+                                    <%= userInfo.visits %>/
+                                        <span style="font-size: 0.95rem;">
+                                            <%= parseInt(totalVisitas) %>
+                                        </span>
+                                </h3>
+                                <span>Total Visitas Usuario: <%= userInfo.username %></span>
+                            </div>
+                            <div class="align-self-center ms-auto">
+                                <i class="icon-directions danger font-large-2 float-right"></i>
+                            </div>
+                        </div>
+                        <div class="progress mt-1 mb-0" style="height: 7px;">
+                            <div class="progress-bar bg-success" role="progressbar"
+                                style="width: <%= porcentaje %>%" aria-valuenow="<%= userInfo.visits %>"
+                                aria-valuemin="0" aria-valuemax="<%= parseInt(totalVisitas) %>"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="progress mt-1 mb-0" style="height: 7px;">
-                  <div class="progress-bar bg-success" role="progressbar" style="width: <%= porcentaje %>%" aria-valuenow="<%= userInfo.visits %>" aria-valuemin="0" aria-valuemax="<%= parseInt(totalVisitas) %>"></div>
-                </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
-    </section>
-  </div>
+    </div>
+</div>

@@ -522,10 +522,10 @@ btnAddNewRow.addEventListener('click', () => {
                 event.stopImmediatePropagation();
     
                 try {
-                    await cargarUsuario(idPermiso, idPermisoNumero);
+                    await cargarProveedor(idPermiso, idPermisoNumero);
     
                 } catch (error) {
-                    const titulo = 'Error al cargar los usuarios'
+                    const titulo = 'Error al cargar los proveedores'
                     const message = error
                     const icon = 'error'
                     messageAlertUser(titulo, message, icon)
@@ -1064,7 +1064,7 @@ function messageUpdateOt(
                             suppliers.forEach((supplier, i) => {
                                 const supplierHTML = `
                                     <label>
-                                        <span id="${supplier._id}" class="badge rounded-pill ${supplier.type === `${permisoProveedor}` ? 'bg-info' : 'bg-light'} text-dark my-2">
+                                        <span id="${supplier._id}" class="badge rounded-pill ${supplier.type === `${permisoProveedor}` ? 'bg-info text-dark' : 'bg-secondary text-light'}  my-2">
                                             <input id="${i}" class="form-check-input mb-1" type="radio"
                                                 name="radioProveedores" value="${supplier.designation}">
                                             ${supplier.designation}
@@ -1130,7 +1130,7 @@ function messageUpdateOt(
                                     const titulo = 'Proveedor no seleccionado'
                                     const message = 'No ha seleccionado ningún usuario!'
                                     const icon = 'warning'
-                                    messageAlertSupplier(titulo, message, icon)
+                                    messageAlertUser(titulo, message, icon)
                                     // Al cerrar el segundo modal, reabrir el primer modal
                                     setTimeout(() => {
                                         messageUpdateOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDesign, otSimulation, otSupplier, imageOci);
@@ -1139,14 +1139,14 @@ function messageUpdateOt(
                             });
                             
                         } else {
-                            throw new Error(`No hay usuarios que seleccionar`);
+                            throw new Error(`No hay proveedores que seleccionar`);
                         }
                 
                     } catch (error) {
                         const titulo = 'Error'
                         const message = `${error}`
                         const icon = 'error'
-                        messageAlertSupplier(titulo, message, icon)
+                        messageAlertUser(titulo, message, icon)
                     }
                 }
 
@@ -1191,7 +1191,6 @@ function messageUpdateOt(
                     Swal.close();
 
                     let idPermiso = searchSupplierModal.id
-                    console.log('idPermiso:...', idPermiso)
                     event.preventDefault();
 
                     try {
@@ -1201,7 +1200,7 @@ function messageUpdateOt(
                         const titulo = 'Error al cargar los proveedores'
                         const message = error
                         const icon = 'error'
-                        messageAlertSupplier(titulo, message, icon)
+                        messageAlertUser(titulo, message, icon)
                     }
                 });
 
@@ -1606,13 +1605,6 @@ function messageAlertUser(titulo, message, icon){
     return false
 }
 
-function messageAlertSupplier(titulo, message, icon){
-    Swal.fire(
-        titulo,
-        message,
-        icon);
-    return false
-}
 
 async function cargarUsuario(idPermiso, idPermisoNumero) {
     const permisos = {
@@ -1745,18 +1737,18 @@ async function cargarProveedor(idPermiso, idPermisoNumero) {
     const permisos = {
         'searchSupplier': {
             permisoProveedor: 'diseno',
-            tituloSeguimiento: 'Diseño',
+            tituloSeguimiento: 'Proveedores Diseño',
             inputTarget: `externoDiseno${idPermisoNumero}`
         },
         'searchSupplierModal': {
             permisoProveedor: 'diseno',
-            tituloSeguimiento: 'Diseño',
+            tituloSeguimiento: 'Proveedores Diseño',
             inputTarget: `externoDiseno${idPermisoNumero}`
         },
-        'searchSimulationSupplier': {
+        'searchSimulationSupplierModal': {
             permisoProveedor: 'simulacion',
-            tituloSeguimiento: 'Simulación',
-            inputTarget: `externoSimulacion${idPermisoNumero}`
+            tituloSeguimiento: 'Proveedores Simulación',
+            inputTarget: `externoDiseno${idPermisoNumero}`
         }
     };
     
@@ -1769,28 +1761,26 @@ async function cargarProveedor(idPermiso, idPermisoNumero) {
     try {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        const url = `../../../api/proveedores/` //searchSuppliers/${userNameBanner}`
+        const url = `../../../api/proveedores/searchSuppliersAll`
         const response = await fetch(url, {
             method: "GET",
             headers: myHeaders,
             mode: 'cors',
             cache: 'default',
         });
-        console.log('response........: ', await response.json())
         
         if(!response.ok ){
             throw new Error(`Error en la solicitud`);
         }
 
         const suppliers = await response.json();
-        console.log('supositoriossss:', suppliers)
         const arrayProveedoresEspecificos = [], arraySuppliersAll = [];
 
         if (suppliers && suppliers.length > 0) {
             suppliers.forEach((supplier, i) => {
                 const supplierHTML = `
                     <label>
-                        <span id="${supplier._id}" class="badge rounded-pill ${supplier.type === `${permisoProveedor}` ? 'bg-info' : 'bg-light'} text-dark my-2">
+                        <span id="${supplier._id}" class="badge rounded-pill ${supplier.type === `${permisoProveedor}` ? 'bg-info text-dark' : 'bg-secondary text-light'} my-2">
                             <input id="${i}" class="form-check-input mb-1" type="radio"
                                 name="radioProveedores" value="${supplier.designation}">
                             ${supplier.designation}
@@ -1809,14 +1799,14 @@ async function cargarProveedor(idPermiso, idPermisoNumero) {
                     ${arrayProveedoresEspecificos.join(' ')}
                 </div>
                 <hr>
-                <label>Proveedores</label>
+                <label>Proveedores Simulación</label>
                 <div name='container' class="container">
                     ${arraySuppliersAll.join(' ')}
                 </div>
                 <hr>`;
 
             Swal.fire({
-                title: tituloSeguimiento,
+                title: 'Proveedores',
                 html: html,
                 width: 450,
                 background: "#eee",
@@ -1848,7 +1838,7 @@ async function cargarProveedor(idPermiso, idPermisoNumero) {
                     const titulo = 'Proveedor no seleccionado'
                     const message = 'No ha seleccionado ningún proveedor!'
                     const icon = 'warning'
-                    messageAlertSupplier(titulo, message, icon)
+                    messageAlertUser(titulo, message, icon)
                 }
             });
 
@@ -1860,7 +1850,7 @@ async function cargarProveedor(idPermiso, idPermisoNumero) {
         const titulo = 'Error'
         const message = `${error}`
         const icon = 'error'
-        messageAlertSupplier(titulo, message, icon)
+        messageAlertUser(titulo, message, icon)
     }
     disabledBtnAceptar()
 }
@@ -1934,13 +1924,13 @@ arrayBtnSearchSupplier.forEach(function(element) {
             event.stopImmediatePropagation();
 
             try {
-                await cargarProveedor(idPermiso);
+                await cargarProveedor(idPermiso, idPermisoNumero);
 
             } catch (error) {
                 const titulo = 'Error al cargar los proveedores'
                 const message = error
                 const icon = 'error'
-                messageAlertSupplier(titulo, message, icon)
+                messageAlertUser(titulo, message, icon)
             }
         }, { once: true });
     }
