@@ -179,6 +179,7 @@
                                         <h3 class="font-medium"><%= parseInt(maquinasVisibles.length) %>/<span style="font-size: 0.95rem;" ><%= parseInt(maquinas.length) %></span></h3>
                                         <% if ( maquinasEnMantenimiento.length != 0 ) { %>
                                             <span><%= parseInt(maquinasVisibles.length) %> Maquinas Activas</span> / <span class="badge rounded-pill text-bg-danger"><%= maquinasEnMantenimiento.length %> en Mantenimiento</span>
+                                            <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #b09b12;"></i>
                                         <% } else { %>
                                             <span class="badge rounded-pill text-bg-success">Maquinas Activas</span>
                                         <% } %>
