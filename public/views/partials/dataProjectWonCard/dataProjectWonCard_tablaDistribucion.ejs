@@ -28,13 +28,7 @@
         </tr>
     </thead>
     <tbody class="table-group-divider">
-        <% let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-            resMecanizado2dCompleto = 'prodismo', resRevisionMecanizado2dCompleto = 0,
-            resMecanizado3dPrefinal = 'prodismo', resRevisionMecanizado3dPrefinal = 0,
-            resMecanizado3dFinal = 'prodismo', resRevisionMecanizado3dFinal = 0,
-            resBancoArmado = 'prodismo', resRevisionBancoArmado = 0
-
-        const mecanizadoConfig = {
+        <% const mecanizadoConfig = {
             prodismo: { text: "PRODISMO", classes: "bg-success text-white" },
             terceros: { text: "TERCEROS", classes: "bg-danger text-white" },
             china: { text: "CHINA", classes: "bg-warning text-dark" },
@@ -46,6 +40,12 @@
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
             pathMongoOtDetalles = pathMongoOtProject[n].otDetalles,
             largoArrayOtDetalles = parseInt(pathMongoOtDetalles.length)
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                resMecanizado2dCompleto = 'prodismo', resRevisionMecanizado2dCompleto = 0,
+                resMecanizado3dPrefinal = 'prodismo', resRevisionMecanizado3dPrefinal = 0,
+                resMecanizado3dFinal = 'prodismo', resRevisionMecanizado3dFinal = 0,
+                resBancoArmado = 'prodismo', resRevisionBancoArmado = 0
 
             for ( let o=0; largoArrayOtDetalles > o; o++) {
                 let pathMongoOtDistribucion = pathMongoOtDetalles[o].otDistribucion || [],

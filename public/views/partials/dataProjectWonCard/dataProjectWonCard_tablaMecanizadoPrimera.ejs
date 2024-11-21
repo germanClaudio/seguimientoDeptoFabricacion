@@ -32,12 +32,7 @@
     </thead>
     <tbody class="table-group-divider">
         
-        <%let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-            resDatoFCero = 'S/D', resEstadoFCero = 'S/D', resRevisionFCero = 0,
-            resDatoFUno = 'S/D', resEstadoFUno = 'S/D', resRevisionFUno = 0,
-            resDatoFDos = 'S/D', resEstadoFDos = 'S/D', resRevisionFDos = 0;
-
-            const mecanizadoPrimeraConfig = {
+        <% const mecanizadoPrimeraConfig = {
                 enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
                 terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
                 suspendido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
@@ -49,6 +44,11 @@
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
             pathMongoOtDetalles = pathMongoOtProject[n].otDetalles,
             largoArrayOtDetalles = parseInt(pathMongoOtDetalles.length)
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                resDatoFCero = 'S/D', resEstadoFCero = 'S/D', resRevisionFCero = 0,
+                resDatoFUno = 'S/D', resEstadoFUno = 'S/D', resRevisionFUno = 0,
+                resDatoFDos = 'S/D', resEstadoFDos = 'S/D', resRevisionFDos = 0;
 
             for ( let o=0; largoArrayOtDetalles> o; o++) {
                 let pathToMongoOtMecanizado = pathMongoOtDetalles[o].otMecanizadoPrimera || [];

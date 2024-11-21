@@ -31,12 +31,7 @@
     </thead>
     <tbody class="table-group-divider">
         
-        <% let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-            resDatoRt = "S/D", resEstadoRt = 'sinDato', resRevisionRt = 0,
-            resDatoPreparacionGeo = "S/D", resEstadoPreparacionGeo = 'sinDato', resRevisionPreparacionGeo = 0,
-            resDatoPrograma2d = "S/D", resEstadoPrograma2d = 'sinDato', resRevisionPrograma2d = 0;
-
-            const programacionPrimeraConfig = {
+        <% const programacionPrimeraConfig = {
                 enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
                 terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
                 suspendido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
@@ -48,6 +43,11 @@
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
             pathMongoOtDetalles = pathMongoOtProject[n].otDetalles,
             largoArrayOtDetalles = parseInt(pathMongoOtDetalles.length)
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                resDatoRt = "S/D", resEstadoRt = 'sinDato', resRevisionRt = 0,
+                resDatoPreparacionGeo = "S/D", resEstadoPreparacionGeo = 'sinDato', resRevisionPreparacionGeo = 0,
+                resDatoPrograma2d = "S/D", resEstadoPrograma2d = 'sinDato', resRevisionPrograma2d = 0;
 
             for ( let o=0; largoArrayOtDetalles> o; o++) {
                 let pathToMongoOtProgramacion = pathMongoOtDetalles[o].otProgramacionPrimera || [];
