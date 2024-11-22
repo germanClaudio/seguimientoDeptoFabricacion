@@ -1,0 +1,166 @@
+<div class="card mb-5 mx-auto text-center" style="max-width: 99vw;">
+    <div class="row align-items-center mx-1" style="background-color: #f1e8ae99;">
+
+        <!-- columna #1 datos de proyecto -->
+        <%- include('../../partials/dataProjectCard/dataProjectCard_col1_projData'); %>
+        
+        <!-- contenedor status de proyecto -->
+        <%- include('../../partials/dataProjectCard/dataProjectCard_contStatusProy'); %>
+
+            <div class="card-body px-1">
+                <% if (proyecto.length > 0) { 
+                        for ( let m=0; proyecto.length> m; m++) { %>                           
+                            <div class="accordion" id="accordionPanelsStayOpenExample">                 
+                                <% let countVisibleOci=0
+                                    let arrayVisibleOci = [] 
+                                    for ( let x=0; proyecto[m].project[j].oci.length> x; x++) {
+                                        if (proyecto[m].project[j].oci[x].visible) { 
+                                            arrayVisibleOci.push(proyecto[m].project[j].oci[x])
+                                                countVisibleOci++
+                                        }
+                                    }    
+
+                                        if (arrayVisibleOci.length > 0 && countVisibleOci > 0) {
+                                            for (let k=0; arrayVisibleOci.length > k; k++) { %>
+                                        
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="panelsStayOpen-headingOneCard<%=k%>">
+                                                    <!-- ------ boton accordion OCI's ------ -->
+                                                        <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_btnAccord', { k, m, j, arrayVisibleOci }); %>
+                                                    </h2>
+
+                                                    <div id="panelsStayOpen-collapseOneCard<%=k%>" class="accordion-collapse show" aria-labelledby="panelsStayOpen-headingOne">
+
+                                                        <% if (arrayVisibleOci[k].ociStatus) { %>
+                                                            <div class="accordion-body px-1 mw-100">
+                                                        <% } else { %>
+                                                            <div class="accordion-body px-1 mw-100 pe-none" contenteditable="false" style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5">
+                                                        <% } %>
+
+                                                                <div class="container-fluid">
+                                                                    <% if (arrayVisibleOci[k].otProject.length> 0) { %>
+
+                                                                        <!-- cabecera botonera principal de OCI -->
+                                                                        <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_btnOci', { k, m, j, arrayVisibleOci }); %>                    
+                                                                    
+                                                                        <div class="d-flex flex-row my-3">
+                                                                            <!-- ----- tabla general ----- -->
+                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaGral', { k, m, j }); %>
+                                                                            
+                                                                            <!-- ----- tabla dueño de OT ----- -->
+                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaDuenoOt', { k, m, j }); %>
+
+                                                                            <!-- Carousel de Tablas ----- -->
+                                                                            <div id="carouselExampleControls<%=k%>" class="carousel slide" data-bs-ride="carousel">
+
+                                                                                <!-- ----- mostrar botones de acuerdo a cantidad de slides ----- -->
+                                                                                <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_btnSlides', { k, m, j }); %>
+                                                                                
+                                                                                <% if (proyecto[0].project[0].levelProject == 'ganado') { 
+                                                                                    let totalColDataOtArmado = 4, 
+                                                                                        totalColDataEtapaPrimera = 8, 
+                                                                                        totalColDataEtapaSegunda = 13, 
+                                                                                        totalColDataAnalisisCritico = 15,
+                                                                                        totalColDataEtapaTerceraPrimera = 18, 
+                                                                                        totalColDataEtapaTerceraSegunda = 21, 
+                                                                                        totalColDataCicloCorreccionPrimera = 24, 
+                                                                                        totalColDataCicloCorreccionSegunda = 27,
+                                                                                        totalColDataCicloCorreccionTercera = 30,
+                                                                                        totalColDataLiberacionBuyOffPrimera = 33,
+                                                                                        totalColDataLiberacionBuyOffSegunda = 36,
+                                                                                        totalColDataBuyOff = 38,
+                                                                                        totalColDataPendientesFinales = 41;
+                                                                                    %>
+
+                                                                                    <div class="carousel-inner">
+                                                                                        <!-- --------- tabla otAramdo ----------- -->
+                                                                                        <div id="slideOtArmado" class="carousel-item" data-bs-interval="600000"> <!-- active -->
+                                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaArmado', { k, m, j, totalColDataOtArmado }); %>
+                                                                                        </div>
+                                                                                        <!-- --------- tabla Etapa Primera ----------- -->
+                                                                                        <div id="slideEtapaPrimera" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaEtapaPrimera', { k, m, j, totalColDataEtapaPrimera }); %>
+                                                                                        </div>
+                                                                                        <!-- --------- tabla Etapa Segunda ----------- -->
+                                                                                        <div id="slideEtapaSegunda" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaEtapaSegunda', { k, m, j, totalColDataEtapaSegunda }); %>
+                                                                                        </div>
+                                                                                        <!-- --------- tabla Analisis Critico ----------- -->
+                                                                                        <div id="slideAnalisisCritico" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaAnalisisCritico', { k, m, j, totalColDataAnalisisCritico }); %>
+                                                                                        </div>
+                                                                                        <!-- --------- tabla Etapa Tercera Primera ----------- -->
+                                                                                        <div id="slideEtapaTerceraPrimera" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaEtapaTerceraPrimera', { k, m, j, totalColDataEtapaTerceraPrimera }); %>
+                                                                                        </div>
+                                                                                        <!-- --------- tabla Etapa Tercera Segunda ----------- -->
+                                                                                        <div id="slideEtapaTerceraSegunda" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaEtapaTerceraSegunda', { k, m, j, totalColDataEtapaTerceraSegunda }); %>
+                                                                                        </div>
+                                                                                        <!-- --------- tabla Ciclo Correccion Primera ----------- -->
+                                                                                        <div id="slideCicloCorreccionPrimera" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaCicloCorreccionPrimera', { k, m, j, totalColDataCicloCorreccionPrimera }); %>
+                                                                                        </div>
+                                                                                        <!-- --------- tabla Ciclo Correccion Segunda ----------- -->
+                                                                                        <div id="slideCicloCorreccionSegunda" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaCicloCorreccionSegunda', { k, m, j, totalColDataCicloCorreccionSegunda }); %>
+                                                                                        </div>
+                                                                                        <!-- --------- Ciclo Correccion Tercera ----------- -->
+                                                                                        <div id="slideCicloCorreccionTercera" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaCicloCorreccionTercera', { k, m, j, totalColDataCicloCorreccionTercera }); %>
+                                                                                        </div>
+                                                                                        <!-- --------- tabla Liberacion BuyOff Primera ----------- -->
+                                                                                        <div id="slideLiberacionBuyOffPrimera" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaLiberacionBuyOffPrimera', { k, m, j, totalColDataLiberacionBuyOffPrimera }); %>
+                                                                                        </div>
+                                                                                        <!-- --------- tabla Liberacion BuyOff Segunda ----------- -->
+                                                                                        <div id="slideLiberacionBuyOffSegunda" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaLiberacionBuyOffSegunda', { k, m, j, totalColDataLiberacionBuyOffSegunda }); %>
+                                                                                        </div>
+                                                                                        <!-- --------- tabla BuyOff ----------- -->
+                                                                                        <div id="slideBuyOff" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaBuyOff', { k, m, j, totalColDataBuyOff }); %>
+                                                                                        </div>
+                                                                                        <!-- --------- tabla Pendientes Finales ----------- -->
+                                                                                        <div id="slidePendientesFinales" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaPendientesFinales', { k, m, j, totalColDataPendientesFinales }); %>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                <% } %>
+                                                                                <!-- --------- botonera carrusel < > ----------- -->
+                                                                                <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_btnCarrousel', { k, m, j }); %>
+                                                                                <input id="slideHidden" type="hidden" value="<%= slide %>">
+                                                                            </div>
+                                                                        </div>
+                                                                        <hr>
+
+                                                                        <!-- ------ contenedor datos creador por y modificado por ------ -->
+                                                                        <%- include('../../partials/dataProjectCard/dataProjectCard_containerDatos', { k, m, j }); %>
+                                                                        
+                                                                    <% } else { %>
+                                                                        <!-- ------ contenedor de OCI vacía ------ -->
+                                                                        <%- include('../../partials/dataProjectCard/dataProjectCard_contOciVacia', { k, m, j , arrayVisibleOci}); %>
+
+                                                                    <% } %>
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                            <% } 
+                                        } %>
+                            </div>
+                        <% } %>
+
+                    <% } else { %>
+
+                        <!-- -------- contenedor de Proyecto vacío --------- -->
+                        <%- include('../../partials/dataProjectCard/dataProjectCard_contProyectoVacio', { k, m, j }); %>
+
+                    <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- contenedor botonera inferior de pagina 'volver atras' 'volver al home' -->
+    <%- include('../../partials/dataProjectCard/dataProjectCard_btnInferior', { k, m, j }); %>
+</div>

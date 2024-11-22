@@ -28,8 +28,19 @@ function dataUserModificatorNotEmpty(userCreator) {
     return userModificator
 }
 
+function dataUserAuthorizator(userCreator) {
+    const user = [{
+        name: userCreator.name,
+        lastName: userCreator.lastName,
+        username: userCreator.username,
+        email: userCreator.email
+    }]
+    return user
+}
+
 module.exports = {
     dataUserCreator,
     dataUserModificatorEmpty,
-    dataUserModificatorNotEmpty
+    dataUserModificatorNotEmpty,
+    dataUserAuthorizator
 }

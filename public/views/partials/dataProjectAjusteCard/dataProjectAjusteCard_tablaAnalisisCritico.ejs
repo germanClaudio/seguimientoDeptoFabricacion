@@ -1,0 +1,332 @@
+<!-- tabla Analisi Critico -->
+<table id="tablaOtAnalisisCritico<%=k%>" class="table-responsive align-middle col-5 border-end border-dark" style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #d8d8eb">
+        <tr>
+            <th colspan="2" class="text-center">ANALISIS CRÍTICO
+                <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
+                    <button id="posBtnAddDataOtAnalisisCritico<%=k%>" type="button" name="btnOtAnalisisCritico" class="btn btn-small btn-success shadow m-1 me-5 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                        <span id="spanCheckSelecMasiveAnalCrit<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                            <span class="visually-hidden">Elementos seleccionados</span>
+                        </span>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 me-5 disabled" style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>                                                    
+                    </button>
+                <% } %>
+                <i class="fa-solid fa-arrows-spin fa-lg" style="color: #b09b12;"></i> En Proceso -
+                <i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i> Terminado -
+                <i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i> Suspendido -
+                <i class="fa-solid fa-ban fa-lg"></i> No Aplica -
+                <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i> Sin Datos
+            </th>
+        </tr>
+        <tr>
+            <th id="colData0" style="width:50vw" scope="col-1" class="text-center pb-1">Estático | Estado | Rev.</th>
+            <th id="colData1" style="width:50vw" scope="col-1" class="text-center pb-1">Dinámico | Estado | Rev.</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        
+        <% const analisisCriticoConfig = {
+                enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
+                terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
+                suspendido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
+                noAplica: { icon: "fa-ban", iconColor: "color:#000000" },
+                default: { icon: "fa-triangle-exclamation", iconColor: "color:#1c21ac" }
+            };
+
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+            pathMongoOtAjuste = pathMongoOtProject[n].otAjuste,
+            largoArrayOtAjuste = parseInt(pathMongoOtAjuste.length)
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                resDatoEstatico = "S/D", resEstadoEstatico = 'sinDato', resRevisionEstatico = 0,
+                resDatoDinamico = "S/D", resEstadoDinamico = 'sinDato', resRevisionDinamico = 0;
+
+            for ( let o=0; largoArrayOtAjuste> o; o++) {
+                let pathToMongoOtAnalisisCritico = pathMongoOtAjuste[o].otAnalisisCritico || [];
+                let largoArrayAnalisisCritico = parseInt(pathToMongoOtAnalisisCritico.length);
+
+                let arrResDatoEstatico = [], arrResEstadoEstatico = [], valueArrayResEstatico = 0, arrResRevisionEstatico = [],
+                    arrResCreadorEstatico = [], arrResModificadorEstatico = [], arrResFechaEstatico = [], arrResFechaModEstatico = [];
+
+                let arrResDatoDinamico = [], arrResEstadoDinamico = [], valueArrayResDinamico = 0, arrResRevisionDinamico = [],
+                    arrResCreadorDinamico = [], arrResModificadorDinamico = [], arrResFechaDinamico = [], arrResFechaModDinamico = [];
+
+                if (pathMongoOtProject[n].visible && pathMongoOtAjuste[o].visible) {
+                    if (pathMongoOtProject[n].otStatus) { %>
+                        <!--Activo-->
+                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh;">
+                            <% for (let q = 13; totalColDataAnalisisCritico > q; q++) {
+                                if (q==13) { %>
+                                    <!-- Estatico data Activo--> 
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtAjuste > 0 && largoArrayAnalisisCritico > 0) {
+
+                                            for (let i = 0; largoArrayAnalisisCritico > i; i++) {
+                                                if (pathToMongoOtAnalisisCritico[i]) {
+                                                    let largoArray = parseInt(largoArrayAnalisisCritico)
+                                                    resDatoEstatico = pathToMongoOtAnalisisCritico[largoArray-1].estatico == 'sinDato' ? "S/D" : pathToMongoOtAnalisisCritico[largoArray-1].estatico
+                                                    resEstadoEstatico = pathToMongoOtAnalisisCritico[largoArray-1].estadoEstatico == 'sinDato' ? "S/D" : pathToMongoOtAnalisisCritico[largoArray-1].estadoEstatico
+                                                    resRevisionEstatico = parseInt(pathToMongoOtAnalisisCritico[largoArray-1].revisionEstatico) || 0
+                                                    
+                                                    pathToMongoOtAnalisisCritico[i].estatico == 'sinDato' ? arrResDatoEstatico.push("S/D") : arrResDatoEstatico.push(pathToMongoOtAnalisisCritico[i].estatico)
+                                                    pathToMongoOtAnalisisCritico[i].estadoEstatico == 'sinDato' ? arrResEstadoEstatico.push("S/D") : arrResEstadoEstatico.push(pathToMongoOtAnalisisCritico[i].estadoEstatico)
+                                                    arrResRevisionEstatico.push(pathToMongoOtAnalisisCritico[i].revisionEstatico)
+
+                                                    arrResCreadorEstatico.push(pathToMongoOtAnalisisCritico[i].creator[0].username)
+                                                    arrResModificadorEstatico.push(pathToMongoOtAnalisisCritico[i].modificator[0].username)
+                                                    arrResFechaEstatico.push(pathToMongoOtAnalisisCritico[i].timestamp)
+                                                    arrResFechaModEstatico.push(pathToMongoOtAnalisisCritico[i].modifiedOn)
+                                                }
+                                            }
+                                            valueArrayResEstatico = parseInt(arrResDatoEstatico.length-1)
+
+                                            if (arrResDatoEstatico.length == 1 ) {
+                                                anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
+                                            } else if (arrResDatoEstatico.length == arrResRevisionEstatico.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                            
+                                        } else {
+                                            arrResDatoEstatico.push(resDatoEstatico)
+                                            arrResEstadoEstatico.push(resEstadoEstatico)
+                                            arrResRevisionEstatico.push(resRevisionEstatico)
+                                            
+                                            arrResCreadorEstatico.push(pathMongoOtAjuste[o].creator[0].username)
+                                            arrResModificadorEstatico = ""
+                                            arrResFechaEstatico.push(pathMongoOtAjuste[o].timestamp)
+                                            arrResFechaModEstatico = ""
+                                        } %>
+                                        
+                                        <div id="btnAnteriorSiguienteEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorEstatico" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoEstatico %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoEstatico %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResEstatico %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionEstatico %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorEstatico %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorEstatico %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaEstatico %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModEstatico %>">
+
+                                            <span id="resDatoEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                <%= resDatoEstatico %>
+                                            </span> |
+                                            
+                                            <% const config = analisisCriticoConfig[resEstadoEstatico] || analisisCriticoConfig.default; %>
+                                            <span id="resEstadoEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoEstatico%>">
+                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                            </span> |
+
+                                            <span id="resRevisionEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionEstatico" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                <%= resRevisionEstatico %>
+                                            </span>
+
+                                            <button id="btnSiguienteEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteEstatico" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+
+                                <% } else { %>
+                                    <!-- Dinamico data Activo-->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtAjuste > 0 && largoArrayAnalisisCritico > 0) {
+
+                                            for (let i = 0; largoArrayAnalisisCritico > i; i++) {
+                                                if (pathToMongoOtAnalisisCritico[i]) {
+                                                    let largoArray = parseInt(largoArrayAnalisisCritico)
+                                                    resDatoDinamico = pathToMongoOtAnalisisCritico[largoArray-1].dinamico == 'sinDato' ? "S/D" :  pathToMongoOtAnalisisCritico[largoArray-1].dinamico
+                                                    resEstadoDinamico = pathToMongoOtAnalisisCritico[largoArray-1].estadoDinamico == 'sinDato' ? "S/D" : pathToMongoOtAnalisisCritico[largoArray-1].estadoDinamico
+                                                    resRevisionDinamico = parseInt(pathToMongoOtAnalisisCritico[largoArray-1].revisionDinamico) || 0
+                                                    
+                                                    pathToMongoOtAnalisisCritico[i].dinamico == 'sinDato' ? arrResDatoDinamico.push("S/D") : arrResDatoDinamico.push(pathToMongoOtAnalisisCritico[i].dinamico)
+                                                    pathToMongoOtAnalisisCritico[i].estadoDinamico == 'sinDato' ? arrResEstadoDinamico.push("S/D") : arrResEstadoDinamico.push(pathToMongoOtAnalisisCritico[i].estadoDinamico)
+                                                    arrResRevisionDinamico.push(pathToMongoOtAnalisisCritico[i].revisionDinamico)
+                                                    
+                                                    arrResCreadorDinamico.push(pathToMongoOtAnalisisCritico[i].creator[0].username)
+                                                    arrResModificadorDinamico.push(pathToMongoOtAnalisisCritico[i].modificator[0].username)
+                                                    arrResFechaDinamico.push(pathToMongoOtAnalisisCritico[i].timestamp)
+                                                    arrResFechaModDinamico.push(pathToMongoOtAnalisisCritico[i].modifiedOn)
+                                                }
+                                            }
+                                            valueArrayResDinamico = parseInt(arrResEstadoDinamico.length-1)
+                                                    
+                                            if (arrResDatoDinamico.length == 1 ) {
+                                                anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
+                                            } else if (arrResDatoDinamico.length == arrResRevisionDinamico.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                            
+                                        } else {
+                                            arrResDatoDinamico.push(resDatoDinamico)
+                                            arrResEstadoDinamico.push(resEstadoDinamico)
+                                            arrResRevisionDinamico.push(resRevisionDinamico)
+                                            
+                                            arrResCreadorDinamico.push(pathMongoOtAjuste[o].creator[0].username)
+                                            arrResModificadorDinamico = ""
+                                            arrResFechaDinamico.push(pathMongoOtAjuste[o].timestamp)
+                                            arrResFechaModDinamico = ""
+                                        } %>
+                                        
+                                        <div id="btnAnteriorSiguienteDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorDinamico" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoDinamico %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoDinamico %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResDinamico %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionDinamico %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorDinamico %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorDinamico %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaDinamico %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModDinamico %>">
+
+                                            <span id="resDatoDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                <%= resDatoDinamico %>
+                                            </span> |
+
+                                            <% const config = analisisCriticoConfig[resEstadoDinamico] || analisisCriticoConfig.default; %>
+                                            <span id="resEstadoDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoDinamico%>">
+                                                <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                            </span> |
+
+                                            <span id="resRevisionDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionDinamico" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                <%= resRevisionDinamico %>
+                                            </span>
+
+                                            <button id="btnSiguienteDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteDinamico" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                <% }
+                            } %>
+                        </tr>
+
+                    <% } else { %>
+                        <!--Inactivo-->
+                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="pe-none border-bottom" style="height: 5vh; background-color: #dedede;">
+                            <% for (let q = 13; totalColDataAnalisisCritico > q; q++) {
+                                if (q==13) { %>
+                                    <!-- Estatico data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtAjuste > 0 && largoArrayAnalisisCritico > 0) {
+                                            for (let i = 0; largoArrayAnalisisCritico > i; i++) {
+
+                                                if (pathToMongoOtAnalisisCritico[i]) {
+                                                    let largoArray = parseInt(largoArrayAnalisisCritico)
+                                                    resDatoEstatico = pathToMongoOtAnalisisCritico[largoArray-1].estatico || 'S/D'
+                                                    resEstadoEstatico = pathToMongoOtAnalisisCritico[largoArray-1].estadoEstatico || 'sinDato'
+                                                    resRevisionEstatico = parseInt(pathToMongoOtAnalisisCritico[largoArray-1].revisionEstatico) || 0
+                                                    
+                                                    arrResDatoEstatico.push(pathToMongoOtAnalisisCritico[i].estatico)
+                                                    arrResEstadoEstatico.push(pathToMongoOtAnalisisCritico[i].estadoEstatico)
+                                                    arrResRevisionEstatico.push(pathToMongoOtAnalisisCritico[i].revisionEstatico)
+                                                }
+                                            }
+                                            valueArrayResEstatico = parseInt(arrResEstadoEstatico.length-1)
+                                            resDatoEstatico = pathToMongoOtAnalisisCritico[0].Estatico
+                                            resEstadoEstatico = pathToMongoOtAnalisisCritico[0].estadoEstatico
+
+                                        } else {
+                                            arrResDatoEstatico.push(resDatoEstatico)
+                                            arrResEstadoEstatico.push(resEstadoEstatico)
+                                            arrResRevisionEstatico.push(resRevisionEstatico)
+                                        } %>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoEstatico %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoEstatico %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResEstatico %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionEstatico %>">
+                                    
+                                        <span id="resDatoEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                            <%= resDatoEstatico %>
+                                        </span> |
+
+                                        <% const config = analisisCriticoConfig[resEstadoEstatico] || analisisCriticoConfig.default; %>
+                                        <span id="resEstadoEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoEstatico%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionEstatico" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionEstatico %>
+                                        </span>
+                                    </td>
+
+                                <% } else { %>
+                                    <!-- Dinamico data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtAjuste > 0 && largoArrayAnalisisCritico > 0) {
+                                            for (let i = 0; largoArrayAnalisisCritico > i; i++) {
+                                                
+                                                if (pathToMongoOtAnalisisCritico[i]) {
+                                                    let largoArray = parseInt(largoArrayAnalisisCritico)
+                                                    resDatoDinamico = pathToMongoOtAnalisisCritico[largoArray-1].dinamico || 'S/D'
+                                                    resEstadoDinamico = pathToMongoOtAnalisisCritico[largoArray-1].dinamico || 'sinDato'
+                                                    resRevisionDinamico = parseInt(pathToMongoOtAnalisisCritico[largoArray-1].revisionDinamico) || 0
+                                                    
+                                                    arrResDatoDinamico.push(pathToMongoOtAnalisisCritico[i].dinamico)
+                                                    arrResEstadoDinamico.push(pathToMongoOtAnalisisCritico[i].dinamico)
+                                                    arrResRevisionDinamico.push(pathToMongoOtAnalisisCritico[i].revisionDinamico)
+                                                }
+                                            }
+                                            valueArrayResDinamico = parseInt(arrResEstadoDinamico.length-1)
+                                            resDatoDinamico = pathToMongoOtAnalisisCritico[0].dinamico
+                                            resEstadoDinamico = pathToMongoOtAnalisisCritico[0].estadoDinamico
+                                        
+                                        } else {
+                                            arrResDatoDinamico.push(resDatoDinamico)
+                                            arrResEstadoDinamico.push(resEstadoDinamico)
+                                            arrResRevisionDinamico.push(resRevisionDinamico)
+                                        } %>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoDinamico %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoDinamico %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResDinamico %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionDinamico %>">
+
+                                        <span id="resDatoDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                            <%= resDatoDinamico %>
+                                        </span> |
+                                        
+                                        <% const config = analisisCriticoConfig[resEstadoDinamico] || analisisCriticoConfig.default; %>
+                                        <span id="resEstadoDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoDinamico%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionDinamico" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionDinamico %>
+                                        </span>
+                                    </td>
+                                <% }
+                            } %>
+                        </tr>
+                    <% }
+                }
+            }
+        }) %>
+    </tbody>
+</table>

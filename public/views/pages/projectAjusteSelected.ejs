@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head/head'); %>
+</head>
+
+<body>
+    <%- include('../partials/header/header'); %>
+    
+    <div class="container" style="padding-top: 70px;"></div>
+    <br>
+    
+    <div class="d-block m-auto">
+        <%- include('../partials/btnHeaderTop/btnProjectAjusteSelected'); %>
+    </div>
+
+    <%- include('../partials/sections/sectionProjectNameTitle'); %>
+
+    <div id="updateCliente">
+    </div>
+    <%- include('../partials/data/dataProjectAjusteCard', { k: data.k, m: data.m, j: data.j, slide: data.slide}); %>
+    <br>
+        <%- include('../partials/btnFooterBottom/btnFooterBottom-goUp'); %>
+    <br>
+    <footer>
+        <%- include('../partials/footer/footer'); %>
+    </footer>
+
+    <!--    scripts     -->
+    <script type="text/javascript" src="/js/projectAjusteInfo.js"></script> 
+    <!-- <script type="text/javascript" src="/js/projectInfoDistribucion.js"></script>
+    <script type="text/javascript" src="/js/projectInfoProgramacionPrimera.js"></script>
+    <script type="text/javascript" src="/js/projectInfoProgramacionSegunda.js"></script>
+    <script type="text/javascript" src="/js/projectInfoMecanizadoPrimera.js"></script>
+    <script type="text/javascript" src="/js/projectInfoMecanizadoSegunda.js"></script> -->
+
+</body>
+
+</html>

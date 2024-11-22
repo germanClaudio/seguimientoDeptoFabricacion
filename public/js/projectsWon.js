@@ -348,7 +348,8 @@ const renderProjectsWonForAdmin = (arrayProjects) => {
                         <td class="text-center border-start">
                             <div class="d-block align-items-center">
                                 <a href="/api/clientes/${element.client[0]._id}" class="btn btn-secondary btn-sm me-1 my-2" data-toggle="tooltip" data-placement="top" title="Ver proyecto"><i class="fa-solid fa-eye"></i></a>
-                                <a href="/api/programas/selectWonProjects/${element.project[0]._id}" class="btn btn-primary btn-sm ms-1 my-2" title="Editar datos de OCI"><i class="fa-solid fa-pencil"></i></a>
+                                <a href="/api/programas/selectWonProjects/${element.project[0]._id}" class="btn btn-primary btn-sm mx-1 my-2" title="Editar datos de Programación"><i class="fa-solid fa-pencil"></i></a>
+                                <a href="/api/ajustes/selectAjusteProjects/${element.project[0]._id}" class="btn btn-info btn-sm ms-1 my-2" title="Editar datos de Ajuste"><i class="fa-solid fa-file-pen"></i></a>
                             </div>
                         </td>
                     </tr>`)
@@ -656,6 +657,7 @@ const renderProjectsWonForUser = (arrayProjects) => {
                             <div class="d-block align-items-center">
                                 <a href="/api/proyectos/${element.client[0]._id}" class="btn btn-secondary btn-sm me-1" data-toggle="tooltip" data-placement="top" title="Ver proyecto"><i class="fa-solid fa-eye"></i></a>
                                 <a href="/api/programas/selectWonProjects/${element.project[0]._id}" class="btn btn-primary btn-sm ms-1" title="Editar datos de OCI/OT/Ítems"><i class="fa-solid fa-pencil"></i></a>
+                                <a href="/api/ajustes/selectAjusteProjects/${element.project[0]._id}" class="btn btn-info btn-sm ms-1 my-2" title="Editar datos de Ajuste"><i class="fa-solid fa-file-pen"></i></a>
                             </div>
                         </td>
                     </tr>`)

@@ -1,0 +1,464 @@
+<!-- tabla Ciclo Corrección Tercera -->
+<table id="tablaOtCicloCorreccionTercera<%=k%>" class="table-responsive align-middle col-5 border-end border-dark" style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #d8d8eb">
+        <tr>
+            <th colspan="3" class="text-center">3° CICLO CORRECCIÓN
+                <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
+                    <button id="posBtnAddDataOtCicloCorreccionTercera<%=k%>" type="button" name="btnOtCicloCorreccionTercera" class="btn btn-small btn-success shadow m-1 me-5 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                        <span id="spanCheckSelecMasiveCicCorTer<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                            <span class="visually-hidden">Elementos seleccionados</span>
+                        </span>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 me-5 disabled" style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>                                                    
+                    </button>
+                <% } %>
+                <i class="fa-solid fa-arrows-spin fa-lg" style="color: #b09b12;"></i> En Proceso -
+                <i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i> Terminado -
+                <i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i> Suspendido -
+                <i class="fa-solid fa-ban fa-lg"></i> No Aplica -
+                <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i> Sin Datos
+            </th>
+        </tr>
+        <tr>
+            <th id="colData0" style="width:33vw" scope="col-1" class="text-center pb-1">Pza Medida + Reunión | Estado | Rev.</th>
+            <th id="colData1" style="width:33vw" scope="col-1" class="text-center pb-1">Máquina | Estado | Rev.</th>
+            <th id="colData2" style="width:33vw" scope="col-1" class="text-center pb-1">Ajuste | Estado | Rev.</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        
+        <% const cicloCorreccionTerceraConfig = {
+                enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
+                terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
+                suspendido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
+                noAplica: { icon: "fa-ban", iconColor: "color:#000000" },
+                default: { icon: "fa-triangle-exclamation", iconColor: "color:#1c21ac" }
+            };
+
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+            pathMongoOtAjuste = pathMongoOtProject[n].otAjuste,
+            largoArrayOtAjuste = parseInt(pathMongoOtAjuste.length)
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                resDatoPiezaMedidaReunionTercera = "S/D", resEstadoPiezaMedidaReunionTercera = 'sinDato', resRevisionPiezaMedidaReunionTercera = 0,
+                resDatoMaquinaTercera = "S/D", resEstadoMaquinaTercera = 'sinDato', resRevisionMaquinaTercera = 0,
+                resDatoAjusteTercera = "S/D", resEstadoAjusteTercera = 'sinDato', resRevisionAjusteTercera = 0;
+
+            for ( let o=0; largoArrayOtAjuste> o; o++) {
+                let pathToMongoOtCicloCorreccionTercera = pathMongoOtAjuste[o].otCicloCorreccionTercera || [];
+                let largoArrayCicloCorreccionTercera = parseInt(pathToMongoOtCicloCorreccionTercera.length);
+
+                let arrResDatoPiezaMedidaReunionTercera = [], arrResEstadoPiezaMedidaReunionTercera = [], valueArrayResPiezaMedidaReunionTercera = 0, arrResRevisionPiezaMedidaReunionTercera = [],
+                    arrResCreadorPiezaMedidaReunionTercera = [], arrResModificadorPiezaMedidaReunionTercera = [], arrResFechaPiezaMedidaReunionTercera = [], arrResFechaModPiezaMedidaReunionTercera = [];
+
+                let arrResDatoMaquinaTercera = [], arrResEstadoMaquinaTercera = [], valueArrayResMaquinaTercera = 0, arrResRevisionMaquinaTercera = [],
+                    arrResCreadorMaquinaTercera = [], arrResModificadorMaquinaTercera = [], arrResFechaMaquinaTercera = [], arrResFechaModMaquinaTercera = [];
+
+                let arrResDatoAjusteTercera = [], arrResEstadoAjusteTercera = [], valueArrayResAjusteTercera = 0, arrResRevisionAjusteTercera = [],
+                    arrResCreadorAjusteTercera = [], arrResModificadorAjusteTercera = [], arrResFechaAjusteTercera = [], arrResFechaModAjusteTercera = [];
+
+                if (pathMongoOtProject[n].visible && pathMongoOtAjuste[o].visible) {
+                    if (pathMongoOtProject[n].otStatus) { %>
+                        <!--Activo-->
+                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh;">
+                            <% for (let q = 27; totalColDataCicloCorreccionTercera > q; q++) {
+                                if (q==27) { %>
+                                    <!-- Pieza Medida Reunion Tercera data Activo--> 
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtAjuste > 0 && largoArrayCicloCorreccionTercera > 0) {
+
+                                            for (let i = 0; largoArrayCicloCorreccionTercera > i; i++) {
+                                                if (pathToMongoOtCicloCorreccionTercera[i]) {
+                                                    let largoArray = parseInt(largoArrayCicloCorreccionTercera)
+                                                    resDatoPiezaMedidaReunionTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].piezaMedidaReunionTercera == 'sinDato' ? "S/D" : pathToMongoOtCicloCorreccionTercera[largoArray-1].piezaMedidaReunionTercera
+                                                    resEstadoPiezaMedidaReunionTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].estadoPiezaMedidaReunionTercera == 'sinDato' ? "S/D" : pathToMongoOtCicloCorreccionTercera[largoArray-1].estadoPiezaMedidaReunionTercera
+                                                    resRevisionPiezaMedidaReunionTercera = parseInt(pathToMongoOtCicloCorreccionTercera[largoArray-1].revisionPiezaMedidaReunionTercera) || 0
+                                                    
+                                                    pathToMongoOtCicloCorreccionTercera[i].piezaMedidaReunionTercera == 'sinDato' ? arrResDatoPiezaMedidaReunionTercera.push("S/D") : arrResDatoPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].piezaMedidaReunionTercera)
+                                                    pathToMongoOtCicloCorreccionTercera[i].estadoPiezaMedidaReunionTercera == 'sinDato' ? arrResEstadoPiezaMedidaReunionTercera.push("S/D") : arrResEstadoPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].estadoPiezaMedidaReunionTercera)
+                                                    arrResRevisionPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].revisionPiezaMedidaReunionTercera)
+
+                                                    arrResCreadorPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].creator[0].username)
+                                                    arrResModificadorPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].modificator[0].username)
+                                                    arrResFechaPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].timestamp)
+                                                    arrResFechaModPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].modifiedOn)
+                                                }
+                                            }
+                                            valueArrayResPiezaMedidaReunionTercera = parseInt(arrResDatoPiezaMedidaReunionTercera.length-1)
+
+                                            if (arrResDatoPiezaMedidaReunionTercera.length == 1 ) {
+                                                anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
+                                            } else if (arrResDatoPiezaMedidaReunionTercera.length == arrResRevisionPiezaMedidaReunionTercera.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                            
+                                        } else {
+                                            arrResDatoPiezaMedidaReunionTercera.push(resDatoPiezaMedidaReunionTercera)
+                                            arrResEstadoPiezaMedidaReunionTercera.push(resEstadoPiezaMedidaReunionTercera)
+                                            arrResRevisionPiezaMedidaReunionTercera.push(resRevisionPiezaMedidaReunionTercera)
+                                            
+                                            arrResCreadorPiezaMedidaReunionTercera.push(pathMongoOtAjuste[o].creator[0].username)
+                                            arrResModificadorPiezaMedidaReunionTercera = ""
+                                            arrResFechaPiezaMedidaReunionTercera.push(pathMongoOtAjuste[o].timestamp)
+                                            arrResFechaModPiezaMedidaReunionTercera = ""
+                                        } %>
+                                        
+                                        <div id="btnAnteriorSiguientePiezaMedidaReunionTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorPiezaMedidaReunionTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorPiezaMedidaReunionTercera" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPiezaMedidaReunionTercera %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPiezaMedidaReunionTercera %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPiezaMedidaReunionTercera %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPiezaMedidaReunionTercera %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorPiezaMedidaReunionTercera %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorPiezaMedidaReunionTercera %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaPiezaMedidaReunionTercera %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModPiezaMedidaReunionTercera %>">
+
+                                            <span id="resDatoPiezaMedidaReunionTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                <%= resDatoPiezaMedidaReunionTercera %>
+                                            </span> |
+                                            
+                                            <% const config = cicloCorreccionTerceraConfig[resEstadoPiezaMedidaReunionTercera] || cicloCorreccionTerceraConfig.default; %>
+                                            <span id="resEstadoPiezaMedidaReunionTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPiezaMedidaReunionTercera%>">
+                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                            </span> |
+
+                                            <span id="resRevisionPiezaMedidaReunionTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPiezaMedidaReunionTercera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                <%= resRevisionPiezaMedidaReunionTercera %>
+                                            </span>
+
+                                            <button id="btnSiguientePiezaMedidaReunionTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguientePiezaMedidaReunionTercera" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+
+                                <% } else if (q==28) { %>
+                                    <!-- Maquina Tercera data Activo-->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtAjuste > 0 && largoArrayCicloCorreccionTercera > 0) {
+
+                                            for (let i = 0; largoArrayCicloCorreccionTercera > i; i++) {
+                                                if (pathToMongoOtCicloCorreccionTercera[i]) {
+                                                    let largoArray = parseInt(largoArrayCicloCorreccionTercera)
+                                                    resDatoMaquinaTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].maquinaTercera == 'sinDato' ? "S/D" :  pathToMongoOtCicloCorreccionTercera[largoArray-1].maquinaTercera
+                                                    resEstadoMaquinaTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].estadoMaquinaTercera == 'sinDato' ? "S/D" : pathToMongoOtCicloCorreccionTercera[largoArray-1].estadoMaquinaTercera
+                                                    resRevisionMaquinaTercera = parseInt(pathToMongoOtCicloCorreccionTercera[largoArray-1].revisionMaquinaTercera) || 0
+                                                    
+                                                    pathToMongoOtCicloCorreccionTercera[i].maquinaTercera == 'sinDato' ? arrResDatoMaquinaTercera.push("S/D") : arrResDatoMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].maquinaTercera)
+                                                    pathToMongoOtCicloCorreccionTercera[i].estadoMaquinaTercera == 'sinDato' ? arrResEstadoMaquinaTercera.push("S/D") : arrResEstadoMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].estadoMaquinaTercera)
+                                                    arrResRevisionMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].revisionMaquinaTercera)
+                                                    
+                                                    arrResCreadorMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].creator[0].username)
+                                                    arrResModificadorMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].modificator[0].username)
+                                                    arrResFechaMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].timestamp)
+                                                    arrResFechaModMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].modifiedOn)
+                                                }
+                                            }
+                                            valueArrayResMaquinaTercera = parseInt(arrResEstadoMaquinaTercera.length-1)
+                                                    
+                                            if (arrResDatoMaquinaTercera.length == 1 ) {
+                                                anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
+                                            } else if (arrResDatoMaquinaTercera.length == arrResRevisionMaquinaTercera.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                            
+                                        } else {
+                                            arrResDatoMaquinaTercera.push(resDatoMaquinaTercera)
+                                            arrResEstadoMaquinaTercera.push(resEstadoMaquinaTercera)
+                                            arrResRevisionMaquinaTercera.push(resRevisionMaquinaTercera)
+                                            
+                                            arrResCreadorMaquinaTercera.push(pathMongoOtAjuste[o].creator[0].username)
+                                            arrResModificadorMaquinaTercera = ""
+                                            arrResFechaMaquinaTercera.push(pathMongoOtAjuste[o].timestamp)
+                                            arrResFechaModMaquinaTercera = ""
+                                        } %>
+                                        
+                                        <div id="btnAnteriorSiguienteMaquinaTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorMaquinaTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorMaquinaTercera" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoMaquinaTercera %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoMaquinaTercera %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResMaquinaTercera %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionMaquinaTercera %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorMaquinaTercera %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorMaquinaTercera %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaMaquinaTercera %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModMaquinaTercera %>">
+
+                                            <span id="resDatoMaquinaTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                <%= resDatoMaquinaTercera %>
+                                            </span> |
+
+                                            <% const config = cicloCorreccionTerceraConfig[resEstadoMaquinaTercera] || cicloCorreccionTerceraConfig.default; %>
+                                            <span id="resEstadoMaquinaTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoMaquinaTercera%>">
+                                                <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                            </span> |
+
+                                            <span id="resRevisionMaquinaTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionMaquinaTercera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                <%= resRevisionMaquinaTercera %>
+                                            </span>
+
+                                            <button id="btnSiguienteMaquinaTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteMaquinaTercera" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+
+                                <% } else { %>
+                                    <!-- Ajuste Tercera data Activo-->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtAjuste > 0 && largoArrayCicloCorreccionTercera > 0) {
+
+                                            for (let i = 0; largoArrayCicloCorreccionTercera > i; i++) {
+                                                if (pathToMongoOtCicloCorreccionTercera[i]) {
+                                                    let largoArray = parseInt(largoArrayCicloCorreccionTercera)
+                                                    resDatoAjusteTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].ajusteTercera == 'sinDato' ? "S/D" : pathToMongoOtCicloCorreccionTercera[largoArray-1].ajusteTercera
+                                                    resEstadoAjusteTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].estadoAjusteTercera == 'sinDato' ? 'sinDato' : pathToMongoOtCicloCorreccionTercera[largoArray-1].estadoAjusteTercera
+                                                    resRevisionAjusteTercera = parseInt(pathToMongoOtCicloCorreccionTercera[largoArray-1].revisionAjusteTercera) || 0
+                                                    
+                                                    pathToMongoOtCicloCorreccionTercera[i].ajusteTercera == 'sinDato' ? arrResDatoAjusteTercera.push('S/D') : arrResDatoAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].ajusteTercera)
+                                                    pathToMongoOtCicloCorreccionTercera[i].estadoAjusteTercera == 'sinDato' ? arrResEstadoAjusteTercera.push('S/D') : arrResEstadoAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].estadoAjusteTercera)
+                                                    arrResRevisionAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].revisionAjusteTercera)
+                                                
+                                                    arrResCreadorAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].creator[0].username)
+                                                    arrResModificadorAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].modificator[0].username)
+                                                    arrResFechaAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].timestamp)
+                                                    arrResFechaModAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].modifiedOn)
+                                                }
+                                            }
+                                            valueArrayResAjusteTercera = parseInt(arrResEstadoAjusteTercera.length-1)
+                                                    
+                                            if (arrResDatoAjusteTercera.length == 1 ) {
+                                                siguienteDisabled = "disabled"
+                                                anteriorDisabled = "disabled"
+                                            } else if (arrResDatoAjusteTercera.length == arrResRevisionAjusteTercera.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                                    
+                                        } else {
+                                            arrResDatoAjusteTercera.push(resDatoAjusteTercera)
+                                            arrResEstadoAjusteTercera.push(resEstadoAjusteTercera)
+                                            arrResRevisionAjusteTercera.push(resRevisionAjusteTercera)
+                                            
+                                            arrResCreadorAjusteTercera.push(pathMongoOtAjuste[o].creator[0].username)
+                                            arrResModificadorAjusteTercera = ""
+                                            arrResFechaAjusteTercera.push(pathMongoOtAjuste[o].timestamp)
+                                            arrResFechaModAjusteTercera = ""
+                                        } %>
+
+                                    <div id="btnAnteriorSiguienteAjusteTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                        <button id="btnAnteriorAjusteTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorAjusteTercera" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoAjusteTercera %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoAjusteTercera %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResAjusteTercera %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionAjusteTercera %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorAjusteTercera %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorAjusteTercera %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaAjusteTercera %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModAjusteTercera %>">
+
+                                        <span id="resDatoAjusteTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                            <%= resDatoAjusteTercera %>
+                                        </span> |
+
+                                        <% const config = cicloCorreccionTerceraConfig[resEstadoAjusteTercera] || cicloCorreccionTerceraConfig.default; %>
+                                        <span id="resEstadoAjusteTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoAjusteTercera%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionAjusteTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionAjusteTercera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionAjusteTercera %>
+                                        </span>
+
+                                        <button id="btnSiguienteAjusteTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteAjusteTercera" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <% }
+                            } %>
+                        </tr>
+
+                    <% } else { %>
+                        <!--Inactivo-->
+                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="pe-none border-bottom" style="height: 5vh; background-color: #dedede;">
+                            <% for (let q = 27; totalColDataCicloCorreccionTercera > q; q++) {
+                                if (q==27) { %>
+                                    <!-- Pieza Medida Reunion Tercera data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtAjuste > 0 && largoArrayCicloCorreccionTercera > 0) {
+                                            for (let i = 0; largoArrayCicloCorreccionTercera > i; i++) {
+
+                                                if (pathToMongoOtCicloCorreccionTercera[i]) {
+                                                    let largoArray = parseInt(largoArrayCicloCorreccionTercera)
+                                                    resDatoPiezaMedidaReunionTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].piezaMedidaReunionTercera || 'S/D'
+                                                    resEstadoPiezaMedidaReunionTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].estadoPiezaMedidaReunionTercera || 'sinDato'
+                                                    resRevisionPiezaMedidaReunionTercera = parseInt(pathToMongoOtCicloCorreccionTercera[largoArray-1].revisionPiezaMedidaReunionTercera) || 0
+                                                    
+                                                    arrResDatoPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].piezaMedidaReunionTercera)
+                                                    arrResEstadoPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].estadoPiezaMedidaReunionTercera)
+                                                    arrResRevisionPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].revisionPiezaMedidaReunionTercera)
+                                                }
+                                            }
+                                            valueArrayResPiezaMedidaReunionTercera = parseInt(arrResEstadoPiezaMedidaReunionTercera.length-1)
+                                            resDatoPiezaMedidaReunionTercera = pathToMongoOtCicloCorreccionTercera[0].PiezaMedidaReunionTercera
+                                            resEstadoPiezaMedidaReunionTercera = pathToMongoOtCicloCorreccionTercera[0].estadoPiezaMedidaReunionTercera
+
+                                        } else {
+                                            arrResDatoPiezaMedidaReunionTercera.push(resDatoPiezaMedidaReunionTercera)
+                                            arrResEstadoPiezaMedidaReunionTercera.push(resEstadoPiezaMedidaReunionTercera)
+                                            arrResRevisionPiezaMedidaReunionTercera.push(resRevisionPiezaMedidaReunionTercera)
+                                        } %>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoPiezaMedidaReunionTercera %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoPiezaMedidaReunionTercera %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPiezaMedidaReunionTercera %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPiezaMedidaReunionTercera %>">
+                                    
+                                        <span id="resDatoPiezaMedidaReunionTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                            <%= resDatoPiezaMedidaReunionTercera %>
+                                        </span> |
+
+                                        <% const config = cicloCorreccionTerceraConfig[resEstadoPiezaMedidaReunionTercera] || cicloCorreccionTerceraConfig.default; %>
+                                        <span id="resEstadoPiezaMedidaReunionTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoPiezaMedidaReunionTercera%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionPiezaMedidaReunionTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPiezaMedidaReunionTercera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionPiezaMedidaReunionTercera %>
+                                        </span>
+                                    </td>
+
+                                <% } else if (q==28) { %>
+                                    <!-- Maquina Tercera data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtAjuste > 0 && largoArrayCicloCorreccionTercera > 0) {
+                                            for (let i = 0; largoArrayCicloCorreccionTercera > i; i++) {
+                                                
+                                                if (pathToMongoOtCicloCorreccionTercera[i]) {
+                                                    let largoArray = parseInt(largoArrayCicloCorreccionTercera)
+                                                    resDatoMaquinaTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].maquinaTercera || 'S/D'
+                                                    resEstadoMaquinaTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].maquinaTercera || 'sinDato'
+                                                    resRevisionMaquinaTercera = parseInt(pathToMongoOtCicloCorreccionTercera[largoArray-1].revisionMaquinaTercera) || 0
+                                                    
+                                                    arrResDatoMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].maquinaTercera)
+                                                    arrResEstadoMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].maquinaTercera)
+                                                    arrResRevisionMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].revisionMaquinaTercera)
+                                                }
+                                            }
+                                            valueArrayResMaquinaTercera = parseInt(arrResEstadoMaquinaTercera.length-1)
+                                            resDatoMaquinaTercera = pathToMongoOtCicloCorreccionTercera[0].maquinaTercera
+                                            resEstadoMaquinaTercera = pathToMongoOtCicloCorreccionTercera[0].estadoMaquinaTercera
+                                        
+                                        } else {
+                                            arrResDatoMaquinaTercera.push(resDatoMaquinaTercera)
+                                            arrResEstadoMaquinaTercera.push(resEstadoMaquinaTercera)
+                                            arrResRevisionMaquinaTercera.push(resRevisionMaquinaTercera)
+                                        } %>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoMaquinaTercera %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoMaquinaTercera %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResMaquinaTercera %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionMaquinaTercera %>">
+
+                                        <span id="resDatoMaquinaTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                            <%= resDatoMaquinaTercera %>
+                                        </span> |
+                                        
+                                        <% const config = cicloCorreccionTerceraConfig[resEstadoMaquinaTercera] || cicloCorreccionTerceraConfig.default; %>
+                                        <span id="resEstadoMaquinaTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoMaquinaTercera%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionMaquinaTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionMaquinaTercera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionMaquinaTercera %>
+                                        </span>
+                                    </td>
+
+                                <% } else { %>
+                                    <!-- Ajuste Tercera data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtAjuste > 0 && largoArrayCicloCorreccionTercera > 0) {
+                                            for (let i = 0; largoArrayCicloCorreccionTercera > i; i++) {
+                                                
+                                                if (pathToMongoOtCicloCorreccionTercera[i]) {
+                                                    let largoArray = parseInt(largoArrayCicloCorreccionTercera)
+                                                    resDatoAjusteTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].ajusteTercera || "S/D"
+                                                    resEstadoAjusteTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].estadoAjusteTercera || 'sinDato'
+                                                    resRevisionAjusteTercera = parseInt(pathToMongoOtCicloCorreccionTercera[largoArray-1].revisionAjusteTercera) || 0
+                                                    
+                                                    arrResDatoAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].ajusteTercera)
+                                                    arrResEstadoAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].estadoAjusteTercera)
+                                                    arrResRevisionAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].revisionAjusteTercera)
+                                                }
+                                            }
+                                            valueArrayResAjusteTercera = parseInt(arrResEstadoAjusteTercera.length-1)
+                                            resDatoAjusteTercera = pathToMongoOtCicloCorreccionTercera[0].ajusteTercera
+                                            resEstadoAjusteTercera = pathToMongoOtCicloCorreccionTercera[0].estadoAjusteTercera
+                                        
+                                        } else {
+                                            arrResDatoAjusteTercera.push(resDatoAjusteTercera)
+                                            arrResEstadoAjusteTercera.push(resEstadoAjusteTercera)
+                                            arrResRevisionAjusteTercera.push(resRevisionAjusteTercera)
+                                        } %>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoAjusteTercera %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoAjusteTercera %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResAjusteTercera %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionAjusteTercera %>">
+
+                                        <span id="resDatoAjusteTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                            <%= resDatoAjusteTercera %>
+                                        </span> |
+                                        
+                                        <% const config = cicloCorreccionTerceraConfig[resEstadoAjusteTercera] || cicloCorreccionTerceraConfig.default; %>
+                                        <span id="resEstadoAjusteTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoAjusteTercera%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionAjusteTercera<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionAjusteTercera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionAjusteTercera %>
+                                        </span>
+                                    </td>
+                                <% }
+                            } %>
+                        </tr>
+                    <% }
+                }
+            }
+        }) %>
+    </tbody>
+</table>

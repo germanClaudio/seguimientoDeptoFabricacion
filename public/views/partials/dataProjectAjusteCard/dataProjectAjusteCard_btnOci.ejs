@@ -1,0 +1,65 @@
+<!-- cabecera botonera principal de OCI -->
+<div class="container mw-100">
+    <div class="row align-items-center">
+        <div class="col-2 d-flex align-items-center">
+            <img src="<%= arrayVisibleOci[k].ociImage %>" class="img-fluid img-thumbnail shadow m-auto shadow" title="<%= arrayVisibleOci[k].ociDescription %>"
+                alt="<%= arrayVisibleOci[k].ociDescription %>" style="width: 100px; height: 100px; object-fit: contain;">
+        </div>
+        <div class="col-10 d-flex align-items-center">
+            <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
+                Agrega datos de OT en OCI# <strong><%= arrayVisibleOci[k].ociNumber %></strong>, haciendo click en
+                <button class="btn btn-primary m-1 rounded-circle shadow"
+                    id="btnAddOtFormSelected<%=k%>" aria-controls="collapseExample" data-bs-toggle="collapse"
+                    data-bs-target="#collapseExample" aria-expanded="false"
+                    style="--bs-btn-font-size: .95rem; color: var(--bs-white);" type="button" value="<%=k%>"
+                    name="<%= proyecto[m].project[j].oci[k].ociNumber %>" title="Agregar nueva OT">
+                    <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
+                </button>
+                
+            <% } else { %>
+                NO puedes ingresar datos de OT debido a tus permisos
+                <button class="btn btn-danger m-1 rounded-circle shadow disabled" style="--bs-btn-font-size: .95rem; color: var(--bs-white);" type="button">
+                    <i class="fa-solid fa-ban" aria-hidden="true"></i>
+                </button>
+            <% } %>    
+        </div>    
+    </div>
+
+    <hr class="border border-primary opacity-75">
+    <div class="row">
+        <div id="posBtnHiddeTableGeneral<%=k%>" class="col-3">
+            <button id="btnHiddeTableGeneral<%=k%>" name="btnHiddeTableGeneral"
+                type="button" class="btn btn-primary shadow" title="Ocultar General"
+                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; background-color: #115; border: none">
+                <i class="fa-solid fa-eye-slash"></i>
+            </button>
+        </div>
+
+        <div id="posBtnHiddeTableDuenoOt<%=k%>" class="col-2">
+            <button id="btnHiddeTableDuenoOt<%=k%>" name="btnHiddeTableDuenoOt"
+                type="button" class="btn btn-secondary shadow" title="Ocultar DuenoOt"
+                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; background-color: #115; border: none">
+                <i class="fa-solid fa-eye-slash"></i>
+            </button>
+        </div>
+
+        <div id="posCheckSelectionAll<%=k%>" class="col-4">
+            <button id="btnCheckSelectionAll<%=k%>" name="btnCheckSelectionAll"
+                type="button" class="btn btn-primary shadow position-relative" title="Seleccionar todos los ítems"
+                style="--bs-btn-padding-y: .5rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; border: none" value="0">
+                Seleccionar OTs <i class="fa-solid fa-check-double"></i>
+                <span id="spanCheckSelecMasive<%=k%>" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    0
+                    <span class="visually-hidden">Elementos seleccionados</span>
+                </span>
+            </button>
+        </div>
+
+        <div id="posCheckSelecMasive<%=k%>" class="col-3">
+            <span id="btnCheckSelecMasive<%=k%>" name="btnCheckSelecMasive"
+                class="badge rounded-pill text-bg-secondary text-warning shadow p-2">
+                <i class="fa-solid fa-list-check"></i> Mod. multiple (0)
+            </span>
+        </div>
+    </div>
+</div>

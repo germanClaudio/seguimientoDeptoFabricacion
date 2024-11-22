@@ -1,0 +1,332 @@
+<!-- tabla BuyOff -->
+<table id="tablaOtBuyOff<%=k%>" class="table-responsive align-middle col-5 border-end border-dark" style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #d8d8eb">
+        <tr>
+            <th colspan="2" class="text-center">BUY OFF
+                <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
+                    <button id="posBtnAddDataOtBuyOff<%=k%>" type="button" name="btnOtBuyOff" class="btn btn-small btn-success shadow m-1 me-5 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                        <span id="spanCheckSelecMasiveBuyOff<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                            <span class="visually-hidden">Elementos seleccionados</span>
+                        </span>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 me-5 disabled" style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>                                                    
+                    </button>
+                <% } %>
+                <i class="fa-solid fa-arrows-spin fa-lg" style="color: #b09b12;"></i> En Proceso -
+                <i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i> Terminado -
+                <i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i> Suspendido -
+                <i class="fa-solid fa-ban fa-lg"></i> No Aplica -
+                <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i> Sin Datos
+            </th>
+        </tr>
+        <tr>
+            <th id="colData0" style="width:50vw" scope="col-1" class="text-center pb-1">BuyOff Estático | Estado | Rev.</th>
+            <th id="colData1" style="width:50vw" scope="col-1" class="text-center pb-1">Buy Off Dinámico | Estado | Rev.</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        
+        <% const analisisCriticoConfig = {
+                enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
+                terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
+                suspendido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
+                noAplica: { icon: "fa-ban", iconColor: "color:#000000" },
+                default: { icon: "fa-triangle-exclamation", iconColor: "color:#1c21ac" }
+            };
+
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+            pathMongoOtAjuste = pathMongoOtProject[n].otAjuste,
+            largoArrayOtAjuste = parseInt(pathMongoOtAjuste.length)
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                resDatoBuyOffEstatico = "S/D", resEstadoBuyOffEstatico = 'sinDato', resRevisionBuyOffEstatico = 0,
+                resDatoBuyOffDinamico = "S/D", resEstadoBuyOffDinamico = 'sinDato', resRevisionBuyOffDinamico = 0;
+
+            for ( let o=0; largoArrayOtAjuste> o; o++) {
+                let pathToMongoOtBuyOff = pathMongoOtAjuste[o].otBuyOff || [];
+                let largoArrayBuyOff = parseInt(pathToMongoOtBuyOff.length);
+
+                let arrResDatoBuyOffEstatico = [], arrResEstadoBuyOffEstatico = [], valueArrayResBuyOffEstatico = 0, arrResRevisionBuyOffEstatico = [],
+                    arrResCreadorBuyOffEstatico = [], arrResModificadorBuyOffEstatico = [], arrResFechaBuyOffEstatico = [], arrResFechaModBuyOffEstatico = [];
+
+                let arrResDatoBuyOffDinamico = [], arrResEstadoBuyOffDinamico = [], valueArrayResBuyOffDinamico = 0, arrResRevisionBuyOffDinamico = [],
+                    arrResCreadorBuyOffDinamico = [], arrResModificadorBuyOffDinamico = [], arrResFechaBuyOffDinamico = [], arrResFechaModBuyOffDinamico = [];
+
+                if (pathMongoOtProject[n].visible && pathMongoOtAjuste[o].visible) {
+                    if (pathMongoOtProject[n].otStatus) { %>
+                        <!--Activo-->
+                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh;">
+                            <% for (let q = 36; totalColDataBuyOff > q; q++) {
+                                if (q==36) { %>
+                                    <!-- BuyOff Estatico data Activo--> 
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtAjuste > 0 && largoArrayBuyOff > 0) {
+
+                                            for (let i = 0; largoArrayBuyOff > i; i++) {
+                                                if (pathToMongoOtBuyOff[i]) {
+                                                    let largoArray = parseInt(largoArrayBuyOff)
+                                                    resDatoBuyOffEstatico = pathToMongoOtBuyOff[largoArray-1].buyOffEstatico == 'sinDato' ? "S/D" : pathToMongoOtBuyOff[largoArray-1].buyOffEstatico
+                                                    resEstadoBuyOffEstatico = pathToMongoOtBuyOff[largoArray-1].estadoBuyOffEstatico == 'sinDato' ? "S/D" : pathToMongoOtBuyOff[largoArray-1].estadoBuyOffEstatico
+                                                    resRevisionBuyOffEstatico = parseInt(pathToMongoOtBuyOff[largoArray-1].revisionBuyOffEstatico) || 0
+                                                    
+                                                    pathToMongoOtBuyOff[i].buyOffEstatico == 'sinDato' ? arrResDatoBuyOffEstatico.push("S/D") : arrResDatoBuyOffEstatico.push(pathToMongoOtBuyOff[i].buyOffEstatico)
+                                                    pathToMongoOtBuyOff[i].estadoBuyOffEstatico == 'sinDato' ? arrResEstadoBuyOffEstatico.push("S/D") : arrResEstadoBuyOffEstatico.push(pathToMongoOtBuyOff[i].estadoBuyOffEstatico)
+                                                    arrResRevisionBuyOffEstatico.push(pathToMongoOtBuyOff[i].revisionBuyOffEstatico)
+
+                                                    arrResCreadorBuyOffEstatico.push(pathToMongoOtBuyOff[i].creator[0].username)
+                                                    arrResModificadorBuyOffEstatico.push(pathToMongoOtBuyOff[i].modificator[0].username)
+                                                    arrResFechaBuyOffEstatico.push(pathToMongoOtBuyOff[i].timestamp)
+                                                    arrResFechaModBuyOffEstatico.push(pathToMongoOtBuyOff[i].modifiedOn)
+                                                }
+                                            }
+                                            valueArrayResBuyOffEstatico = parseInt(arrResDatoBuyOffEstatico.length-1)
+
+                                            if (arrResDatoBuyOffEstatico.length == 1 ) {
+                                                anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
+                                            } else if (arrResDatoBuyOffEstatico.length == arrResRevisionBuyOffEstatico.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                            
+                                        } else {
+                                            arrResDatoBuyOffEstatico.push(resDatoBuyOffEstatico)
+                                            arrResEstadoBuyOffEstatico.push(resEstadoBuyOffEstatico)
+                                            arrResRevisionBuyOffEstatico.push(resRevisionBuyOffEstatico)
+                                            
+                                            arrResCreadorBuyOffEstatico.push(pathMongoOtAjuste[o].creator[0].username)
+                                            arrResModificadorBuyOffEstatico = ""
+                                            arrResFechaBuyOffEstatico.push(pathMongoOtAjuste[o].timestamp)
+                                            arrResFechaModBuyOffEstatico = ""
+                                        } %>
+                                        
+                                        <div id="btnAnteriorSiguienteBuyOffEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorBuyOffEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorBuyOffEstatico" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoBuyOffEstatico %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoBuyOffEstatico %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResBuyOffEstatico %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionBuyOffEstatico %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorBuyOffEstatico %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorBuyOffEstatico %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaBuyOffEstatico %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModBuyOffEstatico %>">
+
+                                            <span id="resDatoBuyOffEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                <%= resDatoBuyOffEstatico %>
+                                            </span> |
+                                            
+                                            <% const config = analisisCriticoConfig[resEstadoBuyOffEstatico] || analisisCriticoConfig.default; %>
+                                            <span id="resEstadoBuyOffEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoBuyOffEstatico%>">
+                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                            </span> |
+
+                                            <span id="resRevisionBuyOffEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionBuyOffEstatico" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                <%= resRevisionBuyOffEstatico %>
+                                            </span>
+
+                                            <button id="btnSiguienteBuyOffEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteBuyOffEstatico" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+
+                                <% } else { %>
+                                    <!-- BuyOff Dinamico data Activo-->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtAjuste > 0 && largoArrayBuyOff > 0) {
+
+                                            for (let i = 0; largoArrayBuyOff > i; i++) {
+                                                if (pathToMongoOtBuyOff[i]) {
+                                                    let largoArray = parseInt(largoArrayBuyOff)
+                                                    resDatoBuyOffDinamico = pathToMongoOtBuyOff[largoArray-1].buyOffDinamico == 'sinDato' ? "S/D" :  pathToMongoOtBuyOff[largoArray-1].buyOffDinamico
+                                                    resEstadoBuyOffDinamico = pathToMongoOtBuyOff[largoArray-1].estadoBuyOffDinamico == 'sinDato' ? "S/D" : pathToMongoOtBuyOff[largoArray-1].estadoBuyOffDinamico
+                                                    resRevisionBuyOffDinamico = parseInt(pathToMongoOtBuyOff[largoArray-1].revisionBuyOffDinamico) || 0
+                                                    
+                                                    pathToMongoOtBuyOff[i].buyOffDinamico == 'sinDato' ? arrResDatoBuyOffDinamico.push("S/D") : arrResDatoBuyOffDinamico.push(pathToMongoOtBuyOff[i].buyOffDinamico)
+                                                    pathToMongoOtBuyOff[i].estadoBuyOffDinamico == 'sinDato' ? arrResEstadoBuyOffDinamico.push("S/D") : arrResEstadoBuyOffDinamico.push(pathToMongoOtBuyOff[i].estadoBuyOffDinamico)
+                                                    arrResRevisionBuyOffDinamico.push(pathToMongoOtBuyOff[i].revisionBuyOffDinamico)
+                                                    
+                                                    arrResCreadorBuyOffDinamico.push(pathToMongoOtBuyOff[i].creator[0].username)
+                                                    arrResModificadorBuyOffDinamico.push(pathToMongoOtBuyOff[i].modificator[0].username)
+                                                    arrResFechaBuyOffDinamico.push(pathToMongoOtBuyOff[i].timestamp)
+                                                    arrResFechaModBuyOffDinamico.push(pathToMongoOtBuyOff[i].modifiedOn)
+                                                }
+                                            }
+                                            valueArrayResBuyOffDinamico = parseInt(arrResEstadoBuyOffDinamico.length-1)
+                                                    
+                                            if (arrResDatoBuyOffDinamico.length == 1 ) {
+                                                anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
+                                            } else if (arrResDatoBuyOffDinamico.length == arrResRevisionBuyOffDinamico.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                            
+                                        } else {
+                                            arrResDatoBuyOffDinamico.push(resDatoBuyOffDinamico)
+                                            arrResEstadoBuyOffDinamico.push(resEstadoBuyOffDinamico)
+                                            arrResRevisionBuyOffDinamico.push(resRevisionBuyOffDinamico)
+                                            
+                                            arrResCreadorBuyOffDinamico.push(pathMongoOtAjuste[o].creator[0].username)
+                                            arrResModificadorBuyOffDinamico = ""
+                                            arrResFechaBuyOffDinamico.push(pathMongoOtAjuste[o].timestamp)
+                                            arrResFechaModBuyOffDinamico = ""
+                                        } %>
+                                        
+                                        <div id="btnAnteriorSiguienteBuyOffDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>">
+                                            <button id="btnAnteriorBuyOffDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorBuyOffDinamico" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoBuyOffDinamico %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoBuyOffDinamico %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResBuyOffDinamico %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionBuyOffDinamico %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorBuyOffDinamico %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorBuyOffDinamico %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaBuyOffDinamico %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModBuyOffDinamico %>">
+
+                                            <span id="resDatoBuyOffDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                <%= resDatoBuyOffDinamico %>
+                                            </span> |
+
+                                            <% const config = analisisCriticoConfig[resEstadoBuyOffDinamico] || analisisCriticoConfig.default; %>
+                                            <span id="resEstadoBuyOffDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoBuyOffDinamico%>">
+                                                <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                            </span> |
+
+                                            <span id="resRevisionBuyOffDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionBuyOffDinamico" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                <%= resRevisionBuyOffDinamico %>
+                                            </span>
+
+                                            <button id="btnSiguienteBuyOffDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteBuyOffDinamico" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                <% }
+                            } %>
+                        </tr>
+
+                    <% } else { %>
+                        <!--Inactivo-->
+                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="pe-none border-bottom" style="height: 5vh; background-color: #dedede;">
+                            <% for (let q = 36; totalColDataBuyOff > q; q++) {
+                                if (q==36) { %>
+                                    <!-- BuyOff Estatico data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtAjuste > 0 && largoArrayBuyOff > 0) {
+                                            for (let i = 0; largoArrayBuyOff > i; i++) {
+
+                                                if (pathToMongoOtBuyOff[i]) {
+                                                    let largoArray = parseInt(largoArrayBuyOff)
+                                                    resDatoBuyOffEstatico = pathToMongoOtBuyOff[largoArray-1].buyOffEstatico || 'S/D'
+                                                    resEstadoBuyOffEstatico = pathToMongoOtBuyOff[largoArray-1].estadoBuyOffEstatico || 'sinDato'
+                                                    resRevisionBuyOffEstatico = parseInt(pathToMongoOtBuyOff[largoArray-1].revisionBuyOffEstatico) || 0
+                                                    
+                                                    arrResDatoBuyOffEstatico.push(pathToMongoOtBuyOff[i].buyOffEstatico)
+                                                    arrResEstadoBuyOffEstatico.push(pathToMongoOtBuyOff[i].estadoBuyOffEstatico)
+                                                    arrResRevisionBuyOffEstatico.push(pathToMongoOtBuyOff[i].revisionBuyOffEstatico)
+                                                }
+                                            }
+                                            valueArrayResBuyOffEstatico = parseInt(arrResEstadoBuyOffEstatico.length-1)
+                                            resDatoBuyOffEstatico = pathToMongoOtBuyOff[0].BuyOffEstatico
+                                            resEstadoBuyOffEstatico = pathToMongoOtBuyOff[0].estadoBuyOffEstatico
+
+                                        } else {
+                                            arrResDatoBuyOffEstatico.push(resDatoBuyOffEstatico)
+                                            arrResEstadoBuyOffEstatico.push(resEstadoBuyOffEstatico)
+                                            arrResRevisionBuyOffEstatico.push(resRevisionBuyOffEstatico)
+                                        } %>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoBuyOffEstatico %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoBuyOffEstatico %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResBuyOffEstatico %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionBuyOffEstatico %>">
+                                    
+                                        <span id="resDatoBuyOffEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                            <%= resDatoBuyOffEstatico %>
+                                        </span> |
+
+                                        <% const config = analisisCriticoConfig[resEstadoBuyOffEstatico] || analisisCriticoConfig.default; %>
+                                        <span id="resEstadoBuyOffEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoBuyOffEstatico%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionBuyOffEstatico<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionBuyOffEstatico" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionBuyOffEstatico %>
+                                        </span>
+                                    </td>
+
+                                <% } else { %>
+                                    <!-- BuyOff Dinamico data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayOtAjuste > 0 && largoArrayBuyOff > 0) {
+                                            for (let i = 0; largoArrayBuyOff > i; i++) {
+                                                
+                                                if (pathToMongoOtBuyOff[i]) {
+                                                    let largoArray = parseInt(largoArrayBuyOff)
+                                                    resDatoBuyOffDinamico = pathToMongoOtBuyOff[largoArray-1].buyOffDinamico || 'S/D'
+                                                    resEstadoBuyOffDinamico = pathToMongoOtBuyOff[largoArray-1].buyOffDinamico || 'sinDato'
+                                                    resRevisionBuyOffDinamico = parseInt(pathToMongoOtBuyOff[largoArray-1].revisionBuyOffDinamico) || 0
+                                                    
+                                                    arrResDatoBuyOffDinamico.push(pathToMongoOtBuyOff[i].buyOffDinamico)
+                                                    arrResEstadoBuyOffDinamico.push(pathToMongoOtBuyOff[i].buyOffDinamico)
+                                                    arrResRevisionBuyOffDinamico.push(pathToMongoOtBuyOff[i].revisionBuyOffDinamico)
+                                                }
+                                            }
+                                            valueArrayResBuyOffDinamico = parseInt(arrResEstadoBuyOffDinamico.length-1)
+                                            resDatoBuyOffDinamico = pathToMongoOtBuyOff[0].buyOffDinamico
+                                            resEstadoBuyOffDinamico = pathToMongoOtBuyOff[0].estadoBuyOffDinamico
+                                        
+                                        } else {
+                                            arrResDatoBuyOffDinamico.push(resDatoBuyOffDinamico)
+                                            arrResEstadoBuyOffDinamico.push(resEstadoBuyOffDinamico)
+                                            arrResRevisionBuyOffDinamico.push(resRevisionBuyOffDinamico)
+                                        } %>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoBuyOffDinamico %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoBuyOffDinamico %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResBuyOffDinamico %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionBuyOffDinamico %>">
+
+                                        <span id="resDatoBuyOffDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                            <%= resDatoBuyOffDinamico %>
+                                        </span> |
+                                        
+                                        <% const config = analisisCriticoConfig[resEstadoBuyOffDinamico] || analisisCriticoConfig.default; %>
+                                        <span id="resEstadoBuyOffDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoBuyOffDinamico%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionBuyOffDinamico<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionBuyOffDinamico" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionBuyOffDinamico %>
+                                        </span>
+                                    </td>
+                                <% }
+                            } %>
+                        </tr>
+                    <% }
+                }
+            }
+        }) %>
+    </tbody>
+</table>
