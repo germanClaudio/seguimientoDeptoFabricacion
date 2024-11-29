@@ -1,0 +1,79 @@
+<div class="card mx-auto" style="width: 80vw;">
+    <div class="card card-body d-flex justify-content-center">
+        <div class="form-group col-12 mx-auto w-100 border px-2 py-1 text-white" style="background-color: #a3aeb4;">
+            <form id="formNewDuenoOt" action="/api/proyectos/newOciOwner" method="post" name="formNewDuenoOt">
+                <fieldset>
+                    <h5 id="tituloForm" class="d-block mx-auto my-2 text-center text-dark">
+                        Asignar Dueño de pieza del Proyecto: "<%= proyecto[0].project[0].projectName %>"
+                    </h5>
+                    <hr>
+                    <div class="container text-center mt-2">
+                        <div class="row my-1 justify-content-center">
+                            <% let arrayOciVisibles = [], largoArrayOci = proyecto[0].project[j].oci.length
+                            if ( proyecto.length > 0 ) {
+                                for ( let k = 0; largoArrayOci > k; k++ ) {
+                                    pathToOciVisible = proyecto[0].project[j].oci[k];
+                                    pathToOciVisible.visible ? arrayOciVisibles.push(pathToOciVisible) : null
+                                }
+                                    
+                                for ( let k = 0; arrayOciVisibles.length > k; k++ ) { %>
+                                    <div class="col-6 col-md-4 d-flex flex-column align-items-center">
+                                        <div class="form-check d-flex flex-column align-items-center text-center mx-auto radio-option">
+                                            <% if ( arrayOciVisibles[k].ociStatus && arrayOciVisibles[k].ociOwner[0].legajoId == 0 ) { %>
+                                                <label class="form-check-label" for="radioSelectedValue<%=k %>">
+                                                    OCI #<%= arrayOciVisibles[k].ociNumber %> - Alias: "<%= arrayOciVisibles[k].ociAlias %>"
+                                                </label>
+                                                <img id="imageOciHeader<%=k%>" src="<%= arrayOciVisibles[k].ociImage %>" class="img-fluid img-thumbnail option-image shadow m-auto shadow" title="<%= arrayOciVisibles[k].ociDescription %>"
+                                                    alt="<%= arrayOciVisibles[k].ociDescription %>" style="width: 100px; height: 100px; object-fit: contain;">
+                                                <input class="form-check-input mx-auto mt-2" type="radio" name="ociNumber" id="radioSelectedValue<%= k %>" value="<%= arrayOciVisibles[k].ociNumber %>" value2="<%= arrayOciVisibles[k].ociAlias %>" required>
+                                            
+                                            <% } else { %>
+                                                <label class="form-check-label text-secondary" for="radioSelectedValue<%=k %>">OCI #<%= arrayOciVisibles[k].ociNumber %> - Alias: "<%= arrayOciVisibles[k].ociAlias %>"</label>
+                                                <img id="imageOciHeader<%=k%>" src="<%= arrayOciVisibles[k].ociImage %>" class="img-fluid img-thumbnail option-image shadow m-auto shadow opacity-25" title="<%= arrayOciVisibles[k].ociDescription %>"
+                                                    alt="<%= arrayOciVisibles[k].ociDescription %>" style="width: 100px; height: 100px; object-fit: contain;">
+                                                <input class="form-check-input mx-auto mt-2" type="radio" name="ociNumber" id="radioSelectedValue<%= k %>" value="<%= arrayOciVisibles[k].ociNumber %>" value2="<%= arrayOciVisibles[k].ociAlias %>" style="background-color: #dedede;" disabled>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                <% } %>
+                                <input class="form-input" type="hidden" name="ociNumberK" id="ociNumberK" value="">
+                                <input class="form-input" type="hidden" name="ociNumberHidden" id="ociNumberHidden" value="">
+                                <input class="form-control" type="hidden" name="projectIdHidden" id="projectIdHidden" value="<%= proyecto[0]._id %>">
+                                <input class="form-control" type="hidden" name="projectNameHidden" id="projectNameHidden" value="<%= proyecto[0].project[0].projectName %>">
+                                
+                            <% } else { %>
+                                <div class="col-6 col-md-4 d-flex flex-column align-items-center">
+                                    <span class="badge rounded-pill bg-danger text-white"> No hay datos cargados aún</span>
+                                </div>
+                            <% } %>
+                        <br>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="row my-1 justify-content-center">
+                        <div class="col-5 d-flex justify-content-center align-items-center">
+                            <label for="duenoOt" id="labelInternoDiseno" class="form-label d-flex justify-content-start mt-2" style="width: 160px;">Dueño de Pieza</label>
+                            <div class="input-group mb-1">
+                                <input type="text" name="duenoOt" id="duenoOt" class="form-control position-relative" disabled>
+                                    <button type="button" title="Buscar Dueño de Pieza" id="searchDuenoOtUser<%=k%>"
+                                        class="btn btn-sm btn-primary rounded-circle ms-1 mt-3 border shadow position-absolute top-0 start-100 translate-middle">
+                                        <i class="fa-solid fa-database"></i>
+                                    </button>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <% if ( proyecto.length > 0 ) { %>
+                        <input type="hidden" name="idHidden" id="idHidden" class="form-control" value="<%= userInfo.id %>" hidden>
+                        <input type="hidden" name="clientIdHidden" id="clientIdHidden" class="form-control" value="<%= proyecto[0].client[0]._id %>" hidden>
+                        <br>
+                    <% } %>
+                        <div class="d-flex justify-content-center mb-2">
+                            <button type="button" title="Asignar Dueño Pieza" id="btnNewDuenoOt" class="btn btn-primary mx-auto">Asignar <i class="fa-solid fa-save"></i></button>
+                        </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>

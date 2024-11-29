@@ -4,7 +4,7 @@
         <tr>
             <th colspan="3" class="text-center">LIBERACIÓN PARA BUY-OFF (1° Parte)
                 <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
-                    <button id="posBtnAddDataOtLiberacionBuyOffPrimera<%=k%>" type="button" name="btnOtLiberacionBuyOffPrimera" class="btn btn-small btn-success shadow m-1 me-5 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                    <button id="posBtnAddDataOtLiberacionBuyOffPrimera<%=k%>" type="button" name="btnOtLiberacionBuyOffPrimera" class="btn btn-small btn-success shadow m-1 me-5 mb-2 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
                         <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
                         <span id="spanCheckSelecMasiveLibBuyOffPrima<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
                             0
@@ -12,13 +12,13 @@
                         </span>
                     </button>
                 <% } else { %>
-                    <button type="button" class="btn btn-small btn-danger shadow m-1 me-5 disabled" style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 me-5 mb-2 disabled" style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
                         <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>                                                    
                     </button>
                 <% } %>
                 <i class="fa-solid fa-arrows-spin fa-lg" style="color: #b09b12;"></i> En Proceso -
                 <i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i> Terminado -
-                <i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i> Suspendido -
+                <i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i> Detenido -
                 <i class="fa-solid fa-ban fa-lg"></i> No Aplica -
                 <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i> Sin Datos
             </th>
@@ -32,12 +32,12 @@
     <tbody class="table-group-divider">
         
         <% const liberacionBuyOffPrimeraConfig = {
-                enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
-                terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
-                suspendido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
-                noAplica: { icon: "fa-ban", iconColor: "color:#000000" },
-                default: { icon: "fa-triangle-exclamation", iconColor: "color:#1c21ac" }
-            };
+            enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
+            terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
+            detenido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
+            noAplica: { icon: "fa-ban", iconColor: "color:#000000" },
+            default: { icon: "fa-triangle-exclamation", iconColor: "color:#1c21ac" }
+        };
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
@@ -48,10 +48,10 @@
                 resDatoAzuladosFondoPieza = "S/D", resEstadoAzuladosFondoPieza = 'sinDato', resRevisionAzuladosFondoPieza = 0,
                 resDatoRoces = "S/D", resEstadoRoces = 'sinDato', resRevisionRoces = 0,
                 resDatoAzuladoGuias = "S/D", resEstadoAzuladoGuias = 'sinDato', resRevisionAzuladoGuias = 0;
-
-            for ( let o=0; largoArrayOtAjuste> o; o++) {
-                let pathToMongoOtLiberacionBuyOffPrimera = pathMongoOtAjuste[o].otLiberacionBuyOffPrimera || [];
-                let largoArrayLiberacionBuyOffPrimera = parseInt(pathToMongoOtLiberacionBuyOffPrimera.length);
+                
+            if (pathMongoOtProject[n].visible) {
+                let pathToMongoOtLiberacionBuyOffPrimera = pathMongoOtAjuste[0].otLiberacionBuyOffPrimera || [],
+                    largoArrayLiberacionBuyOffPrimera = parseInt(pathToMongoOtLiberacionBuyOffPrimera.length);
 
                 let arrResDatoAzuladosFondoPieza = [], arrResEstadoAzuladosFondoPieza = [], valueArrayResAzuladosFondoPieza = 0, arrResRevisionAzuladosFondoPieza = [],
                 arrResCreadorAzuladosFondoPieza = [], arrResModificadorAzuladosFondoPieza = [], arrResFechaAzuladosFondoPieza = [], arrResFechaModAzuladosFondoPieza = [];
@@ -62,402 +62,400 @@
                 let arrResDatoAzuladoGuias = [], arrResEstadoAzuladoGuias = [], valueArrayResAzuladoGuias = 0, arrResRevisionAzuladoGuias = [],
                 arrResCreadorAzuladoGuias = [], arrResModificadorAzuladoGuias = [], arrResFechaAzuladoGuias = [], arrResFechaModAzuladoGuias = [];
 
-                if (pathMongoOtProject[n].visible && pathMongoOtAjuste[o].visible) {
-                    if (pathMongoOtProject[n].otStatus) { %>
-                        <!--Activo-->
-                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh;">
-                            <% for (let q = 30; totalColDataLiberacionBuyOffPrimera > q; q++) {
-                                if (q==30) { %>
-                                    <!-- Azulados Fondo Pieza data Activo--> 
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayLiberacionBuyOffPrimera > 0) {
+                if (pathMongoOtProject[n].otStatus) { %>
+                    <!--Activo-->
+                    <tr name="rowSelected<%=k%>_<%=n%>" class="border-bottom" style="height: 7vh;">
+                        <% for (let q = 30; totalColDataLiberacionBuyOffPrimera > q; q++) {
+                            if (q==30) { %>
+                                <!-- Azulados Fondo Pieza data Activo--> 
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayLiberacionBuyOffPrimera > 0) {
 
-                                            for (let i = 0; largoArrayLiberacionBuyOffPrimera > i; i++) {
-                                                if (pathToMongoOtLiberacionBuyOffPrimera[i]) {
-                                                    let largoArray = parseInt(largoArrayLiberacionBuyOffPrimera)
-                                                    resDatoAzuladosFondoPieza = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].azuladosFondoPieza == 'sinDato' ? "S/D" : pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].azuladosFondoPieza
-                                                    resEstadoAzuladosFondoPieza = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].estadoAzuladosFondoPieza == 'sinDato' ? "S/D" : pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].estadoAzuladosFondoPieza
-                                                    resRevisionAzuladosFondoPieza = parseInt(pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].revisionAzuladosFondoPieza) || 0
-                                                    
-                                                    pathToMongoOtLiberacionBuyOffPrimera[i].azuladosFondoPieza == 'sinDato' ? arrResDatoAzuladosFondoPieza.push("S/D") : arrResDatoAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].azuladosFondoPieza)
-                                                    pathToMongoOtLiberacionBuyOffPrimera[i].estadoAzuladosFondoPieza == 'sinDato' ? arrResEstadoAzuladosFondoPieza.push("S/D") : arrResEstadoAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].estadoAzuladosFondoPieza)
-                                                    arrResRevisionAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].revisionAzuladosFondoPieza)
-
-                                                    arrResCreadorAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].creator[0].username)
-                                                    arrResModificadorAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].modificator[0].username)
-                                                    arrResFechaAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].timestamp)
-                                                    arrResFechaModAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].modifiedOn)
-                                                }
-                                            }
-                                            valueArrayResAzuladosFondoPieza = parseInt(arrResDatoAzuladosFondoPieza.length-1)
-
-                                            if (arrResDatoAzuladosFondoPieza.length == 1 ) {
-                                                anteriorDisabled = "disabled"
-                                                siguienteDisabled = "disabled"
-                                            } else if (arrResDatoAzuladosFondoPieza.length == arrResRevisionAzuladosFondoPieza.length) {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            } else {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            }
-                                            
-                                        } else {
-                                            arrResDatoAzuladosFondoPieza.push(resDatoAzuladosFondoPieza)
-                                            arrResEstadoAzuladosFondoPieza.push(resEstadoAzuladosFondoPieza)
-                                            arrResRevisionAzuladosFondoPieza.push(resRevisionAzuladosFondoPieza)
-                                            
-                                            arrResCreadorAzuladosFondoPieza.push(pathMongoOtAjuste[o].creator[0].username)
-                                            arrResModificadorAzuladosFondoPieza = ""
-                                            arrResFechaAzuladosFondoPieza.push(pathMongoOtAjuste[o].timestamp)
-                                            arrResFechaModAzuladosFondoPieza = ""
-                                        } %>
-                                        
-                                        <div id="btnAnteriorSiguienteAzuladosFondoPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                            <button id="btnAnteriorAzuladosFondoPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorAzuladosFondoPieza" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= anteriorDisabled %>
-                                                ><i class="fa-solid fa-arrow-left"></i>
-                                            </button>
-                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoAzuladosFondoPieza %>">
-                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoAzuladosFondoPieza %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResAzuladosFondoPieza %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionAzuladosFondoPieza %>">
-                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorAzuladosFondoPieza %>">
-                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorAzuladosFondoPieza %>">
-                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaAzuladosFondoPieza %>">
-                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModAzuladosFondoPieza %>">
-
-                                            <span id="resDatoAzuladosFondoPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                                <%= resDatoAzuladosFondoPieza %>
-                                            </span> |
-                                            
-                                            <% const config = liberacionBuyOffPrimeraConfig[resEstadoAzuladosFondoPieza] || liberacionBuyOffPrimeraConfig.default; %>
-                                            <span id="resEstadoAzuladosFondoPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoAzuladosFondoPieza%>">
-                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                            </span> |
-
-                                            <span id="resRevisionAzuladosFondoPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionAzuladosFondoPieza" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                <%= resRevisionAzuladosFondoPieza %>
-                                            </span>
-
-                                            <button id="btnSiguienteAzuladosFondoPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteAzuladosFondoPieza" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
-                                                ><i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-
-                                <% } else if (q==31) { %>
-                                    <!-- Roces data Activo-->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayLiberacionBuyOffPrimera > 0) {
-
-                                            for (let i = 0; largoArrayLiberacionBuyOffPrimera > i; i++) {
-                                                if (pathToMongoOtLiberacionBuyOffPrimera[i]) {
-                                                    let largoArray = parseInt(largoArrayLiberacionBuyOffPrimera)
-                                                    resDatoRoces = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].roces == 'sinDato' ? "S/D" :  pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].roces
-                                                    resEstadoRoces = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].estadoRoces == 'sinDato' ? "S/D" : pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].estadoRoces
-                                                    resRevisionRoces = parseInt(pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].revisionRoces) || 0
-                                                    
-                                                    pathToMongoOtLiberacionBuyOffPrimera[i].roces == 'sinDato' ? arrResDatoRoces.push("S/D") : arrResDatoRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].roces)
-                                                    pathToMongoOtLiberacionBuyOffPrimera[i].estadoRoces == 'sinDato' ? arrResEstadoRoces.push("S/D") : arrResEstadoRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].estadoRoces)
-                                                    arrResRevisionRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].revisionRoces)
-                                                    
-                                                    arrResCreadorRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].creator[0].username)
-                                                    arrResModificadorRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].modificator[0].username)
-                                                    arrResFechaRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].timestamp)
-                                                    arrResFechaModRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].modifiedOn)
-                                                }
-                                            }
-                                            valueArrayResRoces = parseInt(arrResEstadoRoces.length-1)
-                                                    
-                                            if (arrResDatoRoces.length == 1 ) {
-                                                anteriorDisabled = "disabled"
-                                                siguienteDisabled = "disabled"
-                                            } else if (arrResDatoRoces.length == arrResRevisionRoces.length) {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            } else {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            }
-                                            
-                                        } else {
-                                            arrResDatoRoces.push(resDatoRoces)
-                                            arrResEstadoRoces.push(resEstadoRoces)
-                                            arrResRevisionRoces.push(resRevisionRoces)
-                                            
-                                            arrResCreadorRoces.push(pathMongoOtAjuste[o].creator[0].username)
-                                            arrResModificadorRoces = ""
-                                            arrResFechaRoces.push(pathMongoOtAjuste[o].timestamp)
-                                            arrResFechaModRoces = ""
-                                        } %>
-                                        
-                                        <div id="btnAnteriorSiguienteRoces<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                            <button id="btnAnteriorRoces<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorRoces" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= anteriorDisabled %>
-                                                ><i class="fa-solid fa-arrow-left"></i>
-                                            </button>
-                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoRoces %>">
-                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoRoces %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResRoces %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionRoces %>">
-                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorRoces %>">
-                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorRoces %>">
-                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaRoces %>">
-                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModRoces %>">
-
-                                            <span id="resDatoRoces<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                                <%= resDatoRoces %>
-                                            </span> |
-
-                                            <% const config = liberacionBuyOffPrimeraConfig[resEstadoRoces] || liberacionBuyOffPrimeraConfig.default; %>
-                                            <span id="resEstadoRoces<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoRoces%>">
-                                                <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                            </span> |
-
-                                            <span id="resRevisionRoces<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionRoces" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                <%= resRevisionRoces %>
-                                            </span>
-
-                                            <button id="btnSiguienteRoces<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteRoces" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= siguienteDisabled %>
-                                                ><i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-
-                                <% } else { %>
-                                    <!-- Azulado Guias data Activo-->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayLiberacionBuyOffPrimera > 0) {
-
-                                            for (let i = 0; largoArrayLiberacionBuyOffPrimera > i; i++) {
-                                                if (pathToMongoOtLiberacionBuyOffPrimera[i]) {
-                                                    let largoArray = parseInt(largoArrayLiberacionBuyOffPrimera)
-                                                    resDatoAzuladoGuias = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].azuladoGuias == 'sinDato' ? "S/D" : pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].azuladoGuias
-                                                    resEstadoAzuladoGuias = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].estadoAzuladoGuias == 'sinDato' ? 'sinDato' : pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].estadoAzuladoGuias
-                                                    resRevisionAzuladoGuias = parseInt(pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].revisionAzuladoGuias) || 0
-                                                    
-                                                    pathToMongoOtLiberacionBuyOffPrimera[i].azuladoGuias == 'sinDato' ? arrResDatoAzuladoGuias.push('S/D') : arrResDatoAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].azuladoGuias)
-                                                    pathToMongoOtLiberacionBuyOffPrimera[i].estadoAzuladoGuias == 'sinDato' ? arrResEstadoAzuladoGuias.push('S/D') : arrResEstadoAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].estadoAzuladoGuias)
-                                                    arrResRevisionAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].revisionAzuladoGuias)
+                                        for (let i = 0; largoArrayLiberacionBuyOffPrimera > i; i++) {
+                                            if (pathToMongoOtLiberacionBuyOffPrimera[i]) {
+                                                let largoArray = parseInt(largoArrayLiberacionBuyOffPrimera)
+                                                resDatoAzuladosFondoPieza = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].azuladosFondoPieza == 'sinDato' ? "S/D" : pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].azuladosFondoPieza
+                                                resEstadoAzuladosFondoPieza = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].estadoAzuladosFondoPieza == 'sinDato' ? "S/D" : pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].estadoAzuladosFondoPieza
+                                                resRevisionAzuladosFondoPieza = parseInt(pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].revisionAzuladosFondoPieza) || 0
                                                 
-                                                    arrResCreadorAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].creator[0].username)
-                                                    arrResModificadorAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].modificator[0].username)
-                                                    arrResFechaAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].timestamp)
-                                                    arrResFechaModAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].modifiedOn)
-                                                }
-                                            }
-                                            valueArrayResAzuladoGuias = parseInt(arrResEstadoAzuladoGuias.length-1)
-                                                    
-                                            if (arrResDatoAzuladoGuias.length == 1 ) {
-                                                siguienteDisabled = "disabled"
-                                                anteriorDisabled = "disabled"
-                                            } else if (arrResDatoAzuladoGuias.length == arrResRevisionAzuladoGuias.length) {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            } else {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            }
-                                                    
-                                        } else {
-                                            arrResDatoAzuladoGuias.push(resDatoAzuladoGuias)
-                                            arrResEstadoAzuladoGuias.push(resEstadoAzuladoGuias)
-                                            arrResRevisionAzuladoGuias.push(resRevisionAzuladoGuias)
-                                            
-                                            arrResCreadorAzuladoGuias.push(pathMongoOtAjuste[o].creator[0].username)
-                                            arrResModificadorAzuladoGuias = ""
-                                            arrResFechaAzuladoGuias.push(pathMongoOtAjuste[o].timestamp)
-                                            arrResFechaModAzuladoGuias = ""
-                                        } %>
+                                                pathToMongoOtLiberacionBuyOffPrimera[i].azuladosFondoPieza == 'sinDato' ? arrResDatoAzuladosFondoPieza.push("S/D") : arrResDatoAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].azuladosFondoPieza)
+                                                pathToMongoOtLiberacionBuyOffPrimera[i].estadoAzuladosFondoPieza == 'sinDato' ? arrResEstadoAzuladosFondoPieza.push("S/D") : arrResEstadoAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].estadoAzuladosFondoPieza)
+                                                arrResRevisionAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].revisionAzuladosFondoPieza)
 
-                                    <div id="btnAnteriorSiguienteAzuladoGuias<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                        <button id="btnAnteriorAzuladoGuias<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorAzuladoGuias" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                arrResCreadorAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].creator[0].username)
+                                                arrResModificadorAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].modificator[0].username)
+                                                arrResFechaAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].timestamp)
+                                                arrResFechaModAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResAzuladosFondoPieza = parseInt(arrResDatoAzuladosFondoPieza.length-1)
+
+                                        if (arrResDatoAzuladosFondoPieza.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResDatoAzuladosFondoPieza.length == arrResRevisionAzuladosFondoPieza.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResDatoAzuladosFondoPieza.push(resDatoAzuladosFondoPieza)
+                                        arrResEstadoAzuladosFondoPieza.push(resEstadoAzuladosFondoPieza)
+                                        arrResRevisionAzuladosFondoPieza.push(resRevisionAzuladosFondoPieza)
+                                        
+                                        arrResCreadorAzuladosFondoPieza.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorAzuladosFondoPieza = ""
+                                        arrResFechaAzuladosFondoPieza.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModAzuladosFondoPieza = ""
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteAzuladosFondoPieza<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorAzuladosFondoPieza<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorAzuladosFondoPieza" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                             <%= anteriorDisabled %>
                                             ><i class="fa-solid fa-arrow-left"></i>
                                         </button>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoAzuladoGuias %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoAzuladoGuias %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResAzuladoGuias %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionAzuladoGuias %>">
-                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorAzuladoGuias %>">
-                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorAzuladoGuias %>">
-                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaAzuladoGuias %>">
-                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModAzuladoGuias %>">
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAzuladosFondoPieza %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAzuladosFondoPieza %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAzuladosFondoPieza %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAzuladosFondoPieza %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorAzuladosFondoPieza %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorAzuladosFondoPieza %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaAzuladosFondoPieza %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModAzuladosFondoPieza %>">
 
-                                        <span id="resDatoAzuladoGuias<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                            <%= resDatoAzuladoGuias %>
+                                        <span id="resDatoAzuladosFondoPieza<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                            <%= resDatoAzuladosFondoPieza %>
                                         </span> |
-
-                                        <% const config = liberacionBuyOffPrimeraConfig[resEstadoAzuladoGuias] || liberacionBuyOffPrimeraConfig.default; %>
-                                        <span id="resEstadoAzuladoGuias<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoAzuladoGuias%>">
+                                        
+                                        <% const config = liberacionBuyOffPrimeraConfig[resEstadoAzuladosFondoPieza] || liberacionBuyOffPrimeraConfig.default; %>
+                                        <span id="resEstadoAzuladosFondoPieza<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAzuladosFondoPieza%>">
                                             <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
 
-                                        <span id="resRevisionAzuladoGuias<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionAzuladoGuias" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                            <%= resRevisionAzuladoGuias %>
+                                        <span id="resRevisionAzuladosFondoPieza<%=k%>_<%=n%>_<%=q%>" name="resRevisionAzuladosFondoPieza" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionAzuladosFondoPieza %>
                                         </span>
 
-                                        <button id="btnSiguienteAzuladoGuias<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteAzuladoGuias" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                        <button id="btnSiguienteAzuladosFondoPieza<%=k%>_<%=n%>_<%=q%>" name="btnSiguienteAzuladosFondoPieza" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else if (q==31) { %>
+                                <!-- Roces data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayLiberacionBuyOffPrimera > 0) {
+
+                                        for (let i = 0; largoArrayLiberacionBuyOffPrimera > i; i++) {
+                                            if (pathToMongoOtLiberacionBuyOffPrimera[i]) {
+                                                let largoArray = parseInt(largoArrayLiberacionBuyOffPrimera)
+                                                resDatoRoces = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].roces == 'sinDato' ? "S/D" :  pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].roces
+                                                resEstadoRoces = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].estadoRoces == 'sinDato' ? "S/D" : pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].estadoRoces
+                                                resRevisionRoces = parseInt(pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].revisionRoces) || 0
+                                                
+                                                pathToMongoOtLiberacionBuyOffPrimera[i].roces == 'sinDato' ? arrResDatoRoces.push("S/D") : arrResDatoRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].roces)
+                                                pathToMongoOtLiberacionBuyOffPrimera[i].estadoRoces == 'sinDato' ? arrResEstadoRoces.push("S/D") : arrResEstadoRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].estadoRoces)
+                                                arrResRevisionRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].revisionRoces)
+                                                
+                                                arrResCreadorRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].creator[0].username)
+                                                arrResModificadorRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].modificator[0].username)
+                                                arrResFechaRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].timestamp)
+                                                arrResFechaModRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResRoces = parseInt(arrResEstadoRoces.length-1)
+                                                
+                                        if (arrResDatoRoces.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResDatoRoces.length == arrResRevisionRoces.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResDatoRoces.push(resDatoRoces)
+                                        arrResEstadoRoces.push(resEstadoRoces)
+                                        arrResRevisionRoces.push(resRevisionRoces)
+                                        
+                                        arrResCreadorRoces.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorRoces = ""
+                                        arrResFechaRoces.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModRoces = ""
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteRoces<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorRoces<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorRoces" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoRoces %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoRoces %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResRoces %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionRoces %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorRoces %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorRoces %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaRoces %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModRoces %>">
+
+                                        <span id="resDatoRoces<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                            <%= resDatoRoces %>
+                                        </span> |
+
+                                        <% const config = liberacionBuyOffPrimeraConfig[resEstadoRoces] || liberacionBuyOffPrimeraConfig.default; %>
+                                        <span id="resEstadoRoces<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoRoces%>">
+                                            <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionRoces<%=k%>_<%=n%>_<%=q%>" name="resRevisionRoces" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionRoces %>
+                                        </span>
+
+                                        <button id="btnSiguienteRoces<%=k%>_<%=n%>_<%=q%>" name="btnSiguienteRoces" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                             <%= siguienteDisabled %>
                                             ><i class="fa-solid fa-arrow-right"></i>
                                         </button>
                                     </div>
                                 </td>
-                                <% }
-                            } %>
-                        </tr>
 
-                    <% } else { %>
-                        <!--Inactivo-->
-                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="pe-none border-bottom" style="height: 5vh; background-color: #dedede;">
-                            <% for (let q = 30; totalColDataLiberacionBuyOffPrimera > q; q++) {
-                                if (q==30) { %>
-                                    <!-- Azulados Fondo Pieza data Inactivo -->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayLiberacionBuyOffPrimera > 0) {
-                                            for (let i = 0; largoArrayLiberacionBuyOffPrimera > i; i++) {
+                            <% } else { %>
+                                <!-- Azulado Guias data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayLiberacionBuyOffPrimera > 0) {
 
-                                                if (pathToMongoOtLiberacionBuyOffPrimera[i]) {
-                                                    let largoArray = parseInt(largoArrayLiberacionBuyOffPrimera)
-                                                    resDatoAzuladosFondoPieza = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].azuladosFondoPieza || 'S/D'
-                                                    resEstadoAzuladosFondoPieza = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].estadoAzuladosFondoPieza || 'sinDato'
-                                                    resRevisionAzuladosFondoPieza = parseInt(pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].revisionAzuladosFondoPieza) || 0
-                                                    
-                                                    arrResDatoAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].azuladosFondoPieza)
-                                                    arrResEstadoAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].estadoAzuladosFondoPieza)
-                                                    arrResRevisionAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].revisionAzuladosFondoPieza)
-                                                }
+                                        for (let i = 0; largoArrayLiberacionBuyOffPrimera > i; i++) {
+                                            if (pathToMongoOtLiberacionBuyOffPrimera[i]) {
+                                                let largoArray = parseInt(largoArrayLiberacionBuyOffPrimera)
+                                                resDatoAzuladoGuias = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].azuladoGuias == 'sinDato' ? "S/D" : pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].azuladoGuias
+                                                resEstadoAzuladoGuias = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].estadoAzuladoGuias == 'sinDato' ? 'sinDato' : pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].estadoAzuladoGuias
+                                                resRevisionAzuladoGuias = parseInt(pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].revisionAzuladoGuias) || 0
+                                                
+                                                pathToMongoOtLiberacionBuyOffPrimera[i].azuladoGuias == 'sinDato' ? arrResDatoAzuladoGuias.push('S/D') : arrResDatoAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].azuladoGuias)
+                                                pathToMongoOtLiberacionBuyOffPrimera[i].estadoAzuladoGuias == 'sinDato' ? arrResEstadoAzuladoGuias.push('S/D') : arrResEstadoAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].estadoAzuladoGuias)
+                                                arrResRevisionAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].revisionAzuladoGuias)
+                                            
+                                                arrResCreadorAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].creator[0].username)
+                                                arrResModificadorAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].modificator[0].username)
+                                                arrResFechaAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].timestamp)
+                                                arrResFechaModAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].modifiedOn)
                                             }
-                                            valueArrayResAzuladosFondoPieza = parseInt(arrResEstadoAzuladosFondoPieza.length-1)
-                                            resDatoAzuladosFondoPieza = pathToMongoOtLiberacionBuyOffPrimera[0].AzuladosFondoPieza
-                                            resEstadoAzuladosFondoPieza = pathToMongoOtLiberacionBuyOffPrimera[0].estadoAzuladosFondoPieza
-
+                                        }
+                                        valueArrayResAzuladoGuias = parseInt(arrResEstadoAzuladoGuias.length-1)
+                                                
+                                        if (arrResDatoAzuladoGuias.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResDatoAzuladoGuias.length == arrResRevisionAzuladoGuias.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
                                         } else {
-                                            arrResDatoAzuladosFondoPieza.push(resDatoAzuladosFondoPieza)
-                                            arrResEstadoAzuladosFondoPieza.push(resEstadoAzuladosFondoPieza)
-                                            arrResRevisionAzuladosFondoPieza.push(resRevisionAzuladosFondoPieza)
-                                        } %>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoAzuladosFondoPieza %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoAzuladosFondoPieza %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResAzuladosFondoPieza %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionAzuladosFondoPieza %>">
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                                
+                                    } else {
+                                        arrResDatoAzuladoGuias.push(resDatoAzuladoGuias)
+                                        arrResEstadoAzuladoGuias.push(resEstadoAzuladoGuias)
+                                        arrResRevisionAzuladoGuias.push(resRevisionAzuladoGuias)
+                                        
+                                        arrResCreadorAzuladoGuias.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorAzuladoGuias = ""
+                                        arrResFechaAzuladoGuias.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModAzuladoGuias = ""
+                                    } %>
+
+                                <div id="btnAnteriorSiguienteAzuladoGuias<%=k%>_<%=n%>_<%=q%>">
+                                    <button id="btnAnteriorAzuladoGuias<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorAzuladoGuias" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                        <%= anteriorDisabled %>
+                                        ><i class="fa-solid fa-arrow-left"></i>
+                                    </button>
+                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAzuladoGuias %>">
+                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAzuladoGuias %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAzuladoGuias %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAzuladoGuias %>">
+                                    <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorAzuladoGuias %>">
+                                    <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorAzuladoGuias %>">
+                                    <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaAzuladoGuias %>">
+                                    <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModAzuladoGuias %>">
+
+                                    <span id="resDatoAzuladoGuias<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                        <%= resDatoAzuladoGuias %>
+                                    </span> |
+
+                                    <% const config = liberacionBuyOffPrimeraConfig[resEstadoAzuladoGuias] || liberacionBuyOffPrimeraConfig.default; %>
+                                    <span id="resEstadoAzuladoGuias<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAzuladoGuias%>">
+                                        <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                    </span> |
+
+                                    <span id="resRevisionAzuladoGuias<%=k%>_<%=n%>_<%=q%>" name="resRevisionAzuladoGuias" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                        <%= resRevisionAzuladoGuias %>
+                                    </span>
+
+                                    <button id="btnSiguienteAzuladoGuias<%=k%>_<%=n%>_<%=q%>" name="btnSiguienteAzuladoGuias" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                        <%= siguienteDisabled %>
+                                        ><i class="fa-solid fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <% }
+                        } %>
+                    </tr>
+
+                <% } else { %>
+                    <!--Inactivo-->
+                    <tr name="rowSelected<%=k%>_<%=n%>" class="pe-none border-bottom" style="height: 7vh; background-color: #dedede;">
+                        <% for (let q = 30; totalColDataLiberacionBuyOffPrimera > q; q++) {
+                            if (q==30) { %>
+                                <!-- Azulados Fondo Pieza data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayLiberacionBuyOffPrimera > 0) {
+                                        for (let i = 0; largoArrayLiberacionBuyOffPrimera > i; i++) {
+
+                                            if (pathToMongoOtLiberacionBuyOffPrimera[i]) {
+                                                let largoArray = parseInt(largoArrayLiberacionBuyOffPrimera)
+                                                resDatoAzuladosFondoPieza = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].azuladosFondoPieza || 'S/D'
+                                                resEstadoAzuladosFondoPieza = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].estadoAzuladosFondoPieza || 'sinDato'
+                                                resRevisionAzuladosFondoPieza = parseInt(pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].revisionAzuladosFondoPieza) || 0
+                                                
+                                                arrResDatoAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].azuladosFondoPieza)
+                                                arrResEstadoAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].estadoAzuladosFondoPieza)
+                                                arrResRevisionAzuladosFondoPieza.push(pathToMongoOtLiberacionBuyOffPrimera[i].revisionAzuladosFondoPieza)
+                                            }
+                                        }
+                                        valueArrayResAzuladosFondoPieza = parseInt(arrResEstadoAzuladosFondoPieza.length-1)
+                                        resDatoAzuladosFondoPieza = pathToMongoOtLiberacionBuyOffPrimera[0].AzuladosFondoPieza
+                                        resEstadoAzuladosFondoPieza = pathToMongoOtLiberacionBuyOffPrimera[0].estadoAzuladosFondoPieza
+
+                                    } else {
+                                        arrResDatoAzuladosFondoPieza.push(resDatoAzuladosFondoPieza)
+                                        arrResEstadoAzuladosFondoPieza.push(resEstadoAzuladosFondoPieza)
+                                        arrResRevisionAzuladosFondoPieza.push(resRevisionAzuladosFondoPieza)
+                                    } %>
+                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAzuladosFondoPieza %>">
+                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAzuladosFondoPieza %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAzuladosFondoPieza %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAzuladosFondoPieza %>">
+                                
+                                    <span id="resDatoAzuladosFondoPieza<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                        <%= resDatoAzuladosFondoPieza %>
+                                    </span> |
+
+                                    <% const config = liberacionBuyOffPrimeraConfig[resEstadoAzuladosFondoPieza] || liberacionBuyOffPrimeraConfig.default; %>
+                                    <span id="resEstadoAzuladosFondoPieza<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAzuladosFondoPieza%>">
+                                        <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                    </span> |
+
+                                    <span id="resRevisionAzuladosFondoPieza<%=k%>_<%=n%>_<%=q%>" name="resRevisionAzuladosFondoPieza" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                        <%= resRevisionAzuladosFondoPieza %>
+                                    </span>
+                                </td>
+
+                            <% } else if (q==31) { %>
+                                <!-- Roces data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayLiberacionBuyOffPrimera > 0) {
+                                        for (let i = 0; largoArrayLiberacionBuyOffPrimera > i; i++) {
+                                            
+                                            if (pathToMongoOtLiberacionBuyOffPrimera[i]) {
+                                                let largoArray = parseInt(largoArrayLiberacionBuyOffPrimera)
+                                                resDatoRoces = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].roces || 'S/D'
+                                                resEstadoRoces = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].roces || 'sinDato'
+                                                resRevisionRoces = parseInt(pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].revisionRoces) || 0
+                                                
+                                                arrResDatoRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].roces)
+                                                arrResEstadoRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].roces)
+                                                arrResRevisionRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].revisionRoces)
+                                            }
+                                        }
+                                        valueArrayResRoces = parseInt(arrResEstadoRoces.length-1)
+                                        resDatoRoces = pathToMongoOtLiberacionBuyOffPrimera[0].roces
+                                        resEstadoRoces = pathToMongoOtLiberacionBuyOffPrimera[0].estadoRoces
                                     
-                                        <span id="resDatoAzuladosFondoPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                            <%= resDatoAzuladosFondoPieza %>
-                                        </span> |
+                                    } else {
+                                        arrResDatoRoces.push(resDatoRoces)
+                                        arrResEstadoRoces.push(resEstadoRoces)
+                                        arrResRevisionRoces.push(resRevisionRoces)
+                                    } %>
+                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoRoces %>">
+                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoRoces %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResRoces %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionRoces %>">
 
-                                        <% const config = liberacionBuyOffPrimeraConfig[resEstadoAzuladosFondoPieza] || liberacionBuyOffPrimeraConfig.default; %>
-                                        <span id="resEstadoAzuladosFondoPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoAzuladosFondoPieza%>">
-                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                        </span> |
+                                    <span id="resDatoRoces<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                        <%= resDatoRoces %>
+                                    </span> |
+                                    
+                                    <% const config = liberacionBuyOffPrimeraConfig[resEstadoRoces] || liberacionBuyOffPrimeraConfig.default; %>
+                                    <span id="resEstadoRoces<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoRoces%>">
+                                        <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                    </span> |
 
-                                        <span id="resRevisionAzuladosFondoPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionAzuladosFondoPieza" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                            <%= resRevisionAzuladosFondoPieza %>
-                                        </span>
-                                    </td>
+                                    <span id="resRevisionRoces<%=k%>_<%=n%>_<%=q%>" name="resRevisionRoces" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                        <%= resRevisionRoces %>
+                                    </span>
+                                </td>
 
-                                <% } else if (q==31) { %>
-                                    <!-- Roces data Inactivo -->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayLiberacionBuyOffPrimera > 0) {
-                                            for (let i = 0; largoArrayLiberacionBuyOffPrimera > i; i++) {
+                            <% } else { %>
+                                <!-- Azulado Guias data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayLiberacionBuyOffPrimera > 0) {
+                                        for (let i = 0; largoArrayLiberacionBuyOffPrimera > i; i++) {
+                                            
+                                            if (pathToMongoOtLiberacionBuyOffPrimera[i]) {
+                                                let largoArray = parseInt(largoArrayLiberacionBuyOffPrimera)
+                                                resDatoAzuladoGuias = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].azuladoGuias || "S/D"
+                                                resEstadoAzuladoGuias = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].estadoAzuladoGuias || 'sinDato'
+                                                resRevisionAzuladoGuias = parseInt(pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].revisionAzuladoGuias) || 0
                                                 
-                                                if (pathToMongoOtLiberacionBuyOffPrimera[i]) {
-                                                    let largoArray = parseInt(largoArrayLiberacionBuyOffPrimera)
-                                                    resDatoRoces = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].roces || 'S/D'
-                                                    resEstadoRoces = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].roces || 'sinDato'
-                                                    resRevisionRoces = parseInt(pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].revisionRoces) || 0
-                                                    
-                                                    arrResDatoRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].roces)
-                                                    arrResEstadoRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].roces)
-                                                    arrResRevisionRoces.push(pathToMongoOtLiberacionBuyOffPrimera[i].revisionRoces)
-                                                }
+                                                arrResDatoAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].azuladoGuias)
+                                                arrResEstadoAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].estadoAzuladoGuias)
+                                                arrResRevisionAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].revisionAzuladoGuias)
                                             }
-                                            valueArrayResRoces = parseInt(arrResEstadoRoces.length-1)
-                                            resDatoRoces = pathToMongoOtLiberacionBuyOffPrimera[0].roces
-                                            resEstadoRoces = pathToMongoOtLiberacionBuyOffPrimera[0].estadoRoces
-                                        
-                                        } else {
-                                            arrResDatoRoces.push(resDatoRoces)
-                                            arrResEstadoRoces.push(resEstadoRoces)
-                                            arrResRevisionRoces.push(resRevisionRoces)
-                                        } %>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoRoces %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoRoces %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResRoces %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionRoces %>">
+                                        }
+                                        valueArrayResAzuladoGuias = parseInt(arrResEstadoAzuladoGuias.length-1)
+                                        resDatoAzuladoGuias = pathToMongoOtLiberacionBuyOffPrimera[0].azuladoGuias
+                                        resEstadoAzuladoGuias = pathToMongoOtLiberacionBuyOffPrimera[0].estadoAzuladoGuias
+                                    
+                                    } else {
+                                        arrResDatoAzuladoGuias.push(resDatoAzuladoGuias)
+                                        arrResEstadoAzuladoGuias.push(resEstadoAzuladoGuias)
+                                        arrResRevisionAzuladoGuias.push(resRevisionAzuladoGuias)
+                                    } %>
+                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAzuladoGuias %>">
+                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAzuladoGuias %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAzuladoGuias %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAzuladoGuias %>">
 
-                                        <span id="resDatoRoces<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                            <%= resDatoRoces %>
-                                        </span> |
-                                        
-                                        <% const config = liberacionBuyOffPrimeraConfig[resEstadoRoces] || liberacionBuyOffPrimeraConfig.default; %>
-                                        <span id="resEstadoRoces<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoRoces%>">
-                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                        </span> |
+                                    <span id="resDatoAzuladoGuias<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                        <%= resDatoAzuladoGuias %>
+                                    </span> |
+                                    
+                                    <% const config = liberacionBuyOffPrimeraConfig[resEstadoAzuladoGuias] || liberacionBuyOffPrimeraConfig.default; %>
+                                    <span id="resEstadoAzuladoGuias<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAzuladoGuias%>">
+                                        <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                    </span> |
 
-                                        <span id="resRevisionRoces<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionRoces" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                            <%= resRevisionRoces %>
-                                        </span>
-                                    </td>
-
-                                <% } else { %>
-                                    <!-- Azulado Guias data Inactivo -->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayLiberacionBuyOffPrimera > 0) {
-                                            for (let i = 0; largoArrayLiberacionBuyOffPrimera > i; i++) {
-                                                
-                                                if (pathToMongoOtLiberacionBuyOffPrimera[i]) {
-                                                    let largoArray = parseInt(largoArrayLiberacionBuyOffPrimera)
-                                                    resDatoAzuladoGuias = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].azuladoGuias || "S/D"
-                                                    resEstadoAzuladoGuias = pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].estadoAzuladoGuias || 'sinDato'
-                                                    resRevisionAzuladoGuias = parseInt(pathToMongoOtLiberacionBuyOffPrimera[largoArray-1].revisionAzuladoGuias) || 0
-                                                    
-                                                    arrResDatoAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].azuladoGuias)
-                                                    arrResEstadoAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].estadoAzuladoGuias)
-                                                    arrResRevisionAzuladoGuias.push(pathToMongoOtLiberacionBuyOffPrimera[i].revisionAzuladoGuias)
-                                                }
-                                            }
-                                            valueArrayResAzuladoGuias = parseInt(arrResEstadoAzuladoGuias.length-1)
-                                            resDatoAzuladoGuias = pathToMongoOtLiberacionBuyOffPrimera[0].azuladoGuias
-                                            resEstadoAzuladoGuias = pathToMongoOtLiberacionBuyOffPrimera[0].estadoAzuladoGuias
-                                        
-                                        } else {
-                                            arrResDatoAzuladoGuias.push(resDatoAzuladoGuias)
-                                            arrResEstadoAzuladoGuias.push(resEstadoAzuladoGuias)
-                                            arrResRevisionAzuladoGuias.push(resRevisionAzuladoGuias)
-                                        } %>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoAzuladoGuias %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoAzuladoGuias %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResAzuladoGuias %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionAzuladoGuias %>">
-
-                                        <span id="resDatoAzuladoGuias<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                            <%= resDatoAzuladoGuias %>
-                                        </span> |
-                                        
-                                        <% const config = liberacionBuyOffPrimeraConfig[resEstadoAzuladoGuias] || liberacionBuyOffPrimeraConfig.default; %>
-                                        <span id="resEstadoAzuladoGuias<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoAzuladoGuias%>">
-                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                        </span> |
-
-                                        <span id="resRevisionAzuladoGuias<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionAzuladoGuias" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                            <%= resRevisionAzuladoGuias %>
-                                        </span>
-                                    </td>
-                                <% }
-                            } %>
-                        </tr>
-                    <% }
-                }
+                                    <span id="resRevisionAzuladoGuias<%=k%>_<%=n%>_<%=q%>" name="resRevisionAzuladoGuias" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                        <%= resRevisionAzuladoGuias %>
+                                    </span>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+                <% }
             }
         }) %>
     </tbody>

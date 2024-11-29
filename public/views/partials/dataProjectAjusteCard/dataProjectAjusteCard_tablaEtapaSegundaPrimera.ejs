@@ -1,0 +1,463 @@
+<!-- tabla Etapa Segunda Primera -->
+<table id="tablaOtEtapaSegundaPrimera<%=k%>" class="table-responsive align-middle col-5 border-end border-dark" style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #d8d8eb">
+        <tr>
+            <th colspan="3" class="text-center">ETAPA 2 (1° Parte)
+                <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
+                    <button id="posBtnAddDataOtEtapaSegundaPrimera<%=k%>" type="button" name="btnOtEtapaSegundaPrimera" class="btn btn-small btn-success shadow m-1 me-5 mb-2 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                        <span id="spanCheckSelecMasiveEtapaSegPrima<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                            <span class="visually-hidden">Elementos seleccionados</span>
+                        </span>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 me-5 mb-2 disabled" style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>                                                    
+                    </button>
+                <% } %>
+                <i class="fa-solid fa-arrows-spin fa-lg" style="color: #b09b12;"></i> En Proceso -
+                <i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i> Terminado -
+                <i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i> Detenido -
+                <i class="fa-solid fa-ban fa-lg"></i> No Aplica -
+                <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i> Sin Datos
+            </th>
+        </tr>
+        <tr>
+            <th id="colData0" style="width:33vw" scope="col-1" class="text-center pb-1">Ajuste prensachapas | Estado | Rev.</th>
+            <th id="colData1" style="width:33vw" scope="col-1" class="text-center pb-1">Tacho p/ajuste | Estado | Rev.</th>
+            <th id="colData2" style="width:33vw" scope="col-1" class="text-center pb-1">Ajuste Fondo | Estado | Rev.</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        
+        <% const etapaSegundaPrimeraConfig = {
+                enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
+                terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
+                detenido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
+                noAplica: { icon: "fa-ban", iconColor: "color:#000000" },
+                default: { icon: "fa-triangle-exclamation", iconColor: "color:#1c21ac" }
+            };
+
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
+            
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                resDatoAzulados = "S/D", resEstadoAzulados = 'sinDato', resRevisionAzulados = 0,
+                resDatoTachoAjuste = "S/D", resEstadoTachoAjuste = 'sinDato', resRevisionTachoAjuste = 0,
+                resDatoAjusteFondo = "S/D", resEstadoAjusteFondo = 'sinDato', resRevisionAjusteFondo = 0;
+
+            if (pathMongoOtProject[n].visible) {
+                let pathToMongoOtEtapaSegundaPrimera = pathMongoOtAjuste[0].otEtapaSegundaPrimera || [],
+                    largoArrayEtapaSegundaPrimera = parseInt(pathToMongoOtEtapaSegundaPrimera.length);
+
+                let arrResDatoAzulados = [], arrResEstadoAzulados = [], valueArrayResAzulados = 0, arrResRevisionAzulados = [],
+                    arrResCreadorAzulados = [], arrResModificadorAzulados = [], arrResFechaAzulados = [], arrResFechaModAzulados = [];
+
+                let arrResDatoTachoAjuste = [], arrResEstadoTachoAjuste = [], valueArrayResTachoAjuste = 0, arrResRevisionTachoAjuste = [],
+                    arrResCreadorTachoAjuste = [], arrResModificadorTachoAjuste = [], arrResFechaTachoAjuste = [], arrResFechaModTachoAjuste = [];
+
+                let arrResDatoAjusteFondo = [], arrResEstadoAjusteFondo = [], valueArrayResAjusteFondo = 0, arrResRevisionAjusteFondo = [],
+                    arrResCreadorAjusteFondo = [], arrResModificadorAjusteFondo = [], arrResFechaAjusteFondo = [], arrResFechaModAjusteFondo = [];
+
+                    if (pathMongoOtProject[n].otStatus) { %>
+                        <!--Activo-->
+                        <tr name="rowSelected<%=k%>_<%=n%>" class="border-bottom" style="height: 7vh;">
+                            <% for (let q = 8; totalColDataEtapaSegundaPrimera > q; q++) {
+                                if (q==8) { %>
+                                    <!-- Azulados data Activo--> 
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayEtapaSegundaPrimera > 0) {
+
+                                            for (let i = 0; largoArrayEtapaSegundaPrimera > i; i++) {
+                                                if (pathToMongoOtEtapaSegundaPrimera[i]) {
+                                                    let largoArray = parseInt(largoArrayEtapaSegundaPrimera)
+                                                    resDatoAzulados = pathToMongoOtEtapaSegundaPrimera[largoArray-1].azulados == 'sinDato' ? "S/D" : pathToMongoOtEtapaSegundaPrimera[largoArray-1].azulados
+                                                    resEstadoAzulados = pathToMongoOtEtapaSegundaPrimera[largoArray-1].estadoAzulados == 'sinDato' ? "S/D" : pathToMongoOtEtapaSegundaPrimera[largoArray-1].estadoAzulados
+                                                    resRevisionAzulados = parseInt(pathToMongoOtEtapaSegundaPrimera[largoArray-1].revisionAzulados) || 0
+                                                    
+                                                    pathToMongoOtEtapaSegundaPrimera[i].azulados == 'sinDato' ? arrResDatoAzulados.push("S/D") : arrResDatoAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].azulados)
+                                                    pathToMongoOtEtapaSegundaPrimera[i].estadoAzulados == 'sinDato' ? arrResEstadoAzulados.push("S/D") : arrResEstadoAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].estadoAzulados)
+                                                    arrResRevisionAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].revisionAzulados)
+
+                                                    arrResCreadorAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].creator[0].username)
+                                                    arrResModificadorAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].modificator[0].username)
+                                                    arrResFechaAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].timestamp)
+                                                    arrResFechaModAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].modifiedOn)
+                                                }
+                                            }
+                                            valueArrayResAzulados = parseInt(arrResDatoAzulados.length-1)
+
+                                            if (arrResDatoAzulados.length == 1 ) {
+                                                anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
+                                            } else if (arrResDatoAzulados.length == arrResRevisionAzulados.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                            
+                                        } else {
+                                            arrResDatoAzulados.push(resDatoAzulados)
+                                            arrResEstadoAzulados.push(resEstadoAzulados)
+                                            arrResRevisionAzulados.push(resRevisionAzulados)
+                                            
+                                            arrResCreadorAzulados.push(pathMongoOtProject[n].creator[0].username)
+                                            arrResModificadorAzulados = ""
+                                            arrResFechaAzulados.push(pathMongoOtProject[n].timestamp)
+                                            arrResFechaModAzulados = ""
+                                        } %>
+                                        
+                                        <div id="btnAnteriorSiguienteAzulados<%=k%>_<%=n%>_<%=q%>">
+                                            <button id="btnAnteriorAzulados<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorAzulados" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAzulados %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAzulados %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAzulados %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAzulados %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorAzulados %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorAzulados %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaAzulados %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModAzulados %>">
+
+                                            <span id="resDatoAzulados<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                <%= resDatoAzulados %>
+                                            </span> |
+                                            
+                                            <% const config = etapaSegundaPrimeraConfig[resEstadoAzulados] || etapaSegundaPrimeraConfig.default; %>
+                                            <span id="resEstadoAzulados<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAzulados%>">
+                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                            </span> |
+
+                                            <span id="resRevisionAzulados<%=k%>_<%=n%>_<%=q%>" name="resRevisionAzulados" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                <%= resRevisionAzulados %>
+                                            </span>
+
+                                            <button id="btnSiguienteAzulados<%=k%>_<%=n%>_<%=q%>" name="btnSiguienteAzulados" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+
+                                <% } else if (q==9) { %>
+                                    <!-- Tacho Ajuste data Activo-->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayEtapaSegundaPrimera > 0) {
+
+                                            for (let i = 0; largoArrayEtapaSegundaPrimera > i; i++) {
+                                                if (pathToMongoOtEtapaSegundaPrimera[i]) {
+                                                    let largoArray = parseInt(largoArrayEtapaSegundaPrimera)
+                                                    resDatoTachoAjuste = pathToMongoOtEtapaSegundaPrimera[largoArray-1].tachoAjuste == 'sinDato' ? "S/D" :  pathToMongoOtEtapaSegundaPrimera[largoArray-1].tachoAjuste
+                                                    resEstadoTachoAjuste = pathToMongoOtEtapaSegundaPrimera[largoArray-1].estadoTachoAjuste == 'sinDato' ? "S/D" : pathToMongoOtEtapaSegundaPrimera[largoArray-1].estadoTachoAjuste
+                                                    resRevisionTachoAjuste = parseInt(pathToMongoOtEtapaSegundaPrimera[largoArray-1].revisionTachoAjuste) || 0
+                                                    
+                                                    pathToMongoOtEtapaSegundaPrimera[i].tachoAjuste == 'sinDato' ? arrResDatoTachoAjuste.push("S/D") : arrResDatoTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].tachoAjuste)
+                                                    pathToMongoOtEtapaSegundaPrimera[i].estadoTachoAjuste == 'sinDato' ? arrResEstadoTachoAjuste.push("S/D") : arrResEstadoTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].estadoTachoAjuste)
+                                                    arrResRevisionTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].revisionTachoAjuste)
+                                                    
+                                                    arrResCreadorTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].creator[0].username)
+                                                    arrResModificadorTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].modificator[0].username)
+                                                    arrResFechaTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].timestamp)
+                                                    arrResFechaModTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].modifiedOn)
+                                                }
+                                            }
+                                            valueArrayResTachoAjuste = parseInt(arrResEstadoTachoAjuste.length-1)
+                                                    
+                                            if (arrResDatoTachoAjuste.length == 1 ) {
+                                                anteriorDisabled = "disabled"
+                                                siguienteDisabled = "disabled"
+                                            } else if (arrResDatoTachoAjuste.length == arrResRevisionTachoAjuste.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                            
+                                        } else {
+                                            arrResDatoTachoAjuste.push(resDatoTachoAjuste)
+                                            arrResEstadoTachoAjuste.push(resEstadoTachoAjuste)
+                                            arrResRevisionTachoAjuste.push(resRevisionTachoAjuste)
+                                            
+                                            arrResCreadorTachoAjuste.push(pathMongoOtProject[n].creator[0].username)
+                                            arrResModificadorTachoAjuste = ""
+                                            arrResFechaTachoAjuste.push(pathMongoOtProject[n].timestamp)
+                                            arrResFechaModTachoAjuste = ""
+                                        } %>
+                                        
+                                        <div id="btnAnteriorSiguienteTachoAjuste<%=k%>_<%=n%>_<%=q%>">
+                                            <button id="btnAnteriorTachoAjuste<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorTachoAjuste" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoTachoAjuste %>">
+                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoTachoAjuste %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResTachoAjuste %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionTachoAjuste %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorTachoAjuste %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorTachoAjuste %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaTachoAjuste %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModTachoAjuste %>">
+
+                                            <span id="resDatoTachoAjuste<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                                <%= resDatoTachoAjuste %>
+                                            </span> |
+
+                                            <% const config = etapaSegundaPrimeraConfig[resEstadoTachoAjuste] || etapaSegundaPrimeraConfig.default; %>
+                                            <span id="resEstadoTachoAjuste<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoTachoAjuste%>">
+                                                <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                            </span> |
+
+                                            <span id="resRevisionTachoAjuste<%=k%>_<%=n%>_<%=q%>" name="resRevisionTachoAjuste" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                                <%= resRevisionTachoAjuste %>
+                                            </span>
+
+                                            <button id="btnSiguienteTachoAjuste<%=k%>_<%=n%>_<%=q%>" name="btnSiguienteTachoAjuste" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+
+                                <% } else { %>
+                                    <!-- Ajuste Fondo data Activo-->
+                                    <td class="text-center align-middle">
+                                        <% if (largoArrayEtapaSegundaPrimera > 0) {
+
+                                            for (let i = 0; largoArrayEtapaSegundaPrimera > i; i++) {
+                                                if (pathToMongoOtEtapaSegundaPrimera[i]) {
+                                                    let largoArray = parseInt(largoArrayEtapaSegundaPrimera)
+                                                    resDatoAjusteFondo = pathToMongoOtEtapaSegundaPrimera[largoArray-1].ajusteFondo == 'sinDato' ? "S/D" : pathToMongoOtEtapaSegundaPrimera[largoArray-1].ajusteFondo
+                                                    resEstadoAjusteFondo = pathToMongoOtEtapaSegundaPrimera[largoArray-1].estadoAjusteFondo == 'sinDato' ? 'sinDato' : pathToMongoOtEtapaSegundaPrimera[largoArray-1].estadoAjusteFondo
+                                                    resRevisionAjusteFondo = parseInt(pathToMongoOtEtapaSegundaPrimera[largoArray-1].revisionAjusteFondo) || 0
+                                                    
+                                                    pathToMongoOtEtapaSegundaPrimera[i].ajusteFondo == 'sinDato' ? arrResDatoAjusteFondo.push('S/D') : arrResDatoAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].ajusteFondo)
+                                                    pathToMongoOtEtapaSegundaPrimera[i].estadoAjusteFondo == 'sinDato' ? arrResEstadoAjusteFondo.push('S/D') : arrResEstadoAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].estadoAjusteFondo)
+                                                    arrResRevisionAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].revisionAjusteFondo)
+                                                
+                                                    arrResCreadorAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].creator[0].username)
+                                                    arrResModificadorAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].modificator[0].username)
+                                                    arrResFechaAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].timestamp)
+                                                    arrResFechaModAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].modifiedOn)
+                                                }
+                                            }
+                                            valueArrayResAjusteFondo = parseInt(arrResEstadoAjusteFondo.length-1)
+                                                    
+                                            if (arrResDatoAjusteFondo.length == 1 ) {
+                                                siguienteDisabled = "disabled"
+                                                anteriorDisabled = "disabled"
+                                            } else if (arrResDatoAjusteFondo.length == arrResRevisionAjusteFondo.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                                    
+                                        } else {
+                                            arrResDatoAjusteFondo.push(resDatoAjusteFondo)
+                                            arrResEstadoAjusteFondo.push(resEstadoAjusteFondo)
+                                            arrResRevisionAjusteFondo.push(resRevisionAjusteFondo)
+                                            
+                                            arrResCreadorAjusteFondo.push(pathMongoOtProject[n].creator[0].username)
+                                            arrResModificadorAjusteFondo = ""
+                                            arrResFechaAjusteFondo.push(pathMongoOtProject[n].timestamp)
+                                            arrResFechaModAjusteFondo = ""
+                                        } %>
+
+                                    <div id="btnAnteriorSiguienteAjusteFondo<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorAjusteFondo<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorAjusteFondo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAjusteFondo %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAjusteFondo %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAjusteFondo %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAjusteFondo %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorAjusteFondo %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorAjusteFondo %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaAjusteFondo %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModAjusteFondo %>">
+
+                                        <span id="resDatoAjusteFondo<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                            <%= resDatoAjusteFondo %>
+                                        </span> |
+
+                                        <% const config = etapaSegundaPrimeraConfig[resEstadoAjusteFondo] || etapaSegundaPrimeraConfig.default; %>
+                                        <span id="resEstadoAjusteFondo<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAjusteFondo%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionAjusteFondo<%=k%>_<%=n%>_<%=q%>" name="resRevisionAjusteFondo" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionAjusteFondo %>
+                                        </span>
+
+                                        <button id="btnSiguienteAjusteFondo<%=k%>_<%=n%>_<%=q%>" name="btnSiguienteAjusteFondo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                    </td>
+                                
+                                <% }
+                            } %>
+                        </tr>
+
+                    <% } else { %>
+                        <!--Inactivo-->
+                        <tr name="rowSelected<%=k%>_<%=n%>" class="pe-none border-bottom" style="height: 7vh; background-color: #dedede;">
+                            <% for (let q = 8; totalColDataEtapaSegundaPrimera > q; q++) {
+                                if (q==8) { %>
+                                    <!-- Azulados data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if ( largoArrayEtapaSegundaPrimera > 0) {
+                                            for (let i = 0; largoArrayEtapaSegundaPrimera > i; i++) {
+
+                                                if (pathToMongoOtEtapaSegundaPrimera[i]) {
+                                                    let largoArray = parseInt(largoArrayEtapaSegundaPrimera)
+                                                    resDatoAzulados = pathToMongoOtEtapaSegundaPrimera[largoArray-1].azulados || 'S/D'
+                                                    resEstadoAzulados = pathToMongoOtEtapaSegundaPrimera[largoArray-1].estadoAzulados || 'sinDato'
+                                                    resRevisionAzulados = parseInt(pathToMongoOtEtapaSegundaPrimera[largoArray-1].revisionAzulados) || 0
+                                                    
+                                                    arrResDatoAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].azulados)
+                                                    arrResEstadoAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].estadoAzulados)
+                                                    arrResRevisionAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].revisionAzulados)
+                                                }
+                                            }
+                                            valueArrayResAzulados = parseInt(arrResEstadoAzulados.length-1)
+                                            resDatoAzulados = pathToMongoOtEtapaSegundaPrimera[0].Azulados
+                                            resEstadoAzulados = pathToMongoOtEtapaSegundaPrimera[0].estadoAzulados
+
+                                        } else {
+                                            arrResDatoAzulados.push(resDatoAzulados)
+                                            arrResEstadoAzulados.push(resEstadoAzulados)
+                                            arrResRevisionAzulados.push(resRevisionAzulados)
+                                        } %>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAzulados %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAzulados %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAzulados %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAzulados %>">
+                                    
+                                        <span id="resDatoAzulados<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                            <%= resDatoAzulados %>
+                                        </span> |
+
+                                        <% const config = etapaSegundaPrimeraConfig[resEstadoAzulados] || etapaSegundaPrimeraConfig.default; %>
+                                        <span id="resEstadoAzulados<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAzulados%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionAzulados<%=k%>_<%=n%>_<%=q%>" name="resRevisionAzulados" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionAzulados %>
+                                        </span>
+                                    </td>
+
+                                <% } else if (q==9) { %>
+                                    <!-- Tacho Ajuste data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if ( largoArrayEtapaSegundaPrimera > 0) {
+                                            for (let i = 0; largoArrayEtapaSegundaPrimera > i; i++) {
+                                                
+                                                if (pathToMongoOtEtapaSegundaPrimera[i]) {
+                                                    let largoArray = parseInt(largoArrayEtapaSegundaPrimera)
+                                                    resDatoTachoAjuste = pathToMongoOtEtapaSegundaPrimera[largoArray-1].tachoAjuste || 'S/D'
+                                                    resEstadoTachoAjuste = pathToMongoOtEtapaSegundaPrimera[largoArray-1].tachoAjuste || 'sinDato'
+                                                    resRevisionTachoAjuste = parseInt(pathToMongoOtEtapaSegundaPrimera[largoArray-1].revisionTachoAjuste) || 0
+                                                    
+                                                    arrResDatoTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].tachoAjuste)
+                                                    arrResEstadoTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].tachoAjuste)
+                                                    arrResRevisionTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].revisionTachoAjuste)
+                                                }
+                                            }
+                                            valueArrayResTachoAjuste = parseInt(arrResEstadoTachoAjuste.length-1)
+                                            resDatoTachoAjuste = pathToMongoOtEtapaSegundaPrimera[0].tachoAjuste
+                                            resEstadoTachoAjuste = pathToMongoOtEtapaSegundaPrimera[0].estadoTachoAjuste
+                                        
+                                        } else {
+                                            arrResDatoTachoAjuste.push(resDatoTachoAjuste)
+                                            arrResEstadoTachoAjuste.push(resEstadoTachoAjuste)
+                                            arrResRevisionTachoAjuste.push(resRevisionTachoAjuste)
+                                        } %>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoTachoAjuste %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoTachoAjuste %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResTachoAjuste %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionTachoAjuste %>">
+
+                                        <span id="resDatoTachoAjuste<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                            <%= resDatoTachoAjuste %>
+                                        </span> |
+                                        
+                                        <% const config = etapaSegundaPrimeraConfig[resEstadoTachoAjuste] || etapaSegundaPrimeraConfig.default; %>
+                                        <span id="resEstadoTachoAjuste<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoTachoAjuste%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionTachoAjuste<%=k%>_<%=n%>_<%=q%>" name="resRevisionTachoAjuste" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionTachoAjuste %>
+                                        </span>
+                                    </td>
+
+                                <% } else { %>
+                                    <!-- Ajuste Fondo data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if ( largoArrayEtapaSegundaPrimera > 0) {
+                                            for (let i = 0; largoArrayEtapaSegundaPrimera > i; i++) {
+                                                
+                                                if (pathToMongoOtEtapaSegundaPrimera[i]) {
+                                                    let largoArray = parseInt(largoArrayEtapaSegundaPrimera)
+                                                    resDatoAjusteFondo = pathToMongoOtEtapaSegundaPrimera[largoArray-1].ajusteFondo || "S/D"
+                                                    resEstadoAjusteFondo = pathToMongoOtEtapaSegundaPrimera[largoArray-1].estadoAjusteFondo || 'sinDato'
+                                                    resRevisionAjusteFondo = parseInt(pathToMongoOtEtapaSegundaPrimera[largoArray-1].revisionAjusteFondo) || 0
+                                                    
+                                                    arrResDatoAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].ajusteFondo)
+                                                    arrResEstadoAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].estadoAjusteFondo)
+                                                    arrResRevisionAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].revisionAjusteFondo)
+                                                }
+                                            }
+                                            valueArrayResAjusteFondo = parseInt(arrResEstadoAjusteFondo.length-1)
+                                            resDatoAjusteFondo = pathToMongoOtEtapaSegundaPrimera[0].ajusteFondo
+                                            resEstadoAjusteFondo = pathToMongoOtEtapaSegundaPrimera[0].estadoAjusteFondo
+                                        
+                                        } else {
+                                            arrResDatoAjusteFondo.push(resDatoAjusteFondo)
+                                            arrResEstadoAjusteFondo.push(resEstadoAjusteFondo)
+                                            arrResRevisionAjusteFondo.push(resRevisionAjusteFondo)
+                                        } %>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAjusteFondo %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAjusteFondo %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAjusteFondo %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAjusteFondo %>">
+
+                                        <span id="resDatoAjusteFondo<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                            <%= resDatoAjusteFondo %>
+                                        </span> |
+                                        
+                                        <% const config = etapaSegundaPrimeraConfig[resEstadoAjusteFondo] || etapaSegundaPrimeraConfig.default; %>
+                                        <span id="resEstadoAjusteFondo<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAjusteFondo%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionAjusteFondo<%=k%>_<%=n%>_<%=q%>" name="resRevisionAjusteFondo" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionAjusteFondo %>
+                                        </span>
+                                    </td>
+                                
+                                <% }
+                            } %>
+                        </tr>
+                    <% }
+                }
+        }) %>
+    </tbody>
+</table>

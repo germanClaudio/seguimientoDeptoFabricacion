@@ -37,8 +37,8 @@
         
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
-            largoArrayOtProject = parseInt(pathMongoOtProject.length),
-            pathMongoOtInformation = pathMongoOtProject[n].otInformation
+                largoArrayOtProject = parseInt(pathMongoOtProject.length),
+                pathMongoOtInformation = pathMongoOtProject[n].otInformation
 
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
                 resProcesoR14 = "sinDato", resRevisionProcesoR14 = 0,
@@ -46,13 +46,13 @@
 
             if (pathMongoOtProject[n].visible) {
                 let pathMongoOtInfoR14 = pathMongoOtInformation[0].otInfoR14 || [],
-                largoArrayInfoR14 = parseInt(pathMongoOtInfoR14.length);
+                    largoArrayInfoR14 = parseInt(pathMongoOtInfoR14.length);
 
                 let arrResProcesoR14 = [], valueArrayResProcesoR14 = 0, arrResRevisionProcesoR14 = [],
-                arrResCreadorProcesoR14 = [], arrResModificadorProcesoR14 = [], arrResFechaProcesoR14 = [], arrResFechaModProcesoR14 = [];
+                    arrResCreadorProcesoR14 = [], arrResModificadorProcesoR14 = [], arrResFechaProcesoR14 = [], arrResFechaModProcesoR14 = [];
 
                 let arrResAprobadoR14 = [], valueArrayResAprobadoR14 = 0, arrResRevisionAprobadoR14 = [],
-                arrResCreadorAprobadoR14 = [], arrResModificadorAprobadoR14 = [], arrResFechaAprobadoR14 = [], arrResFechaModAprobadoR14 = [];
+                    arrResCreadorAprobadoR14 = [], arrResModificadorAprobadoR14 = [], arrResFechaAprobadoR14 = [], arrResFechaModAprobadoR14 = [];
 
                 if (pathMongoOtProject[n].otStatus) { %>
                     <!-- Activos --> 

@@ -11,8 +11,8 @@
                 <% if (proyecto.length > 0) { 
                         for ( let m=0; proyecto.length> m; m++) { %>                           
                             <div class="accordion" id="accordionPanelsStayOpenExample">                 
-                                <% let countVisibleOci=0
-                                    let arrayVisibleOci = [] 
+                                <% let countVisibleOci=0, arrayVisibleOci = [];
+
                                     for ( let x=0; proyecto[m].project[j].oci.length> x; x++) {
                                         if (proyecto[m].project[j].oci[x].visible) { 
                                             arrayVisibleOci.push(proyecto[m].project[j].oci[x])
@@ -26,7 +26,7 @@
                                                 <div class="accordion-item">
                                                     <h2 class="accordion-header" id="panelsStayOpen-headingOneCard<%=k%>">
                                                     <!-- ------ boton accordion OCI's ------ -->
-                                                        <%- include('../../partials/dataProjectWonCard/dataProjectWonCard_btnAccord', { k, m, j, arrayVisibleOci }); %>
+                                                        <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_btnAccord', { k, m, j, arrayVisibleOci }); %>
                                                     </h2>
 
                                                     <div id="panelsStayOpen-collapseOneCard<%=k%>" class="accordion-collapse show" aria-labelledby="panelsStayOpen-headingOne">
@@ -45,10 +45,10 @@
                                                                     
                                                                         <div class="d-flex flex-row my-3">
                                                                             <!-- ----- tabla general ----- -->
-                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaGral', { k, m, j }); %>
+                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaGral', { k, m, j }); %>
                                                                             
-                                                                            <!-- ----- tabla dueño de OT ----- -->
-                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaDuenoOt', { k, m, j }); %>
+                                                                            <!-- ----- tabla dueño de pieza ----- -->
+                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaDuenoOt', { k, m, j, arrayVisibleOci }); %>
 
                                                                             <!-- Carousel de Tablas ----- -->
                                                                             <div id="carouselExampleControls<%=k%>" class="carousel slide" data-bs-ride="carousel">
@@ -59,7 +59,8 @@
                                                                                 <% if (proyecto[0].project[0].levelProject == 'ganado') { 
                                                                                     let totalColDataOtArmado = 4, 
                                                                                         totalColDataEtapaPrimera = 8, 
-                                                                                        totalColDataEtapaSegunda = 13, 
+                                                                                        totalColDataEtapaSegundaPrimera = 11,
+                                                                                        totalColDataEtapaSegundaSegunda = 13,
                                                                                         totalColDataAnalisisCritico = 15,
                                                                                         totalColDataEtapaTerceraPrimera = 18, 
                                                                                         totalColDataEtapaTerceraSegunda = 21, 
@@ -73,7 +74,7 @@
                                                                                     %>
 
                                                                                     <div class="carousel-inner">
-                                                                                        <!-- --------- tabla otAramdo ----------- -->
+                                                                                        <!-- --------- tabla Armado ----------- -->
                                                                                         <div id="slideOtArmado" class="carousel-item" data-bs-interval="600000"> <!-- active -->
                                                                                             <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaArmado', { k, m, j, totalColDataOtArmado }); %>
                                                                                         </div>
@@ -81,9 +82,13 @@
                                                                                         <div id="slideEtapaPrimera" class="carousel-item" data-bs-interval="600000">
                                                                                             <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaEtapaPrimera', { k, m, j, totalColDataEtapaPrimera }); %>
                                                                                         </div>
-                                                                                        <!-- --------- tabla Etapa Segunda ----------- -->
-                                                                                        <div id="slideEtapaSegunda" class="carousel-item" data-bs-interval="600000">
-                                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaEtapaSegunda', { k, m, j, totalColDataEtapaSegunda }); %>
+                                                                                        <!-- --------- tabla Etapa Segunda Primera ----------- -->
+                                                                                        <div id="slideEtapaSegundaPrimera" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaEtapaSegundaPrimera', { k, m, j, totalColDataEtapaSegundaPrimera }); %>
+                                                                                        </div>
+                                                                                        <!-- --------- tabla Etapa Segunda Segunda ----------- -->
+                                                                                        <div id="slideEtapaSegundaSegunda" class="carousel-item" data-bs-interval="600000">
+                                                                                            <%- include('../../partials/dataProjectAjusteCard/dataProjectAjusteCard_tablaEtapaSegundaSegunda', { k, m, j, totalColDataEtapaSegundaSegunda }); %>
                                                                                         </div>
                                                                                         <!-- --------- tabla Analisis Critico ----------- -->
                                                                                         <div id="slideAnalisisCritico" class="carousel-item" data-bs-interval="600000">

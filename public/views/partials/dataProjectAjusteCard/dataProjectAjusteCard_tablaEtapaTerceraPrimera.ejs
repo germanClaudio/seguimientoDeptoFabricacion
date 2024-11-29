@@ -4,7 +4,7 @@
         <tr>
             <th colspan="3" class="text-center">ETAPA 3 (1° Parte)
                 <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
-                    <button id="posBtnAddDataOtEtapaTerceraPrimera<%=k%>" type="button" name="btnOtEtapaTerceraPrimera" class="btn btn-small btn-success shadow m-1 me-5 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                    <button id="posBtnAddDataOtEtapaTerceraPrimera<%=k%>" type="button" name="btnOtEtapaTerceraPrimera" class="btn btn-small btn-success shadow m-1 me-5 mb-2 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
                         <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
                         <span id="spanCheckSelecMasiveEtapaTerPrima<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
                             0
@@ -12,13 +12,13 @@
                         </span>
                     </button>
                 <% } else { %>
-                    <button type="button" class="btn btn-small btn-danger shadow m-1 me-5 disabled" style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 me-5 mb-2 disabled" style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
                         <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>                                                    
                     </button>
                 <% } %>
                 <i class="fa-solid fa-arrows-spin fa-lg" style="color: #b09b12;"></i> En Proceso -
                 <i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i> Terminado -
-                <i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i> Suspendido -
+                <i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i> Detenido -
                 <i class="fa-solid fa-ban fa-lg"></i> No Aplica -
                 <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i> Sin Datos
             </th>
@@ -32,26 +32,25 @@
     <tbody class="table-group-divider">
         
         <% const etapaTerceraPrimeraConfig = {
-                enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
-                terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
-                suspendido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
-                noAplica: { icon: "fa-ban", iconColor: "color:#000000" },
-                default: { icon: "fa-triangle-exclamation", iconColor: "color:#1c21ac" }
-            };
+            enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
+            terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
+            detenido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
+            noAplica: { icon: "fa-ban", iconColor: "color:#000000" },
+            default: { icon: "fa-triangle-exclamation", iconColor: "color:#1c21ac" }
+        };
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
-            pathMongoOtAjuste = pathMongoOtProject[n].otAjuste,
-            largoArrayOtAjuste = parseInt(pathMongoOtAjuste.length)
+                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
 
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
                 resDatoLocalizacionFuncional = "S/D", resEstadoLocalizacionFuncional = 'sinDato', resRevisionLocalizacionFuncional = 0,
                 resDatoObtencionPieza = "S/D", resEstadoObtencionPieza = 'sinDato', resRevisionObtencionPieza = 0,
                 resDatoAzuladoFuncional = "S/D", resEstadoAzuladoFuncional = 'sinDato', resRevisionAzuladoFuncional = 0;
 
-            for ( let o=0; largoArrayOtAjuste> o; o++) {
-                let pathToMongoOtEtapaTerceraPrimera = pathMongoOtAjuste[o].otEtapaTerceraPrimera || [];
-                let largoArrayEtapaTerceraPrimera = parseInt(pathToMongoOtEtapaTerceraPrimera.length);
+            if (pathMongoOtProject[n].visible) {
+                let pathToMongoOtEtapaTerceraPrimera = pathMongoOtAjuste[0].otEtapaTerceraPrimera || [],
+                    largoArrayEtapaTerceraPrimera = parseInt(pathToMongoOtEtapaTerceraPrimera.length);
 
                 let arrResDatoLocalizacionFuncional = [], arrResEstadoLocalizacionFuncional = [], valueArrayResLocalizacionFuncional = 0, arrResRevisionLocalizacionFuncional = [],
                     arrResCreadorLocalizacionFuncional = [], arrResModificadorLocalizacionFuncional = [], arrResFechaLocalizacionFuncional = [], arrResFechaModLocalizacionFuncional = [];
@@ -62,402 +61,400 @@
                 let arrResDatoAzuladoFuncional = [], arrResEstadoAzuladoFuncional = [], valueArrayResAzuladoFuncional = 0, arrResRevisionAzuladoFuncional = [],
                     arrResCreadorAzuladoFuncional = [], arrResModificadorAzuladoFuncional = [], arrResFechaAzuladoFuncional = [], arrResFechaModAzuladoFuncional = [];
 
-                if (pathMongoOtProject[n].visible && pathMongoOtAjuste[o].visible) {
-                    if (pathMongoOtProject[n].otStatus) { %>
-                        <!--Activo-->
-                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh;">
-                            <% for (let q = 15; totalColDataEtapaTerceraPrimera > q; q++) {
-                                if (q==15) { %>
-                                    <!-- Localizacion Funcional data Activo--> 
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayEtapaTerceraPrimera > 0) {
+                if (pathMongoOtProject[n].otStatus) { %>
+                    <!--Activo-->
+                    <tr name="rowSelected<%=k%>_<%=n%>" class="border-bottom" style="height: 7vh;">
+                        <% for (let q = 15; totalColDataEtapaTerceraPrimera > q; q++) {
+                            if (q==15) { %>
+                                <!-- Localizacion Funcional data Activo--> 
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayEtapaTerceraPrimera > 0) {
 
-                                            for (let i = 0; largoArrayEtapaTerceraPrimera > i; i++) {
-                                                if (pathToMongoOtEtapaTerceraPrimera[i]) {
-                                                    let largoArray = parseInt(largoArrayEtapaTerceraPrimera)
-                                                    resDatoLocalizacionFuncional = pathToMongoOtEtapaTerceraPrimera[largoArray-1].localizacionFuncional == 'sinDato' ? "S/D" : pathToMongoOtEtapaTerceraPrimera[largoArray-1].localizacionFuncional
-                                                    resEstadoLocalizacionFuncional = pathToMongoOtEtapaTerceraPrimera[largoArray-1].estadoLocalizacionFuncional == 'sinDato' ? "S/D" : pathToMongoOtEtapaTerceraPrimera[largoArray-1].estadoLocalizacionFuncional
-                                                    resRevisionLocalizacionFuncional = parseInt(pathToMongoOtEtapaTerceraPrimera[largoArray-1].revisionLocalizacionFuncional) || 0
-                                                    
-                                                    pathToMongoOtEtapaTerceraPrimera[i].localizacionFuncional == 'sinDato' ? arrResDatoLocalizacionFuncional.push("S/D") : arrResDatoLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].localizacionFuncional)
-                                                    pathToMongoOtEtapaTerceraPrimera[i].estadoLocalizacionFuncional == 'sinDato' ? arrResEstadoLocalizacionFuncional.push("S/D") : arrResEstadoLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].estadoLocalizacionFuncional)
-                                                    arrResRevisionLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].revisionLocalizacionFuncional)
-
-                                                    arrResCreadorLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].creator[0].username)
-                                                    arrResModificadorLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].modificator[0].username)
-                                                    arrResFechaLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].timestamp)
-                                                    arrResFechaModLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].modifiedOn)
-                                                }
-                                            }
-                                            valueArrayResLocalizacionFuncional = parseInt(arrResDatoLocalizacionFuncional.length-1)
-
-                                            if (arrResDatoLocalizacionFuncional.length == 1 ) {
-                                                anteriorDisabled = "disabled"
-                                                siguienteDisabled = "disabled"
-                                            } else if (arrResDatoLocalizacionFuncional.length == arrResRevisionLocalizacionFuncional.length) {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            } else {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            }
-                                            
-                                        } else {
-                                            arrResDatoLocalizacionFuncional.push(resDatoLocalizacionFuncional)
-                                            arrResEstadoLocalizacionFuncional.push(resEstadoLocalizacionFuncional)
-                                            arrResRevisionLocalizacionFuncional.push(resRevisionLocalizacionFuncional)
-                                            
-                                            arrResCreadorLocalizacionFuncional.push(pathMongoOtAjuste[o].creator[0].username)
-                                            arrResModificadorLocalizacionFuncional = ""
-                                            arrResFechaLocalizacionFuncional.push(pathMongoOtAjuste[o].timestamp)
-                                            arrResFechaModLocalizacionFuncional = ""
-                                        } %>
-                                        
-                                        <div id="btnAnteriorSiguienteLocalizacionFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                            <button id="btnAnteriorLocalizacionFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorLocalizacionFuncional" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= anteriorDisabled %>
-                                                ><i class="fa-solid fa-arrow-left"></i>
-                                            </button>
-                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoLocalizacionFuncional %>">
-                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoLocalizacionFuncional %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResLocalizacionFuncional %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionLocalizacionFuncional %>">
-                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorLocalizacionFuncional %>">
-                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorLocalizacionFuncional %>">
-                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaLocalizacionFuncional %>">
-                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModLocalizacionFuncional %>">
-
-                                            <span id="resDatoLocalizacionFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                                <%= resDatoLocalizacionFuncional %>
-                                            </span> |
-                                            
-                                            <% const config = etapaTerceraPrimeraConfig[resEstadoLocalizacionFuncional] || etapaTerceraPrimeraConfig.default; %>
-                                            <span id="resEstadoLocalizacionFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoLocalizacionFuncional%>">
-                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                            </span> |
-
-                                            <span id="resRevisionLocalizacionFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionLocalizacionFuncional" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                <%= resRevisionLocalizacionFuncional %>
-                                            </span>
-
-                                            <button id="btnSiguienteLocalizacionFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteLocalizacionFuncional" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
-                                                ><i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-
-                                <% } else if (q==16) { %>
-                                    <!-- Obtencion Pieza data Activo-->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayEtapaTerceraPrimera > 0) {
-
-                                            for (let i = 0; largoArrayEtapaTerceraPrimera > i; i++) {
-                                                if (pathToMongoOtEtapaTerceraPrimera[i]) {
-                                                    let largoArray = parseInt(largoArrayEtapaTerceraPrimera)
-                                                    resDatoObtencionPieza = pathToMongoOtEtapaTerceraPrimera[largoArray-1].obtencionPieza == 'sinDato' ? "S/D" :  pathToMongoOtEtapaTerceraPrimera[largoArray-1].obtencionPieza
-                                                    resEstadoObtencionPieza = pathToMongoOtEtapaTerceraPrimera[largoArray-1].estadoObtencionPieza == 'sinDato' ? "S/D" : pathToMongoOtEtapaTerceraPrimera[largoArray-1].estadoObtencionPieza
-                                                    resRevisionObtencionPieza = parseInt(pathToMongoOtEtapaTerceraPrimera[largoArray-1].revisionObtencionPieza) || 0
-                                                    
-                                                    pathToMongoOtEtapaTerceraPrimera[i].obtencionPieza == 'sinDato' ? arrResDatoObtencionPieza.push("S/D") : arrResDatoObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].obtencionPieza)
-                                                    pathToMongoOtEtapaTerceraPrimera[i].estadoObtencionPieza == 'sinDato' ? arrResEstadoObtencionPieza.push("S/D") : arrResEstadoObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].estadoObtencionPieza)
-                                                    arrResRevisionObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].revisionObtencionPieza)
-                                                    
-                                                    arrResCreadorObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].creator[0].username)
-                                                    arrResModificadorObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].modificator[0].username)
-                                                    arrResFechaObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].timestamp)
-                                                    arrResFechaModObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].modifiedOn)
-                                                }
-                                            }
-                                            valueArrayResObtencionPieza = parseInt(arrResEstadoObtencionPieza.length-1)
-                                                    
-                                            if (arrResDatoObtencionPieza.length == 1 ) {
-                                                anteriorDisabled = "disabled"
-                                                siguienteDisabled = "disabled"
-                                            } else if (arrResDatoObtencionPieza.length == arrResRevisionObtencionPieza.length) {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            } else {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            }
-                                            
-                                        } else {
-                                            arrResDatoObtencionPieza.push(resDatoObtencionPieza)
-                                            arrResEstadoObtencionPieza.push(resEstadoObtencionPieza)
-                                            arrResRevisionObtencionPieza.push(resRevisionObtencionPieza)
-                                            
-                                            arrResCreadorObtencionPieza.push(pathMongoOtAjuste[o].creator[0].username)
-                                            arrResModificadorObtencionPieza = ""
-                                            arrResFechaObtencionPieza.push(pathMongoOtAjuste[o].timestamp)
-                                            arrResFechaModObtencionPieza = ""
-                                        } %>
-                                        
-                                        <div id="btnAnteriorSiguienteObtencionPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                            <button id="btnAnteriorObtencionPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorObtencionPieza" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= anteriorDisabled %>
-                                                ><i class="fa-solid fa-arrow-left"></i>
-                                            </button>
-                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoObtencionPieza %>">
-                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoObtencionPieza %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResObtencionPieza %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionObtencionPieza %>">
-                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorObtencionPieza %>">
-                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorObtencionPieza %>">
-                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaObtencionPieza %>">
-                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModObtencionPieza %>">
-
-                                            <span id="resDatoObtencionPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                                <%= resDatoObtencionPieza %>
-                                            </span> |
-
-                                            <% const config = etapaTerceraPrimeraConfig[resEstadoObtencionPieza] || etapaTerceraPrimeraConfig.default; %>
-                                            <span id="resEstadoObtencionPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoObtencionPieza%>">
-                                                <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                            </span> |
-
-                                            <span id="resRevisionObtencionPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionObtencionPieza" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                <%= resRevisionObtencionPieza %>
-                                            </span>
-
-                                            <button id="btnSiguienteObtencionPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteObtencionPieza" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= siguienteDisabled %>
-                                                ><i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-
-                                <% } else { %>
-                                    <!-- Azulado Funcional data Activo-->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayEtapaTerceraPrimera > 0) {
-
-                                            for (let i = 0; largoArrayEtapaTerceraPrimera > i; i++) {
-                                                if (pathToMongoOtEtapaTerceraPrimera[i]) {
-                                                    let largoArray = parseInt(largoArrayEtapaTerceraPrimera)
-                                                    resDatoAzuladoFuncional = pathToMongoOtEtapaTerceraPrimera[largoArray-1].azuladoFuncional == 'sinDato' ? "S/D" : pathToMongoOtEtapaTerceraPrimera[largoArray-1].azuladoFuncional
-                                                    resEstadoAzuladoFuncional = pathToMongoOtEtapaTerceraPrimera[largoArray-1].estadoAzuladoFuncional == 'sinDato' ? 'sinDato' : pathToMongoOtEtapaTerceraPrimera[largoArray-1].estadoAzuladoFuncional
-                                                    resRevisionAzuladoFuncional = parseInt(pathToMongoOtEtapaTerceraPrimera[largoArray-1].revisionAzuladoFuncional) || 0
-                                                    
-                                                    pathToMongoOtEtapaTerceraPrimera[i].azuladoFuncional == 'sinDato' ? arrResDatoAzuladoFuncional.push('S/D') : arrResDatoAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].azuladoFuncional)
-                                                    pathToMongoOtEtapaTerceraPrimera[i].estadoAzuladoFuncional == 'sinDato' ? arrResEstadoAzuladoFuncional.push('S/D') : arrResEstadoAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].estadoAzuladoFuncional)
-                                                    arrResRevisionAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].revisionAzuladoFuncional)
+                                        for (let i = 0; largoArrayEtapaTerceraPrimera > i; i++) {
+                                            if (pathToMongoOtEtapaTerceraPrimera[i]) {
+                                                let largoArray = parseInt(largoArrayEtapaTerceraPrimera)
+                                                resDatoLocalizacionFuncional = pathToMongoOtEtapaTerceraPrimera[largoArray-1].localizacionFuncional == 'sinDato' ? "S/D" : pathToMongoOtEtapaTerceraPrimera[largoArray-1].localizacionFuncional
+                                                resEstadoLocalizacionFuncional = pathToMongoOtEtapaTerceraPrimera[largoArray-1].estadoLocalizacionFuncional == 'sinDato' ? "S/D" : pathToMongoOtEtapaTerceraPrimera[largoArray-1].estadoLocalizacionFuncional
+                                                resRevisionLocalizacionFuncional = parseInt(pathToMongoOtEtapaTerceraPrimera[largoArray-1].revisionLocalizacionFuncional) || 0
                                                 
-                                                    arrResCreadorAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].creator[0].username)
-                                                    arrResModificadorAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].modificator[0].username)
-                                                    arrResFechaAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].timestamp)
-                                                    arrResFechaModAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].modifiedOn)
-                                                }
-                                            }
-                                            valueArrayResAzuladoFuncional = parseInt(arrResEstadoAzuladoFuncional.length-1)
-                                                    
-                                            if (arrResDatoAzuladoFuncional.length == 1 ) {
-                                                siguienteDisabled = "disabled"
-                                                anteriorDisabled = "disabled"
-                                            } else if (arrResDatoAzuladoFuncional.length == arrResRevisionAzuladoFuncional.length) {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            } else {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            }
-                                                    
-                                        } else {
-                                            arrResDatoAzuladoFuncional.push(resDatoAzuladoFuncional)
-                                            arrResEstadoAzuladoFuncional.push(resEstadoAzuladoFuncional)
-                                            arrResRevisionAzuladoFuncional.push(resRevisionAzuladoFuncional)
-                                            
-                                            arrResCreadorAzuladoFuncional.push(pathMongoOtAjuste[o].creator[0].username)
-                                            arrResModificadorAzuladoFuncional = ""
-                                            arrResFechaAzuladoFuncional.push(pathMongoOtAjuste[o].timestamp)
-                                            arrResFechaModAzuladoFuncional = ""
-                                        } %>
+                                                pathToMongoOtEtapaTerceraPrimera[i].localizacionFuncional == 'sinDato' ? arrResDatoLocalizacionFuncional.push("S/D") : arrResDatoLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].localizacionFuncional)
+                                                pathToMongoOtEtapaTerceraPrimera[i].estadoLocalizacionFuncional == 'sinDato' ? arrResEstadoLocalizacionFuncional.push("S/D") : arrResEstadoLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].estadoLocalizacionFuncional)
+                                                arrResRevisionLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].revisionLocalizacionFuncional)
 
-                                    <div id="btnAnteriorSiguienteAzuladoFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                        <button id="btnAnteriorAzuladoFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorAzuladoFuncional" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                arrResCreadorLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].creator[0].username)
+                                                arrResModificadorLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].modificator[0].username)
+                                                arrResFechaLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].timestamp)
+                                                arrResFechaModLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResLocalizacionFuncional = parseInt(arrResDatoLocalizacionFuncional.length-1)
+
+                                        if (arrResDatoLocalizacionFuncional.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResDatoLocalizacionFuncional.length == arrResRevisionLocalizacionFuncional.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResDatoLocalizacionFuncional.push(resDatoLocalizacionFuncional)
+                                        arrResEstadoLocalizacionFuncional.push(resEstadoLocalizacionFuncional)
+                                        arrResRevisionLocalizacionFuncional.push(resRevisionLocalizacionFuncional)
+                                        
+                                        arrResCreadorLocalizacionFuncional.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorLocalizacionFuncional = ""
+                                        arrResFechaLocalizacionFuncional.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModLocalizacionFuncional = ""
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteLocalizacionFuncional<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorLocalizacionFuncional<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorLocalizacionFuncional" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                             <%= anteriorDisabled %>
                                             ><i class="fa-solid fa-arrow-left"></i>
                                         </button>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoAzuladoFuncional %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoAzuladoFuncional %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResAzuladoFuncional %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionAzuladoFuncional %>">
-                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorAzuladoFuncional %>">
-                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorAzuladoFuncional %>">
-                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaAzuladoFuncional %>">
-                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModAzuladoFuncional %>">
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoLocalizacionFuncional %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoLocalizacionFuncional %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResLocalizacionFuncional %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionLocalizacionFuncional %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorLocalizacionFuncional %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorLocalizacionFuncional %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaLocalizacionFuncional %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModLocalizacionFuncional %>">
 
-                                        <span id="resDatoAzuladoFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                            <%= resDatoAzuladoFuncional %>
+                                        <span id="resDatoLocalizacionFuncional<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                            <%= resDatoLocalizacionFuncional %>
                                         </span> |
-
-                                        <% const config = etapaTerceraPrimeraConfig[resEstadoAzuladoFuncional] || etapaTerceraPrimeraConfig.default; %>
-                                        <span id="resEstadoAzuladoFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoAzuladoFuncional%>">
+                                        
+                                        <% const config = etapaTerceraPrimeraConfig[resEstadoLocalizacionFuncional] || etapaTerceraPrimeraConfig.default; %>
+                                        <span id="resEstadoLocalizacionFuncional<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoLocalizacionFuncional%>">
                                             <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
 
-                                        <span id="resRevisionAzuladoFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionAzuladoFuncional" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                            <%= resRevisionAzuladoFuncional %>
+                                        <span id="resRevisionLocalizacionFuncional<%=k%>_<%=n%>_<%=q%>" name="resRevisionLocalizacionFuncional" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionLocalizacionFuncional %>
                                         </span>
 
-                                        <button id="btnSiguienteAzuladoFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteAzuladoFuncional" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                        <button id="btnSiguienteLocalizacionFuncional<%=k%>_<%=n%>_<%=q%>" name="btnSiguienteLocalizacionFuncional" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else if (q==16) { %>
+                                <!-- Obtencion Pieza data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayEtapaTerceraPrimera > 0) {
+
+                                        for (let i = 0; largoArrayEtapaTerceraPrimera > i; i++) {
+                                            if (pathToMongoOtEtapaTerceraPrimera[i]) {
+                                                let largoArray = parseInt(largoArrayEtapaTerceraPrimera)
+                                                resDatoObtencionPieza = pathToMongoOtEtapaTerceraPrimera[largoArray-1].obtencionPieza == 'sinDato' ? "S/D" :  pathToMongoOtEtapaTerceraPrimera[largoArray-1].obtencionPieza
+                                                resEstadoObtencionPieza = pathToMongoOtEtapaTerceraPrimera[largoArray-1].estadoObtencionPieza == 'sinDato' ? "S/D" : pathToMongoOtEtapaTerceraPrimera[largoArray-1].estadoObtencionPieza
+                                                resRevisionObtencionPieza = parseInt(pathToMongoOtEtapaTerceraPrimera[largoArray-1].revisionObtencionPieza) || 0
+                                                
+                                                pathToMongoOtEtapaTerceraPrimera[i].obtencionPieza == 'sinDato' ? arrResDatoObtencionPieza.push("S/D") : arrResDatoObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].obtencionPieza)
+                                                pathToMongoOtEtapaTerceraPrimera[i].estadoObtencionPieza == 'sinDato' ? arrResEstadoObtencionPieza.push("S/D") : arrResEstadoObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].estadoObtencionPieza)
+                                                arrResRevisionObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].revisionObtencionPieza)
+                                                
+                                                arrResCreadorObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].creator[0].username)
+                                                arrResModificadorObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].modificator[0].username)
+                                                arrResFechaObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].timestamp)
+                                                arrResFechaModObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResObtencionPieza = parseInt(arrResEstadoObtencionPieza.length-1)
+                                                
+                                        if (arrResDatoObtencionPieza.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResDatoObtencionPieza.length == arrResRevisionObtencionPieza.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResDatoObtencionPieza.push(resDatoObtencionPieza)
+                                        arrResEstadoObtencionPieza.push(resEstadoObtencionPieza)
+                                        arrResRevisionObtencionPieza.push(resRevisionObtencionPieza)
+                                        
+                                        arrResCreadorObtencionPieza.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorObtencionPieza = ""
+                                        arrResFechaObtencionPieza.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModObtencionPieza = ""
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteObtencionPieza<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorObtencionPieza<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorObtencionPieza" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoObtencionPieza %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoObtencionPieza %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResObtencionPieza %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionObtencionPieza %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorObtencionPieza %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorObtencionPieza %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaObtencionPieza %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModObtencionPieza %>">
+
+                                        <span id="resDatoObtencionPieza<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                            <%= resDatoObtencionPieza %>
+                                        </span> |
+
+                                        <% const config = etapaTerceraPrimeraConfig[resEstadoObtencionPieza] || etapaTerceraPrimeraConfig.default; %>
+                                        <span id="resEstadoObtencionPieza<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoObtencionPieza%>">
+                                            <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionObtencionPieza<%=k%>_<%=n%>_<%=q%>" name="resRevisionObtencionPieza" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionObtencionPieza %>
+                                        </span>
+
+                                        <button id="btnSiguienteObtencionPieza<%=k%>_<%=n%>_<%=q%>" name="btnSiguienteObtencionPieza" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                             <%= siguienteDisabled %>
                                             ><i class="fa-solid fa-arrow-right"></i>
                                         </button>
                                     </div>
                                 </td>
-                                <% }
-                            } %>
-                        </tr>
 
-                    <% } else { %>
-                        <!--Inactivo-->
-                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="pe-none border-bottom" style="height: 5vh; background-color: #dedede;">
-                            <% for (let q = 15; totalColDataEtapaTerceraPrimera > q; q++) {
-                                if (q==15) { %>
-                                    <!-- Localizacion Funcional data Inactivo -->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayEtapaTerceraPrimera > 0) {
-                                            for (let i = 0; largoArrayEtapaTerceraPrimera > i; i++) {
+                            <% } else { %>
+                                <!-- Azulado Funcional data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayEtapaTerceraPrimera > 0) {
 
-                                                if (pathToMongoOtEtapaTerceraPrimera[i]) {
-                                                    let largoArray = parseInt(largoArrayEtapaTerceraPrimera)
-                                                    resDatoLocalizacionFuncional = pathToMongoOtEtapaTerceraPrimera[largoArray-1].localizacionFuncional || 'S/D'
-                                                    resEstadoLocalizacionFuncional = pathToMongoOtEtapaTerceraPrimera[largoArray-1].estadoLocalizacionFuncional || 'sinDato'
-                                                    resRevisionLocalizacionFuncional = parseInt(pathToMongoOtEtapaTerceraPrimera[largoArray-1].revisionLocalizacionFuncional) || 0
-                                                    
-                                                    arrResDatoLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].localizacionFuncional)
-                                                    arrResEstadoLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].estadoLocalizacionFuncional)
-                                                    arrResRevisionLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].revisionLocalizacionFuncional)
-                                                }
+                                        for (let i = 0; largoArrayEtapaTerceraPrimera > i; i++) {
+                                            if (pathToMongoOtEtapaTerceraPrimera[i]) {
+                                                let largoArray = parseInt(largoArrayEtapaTerceraPrimera)
+                                                resDatoAzuladoFuncional = pathToMongoOtEtapaTerceraPrimera[largoArray-1].azuladoFuncional == 'sinDato' ? "S/D" : pathToMongoOtEtapaTerceraPrimera[largoArray-1].azuladoFuncional
+                                                resEstadoAzuladoFuncional = pathToMongoOtEtapaTerceraPrimera[largoArray-1].estadoAzuladoFuncional == 'sinDato' ? 'sinDato' : pathToMongoOtEtapaTerceraPrimera[largoArray-1].estadoAzuladoFuncional
+                                                resRevisionAzuladoFuncional = parseInt(pathToMongoOtEtapaTerceraPrimera[largoArray-1].revisionAzuladoFuncional) || 0
+                                                
+                                                pathToMongoOtEtapaTerceraPrimera[i].azuladoFuncional == 'sinDato' ? arrResDatoAzuladoFuncional.push('S/D') : arrResDatoAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].azuladoFuncional)
+                                                pathToMongoOtEtapaTerceraPrimera[i].estadoAzuladoFuncional == 'sinDato' ? arrResEstadoAzuladoFuncional.push('S/D') : arrResEstadoAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].estadoAzuladoFuncional)
+                                                arrResRevisionAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].revisionAzuladoFuncional)
+                                            
+                                                arrResCreadorAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].creator[0].username)
+                                                arrResModificadorAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].modificator[0].username)
+                                                arrResFechaAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].timestamp)
+                                                arrResFechaModAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].modifiedOn)
                                             }
-                                            valueArrayResLocalizacionFuncional = parseInt(arrResEstadoLocalizacionFuncional.length-1)
-                                            resDatoLocalizacionFuncional = pathToMongoOtEtapaTerceraPrimera[0].LocalizacionFuncional
-                                            resEstadoLocalizacionFuncional = pathToMongoOtEtapaTerceraPrimera[0].estadoLocalizacionFuncional
-
+                                        }
+                                        valueArrayResAzuladoFuncional = parseInt(arrResEstadoAzuladoFuncional.length-1)
+                                                
+                                        if (arrResDatoAzuladoFuncional.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResDatoAzuladoFuncional.length == arrResRevisionAzuladoFuncional.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
                                         } else {
-                                            arrResDatoLocalizacionFuncional.push(resDatoLocalizacionFuncional)
-                                            arrResEstadoLocalizacionFuncional.push(resEstadoLocalizacionFuncional)
-                                            arrResRevisionLocalizacionFuncional.push(resRevisionLocalizacionFuncional)
-                                        } %>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoLocalizacionFuncional %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoLocalizacionFuncional %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResLocalizacionFuncional %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionLocalizacionFuncional %>">
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                                
+                                    } else {
+                                        arrResDatoAzuladoFuncional.push(resDatoAzuladoFuncional)
+                                        arrResEstadoAzuladoFuncional.push(resEstadoAzuladoFuncional)
+                                        arrResRevisionAzuladoFuncional.push(resRevisionAzuladoFuncional)
+                                        
+                                        arrResCreadorAzuladoFuncional.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorAzuladoFuncional = ""
+                                        arrResFechaAzuladoFuncional.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModAzuladoFuncional = ""
+                                    } %>
+
+                                <div id="btnAnteriorSiguienteAzuladoFuncional<%=k%>_<%=n%>_<%=q%>">
+                                    <button id="btnAnteriorAzuladoFuncional<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorAzuladoFuncional" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                        <%= anteriorDisabled %>
+                                        ><i class="fa-solid fa-arrow-left"></i>
+                                    </button>
+                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAzuladoFuncional %>">
+                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAzuladoFuncional %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAzuladoFuncional %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAzuladoFuncional %>">
+                                    <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorAzuladoFuncional %>">
+                                    <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorAzuladoFuncional %>">
+                                    <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaAzuladoFuncional %>">
+                                    <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModAzuladoFuncional %>">
+
+                                    <span id="resDatoAzuladoFuncional<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                        <%= resDatoAzuladoFuncional %>
+                                    </span> |
+
+                                    <% const config = etapaTerceraPrimeraConfig[resEstadoAzuladoFuncional] || etapaTerceraPrimeraConfig.default; %>
+                                    <span id="resEstadoAzuladoFuncional<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAzuladoFuncional%>">
+                                        <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                    </span> |
+
+                                    <span id="resRevisionAzuladoFuncional<%=k%>_<%=n%>_<%=q%>" name="resRevisionAzuladoFuncional" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                        <%= resRevisionAzuladoFuncional %>
+                                    </span>
+
+                                    <button id="btnSiguienteAzuladoFuncional<%=k%>_<%=n%>_<%=q%>" name="btnSiguienteAzuladoFuncional" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                        <%= siguienteDisabled %>
+                                        ><i class="fa-solid fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <% }
+                        } %>
+                    </tr>
+
+                <% } else { %>
+                    <!--Inactivo-->
+                    <tr name="rowSelected<%=k%>_<%=n%>" class="pe-none border-bottom" style="height: 5vh; background-color: #dedede;">
+                        <% for (let q = 15; totalColDataEtapaTerceraPrimera > q; q++) {
+                            if (q==15) { %>
+                                <!-- Localizacion Funcional data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayEtapaTerceraPrimera > 0) {
+                                        for (let i = 0; largoArrayEtapaTerceraPrimera > i; i++) {
+
+                                            if (pathToMongoOtEtapaTerceraPrimera[i]) {
+                                                let largoArray = parseInt(largoArrayEtapaTerceraPrimera)
+                                                resDatoLocalizacionFuncional = pathToMongoOtEtapaTerceraPrimera[largoArray-1].localizacionFuncional || 'S/D'
+                                                resEstadoLocalizacionFuncional = pathToMongoOtEtapaTerceraPrimera[largoArray-1].estadoLocalizacionFuncional || 'sinDato'
+                                                resRevisionLocalizacionFuncional = parseInt(pathToMongoOtEtapaTerceraPrimera[largoArray-1].revisionLocalizacionFuncional) || 0
+                                                
+                                                arrResDatoLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].localizacionFuncional)
+                                                arrResEstadoLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].estadoLocalizacionFuncional)
+                                                arrResRevisionLocalizacionFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].revisionLocalizacionFuncional)
+                                            }
+                                        }
+                                        valueArrayResLocalizacionFuncional = parseInt(arrResEstadoLocalizacionFuncional.length-1)
+                                        resDatoLocalizacionFuncional = pathToMongoOtEtapaTerceraPrimera[0].LocalizacionFuncional
+                                        resEstadoLocalizacionFuncional = pathToMongoOtEtapaTerceraPrimera[0].estadoLocalizacionFuncional
+
+                                    } else {
+                                        arrResDatoLocalizacionFuncional.push(resDatoLocalizacionFuncional)
+                                        arrResEstadoLocalizacionFuncional.push(resEstadoLocalizacionFuncional)
+                                        arrResRevisionLocalizacionFuncional.push(resRevisionLocalizacionFuncional)
+                                    } %>
+                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoLocalizacionFuncional %>">
+                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoLocalizacionFuncional %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResLocalizacionFuncional %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionLocalizacionFuncional %>">
+                                
+                                    <span id="resDatoLocalizacionFuncional<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                        <%= resDatoLocalizacionFuncional %>
+                                    </span> |
+
+                                    <% const config = etapaTerceraPrimeraConfig[resEstadoLocalizacionFuncional] || etapaTerceraPrimeraConfig.default; %>
+                                    <span id="resEstadoLocalizacionFuncional<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoLocalizacionFuncional%>">
+                                        <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                    </span> |
+
+                                    <span id="resRevisionLocalizacionFuncional<%=k%>_<%=n%>_<%=q%>" name="resRevisionLocalizacionFuncional" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                        <%= resRevisionLocalizacionFuncional %>
+                                    </span>
+                                </td>
+
+                            <% } else if (q==16) { %>
+                                <!-- Obtencion Pieza data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayEtapaTerceraPrimera > 0) {
+                                        for (let i = 0; largoArrayEtapaTerceraPrimera > i; i++) {
+                                            
+                                            if (pathToMongoOtEtapaTerceraPrimera[i]) {
+                                                let largoArray = parseInt(largoArrayEtapaTerceraPrimera)
+                                                resDatoObtencionPieza = pathToMongoOtEtapaTerceraPrimera[largoArray-1].obtencionPieza || 'S/D'
+                                                resEstadoObtencionPieza = pathToMongoOtEtapaTerceraPrimera[largoArray-1].obtencionPieza || 'sinDato'
+                                                resRevisionObtencionPieza = parseInt(pathToMongoOtEtapaTerceraPrimera[largoArray-1].revisionObtencionPieza) || 0
+                                                
+                                                arrResDatoObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].obtencionPieza)
+                                                arrResEstadoObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].obtencionPieza)
+                                                arrResRevisionObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].revisionObtencionPieza)
+                                            }
+                                        }
+                                        valueArrayResObtencionPieza = parseInt(arrResEstadoObtencionPieza.length-1)
+                                        resDatoObtencionPieza = pathToMongoOtEtapaTerceraPrimera[0].obtencionPieza
+                                        resEstadoObtencionPieza = pathToMongoOtEtapaTerceraPrimera[0].estadoObtencionPieza
                                     
-                                        <span id="resDatoLocalizacionFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                            <%= resDatoLocalizacionFuncional %>
-                                        </span> |
+                                    } else {
+                                        arrResDatoObtencionPieza.push(resDatoObtencionPieza)
+                                        arrResEstadoObtencionPieza.push(resEstadoObtencionPieza)
+                                        arrResRevisionObtencionPieza.push(resRevisionObtencionPieza)
+                                    } %>
+                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoObtencionPieza %>">
+                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoObtencionPieza %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResObtencionPieza %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionObtencionPieza %>">
 
-                                        <% const config = etapaTerceraPrimeraConfig[resEstadoLocalizacionFuncional] || etapaTerceraPrimeraConfig.default; %>
-                                        <span id="resEstadoLocalizacionFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoLocalizacionFuncional%>">
-                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                        </span> |
+                                    <span id="resDatoObtencionPieza<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                        <%= resDatoObtencionPieza %>
+                                    </span> |
+                                    
+                                    <% const config = etapaTerceraPrimeraConfig[resEstadoObtencionPieza] || etapaTerceraPrimeraConfig.default; %>
+                                    <span id="resEstadoObtencionPieza<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoObtencionPieza%>">
+                                        <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                    </span> |
 
-                                        <span id="resRevisionLocalizacionFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionLocalizacionFuncional" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                            <%= resRevisionLocalizacionFuncional %>
-                                        </span>
-                                    </td>
+                                    <span id="resRevisionObtencionPieza<%=k%>_<%=n%>_<%=q%>" name="resRevisionObtencionPieza" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                        <%= resRevisionObtencionPieza %>
+                                    </span>
+                                </td>
 
-                                <% } else if (q==16) { %>
-                                    <!-- Obtencion Pieza data Inactivo -->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayEtapaTerceraPrimera > 0) {
-                                            for (let i = 0; largoArrayEtapaTerceraPrimera > i; i++) {
+                            <% } else { %>
+                                <!-- Azulado Funcional data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayEtapaTerceraPrimera > 0) {
+                                        for (let i = 0; largoArrayEtapaTerceraPrimera > i; i++) {
+                                            
+                                            if (pathToMongoOtEtapaTerceraPrimera[i]) {
+                                                let largoArray = parseInt(largoArrayEtapaTerceraPrimera)
+                                                resDatoAzuladoFuncional = pathToMongoOtEtapaTerceraPrimera[largoArray-1].azuladoFuncional || "S/D"
+                                                resEstadoAzuladoFuncional = pathToMongoOtEtapaTerceraPrimera[largoArray-1].estadoAzuladoFuncional || 'sinDato'
+                                                resRevisionAzuladoFuncional = parseInt(pathToMongoOtEtapaTerceraPrimera[largoArray-1].revisionAzuladoFuncional) || 0
                                                 
-                                                if (pathToMongoOtEtapaTerceraPrimera[i]) {
-                                                    let largoArray = parseInt(largoArrayEtapaTerceraPrimera)
-                                                    resDatoObtencionPieza = pathToMongoOtEtapaTerceraPrimera[largoArray-1].obtencionPieza || 'S/D'
-                                                    resEstadoObtencionPieza = pathToMongoOtEtapaTerceraPrimera[largoArray-1].obtencionPieza || 'sinDato'
-                                                    resRevisionObtencionPieza = parseInt(pathToMongoOtEtapaTerceraPrimera[largoArray-1].revisionObtencionPieza) || 0
-                                                    
-                                                    arrResDatoObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].obtencionPieza)
-                                                    arrResEstadoObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].obtencionPieza)
-                                                    arrResRevisionObtencionPieza.push(pathToMongoOtEtapaTerceraPrimera[i].revisionObtencionPieza)
-                                                }
+                                                arrResDatoAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].azuladoFuncional)
+                                                arrResEstadoAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].estadoAzuladoFuncional)
+                                                arrResRevisionAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].revisionAzuladoFuncional)
                                             }
-                                            valueArrayResObtencionPieza = parseInt(arrResEstadoObtencionPieza.length-1)
-                                            resDatoObtencionPieza = pathToMongoOtEtapaTerceraPrimera[0].obtencionPieza
-                                            resEstadoObtencionPieza = pathToMongoOtEtapaTerceraPrimera[0].estadoObtencionPieza
-                                        
-                                        } else {
-                                            arrResDatoObtencionPieza.push(resDatoObtencionPieza)
-                                            arrResEstadoObtencionPieza.push(resEstadoObtencionPieza)
-                                            arrResRevisionObtencionPieza.push(resRevisionObtencionPieza)
-                                        } %>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoObtencionPieza %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoObtencionPieza %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResObtencionPieza %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionObtencionPieza %>">
+                                        }
+                                        valueArrayResAzuladoFuncional = parseInt(arrResEstadoAzuladoFuncional.length-1)
+                                        resDatoAzuladoFuncional = pathToMongoOtEtapaTerceraPrimera[0].azuladoFuncional
+                                        resEstadoAzuladoFuncional = pathToMongoOtEtapaTerceraPrimera[0].estadoAzuladoFuncional
+                                    
+                                    } else {
+                                        arrResDatoAzuladoFuncional.push(resDatoAzuladoFuncional)
+                                        arrResEstadoAzuladoFuncional.push(resEstadoAzuladoFuncional)
+                                        arrResRevisionAzuladoFuncional.push(resRevisionAzuladoFuncional)
+                                    } %>
+                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAzuladoFuncional %>">
+                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAzuladoFuncional %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAzuladoFuncional %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAzuladoFuncional %>">
 
-                                        <span id="resDatoObtencionPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                            <%= resDatoObtencionPieza %>
-                                        </span> |
-                                        
-                                        <% const config = etapaTerceraPrimeraConfig[resEstadoObtencionPieza] || etapaTerceraPrimeraConfig.default; %>
-                                        <span id="resEstadoObtencionPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoObtencionPieza%>">
-                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                        </span> |
+                                    <span id="resDatoAzuladoFuncional<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                        <%= resDatoAzuladoFuncional %>
+                                    </span> |
+                                    
+                                    <% const config = etapaTerceraPrimeraConfig[resEstadoAzuladoFuncional] || etapaTerceraPrimeraConfig.default; %>
+                                    <span id="resEstadoAzuladoFuncional<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAzuladoFuncional%>">
+                                        <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                    </span> |
 
-                                        <span id="resRevisionObtencionPieza<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionObtencionPieza" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                            <%= resRevisionObtencionPieza %>
-                                        </span>
-                                    </td>
-
-                                <% } else { %>
-                                    <!-- Azulado Funcional data Inactivo -->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayEtapaTerceraPrimera > 0) {
-                                            for (let i = 0; largoArrayEtapaTerceraPrimera > i; i++) {
-                                                
-                                                if (pathToMongoOtEtapaTerceraPrimera[i]) {
-                                                    let largoArray = parseInt(largoArrayEtapaTerceraPrimera)
-                                                    resDatoAzuladoFuncional = pathToMongoOtEtapaTerceraPrimera[largoArray-1].azuladoFuncional || "S/D"
-                                                    resEstadoAzuladoFuncional = pathToMongoOtEtapaTerceraPrimera[largoArray-1].estadoAzuladoFuncional || 'sinDato'
-                                                    resRevisionAzuladoFuncional = parseInt(pathToMongoOtEtapaTerceraPrimera[largoArray-1].revisionAzuladoFuncional) || 0
-                                                    
-                                                    arrResDatoAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].azuladoFuncional)
-                                                    arrResEstadoAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].estadoAzuladoFuncional)
-                                                    arrResRevisionAzuladoFuncional.push(pathToMongoOtEtapaTerceraPrimera[i].revisionAzuladoFuncional)
-                                                }
-                                            }
-                                            valueArrayResAzuladoFuncional = parseInt(arrResEstadoAzuladoFuncional.length-1)
-                                            resDatoAzuladoFuncional = pathToMongoOtEtapaTerceraPrimera[0].azuladoFuncional
-                                            resEstadoAzuladoFuncional = pathToMongoOtEtapaTerceraPrimera[0].estadoAzuladoFuncional
-                                        
-                                        } else {
-                                            arrResDatoAzuladoFuncional.push(resDatoAzuladoFuncional)
-                                            arrResEstadoAzuladoFuncional.push(resEstadoAzuladoFuncional)
-                                            arrResRevisionAzuladoFuncional.push(resRevisionAzuladoFuncional)
-                                        } %>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoAzuladoFuncional %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoAzuladoFuncional %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResAzuladoFuncional %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionAzuladoFuncional %>">
-
-                                        <span id="resDatoAzuladoFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                            <%= resDatoAzuladoFuncional %>
-                                        </span> |
-                                        
-                                        <% const config = etapaTerceraPrimeraConfig[resEstadoAzuladoFuncional] || etapaTerceraPrimeraConfig.default; %>
-                                        <span id="resEstadoAzuladoFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoAzuladoFuncional%>">
-                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                        </span> |
-
-                                        <span id="resRevisionAzuladoFuncional<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionAzuladoFuncional" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                            <%= resRevisionAzuladoFuncional %>
-                                        </span>
-                                    </td>
-                                <% }
-                            } %>
-                        </tr>
-                    <% }
-                }
+                                    <span id="resRevisionAzuladoFuncional<%=k%>_<%=n%>_<%=q%>" name="resRevisionAzuladoFuncional" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                        <%= resRevisionAzuladoFuncional %>
+                                    </span>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+                <% }
             }
         }) %>
     </tbody>

@@ -57,6 +57,29 @@ let modificatorSchema = new Schema({
     }
 })
 
+// ------- Dueño de OT Schema -------------
+let duenoOciSchema = new Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Usuarios",
+    },
+    name: { 
+        type: String,
+    },
+    lastName: {
+        type: String,
+    },
+    username:{
+        type: String,
+    },
+    email: {
+        type: String,
+    },
+    legajoId: {
+        type: Number,
+    }
+})
+
 // ------- OT Information R-14 Schema ---------
 let otInformationR14Schema = new Schema({
     procesoR14: { 
@@ -551,7 +574,6 @@ let otInformationSchema = new Schema({
     otInfoSim4Primera: [otInformationSim4PrimeraSchema],
     otInfoSim4Segunda: [otInformationSim4SegundaSchema],
     otInfoSim5: [otInformationSim5Schema],
-
 })
 
 // ------- OT Project Schema -------------
@@ -634,6 +656,7 @@ let ociProjectSchema = new Schema({
         maxlength: 1000,
         default: '../../../src/images/upload/LogoClientImages/noImageFound.png'
     },
+    ociOwner: [duenoOciSchema],
     creator: [creatorSchema],
     timestamp: {
         type: String,

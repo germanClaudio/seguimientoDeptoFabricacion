@@ -7,8 +7,8 @@
         <li class="list-group-item list-group-item-secondary my-1">
             OCI#: <strong id="ociNumber<%= k %>" class="mx-2"><%= arrayVisibleOci[k].ociNumber %></strong>
         </li>
-        <li id="ociDescription<%= k %>" class="list-group-item list-group-item-secondary my-1">
-            Descripcion: <%= arrayVisibleOci[k].ociDescription %>
+        <li class="list-group-item list-group-item-secondary my-1">
+            Descripcion: <strong id="ociDescription<%= k %>"><%= arrayVisibleOci[k].ociDescription %></strong>
         </li>
         <li class="list-group-item list-group-item-secondary my-1">
             Alias: <span id="ociAlias<%= k %>" class="badge bg-info text-dark mx-1"><strong><%= arrayVisibleOci[k].ociAlias %></strong></span>
@@ -20,6 +20,18 @@
             <% } else { %>
                 <span class="badge rounded-pill bg-danger text-white mx-1">Inactiva</span>
             <% } %>
+        </li>
+        <li class="list-group-item list-group-item-secondary my-1">
+            Dueño de Pieza:
+            <% if (arrayVisibleOci[k].ociOwner[0].legajoId !== 0) { %>
+                <span id="ociDueno<%= k %>" class="badge bg-success text-light mx-1">
+                    <strong><%= arrayVisibleOci[k].ociOwner[0].name %> <%= arrayVisibleOci[k].ociOwner[0].lastName %>
+            <% } else { %>
+                <span id="ociDueno<%= k %>" class="badge bg-danger text-light mx-1">
+                    <strong>No Asignado
+            <% } %>
+                    </strong>
+                </span>
         </li>
     </ul>
 </button>

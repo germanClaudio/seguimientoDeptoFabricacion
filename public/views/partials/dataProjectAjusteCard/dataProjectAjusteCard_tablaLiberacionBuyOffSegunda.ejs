@@ -4,21 +4,21 @@
         <tr>
             <th colspan="3" class="text-center">LIBERACIÓN PARA BUY-OFF (2° Parte)
                 <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
-                    <button id="posBtnAddDataOtLiberacionBuyOffSegunda<%=k%>" type="button" name="btnOtLiberacionBuyOffSegunda" class="btn btn-small btn-success shadow m-1 me-5 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                    <button id="posBtnAddDataOtLiberacionBuyOffSegunda<%=k%>" type="button" name="btnOtLiberacionBuyOffSegunda" class="btn btn-small btn-success shadow m-1 me-5 mb-2 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
                         <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
-                        <span id="spanCheckSelecMasiveProgPrima<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                        <span id="spanCheckSelecMasiveLibBuyOffSeg<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
                             0
                             <span class="visually-hidden">Elementos seleccionados</span>
                         </span>
                     </button>
                 <% } else { %>
-                    <button type="button" class="btn btn-small btn-danger shadow m-1 me-5 disabled" style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 me-5 mb-2 disabled" style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
                         <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>                                                    
                     </button>
                 <% } %>
                 <i class="fa-solid fa-arrows-spin fa-lg" style="color: #b09b12;"></i> En Proceso -
                 <i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i> Terminado -
-                <i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i> Suspendido -
+                <i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i> Detenido -
                 <i class="fa-solid fa-ban fa-lg"></i> No Aplica -
                 <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i> Sin Datos
             </th>
@@ -34,430 +34,427 @@
         <% const liberacionBuyOffSegundaConfig = {
                 enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
                 terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
-                suspendido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
+                detenido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
                 noAplica: { icon: "fa-ban", iconColor: "color:#000000" },
                 default: { icon: "fa-triangle-exclamation", iconColor: "color:#1c21ac" }
             };
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
-            pathMongoOtAjuste = pathMongoOtProject[n].otAjuste,
-            largoArrayOtAjuste = parseInt(pathMongoOtAjuste.length)
+                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
 
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
                 resDatoRebabas = "S/D", resEstadoRebabas = 'sinDato', resRevisionRebabas = 0,
                 resDatoCaidasScrap = "S/D", resEstadoCaidasScrap = 'sinDato', resRevisionCaidasScrap = 0,
                 resDatoAspecto = "S/D", resEstadoAspecto = 'sinDato', resRevisionAspecto = 0;
 
-            for ( let o=0; largoArrayOtAjuste> o; o++) {
-                let pathToMongoOtLiberacionBuyOffSegunda = pathMongoOtAjuste[o].otLiberacionBuyOffSegunda || [];
-                let largoArrayLiberacionBuyOffSegunda = parseInt(pathToMongoOtLiberacionBuyOffSegunda.length);
+            if (pathMongoOtProject[n].visible) {
+                let pathToMongoOtLiberacionBuyOffSegunda = pathMongoOtAjuste[0].otLiberacionBuyOffSegunda || [],
+                    largoArrayLiberacionBuyOffSegunda = parseInt(pathToMongoOtLiberacionBuyOffSegunda.length);
 
                 let arrResDatoRebabas = [], arrResEstadoRebabas = [], valueArrayResRebabas = 0, arrResRevisionRebabas = [],
-                arrResCreadorRebabas = [], arrResModificadorRebabas = [], arrResFechaRebabas = [], arrResFechaModRebabas = [];
+                    arrResCreadorRebabas = [], arrResModificadorRebabas = [], arrResFechaRebabas = [], arrResFechaModRebabas = [];
 
                 let arrResDatoCaidasScrap = [], arrResEstadoCaidasScrap = [], valueArrayResCaidasScrap = 0, arrResRevisionCaidasScrap = [],
-                arrResCreadorCaidasScrap = [], arrResModificadorCaidasScrap = [], arrResFechaCaidasScrap = [], arrResFechaModCaidasScrap = [];
+                    arrResCreadorCaidasScrap = [], arrResModificadorCaidasScrap = [], arrResFechaCaidasScrap = [], arrResFechaModCaidasScrap = [];
 
                 let arrResDatoAspecto = [], arrResEstadoAspecto = [], valueArrayResAspecto = 0, arrResRevisionAspecto = [],
-                arrResCreadorAspecto = [], arrResModificadorAspecto = [], arrResFechaAspecto = [], arrResFechaModAspecto = [];
+                    arrResCreadorAspecto = [], arrResModificadorAspecto = [], arrResFechaAspecto = [], arrResFechaModAspecto = [];
 
-                if (pathMongoOtProject[n].visible && pathMongoOtAjuste[o].visible) {
-                    if (pathMongoOtProject[n].otStatus) { %>
-                        <!--Activo-->
-                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh;">
-                            <% for (let q = 33; totalColDataLiberacionBuyOffSegunda > q; q++) {
-                                if (q==33) { %>
-                                    <!-- Rebabas data Activo--> 
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayLiberacionBuyOffSegunda > 0) {
+                if (pathMongoOtProject[n].otStatus) { %>
+                    <!--Activo-->
+                    <tr name="rowSelected<%=k%>_<%=n%>" class="border-bottom" style="height: 7vh;">
+                        <% for (let q = 33; totalColDataLiberacionBuyOffSegunda > q; q++) {
+                            if (q==33) { %>
+                                <!-- Rebabas data Activo--> 
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayLiberacionBuyOffSegunda > 0) {
 
-                                            for (let i = 0; largoArrayLiberacionBuyOffSegunda > i; i++) {
-                                                if (pathToMongoOtLiberacionBuyOffSegunda[i]) {
-                                                    let largoArray = parseInt(largoArrayLiberacionBuyOffSegunda)
-                                                    resDatoRebabas = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].rebabas == 'sinDato' ? "S/D" : pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].rebabas
-                                                    resEstadoRebabas = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].estadoRebabas == 'sinDato' ? "S/D" : pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].estadoRebabas
-                                                    resRevisionRebabas = parseInt(pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].revisionRebabas) || 0
-                                                    
-                                                    pathToMongoOtLiberacionBuyOffSegunda[i].rebabas == 'sinDato' ? arrResDatoRebabas.push("S/D") : arrResDatoRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].rebabas)
-                                                    pathToMongoOtLiberacionBuyOffSegunda[i].estadoRebabas == 'sinDato' ? arrResEstadoRebabas.push("S/D") : arrResEstadoRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].estadoRebabas)
-                                                    arrResRevisionRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].revisionRebabas)
-
-                                                    arrResCreadorRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].creator[0].username)
-                                                    arrResModificadorRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].modificator[0].username)
-                                                    arrResFechaRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].timestamp)
-                                                    arrResFechaModRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].modifiedOn)
-                                                }
-                                            }
-                                            valueArrayResRebabas = parseInt(arrResDatoRebabas.length-1)
-
-                                            if (arrResDatoRebabas.length == 1 ) {
-                                                anteriorDisabled = "disabled"
-                                                siguienteDisabled = "disabled"
-                                            } else if (arrResDatoRebabas.length == arrResRevisionRebabas.length) {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            } else {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            }
-                                            
-                                        } else {
-                                            arrResDatoRebabas.push(resDatoRebabas)
-                                            arrResEstadoRebabas.push(resEstadoRebabas)
-                                            arrResRevisionRebabas.push(resRevisionRebabas)
-                                            
-                                            arrResCreadorRebabas.push(pathMongoOtAjuste[o].creator[0].username)
-                                            arrResModificadorRebabas = ""
-                                            arrResFechaRebabas.push(pathMongoOtAjuste[o].timestamp)
-                                            arrResFechaModRebabas = ""
-                                        } %>
-                                        
-                                        <div id="btnAnteriorSiguienteRebabas<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                            <button id="btnAnteriorRebabas<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorRebabas" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= anteriorDisabled %>
-                                                ><i class="fa-solid fa-arrow-left"></i>
-                                            </button>
-                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoRebabas %>">
-                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoRebabas %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResRebabas %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionRebabas %>">
-                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorRebabas %>">
-                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorRebabas %>">
-                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaRebabas %>">
-                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModRebabas %>">
-
-                                            <span id="resDatoRebabas<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                                <%= resDatoRebabas %>
-                                            </span> |
-                                            
-                                            <% const config = liberacionBuyOffSegundaConfig[resEstadoRebabas] || liberacionBuyOffSegundaConfig.default; %>
-                                            <span id="resEstadoRebabas<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoRebabas%>">
-                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                            </span> |
-
-                                            <span id="resRevisionRebabas<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionRebabas" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                <%= resRevisionRebabas %>
-                                            </span>
-
-                                            <button id="btnSiguienteRebabas<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteRebabas" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
-                                                ><i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-
-                                <% } else if (q==34) { %>
-                                    <!-- Caidas Scrap data Activo-->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayLiberacionBuyOffSegunda > 0) {
-
-                                            for (let i = 0; largoArrayLiberacionBuyOffSegunda > i; i++) {
-                                                if (pathToMongoOtLiberacionBuyOffSegunda[i]) {
-                                                    let largoArray = parseInt(largoArrayLiberacionBuyOffSegunda)
-                                                    resDatoCaidasScrap = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].caidasScrap == 'sinDato' ? "S/D" :  pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].caidasScrap
-                                                    resEstadoCaidasScrap = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].estadoCaidasScrap == 'sinDato' ? "S/D" : pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].estadoCaidasScrap
-                                                    resRevisionCaidasScrap = parseInt(pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].revisionCaidasScrap) || 0
-                                                    
-                                                    pathToMongoOtLiberacionBuyOffSegunda[i].caidasScrap == 'sinDato' ? arrResDatoCaidasScrap.push("S/D") : arrResDatoCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].caidasScrap)
-                                                    pathToMongoOtLiberacionBuyOffSegunda[i].estadoCaidasScrap == 'sinDato' ? arrResEstadoCaidasScrap.push("S/D") : arrResEstadoCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].estadoCaidasScrap)
-                                                    arrResRevisionCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].revisionCaidasScrap)
-                                                    
-                                                    arrResCreadorCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].creator[0].username)
-                                                    arrResModificadorCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].modificator[0].username)
-                                                    arrResFechaCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].timestamp)
-                                                    arrResFechaModCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].modifiedOn)
-                                                }
-                                            }
-                                            valueArrayResCaidasScrap = parseInt(arrResEstadoCaidasScrap.length-1)
-                                                    
-                                            if (arrResDatoCaidasScrap.length == 1 ) {
-                                                anteriorDisabled = "disabled"
-                                                siguienteDisabled = "disabled"
-                                            } else if (arrResDatoCaidasScrap.length == arrResRevisionCaidasScrap.length) {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            } else {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            }
-                                            
-                                        } else {
-                                            arrResDatoCaidasScrap.push(resDatoCaidasScrap)
-                                            arrResEstadoCaidasScrap.push(resEstadoCaidasScrap)
-                                            arrResRevisionCaidasScrap.push(resRevisionCaidasScrap)
-                                            
-                                            arrResCreadorCaidasScrap.push(pathMongoOtAjuste[o].creator[0].username)
-                                            arrResModificadorCaidasScrap = ""
-                                            arrResFechaCaidasScrap.push(pathMongoOtAjuste[o].timestamp)
-                                            arrResFechaModCaidasScrap = ""
-                                        } %>
-                                        
-                                        <div id="btnAnteriorSiguienteCaidasScrap<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                            <button id="btnAnteriorCaidasScrap<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorCaidasScrap" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= anteriorDisabled %>
-                                                ><i class="fa-solid fa-arrow-left"></i>
-                                            </button>
-                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoCaidasScrap %>">
-                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoCaidasScrap %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResCaidasScrap %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionCaidasScrap %>">
-                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorCaidasScrap %>">
-                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorCaidasScrap %>">
-                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaCaidasScrap %>">
-                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModCaidasScrap %>">
-
-                                            <span id="resDatoCaidasScrap<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                                <%= resDatoCaidasScrap %>
-                                            </span> |
-
-                                            <% const config = liberacionBuyOffSegundaConfig[resEstadoCaidasScrap] || liberacionBuyOffSegundaConfig.default; %>
-                                            <span id="resEstadoCaidasScrap<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoCaidasScrap%>">
-                                                <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                            </span> |
-
-                                            <span id="resRevisionCaidasScrap<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionCaidasScrap" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                                <%= resRevisionCaidasScrap %>
-                                            </span>
-
-                                            <button id="btnSiguienteCaidasScrap<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteCaidasScrap" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= siguienteDisabled %>
-                                                ><i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-
-                                <% } else { %>
-                                    <!-- Aspecto data Activo-->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayLiberacionBuyOffSegunda > 0) {
-
-                                            for (let i = 0; largoArrayLiberacionBuyOffSegunda > i; i++) {
-                                                if (pathToMongoOtLiberacionBuyOffSegunda[i]) {
-                                                    let largoArray = parseInt(largoArrayLiberacionBuyOffSegunda)
-                                                    resDatoAspecto = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].aspecto == 'sinDato' ? "S/D" : pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].aspecto
-                                                    resEstadoAspecto = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].estadoAspecto == 'sinDato' ? 'sinDato' : pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].estadoAspecto
-                                                    resRevisionAspecto = parseInt(pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].revisionAspecto) || 0
-                                                    
-                                                    pathToMongoOtLiberacionBuyOffSegunda[i].aspecto == 'sinDato' ? arrResDatoAspecto.push('S/D') : arrResDatoAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].aspecto)
-                                                    pathToMongoOtLiberacionBuyOffSegunda[i].estadoAspecto == 'sinDato' ? arrResEstadoAspecto.push('S/D') : arrResEstadoAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].estadoAspecto)
-                                                    arrResRevisionAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].revisionAspecto)
+                                        for (let i = 0; largoArrayLiberacionBuyOffSegunda > i; i++) {
+                                            if (pathToMongoOtLiberacionBuyOffSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayLiberacionBuyOffSegunda)
+                                                resDatoRebabas = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].rebabas == 'sinDato' ? "S/D" : pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].rebabas
+                                                resEstadoRebabas = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].estadoRebabas == 'sinDato' ? "S/D" : pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].estadoRebabas
+                                                resRevisionRebabas = parseInt(pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].revisionRebabas) || 0
                                                 
-                                                    arrResCreadorAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].creator[0].username)
-                                                    arrResModificadorAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].modificator[0].username)
-                                                    arrResFechaAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].timestamp)
-                                                    arrResFechaModAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].modifiedOn)
-                                                }
-                                            }
-                                            valueArrayResAspecto = parseInt(arrResEstadoAspecto.length-1)
-                                                    
-                                            if (arrResDatoAspecto.length == 1 ) {
-                                                siguienteDisabled = "disabled"
-                                                anteriorDisabled = "disabled"
-                                            } else if (arrResDatoAspecto.length == arrResRevisionAspecto.length) {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            } else {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            }
-                                                    
-                                        } else {
-                                            arrResDatoAspecto.push(resDatoAspecto)
-                                            arrResEstadoAspecto.push(resEstadoAspecto)
-                                            arrResRevisionAspecto.push(resRevisionAspecto)
-                                            
-                                            arrResCreadorAspecto.push(pathMongoOtAjuste[o].creator[0].username)
-                                            arrResModificadorAspecto = ""
-                                            arrResFechaAspecto.push(pathMongoOtAjuste[o].timestamp)
-                                            arrResFechaModAspecto = ""
-                                        } %>
+                                                pathToMongoOtLiberacionBuyOffSegunda[i].rebabas == 'sinDato' ? arrResDatoRebabas.push("S/D") : arrResDatoRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].rebabas)
+                                                pathToMongoOtLiberacionBuyOffSegunda[i].estadoRebabas == 'sinDato' ? arrResEstadoRebabas.push("S/D") : arrResEstadoRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].estadoRebabas)
+                                                arrResRevisionRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].revisionRebabas)
 
-                                    <div id="btnAnteriorSiguienteAspecto<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                        <button id="btnAnteriorAspecto<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnAnteriorAspecto" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                arrResCreadorRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].creator[0].username)
+                                                arrResModificadorRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].modificator[0].username)
+                                                arrResFechaRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].timestamp)
+                                                arrResFechaModRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResRebabas = parseInt(arrResDatoRebabas.length-1)
+
+                                        if (arrResDatoRebabas.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResDatoRebabas.length == arrResRevisionRebabas.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResDatoRebabas.push(resDatoRebabas)
+                                        arrResEstadoRebabas.push(resEstadoRebabas)
+                                        arrResRevisionRebabas.push(resRevisionRebabas)
+                                        
+                                        arrResCreadorRebabas.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorRebabas = ""
+                                        arrResFechaRebabas.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModRebabas = ""
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteRebabas<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorRebabas<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorRebabas" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                             <%= anteriorDisabled %>
                                             ><i class="fa-solid fa-arrow-left"></i>
                                         </button>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoAspecto %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoAspecto %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResAspecto %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionAspecto %>">
-                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorAspecto %>">
-                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorAspecto %>">
-                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaAspecto %>">
-                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModAspecto %>">
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoRebabas %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoRebabas %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResRebabas %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionRebabas %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorRebabas %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorRebabas %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaRebabas %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModRebabas %>">
 
-                                        <span id="resDatoAspecto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                            <%= resDatoAspecto %>
+                                        <span id="resDatoRebabas<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                            <%= resDatoRebabas %>
                                         </span> |
-
-                                        <% const config = liberacionBuyOffSegundaConfig[resEstadoAspecto] || liberacionBuyOffSegundaConfig.default; %>
-                                        <span id="resEstadoAspecto<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoAspecto%>">
+                                        
+                                        <% const config = liberacionBuyOffSegundaConfig[resEstadoRebabas] || liberacionBuyOffSegundaConfig.default; %>
+                                        <span id="resEstadoRebabas<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoRebabas%>">
                                             <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
 
-                                        <span id="resRevisionAspecto<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionAspecto" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                            <%= resRevisionAspecto %>
+                                        <span id="resRevisionRebabas<%=k%>_<%=n%>_<%=q%>" name="resRevisionRebabas" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionRebabas %>
                                         </span>
 
-                                        <button id="btnSiguienteAspecto<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="btnSiguienteAspecto" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                        <button id="btnSiguienteRebabas<%=k%>_<%=n%>_<%=q%>" name="btnSiguienteRebabas" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;" <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else if (q==34) { %>
+                                <!-- Caidas Scrap data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayLiberacionBuyOffSegunda > 0) {
+
+                                        for (let i = 0; largoArrayLiberacionBuyOffSegunda > i; i++) {
+                                            if (pathToMongoOtLiberacionBuyOffSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayLiberacionBuyOffSegunda)
+                                                resDatoCaidasScrap = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].caidasScrap == 'sinDato' ? "S/D" :  pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].caidasScrap
+                                                resEstadoCaidasScrap = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].estadoCaidasScrap == 'sinDato' ? "S/D" : pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].estadoCaidasScrap
+                                                resRevisionCaidasScrap = parseInt(pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].revisionCaidasScrap) || 0
+                                                
+                                                pathToMongoOtLiberacionBuyOffSegunda[i].caidasScrap == 'sinDato' ? arrResDatoCaidasScrap.push("S/D") : arrResDatoCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].caidasScrap)
+                                                pathToMongoOtLiberacionBuyOffSegunda[i].estadoCaidasScrap == 'sinDato' ? arrResEstadoCaidasScrap.push("S/D") : arrResEstadoCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].estadoCaidasScrap)
+                                                arrResRevisionCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].revisionCaidasScrap)
+                                                
+                                                arrResCreadorCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].creator[0].username)
+                                                arrResModificadorCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].modificator[0].username)
+                                                arrResFechaCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].timestamp)
+                                                arrResFechaModCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResCaidasScrap = parseInt(arrResEstadoCaidasScrap.length-1)
+                                                
+                                        if (arrResDatoCaidasScrap.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResDatoCaidasScrap.length == arrResRevisionCaidasScrap.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResDatoCaidasScrap.push(resDatoCaidasScrap)
+                                        arrResEstadoCaidasScrap.push(resEstadoCaidasScrap)
+                                        arrResRevisionCaidasScrap.push(resRevisionCaidasScrap)
+                                        
+                                        arrResCreadorCaidasScrap.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorCaidasScrap = ""
+                                        arrResFechaCaidasScrap.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModCaidasScrap = ""
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteCaidasScrap<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorCaidasScrap<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorCaidasScrap" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoCaidasScrap %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoCaidasScrap %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResCaidasScrap %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionCaidasScrap %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorCaidasScrap %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorCaidasScrap %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaCaidasScrap %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModCaidasScrap %>">
+
+                                        <span id="resDatoCaidasScrap<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                            <%= resDatoCaidasScrap %>
+                                        </span> |
+
+                                        <% const config = liberacionBuyOffSegundaConfig[resEstadoCaidasScrap] || liberacionBuyOffSegundaConfig.default; %>
+                                        <span id="resEstadoCaidasScrap<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoCaidasScrap%>">
+                                            <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionCaidasScrap<%=k%>_<%=n%>_<%=q%>" name="resRevisionCaidasScrap" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionCaidasScrap %>
+                                        </span>
+
+                                        <button id="btnSiguienteCaidasScrap<%=k%>_<%=n%>_<%=q%>" name="btnSiguienteCaidasScrap" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
                                             <%= siguienteDisabled %>
                                             ><i class="fa-solid fa-arrow-right"></i>
                                         </button>
                                     </div>
                                 </td>
-                                <% }
-                            } %>
-                        </tr>
 
-                    <% } else { %>
-                        <!--Inactivo-->
-                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="pe-none border-bottom" style="height: 5vh; background-color: #dedede;">
-                            <% for (let q = 33; totalColDataLiberacionBuyOffSegunda > q; q++) {
-                                if (q==33) { %>
-                                    <!-- Rebabas data Inactivo -->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayLiberacionBuyOffSegunda > 0) {
-                                            for (let i = 0; largoArrayLiberacionBuyOffSegunda > i; i++) {
+                            <% } else { %>
+                                <!-- Aspecto data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayLiberacionBuyOffSegunda > 0) {
 
-                                                if (pathToMongoOtLiberacionBuyOffSegunda[i]) {
-                                                    let largoArray = parseInt(largoArrayLiberacionBuyOffSegunda)
-                                                    resDatoRebabas = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].rebabas || 'S/D'
-                                                    resEstadoRebabas = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].estadoRebabas || 'sinDato'
-                                                    resRevisionRebabas = parseInt(pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].revisionRebabas) || 0
-                                                    
-                                                    arrResDatoRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].rebabas)
-                                                    arrResEstadoRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].estadoRebabas)
-                                                    arrResRevisionRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].revisionRebabas)
-                                                }
+                                        for (let i = 0; largoArrayLiberacionBuyOffSegunda > i; i++) {
+                                            if (pathToMongoOtLiberacionBuyOffSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayLiberacionBuyOffSegunda)
+                                                resDatoAspecto = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].aspecto == 'sinDato' ? "S/D" : pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].aspecto
+                                                resEstadoAspecto = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].estadoAspecto == 'sinDato' ? 'sinDato' : pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].estadoAspecto
+                                                resRevisionAspecto = parseInt(pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].revisionAspecto) || 0
+                                                
+                                                pathToMongoOtLiberacionBuyOffSegunda[i].aspecto == 'sinDato' ? arrResDatoAspecto.push('S/D') : arrResDatoAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].aspecto)
+                                                pathToMongoOtLiberacionBuyOffSegunda[i].estadoAspecto == 'sinDato' ? arrResEstadoAspecto.push('S/D') : arrResEstadoAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].estadoAspecto)
+                                                arrResRevisionAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].revisionAspecto)
+                                            
+                                                arrResCreadorAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].creator[0].username)
+                                                arrResModificadorAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].modificator[0].username)
+                                                arrResFechaAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].timestamp)
+                                                arrResFechaModAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].modifiedOn)
                                             }
-                                            valueArrayResRebabas = parseInt(arrResEstadoRebabas.length-1)
-                                            resDatoRebabas = pathToMongoOtLiberacionBuyOffSegunda[0].Rebabas
-                                            resEstadoRebabas = pathToMongoOtLiberacionBuyOffSegunda[0].estadoRebabas
-
+                                        }
+                                        valueArrayResAspecto = parseInt(arrResEstadoAspecto.length-1)
+                                                
+                                        if (arrResDatoAspecto.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResDatoAspecto.length == arrResRevisionAspecto.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
                                         } else {
-                                            arrResDatoRebabas.push(resDatoRebabas)
-                                            arrResEstadoRebabas.push(resEstadoRebabas)
-                                            arrResRevisionRebabas.push(resRevisionRebabas)
-                                        } %>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoRebabas %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoRebabas %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResRebabas %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionRebabas %>">
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                                
+                                    } else {
+                                        arrResDatoAspecto.push(resDatoAspecto)
+                                        arrResEstadoAspecto.push(resEstadoAspecto)
+                                        arrResRevisionAspecto.push(resRevisionAspecto)
+                                        
+                                        arrResCreadorAspecto.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorAspecto = ""
+                                        arrResFechaAspecto.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModAspecto = ""
+                                    } %>
+
+                                <div id="btnAnteriorSiguienteAspecto<%=k%>_<%=n%>_<%=q%>">
+                                    <button id="btnAnteriorAspecto<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorAspecto" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                        <%= anteriorDisabled %>
+                                        ><i class="fa-solid fa-arrow-left"></i>
+                                    </button>
+                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAspecto %>">
+                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAspecto %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAspecto %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAspecto %>">
+                                    <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorAspecto %>">
+                                    <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorAspecto %>">
+                                    <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaAspecto %>">
+                                    <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModAspecto %>">
+
+                                    <span id="resDatoAspecto<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                        <%= resDatoAspecto %>
+                                    </span> |
+
+                                    <% const config = liberacionBuyOffSegundaConfig[resEstadoAspecto] || liberacionBuyOffSegundaConfig.default; %>
+                                    <span id="resEstadoAspecto<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAspecto%>">
+                                        <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                    </span> |
+
+                                    <span id="resRevisionAspecto<%=k%>_<%=n%>_<%=q%>" name="resRevisionAspecto" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                        <%= resRevisionAspecto %>
+                                    </span>
+
+                                    <button id="btnSiguienteAspecto<%=k%>_<%=n%>_<%=q%>" name="btnSiguienteAspecto" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                        <%= siguienteDisabled %>
+                                        ><i class="fa-solid fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <% }
+                        } %>
+                    </tr>
+
+                <% } else { %>
+                    <!--Inactivo-->
+                    <tr name="rowSelected<%=k%>_<%=n%>" class="pe-none border-bottom" style="height: 7vh; background-color: #dedede;">
+                        <% for (let q = 33; totalColDataLiberacionBuyOffSegunda > q; q++) {
+                            if (q==33) { %>
+                                <!-- Rebabas data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayLiberacionBuyOffSegunda > 0) {
+                                        for (let i = 0; largoArrayLiberacionBuyOffSegunda > i; i++) {
+
+                                            if (pathToMongoOtLiberacionBuyOffSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayLiberacionBuyOffSegunda)
+                                                resDatoRebabas = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].rebabas || 'S/D'
+                                                resEstadoRebabas = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].estadoRebabas || 'sinDato'
+                                                resRevisionRebabas = parseInt(pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].revisionRebabas) || 0
+                                                
+                                                arrResDatoRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].rebabas)
+                                                arrResEstadoRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].estadoRebabas)
+                                                arrResRevisionRebabas.push(pathToMongoOtLiberacionBuyOffSegunda[i].revisionRebabas)
+                                            }
+                                        }
+                                        valueArrayResRebabas = parseInt(arrResEstadoRebabas.length-1)
+                                        resDatoRebabas = pathToMongoOtLiberacionBuyOffSegunda[0].Rebabas
+                                        resEstadoRebabas = pathToMongoOtLiberacionBuyOffSegunda[0].estadoRebabas
+
+                                    } else {
+                                        arrResDatoRebabas.push(resDatoRebabas)
+                                        arrResEstadoRebabas.push(resEstadoRebabas)
+                                        arrResRevisionRebabas.push(resRevisionRebabas)
+                                    } %>
+                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoRebabas %>">
+                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoRebabas %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResRebabas %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionRebabas %>">
+                                
+                                    <span id="resDatoRebabas<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                        <%= resDatoRebabas %>
+                                    </span> |
+
+                                    <% const config = liberacionBuyOffSegundaConfig[resEstadoRebabas] || liberacionBuyOffSegundaConfig.default; %>
+                                    <span id="resEstadoRebabas<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoRebabas%>">
+                                        <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                    </span> |
+
+                                    <span id="resRevisionRebabas<%=k%>_<%=n%>_<%=q%>" name="resRevisionRebabas" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                        <%= resRevisionRebabas %>
+                                    </span>
+                                </td>
+
+                            <% } else if (q==34) { %>
+                                <!-- Caidas Scrap data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayLiberacionBuyOffSegunda > 0) {
+                                        for (let i = 0; largoArrayLiberacionBuyOffSegunda > i; i++) {
+                                            
+                                            if (pathToMongoOtLiberacionBuyOffSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayLiberacionBuyOffSegunda)
+                                                resDatoCaidasScrap = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].caidasScrap || 'S/D'
+                                                resEstadoCaidasScrap = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].caidasScrap || 'sinDato'
+                                                resRevisionCaidasScrap = parseInt(pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].revisionCaidasScrap) || 0
+                                                
+                                                arrResDatoCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].caidasScrap)
+                                                arrResEstadoCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].caidasScrap)
+                                                arrResRevisionCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].revisionCaidasScrap)
+                                            }
+                                        }
+                                        valueArrayResCaidasScrap = parseInt(arrResEstadoCaidasScrap.length-1)
+                                        resDatoCaidasScrap = pathToMongoOtLiberacionBuyOffSegunda[0].caidasScrap
+                                        resEstadoCaidasScrap = pathToMongoOtLiberacionBuyOffSegunda[0].estadoCaidasScrap
                                     
-                                        <span id="resDatoRebabas<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                            <%= resDatoRebabas %>
-                                        </span> |
+                                    } else {
+                                        arrResDatoCaidasScrap.push(resDatoCaidasScrap)
+                                        arrResEstadoCaidasScrap.push(resEstadoCaidasScrap)
+                                        arrResRevisionCaidasScrap.push(resRevisionCaidasScrap)
+                                    } %>
+                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoCaidasScrap %>">
+                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoCaidasScrap %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResCaidasScrap %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionCaidasScrap %>">
 
-                                        <% const config = liberacionBuyOffSegundaConfig[resEstadoRebabas] || liberacionBuyOffSegundaConfig.default; %>
-                                        <span id="resEstadoRebabas<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoRebabas%>">
-                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                        </span> |
+                                    <span id="resDatoCaidasScrap<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                        <%= resDatoCaidasScrap %>
+                                    </span> |
+                                    
+                                    <% const config = liberacionBuyOffSegundaConfig[resEstadoCaidasScrap] || liberacionBuyOffSegundaConfig.default; %>
+                                    <span id="resEstadoCaidasScrap<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoCaidasScrap%>">
+                                        <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                    </span> |
 
-                                        <span id="resRevisionRebabas<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionRebabas" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                            <%= resRevisionRebabas %>
-                                        </span>
-                                    </td>
+                                    <span id="resRevisionCaidasScrap<%=k%>_<%=n%>_<%=q%>" name="resRevisionCaidasScrap" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                        <%= resRevisionCaidasScrap %>
+                                    </span>
+                                </td>
 
-                                <% } else if (q==34) { %>
-                                    <!-- Caidas Scrap data Inactivo -->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayLiberacionBuyOffSegunda > 0) {
-                                            for (let i = 0; largoArrayLiberacionBuyOffSegunda > i; i++) {
+                            <% } else { %>
+                                <!-- Aspecto data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayLiberacionBuyOffSegunda > 0) {
+                                        for (let i = 0; largoArrayLiberacionBuyOffSegunda > i; i++) {
+                                            
+                                            if (pathToMongoOtLiberacionBuyOffSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayLiberacionBuyOffSegunda)
+                                                resDatoAspecto = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].aspecto || "S/D"
+                                                resEstadoAspecto = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].estadoAspecto || 'sinDato'
+                                                resRevisionAspecto = parseInt(pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].revisionAspecto) || 0
                                                 
-                                                if (pathToMongoOtLiberacionBuyOffSegunda[i]) {
-                                                    let largoArray = parseInt(largoArrayLiberacionBuyOffSegunda)
-                                                    resDatoCaidasScrap = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].caidasScrap || 'S/D'
-                                                    resEstadoCaidasScrap = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].caidasScrap || 'sinDato'
-                                                    resRevisionCaidasScrap = parseInt(pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].revisionCaidasScrap) || 0
-                                                    
-                                                    arrResDatoCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].caidasScrap)
-                                                    arrResEstadoCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].caidasScrap)
-                                                    arrResRevisionCaidasScrap.push(pathToMongoOtLiberacionBuyOffSegunda[i].revisionCaidasScrap)
-                                                }
+                                                arrResDatoAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].aspecto)
+                                                arrResEstadoAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].estadoAspecto)
+                                                arrResRevisionAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].revisionAspecto)
                                             }
-                                            valueArrayResCaidasScrap = parseInt(arrResEstadoCaidasScrap.length-1)
-                                            resDatoCaidasScrap = pathToMongoOtLiberacionBuyOffSegunda[0].caidasScrap
-                                            resEstadoCaidasScrap = pathToMongoOtLiberacionBuyOffSegunda[0].estadoCaidasScrap
-                                        
-                                        } else {
-                                            arrResDatoCaidasScrap.push(resDatoCaidasScrap)
-                                            arrResEstadoCaidasScrap.push(resEstadoCaidasScrap)
-                                            arrResRevisionCaidasScrap.push(resRevisionCaidasScrap)
-                                        } %>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoCaidasScrap %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoCaidasScrap %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResCaidasScrap %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionCaidasScrap %>">
+                                        }
+                                        valueArrayResAspecto = parseInt(arrResEstadoAspecto.length-1)
+                                        resDatoAspecto = pathToMongoOtLiberacionBuyOffSegunda[0].aspecto
+                                        resEstadoAspecto = pathToMongoOtLiberacionBuyOffSegunda[0].estadoAspecto
+                                    
+                                    } else {
+                                        arrResDatoAspecto.push(resDatoAspecto)
+                                        arrResEstadoAspecto.push(resEstadoAspecto)
+                                        arrResRevisionAspecto.push(resRevisionAspecto)
+                                    } %>
+                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAspecto %>">
+                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAspecto %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAspecto %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAspecto %>">
 
-                                        <span id="resDatoCaidasScrap<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                            <%= resDatoCaidasScrap %>
-                                        </span> |
-                                        
-                                        <% const config = liberacionBuyOffSegundaConfig[resEstadoCaidasScrap] || liberacionBuyOffSegundaConfig.default; %>
-                                        <span id="resEstadoCaidasScrap<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoCaidasScrap%>">
-                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                        </span> |
+                                    <span id="resDatoAspecto<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                        <%= resDatoAspecto %>
+                                    </span> |
+                                    
+                                    <% const config = liberacionBuyOffSegundaConfig[resEstadoAspecto] || liberacionBuyOffSegundaConfig.default; %>
+                                    <span id="resEstadoAspecto<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAspecto%>">
+                                        <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                    </span> |
 
-                                        <span id="resRevisionCaidasScrap<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionCaidasScrap" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                            <%= resRevisionCaidasScrap %>
-                                        </span>
-                                    </td>
-
-                                <% } else { %>
-                                    <!-- Aspecto data Inactivo -->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayLiberacionBuyOffSegunda > 0) {
-                                            for (let i = 0; largoArrayLiberacionBuyOffSegunda > i; i++) {
-                                                
-                                                if (pathToMongoOtLiberacionBuyOffSegunda[i]) {
-                                                    let largoArray = parseInt(largoArrayLiberacionBuyOffSegunda)
-                                                    resDatoAspecto = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].aspecto || "S/D"
-                                                    resEstadoAspecto = pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].estadoAspecto || 'sinDato'
-                                                    resRevisionAspecto = parseInt(pathToMongoOtLiberacionBuyOffSegunda[largoArray-1].revisionAspecto) || 0
-                                                    
-                                                    arrResDatoAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].aspecto)
-                                                    arrResEstadoAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].estadoAspecto)
-                                                    arrResRevisionAspecto.push(pathToMongoOtLiberacionBuyOffSegunda[i].revisionAspecto)
-                                                }
-                                            }
-                                            valueArrayResAspecto = parseInt(arrResEstadoAspecto.length-1)
-                                            resDatoAspecto = pathToMongoOtLiberacionBuyOffSegunda[0].aspecto
-                                            resEstadoAspecto = pathToMongoOtLiberacionBuyOffSegunda[0].estadoAspecto
-                                        
-                                        } else {
-                                            arrResDatoAspecto.push(resDatoAspecto)
-                                            arrResEstadoAspecto.push(resEstadoAspecto)
-                                            arrResRevisionAspecto.push(resRevisionAspecto)
-                                        } %>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResDatoAspecto %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResEstadoAspecto %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResAspecto %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionAspecto %>">
-
-                                        <span id="resDatoAspecto<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                            <%= resDatoAspecto %>
-                                        </span> |
-                                        
-                                        <% const config = liberacionBuyOffSegundaConfig[resEstadoAspecto] || liberacionBuyOffSegundaConfig.default; %>
-                                        <span id="resEstadoAspecto<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%=resEstadoAspecto%>">
-                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                        </span> |
-
-                                        <span id="resRevisionAspecto<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionAspecto" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
-                                            <%= resRevisionAspecto %>
-                                        </span>
-                                    </td>
-                                <% }
-                            } %>
-                        </tr>
-                    <% }
-                }
+                                    <span id="resRevisionAspecto<%=k%>_<%=n%>_<%=q%>" name="resRevisionAspecto" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                        <%= resRevisionAspecto %>
+                                    </span>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+                <% }
             }
         }) %>
     </tbody>

@@ -16,7 +16,7 @@ const cookie = require('../utils/cookie.js')
 
 let data = require('../utils/variablesInicializator.js')
 
-const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
+const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty, dataUserOtOwnerEmpty } = require('../utils/generateUsers.js')
 
 const {catchError400,
     catchError400_1,
@@ -433,14 +433,9 @@ class ProjectsController {
                 otInfoDisenoPrimera: [], otInfoDisenoSegunda: [],
                 otInfoInfo80: [], otInfoInfo100: [],
                 otInfoSim0: [], otInfoSim1: [], otInfoSim2_3: [],
-                otInfoSim4Primera: [], otInfoSim4Segunda: [], otInfoSim5: []
+                otInfoSim4Primera: [], otInfoSim4Segunda: [], otInfoSim5: [],
+                otOwner: []
             }]
-
-            // const otDetallesEmpty = [{
-            //     otDistribution: [],
-            //     otProgramacionPrimera: [], otProgramacionSegunda: [],
-            //     otMecanizadoPrimera: [], otMecanizadoSegunda: []
-            // }]
 
             const arrayOtAddedToOci = []
             if (otQuantity>0) {
@@ -453,6 +448,7 @@ class ProjectsController {
                         otDesign: arrayOtDesign[i],
                         otSimulation: arrayOtSimulation[i],
                         otSupplier: arrayOtSupplier[i],
+                        otOwner: dataUserOtOwnerEmpty(),
                         creator: dataUserCreator(userCreator),
                         timestamp: formatDate(),
                         modificator: dataUserModificatorEmpty(),
@@ -1403,7 +1399,7 @@ class ProjectsController {
         }
     }
 
-    // FIXME: MODIFICAR NUMERO FINAL----------------------------------------------------
+
     addInfoR14ToOtProject = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
@@ -1498,7 +1494,7 @@ class ProjectsController {
                     data,
                     csrfToken
                 })
-            }, 1000)
+            }, 500)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -1597,7 +1593,7 @@ class ProjectsController {
                     data,
                     csrfToken
                 })
-            }, 1000)
+            }, 500)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -1706,7 +1702,7 @@ class ProjectsController {
                     data,
                     csrfToken
                 })
-            }, 1000)
+            }, 500)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -1925,7 +1921,7 @@ class ProjectsController {
                     data,
                     csrfToken
                 })
-            }, 1000)
+            }, 500)
 
         } catch (err) {
             catchError500(err, req, res, next)

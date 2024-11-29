@@ -1175,6 +1175,7 @@ function messageModalAddDetallesOt(idProjectSelected, clientId,  arrayIdOciOt, a
                 // Cancelar el evento para evitar que se ingrese el carácter
                 event.preventDefault()
                 input.classList.add("border", "border-danger", "border-2")
+            
             } else {
                 input.classList.remove("border", "border-danger", "border-2")
             }
@@ -2915,7 +2916,6 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
 
                 } else if (resDatoHidden && !resEstadoHidden) {
                     otHidden = resDatoHidden.value;
-                    console.log('otHidden: ', otHidden)
                     otRevisionHidden = resRevisionHidden.value;
                     otRevision = otRevisionHidden.split(",").pop();
                     otInfo = changeValueFromArray(otHidden.split(",")).pop();
@@ -2923,9 +2923,9 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
                 } else {
                     flag = 2;
                 }
-    
+
                 const [infoKey, revisionKey, estadoKey] = mapping[q] || [];
-    
+                
                 if (flag === 1 && infoKey && estadoKey && revisionKey && otHidden && estadoInfo && otRevision) {
                     arrays[infoKey].push(otInfo);
                     arrays[estadoKey].push(estadoInfo);
@@ -2951,7 +2951,6 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
     const keysToReturn = resultMap[qFinalX] || [];
     const result = {};
     keysToReturn.forEach(key => result[key] = arrays[key]);
-    console.log('result: ', result)
     return result;
 }
 
@@ -3020,7 +3019,6 @@ function estadoSelect(option) {
             <option value="noAplica">N/A</option>
         `
     };
-
     return options[option] || options.default;
 }
 
@@ -3682,7 +3680,7 @@ function addDatoToOtProgramacionSegunda(i, idTabla, qInicial, qFinal) {
                 let hiddenSelectedPrograma3d2F, hiddenSelectedPrograma3d4F
                 getValues.arrayPrograma3d2F[y] != 'S/D' ? hiddenSelectedPrograma3d2F = getValues.arrayPrograma3d2F[y] : hiddenSelectedPrograma3d2F = (switchOptionSelected(getValues.arrayPrograma3d2F[y])).variableValue
                 getValues.arrayPrograma3d4F[y] != 'S/D' ? hiddenSelectedPrograma3d4F = getValues.arrayPrograma3d4F[y] : hiddenSelectedPrograma3d4F = (switchOptionSelected(getValues.arrayPrograma3d4F[y])).variableValue
-                
+
                 const dataEnArrayBloque = `
                     <div class="col my-auto">
                         <select id="programa3d2F${res.arrayOtNumber[y]}_${res.arrayOtDetalle[y]}" name="programa3d2F${y}"

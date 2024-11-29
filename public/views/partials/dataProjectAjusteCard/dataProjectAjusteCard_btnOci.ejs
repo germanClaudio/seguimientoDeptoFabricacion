@@ -2,22 +2,30 @@
 <div class="container mw-100">
     <div class="row align-items-center">
         <div class="col-2 d-flex align-items-center">
-            <img src="<%= arrayVisibleOci[k].ociImage %>" class="img-fluid img-thumbnail shadow m-auto shadow" title="<%= arrayVisibleOci[k].ociDescription %>"
+            <img id="imageOciHeader<%=k%>" src="<%= arrayVisibleOci[k].ociImage %>" class="img-fluid img-thumbnail shadow m-auto shadow" title="<%= arrayVisibleOci[k].ociDescription %>"
                 alt="<%= arrayVisibleOci[k].ociDescription %>" style="width: 100px; height: 100px; object-fit: contain;">
         </div>
         <div class="col-10 d-flex align-items-center">
             <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
-                Agrega datos de OT en OCI# <strong><%= arrayVisibleOci[k].ociNumber %></strong>, haciendo click en
-                <button class="btn btn-primary m-1 rounded-circle shadow"
-                    id="btnAddOtFormSelected<%=k%>" aria-controls="collapseExample" data-bs-toggle="collapse"
-                    data-bs-target="#collapseExample" aria-expanded="false"
-                    style="--bs-btn-font-size: .95rem; color: var(--bs-white);" type="button" value="<%=k%>"
-                    name="<%= proyecto[m].project[j].oci[k].ociNumber %>" title="Agregar nueva OT">
-                    <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
-                </button>
+                Asigna dueño de pieza de OCI# <strong><%= arrayVisibleOci[k].ociNumber %></strong>, haciendo click en
+                
+                <% if (arrayVisibleOci[k].ociOwner[0].legajoId == 0) { %>
+                    <button class="custom2-btn m-1"
+                        id="btnAddOtFormSelected<%=k%>" aria-controls="collapseExample" data-bs-toggle="collapse"
+                        data-bs-target="#collapseExample" aria-expanded="false"
+                        style="--bs-btn-font-size: .95rem; color: var(--bs-white);" type="button" value="<%=k%>"
+                        name="<%= proyecto[m].project[j].oci[k].ociNumber %>" title="Asignar Dueño de pieza">
+                        <i class="fa-solid fa-screwdriver-wrench fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } else { %>
+                    <button class="custom2-btn-disable m-1 pe-none" aria-controls="collapseExample" 
+                        style="--bs-btn-font-size: .95rem; color: var(--bs-white);" type="button" disabled>
+                        <i class="fa-solid fa-screwdriver-wrench fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } %> 
                 
             <% } else { %>
-                NO puedes ingresar datos de OT debido a tus permisos
+                NO puedes modificar datos de OT debido a tus permisos
                 <button class="btn btn-danger m-1 rounded-circle shadow disabled" style="--bs-btn-font-size: .95rem; color: var(--bs-white);" type="button">
                     <i class="fa-solid fa-ban" aria-hidden="true"></i>
                 </button>

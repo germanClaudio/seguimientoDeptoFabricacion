@@ -61,29 +61,6 @@ let authorizatorSchema = new Schema({
     }
 })
 
-// ------- Dueño de OT Schema -------------
-let duenoOtSchema = new Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Usuarios",
-    },
-    name: { 
-        type: String,
-    },
-    lastName: {
-        type: String,
-    },
-    username:{
-        type: String,
-    },
-    email: {
-        type: String,
-    },
-    legajoId: {
-        type: Number,
-    }
-})
-
 // ------- OT Armado Schema ---------
 let otArmadoSchema = new Schema({
     armadoMaquina: { 
@@ -187,7 +164,7 @@ let otEtapaPrimeraSchema = new Schema({
 })
 
 // ------- OT Etapa Segunda Schema ---------
-let otEtapaSegundaSchema = new Schema({
+let otEtapaSegundaPrimeraSchema = new Schema({
     azulados: {
         type: String,
         default: 'sinDato',
@@ -212,6 +189,25 @@ let otEtapaSegundaSchema = new Schema({
         type: Number,
         default: 0,
     },
+    creator: [creatorSchema],
+    timestamp: {
+        type: String,
+        default: now,
+    },
+    modificator: [modificatorSchema],
+    modifiedOn: {
+        type: String,
+        default: ""
+    },
+    authorizator: [authorizatorSchema],
+    authorizatedOn: {
+        type: String,
+        default: ""
+    },
+})
+
+// ------- OT Etapa Segunda Schema ---------
+let otEtapaSegundaSegundaSchema = new Schema({
     azuladoAceros: {
         type: String,
         default: 'sinDato',
@@ -659,10 +655,10 @@ let AjusteSchema = new Schema({
     otAjusteId: {
         type: mongoose.Schema.Types.ObjectId,
     },
-    duenoOt: [duenoOtSchema],
     otArmado: [otArmadoSchema],
     otEtapaPrimera: [otEtapaPrimeraSchema],
-    otEtapaSegunda: [otEtapaSegundaSchema],
+    otEtapaSegundaPrimera: [otEtapaSegundaPrimeraSchema],
+    otEtapaSegundaSegunda: [otEtapaSegundaSegundaSchema],
     otAnalisisCritico: [otAnalisisCriticoSchema],
     otEtapaTerceraPrimera: [otEtapaTerceraPrimeraSchema],
     otEtapaTerceraSegunda: [otEtapaTerceraSegundaSchema],

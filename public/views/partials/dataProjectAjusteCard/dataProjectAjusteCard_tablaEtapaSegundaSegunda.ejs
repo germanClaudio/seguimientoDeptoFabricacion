@@ -1,0 +1,330 @@
+<!-- tabla Etapa Segunda Segunda -->
+<table id="tablaOtEtapaSegundaSegunda<%=k%>" class="table-responsive align-middle col-5 border-end border-dark" style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #d8d8eb">
+        <tr>
+            <th colspan="5" class="text-center">ETAPA 2 (2° Parte)
+                <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
+                    <button id="posBtnAddDataOtEtapaSegundaSegunda<%=k%>" type="button" name="btnOtEtapaSegundaSegunda" class="btn btn-small btn-success shadow m-1 me-5 mb-2 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                        <span id="spanCheckSelecMasiveEtapaSegSeg<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                            <span class="visually-hidden">Elementos seleccionados</span>
+                        </span>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 me-5 mb-2 disabled" style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>                                                    
+                    </button>
+                <% } %>
+                <i class="fa-solid fa-arrows-spin fa-lg" style="color: #b09b12;"></i> En Proceso -
+                <i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i> Terminado -
+                <i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i> Detenido -
+                <i class="fa-solid fa-ban fa-lg"></i> No Aplica -
+                <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i> Sin Datos
+            </th>
+        </tr>
+        <tr>
+            <th id="colData1" style="width:50vw" scope="col-1" class="text-center pb-1">Azulado Aceros (Pest-Calib) | Estado | Rev.</th>
+            <th id="colData2" style="width:50vw" scope="col-1" class="text-center pb-1">LTH | Estado | Rev.</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        
+        <% const etapaSegundaSegundaConfig = {
+                enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
+                terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
+                detenido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
+                noAplica: { icon: "fa-ban", iconColor: "color:#000000" },
+                default: { icon: "fa-triangle-exclamation", iconColor: "color:#1c21ac" }
+            };
+
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
+            
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                resDatoAzuladoAceros = "S/D", resEstadoAzuladoAceros = 'sinDato', resRevisionAzuladoAceros = 0;
+                resDatoLthEtapaSegundaSegunda = "S/D", resEstadoLthEtapaSegundaSegunda = 'sinDato', resRevisionLthEtapaSegundaSegunda = 0;
+
+            if (pathMongoOtProject[n].visible) {
+                let pathToMongoOtEtapaSegundaSegunda = pathMongoOtAjuste[0].otEtapaSegundaSegunda || [],
+                    largoArrayEtapaSegundaSegunda = parseInt(pathToMongoOtEtapaSegundaSegunda.length);
+
+                let arrResDatoAzuladoAceros = [], arrResEstadoAzuladoAceros = [], valueArrayResAzuladoAceros = 0, arrResRevisionAzuladoAceros = [],
+                    arrResCreadorAzuladoAceros = [], arrResModificadorAzuladoAceros = [], arrResFechaAzuladoAceros = [], arrResFechaModAzuladoAceros = [];
+                
+                let arrResDatoLthEtapaSegundaSegunda = [], arrResEstadoLthEtapaSegundaSegunda = [], valueArrayResLthEtapaSegundaSegunda = 0, arrResRevisionLthEtapaSegundaSegunda = [],
+                    arrResCreadorLthEtapaSegundaSegunda = [], arrResModificadorLthEtapaSegundaSegunda = [], arrResFechaLthEtapaSegundaSegunda = [], arrResFechaModLthEtapaSegundaSegunda = [];
+
+                    if (pathMongoOtProject[n].otStatus) { %>
+                        <!--Activo-->
+                        <tr name="rowSelected<%=k%>_<%=n%>" class="border-bottom" style="height: 7vh;">
+                            <% for (let q = 11; totalColDataEtapaSegundaSegunda > q; q++) {
+                                if (q==11) { %>
+                                    <!-- Azulado Aceros data Activo-->
+                                    <td class="text-center align-middle">
+                                        <% if ( largoArrayEtapaSegundaSegunda > 0) {
+
+                                            for (let i = 0; largoArrayEtapaSegundaSegunda > i; i++) {
+                                                if (pathToMongoOtEtapaSegundaSegunda[i]) {
+                                                    let largoArray = parseInt(largoArrayEtapaSegundaSegunda)
+                                                    resDatoAzuladoAceros = pathToMongoOtEtapaSegundaSegunda[largoArray-1].azuladoAceros == 'sinDato' ? "S/D" : pathToMongoOtEtapaSegundaSegunda[largoArray-1].azuladoAceros
+                                                    resEstadoAzuladoAceros = pathToMongoOtEtapaSegundaSegunda[largoArray-1].estadoAzuladoAceros == 'sinDato' ? 'sinDato' : pathToMongoOtEtapaSegundaSegunda[largoArray-1].estadoAzuladoAceros
+                                                    resRevisionAzuladoAceros = parseInt(pathToMongoOtEtapaSegundaSegunda[largoArray-1].revisionAzuladoAceros) || 0
+                                                    
+                                                    pathToMongoOtEtapaSegundaSegunda[i].azuladoAceros == 'sinDato' ? arrResDatoAzuladoAceros.push('S/D') : arrResDatoAzuladoAceros.push(pathToMongoOtEtapaSegundaSegunda[i].azuladoAceros)
+                                                    pathToMongoOtEtapaSegundaSegunda[i].estadoAzuladoAceros == 'sinDato' ? arrResEstadoAzuladoAceros.push('S/D') : arrResEstadoAzuladoAceros.push(pathToMongoOtEtapaSegundaSegunda[i].estadoAzuladoAceros)
+                                                    arrResRevisionAzuladoAceros.push(pathToMongoOtEtapaSegundaSegunda[i].revisionAzuladoAceros)
+                                                
+                                                    arrResCreadorAzuladoAceros.push(pathToMongoOtEtapaSegundaSegunda[i].creator[0].username)
+                                                    arrResModificadorAzuladoAceros.push(pathToMongoOtEtapaSegundaSegunda[i].modificator[0].username)
+                                                    arrResFechaAzuladoAceros.push(pathToMongoOtEtapaSegundaSegunda[i].timestamp)
+                                                    arrResFechaModAzuladoAceros.push(pathToMongoOtEtapaSegundaSegunda[i].modifiedOn)
+                                                }
+                                            }
+                                            valueArrayResAzuladoAceros = parseInt(arrResEstadoAzuladoAceros.length-1)
+                                            
+                                            if (arrResDatoAzuladoAceros.length == 1 ) {
+                                                siguienteDisabled = "disabled"
+                                                anteriorDisabled = "disabled"
+                                            } else if (arrResDatoAzuladoAceros.length == arrResRevisionAzuladoAceros.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                        
+                                        } else {
+                                            arrResDatoAzuladoAceros.push(resDatoAzuladoAceros)
+                                            arrResEstadoAzuladoAceros.push(resEstadoAzuladoAceros)
+                                            arrResRevisionAzuladoAceros.push(resRevisionAzuladoAceros)
+                                            
+                                            arrResCreadorAzuladoAceros.push(pathMongoOtProject[n].creator[0].username)
+                                            arrResModificadorAzuladoAceros = ""
+                                            arrResFechaAzuladoAceros.push(pathMongoOtProject[n].timestamp)
+                                            arrResFechaModAzuladoAceros = ""
+                                        } %>
+
+                                    <div id="btnAnteriorSiguienteAzuladoAceros<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorAzuladoAceros<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorAzuladoAceros" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAzuladoAceros %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAzuladoAceros %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAzuladoAceros %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAzuladoAceros %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorAzuladoAceros %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorAzuladoAceros %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaAzuladoAceros %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModAzuladoAceros %>">
+
+                                        <span id="resDatoAzuladoAceros<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                            <%= resDatoAzuladoAceros %>
+                                        </span> |
+
+                                        <% const config = etapaSegundaSegundaConfig[resEstadoAzuladoAceros] || etapaSegundaSegundaConfig.default; %>
+                                        <span id="resEstadoAzuladoAceros<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAzuladoAceros%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionAzuladoAceros<%=k%>_<%=n%>_<%=q%>" name="resRevisionAzuladoAceros" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionAzuladoAceros %>
+                                        </span>
+
+                                        <button id="btnSiguienteAzuladoAceros<%=k%>_<%=n%>_<%=q%>" name="btnSiguienteAzuladoAceros" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                    </td>
+                                
+                                <% } else { %>
+                                    <!-- Lth Etapa SegundaSegunda data Activo-->
+                                    <td class="text-center align-middle">
+                                        <% if ( largoArrayEtapaSegundaSegunda > 0) {
+
+                                            for (let i = 0; largoArrayEtapaSegundaSegunda > i; i++) {
+                                                if (pathToMongoOtEtapaSegundaSegunda[i]) {
+                                                    let largoArray = parseInt(largoArrayEtapaSegundaSegunda)
+                                                    resDatoLthEtapaSegundaSegunda = pathToMongoOtEtapaSegundaSegunda[largoArray-1].lthEtapaSegundaSegunda == 'sinDato' ? "S/D" : pathToMongoOtEtapaSegundaSegunda[largoArray-1].lthEtapaSegundaSegunda
+                                                    resEstadoLthEtapaSegundaSegunda = pathToMongoOtEtapaSegundaSegunda[largoArray-1].estadoLthEtapaSegundaSegunda == 'sinDato' ? 'sinDato' : pathToMongoOtEtapaSegundaSegunda[largoArray-1].estadoLthEtapaSegundaSegunda
+                                                    resRevisionLthEtapaSegundaSegunda = parseInt(pathToMongoOtEtapaSegundaSegunda[largoArray-1].revisionLthEtapaSegundaSegunda) || 0
+                                                    
+                                                    pathToMongoOtEtapaSegundaSegunda[i].lthEtapaSegundaSegunda == 'sinDato' ? arrResDatoLthEtapaSegundaSegunda.push('S/D') : arrResDatoLthEtapaSegundaSegunda.push(pathToMongoOtEtapaSegundaSegunda[i].lthEtapaSegundaSegunda)
+                                                    pathToMongoOtEtapaSegundaSegunda[i].estadoLthEtapaSegundaSegunda == 'sinDato' ? arrResEstadoLthEtapaSegundaSegunda.push('S/D') : arrResEstadoLthEtapaSegundaSegunda.push(pathToMongoOtEtapaSegundaSegunda[i].estadoLthEtapaSegundaSegunda)
+                                                    arrResRevisionLthEtapaSegundaSegunda.push(pathToMongoOtEtapaSegundaSegunda[i].revisionLthEtapaSegundaSegunda)
+                                                
+                                                    arrResCreadorLthEtapaSegundaSegunda.push(pathToMongoOtEtapaSegundaSegunda[i].creator[0].username)
+                                                    arrResModificadorLthEtapaSegundaSegunda.push(pathToMongoOtEtapaSegundaSegunda[i].modificator[0].username)
+                                                    arrResFechaLthEtapaSegundaSegunda.push(pathToMongoOtEtapaSegundaSegunda[i].timestamp)
+                                                    arrResFechaModLthEtapaSegundaSegunda.push(pathToMongoOtEtapaSegundaSegunda[i].modifiedOn)
+                                                }
+                                            }
+                                            valueArrayResLthEtapaSegundaSegunda = parseInt(arrResEstadoLthEtapaSegundaSegunda.length-1)
+                                            
+                                            if (arrResDatoLthEtapaSegundaSegunda.length == 1 ) {
+                                                siguienteDisabled = "disabled"
+                                                anteriorDisabled = "disabled"
+                                            } else if (arrResDatoLthEtapaSegundaSegunda.length == arrResRevisionLthEtapaSegundaSegunda.length) {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            } else {
+                                                anteriorDisabled = ""
+                                                siguienteDisabled = "disabled"
+                                            }
+                                        
+                                        } else {
+                                            arrResDatoLthEtapaSegundaSegunda.push(resDatoLthEtapaSegundaSegunda)
+                                            arrResEstadoLthEtapaSegundaSegunda.push(resEstadoLthEtapaSegundaSegunda)
+                                            arrResRevisionLthEtapaSegundaSegunda.push(resRevisionLthEtapaSegundaSegunda)
+                                            
+                                            arrResCreadorLthEtapaSegundaSegunda.push(pathMongoOtProject[n].creator[0].username)
+                                            arrResModificadorLthEtapaSegundaSegunda = ""
+                                            arrResFechaLthEtapaSegundaSegunda.push(pathMongoOtProject[n].timestamp)
+                                            arrResFechaModLthEtapaSegundaSegunda = ""
+                                        } %>
+
+                                    <div id="btnAnteriorSiguienteLthEtapaSegundaSegunda<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorLthEtapaSegundaSegunda<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorLthEtapaSegundaSegunda" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoLthEtapaSegundaSegunda %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoLthEtapaSegundaSegunda %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResLthEtapaSegundaSegunda %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionLthEtapaSegundaSegunda %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorLthEtapaSegundaSegunda %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorLthEtapaSegundaSegunda %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaLthEtapaSegundaSegunda %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModLthEtapaSegundaSegunda %>">
+
+                                        <span id="resDatoLthEtapaSegundaSegunda<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                            <%= resDatoLthEtapaSegundaSegunda %>
+                                        </span> |
+
+                                        <% const config = etapaSegundaSegundaConfig[resEstadoLthEtapaSegundaSegunda] || etapaSegundaSegundaConfig.default; %>
+                                        <span id="resEstadoLthEtapaSegundaSegunda<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoLthEtapaSegundaSegunda%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionLthEtapaSegundaSegunda<%=k%>_<%=n%>_<%=q%>" name="resRevisionLthEtapaSegundaSegunda" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionLthEtapaSegundaSegunda %>
+                                        </span>
+
+                                        <button id="btnSiguienteLthEtapaSegundaSegunda<%=k%>_<%=n%>_<%=q%>" name="btnSiguienteLthEtapaSegundaSegunda" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                    </td>
+                                <% }
+                            } %>
+                        </tr>
+
+                    <% } else { %>
+                        <!--Inactivo-->
+                        <tr name="rowSelected<%=k%>_<%=n%>" class="pe-none border-bottom" style="height: 7vh; background-color: #dedede;">
+                            <% for (let q = 11; totalColDataEtapaSegundaSegunda > q; q++) {
+                                if (q==11) { %>
+                                    <!-- Azulado Aceros data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if ( largoArrayEtapaSegundaSegunda > 0) {
+                                            for (let i = 0; largoArrayEtapaSegundaSegunda > i; i++) {
+                                                
+                                                if (pathToMongoOtEtapaSegundaSegunda[i]) {
+                                                    let largoArray = parseInt(largoArrayEtapaSegundaSegunda)
+                                                    resDatoAzuladoAceros = pathToMongoOtEtapaSegundaSegunda[largoArray-1].azuladoAceros || "S/D"
+                                                    resEstadoAzuladoAceros = pathToMongoOtEtapaSegundaSegunda[largoArray-1].estadoAzuladoAceros || 'sinDato'
+                                                    resRevisionAzuladoAceros = parseInt(pathToMongoOtEtapaSegundaSegunda[largoArray-1].revisionAzuladoAceros) || 0
+                                                    
+                                                    arrResDatoAzuladoAceros.push(pathToMongoOtEtapaSegundaSegunda[i].azuladoAceros)
+                                                    arrResEstadoAzuladoAceros.push(pathToMongoOtEtapaSegundaSegunda[i].estadoAzuladoAceros)
+                                                    arrResRevisionAzuladoAceros.push(pathToMongoOtEtapaSegundaSegunda[i].revisionAzuladoAceros)
+                                                }
+                                            }
+                                            valueArrayResAzuladoAceros = parseInt(arrResEstadoAzuladoAceros.length-1)
+                                            resDatoAzuladoAceros = pathToMongoOtEtapaSegundaSegunda[0].azuladoAceros
+                                            resEstadoAzuladoAceros = pathToMongoOtEtapaSegundaSegunda[0].estadoAzuladoAceros
+                                        
+                                        } else {
+                                            arrResDatoAzuladoAceros.push(resDatoAzuladoAceros)
+                                            arrResEstadoAzuladoAceros.push(resEstadoAzuladoAceros)
+                                            arrResRevisionAzuladoAceros.push(resRevisionAzuladoAceros)
+                                        } %>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAzuladoAceros %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAzuladoAceros %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAzuladoAceros %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAzuladoAceros %>">
+
+                                        <span id="resDatoAzuladoAceros<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                            <%= resDatoAzuladoAceros %>
+                                        </span> |
+                                        
+                                        <% const config = etapaSegundaSegundaConfig[resEstadoAzuladoAceros] || etapaSegundaSegundaConfig.default; %>
+                                        <span id="resEstadoAzuladoAceros<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAzuladoAceros%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionAzuladoAceros<%=k%>_<%=n%>_<%=q%>" name="resRevisionAzuladoAceros" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionAzuladoAceros %>
+                                        </span>
+                                    </td>
+
+                                <% } else { %>
+                                    <!-- Lth Etapa SegundaSegunda data Inactivo -->
+                                    <td class="text-center align-middle">
+                                        <% if ( largoArrayEtapaSegundaSegunda > 0) {
+                                            for (let i = 0; largoArrayEtapaSegundaSegunda > i; i++) {
+                                                
+                                                if (pathToMongoOtEtapaSegundaSegunda[i]) {
+                                                    let largoArray = parseInt(largoArrayEtapaSegundaSegunda)
+                                                    resDatoLthEtapaSegundaSegunda = pathToMongoOtEtapaSegundaSegunda[largoArray-1].lthEtapaSegundaSegunda || "S/D"
+                                                    resEstadoLthEtapaSegundaSegunda = pathToMongoOtEtapaSegundaSegunda[largoArray-1].estadoLthEtapaSegundaSegunda || 'sinDato'
+                                                    resRevisionLthEtapaSegundaSegunda = parseInt(pathToMongoOtEtapaSegundaSegunda[largoArray-1].revisionLthEtapaSegundaSegunda) || 0
+                                                    
+                                                    arrResDatoLthEtapaSegundaSegunda.push(pathToMongoOtEtapaSegundaSegunda[i].lthEtapaSegundaSegunda)
+                                                    arrResEstadoLthEtapaSegundaSegunda.push(pathToMongoOtEtapaSegundaSegunda[i].estadoLthEtapaSegundaSegunda)
+                                                    arrResRevisionLthEtapaSegundaSegunda.push(pathToMongoOtEtapaSegundaSegunda[i].revisionLthEtapaSegundaSegunda)
+                                                }
+                                            }
+                                            valueArrayResLthEtapaSegundaSegunda = parseInt(arrResEstadoLthEtapaSegundaSegunda.length-1)
+                                            resDatoLthEtapaSegundaSegunda = pathToMongoOtEtapaSegundaSegunda[0].lthEtapaSegundaSegunda
+                                            resEstadoLthEtapaSegundaSegunda = pathToMongoOtEtapaSegundaSegunda[0].estadoLthEtapaSegundaSegunda
+                                        
+                                        } else {
+                                            arrResDatoLthEtapaSegundaSegunda.push(resDatoLthEtapaSegundaSegunda)
+                                            arrResEstadoLthEtapaSegundaSegunda.push(resEstadoLthEtapaSegundaSegunda)
+                                            arrResRevisionLthEtapaSegundaSegunda.push(resRevisionLthEtapaSegundaSegunda)
+                                        } %>
+                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoLthEtapaSegundaSegunda %>">
+                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoLthEtapaSegundaSegunda %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResLthEtapaSegundaSegunda %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionLthEtapaSegundaSegunda %>">
+
+                                        <span id="resDatoLthEtapaSegundaSegunda<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                            <%= resDatoLthEtapaSegundaSegunda %>
+                                        </span> |
+                                        
+                                        <% const config = etapaSegundaSegundaConfig[resEstadoLthEtapaSegundaSegunda] || etapaSegundaSegundaConfig.default; %>
+                                        <span id="resEstadoLthEtapaSegundaSegunda<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoLthEtapaSegundaSegunda%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
+                                        </span> |
+
+                                        <span id="resRevisionLthEtapaSegundaSegunda<%=k%>_<%=n%>_<%=q%>" name="resRevisionLthEtapaSegundaSegunda" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
+                                            <%= resRevisionLthEtapaSegundaSegunda %>
+                                        </span>
+                                    </td>
+                                <% }
+                            } %>
+                        </tr>
+                    <% }
+                }
+        }) %>
+    </tbody>
+</table>

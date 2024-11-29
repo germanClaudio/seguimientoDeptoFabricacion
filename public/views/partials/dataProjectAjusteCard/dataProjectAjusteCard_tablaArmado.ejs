@@ -21,10 +21,10 @@
             </th>
         </tr>
         <tr>
-            <th id="colData0" style="width:25vw" scope="col-1" class="text-center pb-1">Armado p/máquina | Rev.</th>
-            <th id="colData1" style="width:25vw" scope="col-1" class="text-center pb-1">Patronizado | Rev.</th>
-            <th id="colData3" style="width:25vw" scope="col-1" class="text-center pb-1">LTH | Rev.</th>
-            <th id="colData4" style="width:25vw" scope="col-1" class="text-center pb-1">Armado p/prensa | Rev.</th>
+            <th id="colData0" style="width:25vw" scope="col-1" class="text-center pb-2">Armado p/máquina | Rev.</th>
+            <th id="colData1" style="width:25vw" scope="col-1" class="text-center pb-2">Patronizado | Rev.</th>
+            <th id="colData3" style="width:25vw" scope="col-1" class="text-center pb-2">LTH | Rev.</th>
+            <th id="colData4" style="width:25vw" scope="col-1" class="text-center pb-2">Armado p/prensa | Rev.</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -34,492 +34,489 @@
             detenido: { text: "Detenido", classes: "bg-danger text-white" },
             noAplica: { text: "N/A", classes: "bg-info text-dark" },
             default: { text: "S/D", classes: "bg-secondary text-white" }
-        };
+            };
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
-            pathMongoOtAjuste = pathMongoOtProject[n].otAjuste,
-            largoArrayOtAjuste = parseInt(pathMongoOtAjuste.length)
+                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
 
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
                 resArmadoMaquina = 'S/D', resRevisionArmadoMaquina = 0,
                 resPatronizado = 'S/D', resRevisionPatronizado = 0,
                 resLthArmado = 'S/D', resRevisionLthArmado = 0,
-                resArmadoPrensa = 'S/D', resRevisionArmadoPrensa = 0
+                resArmadoPrensa = 'S/D', resRevisionArmadoPrensa = 0;
 
-            for ( let o=0; largoArrayOtAjuste > o; o++) {
-                let pathMongoOtArmado = pathMongoOtAjuste[o].otArmado || [],
-                largoArrayArmado = parseInt(pathMongoOtArmado.length);
+            if (pathMongoOtProject[n].visible) {
+                let pathMongoOtArmado = pathMongoOtAjuste[0].otArmado || [],
+                    largoArrayArmado = parseInt(pathMongoOtArmado.length);
 
                 let arrResArmadoMaquina = [], arrResRevisionArmadoMaquina = [], valueArrayResArmadoMaquina = 0,
-                arrResCreadorArmadoMaquina = [], arrResModificadorArmadoMaquina = [], arrResFechaArmadoMaquina = [], arrResFechaModArmadoMaquina = [];
+                    arrResCreadorArmadoMaquina = [], arrResModificadorArmadoMaquina = [], arrResFechaArmadoMaquina = [], arrResFechaModArmadoMaquina = [];
 
                 let arrResPatronizado = [], arrResRevisionPatronizado = [], valueArrayResPatronizado = 0,
-                arrResCreadorPatronizado = [], arrResModificadorPatronizado = [], arrResFechaPatronizado = [], arrResFechaModPatronizado = [];
+                    arrResCreadorPatronizado = [], arrResModificadorPatronizado = [], arrResFechaPatronizado = [], arrResFechaModPatronizado = [];
 
                 let arrResLthArmado = [], valueArrayResLthArmado = 0, arrResRevisionLthArmado = [],
-                arrResCreadorLthArmado = [], arrResModificadorLthArmado = [], arrResFechaLthArmado = [], arrResFechaModLthArmado = [];
+                    arrResCreadorLthArmado = [], arrResModificadorLthArmado = [], arrResFechaLthArmado = [], arrResFechaModLthArmado = [];
 
                 let arrResArmadoPrensa = [], valueArrayResArmadoPrensa = 0, arrResRevisionArmadoPrensa = [],
-                arrResCreadorArmadoPrensa = [], arrResModificadorArmadoPrensa = [], arrResFechaArmadoPrensa = [], arrResFechaModArmadoPrensa = [];
+                    arrResCreadorArmadoPrensa = [], arrResModificadorArmadoPrensa = [], arrResFechaArmadoPrensa = [], arrResFechaModArmadoPrensa = [];
 
-                if (pathMongoOtProject[n].visible && pathMongoOtAjuste[o].visible) {
-                    if (pathMongoOtProject[n].otStatus) { %>
-                        <!--Activo-->
-                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="border-bottom" style="height: 5vh;">
-                            <% for (let q = 0; totalColDataOtArmado > q; q++) {
-                                if (q==0) { %>
-                                    <!-- Armado Maquina data Activo--> 
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayArmado > 0) {
-                                            
-                                            for (let i = 0; largoArrayArmado > i; i++) {
-                                                if (pathMongoOtArmado[i]) {
-                                                    let largoArray = parseInt(largoArrayArmado)
-                                                    resArmadoMaquina = pathMongoOtArmado[largoArray-1].armadoMaquina || 'S/D'
-                                                    resRevisionArmadoMaquina = parseInt(pathMongoOtArmado[largoArray-1].revisionArmadoMaquina) || 0
-
-                                                    arrResArmadoMaquina.push(pathMongoOtArmado[i].armadoMaquina)
-                                                    arrResRevisionArmadoMaquina.push(pathMongoOtArmado[i].revisionArmadoMaquina)
-
-                                                    arrResCreadorArmadoMaquina.push(pathMongoOtArmado[i].creator[0].username)
-                                                    arrResModificadorArmadoMaquina.push(pathMongoOtArmado[i].modificator[0].username)
-                                                    arrResFechaArmadoMaquina.push(pathMongoOtArmado[i].timestamp)
-                                                    arrResFechaModArmadoMaquina.push(pathMongoOtArmado[i].modifiedOn)
-                                                }
-                                            }
-                                            valueArrayResArmadoMaquina = parseInt(arrResArmadoMaquina.length-1)
-                                            
-                                            if (arrResArmadoMaquina.length == 1 ) {
-                                                anteriorDisabled = "disabled"
-                                                siguienteDisabled = "disabled"
-                                            } else if (arrResArmadoMaquina.length == arrResRevisionArmadoMaquina.length) {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            } else {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            }
+                if (pathMongoOtProject[n].otStatus) { %>
+                    <!--Activo-->
+                    <tr name="rowSelected<%=k%>_<%=n%>" class="border-bottom" style="height: 7vh;">
+                        <% for (let q = 0; totalColDataOtArmado > q; q++) {
+                            if (q==0) { %>
+                                <!-- Armado Maquina data Activo--> 
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayArmado > 0) {
                                         
+                                        for (let i = 0; largoArrayArmado > i; i++) {
+                                            if (pathMongoOtArmado[i]) {
+                                                let largoArray = parseInt(largoArrayArmado)
+                                                resArmadoMaquina = pathMongoOtArmado[largoArray-1].armadoMaquina || 'S/D'
+                                                resRevisionArmadoMaquina = parseInt(pathMongoOtArmado[largoArray-1].revisionArmadoMaquina) || 0
+
+                                                arrResArmadoMaquina.push(pathMongoOtArmado[i].armadoMaquina)
+                                                arrResRevisionArmadoMaquina.push(pathMongoOtArmado[i].revisionArmadoMaquina)
+
+                                                arrResCreadorArmadoMaquina.push(pathMongoOtArmado[i].creator[0].username)
+                                                arrResModificadorArmadoMaquina.push(pathMongoOtArmado[i].modificator[0].username)
+                                                arrResFechaArmadoMaquina.push(pathMongoOtArmado[i].timestamp)
+                                                arrResFechaModArmadoMaquina.push(pathMongoOtArmado[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResArmadoMaquina = parseInt(arrResArmadoMaquina.length-1)
+                                        
+                                        if (arrResArmadoMaquina.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResArmadoMaquina.length == arrResRevisionArmadoMaquina.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
                                         } else {
-                                            arrResArmadoMaquina.push(resArmadoMaquina)
-                                            arrResRevisionArmadoMaquina.push(resRevisionArmadoMaquina)
-                                            
-                                            arrResCreadorArmadoMaquina.push(pathMongoOtAjuste[o].creator[0].username)
-                                            arrResModificadorArmadoMaquina = ""
-                                            arrResFechaArmadoMaquina.push(pathMongoOtAjuste[o].timestamp)
-                                            arrResFechaModArmadoMaquina = ""
-                                        } %>
-                                        
-                                        <div id="btnAnteriorSiguienteArmadoMaquina<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                            <button id="btnAnteriorArmadoMaquina<%=k%>_<%=n%>_<%=o%>_<%=q%>"
-                                                name="btnAnteriorArmadoMaquina" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= anteriorDisabled %>
-                                                ><i class="fa-solid fa-arrow-left"></i>
-                                            </button>
-                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResArmadoMaquina %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResArmadoMaquina %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionArmadoMaquina %>">
-                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorArmadoMaquina %>">
-                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorArmadoMaquina %>">
-                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaArmadoMaquina %>">
-                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModArmadoMaquina %>">
-
-                                            <% const config = armadoConfig[resArmadoMaquina] || armadoConfig.default; %>
-                                            <span id="resArmadoMaquina<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
-                                                <%= config.text %>
-                                            </span> |
-                                            <span id="resRevisionArmadoMaquina<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionArmadoMaquina" class="badge text-dark my-2" style="cursor: help;">
-                                                <%= resRevisionArmadoMaquina %>
-                                            </span>
-
-                                            <button id="btnSiguienteArmadoMaquina<%=k%>_<%=n%>_<%=o%>_<%=q%>"
-                                                name="btnSiguienteArmadoMaquina" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= siguienteDisabled %>
-                                                ><i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
-                                    </td>
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
                                     
-                                <% } else if (q==1) { %>
-                                    <!-- Patronizado data Activo-->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayArmado > 0) {
-                                            
-                                            for (let i = 0; largoArrayArmado > i; i++) {
-                                                if (pathMongoOtArmado[i]) {
-                                                    let largoArray = parseInt(largoArrayArmado)
-                                                    resPatronizado = pathMongoOtArmado[largoArray-1].patronizado || 'S/D'
-                                                    resRevisionPatronizado = parseInt(pathMongoOtArmado[largoArray-1].revisionPatronizado) || 0
-
-                                                    arrResPatronizado.push(pathMongoOtArmado[i].patronizado)
-                                                    arrResRevisionPatronizado.push(pathMongoOtArmado[i].revisionPatronizado)
-
-                                                    arrResCreadorPatronizado.push(pathMongoOtArmado[i].creator[0].username)
-                                                    arrResModificadorPatronizado.push(pathMongoOtArmado[i].modificator[0].username)
-                                                    arrResFechaPatronizado.push(pathMongoOtArmado[i].timestamp)
-                                                    arrResFechaModPatronizado.push(pathMongoOtArmado[i].modifiedOn)
-                                                }
-                                            }
-                                            valueArrayResPatronizado = parseInt(arrResPatronizado.length-1)
-                                            
-                                            if (arrResPatronizado.length == 1 ) {
-                                                anteriorDisabled = "disabled"
-                                                siguienteDisabled = "disabled"
-                                            } else if (arrResPatronizado.length == arrResRevisionPatronizado.length) {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            } else {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            }
+                                    } else {
+                                        arrResArmadoMaquina.push(resArmadoMaquina)
+                                        arrResRevisionArmadoMaquina.push(resRevisionArmadoMaquina)
                                         
-                                        } else {
-                                            arrResPatronizado.push(resPatronizado)
-                                            arrResRevisionPatronizado.push(resRevisionPatronizado)
-                                            
-                                            arrResCreadorPatronizado.push(pathMongoOtAjuste[o].creator[0].username)
-                                            arrResModificadorPatronizado = ""
-                                            arrResFechaPatronizado.push(pathMongoOtAjuste[o].timestamp)
-                                            arrResFechaModPatronizado = ""
-                                        } %>
-                                        
-                                        <div id="btnAnteriorSiguientePatronizado<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                            <button id="btnAnteriorPatronizado<%=k%>_<%=n%>_<%=o%>_<%=q%>"
-                                                name="btnAnteriorPatronizado" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= anteriorDisabled %>
-                                                ><i class="fa-solid fa-arrow-left"></i>
-                                            </button>
-                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResPatronizado %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPatronizado %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPatronizado %>">
-                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorPatronizado %>">
-                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorPatronizado %>">
-                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaPatronizado %>">
-                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModPatronizado %>">
-
-                                            <% const config = armadoConfig[resPatronizado] || armadoConfig.default; %>
-                                            <span id="resPatronizado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
-                                                <%= config.text %>
-                                            </span> |
-                                            <span id="resRevisionPatronizado<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionPatronizado" class="badge text-dark my-2" style="cursor: help;">
-                                                <%= resRevisionPatronizado %>
-                                            </span>
-
-                                            <button id="btnSiguientePatronizado<%=k%>_<%=n%>_<%=o%>_<%=q%>"
-                                                name="btnSiguientePatronizado" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= siguienteDisabled %>
-                                                ><i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-
-                                <% } else if (q==2) { %>
-                                    <!-- LTH data Activo-->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayArmado > 0) {
-                                            
-                                            for (let i = 0; largoArrayArmado > i; i++) {
-                                                if (pathMongoOtArmado[i]) {
-                                                    let largoArray = parseInt(largoArrayArmado)
-                                                    resLthArmado = pathMongoOtArmado[largoArray-1].lthArmado || 'S/D'
-                                                    resRevisionLthArmado = parseInt(pathMongoOtArmado[largoArray-1].revisionLthArmado) || 0
-
-                                                    arrResLthArmado.push(pathMongoOtArmado[i].lthArmado)
-                                                    arrResRevisionLthArmado.push(pathMongoOtArmado[i].revisionLthArmado)
-
-                                                    arrResCreadorLthArmado.push(pathMongoOtArmado[i].creator[0].username)
-                                                    arrResModificadorLthArmado.push(pathMongoOtArmado[i].modificator[0].username)
-                                                    arrResFechaLthArmado.push(pathMongoOtArmado[i].timestamp)
-                                                    arrResFechaModLthArmado.push(pathMongoOtArmado[i].modifiedOn)
-                                                }
-                                            }
-                                            valueArrayResLthArmado = parseInt(arrResLthArmado.length-1)
-                                            
-                                            if (arrResLthArmado.length == 1 ) {
-                                                anteriorDisabled = "disabled"
-                                                siguienteDisabled = "disabled"
-                                            } else if (arrResLthArmado.length == arrResRevisionLthArmado.length) {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            } else {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            }
-                                        
-                                        } else {
-                                            arrResLthArmado.push(resLthArmado)
-                                            arrResRevisionLthArmado.push(resRevisionLthArmado)
-                                            
-                                            arrResCreadorLthArmado.push(pathMongoOtAjuste[o].creator[0].username)
-                                            arrResModificadorLthArmado = ""
-                                            arrResFechaLthArmado.push(pathMongoOtAjuste[o].timestamp)
-                                            arrResFechaModLthArmado = ""
-                                        } %>
-                                        
-                                        <div id="btnAnteriorSiguienteLthArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                            <button id="btnAnteriorLthArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>"
-                                                name="btnAnteriorLthArmado" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= anteriorDisabled %>
-                                                ><i class="fa-solid fa-arrow-left"></i>
-                                            </button>
-                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResLthArmado %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResLthArmado %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionLthArmado %>">
-                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorLthArmado %>">
-                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorLthArmado %>">
-                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaLthArmado %>">
-                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModLthArmado %>">
-
-                                            <% const config = armadoConfig[resLthArmado] || armadoConfig.default; %>
-                                            
-                                            <span id="resLthArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
-                                            <%= config.text %>
-                                            </span> |
-                                            <span id="resRevisionLthArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionLthArmado" class="badge text-dark my-2" style="cursor: help;">
-                                                <%= resRevisionLthArmado %>
-                                            </span>
-
-                                            <button id="btnSiguienteLthArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>"
-                                                name="btnSiguienteLthArmado" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= siguienteDisabled %>
-                                                ><i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-
-                                <% } else { %>
-                                    <!-- Armado Prensa data Activo-->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayArmado > 0) {
-                                            
-                                            for (let i = 0; largoArrayArmado > i; i++) {
-                                                if (pathMongoOtArmado[i]) {
-                                                    let largoArray = parseInt(largoArrayArmado)
-                                                    resArmadoPrensa = pathMongoOtArmado[largoArray-1].armadoPrensa || 'S/D'
-                                                    resRevisionArmadoPrensa = parseInt(pathMongoOtArmado[largoArray-1].revisionArmadoPrensa) || 0
-                                                    
-                                                    arrResArmadoPrensa.push(pathMongoOtArmado[i].armadoPrensa)
-                                                    arrResRevisionArmadoPrensa.push(pathMongoOtArmado[i].revisionArmadoPrensa)
-
-                                                    arrResCreadorArmadoPrensa.push(pathMongoOtArmado[i].creator[0].username)
-                                                    arrResModificadorArmadoPrensa.push(pathMongoOtArmado[i].modificator[0].username)
-                                                    arrResFechaArmadoPrensa.push(pathMongoOtArmado[i].timestamp)
-                                                    arrResFechaModArmadoPrensa.push(pathMongoOtArmado[i].modifiedOn)
-                                                }
-                                            }
-                                            valueArrayResArmadoPrensa = parseInt(arrResArmadoPrensa.length-1)
-                                            
-                                            if (arrResArmadoPrensa.length == 1 ) {
-                                                anteriorDisabled = "disabled"
-                                                siguienteDisabled = "disabled"
-                                            } else if (arrResArmadoPrensa.length == arrResRevisionArmadoPrensa.length) {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            } else {
-                                                anteriorDisabled = ""
-                                                siguienteDisabled = "disabled"
-                                            }
-                                        
-                                        } else {
-                                            arrResArmadoPrensa.push(resArmadoPrensa)
-                                            arrResRevisionArmadoPrensa.push(resRevisionArmadoPrensa)
-                                            
-                                            arrResCreadorArmadoPrensa.push(pathMongoOtAjuste[o].creator[0].username)
-                                            arrResModificadorArmadoPrensa = ""
-                                            arrResFechaArmadoPrensa.push(pathMongoOtAjuste[o].timestamp)
-                                            arrResFechaModArmadoPrensa = ""
-                                        } %>
-                                        
-                                        <div id="btnAnteriorSiguienteArmadoPrensa<%=k%>_<%=n%>_<%=o%>_<%=q%>">
-                                            <button id="btnAnteriorArmadoPrensa<%=k%>_<%=n%>_<%=o%>_<%=q%>"
-                                                name="btnAnteriorArmadoPrensa" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= anteriorDisabled %>
-                                                ><i class="fa-solid fa-arrow-left"></i>
-                                            </button>
-                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResArmadoPrensa %>">
-                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResArmadoPrensa %>">
-                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionArmadoPrensa %>">
-                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResCreadorArmadoPrensa %>">
-                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResModificadorArmadoPrensa %>">
-                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaArmadoPrensa %>">
-                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResFechaModArmadoPrensa %>">
-
-                                            <% const config = armadoConfig[resArmadoPrensa] || armadoConfig.default; %>
-                                            <span id="resArmadoPrensa<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
-                                                <%= config.text %>
-                                            </span> |
-                                            <span id="resRevisionArmadoPrensa<%=k%>_<%=n%>_<%=o%>_<%=q%>" name="resRevisionArmadoPrensa" class="badge text-dark my-2" style="cursor: help;">
-                                                <%= resRevisionArmadoPrensa %>
-                                            </span>
-
-                                            <button id="btnSiguienteArmadoPrensa<%=k%>_<%=n%>_<%=o%>_<%=q%>"
-                                                name="btnSiguienteArmadoPrensa" value="<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
-                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
-                                                <%= siguienteDisabled %>
-                                                ><i class="fa-solid fa-arrow-right"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                <% }
-                            } %>
-                        </tr>
-
-                    <% } else { %>
-                        <!--Inactivo-->
-                        <tr name="rowSelected<%=k%>_<%=n%>_<%=o%>" class="pe-none border-bottom" style="height: 5vh; background-color: #dedede;">
-                            <% for (let q = 0; totalColDataOtArmado > q; q++) {
-                                if (q==0) { %>
-                                    <!-- Armado Maquina Completo data Inactivo -->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayArmado > 0) {
-                                            for (let i = 0; largoArrayArmado > i; i++) {
-
-                                                if (pathMongoOtArmado[i]) {
-                                                    let largoArray = parseInt(largoArrayArmado)
-                                                    resArmadoMaquina = pathMongoOtArmado[largoArray-1].armadoMaquina || 'S/D'
-                                                    resRevisionArmadoMaquina = parseInt(pathMongoOtArmado[largoArray-1].revisionArmadoMaquina) || 0
-                                                    
-                                                    arrResArmadoMaquina.push(pathToMongoDBOtArmado[i].armadoMaquina)
-                                                    arrResRevisionArmadoMaquina.push(pathToMongoDBOtArmado[i].revisionArmadoMaquina)
-                                                }
-                                            }
-                                            valueArrayResArmadoMaquina = parseInt(arrResArmadoMaquina.length-1)
-                                            resArmadoMaquina = pathMongoOtArmado[0].armadoMaquina
-
-                                        } else {
-                                            arrResArmadoMaquina.push(resArmadoMaquina)
-                                            arrResRevisionArmadoMaquina.push(resRevisionArmadoMaquina)
-                                        } %>
-                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResArmadoMaquina %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResArmadoMaquina %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionArmadoMaquina %>">
+                                        arrResCreadorArmadoMaquina.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorArmadoMaquina = ""
+                                        arrResFechaArmadoMaquina.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModArmadoMaquina = ""
+                                    } %>
                                     
+                                    <div id="btnAnteriorSiguienteArmadoMaquina<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorArmadoMaquina<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorArmadoMaquina" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResArmadoMaquina %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResArmadoMaquina %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionArmadoMaquina %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorArmadoMaquina %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorArmadoMaquina %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaArmadoMaquina %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModArmadoMaquina %>">
+
                                         <% const config = armadoConfig[resArmadoMaquina] || armadoConfig.default; %>
-                                        <span id="resArmadoMaquina<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                        <span id="resArmadoMaquina<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
                                             <%= config.text %>
                                         </span> |
-                                        <span id="resRevisionArmadoMaquina<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge text-dark my-2" style="cursor: help;">
+                                        <span id="resRevisionArmadoMaquina<%=k%>_<%=n%>_<%=q%>" name="resRevisionArmadoMaquina" class="badge text-dark my-2" style="cursor: help;">
                                             <%= resRevisionArmadoMaquina %>
                                         </span>
-                                    </td>
 
-                                <% } else if (q==1) { %>
-                                    <!-- Patronizado data Inactivo -->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayArmado > 0) {
-                                            for (let i = 0; largoArrayArmado > i; i++) {
-                                                
-                                                if (pathMongoOtArmado[i]) {
-                                                    let largoArray = parseInt(largoArrayArmado)
-                                                    resPatronizado = pathMongoOtArmado[largoArray-1].patronizado || 'S/D'
-                                                    resRevisionPatronizado = parseInt(pathMongoOtArmado[largoArray-1].revisionPatronizado) || 0
-                                                    
-                                                    arrResPatronizado.push(pathToMongoDBOtArmado[i].patronizado)
-                                                    arrResRevisionPatronizado.push(pathToMongoDBOtArmado[i].revisionPatronizado)
-                                                }
-                                            }
-                                            valueArrayResPatronizado = parseInt(arrResPatronizado.length-1)
-                                            resPatronizado = pathMongoOtArmado[0].patronizado
+                                        <button id="btnSiguienteArmadoMaquina<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteArmadoMaquina" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                
+                            <% } else if (q==1) { %>
+                                <!-- Patronizado data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if ( largoArrayArmado > 0) {
                                         
+                                        for (let i = 0; largoArrayArmado > i; i++) {
+                                            if (pathMongoOtArmado[i]) {
+                                                let largoArray = parseInt(largoArrayArmado)
+                                                resPatronizado = pathMongoOtArmado[largoArray-1].patronizado || 'S/D'
+                                                resRevisionPatronizado = parseInt(pathMongoOtArmado[largoArray-1].revisionPatronizado) || 0
+
+                                                arrResPatronizado.push(pathMongoOtArmado[i].patronizado)
+                                                arrResRevisionPatronizado.push(pathMongoOtArmado[i].revisionPatronizado)
+
+                                                arrResCreadorPatronizado.push(pathMongoOtArmado[i].creator[0].username)
+                                                arrResModificadorPatronizado.push(pathMongoOtArmado[i].modificator[0].username)
+                                                arrResFechaPatronizado.push(pathMongoOtArmado[i].timestamp)
+                                                arrResFechaModPatronizado.push(pathMongoOtArmado[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResPatronizado = parseInt(arrResPatronizado.length-1)
+                                        
+                                        if (arrResPatronizado.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResPatronizado.length == arrResRevisionPatronizado.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
                                         } else {
-                                            arrResPatronizado.push(resPatronizado)
-                                            arrResRevisionPatronizado.push(resRevisionPatronizado)
-                                        } %>
-                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResPatronizado %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResPatronizado %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionPatronizado %>">
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                    
+                                    } else {
+                                        arrResPatronizado.push(resPatronizado)
+                                        arrResRevisionPatronizado.push(resRevisionPatronizado)
+                                        
+                                        arrResCreadorPatronizado.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorPatronizado = ""
+                                        arrResFechaPatronizado.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModPatronizado = ""
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguientePatronizado<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorPatronizado<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorPatronizado" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPatronizado %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPatronizado %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPatronizado %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorPatronizado %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorPatronizado %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaPatronizado %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModPatronizado %>">
 
                                         <% const config = armadoConfig[resPatronizado] || armadoConfig.default; %>
-                                        <span id="resPatronizado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                        <span id="resPatronizado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
                                             <%= config.text %>
                                         </span> |
-                                        <span id="resRevisionPatronizado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge text-dark my-2">
+                                        <span id="resRevisionPatronizado<%=k%>_<%=n%>_<%=q%>" name="resRevisionPatronizado" class="badge text-dark my-2" style="cursor: help;">
                                             <%= resRevisionPatronizado %>
                                         </span>
-                                    </td>
 
-                                <% } else if (q==2) { %>
-                                    <!-- LTH data Inactivo -->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayArmado > 0) {
-                                            for (let i = 0; largoArrayArmado > i; i++) {
-                                                
-                                                if (pathMongoOtArmado[i]) {
-                                                    let largoArray = parseInt(largoArrayArmado)
-                                                    resLthArmado = pathMongoOtArmado[largoArray-1].lthArmado || 'S/D'
-                                                    resRevisionLthArmado = parseInt(pathMongoOtArmado[largoArray-1].revisionLthArmado) || 0
-                                                    
-                                                    arrResLthArmado.push(pathToMongoDBOtArmado[i].lthArmado)
-                                                    arrResRevisionLthArmado.push(pathToMongoDBOtArmado[i].revisionLthArmado)
-                                                }
-                                            }
-                                            valueArrayResLthArmado = parseInt(arrResLthArmado.length-1)
-                                            resLthArmado = pathMongoOtArmado[0].lthArmado
+                                        <button id="btnSiguientePatronizado<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguientePatronizado" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else if (q==2) { %>
+                                <!-- LTH data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if ( largoArrayArmado > 0) {
                                         
+                                        for (let i = 0; largoArrayArmado > i; i++) {
+                                            if (pathMongoOtArmado[i]) {
+                                                let largoArray = parseInt(largoArrayArmado)
+                                                resLthArmado = pathMongoOtArmado[largoArray-1].lthArmado || 'S/D'
+                                                resRevisionLthArmado = parseInt(pathMongoOtArmado[largoArray-1].revisionLthArmado) || 0
+
+                                                arrResLthArmado.push(pathMongoOtArmado[i].lthArmado)
+                                                arrResRevisionLthArmado.push(pathMongoOtArmado[i].revisionLthArmado)
+
+                                                arrResCreadorLthArmado.push(pathMongoOtArmado[i].creator[0].username)
+                                                arrResModificadorLthArmado.push(pathMongoOtArmado[i].modificator[0].username)
+                                                arrResFechaLthArmado.push(pathMongoOtArmado[i].timestamp)
+                                                arrResFechaModLthArmado.push(pathMongoOtArmado[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResLthArmado = parseInt(arrResLthArmado.length-1)
+                                        
+                                        if (arrResLthArmado.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResLthArmado.length == arrResRevisionLthArmado.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
                                         } else {
-                                            arrResLthArmado.push(resLthArmado)
-                                            arrResRevisionLthArmado.push(resRevisionLthArmado)
-                                        } %>
-                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResLthArmado %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResLthArmado %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionLthArmado %>">
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                    
+                                    } else {
+                                        arrResLthArmado.push(resLthArmado)
+                                        arrResRevisionLthArmado.push(resRevisionLthArmado)
+                                        
+                                        arrResCreadorLthArmado.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorLthArmado = ""
+                                        arrResFechaLthArmado.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModLthArmado = ""
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteLthArmado<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorLthArmado<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorLthArmado" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResLthArmado %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResLthArmado %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionLthArmado %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorLthArmado %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorLthArmado %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaLthArmado %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModLthArmado %>">
 
                                         <% const config = armadoConfig[resLthArmado] || armadoConfig.default; %>
-                                        <span id="resLthArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
-                                            <%= config.text %>
+                                        
+                                        <span id="resLthArmado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                        <%= config.text %>
                                         </span> |
-                                        <span id="resRevisionLthArmado<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge text-dark my-2">
+                                        <span id="resRevisionLthArmado<%=k%>_<%=n%>_<%=q%>" name="resRevisionLthArmado" class="badge text-dark my-2" style="cursor: help;">
                                             <%= resRevisionLthArmado %>
                                         </span>
-                                    </td>
 
-                                <% } else { %>
-                                    <!-- Armado Prensa data Inactivo -->
-                                    <td class="text-center align-middle">
-                                        <% if (largoArrayOtAjuste > 0 && largoArrayArmado > 0) {
-                                            for (let i = 0; largoArrayArmado > i; i++) {
-                                                
-                                                if (pathMongoOtArmado[i]) {
-                                                    let largoArray = parseInt(largoArrayArmado)
-                                                    resArmadoPrensa = pathMongoOtArmado[largoArray-1].armadoPrensa || 'S/D'
-                                                    resRevisionArmadoPrensa = parseInt(pathMongoOtArmado[largoArray-1].revisionArmadoPrensa) || 0
-                                                    
-                                                    arrResArmadoPrensa.push(pathToMongoDBOtArmado[i].armadoPrensa)
-                                                    arrResRevisionArmadoPrensa.push(pathToMongoDBOtArmado[i].revisionArmadoPrensa)
-                                                }
-                                            }
-                                            valueArrayResArmadoPrensa = parseInt(arrResArmadoPrensa.length-1)
-                                            resArmadoPrensa = pathMongoOtArmado[0].armadoPrensa
+                                        <button id="btnSiguienteLthArmado<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteLthArmado" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else { %>
+                                <!-- Armado Prensa data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if ( largoArrayArmado > 0) {
                                         
+                                        for (let i = 0; largoArrayArmado > i; i++) {
+                                            if (pathMongoOtArmado[i]) {
+                                                let largoArray = parseInt(largoArrayArmado)
+                                                resArmadoPrensa = pathMongoOtArmado[largoArray-1].armadoPrensa || 'S/D'
+                                                resRevisionArmadoPrensa = parseInt(pathMongoOtArmado[largoArray-1].revisionArmadoPrensa) || 0
+                                                
+                                                arrResArmadoPrensa.push(pathMongoOtArmado[i].armadoPrensa)
+                                                arrResRevisionArmadoPrensa.push(pathMongoOtArmado[i].revisionArmadoPrensa)
+
+                                                arrResCreadorArmadoPrensa.push(pathMongoOtArmado[i].creator[0].username)
+                                                arrResModificadorArmadoPrensa.push(pathMongoOtArmado[i].modificator[0].username)
+                                                arrResFechaArmadoPrensa.push(pathMongoOtArmado[i].timestamp)
+                                                arrResFechaModArmadoPrensa.push(pathMongoOtArmado[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResArmadoPrensa = parseInt(arrResArmadoPrensa.length-1)
+                                        
+                                        if (arrResArmadoPrensa.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResArmadoPrensa.length == arrResRevisionArmadoPrensa.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
                                         } else {
-                                            arrResArmadoPrensa.push(resArmadoPrensa)
-                                            arrResRevisionArmadoPrensa.push(resRevisionArmadoPrensa)
-                                        } %>
-                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResArmadoPrensa %>">
-                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResArmadoPrensa %>">
-                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionArmadoPrensa %>">
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                    
+                                    } else {
+                                        arrResArmadoPrensa.push(resArmadoPrensa)
+                                        arrResRevisionArmadoPrensa.push(resRevisionArmadoPrensa)
+                                        
+                                        arrResCreadorArmadoPrensa.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorArmadoPrensa = ""
+                                        arrResFechaArmadoPrensa.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModArmadoPrensa = ""
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteArmadoPrensa<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorArmadoPrensa<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorArmadoPrensa" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResArmadoPrensa %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResArmadoPrensa %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionArmadoPrensa %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorArmadoPrensa %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorArmadoPrensa %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaArmadoPrensa %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModArmadoPrensa %>">
 
                                         <% const config = armadoConfig[resArmadoPrensa] || armadoConfig.default; %>
-                                        <span id="resArmadoPrensa<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                        <span id="resArmadoPrensa<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
                                             <%= config.text %>
                                         </span> |
-                                        <span id="resRevisionArmadoPrensa<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge text-dark my-2">
+                                        <span id="resRevisionArmadoPrensa<%=k%>_<%=n%>_<%=q%>" name="resRevisionArmadoPrensa" class="badge text-dark my-2" style="cursor: help;">
                                             <%= resRevisionArmadoPrensa %>
                                         </span>
-                                    </td>
-                                <% }
-                            } %>
-                        </tr>
-                    <% }
-                }
+
+                                        <button id="btnSiguienteArmadoPrensa<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteArmadoPrensa" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+
+                <% } else { %>
+                    <!--Inactivo-->
+                    <tr name="rowSelected<%=k%>_<%=n%>" class="pe-none border-bottom" style="height: 7vh; background-color: #dedede;">
+                        <% for (let q = 0; totalColDataOtArmado > q; q++) {
+                            if (q==0) { %>
+                                <!-- Armado Maquina Completo data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if ( largoArrayArmado > 0) {
+                                        for (let i = 0; largoArrayArmado > i; i++) {
+
+                                            if (pathMongoOtArmado[i]) {
+                                                let largoArray = parseInt(largoArrayArmado)
+                                                resArmadoMaquina = pathMongoOtArmado[largoArray-1].armadoMaquina || 'S/D'
+                                                resRevisionArmadoMaquina = parseInt(pathMongoOtArmado[largoArray-1].revisionArmadoMaquina) || 0
+                                                
+                                                arrResArmadoMaquina.push(pathToMongoDBOtArmado[i].armadoMaquina)
+                                                arrResRevisionArmadoMaquina.push(pathToMongoDBOtArmado[i].revisionArmadoMaquina)
+                                            }
+                                        }
+                                        valueArrayResArmadoMaquina = parseInt(arrResArmadoMaquina.length-1)
+                                        resArmadoMaquina = pathMongoOtArmado[0].armadoMaquina
+
+                                    } else {
+                                        arrResArmadoMaquina.push(resArmadoMaquina)
+                                        arrResRevisionArmadoMaquina.push(resRevisionArmadoMaquina)
+                                    } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResArmadoMaquina %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResArmadoMaquina %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionArmadoMaquina %>">
+                                
+                                    <% const config = armadoConfig[resArmadoMaquina] || armadoConfig.default; %>
+                                    <span id="resArmadoMaquina<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                        <%= config.text %>
+                                    </span> |
+                                    <span id="resRevisionArmadoMaquina<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionArmadoMaquina %>
+                                    </span>
+                                </td>
+
+                            <% } else if (q==1) { %>
+                                <!-- Patronizado data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if ( largoArrayArmado > 0) {
+                                        for (let i = 0; largoArrayArmado > i; i++) {
+                                            
+                                            if (pathMongoOtArmado[i]) {
+                                                let largoArray = parseInt(largoArrayArmado)
+                                                resPatronizado = pathMongoOtArmado[largoArray-1].patronizado || 'S/D'
+                                                resRevisionPatronizado = parseInt(pathMongoOtArmado[largoArray-1].revisionPatronizado) || 0
+                                                
+                                                arrResPatronizado.push(pathToMongoDBOtArmado[i].patronizado)
+                                                arrResRevisionPatronizado.push(pathToMongoDBOtArmado[i].revisionPatronizado)
+                                            }
+                                        }
+                                        valueArrayResPatronizado = parseInt(arrResPatronizado.length-1)
+                                        resPatronizado = pathMongoOtArmado[0].patronizado
+                                    
+                                    } else {
+                                        arrResPatronizado.push(resPatronizado)
+                                        arrResRevisionPatronizado.push(resRevisionPatronizado)
+                                    } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPatronizado %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPatronizado %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPatronizado %>">
+
+                                    <% const config = armadoConfig[resPatronizado] || armadoConfig.default; %>
+                                    <span id="resPatronizado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                        <%= config.text %>
+                                    </span> |
+                                    <span id="resRevisionPatronizado<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2">
+                                        <%= resRevisionPatronizado %>
+                                    </span>
+                                </td>
+
+                            <% } else if (q==2) { %>
+                                <!-- LTH data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if ( largoArrayArmado > 0) {
+                                        for (let i = 0; largoArrayArmado > i; i++) {
+                                            
+                                            if (pathMongoOtArmado[i]) {
+                                                let largoArray = parseInt(largoArrayArmado)
+                                                resLthArmado = pathMongoOtArmado[largoArray-1].lthArmado || 'S/D'
+                                                resRevisionLthArmado = parseInt(pathMongoOtArmado[largoArray-1].revisionLthArmado) || 0
+                                                
+                                                arrResLthArmado.push(pathToMongoDBOtArmado[i].lthArmado)
+                                                arrResRevisionLthArmado.push(pathToMongoDBOtArmado[i].revisionLthArmado)
+                                            }
+                                        }
+                                        valueArrayResLthArmado = parseInt(arrResLthArmado.length-1)
+                                        resLthArmado = pathMongoOtArmado[0].lthArmado
+                                    
+                                    } else {
+                                        arrResLthArmado.push(resLthArmado)
+                                        arrResRevisionLthArmado.push(resRevisionLthArmado)
+                                    } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResLthArmado %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResLthArmado %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionLthArmado %>">
+
+                                    <% const config = armadoConfig[resLthArmado] || armadoConfig.default; %>
+                                    <span id="resLthArmado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                        <%= config.text %>
+                                    </span> |
+                                    <span id="resRevisionLthArmado<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2">
+                                        <%= resRevisionLthArmado %>
+                                    </span>
+                                </td>
+
+                            <% } else { %>
+                                <!-- Armado Prensa data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if ( largoArrayArmado > 0) {
+                                        for (let i = 0; largoArrayArmado > i; i++) {
+                                            
+                                            if (pathMongoOtArmado[i]) {
+                                                let largoArray = parseInt(largoArrayArmado)
+                                                resArmadoPrensa = pathMongoOtArmado[largoArray-1].armadoPrensa || 'S/D'
+                                                resRevisionArmadoPrensa = parseInt(pathMongoOtArmado[largoArray-1].revisionArmadoPrensa) || 0
+                                                
+                                                arrResArmadoPrensa.push(pathToMongoDBOtArmado[i].armadoPrensa)
+                                                arrResRevisionArmadoPrensa.push(pathToMongoDBOtArmado[i].revisionArmadoPrensa)
+                                            }
+                                        }
+                                        valueArrayResArmadoPrensa = parseInt(arrResArmadoPrensa.length-1)
+                                        resArmadoPrensa = pathMongoOtArmado[0].armadoPrensa
+                                    
+                                    } else {
+                                        arrResArmadoPrensa.push(resArmadoPrensa)
+                                        arrResRevisionArmadoPrensa.push(resRevisionArmadoPrensa)
+                                    } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResArmadoPrensa %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResArmadoPrensa %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionArmadoPrensa %>">
+
+                                    <% const config = armadoConfig[resArmadoPrensa] || armadoConfig.default; %>
+                                    <span id="resArmadoPrensa<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                        <%= config.text %>
+                                    </span> |
+                                    <span id="resRevisionArmadoPrensa<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2">
+                                        <%= resRevisionArmadoPrensa %>
+                                    </span>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+                <% }
             }
         }) %>
     </tbody>

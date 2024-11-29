@@ -765,7 +765,8 @@ function messageUpdateOt(
     otDesign,
     otSimulation,
     otSupplier,
-    imageOci
+    imageOci,
+    flag
 ) {
     
     let numberKOci = parseInt(ociKNumber)
@@ -774,6 +775,9 @@ function messageUpdateOt(
     let numberOp = parseInt(opNumber)
     let checked = 'checked'
     statusOt=='Activo' ? checked : checked = ''
+
+    let initialFlag = false
+    flag ? initialFlag = flag : initialFlag = false
 
     let bgColorStatus
     statusOt=='Activo' ? bgColorStatus='background-color: #55dd5560;' : bgColorStatus='background-color: #dd555560;'
@@ -995,17 +999,19 @@ function messageUpdateOt(
                                     } else {
                                         otSupplier = radioSelected.value
                                     }
+                                    flag = true
                                     // Al cerrar el segundo modal, reabrir el primer modal
-                                    messageUpdateOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDesign, otSimulation, otSupplier, imageOci);
+                                    messageUpdateOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDesign, otSimulation, otSupplier, imageOci, flag);
                                     
                                 } else {
                                     const titulo = 'Usuario no seleccionado'
                                     const message = 'No ha seleccionado ningún usuario!'
                                     const icon = 'warning'
                                     messageAlertUser(titulo, message, icon)
+                                    flag = false
                                     // Al cerrar el segundo modal, reabrir el primer modal
                                     setTimeout(() => {
-                                        messageUpdateOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDesign, otSimulation, otSupplier, imageOci);
+                                        messageUpdateOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDesign, otSimulation, otSupplier, imageOci, flag);
                                     }, 1000)
                                 }
                             });
@@ -1123,17 +1129,19 @@ function messageUpdateOt(
                                     } else {
                                         otDesign = radioSelected.value
                                     }
+                                    flag = true
                                     // Al cerrar el segundo modal, reabrir el primer modal
-                                    messageUpdateOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDesign, otSimulation, otSupplier, imageOci);
+                                    messageUpdateOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDesign, otSimulation, otSupplier, imageOci, flag);
                                     
                                 } else {
                                     const titulo = 'Proveedor no seleccionado'
                                     const message = 'No ha seleccionado ningún usuario!'
                                     const icon = 'warning'
                                     messageAlertUser(titulo, message, icon)
+                                    flag = false
                                     // Al cerrar el segundo modal, reabrir el primer modal
                                     setTimeout(() => {
-                                        messageUpdateOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDesign, otSimulation, otSupplier, imageOci);
+                                        messageUpdateOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDesign, otSimulation, otSupplier, imageOci, flag);
                                     }, 1000)
                                 }
                             });
@@ -1204,9 +1212,11 @@ function messageUpdateOt(
                     }
                 });
 
-                btnAceptarPrimerModal = document.getElementById('btnAceptarModal');
-                btnAceptarPrimerModal.style.cursor = "pointer";
-                btnAceptarPrimerModal.disabled = false;
+                if (initialFlag) {
+                    btnAceptarPrimerModal = document.getElementById('btnAceptarModal');
+                    btnAceptarPrimerModal.style.cursor = "pointer";
+                    btnAceptarPrimerModal.disabled = false;
+                }
             }
             
         }).then((result) => {
@@ -1445,6 +1455,7 @@ arrayBtnUpdateOt.forEach(function(elemento) {
             const otSimulation =  document.getElementById(`otSimulation${idOtOci}`).textContent
             const otSupplier =  document.getElementById(`otSupplier${idOtOci}`).textContent
             const ociImage = document.getElementById(`imageOciHeader${ociKNumber}`).src
+            let flag = false
 
             messageUpdateOt(
                 idProjectSelected,
@@ -1457,7 +1468,8 @@ arrayBtnUpdateOt.forEach(function(elemento) {
                 cleanString(otDesign),
                 cleanString(otSimulation),
                 cleanString(otSupplier),
-                ociImage
+                ociImage,
+                flag
             )
         })
     }

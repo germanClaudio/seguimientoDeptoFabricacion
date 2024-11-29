@@ -83,7 +83,7 @@
                                                     arrResDatoFTres.push(pathToMongoOtMecanizadoSegunda[i].fTres)
                                                     arrResEstadoFTres.push(pathToMongoOtMecanizadoSegunda[i].estadoFTres)
                                                     arrResRevisionFTres.push(pathToMongoOtMecanizadoSegunda[i].revisionFTres)
-                                                
+                                                    
                                                     arrResCreadorFTres.push(pathToMongoOtMecanizadoSegunda[i].creator[0].username)
                                                     arrResModificadorFTres.push(pathToMongoOtMecanizadoSegunda[i].modificator[0].username)
                                                     arrResFechaFTres.push(pathToMongoOtMecanizadoSegunda[i].timestamp)
@@ -387,7 +387,7 @@
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= valueArrayResFCuatro %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=o%>_<%=q%>" value="<%= arrResRevisionFCuatro %>">
                                     
-                                        <span id="resDatoFCuatro<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-dark my-2">
+                                        <span id="resDatoFCuatro<%=k%>_<%=n%>_<%=o%>_<%=q%>" class="badge bg-secondary text-light my-2">
                                             <%= resDatoFCuatro %>
                                         </span> |
 

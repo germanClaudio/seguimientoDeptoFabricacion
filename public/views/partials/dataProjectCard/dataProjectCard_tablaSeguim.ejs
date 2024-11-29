@@ -1,9 +1,6 @@
 <!-- tabla seguimiento -->
-                                                                
-<table id="tablaSeguimiento<%=k%>"
-    name="tablaSeguimiento" class="table-responsive align-middle col-3 border-end border-dark" style="font-size: 10pt">
-    <thead class="align-middle"
-        style="background-color: #bbc">
+<table id="tablaSeguimiento<%=k%>" name="tablaSeguimiento" class="table-responsive align-middle col-3 border-end border-dark" style="font-size: 10pt">
+    <thead class="align-middle" style="background-color: #bbc">
         <tr>
             <th colspan="2" class="text-center pb-1"> <div class="mb-3">INTERNO</div></th>
             <th colspan="1" class="text-center pb-1"> <div class="mb-3">EXTERNO</div></th>
@@ -20,43 +17,26 @@
                 if (pathMongoOtProject[n].visible) {
                     if (pathMongoOtProject[n].otStatus) { %>
                         <tr name="rowSelected<%=k%>_<%=n%>" class="border-bottom fw-semibold fs-6" style="height: 7vh;">
-                            <td class="text-center align-middle overflow-ellipsis">
-                                <small id="otDesign<%=k%>_<%=n%>" class="text-dark align-middle">
-                                    <%= pathMongoOtProject[n].otDesign %>
-                                </small>
-                            </td>
-                            <td class="text-center align-middle overflow-ellipsis">
-                                <small id="otSimulation<%=k%>_<%=n%>" class="text-dark">
-                                    <%= pathMongoOtProject[n].otSimulation %>
-                                </small>
-                            </td>
-                            <td class="text-center align-middle overflow-ellipsis">
-                                <small id="otSupplier<%=k%>_<%=n%>" class="text-dark">
-                                    <%= pathMongoOtProject[n].otSupplier %>
-                                </small>
-                            </td>
-                        </tr>
-
                     <% } else { %>
-                        <tr class="border-bottom fw-semibold fs-6" style="height: 7vh; background-color: #dedede;">
-                            <td class="text-center">
+                        <tr class="border-bottom fw-semibold fs-6" style="height: 7vh; background-color: #dedede;"></tr>
+                    <% } %>        
+                            <td class="text-center align-middle overflow-ellipsis">
                                 <small id="otDesign<%=k%>_<%=n%>" class="text-dark align-middle">
                                     <%= pathMongoOtProject[n].otDesign %>
                                 </small>
                             </td>
-                            <td class="text-center align-middle">
+                            <td class="text-center align-middle overflow-ellipsis">
                                 <small id="otSimulation<%=k%>_<%=n%>" class="text-dark">
                                     <%= pathMongoOtProject[n].otSimulation %>
                                 </small>
                             </td>
-                            <td class="text-center align-middle">
+                            <td class="text-center align-middle overflow-ellipsis">
                                 <small id="otSupplier<%=k%>_<%=n%>" class="text-dark">
                                     <%= pathMongoOtProject[n].otSupplier %>
                                 </small>
                             </td>
                         </tr>
-                    <% }
-                }
+                <% }
             }) %>
     </tbody>
 </table>

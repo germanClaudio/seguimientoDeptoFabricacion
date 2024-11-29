@@ -1193,52 +1193,60 @@ form.dropzone {
 }
 
 .custom-btn {
-  background-color: #24248d;
-  color: white;
   width: 2.45rem;
   height: 2.45rem;
-  border-radius: 50%;
-  border: 1px solid #dfdfdf;
+  border: none;
+  border-radius: 50%; /* Hace el botón completamente circular */
+  color: #ffffff; /* Color del texto */
   font-size: 13px;
-  line-height: 2.45rem; /* Alinea el texto verticalmente */
+  font-weight: bold;
   text-align: center;
-  transition: all 0.3s ease; /* Transición suave */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06); /* Sombra suave */
   cursor: pointer;
+  background: linear-gradient(145deg, #24248d, #6a6ade); /* Efecto de degradado */
+  box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.3),
+              5px 5px 15px rgba(0, 0, 0, 0.4),
+              -5px -5px 15px rgba(255, 255, 255, 0.1); /* Sombras */
+  transition: transform 0.3s ease, background-position 0.3s ease;
+  background-size: 200%; /* Para dar espacio al efecto de hover */
+  background-position: center;
 }
 
 /* Estilo hover */
 .custom-btn:hover {
-  background-color: #1e1e77; /* Cambia el color al pasar el mouse */
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.10); /* Aumenta la sombra */
-  transform: scale(1.05); /* Agranda ligeramente el botón */
+  transform: scale(1.05);
+  background-position: 100% 100%; /* Simula el giro del degradado */
+  box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.3), -6px -6px 15px rgba(255, 255, 255, 0.6); /* Sombras al pasar el cursor */
 }
 
 /* Efecto cuando se presiona el botón */
 .custom-btn:active {
-  transform: scale(0.98); /* Achica el botón temporalmente */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+  box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.3), inset -4px -4px 10px rgba(255, 255, 255, 0.6); /* Sombras internas al hacer clic */
+  transform: scale(0.98); /* Hace el botón más pequeño al presionarlo */
 }
 
 .custom-btn-excel {
-  background-color: #edf3ee;
-  color: white;
   width: 2.45rem;
   height: 2.45rem;
-  border-radius: 50%;
-  border: 1px solid #2e2e2e;
+  border: none;
+  border-radius: 50%; /* Hace el botón completamente circular */
+  color: #ffffff; /* Color del texto */
   font-size: 13px;
-  line-height: 2.45rem; /* Alinea el texto verticalmente */
+  font-weight: bold;
   text-align: center;
-  transition: all 0.3s ease; /* Transición suave */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06); /* Sombra suave */
   cursor: pointer;
+  background: linear-gradient(145deg, #248d2e, #6ade6c); /* Efecto de degradado */
+  box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.3),
+              5px 5px 15px rgba(0, 0, 0, 0.4),
+              -5px -5px 15px rgba(255, 255, 255, 0.1); /* Sombras */
+  transition: transform 0.3s ease, background-position 0.3s ease;
+  background-size: 200%; /* Para dar espacio al efecto de hover */
+  background-position: center;
 }
 
 /* Estilo hover */
 .custom-btn-excel:hover {
-  background-color: #56e07d; /* Cambia el color al pasar el mouse */
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.10); /* Aumenta la sombra */
+  background-position: 100% 100%; /* Simula el giro del degradado */
+  box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.3), -6px -6px 15px rgba(255, 255, 255, 0.6); /* Sombras al pasar el cursor */
   transform: scale(1.05); /* Agranda ligeramente el botón */
 }
 
@@ -1248,9 +1256,65 @@ form.dropzone {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
+.custom2-btn {
+  width: 2.45rem;
+  height: 2.45rem;
+  border: none;
+  border-radius: 50%; /* Hace el botón completamente circular */
+  color: #ffffff; /* Color del texto */
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  background: linear-gradient(145deg, #1010c5, #4343dd); /* Efecto de degradado */
+  box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.3),
+              5px 5px 15px rgba(0, 0, 0, 0.4),
+              -5px -5px 15px rgba(255, 255, 255, 0.1); /* Sombras */
+  transition: transform 0.3s ease, background-position 0.3s ease;
+  background-size: 200%; /* Para dar espacio al efecto de hover */
+  background-position: center;
+}
+
+.custom2-btn-disable {
+  width: 2.45rem;
+  height: 2.45rem;
+  border: none;
+  border-radius: 50%; /* Hace el botón completamente circular */
+  color: #ffffff; /* Color del texto */
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  background: linear-gradient(145deg, #8b8b8b, #d2d2dc); /* Efecto de degradado */
+  box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.3),
+              5px 5px 15px rgba(0, 0, 0, 0.4),
+              -5px -5px 15px rgba(255, 255, 255, 0.1); /* Sombras */
+  transition: transform 0.3s ease, background-position 0.3s ease;
+  background-size: 200%; /* Para dar espacio al efecto de hover */
+  background-position: center;
+}
+
+/* Estilo hover */
+.custom2-btn:hover {
+  transform: scale(1.05);
+  background-position: 100% 100%; /* Simula el giro del degradado */
+  box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.3), -6px -6px 15px rgba(255, 255, 255, 0.6); /* Sombras al pasar el cursor */
+}
+
 
 .dot-separator {
   font-size: 20px; /* Ajusta el tamaño del punto */
   line-height: 1; /* Asegura que el punto no tenga espacio extra */
   margin-bottom: 0.5rem; /* Ajusta el margen inferior del punto para alinearlo */
+}
+
+/* Aplicar al seleccionar un radio */
+.radio-option:checked .option-image {
+  box-shadow: 6px 6px 15px #0047064d, -6px -6px 15px #d2ffd099;
+  transform: scale(1.05);
+  transition: all 0.2s ease-in-out;
+}
+
+.radio-option .option-image {
+  transition: all 0.2s ease-in-out;
 }
