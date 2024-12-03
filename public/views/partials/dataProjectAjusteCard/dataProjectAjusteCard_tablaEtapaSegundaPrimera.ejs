@@ -24,13 +24,12 @@
             </th>
         </tr>
         <tr>
-            <th id="colData0" style="width:33vw" scope="col-1" class="text-center pb-1">Ajuste prensachapas | Estado | Rev.</th>
-            <th id="colData1" style="width:33vw" scope="col-1" class="text-center pb-1">Tacho p/ajuste | Estado | Rev.</th>
-            <th id="colData2" style="width:33vw" scope="col-1" class="text-center pb-1">Ajuste Fondo | Estado | Rev.</th>
+            <th id="colData0" style="width:33vw" scope="col-1" class="text-center pb-1">Ajuste prensachapas | Rev.</th>
+            <th id="colData1" style="width:33vw" scope="col-1" class="text-center pb-1">Tacho p/ajuste | Rev.</th>
+            <th id="colData2" style="width:33vw" scope="col-1" class="text-center pb-1">Ajuste Fondo | Rev.</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
-        
         <% const etapaSegundaPrimeraConfig = {
                 enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
                 terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
@@ -44,21 +43,21 @@
                 pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
             
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-                resDatoAzulados = "S/D", resEstadoAzulados = 'sinDato', resRevisionAzulados = 0,
-                resDatoTachoAjuste = "S/D", resEstadoTachoAjuste = 'sinDato', resRevisionTachoAjuste = 0,
-                resDatoAjusteFondo = "S/D", resEstadoAjusteFondo = 'sinDato', resRevisionAjusteFondo = 0;
+                resAzulados = "S/D", resRevisionAzulados = 0,
+                resTachoAjuste = "S/D", resRevisionTachoAjuste = 0,
+                resAjusteFondo = "S/D", resRevisionAjusteFondo = 0;
 
             if (pathMongoOtProject[n].visible) {
                 let pathToMongoOtEtapaSegundaPrimera = pathMongoOtAjuste[0].otEtapaSegundaPrimera || [],
                     largoArrayEtapaSegundaPrimera = parseInt(pathToMongoOtEtapaSegundaPrimera.length);
 
-                let arrResDatoAzulados = [], arrResEstadoAzulados = [], valueArrayResAzulados = 0, arrResRevisionAzulados = [],
+                let arrResAzulados = [], valueArrayResAzulados = 0, arrResRevisionAzulados = [],
                     arrResCreadorAzulados = [], arrResModificadorAzulados = [], arrResFechaAzulados = [], arrResFechaModAzulados = [];
 
-                let arrResDatoTachoAjuste = [], arrResEstadoTachoAjuste = [], valueArrayResTachoAjuste = 0, arrResRevisionTachoAjuste = [],
+                let arrResTachoAjuste = [], valueArrayResTachoAjuste = 0, arrResRevisionTachoAjuste = [],
                     arrResCreadorTachoAjuste = [], arrResModificadorTachoAjuste = [], arrResFechaTachoAjuste = [], arrResFechaModTachoAjuste = [];
 
-                let arrResDatoAjusteFondo = [], arrResEstadoAjusteFondo = [], valueArrayResAjusteFondo = 0, arrResRevisionAjusteFondo = [],
+                let arrResAjusteFondo = [], valueArrayResAjusteFondo = 0, arrResRevisionAjusteFondo = [],
                     arrResCreadorAjusteFondo = [], arrResModificadorAjusteFondo = [], arrResFechaAjusteFondo = [], arrResFechaModAjusteFondo = [];
 
                     if (pathMongoOtProject[n].otStatus) { %>
@@ -73,12 +72,10 @@
                                             for (let i = 0; largoArrayEtapaSegundaPrimera > i; i++) {
                                                 if (pathToMongoOtEtapaSegundaPrimera[i]) {
                                                     let largoArray = parseInt(largoArrayEtapaSegundaPrimera)
-                                                    resDatoAzulados = pathToMongoOtEtapaSegundaPrimera[largoArray-1].azulados == 'sinDato' ? "S/D" : pathToMongoOtEtapaSegundaPrimera[largoArray-1].azulados
-                                                    resEstadoAzulados = pathToMongoOtEtapaSegundaPrimera[largoArray-1].estadoAzulados == 'sinDato' ? "S/D" : pathToMongoOtEtapaSegundaPrimera[largoArray-1].estadoAzulados
+                                                    resAzulados = pathToMongoOtEtapaSegundaPrimera[largoArray-1].azulados == 'sinDato' ? "S/D" : pathToMongoOtEtapaSegundaPrimera[largoArray-1].azulados
                                                     resRevisionAzulados = parseInt(pathToMongoOtEtapaSegundaPrimera[largoArray-1].revisionAzulados) || 0
                                                     
-                                                    pathToMongoOtEtapaSegundaPrimera[i].azulados == 'sinDato' ? arrResDatoAzulados.push("S/D") : arrResDatoAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].azulados)
-                                                    pathToMongoOtEtapaSegundaPrimera[i].estadoAzulados == 'sinDato' ? arrResEstadoAzulados.push("S/D") : arrResEstadoAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].estadoAzulados)
+                                                    pathToMongoOtEtapaSegundaPrimera[i].azulados == 'sinDato' ? arrResAzulados.push("S/D") : arrResAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].azulados)
                                                     arrResRevisionAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].revisionAzulados)
 
                                                     arrResCreadorAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].creator[0].username)
@@ -87,12 +84,12 @@
                                                     arrResFechaModAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].modifiedOn)
                                                 }
                                             }
-                                            valueArrayResAzulados = parseInt(arrResDatoAzulados.length-1)
+                                            valueArrayResAzulados = parseInt(arrResAzulados.length-1)
 
-                                            if (arrResDatoAzulados.length == 1 ) {
+                                            if (arrResAzulados.length == 1 ) {
                                                 anteriorDisabled = "disabled"
                                                 siguienteDisabled = "disabled"
-                                            } else if (arrResDatoAzulados.length == arrResRevisionAzulados.length) {
+                                            } else if (arrResAzulados.length == arrResRevisionAzulados.length) {
                                                 anteriorDisabled = ""
                                                 siguienteDisabled = "disabled"
                                             } else {
@@ -101,8 +98,7 @@
                                             }
                                             
                                         } else {
-                                            arrResDatoAzulados.push(resDatoAzulados)
-                                            arrResEstadoAzulados.push(resEstadoAzulados)
+                                            arrResAzulados.push(resAzulados)
                                             arrResRevisionAzulados.push(resRevisionAzulados)
                                             
                                             arrResCreadorAzulados.push(pathMongoOtProject[n].creator[0].username)
@@ -117,8 +113,7 @@
                                                 <%= anteriorDisabled %>
                                                 ><i class="fa-solid fa-arrow-left"></i>
                                             </button>
-                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAzulados %>">
-                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAzulados %>">
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResAzulados %>">
                                             <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAzulados %>">
                                             <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAzulados %>">
                                             <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorAzulados %>">
@@ -126,15 +121,10 @@
                                             <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaAzulados %>">
                                             <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModAzulados %>">
 
-                                            <span id="resDatoAzulados<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                                <%= resDatoAzulados %>
-                                            </span> |
-                                            
-                                            <% const config = etapaSegundaPrimeraConfig[resEstadoAzulados] || etapaSegundaPrimeraConfig.default; %>
-                                            <span id="resEstadoAzulados<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAzulados%>">
+                                            <% const config = etapaSegundaPrimeraConfig[resAzulados] || etapaSegundaPrimeraConfig.default; %>
+                                            <span id="resAzulados<%=k%>_<%=n%>_<%=q%>" value="<%=resAzulados%>">
                                                 <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                             </span> |
-
                                             <span id="resRevisionAzulados<%=k%>_<%=n%>_<%=q%>" name="resRevisionAzulados" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                                 <%= resRevisionAzulados %>
                                             </span>
@@ -154,12 +144,10 @@
                                             for (let i = 0; largoArrayEtapaSegundaPrimera > i; i++) {
                                                 if (pathToMongoOtEtapaSegundaPrimera[i]) {
                                                     let largoArray = parseInt(largoArrayEtapaSegundaPrimera)
-                                                    resDatoTachoAjuste = pathToMongoOtEtapaSegundaPrimera[largoArray-1].tachoAjuste == 'sinDato' ? "S/D" :  pathToMongoOtEtapaSegundaPrimera[largoArray-1].tachoAjuste
-                                                    resEstadoTachoAjuste = pathToMongoOtEtapaSegundaPrimera[largoArray-1].estadoTachoAjuste == 'sinDato' ? "S/D" : pathToMongoOtEtapaSegundaPrimera[largoArray-1].estadoTachoAjuste
+                                                    resTachoAjuste = pathToMongoOtEtapaSegundaPrimera[largoArray-1].tachoAjuste == 'sinDato' ? "S/D" :  pathToMongoOtEtapaSegundaPrimera[largoArray-1].tachoAjuste
                                                     resRevisionTachoAjuste = parseInt(pathToMongoOtEtapaSegundaPrimera[largoArray-1].revisionTachoAjuste) || 0
                                                     
-                                                    pathToMongoOtEtapaSegundaPrimera[i].tachoAjuste == 'sinDato' ? arrResDatoTachoAjuste.push("S/D") : arrResDatoTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].tachoAjuste)
-                                                    pathToMongoOtEtapaSegundaPrimera[i].estadoTachoAjuste == 'sinDato' ? arrResEstadoTachoAjuste.push("S/D") : arrResEstadoTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].estadoTachoAjuste)
+                                                    pathToMongoOtEtapaSegundaPrimera[i].tachoAjuste == 'sinDato' ? arrResTachoAjuste.push("S/D") : arrResTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].tachoAjuste)
                                                     arrResRevisionTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].revisionTachoAjuste)
                                                     
                                                     arrResCreadorTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].creator[0].username)
@@ -168,12 +156,12 @@
                                                     arrResFechaModTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].modifiedOn)
                                                 }
                                             }
-                                            valueArrayResTachoAjuste = parseInt(arrResEstadoTachoAjuste.length-1)
+                                            valueArrayResTachoAjuste = parseInt(arrresTachoAjuste.length-1)
                                                     
-                                            if (arrResDatoTachoAjuste.length == 1 ) {
+                                            if (arrResTachoAjuste.length == 1 ) {
                                                 anteriorDisabled = "disabled"
                                                 siguienteDisabled = "disabled"
-                                            } else if (arrResDatoTachoAjuste.length == arrResRevisionTachoAjuste.length) {
+                                            } else if (arrResTachoAjuste.length == arrResRevisionTachoAjuste.length) {
                                                 anteriorDisabled = ""
                                                 siguienteDisabled = "disabled"
                                             } else {
@@ -182,8 +170,7 @@
                                             }
                                             
                                         } else {
-                                            arrResDatoTachoAjuste.push(resDatoTachoAjuste)
-                                            arrResEstadoTachoAjuste.push(resEstadoTachoAjuste)
+                                            arrResTachoAjuste.push(resTachoAjuste)
                                             arrResRevisionTachoAjuste.push(resRevisionTachoAjuste)
                                             
                                             arrResCreadorTachoAjuste.push(pathMongoOtProject[n].creator[0].username)
@@ -198,8 +185,7 @@
                                                 <%= anteriorDisabled %>
                                                 ><i class="fa-solid fa-arrow-left"></i>
                                             </button>
-                                            <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoTachoAjuste %>">
-                                            <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoTachoAjuste %>">
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResTachoAjuste %>">
                                             <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResTachoAjuste %>">
                                             <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionTachoAjuste %>">
                                             <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorTachoAjuste %>">
@@ -207,15 +193,10 @@
                                             <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaTachoAjuste %>">
                                             <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModTachoAjuste %>">
 
-                                            <span id="resDatoTachoAjuste<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                                <%= resDatoTachoAjuste %>
+                                            <% const config = etapaSegundaPrimeraConfig[resTachoAjuste] || etapaSegundaPrimeraConfig.default; %>
+                                            <span id="resTachoAjuste<%=k%>_<%=n%>_<%=q%>" value="<%=resTachoAjuste%>">
+                                                <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                             </span> |
-
-                                            <% const config = etapaSegundaPrimeraConfig[resEstadoTachoAjuste] || etapaSegundaPrimeraConfig.default; %>
-                                            <span id="resEstadoTachoAjuste<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoTachoAjuste%>">
-                                                <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                            </span> |
-
                                             <span id="resRevisionTachoAjuste<%=k%>_<%=n%>_<%=q%>" name="resRevisionTachoAjuste" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                                 <%= resRevisionTachoAjuste %>
                                             </span>
@@ -236,12 +217,10 @@
                                             for (let i = 0; largoArrayEtapaSegundaPrimera > i; i++) {
                                                 if (pathToMongoOtEtapaSegundaPrimera[i]) {
                                                     let largoArray = parseInt(largoArrayEtapaSegundaPrimera)
-                                                    resDatoAjusteFondo = pathToMongoOtEtapaSegundaPrimera[largoArray-1].ajusteFondo == 'sinDato' ? "S/D" : pathToMongoOtEtapaSegundaPrimera[largoArray-1].ajusteFondo
-                                                    resEstadoAjusteFondo = pathToMongoOtEtapaSegundaPrimera[largoArray-1].estadoAjusteFondo == 'sinDato' ? 'sinDato' : pathToMongoOtEtapaSegundaPrimera[largoArray-1].estadoAjusteFondo
+                                                    resAjusteFondo = pathToMongoOtEtapaSegundaPrimera[largoArray-1].ajusteFondo == 'sinDato' ? "S/D" : pathToMongoOtEtapaSegundaPrimera[largoArray-1].ajusteFondo
                                                     resRevisionAjusteFondo = parseInt(pathToMongoOtEtapaSegundaPrimera[largoArray-1].revisionAjusteFondo) || 0
                                                     
-                                                    pathToMongoOtEtapaSegundaPrimera[i].ajusteFondo == 'sinDato' ? arrResDatoAjusteFondo.push('S/D') : arrResDatoAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].ajusteFondo)
-                                                    pathToMongoOtEtapaSegundaPrimera[i].estadoAjusteFondo == 'sinDato' ? arrResEstadoAjusteFondo.push('S/D') : arrResEstadoAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].estadoAjusteFondo)
+                                                    pathToMongoOtEtapaSegundaPrimera[i].ajusteFondo == 'sinDato' ? arrResAjusteFondo.push('S/D') : arrResAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].ajusteFondo)
                                                     arrResRevisionAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].revisionAjusteFondo)
                                                 
                                                     arrResCreadorAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].creator[0].username)
@@ -250,22 +229,21 @@
                                                     arrResFechaModAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].modifiedOn)
                                                 }
                                             }
-                                            valueArrayResAjusteFondo = parseInt(arrResEstadoAjusteFondo.length-1)
-                                                    
-                                            if (arrResDatoAjusteFondo.length == 1 ) {
+                                            valueArrayResAjusteFondo = parseInt(arrResAjusteFondo.length-1)
+                                            
+                                            if (arrResAjusteFondo.length == 1 ) {
                                                 siguienteDisabled = "disabled"
                                                 anteriorDisabled = "disabled"
-                                            } else if (arrResDatoAjusteFondo.length == arrResRevisionAjusteFondo.length) {
+                                            } else if (arrResAjusteFondo.length == arrResRevisionAjusteFondo.length) {
                                                 anteriorDisabled = ""
                                                 siguienteDisabled = "disabled"
                                             } else {
                                                 anteriorDisabled = ""
                                                 siguienteDisabled = "disabled"
                                             }
-                                                    
+                                            
                                         } else {
-                                            arrResDatoAjusteFondo.push(resDatoAjusteFondo)
-                                            arrResEstadoAjusteFondo.push(resEstadoAjusteFondo)
+                                            arrResAjusteFondo.push(resAjusteFondo)
                                             arrResRevisionAjusteFondo.push(resRevisionAjusteFondo)
                                             
                                             arrResCreadorAjusteFondo.push(pathMongoOtProject[n].creator[0].username)
@@ -280,24 +258,18 @@
                                             <%= anteriorDisabled %>
                                             ><i class="fa-solid fa-arrow-left"></i>
                                         </button>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAjusteFondo %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAjusteFondo %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResAjusteFondo %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAjusteFondo %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAjusteFondo %>">
                                         <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorAjusteFondo %>">
                                         <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorAjusteFondo %>">
                                         <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaAjusteFondo %>">
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModAjusteFondo %>">
-
-                                        <span id="resDatoAjusteFondo<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                            <%= resDatoAjusteFondo %>
-                                        </span> |
-
-                                        <% const config = etapaSegundaPrimeraConfig[resEstadoAjusteFondo] || etapaSegundaPrimeraConfig.default; %>
-                                        <span id="resEstadoAjusteFondo<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAjusteFondo%>">
+                                        
+                                        <% const config = etapaSegundaPrimeraConfig[resAjusteFondo] || etapaSegundaPrimeraConfig.default; %>
+                                        <span id="resAjusteFondo<%=k%>_<%=n%>_<%=q%>" value="<%=resAjusteFondo%>">
                                             <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
-
                                         <span id="resRevisionAjusteFondo<%=k%>_<%=n%>_<%=q%>" name="resRevisionAjusteFondo" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                             <%= resRevisionAjusteFondo %>
                                         </span>
@@ -326,38 +298,28 @@
 
                                                 if (pathToMongoOtEtapaSegundaPrimera[i]) {
                                                     let largoArray = parseInt(largoArrayEtapaSegundaPrimera)
-                                                    resDatoAzulados = pathToMongoOtEtapaSegundaPrimera[largoArray-1].azulados || 'S/D'
-                                                    resEstadoAzulados = pathToMongoOtEtapaSegundaPrimera[largoArray-1].estadoAzulados || 'sinDato'
+                                                    resAzulados = pathToMongoOtEtapaSegundaPrimera[largoArray-1].azulados || 'S/D'
                                                     resRevisionAzulados = parseInt(pathToMongoOtEtapaSegundaPrimera[largoArray-1].revisionAzulados) || 0
                                                     
-                                                    arrResDatoAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].azulados)
-                                                    arrResEstadoAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].estadoAzulados)
+                                                    arrResAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].azulados)
                                                     arrResRevisionAzulados.push(pathToMongoOtEtapaSegundaPrimera[i].revisionAzulados)
                                                 }
                                             }
-                                            valueArrayResAzulados = parseInt(arrResEstadoAzulados.length-1)
-                                            resDatoAzulados = pathToMongoOtEtapaSegundaPrimera[0].Azulados
-                                            resEstadoAzulados = pathToMongoOtEtapaSegundaPrimera[0].estadoAzulados
-
+                                            valueArrayResAzulados = parseInt(arrResAzulados.length-1)
+                                            resAzulados = pathToMongoOtEtapaSegundaPrimera[0].Azulados
+                                            
                                         } else {
-                                            arrResDatoAzulados.push(resDatoAzulados)
-                                            arrResEstadoAzulados.push(resEstadoAzulados)
+                                            arrResAzulados.push(resAzulados)
                                             arrResRevisionAzulados.push(resRevisionAzulados)
                                         } %>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAzulados %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAzulados %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResAzulados %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAzulados %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAzulados %>">
                                     
-                                        <span id="resDatoAzulados<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                            <%= resDatoAzulados %>
-                                        </span> |
-
-                                        <% const config = etapaSegundaPrimeraConfig[resEstadoAzulados] || etapaSegundaPrimeraConfig.default; %>
-                                        <span id="resEstadoAzulados<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAzulados%>">
+                                        <% const config = etapaSegundaPrimeraConfig[resAzulados] || etapaSegundaPrimeraConfig.default; %>
+                                        <span id="resAzulados<%=k%>_<%=n%>_<%=q%>" value="<%=resAzulados%>">
                                             <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
-
                                         <span id="resRevisionAzulados<%=k%>_<%=n%>_<%=q%>" name="resRevisionAzulados" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                             <%= resRevisionAzulados %>
                                         </span>
@@ -371,38 +333,28 @@
                                                 
                                                 if (pathToMongoOtEtapaSegundaPrimera[i]) {
                                                     let largoArray = parseInt(largoArrayEtapaSegundaPrimera)
-                                                    resDatoTachoAjuste = pathToMongoOtEtapaSegundaPrimera[largoArray-1].tachoAjuste || 'S/D'
-                                                    resEstadoTachoAjuste = pathToMongoOtEtapaSegundaPrimera[largoArray-1].tachoAjuste || 'sinDato'
+                                                    resTachoAjuste = pathToMongoOtEtapaSegundaPrimera[largoArray-1].tachoAjuste || 'S/D'
                                                     resRevisionTachoAjuste = parseInt(pathToMongoOtEtapaSegundaPrimera[largoArray-1].revisionTachoAjuste) || 0
                                                     
-                                                    arrResDatoTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].tachoAjuste)
-                                                    arrResEstadoTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].tachoAjuste)
+                                                    arrResTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].tachoAjuste)
                                                     arrResRevisionTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].revisionTachoAjuste)
                                                 }
                                             }
-                                            valueArrayResTachoAjuste = parseInt(arrResEstadoTachoAjuste.length-1)
-                                            resDatoTachoAjuste = pathToMongoOtEtapaSegundaPrimera[0].tachoAjuste
-                                            resEstadoTachoAjuste = pathToMongoOtEtapaSegundaPrimera[0].estadoTachoAjuste
-                                        
+                                            valueArrayResTachoAjuste = parseInt(arrResTachoAjuste.length-1)
+                                            resTachoAjuste = pathToMongoOtEtapaSegundaPrimera[0].tachoAjuste
+                                            
                                         } else {
-                                            arrResDatoTachoAjuste.push(resDatoTachoAjuste)
-                                            arrResEstadoTachoAjuste.push(resEstadoTachoAjuste)
+                                            arrResTachoAjuste.push(resTachoAjuste)
                                             arrResRevisionTachoAjuste.push(resRevisionTachoAjuste)
                                         } %>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoTachoAjuste %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoTachoAjuste %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResTachoAjuste %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResTachoAjuste %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionTachoAjuste %>">
 
-                                        <span id="resDatoTachoAjuste<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                            <%= resDatoTachoAjuste %>
-                                        </span> |
-                                        
-                                        <% const config = etapaSegundaPrimeraConfig[resEstadoTachoAjuste] || etapaSegundaPrimeraConfig.default; %>
-                                        <span id="resEstadoTachoAjuste<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoTachoAjuste%>">
+                                        <% const config = etapaSegundaPrimeraConfig[resTachoAjuste] || etapaSegundaPrimeraConfig.default; %>
+                                        <span id="resTachoAjuste<%=k%>_<%=n%>_<%=q%>" value="<%=resTachoAjuste%>">
                                             <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
-
                                         <span id="resRevisionTachoAjuste<%=k%>_<%=n%>_<%=q%>" name="resRevisionTachoAjuste" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                             <%= resRevisionTachoAjuste %>
                                         </span>
@@ -416,35 +368,26 @@
                                                 
                                                 if (pathToMongoOtEtapaSegundaPrimera[i]) {
                                                     let largoArray = parseInt(largoArrayEtapaSegundaPrimera)
-                                                    resDatoAjusteFondo = pathToMongoOtEtapaSegundaPrimera[largoArray-1].ajusteFondo || "S/D"
-                                                    resEstadoAjusteFondo = pathToMongoOtEtapaSegundaPrimera[largoArray-1].estadoAjusteFondo || 'sinDato'
+                                                    resAjusteFondo = pathToMongoOtEtapaSegundaPrimera[largoArray-1].ajusteFondo || "S/D"
                                                     resRevisionAjusteFondo = parseInt(pathToMongoOtEtapaSegundaPrimera[largoArray-1].revisionAjusteFondo) || 0
                                                     
-                                                    arrResDatoAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].ajusteFondo)
-                                                    arrResEstadoAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].estadoAjusteFondo)
+                                                    arrResAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].ajusteFondo)
                                                     arrResRevisionAjusteFondo.push(pathToMongoOtEtapaSegundaPrimera[i].revisionAjusteFondo)
                                                 }
                                             }
-                                            valueArrayResAjusteFondo = parseInt(arrResEstadoAjusteFondo.length-1)
-                                            resDatoAjusteFondo = pathToMongoOtEtapaSegundaPrimera[0].ajusteFondo
-                                            resEstadoAjusteFondo = pathToMongoOtEtapaSegundaPrimera[0].estadoAjusteFondo
-                                        
+                                            valueArrayResAjusteFondo = parseInt(arrResAjusteFondo.length-1)
+                                            resAjusteFondo = pathToMongoOtEtapaSegundaPrimera[0].ajusteFondo
+                                            
                                         } else {
-                                            arrResDatoAjusteFondo.push(resDatoAjusteFondo)
-                                            arrResEstadoAjusteFondo.push(resEstadoAjusteFondo)
+                                            arrResAjusteFondo.push(resAjusteFondo)
                                             arrResRevisionAjusteFondo.push(resRevisionAjusteFondo)
                                         } %>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAjusteFondo %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAjusteFondo %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResAjusteFondo %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAjusteFondo %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAjusteFondo %>">
 
-                                        <span id="resDatoAjusteFondo<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                            <%= resDatoAjusteFondo %>
-                                        </span> |
-                                        
-                                        <% const config = etapaSegundaPrimeraConfig[resEstadoAjusteFondo] || etapaSegundaPrimeraConfig.default; %>
-                                        <span id="resEstadoAjusteFondo<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAjusteFondo%>">
+                                        <% const config = etapaSegundaPrimeraConfig[resAjusteFondo] || etapaSegundaPrimeraConfig.default; %>
+                                        <span id="resAjusteFondo<%=k%>_<%=n%>_<%=q%>" value="<%=resAjusteFondo%>">
                                             <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
 

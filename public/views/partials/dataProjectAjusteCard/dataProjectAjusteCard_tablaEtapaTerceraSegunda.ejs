@@ -24,9 +24,9 @@
             </th>
         </tr>
         <tr>
-            <th id="colData0" style="width:33vw" scope="col-1" class="text-center pb-1">Funcional Completa | Estado | Rev.</th>
-            <th id="colData1" style="width:33vw" scope="col-1" class="text-center pb-1">LTH | Estado | Rev.</th>
-            <th id="colData2" style="width:33vw" scope="col-1" class="text-center pb-1">Liberación Pza./Metrologia | Estado | Rev.</th>
+            <th id="colData0" style="width:33vw" scope="col-1" class="text-center pb-1">Funcional Completa | Rev.</th>
+            <th id="colData1" style="width:33vw" scope="col-1" class="text-center pb-1">LTH | Rev.</th>
+            <th id="colData2" style="width:33vw" scope="col-1" class="text-center pb-1">Liberación Pza./Metrologia | Rev.</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -44,21 +44,21 @@
                 pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
 
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-                resDatoFuncionalCompleta = "S/D", resEstadoFuncionalCompleta = 'sinDato', resRevisionFuncionalCompleta = 0,
-                resDatoLthEtapaTercera = "S/D", resEstadoLthEtapaTercera = 'sinDato', resRevisionLthEtapaTercera = 0,
-                resDatoLiberarPiezaMetrologia = "S/D", resEstadoLiberarPiezaMetrologia = 'sinDato', resRevisionLiberarPiezaMetrologia = 0;
+                resFuncionalCompleta = "S/D", resRevisionFuncionalCompleta = 0,
+                resLthEtapaTercera = "S/D", resRevisionLthEtapaTercera = 0,
+                resLiberarPiezaMetrologia = "S/D", resRevisionLiberarPiezaMetrologia = 0;
 
             if (pathMongoOtProject[n].visible) {
                 let pathToMongoOtEtapaTerceraSegunda = pathMongoOtAjuste[0].otEtapaTerceraSegunda || [],
                     largoArrayEtapaTerceraSegunda = parseInt(pathToMongoOtEtapaTerceraSegunda.length);
 
-                let arrResDatoFuncionalCompleta = [], arrResEstadoFuncionalCompleta = [], valueArrayResFuncionalCompleta = 0, arrResRevisionFuncionalCompleta = [],
+                let arrResFuncionalCompleta = [], valueArrayResFuncionalCompleta = 0, arrResRevisionFuncionalCompleta = [],
                     arrResCreadorFuncionalCompleta = [], arrResModificadorFuncionalCompleta = [], arrResFechaFuncionalCompleta = [], arrResFechaModFuncionalCompleta = [];
 
-                let arrResDatoLthEtapaTercera = [], arrResEstadoLthEtapaTercera = [], valueArrayResLthEtapaTercera = 0, arrResRevisionLthEtapaTercera = [],
+                let arrResLthEtapaTercera = [], valueArrayResLthEtapaTercera = 0, arrResRevisionLthEtapaTercera = [],
                     arrResCreadorLthEtapaTercera = [], arrResModificadorLthEtapaTercera = [], arrResFechaLthEtapaTercera = [], arrResFechaModLthEtapaTercera = [];
 
-                let arrResDatoLiberarPiezaMetrologia = [], arrResEstadoLiberarPiezaMetrologia = [], valueArrayResLiberarPiezaMetrologia = 0, arrResRevisionLiberarPiezaMetrologia = [],
+                let arrResLiberarPiezaMetrologia = [], valueArrayResLiberarPiezaMetrologia = 0, arrResRevisionLiberarPiezaMetrologia = [],
                     arrResCreadorLiberarPiezaMetrologia = [], arrResModificadorLiberarPiezaMetrologia = [], arrResFechaLiberarPiezaMetrologia = [], arrResFechaModLiberarPiezaMetrologia = [];
 
                 if (pathMongoOtProject[n].otStatus) { %>
@@ -73,12 +73,10 @@
                                         for (let i = 0; largoArrayEtapaTerceraSegunda > i; i++) {
                                             if (pathToMongoOtEtapaTerceraSegunda[i]) {
                                                 let largoArray = parseInt(largoArrayEtapaTerceraSegunda)
-                                                resDatoFuncionalCompleta = pathToMongoOtEtapaTerceraSegunda[largoArray-1].funcionalCompleta == 'sinDato' ? "S/D" : pathToMongoOtEtapaTerceraSegunda[largoArray-1].funcionalCompleta
-                                                resEstadoFuncionalCompleta = pathToMongoOtEtapaTerceraSegunda[largoArray-1].estadoFuncionalCompleta == 'sinDato' ? "S/D" : pathToMongoOtEtapaTerceraSegunda[largoArray-1].estadoFuncionalCompleta
+                                                resFuncionalCompleta = pathToMongoOtEtapaTerceraSegunda[largoArray-1].funcionalCompleta == 'sinDato' ? "S/D" : pathToMongoOtEtapaTerceraSegunda[largoArray-1].funcionalCompleta
                                                 resRevisionFuncionalCompleta = parseInt(pathToMongoOtEtapaTerceraSegunda[largoArray-1].revisionFuncionalCompleta) || 0
                                                 
-                                                pathToMongoOtEtapaTerceraSegunda[i].funcionalCompleta == 'sinDato' ? arrResDatoFuncionalCompleta.push("S/D") : arrResDatoFuncionalCompleta.push(pathToMongoOtEtapaTerceraSegunda[i].funcionalCompleta)
-                                                pathToMongoOtEtapaTerceraSegunda[i].estadoFuncionalCompleta == 'sinDato' ? arrResEstadoFuncionalCompleta.push("S/D") : arrResEstadoFuncionalCompleta.push(pathToMongoOtEtapaTerceraSegunda[i].estadoFuncionalCompleta)
+                                                pathToMongoOtEtapaTerceraSegunda[i].funcionalCompleta == 'sinDato' ? arrResFuncionalCompleta.push("S/D") : arrResFuncionalCompleta.push(pathToMongoOtEtapaTerceraSegunda[i].funcionalCompleta)
                                                 arrResRevisionFuncionalCompleta.push(pathToMongoOtEtapaTerceraSegunda[i].revisionFuncionalCompleta)
 
                                                 arrResCreadorFuncionalCompleta.push(pathToMongoOtEtapaTerceraSegunda[i].creator[0].username)
@@ -87,12 +85,12 @@
                                                 arrResFechaModFuncionalCompleta.push(pathToMongoOtEtapaTerceraSegunda[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResFuncionalCompleta = parseInt(arrResDatoFuncionalCompleta.length-1)
+                                        valueArrayResFuncionalCompleta = parseInt(arrResFuncionalCompleta.length-1)
 
-                                        if (arrResDatoFuncionalCompleta.length == 1 ) {
+                                        if (arrResFuncionalCompleta.length == 1 ) {
                                             anteriorDisabled = "disabled"
                                             siguienteDisabled = "disabled"
-                                        } else if (arrResDatoFuncionalCompleta.length == arrResRevisionFuncionalCompleta.length) {
+                                        } else if (arrResFuncionalCompleta.length == arrResRevisionFuncionalCompleta.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -101,8 +99,7 @@
                                         }
                                         
                                     } else {
-                                        arrResDatoFuncionalCompleta.push(resDatoFuncionalCompleta)
-                                        arrResEstadoFuncionalCompleta.push(resEstadoFuncionalCompleta)
+                                        arrResFuncionalCompleta.push(resFuncionalCompleta)
                                         arrResRevisionFuncionalCompleta.push(resRevisionFuncionalCompleta)
                                         
                                         arrResCreadorFuncionalCompleta.push(pathMongoOtProject[n].creator[0].username)
@@ -117,8 +114,7 @@
                                             <%= anteriorDisabled %>
                                             ><i class="fa-solid fa-arrow-left"></i>
                                         </button>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoFuncionalCompleta %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoFuncionalCompleta %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFuncionalCompleta %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResFuncionalCompleta %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionFuncionalCompleta %>">
                                         <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorFuncionalCompleta %>">
@@ -126,15 +122,10 @@
                                         <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaFuncionalCompleta %>">
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModFuncionalCompleta %>">
 
-                                        <span id="resDatoFuncionalCompleta<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                            <%= resDatoFuncionalCompleta %>
-                                        </span> |
-                                        
-                                        <% const config = etapaTerceraSegundaConfig[resEstadoFuncionalCompleta] || etapaTerceraSegundaConfig.default; %>
-                                        <span id="resEstadoFuncionalCompleta<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoFuncionalCompleta%>">
+                                        <% const config = etapaTerceraSegundaConfig[resFuncionalCompleta] || etapaTerceraSegundaConfig.default; %>
+                                        <span id="resFuncionalCompleta<%=k%>_<%=n%>_<%=q%>" value="<%=resFuncionalCompleta%>">
                                             <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
-
                                         <span id="resRevisionFuncionalCompleta<%=k%>_<%=n%>_<%=q%>" name="resRevisionFuncionalCompleta" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                             <%= resRevisionFuncionalCompleta %>
                                         </span>
@@ -154,12 +145,10 @@
                                         for (let i = 0; largoArrayEtapaTerceraSegunda > i; i++) {
                                             if (pathToMongoOtEtapaTerceraSegunda[i]) {
                                                 let largoArray = parseInt(largoArrayEtapaTerceraSegunda)
-                                                resDatoLthEtapaTercera = pathToMongoOtEtapaTerceraSegunda[largoArray-1].lthEtapaTercera == 'sinDato' ? "S/D" :  pathToMongoOtEtapaTerceraSegunda[largoArray-1].lthEtapaTercera
-                                                resEstadoLthEtapaTercera = pathToMongoOtEtapaTerceraSegunda[largoArray-1].estadoLthEtapaTercera == 'sinDato' ? "S/D" : pathToMongoOtEtapaTerceraSegunda[largoArray-1].estadoLthEtapaTercera
+                                                resLthEtapaTercera = pathToMongoOtEtapaTerceraSegunda[largoArray-1].lthEtapaTercera == 'sinDato' ? "S/D" :  pathToMongoOtEtapaTerceraSegunda[largoArray-1].lthEtapaTercera
                                                 resRevisionLthEtapaTercera = parseInt(pathToMongoOtEtapaTerceraSegunda[largoArray-1].revisionLthEtapaTercera) || 0
                                                 
-                                                pathToMongoOtEtapaTerceraSegunda[i].lthEtapaTercera == 'sinDato' ? arrResDatoLthEtapaTercera.push("S/D") : arrResDatoLthEtapaTercera.push(pathToMongoOtEtapaTerceraSegunda[i].lthEtapaTercera)
-                                                pathToMongoOtEtapaTerceraSegunda[i].estadoLthEtapaTercera == 'sinDato' ? arrResEstadoLthEtapaTercera.push("S/D") : arrResEstadoLthEtapaTercera.push(pathToMongoOtEtapaTerceraSegunda[i].estadoLthEtapaTercera)
+                                                pathToMongoOtEtapaTerceraSegunda[i].lthEtapaTercera == 'sinDato' ? arrResLthEtapaTercera.push("S/D") : arrResLthEtapaTercera.push(pathToMongoOtEtapaTerceraSegunda[i].lthEtapaTercera)
                                                 arrResRevisionLthEtapaTercera.push(pathToMongoOtEtapaTerceraSegunda[i].revisionLthEtapaTercera)
                                                 
                                                 arrResCreadorLthEtapaTercera.push(pathToMongoOtEtapaTerceraSegunda[i].creator[0].username)
@@ -168,12 +157,12 @@
                                                 arrResFechaModLthEtapaTercera.push(pathToMongoOtEtapaTerceraSegunda[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResLthEtapaTercera = parseInt(arrResEstadoLthEtapaTercera.length-1)
+                                        valueArrayResLthEtapaTercera = parseInt(arrResLthEtapaTercera.length-1)
                                                 
-                                        if (arrResDatoLthEtapaTercera.length == 1 ) {
+                                        if (arrResLthEtapaTercera.length == 1 ) {
                                             anteriorDisabled = "disabled"
                                             siguienteDisabled = "disabled"
-                                        } else if (arrResDatoLthEtapaTercera.length == arrResRevisionLthEtapaTercera.length) {
+                                        } else if (arrResLthEtapaTercera.length == arrResRevisionLthEtapaTercera.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -182,8 +171,7 @@
                                         }
                                         
                                     } else {
-                                        arrResDatoLthEtapaTercera.push(resDatoLthEtapaTercera)
-                                        arrResEstadoLthEtapaTercera.push(resEstadoLthEtapaTercera)
+                                        arrResLthEtapaTercera.push(resLthEtapaTercera)
                                         arrResRevisionLthEtapaTercera.push(resRevisionLthEtapaTercera)
                                         
                                         arrResCreadorLthEtapaTercera.push(pathMongoOtProject[n].creator[0].username)
@@ -198,8 +186,7 @@
                                             <%= anteriorDisabled %>
                                             ><i class="fa-solid fa-arrow-left"></i>
                                         </button>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoLthEtapaTercera %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoLthEtapaTercera %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResLthEtapaTercera %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResLthEtapaTercera %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionLthEtapaTercera %>">
                                         <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorLthEtapaTercera %>">
@@ -207,15 +194,10 @@
                                         <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaLthEtapaTercera %>">
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModLthEtapaTercera %>">
 
-                                        <span id="resDatoLthEtapaTercera<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                            <%= resDatoLthEtapaTercera %>
-                                        </span> |
-
-                                        <% const config = etapaTerceraSegundaConfig[resEstadoLthEtapaTercera] || etapaTerceraSegundaConfig.default; %>
-                                        <span id="resEstadoLthEtapaTercera<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoLthEtapaTercera%>">
+                                        <% const config = etapaTerceraSegundaConfig[resLthEtapaTercera] || etapaTerceraSegundaConfig.default; %>
+                                        <span id="resLthEtapaTercera<%=k%>_<%=n%>_<%=q%>" value="<%=resLthEtapaTercera%>">
                                             <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
-
                                         <span id="resRevisionLthEtapaTercera<%=k%>_<%=n%>_<%=q%>" name="resRevisionLthEtapaTercera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                             <%= resRevisionLthEtapaTercera %>
                                         </span>
@@ -236,12 +218,10 @@
                                         for (let i = 0; largoArrayEtapaTerceraSegunda > i; i++) {
                                             if (pathToMongoOtEtapaTerceraSegunda[i]) {
                                                 let largoArray = parseInt(largoArrayEtapaTerceraSegunda)
-                                                resDatoLiberarPiezaMetrologia = pathToMongoOtEtapaTerceraSegunda[largoArray-1].liberarPiezaMetrologia == 'sinDato' ? "S/D" : pathToMongoOtEtapaTerceraSegunda[largoArray-1].liberarPiezaMetrologia
-                                                resEstadoLiberarPiezaMetrologia = pathToMongoOtEtapaTerceraSegunda[largoArray-1].estadoLiberarPiezaMetrologia == 'sinDato' ? 'sinDato' : pathToMongoOtEtapaTerceraSegunda[largoArray-1].estadoLiberarPiezaMetrologia
+                                                resLiberarPiezaMetrologia = pathToMongoOtEtapaTerceraSegunda[largoArray-1].liberarPiezaMetrologia == 'sinDato' ? "S/D" : pathToMongoOtEtapaTerceraSegunda[largoArray-1].liberarPiezaMetrologia
                                                 resRevisionLiberarPiezaMetrologia = parseInt(pathToMongoOtEtapaTerceraSegunda[largoArray-1].revisionLiberarPiezaMetrologia) || 0
                                                 
-                                                pathToMongoOtEtapaTerceraSegunda[i].liberarPiezaMetrologia == 'sinDato' ? arrResDatoLiberarPiezaMetrologia.push('S/D') : arrResDatoLiberarPiezaMetrologia.push(pathToMongoOtEtapaTerceraSegunda[i].liberarPiezaMetrologia)
-                                                pathToMongoOtEtapaTerceraSegunda[i].estadoLiberarPiezaMetrologia == 'sinDato' ? arrResEstadoLiberarPiezaMetrologia.push('S/D') : arrResEstadoLiberarPiezaMetrologia.push(pathToMongoOtEtapaTerceraSegunda[i].estadoLiberarPiezaMetrologia)
+                                                pathToMongoOtEtapaTerceraSegunda[i].liberarPiezaMetrologia == 'sinDato' ? arrResLiberarPiezaMetrologia.push('S/D') : arrResLiberarPiezaMetrologia.push(pathToMongoOtEtapaTerceraSegunda[i].liberarPiezaMetrologia)
                                                 arrResRevisionLiberarPiezaMetrologia.push(pathToMongoOtEtapaTerceraSegunda[i].revisionLiberarPiezaMetrologia)
                                             
                                                 arrResCreadorLiberarPiezaMetrologia.push(pathToMongoOtEtapaTerceraSegunda[i].creator[0].username)
@@ -250,12 +230,12 @@
                                                 arrResFechaModLiberarPiezaMetrologia.push(pathToMongoOtEtapaTerceraSegunda[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResLiberarPiezaMetrologia = parseInt(arrResEstadoLiberarPiezaMetrologia.length-1)
+                                        valueArrayResLiberarPiezaMetrologia = parseInt(arrResLiberarPiezaMetrologia.length-1)
                                                 
-                                        if (arrResDatoLiberarPiezaMetrologia.length == 1 ) {
+                                        if (arrResLiberarPiezaMetrologia.length == 1 ) {
                                             siguienteDisabled = "disabled"
                                             anteriorDisabled = "disabled"
-                                        } else if (arrResDatoLiberarPiezaMetrologia.length == arrResRevisionLiberarPiezaMetrologia.length) {
+                                        } else if (arrResLiberarPiezaMetrologia.length == arrResRevisionLiberarPiezaMetrologia.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -264,8 +244,7 @@
                                         }
                                                 
                                     } else {
-                                        arrResDatoLiberarPiezaMetrologia.push(resDatoLiberarPiezaMetrologia)
-                                        arrResEstadoLiberarPiezaMetrologia.push(resEstadoLiberarPiezaMetrologia)
+                                        arrResLiberarPiezaMetrologia.push(resLiberarPiezaMetrologia)
                                         arrResRevisionLiberarPiezaMetrologia.push(resRevisionLiberarPiezaMetrologia)
                                         
                                         arrResCreadorLiberarPiezaMetrologia.push(pathMongoOtProject[n].creator[0].username)
@@ -280,8 +259,7 @@
                                         <%= anteriorDisabled %>
                                         ><i class="fa-solid fa-arrow-left"></i>
                                     </button>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoLiberarPiezaMetrologia %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoLiberarPiezaMetrologia %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResLiberarPiezaMetrologia %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResLiberarPiezaMetrologia %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionLiberarPiezaMetrologia %>">
                                     <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorLiberarPiezaMetrologia %>">
@@ -289,15 +267,10 @@
                                     <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaLiberarPiezaMetrologia %>">
                                     <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModLiberarPiezaMetrologia %>">
 
-                                    <span id="resDatoLiberarPiezaMetrologia<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                        <%= resDatoLiberarPiezaMetrologia %>
-                                    </span> |
-
-                                    <% const config = etapaTerceraSegundaConfig[resEstadoLiberarPiezaMetrologia] || etapaTerceraSegundaConfig.default; %>
-                                    <span id="resEstadoLiberarPiezaMetrologia<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoLiberarPiezaMetrologia%>">
+                                    <% const config = etapaTerceraSegundaConfig[resLiberarPiezaMetrologia] || etapaTerceraSegundaConfig.default; %>
+                                    <span id="resLiberarPiezaMetrologia<%=k%>_<%=n%>_<%=q%>" value="<%=resLiberarPiezaMetrologia%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionLiberarPiezaMetrologia<%=k%>_<%=n%>_<%=q%>" name="resRevisionLiberarPiezaMetrologia" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionLiberarPiezaMetrologia %>
                                     </span>
@@ -325,38 +298,28 @@
 
                                             if (pathToMongoOtEtapaTerceraSegunda[i]) {
                                                 let largoArray = parseInt(largoArrayEtapaTerceraSegunda)
-                                                resDatoFuncionalCompleta = pathToMongoOtEtapaTerceraSegunda[largoArray-1].funcionalCompleta || 'S/D'
-                                                resEstadoFuncionalCompleta = pathToMongoOtEtapaTerceraSegunda[largoArray-1].estadoFuncionalCompleta || 'sinDato'
+                                                resFuncionalCompleta = pathToMongoOtEtapaTerceraSegunda[largoArray-1].funcionalCompleta || 'S/D'
                                                 resRevisionFuncionalCompleta = parseInt(pathToMongoOtEtapaTerceraSegunda[largoArray-1].revisionFuncionalCompleta) || 0
                                                 
-                                                arrResDatoFuncionalCompleta.push(pathToMongoOtEtapaTerceraSegunda[i].funcionalCompleta)
-                                                arrResEstadoFuncionalCompleta.push(pathToMongoOtEtapaTerceraSegunda[i].estadoFuncionalCompleta)
+                                                arrResFuncionalCompleta.push(pathToMongoOtEtapaTerceraSegunda[i].funcionalCompleta)
                                                 arrResRevisionFuncionalCompleta.push(pathToMongoOtEtapaTerceraSegunda[i].revisionFuncionalCompleta)
                                             }
                                         }
-                                        valueArrayResFuncionalCompleta = parseInt(arrResEstadoFuncionalCompleta.length-1)
-                                        resDatoFuncionalCompleta = pathToMongoOtEtapaTerceraSegunda[0].FuncionalCompleta
-                                        resEstadoFuncionalCompleta = pathToMongoOtEtapaTerceraSegunda[0].estadoFuncionalCompleta
-
+                                        valueArrayResFuncionalCompleta = parseInt(arrResFuncionalCompleta.length-1)
+                                        resFuncionalCompleta = pathToMongoOtEtapaTerceraSegunda[0].FuncionalCompleta
+                                        
                                     } else {
-                                        arrResDatoFuncionalCompleta.push(resDatoFuncionalCompleta)
-                                        arrResEstadoFuncionalCompleta.push(resEstadoFuncionalCompleta)
+                                        arrResFuncionalCompleta.push(resFuncionalCompleta)
                                         arrResRevisionFuncionalCompleta.push(resRevisionFuncionalCompleta)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoFuncionalCompleta %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoFuncionalCompleta %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFuncionalCompleta %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResFuncionalCompleta %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionFuncionalCompleta %>">
                                 
-                                    <span id="resDatoFuncionalCompleta<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoFuncionalCompleta %>
-                                    </span> |
-
-                                    <% const config = etapaTerceraSegundaConfig[resEstadoFuncionalCompleta] || etapaTerceraSegundaConfig.default; %>
-                                    <span id="resEstadoFuncionalCompleta<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoFuncionalCompleta%>">
+                                    <% const config = etapaTerceraSegundaConfig[resFuncionalCompleta] || etapaTerceraSegundaConfig.default; %>
+                                    <span id="resFuncionalCompleta<%=k%>_<%=n%>_<%=q%>" value="<%=resFuncionalCompleta%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionFuncionalCompleta<%=k%>_<%=n%>_<%=q%>" name="resRevisionFuncionalCompleta" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionFuncionalCompleta %>
                                     </span>
@@ -370,38 +333,28 @@
                                             
                                             if (pathToMongoOtEtapaTerceraSegunda[i]) {
                                                 let largoArray = parseInt(largoArrayEtapaTerceraSegunda)
-                                                resDatoLthEtapaTercera = pathToMongoOtEtapaTerceraSegunda[largoArray-1].lthEtapaTercera || 'S/D'
-                                                resEstadoLthEtapaTercera = pathToMongoOtEtapaTerceraSegunda[largoArray-1].lthEtapaTercera || 'sinDato'
+                                                resLthEtapaTercera = pathToMongoOtEtapaTerceraSegunda[largoArray-1].lthEtapaTercera || 'S/D'
                                                 resRevisionLthEtapaTercera = parseInt(pathToMongoOtEtapaTerceraSegunda[largoArray-1].revisionLthEtapaTercera) || 0
                                                 
-                                                arrResDatoLthEtapaTercera.push(pathToMongoOtEtapaTerceraSegunda[i].lthEtapaTercera)
-                                                arrResEstadoLthEtapaTercera.push(pathToMongoOtEtapaTerceraSegunda[i].lthEtapaTercera)
+                                                arrResLthEtapaTercera.push(pathToMongoOtEtapaTerceraSegunda[i].lthEtapaTercera)
                                                 arrResRevisionLthEtapaTercera.push(pathToMongoOtEtapaTerceraSegunda[i].revisionLthEtapaTercera)
                                             }
                                         }
-                                        valueArrayResLthEtapaTercera = parseInt(arrResEstadoLthEtapaTercera.length-1)
-                                        resDatoLthEtapaTercera = pathToMongoOtEtapaTerceraSegunda[0].lthEtapaTercera
-                                        resEstadoLthEtapaTercera = pathToMongoOtEtapaTerceraSegunda[0].estadoLthEtapaTercera
-                                    
+                                        valueArrayResLthEtapaTercera = parseInt(arrResLthEtapaTercera.length-1)
+                                        resLthEtapaTercera = pathToMongoOtEtapaTerceraSegunda[0].lthEtapaTercera
+                                        
                                     } else {
-                                        arrResDatoLthEtapaTercera.push(resDatoLthEtapaTercera)
-                                        arrResEstadoLthEtapaTercera.push(resEstadoLthEtapaTercera)
+                                        arrResLthEtapaTercera.push(resLthEtapaTercera)
                                         arrResRevisionLthEtapaTercera.push(resRevisionLthEtapaTercera)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoLthEtapaTercera %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoLthEtapaTercera %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResLthEtapaTercera %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResLthEtapaTercera %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionLthEtapaTercera %>">
 
-                                    <span id="resDatoLthEtapaTercera<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoLthEtapaTercera %>
-                                    </span> |
-                                    
-                                    <% const config = etapaTerceraSegundaConfig[resEstadoLthEtapaTercera] || etapaTerceraSegundaConfig.default; %>
-                                    <span id="resEstadoLthEtapaTercera<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoLthEtapaTercera%>">
+                                    <% const config = etapaTerceraSegundaConfig[resLthEtapaTercera] || etapaTerceraSegundaConfig.default; %>
+                                    <span id="resLthEtapaTercera<%=k%>_<%=n%>_<%=q%>" value="<%=resLthEtapaTercera%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionLthEtapaTercera<%=k%>_<%=n%>_<%=q%>" name="resRevisionLthEtapaTercera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionLthEtapaTercera %>
                                     </span>
@@ -415,38 +368,28 @@
                                             
                                             if (pathToMongoOtEtapaTerceraSegunda[i]) {
                                                 let largoArray = parseInt(largoArrayEtapaTerceraSegunda)
-                                                resDatoLiberarPiezaMetrologia = pathToMongoOtEtapaTerceraSegunda[largoArray-1].liberarPiezaMetrologia || "S/D"
-                                                resEstadoLiberarPiezaMetrologia = pathToMongoOtEtapaTerceraSegunda[largoArray-1].estadoLiberarPiezaMetrologia || 'sinDato'
+                                                resLiberarPiezaMetrologia = pathToMongoOtEtapaTerceraSegunda[largoArray-1].liberarPiezaMetrologia || "S/D"
                                                 resRevisionLiberarPiezaMetrologia = parseInt(pathToMongoOtEtapaTerceraSegunda[largoArray-1].revisionLiberarPiezaMetrologia) || 0
                                                 
-                                                arrResDatoLiberarPiezaMetrologia.push(pathToMongoOtEtapaTerceraSegunda[i].liberarPiezaMetrologia)
-                                                arrResEstadoLiberarPiezaMetrologia.push(pathToMongoOtEtapaTerceraSegunda[i].estadoLiberarPiezaMetrologia)
+                                                arrResLiberarPiezaMetrologia.push(pathToMongoOtEtapaTerceraSegunda[i].liberarPiezaMetrologia)
                                                 arrResRevisionLiberarPiezaMetrologia.push(pathToMongoOtEtapaTerceraSegunda[i].revisionLiberarPiezaMetrologia)
                                             }
                                         }
-                                        valueArrayResLiberarPiezaMetrologia = parseInt(arrResEstadoLiberarPiezaMetrologia.length-1)
-                                        resDatoLiberarPiezaMetrologia = pathToMongoOtEtapaTerceraSegunda[0].liberarPiezaMetrologia
-                                        resEstadoLiberarPiezaMetrologia = pathToMongoOtEtapaTerceraSegunda[0].estadoLiberarPiezaMetrologia
-                                    
+                                        valueArrayResLiberarPiezaMetrologia = parseInt(arrResLiberarPiezaMetrologia.length-1)
+                                        resLiberarPiezaMetrologia = pathToMongoOtEtapaTerceraSegunda[0].liberarPiezaMetrologia
+                                        
                                     } else {
-                                        arrResDatoLiberarPiezaMetrologia.push(resDatoLiberarPiezaMetrologia)
-                                        arrResEstadoLiberarPiezaMetrologia.push(resEstadoLiberarPiezaMetrologia)
+                                        arrResLiberarPiezaMetrologia.push(resLiberarPiezaMetrologia)
                                         arrResRevisionLiberarPiezaMetrologia.push(resRevisionLiberarPiezaMetrologia)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoLiberarPiezaMetrologia %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoLiberarPiezaMetrologia %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResLiberarPiezaMetrologia %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResLiberarPiezaMetrologia %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionLiberarPiezaMetrologia %>">
 
-                                    <span id="resDatoLiberarPiezaMetrologia<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoLiberarPiezaMetrologia %>
-                                    </span> |
-                                    
-                                    <% const config = etapaTerceraSegundaConfig[resEstadoLiberarPiezaMetrologia] || etapaTerceraSegundaConfig.default; %>
-                                    <span id="resEstadoLiberarPiezaMetrologia<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoLiberarPiezaMetrologia%>">
+                                    <% const config = etapaTerceraSegundaConfig[resLiberarPiezaMetrologia] || etapaTerceraSegundaConfig.default; %>
+                                    <span id="resLiberarPiezaMetrologia<%=k%>_<%=n%>_<%=q%>" value="<%=resLiberarPiezaMetrologia%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionLiberarPiezaMetrologia<%=k%>_<%=n%>_<%=q%>" name="resRevisionLiberarPiezaMetrologia" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionLiberarPiezaMetrologia %>
                                     </span>

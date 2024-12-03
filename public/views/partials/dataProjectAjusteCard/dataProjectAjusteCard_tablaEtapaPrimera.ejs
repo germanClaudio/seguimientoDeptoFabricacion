@@ -24,46 +24,46 @@
             </th>
         </tr>
         <tr>
-            <th id="colData0" style="width:25vw" scope="col-1" class="text-center pb-1">Guiados | Estado | Rev.</th>
-            <th id="colData1" style="width:25vw" scope="col-1" class="text-center pb-1">Centr / L. Corte / Chapa | Est | Rev.</th>
-            <th id="colData2" style="width:25vw" scope="col-1" class="text-center pb-1">Centr Levas | Estado | Rev.</th>
-            <th id="colData3" style="width:25vw" scope="col-1" class="text-center pb-1">LTH | Estado | Rev.</th>
+            <th id="colData0" style="width:25vw" scope="col-1" class="text-center pb-1">Guiados | Rev.</th>
+            <th id="colData1" style="width:25vw" scope="col-1" class="text-center pb-1">Centr / L. Corte / Chapa | Rev.</th>
+            <th id="colData2" style="width:25vw" scope="col-1" class="text-center pb-1">Centr Levas | Rev.</th>
+            <th id="colData3" style="width:25vw" scope="col-1" class="text-center pb-1">LTH | Rev.</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
         
         <% const etapaPrimeraConfig = {
-                enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
-                terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
-                detenido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
-                noAplica: { icon: "fa-ban", iconColor: "color:#000000" },
-                default: { icon: "fa-triangle-exclamation", iconColor: "color:#1c21ac" }
-            };
+            enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
+            terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
+            detenido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
+            noAplica: { icon: "fa-ban", iconColor: "color:#000000" },
+            default: { icon: "fa-triangle-exclamation", iconColor: "color:#1c21ac" }
+        };
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
                 pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
 
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-                resDatoGuiados = "S/D", resEstadoGuiados = 'sinDato', resRevisionGuiados = 0,
-                resDatoCentradoLuzCorte = "S/D", resEstadoCentradoLuzCorte = 'sinDato', resRevisionCentradoLuzCorte = 0,
-                resDatoCentradoLevas = "S/D", resEstadoCentradoLevas = 'sinDato', resRevisionCentradoLevas = 0;
-                resDatoLthEtapaPrimera = "S/D", resEstadoLthEtapaPrimera = 'sinDato', resRevisionLthEtapaPrimera = 0;
+                resGuiados = "S/D", resRevisionGuiados = 0,
+                resCentradoLuzCorte = "S/D", resRevisionCentradoLuzCorte = 0,
+                resCentradoLevas = "S/D", resRevisionCentradoLevas = 0;
+                resLthEtapaPrimera = "S/D", resRevisionLthEtapaPrimera = 0;
 
             if (pathMongoOtProject[n].visible) {
                 let pathToMongoOtEtapa = pathMongoOtAjuste[0].otEtapaPrimera || [],
                     largoArrayEtapa = parseInt(pathToMongoOtEtapa.length);
 
-                let arrResDatoGuiados = [], arrResEstadoGuiados = [], valueArrayResGuiados = 0, arrResRevisionGuiados = [],
+                let arrResGuiados = [], valueArrayResGuiados = 0, arrResRevisionGuiados = [],
                     arrResCreadorGuiados = [], arrResModificadorGuiados = [], arrResFechaGuiados = [], arrResFechaModGuiados = [];
 
-                let arrResDatoCentradoLuzCorte = [], arrResEstadoCentradoLuzCorte = [], valueArrayResCentradoLuzCorte = 0, arrResRevisionCentradoLuzCorte = [],
+                let arrResCentradoLuzCorte = [], valueArrayResCentradoLuzCorte = 0, arrResRevisionCentradoLuzCorte = [],
                     arrResCreadorCentradoLuzCorte = [], arrResModificadorCentradoLuzCorte = [], arrResFechaCentradoLuzCorte = [], arrResFechaModCentradoLuzCorte = [];
 
-                let arrResDatoCentradoLevas = [], arrResEstadoCentradoLevas = [], valueArrayResCentradoLevas = 0, arrResRevisionCentradoLevas = [],
+                let arrResCentradoLevas = [], valueArrayResCentradoLevas = 0, arrResRevisionCentradoLevas = [],
                     arrResCreadorCentradoLevas = [], arrResModificadorCentradoLevas = [], arrResFechaCentradoLevas = [], arrResFechaModCentradoLevas = [];
 
-                let arrResDatoLthEtapaPrimera = [], arrResEstadoLthEtapaPrimera = [], valueArrayResLthEtapaPrimera = 0, arrResRevisionLthEtapaPrimera = [],
+                let arrResLthEtapaPrimera = [], valueArrayResLthEtapaPrimera = 0, arrResRevisionLthEtapaPrimera = [],
                     arrResCreadorLthEtapaPrimera = [], arrResModificadorLthEtapaPrimera = [], arrResFechaLthEtapaPrimera = [], arrResFechaModLthEtapaPrimera = [];
 
                 if (pathMongoOtProject[n].otStatus) { %>
@@ -78,12 +78,10 @@
                                         for (let i = 0; largoArrayEtapa > i; i++) {
                                             if (pathToMongoOtEtapa[i]) {
                                                 let largoArray = parseInt(largoArrayEtapa)
-                                                resDatoGuiados = pathToMongoOtEtapa[largoArray-1].guiados == 'sinDato' ? "S/D" : pathToMongoOtEtapa[largoArray-1].guiados
-                                                resEstadoGuiados = pathToMongoOtEtapa[largoArray-1].estadoGuiados == 'sinDato' ? "S/D" : pathToMongoOtEtapa[largoArray-1].estadoGuiados
+                                                resGuiados = pathToMongoOtEtapa[largoArray-1].guiados == 'sinDato' ? "S/D" : pathToMongoOtEtapa[largoArray-1].guiados
                                                 resRevisionGuiados = parseInt(pathToMongoOtEtapa[largoArray-1].revisionGuiados) || 0
                                                 
-                                                pathToMongoOtEtapa[i].guiados == 'sinDato' ? arrResDatoGuiados.push("S/D") : arrResDatoGuiados.push(pathToMongoOtEtapa[i].guiados)
-                                                pathToMongoOtEtapa[i].estadoGuiados == 'sinDato' ? arrResEstadoGuiados.push("S/D") : arrResEstadoGuiados.push(pathToMongoOtEtapa[i].estadoGuiados)
+                                                pathToMongoOtEtapa[i].guiados == 'sinDato' ? arrResGuiados.push("S/D") : arrResGuiados.push(pathToMongoOtEtapa[i].guiados)
                                                 arrResRevisionGuiados.push(pathToMongoOtEtapa[i].revisionGuiados)
 
                                                 arrResCreadorGuiados.push(pathToMongoOtEtapa[i].creator[0].username)
@@ -92,12 +90,12 @@
                                                 arrResFechaModGuiados.push(pathToMongoOtEtapa[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResGuiados = parseInt(arrResDatoGuiados.length-1)
+                                        valueArrayResGuiados = parseInt(arrResGuiados.length-1)
 
-                                        if (arrResDatoGuiados.length == 1 ) {
+                                        if (arrResGuiados.length == 1 ) {
                                             anteriorDisabled = "disabled"
                                             siguienteDisabled = "disabled"
-                                        } else if (arrResDatoGuiados.length == arrResRevisionGuiados.length) {
+                                        } else if (arrResGuiados.length == arrResRevisionGuiados.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -106,8 +104,7 @@
                                         }
                                         
                                     } else {
-                                        arrResDatoGuiados.push(resDatoGuiados)
-                                        arrResEstadoGuiados.push(resEstadoGuiados)
+                                        arrResGuiados.push(resGuiados)
                                         arrResRevisionGuiados.push(resRevisionGuiados)
                                         
                                         arrResCreadorGuiados.push(pathMongoOtProject[n].creator[0].username)
@@ -122,8 +119,7 @@
                                             <%= anteriorDisabled %>
                                             ><i class="fa-solid fa-arrow-left"></i>
                                         </button>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoGuiados %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoGuiados %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResGuiados %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResGuiados %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionGuiados %>">
                                         <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorGuiados %>">
@@ -131,15 +127,10 @@
                                         <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaGuiados %>">
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModGuiados %>">
 
-                                        <span id="resDatoGuiados<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                            <%= resDatoGuiados %>
-                                        </span> |
-                                        
-                                        <% const config = etapaPrimeraConfig[resEstadoGuiados] || etapaPrimeraConfig.default; %>
-                                        <span id="resEstadoGuiados<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoGuiados%>">
+                                        <% const config = etapaPrimeraConfig[resGuiados] || etapaPrimeraConfig.default; %>
+                                        <span id="resGuiados<%=k%>_<%=n%>_<%=q%>" value="<%=resGuiados%>">
                                             <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
-
                                         <span id="resRevisionGuiados<%=k%>_<%=n%>_<%=q%>" name="resRevisionGuiados" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                             <%= resRevisionGuiados %>
                                         </span>
@@ -159,12 +150,10 @@
                                         for (let i = 0; largoArrayEtapa > i; i++) {
                                             if (pathToMongoOtEtapa[i]) {
                                                 let largoArray = parseInt(largoArrayEtapa)
-                                                resDatoCentradoLuzCorte = pathToMongoOtEtapa[largoArray-1].centradoLuzCorte == 'sinDato' ? "S/D" :  pathToMongoOtEtapa[largoArray-1].centradoLuzCorte
-                                                resEstadoCentradoLuzCorte = pathToMongoOtEtapa[largoArray-1].estadoCentradoLuzCorte == 'sinDato' ? "S/D" : pathToMongoOtEtapa[largoArray-1].estadoCentradoLuzCorte
+                                                resCentradoLuzCorte = pathToMongoOtEtapa[largoArray-1].centradoLuzCorte == 'sinDato' ? "S/D" :  pathToMongoOtEtapa[largoArray-1].centradoLuzCorte
                                                 resRevisionCentradoLuzCorte = parseInt(pathToMongoOtEtapa[largoArray-1].revisionCentradoLuzCorte) || 0
                                                 
-                                                pathToMongoOtEtapa[i].centradoLuzCorte == 'sinDato' ? arrResDatoCentradoLuzCorte.push("S/D") : arrResDatoCentradoLuzCorte.push(pathToMongoOtEtapa[i].centradoLuzCorte)
-                                                pathToMongoOtEtapa[i].estadoCentradoLuzCorte == 'sinDato' ? arrResEstadoCentradoLuzCorte.push("S/D") : arrResEstadoCentradoLuzCorte.push(pathToMongoOtEtapa[i].estadoCentradoLuzCorte)
+                                                pathToMongoOtEtapa[i].centradoLuzCorte == 'sinDato' ? arrResCentradoLuzCorte.push("S/D") : arrResCentradoLuzCorte.push(pathToMongoOtEtapa[i].centradoLuzCorte)
                                                 arrResRevisionCentradoLuzCorte.push(pathToMongoOtEtapa[i].revisionCentradoLuzCorte)
                                                 
                                                 arrResCreadorCentradoLuzCorte.push(pathToMongoOtEtapa[i].creator[0].username)
@@ -173,12 +162,12 @@
                                                 arrResFechaModCentradoLuzCorte.push(pathToMongoOtEtapa[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResCentradoLuzCorte = parseInt(arrResEstadoCentradoLuzCorte.length-1)
+                                        valueArrayResCentradoLuzCorte = parseInt(arrResCentradoLuzCorte.length-1)
                                                 
-                                        if (arrResDatoCentradoLuzCorte.length == 1 ) {
+                                        if (arrResCentradoLuzCorte.length == 1 ) {
                                             anteriorDisabled = "disabled"
                                             siguienteDisabled = "disabled"
-                                        } else if (arrResDatoCentradoLuzCorte.length == arrResRevisionCentradoLuzCorte.length) {
+                                        } else if (arrResCentradoLuzCorte.length == arrResRevisionCentradoLuzCorte.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -187,8 +176,7 @@
                                         }
                                         
                                     } else {
-                                        arrResDatoCentradoLuzCorte.push(resDatoCentradoLuzCorte)
-                                        arrResEstadoCentradoLuzCorte.push(resEstadoCentradoLuzCorte)
+                                        arrResCentradoLuzCorte.push(resCentradoLuzCorte)
                                         arrResRevisionCentradoLuzCorte.push(resRevisionCentradoLuzCorte)
                                         
                                         arrResCreadorCentradoLuzCorte.push(pathMongoOtProject[n].creator[0].username)
@@ -203,8 +191,7 @@
                                             <%= anteriorDisabled %>
                                             ><i class="fa-solid fa-arrow-left"></i>
                                         </button>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoCentradoLuzCorte %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoCentradoLuzCorte %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCentradoLuzCorte %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResCentradoLuzCorte %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionCentradoLuzCorte %>">
                                         <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorCentradoLuzCorte %>">
@@ -212,15 +199,10 @@
                                         <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaCentradoLuzCorte %>">
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModCentradoLuzCorte %>">
 
-                                        <span id="resDatoCentradoLuzCorte<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                            <%= resDatoCentradoLuzCorte %>
+                                        <% const config = etapaPrimeraConfig[resCentradoLuzCorte] || etapaPrimeraConfig.default; %>
+                                        <span id="resCentradoLuzCorte<%=k%>_<%=n%>_<%=q%>" value="<%=resCentradoLuzCorte%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
-
-                                        <% const config = etapaPrimeraConfig[resEstadoCentradoLuzCorte] || etapaPrimeraConfig.default; %>
-                                        <span id="resEstadoCentradoLuzCorte<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoCentradoLuzCorte%>">
-                                            <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
-                                        </span> |
-
                                         <span id="resRevisionCentradoLuzCorte<%=k%>_<%=n%>_<%=q%>" name="resRevisionCentradoLuzCorte" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                             <%= resRevisionCentradoLuzCorte %>
                                         </span>
@@ -241,12 +223,10 @@
                                         for (let i = 0; largoArrayEtapa > i; i++) {
                                             if (pathToMongoOtEtapa[i]) {
                                                 let largoArray = parseInt(largoArrayEtapa)
-                                                resDatoCentradoLevas = pathToMongoOtEtapa[largoArray-1].centradoLevas == 'sinDato' ? "S/D" : pathToMongoOtEtapa[largoArray-1].centradoLevas
-                                                resEstadoCentradoLevas = pathToMongoOtEtapa[largoArray-1].estadoCentradoLevas == 'sinDato' ? 'sinDato' : pathToMongoOtEtapa[largoArray-1].estadoCentradoLevas
+                                                resCentradoLevas = pathToMongoOtEtapa[largoArray-1].centradoLevas == 'sinDato' ? "S/D" : pathToMongoOtEtapa[largoArray-1].centradoLevas
                                                 resRevisionCentradoLevas = parseInt(pathToMongoOtEtapa[largoArray-1].revisionCentradoLevas) || 0
                                                 
-                                                pathToMongoOtEtapa[i].centradoLevas == 'sinDato' ? arrResDatoCentradoLevas.push('S/D') : arrResDatoCentradoLevas.push(pathToMongoOtEtapa[i].centradoLevas)
-                                                pathToMongoOtEtapa[i].estadoCentradoLevas == 'sinDato' ? arrResEstadoCentradoLevas.push('S/D') : arrResEstadoCentradoLevas.push(pathToMongoOtEtapa[i].estadoCentradoLevas)
+                                                pathToMongoOtEtapa[i].centradoLevas == 'sinDato' ? arrResCentradoLevas.push('S/D') : arrResCentradoLevas.push(pathToMongoOtEtapa[i].centradoLevas)
                                                 arrResRevisionCentradoLevas.push(pathToMongoOtEtapa[i].revisionCentradoLevas)
                                             
                                                 arrResCreadorCentradoLevas.push(pathToMongoOtEtapa[i].creator[0].username)
@@ -255,12 +235,12 @@
                                                 arrResFechaModCentradoLevas.push(pathToMongoOtEtapa[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResCentradoLevas = parseInt(arrResEstadoCentradoLevas.length-1)
+                                        valueArrayResCentradoLevas = parseInt(arrResCentradoLevas.length-1)
                                                 
-                                        if (arrResDatoCentradoLevas.length == 1 ) {
+                                        if (arrResCentradoLevas.length == 1 ) {
                                             siguienteDisabled = "disabled"
                                             anteriorDisabled = "disabled"
-                                        } else if (arrResDatoCentradoLevas.length == arrResRevisionCentradoLevas.length) {
+                                        } else if (arrResCentradoLevas.length == arrResRevisionCentradoLevas.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -269,8 +249,7 @@
                                         }
                                                 
                                     } else {
-                                        arrResDatoCentradoLevas.push(resDatoCentradoLevas)
-                                        arrResEstadoCentradoLevas.push(resEstadoCentradoLevas)
+                                        arrResCentradoLevas.push(resCentradoLevas)
                                         arrResRevisionCentradoLevas.push(resRevisionCentradoLevas)
                                         
                                         arrResCreadorCentradoLevas.push(pathMongoOtProject[n].creator[0].username)
@@ -285,8 +264,7 @@
                                         <%= anteriorDisabled %>
                                         ><i class="fa-solid fa-arrow-left"></i>
                                     </button>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoCentradoLevas %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoCentradoLevas %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCentradoLevas %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResCentradoLevas %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionCentradoLevas %>">
                                     <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorCentradoLevas %>">
@@ -294,15 +272,10 @@
                                     <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaCentradoLevas %>">
                                     <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModCentradoLevas %>">
 
-                                    <span id="resDatoCentradoLevas<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                        <%= resDatoCentradoLevas %>
-                                    </span> |
-
-                                    <% const config = etapaPrimeraConfig[resEstadoCentradoLevas] || etapaPrimeraConfig.default; %>
-                                    <span id="resEstadoCentradoLevas<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoCentradoLevas%>">
+                                    <% const config = etapaPrimeraConfig[resCentradoLevas] || etapaPrimeraConfig.default; %>
+                                    <span id="resCentradoLevas<%=k%>_<%=n%>_<%=q%>" value="<%=resCentradoLevas%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionCentradoLevas<%=k%>_<%=n%>_<%=q%>" name="resRevisionCentradoLevas" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionCentradoLevas %>
                                     </span>
@@ -323,12 +296,10 @@
                                         for (let i = 0; largoArrayEtapa > i; i++) {
                                             if (pathToMongoOtEtapa[i]) {
                                                 let largoArray = parseInt(largoArrayEtapa)
-                                                resDatoLthEtapaPrimera = pathToMongoOtEtapa[largoArray-1].lthEtapaPrimera == 'sinDato' ? "S/D" : pathToMongoOtEtapa[largoArray-1].lthEtapaPrimera
-                                                resEstadoLthEtapaPrimera = pathToMongoOtEtapa[largoArray-1].estadoLthEtapaPrimera == 'sinDato' ? 'sinDato' : pathToMongoOtEtapa[largoArray-1].estadoLthEtapaPrimera
+                                                resLthEtapaPrimera = pathToMongoOtEtapa[largoArray-1].lthEtapaPrimera == 'sinDato' ? "S/D" : pathToMongoOtEtapa[largoArray-1].lthEtapaPrimera
                                                 resRevisionLthEtapaPrimera = parseInt(pathToMongoOtEtapa[largoArray-1].revisionLthEtapaPrimera) || 0
                                                 
-                                                pathToMongoOtEtapa[i].lthEtapaPrimera == 'sinDato' ? arrResDatoLthEtapaPrimera.push('S/D') : arrResDatoLthEtapaPrimera.push(pathToMongoOtEtapa[i].lthEtapaPrimera)
-                                                pathToMongoOtEtapa[i].estadoLthEtapaPrimera == 'sinDato' ? arrResEstadoLthEtapaPrimera.push('S/D') : arrResEstadoLthEtapaPrimera.push(pathToMongoOtEtapa[i].estadoLthEtapaPrimera)
+                                                pathToMongoOtEtapa[i].lthEtapaPrimera == 'sinDato' ? arrResLthEtapaPrimera.push('S/D') : arrResLthEtapaPrimera.push(pathToMongoOtEtapa[i].lthEtapaPrimera)
                                                 arrResRevisionLthEtapaPrimera.push(pathToMongoOtEtapa[i].revisionLthEtapaPrimera)
                                             
                                                 arrResCreadorLthEtapaPrimera.push(pathToMongoOtEtapa[i].creator[0].username)
@@ -337,12 +308,12 @@
                                                 arrResFechaModLthEtapaPrimera.push(pathToMongoOtEtapa[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResLthEtapaPrimera = parseInt(arrResEstadoLthEtapaPrimera.length-1)
+                                        valueArrayResLthEtapaPrimera = parseInt(arrResLthEtapaPrimera.length-1)
                                                 
-                                        if (arrResDatoLthEtapaPrimera.length == 1 ) {
+                                        if (arrResLthEtapaPrimera.length == 1 ) {
                                             siguienteDisabled = "disabled"
                                             anteriorDisabled = "disabled"
-                                        } else if (arrResDatoLthEtapaPrimera.length == arrResRevisionLthEtapaPrimera.length) {
+                                        } else if (arrResLthEtapaPrimera.length == arrResRevisionLthEtapaPrimera.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -351,8 +322,7 @@
                                         }
                                                 
                                     } else {
-                                        arrResDatoLthEtapaPrimera.push(resDatoLthEtapaPrimera)
-                                        arrResEstadoLthEtapaPrimera.push(resEstadoLthEtapaPrimera)
+                                        arrResLthEtapaPrimera.push(resLthEtapaPrimera)
                                         arrResRevisionLthEtapaPrimera.push(resRevisionLthEtapaPrimera)
                                         
                                         arrResCreadorLthEtapaPrimera.push(pathMongoOtProject[n].creator[0].username)
@@ -367,8 +337,7 @@
                                         <%= anteriorDisabled %>
                                         ><i class="fa-solid fa-arrow-left"></i>
                                     </button>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoLthEtapaPrimera %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoLthEtapaPrimera %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResLthEtapaPrimera %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResLthEtapaPrimera %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionLthEtapaPrimera %>">
                                     <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorLthEtapaPrimera %>">
@@ -376,15 +345,10 @@
                                     <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaLthEtapaPrimera %>">
                                     <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModLthEtapaPrimera %>">
 
-                                    <span id="resDatoLthEtapaPrimera<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                        <%= resDatoLthEtapaPrimera %>
-                                    </span> |
-
-                                    <% const config = etapaPrimeraConfig[resEstadoLthEtapaPrimera] || etapaPrimeraConfig.default; %>
-                                    <span id="resEstadoLthEtapaPrimera<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoLthEtapaPrimera%>">
+                                    <% const config = etapaPrimeraConfig[resLthEtapaPrimera] || etapaPrimeraConfig.default; %>
+                                    <span id="resLthEtapaPrimera<%=k%>_<%=n%>_<%=q%>" value="<%=resLthEtapaPrimera%>" >
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionLthEtapaPrimera<%=k%>_<%=n%>_<%=q%>" name="resRevisionLthEtapaPrimera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionLthEtapaPrimera %>
                                     </span>
@@ -412,38 +376,27 @@
 
                                             if (pathToMongoOtEtapa[i]) {
                                                 let largoArray = parseInt(largoArrayEtapa)
-                                                resDatoGuiados = pathToMongoOtEtapa[largoArray-1].guiados || 'S/D'
-                                                resEstadoGuiados = pathToMongoOtEtapa[largoArray-1].estadoGuiados || 'sinDato'
+                                                resGuiados = pathToMongoOtEtapa[largoArray-1].guiados || 'S/D'
                                                 resRevisionGuiados = parseInt(pathToMongoOtEtapa[largoArray-1].revisionGuiados) || 0
                                                 
-                                                arrResDatoGuiados.push(pathToMongoOtEtapa[i].guiados)
-                                                arrResEstadoGuiados.push(pathToMongoOtEtapa[i].estadoGuiados)
+                                                arrResGuiados.push(pathToMongoOtEtapa[i].guiados)
                                                 arrResRevisionGuiados.push(pathToMongoOtEtapa[i].revisionGuiados)
                                             }
                                         }
-                                        valueArrayResGuiados = parseInt(arrResEstadoGuiados.length-1)
-                                        resDatoGuiados = pathToMongoOtEtapa[0].Guiados
-                                        resEstadoGuiados = pathToMongoOtEtapa[0].estadoGuiados
-
+                                        valueArrayResGuiados = parseInt(arrResGuiados.length-1)
+                                        resGuiados = pathToMongoOtEtapa[0].Guiados
+                                        
                                     } else {
-                                        arrResDatoGuiados.push(resDatoGuiados)
-                                        arrResEstadoGuiados.push(resEstadoGuiados)
+                                        arrResGuiados.push(resGuiados)
                                         arrResRevisionGuiados.push(resRevisionGuiados)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoGuiados %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoGuiados %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResGuiados %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResGuiados %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionGuiados %>">
                                 
-                                    <span id="resDatoGuiados<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoGuiados %>
-                                    </span> |
-
-                                    <% const config = etapaPrimeraConfig[resEstadoGuiados] || etapaPrimeraConfig.default; %>
-                                    <span id="resEstadoGuiados<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoGuiados%>">
+                                    <span id="resGuiados<%=k%>_<%=n%>_<%=q%>" value="<%=resGuiados%>" >
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionGuiados<%=k%>_<%=n%>_<%=q%>" name="resRevisionGuiados" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionGuiados %>
                                     </span>
@@ -457,38 +410,27 @@
                                             
                                             if (pathToMongoOtEtapa[i]) {
                                                 let largoArray = parseInt(largoArrayEtapa)
-                                                resDatoCentradoLuzCorte = pathToMongoOtEtapa[largoArray-1].centradoLuzCorte || 'S/D'
-                                                resEstadoCentradoLuzCorte = pathToMongoOtEtapa[largoArray-1].centradoLuzCorte || 'sinDato'
+                                                resCentradoLuzCorte = pathToMongoOtEtapa[largoArray-1].centradoLuzCorte || 'S/D'
                                                 resRevisionCentradoLuzCorte = parseInt(pathToMongoOtEtapa[largoArray-1].revisionCentradoLuzCorte) || 0
                                                 
-                                                arrResDatoCentradoLuzCorte.push(pathToMongoOtEtapa[i].centradoLuzCorte)
-                                                arrResEstadoCentradoLuzCorte.push(pathToMongoOtEtapa[i].centradoLuzCorte)
+                                                arrResCentradoLuzCorte.push(pathToMongoOtEtapa[i].centradoLuzCorte)
                                                 arrResRevisionCentradoLuzCorte.push(pathToMongoOtEtapa[i].revisionCentradoLuzCorte)
                                             }
                                         }
-                                        valueArrayResCentradoLuzCorte = parseInt(arrResEstadoCentradoLuzCorte.length-1)
-                                        resDatoCentradoLuzCorte = pathToMongoOtEtapa[0].centradoLuzCorte
-                                        resEstadoCentradoLuzCorte = pathToMongoOtEtapa[0].estadoCentradoLuzCorte
-                                    
+                                        valueArrayResCentradoLuzCorte = parseInt(arrResCentradoLuzCorte.length-1)
+                                        resCentradoLuzCorte = pathToMongoOtEtapa[0].centradoLuzCorte
+                                        
                                     } else {
-                                        arrResDatoCentradoLuzCorte.push(resDatoCentradoLuzCorte)
-                                        arrResEstadoCentradoLuzCorte.push(resEstadoCentradoLuzCorte)
+                                        arrResCentradoLuzCorte.push(resCentradoLuzCorte)
                                         arrResRevisionCentradoLuzCorte.push(resRevisionCentradoLuzCorte)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoCentradoLuzCorte %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoCentradoLuzCorte %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCentradoLuzCorte %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResCentradoLuzCorte %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionCentradoLuzCorte %>">
 
-                                    <span id="resDatoCentradoLuzCorte<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoCentradoLuzCorte %>
-                                    </span> |
-                                    
-                                    <% const config = etapaPrimeraConfig[resEstadoCentradoLuzCorte] || etapaPrimeraConfig.default; %>
-                                    <span id="resEstadoCentradoLuzCorte<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoCentradoLuzCorte%>">
+                                    <span id="resCentradoLuzCorte<%=k%>_<%=n%>_<%=q%>" value="<%=resCentradoLuzCorte%>" >
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionCentradoLuzCorte<%=k%>_<%=n%>_<%=q%>" name="resRevisionCentradoLuzCorte" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionCentradoLuzCorte %>
                                     </span>
@@ -502,38 +444,27 @@
                                             
                                             if (pathToMongoOtEtapa[i]) {
                                                 let largoArray = parseInt(largoArrayEtapa)
-                                                resDatoCentradoLevas = pathToMongoOtEtapa[largoArray-1].centradoLevas || "S/D"
-                                                resEstadoCentradoLevas = pathToMongoOtEtapa[largoArray-1].estadoCentradoLevas || 'sinDato'
+                                                resCentradoLevas = pathToMongoOtEtapa[largoArray-1].centradoLevas || "S/D"
                                                 resRevisionCentradoLevas = parseInt(pathToMongoOtEtapa[largoArray-1].revisionCentradoLevas) || 0
                                                 
-                                                arrResDatoCentradoLevas.push(pathToMongoOtEtapa[i].centradoLevas)
-                                                arrResEstadoCentradoLevas.push(pathToMongoOtEtapa[i].estadoCentradoLevas)
+                                                arrResCentradoLevas.push(pathToMongoOtEtapa[i].centradoLevas)
                                                 arrResRevisionCentradoLevas.push(pathToMongoOtEtapa[i].revisionCentradoLevas)
                                             }
                                         }
-                                        valueArrayResCentradoLevas = parseInt(arrResEstadoCentradoLevas.length-1)
-                                        resDatoCentradoLevas = pathToMongoOtEtapa[0].centradoLevas
-                                        resEstadoCentradoLevas = pathToMongoOtEtapa[0].estadoCentradoLevas
-                                    
+                                        valueArrayResCentradoLevas = parseInt(arrResCentradoLevas.length-1)
+                                        resCentradoLevas = pathToMongoOtEtapa[0].centradoLevas
+                                        
                                     } else {
-                                        arrResDatoCentradoLevas.push(resDatoCentradoLevas)
-                                        arrResEstadoCentradoLevas.push(resEstadoCentradoLevas)
+                                        arrResCentradoLevas.push(resCentradoLevas)
                                         arrResRevisionCentradoLevas.push(resRevisionCentradoLevas)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoCentradoLevas %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoCentradoLevas %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCentradoLevas %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResCentradoLevas %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionCentradoLevas %>">
 
-                                    <span id="resDatoCentradoLevas<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoCentradoLevas %>
-                                    </span> |
-                                    
-                                    <% const config = etapaPrimeraConfig[resEstadoCentradoLevas] || etapaPrimeraConfig.default; %>
-                                    <span id="resEstadoCentradoLevas<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoCentradoLevas%>">
+                                    <span id="resCentradoLevas<%=k%>_<%=n%>_<%=q%>" value="<%=resCentradoLevas%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionCentradoLevas<%=k%>_<%=n%>_<%=q%>" name="resRevisionCentradoLevas" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionCentradoLevas %>
                                     </span>
@@ -547,38 +478,27 @@
                                             
                                             if (pathToMongoOtEtapa[i]) {
                                                 let largoArray = parseInt(largoArrayEtapa)
-                                                resDatoLthEtapaPrimera = pathToMongoOtEtapa[largoArray-1].lthEtapaPrimera || "S/D"
-                                                resEstadoLthEtapaPrimera = pathToMongoOtEtapa[largoArray-1].estadoLthEtapaPrimera || 'sinDato'
+                                                resLthEtapaPrimera = pathToMongoOtEtapa[largoArray-1].lthEtapaPrimera || "S/D"
                                                 resRevisionLthEtapaPrimera = parseInt(pathToMongoOtEtapa[largoArray-1].revisionLthEtapaPrimera) || 0
                                                 
-                                                arrResDatoLthEtapaPrimera.push(pathToMongoOtEtapa[i].lthEtapaPrimera)
-                                                arrResEstadoLthEtapaPrimera.push(pathToMongoOtEtapa[i].estadoLthEtapaPrimera)
+                                                arrResLthEtapaPrimera.push(pathToMongoOtEtapa[i].lthEtapaPrimera)
                                                 arrResRevisionLthEtapaPrimera.push(pathToMongoOtEtapa[i].revisionLthEtapaPrimera)
                                             }
                                         }
-                                        valueArrayResLthEtapaPrimera = parseInt(arrResEstadoLthEtapaPrimera.length-1)
-                                        resDatoLthEtapaPrimera = pathToMongoOtEtapa[0].lthEtapaPrimera
-                                        resEstadoLthEtapaPrimera = pathToMongoOtEtapa[0].estadoLthEtapaPrimera
-                                    
+                                        valueArrayResLthEtapaPrimera = parseInt(arrResLthEtapaPrimera.length-1)
+                                        resLthEtapaPrimera = pathToMongoOtEtapa[0].lthEtapaPrimera
+                                        
                                     } else {
-                                        arrResDatoLthEtapaPrimera.push(resDatoLthEtapaPrimera)
-                                        arrResEstadoLthEtapaPrimera.push(resEstadoLthEtapaPrimera)
+                                        arrResLthEtapaPrimera.push(resLthEtapaPrimera)
                                         arrResRevisionLthEtapaPrimera.push(resRevisionLthEtapaPrimera)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoLthEtapaPrimera %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoLthEtapaPrimera %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResLthEtapaPrimera %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResLthEtapaPrimera %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionLthEtapaPrimera %>">
 
-                                    <span id="resDatoLthEtapaPrimera<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoLthEtapaPrimera %>
-                                    </span> |
-                                    
-                                    <% const config = etapaPrimeraConfig[resEstadoLthEtapaPrimera] || etapaPrimeraConfig.default; %>
-                                    <span id="resEstadoLthEtapaPrimera<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoLthEtapaPrimera%>">
+                                    <span id="resLthEtapaPrimera<%=k%>_<%=n%>_<%=q%>" value="<%=resLthEtapaPrimera%>" >
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionLthEtapaPrimera<%=k%>_<%=n%>_<%=q%>" name="resRevisionLthEtapaPrimera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionLthEtapaPrimera %>
                                     </span>

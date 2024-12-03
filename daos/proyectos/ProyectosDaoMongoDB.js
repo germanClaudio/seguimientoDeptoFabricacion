@@ -6,6 +6,8 @@ const Clientes = require('../../models/clientes.models.js')
 let formatDate = require('../../utils/formatDate.js')
 const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000}
 
+const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty, dataUserOciOwnerEmpty } = require('../../utils/generateUsers.js')
+
 class ProyectosDaoMongoDB extends ContenedorMongoDB {
     constructor(cnxStr) {
         super(cnxStr)
@@ -130,7 +132,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                 } else {
                     const newProject = new Proyectos(project)
                     await newProject.save()
-                    console.info('Project created')
+                    // console.info('Project created')
                     return newProject
                 }
             } catch (error) {
@@ -187,7 +189,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                     [`project.0.oci.${numberKOciParsed}.ociNumber`]: numberOciParsed
                 })
                 // const projects = await Proyectos.find()
-                console.log('projectDao: ', project)
+                // console.log('projectDao: ', project)
                 return project ? numberOciParsed : false
 
             } catch (error) {
@@ -229,7 +231,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
         if (projectInput && projectCodeInput) {
             const existingProject = await Proyectos.findOne(
                 { $or: [ {projectName: `${projectInput}`},
-                         {codeProject: `${projectCodeInput}`}
+                        {codeProject: `${projectCodeInput}`}
                         ]
                 }
             );
@@ -431,7 +433,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                         } else {
                             // Recupero el creador y la fecha inicial, ya que solo se modifica
                             let pathToOtProject = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt],
-                                pathToOtInformation = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otInformation[0],
+                                pathToOtInformation = pathToOtProject.otInformation[0],
                                 otInfoR14Length = parseInt(pathToOtInformation.otInfoR14.length) || 0,
                                 pathToOtInfoR14 = pathToOtInformation.otInfoR14[otInfoR14Length-1]
 
@@ -608,7 +610,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                         } else {
                             // Recupero el creador y la fecha inicial, ya que solo se modifica
                             let pathToOtProject = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt],
-                                pathToOtInformation = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otInformation[0],
+                                pathToOtInformation = pathToOtProject.otInformation[0],
                                 otInfoProceso3dLength = parseInt(pathToOtInformation.otInfoProceso.length) || 0,
                                 pathToProceso3d = pathToOtInformation.otInfoProceso[otInfoProceso3dLength-1]
 
@@ -786,7 +788,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                         } else {
                             // Recupero el creador y la fecha inicial, ya que solo se modifica
                             let pathToOtProject = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt],
-                                pathToOtInformation = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otInformation[0],
+                                pathToOtInformation = pathToOtProject.otInformation[0],
                                 otInfoDisenoPrimeraLength = parseInt(pathToOtInformation.otInfoDisenoPrimera.length) || 0,
                                 pathToDisenoPrimera = pathToOtInformation.otInfoDisenoPrimera[otInfoDisenoPrimeraLength-1]
 
@@ -985,7 +987,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                         } else {
                             // Recupero el creador y la fecha inicial, ya que solo se modifica
                             let pathToOtProject = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt],
-                                pathToOtInformation = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otInformation[0],
+                                pathToOtInformation = pathToOtProject.otInformation[0],
                                 otInfoDisenoSegundaLength = parseInt(pathToOtInformation.otInfoDisenoSegunda.length) || 0,
                                 pathToDisenoSegunda = pathToOtInformation.otInfoDisenoSegunda[otInfoDisenoSegundaLength-1]
 
@@ -1185,7 +1187,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                         } else {
                             // Recupero el creador y la fecha inicial, ya que solo se modifica
                             let pathToOtProject = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt],
-                                pathToOtInformation = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otInformation[0],
+                                pathToOtInformation = pathToOtProject.otInformation[0],
                                 otInfoInfo80Length = parseInt(pathToOtInformation.otInfoInfo80.length) || 0,
                                 pathToOtInfoInfo80 = pathToOtInformation.otInfoInfo80[otInfoInfo80Length-1]
 
@@ -1380,7 +1382,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                         } else {
                             // Recupero el creador y la fecha inicial, ya que solo se modifica
                             let pathToOtProject = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt],
-                                pathToOtInformation = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otInformation[0],
+                                pathToOtInformation = pathToOtProject.otInformation[0],
                                 otInfoInfo100Length = parseInt(pathToOtInformation.otInfoInfo100.length) || 0,
                                 pathToOtInfoInfo100 = pathToOtInformation.otInfoInfo100[otInfoInfo100Length-1]
 
@@ -1553,7 +1555,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                         } else {
                             // Recupero el creador y la fecha inicial, ya que solo se modifica
                             let pathToOtProject = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt],
-                                pathToOtInformation = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otInformation[0],
+                                pathToOtInformation = pathToOtProject.otInformation[0],
                                 otInfoSim0Length = parseInt(pathToOtInformation.otInfoSim0.length) || 0,
                                 pathToOtInfoSim0 = pathToOtInformation.otInfoSim0[otInfoSim0Length-1]
 
@@ -1733,7 +1735,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                         } else {
                             // Recupero el creador y la fecha inicial, ya que solo se modifica
                             let pathToOtProject = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt],
-                                pathToOtInformation = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otInformation[0],
+                                pathToOtInformation = pathToOtProject.otInformation[0],
                                 otInfoSim1Length = parseInt(pathToOtInformation.otInfoSim1.length) || 0,
                                 pathToOtInfoSim1 = pathToOtInformation.otInfoSim1[otInfoSim1Length-1]
 
@@ -1944,7 +1946,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                         } else {
                             // Recupero el creador y la fecha inicial, ya que solo se modifica
                             let pathToOtProject = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt],
-                                pathToOtInformation = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otInformation[0],
+                                pathToOtInformation = pathToOtProject.otInformation[0],
                                 otInfoSim2_3Length = parseInt(pathToOtInformation.otInfoSim2_3.length) || 0,
                                 pathToOtInfoSim2_3 = pathToOtInformation.otInfoSim2_3[otInfoSim2_3Length-1]
 
@@ -2144,7 +2146,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                         } else {
                             // Recupero el creador y la fecha inicial, ya que solo se modifica
                             let pathToOtProject = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt],
-                                pathToOtInformation = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otInformation[0],
+                                pathToOtInformation = pathToOtProject.otInformation[0],
                                 otInfoSim4PrimeraLength = parseInt(pathToOtInformation.otInfoSim4Primera.length) || 0,
                                 pathToOtInfoSim4Primera = pathToOtInformation.otInfoSim4Primera[otInfoSim4PrimeraLength-1]
 
@@ -2344,7 +2346,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                         } else {
                             // Recupero el creador y la fecha inicial, ya que solo se modifica
                             let pathToOtProject = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt],
-                                pathToOtInformation = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otInformation[0],
+                                pathToOtInformation = pathToOtProject.otInformation[0],
                                 otInfoSim4SegundaLength = parseInt(pathToOtInformation.otInfoSim4Segunda.length) || 0,
                                 pathToOtInfoSim4Segunda = pathToOtInformation.otInfoSim4Segunda[otInfoSim4SegundaLength-1]
 
@@ -2540,7 +2542,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                         } else {
                             // Recupero el creador y la fecha inicial, ya que solo se modifica
                             let pathToOtProject = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt],
-                                pathToOtInformation = itemMongoDB.project[0].oci[ociKNumber].otProject[iOtKParseInt].otInformation[0],
+                                pathToOtInformation = pathToOtProject.otInformation[0],
                                 otInfoSim5Length = parseInt(pathToOtInformation.otInfoSim5.length) || 0,
                                 pathToOtInfoSim5 = pathToOtInformation.otInfoSim5[otInfoSim5Length-1]
 
@@ -2675,9 +2677,6 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
 
     // Update Level Project by Project Id
     async updateLevelProject(id, project, levelProject, userModificator) {
-        //console.log('Project...', project)
-        //console.log('userInfo...', userInfo)
-        
         if (project) {
             try {
                 const itemMongoDB = await Proyectos.findById({ _id: project[0]._id })
@@ -2831,6 +2830,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                             ociDescription: arrayOciAddedToProject[i].ociDescription,
                             ociStatus: arrayOciAddedToProject[i].ociStatus,
                             ociAlias: arrayOciAddedToProject[i].ociAlias,
+                            ociOwner: dataUserOciOwnerEmpty(),
                             creator: arrayOciAddedToProject[i].creator,
                             timestamp: formatDate(),
                             ociImage: arrayOciAddedToProject[i].ociImage,
@@ -2958,9 +2958,9 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
             try {
                 const itemMongoDB = await Proyectos.findById({ _id: project[0]._id })
                 
-                let numberOciK = parseInt(ociKNumber)
-                let numberOci = parseInt(ociNumber)
-                let booleanStatus
+                let numberOciK = parseInt(ociKNumber),
+                    numberOci = parseInt(ociNumber),
+                    booleanStatus
                 statusOci=='on' ? booleanStatus=true : booleanStatus=false
                 ociImage ? ociImage : itemMongoDB.project[0].oci[numberOciK].ociImage
                 let updatedOci
@@ -3096,13 +3096,13 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
             try {
                 const itemMongoDB = await Proyectos.findById({ _id: project[0]._id })
             
-                let numberOciK = parseInt(ociKNumber)
-                let numberOt = parseInt(otNumber)
-                let numberOtK = parseInt(otKNumber)
-                let numberOp = parseInt(opNumber)
-                let booleanStatus
+                let numberOciK = parseInt(ociKNumber),
+                    numberOt = parseInt(otNumber),
+                    numberOtK = parseInt(otKNumber),
+                    numberOp = parseInt(opNumber),
+                    booleanStatus,
+                    updatedOt
                 statusOt=='on' ? booleanStatus=true : booleanStatus=false
-                let updatedOt
 
                 if (itemMongoDB) {
                     updatedOt = await Proyectos.updateOne(
@@ -3152,8 +3152,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
         otKNumber,
         userModificator
     ) {
-    const ociNumberK = parseInt(ociKNumber)
-    const otNumberK = parseInt(otKNumber) 
+    const ociNumberK = parseInt(ociKNumber), otNumberK = parseInt(otKNumber) 
 
     if (id && project) {
         
@@ -3161,7 +3160,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
             const itemMongoDB = await Proyectos.findById({ _id: project[0]._id })
             let deleteOt
             if (itemMongoDB) {
-                                
+                
                 if(itemMongoDB.project[0].oci[ociNumberK].otProject[otNumberK].visible) {
                     deleteOt = await Proyectos.updateOne(
                         { _id: itemMongoDB._id },
@@ -3224,7 +3223,6 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
 
     // Delete Project by Project Id
     async deleteProjectById(id, project, userModificator) {
-                        
         if (id) {
             try {
                 const itemMongoDB = await Proyectos.findById({ _id: project[0]._id })

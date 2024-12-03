@@ -2323,15 +2323,12 @@ const cabeceraFormulario = `<div class="col-2 my-auto align-self-middle" style="
                             </div>
                             <div class="col-1 my-auto align-self-middle">
                                 <label for="opNumber"><strong>OP#</strong></label>
+                            </div>
+                            <div class="col my-auto align-self-middle" style="width: 10rem;">
+                                <label for="otDescription"><strong>Descripción</strong></label>
                             </div>`
 
-function datosCabeceraFormulario (
-            arrayOtStatus, 
-            y, 
-            arrayOtNumber, 
-            arrayOpNumber
-        ) {
-
+function datosCabeceraFormulario (arrayOtStatus, y, arrayOtNumber, arrayOpNumber, arrayOtDescription) {
     const datosCabecera = 
         `<div class="col-2 my-auto align-self-middle" style="width: 5rem;">
             <span id="${arrayOtStatus}"
@@ -2351,9 +2348,72 @@ function datosCabeceraFormulario (
             <span class="badge rounded-pill bg-secondary text-white">
                 ${arrayOpNumber}
             </span>
+        </div>
+        <div class="col my-auto align-self-middle overflow-ellipsis" style="width: 10rem;">
+            <span class="text-dark">${arrayOtDescription}</span>
         </div>`
 
     return datosCabecera                    
+}
+
+function htmlTitulos(qInicialX, qFinalX){
+    const resultMapTitles = {
+        0: ['Proceso R14'],
+        1: ['Aprobado PM'],
+        2: ['Proceso 3D'],
+        3: ['Hs Proceso 3D'],
+        4: ['Av Diseño'],
+        5: ['1° Rev 50%'],
+        6: ['2° Rev 80%'],
+        7: ['Env a Cliente'],
+        8: ['Rev Cliente'],
+        9: ['LdM Provisoria'],
+        10: ['Av Diseño 100%'],
+        11: ['Aprob Cliente'],
+        12: ['LdM Avanzada (Cilindros/Guías)'],
+        13: ['LdM Avanzada (Tacos D2)'],
+        14: ['LdM 80%'],
+        15: ['Info Modelo'],
+        16: ['LdM 100%'],
+        17: ['Info 100%'],
+        18: ['Simulación 0'],
+        19: ['Doc Simulación 0'],
+        20: ['Simulación 1'],
+        21: ['Video'],
+        22: ['Informe'],
+        23: ['PPT'],
+        24: ['S1 p/Op20'],
+        25: ['Simulación 2'],
+        26: ['Reporte'],
+        27: ['DFN Prodismo'],
+        28: ['Simulación 3'],
+        29: ['Material Ensayo'],
+        30: ['±10'],
+        31: ['Mp Alternativo'],
+        32: ['Reunión Simulación'],
+        33: ['Informe Sim 4'],
+        34: ['Geo Copiado #1'],
+        35: ['Geo Copiado #2'],
+        36: ['Horas Sim'],
+        37: ['Blank Grillado'],
+        38: ['Mp Ensayada']
+    };
+
+    let htmlTitulos = ''
+    for (let q = qInicialX; q < qFinalX; q++) {
+        if (resultMapTitles[q]) { // Verifica si existe un título para la clave actual
+            resultMapTitles[q].forEach(title => {
+                htmlTitulos += `
+                    <div class="col my-auto">
+                        <span><strong>${title}</strong></span>
+                    </div>
+                    <div class="col-1 my-auto align-self-start border-start border-dark" style="width: 4vw;">
+                        <span><strong>Rev</strong></span>
+                    </div>`;
+            });
+        }
+    }
+    return htmlTitulos
 }
 
 function footerFormularioHidden (projectNumberId, clientId, i, arrayBloqueLength, arrayOtKNumber) {
@@ -2469,7 +2529,7 @@ function addDatoToR14(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="procesoR14Hidden${res.arrayOtNumber[y]}"
                             name="procesoR14Hidden${[y]}" value="${(switchOptionSelected(getValues.arrayProcesoR14[y])).variableValue}">
                         </div>
-                        <div class="col-1 my-auto">    
+                        <div class="col-1 my-auto" style="width: 4vw;">    
                             <input type="text" id="revisionProcesoR14${res.arrayOtNumber[y]}_readOnly"
                                 value="${getValues.arrayRevisionProcesoR14[y]}" class="form-control" style="text-align: center;" disabled readonly">
                             <input type="hidden" id="revisionProcesoR14${res.arrayOtNumber[y]}"
@@ -2487,7 +2547,7 @@ function addDatoToR14(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="aprobadoR14Hidden${res.arrayOtNumber[y]}"
                             name="aprobadoR14Hidden${[y]}" value="${(switchOptionSelected(getValues.arrayAprobadoR14[y])).variableValue}">
                         </div>    
-                        <div class="col-1 my-auto">  
+                        <div class="col-1 my-auto" style="width: 4vw;">  
                             <input type="text" id="revisionAprobadoR14${res.arrayOtNumber[y]}_readOnly"
                                 value="${getValues.arrayRevisionAprobadoR14[y]}" class="form-control"
                                 style="text-align: center;" disabled readonly">
@@ -2501,7 +2561,7 @@ function addDatoToR14(i, idTabla, qInicial, qFinal) {
 
                 arrayBloque.push(`
                     <div class="row py-1 mx-auto ${divClass}" ${divStyle}>
-                        ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
+                        ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], arrayOtDescriptionSelected[y])}
                         ${dataEnArrayBloque}
                     </div>`);
                 
@@ -2513,18 +2573,7 @@ function addDatoToR14(i, idTabla, qInicial, qFinal) {
                         <fieldset>
                             <div class="row mx-auto">
                                 ${cabeceraFormulario}
-                                <div class="col my-auto">
-                                    <label for="procesoR14${res.arrayOtNumber[0]}"><strong>Proceso</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start">
-                                    <label for="revisionProcesoR14${res.arrayOtNumber[0]}_readOnly"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto">
-                                    <label for="aprobadoR14${res.arrayOtNumber[0]}"><strong>Aprobado PM</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start">
-                                    <label for="revisionAprobadoR14${res.arrayOtNumber[0]}_readOnly"><strong>Rev</strong></label>
-                                </div>
+                                ${htmlTitulos(qInicial, qFinal)}
                             </div>
                             <hr>
                                 ${arrayBloque.join("<br>")}
@@ -2533,13 +2582,10 @@ function addDatoToR14(i, idTabla, qInicial, qFinal) {
                         </fieldset>
                     </form>`
 
-        const titulo = "R14"
-        const ancho = 870
-        const background = '#ffffff'
-        const formulario = 'formR14Values'
-        const arrayDeOtNumber = arrayOtSelected
-        const arrayDeOpNumber = arrayOpDescriptionSelected
-        const arrayDeOtDescription = arrayOtDescriptionSelected
+        const titulo = "R14",
+        ancho = 870,
+        background = '#ffffff',
+        formulario = 'formR14Values'
 
         swalFireAlert (
             titulo,
@@ -2547,9 +2593,9 @@ function addDatoToR14(i, idTabla, qInicial, qFinal) {
             ancho,
             background,
             formulario,
-            arrayDeOtNumber,
-            arrayDeOpNumber,
-            arrayDeOtDescription
+            arrayOtSelected,
+            arrayOpDescriptionSelected,
+            arrayOtDescriptionSelected
         )
         disabledBtnAceptar()
     }
@@ -2610,7 +2656,7 @@ function addDatoToProceso3d(i, idTabla, qInicial, qFinal) {
                                 <input type="hidden" id="proceso3dHidden${res.arrayOtNumber[y]}"
                                     name="proceso3dHidden${[y]}" value="${(switchOptionSelected(getValues.arrayProceso3d[y])).variableValue}">
                             </div>
-                            <div class="col-1 my-auto">    
+                            <div class="col-1 my-auto" style="width: 4vw;">    
                                 <input type="text" value="${getValues.arrayRevisionProceso3d[y]}" class="form-control"
                                     style="text-align: center;" disabled readonly">
                                 <input type="hidden" id="revisionProceso3d${res.arrayOtNumber[y]}"
@@ -2623,7 +2669,7 @@ function addDatoToProceso3d(i, idTabla, qInicial, qFinal) {
                                     class="form-control" min="0" max="9999"
                                     style="text-align: center;" ${colorStatusOt(res.arrayOtStatus[y]).disabled}>
                             </div>
-                            <div class="col-1 my-auto">    
+                            <div class="col-1 my-auto" style="width: 4vw;">    
                                 <input type="text" value="${getValues.arrayRevisionHorasProceso3d[y]}" class="form-control"
                                     style="text-align: center;" disabled readonly">
                                 <input type="hidden" id="revisionHorasProceso3d${res.arrayOtNumber[y]}"
@@ -2636,7 +2682,7 @@ function addDatoToProceso3d(i, idTabla, qInicial, qFinal) {
 
                 arrayBloqueProceso3d.push(`
                     <div class="row py-1 mx-auto ${divClass}" ${divStyle}>
-                        ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
+                        ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], arrayOtDescriptionSelected[y])}
                         ${dataEnArrayBloque}
                     </div>`);
                 
@@ -2660,18 +2706,7 @@ function addDatoToProceso3d(i, idTabla, qInicial, qFinal) {
                         <fieldset>
                             <div class="row mx-auto">
                                 ${cabeceraFormulario}
-                                <div class="col my-auto">
-                                    <label for="proceso"><strong>Proceso 3D</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start">
-                                    <label for="revisionProceso3d"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto">
-                                    <label for="hsProceso"><strong>Hs. Proceso 3D</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start">
-                                    <label for="revisionHorasProceso3d"><strong>Rev</strong></label>
-                                </div>
+                                ${htmlTitulos(qInicial, qFinal)}
                             </div>
                             <hr>
                                 ${arrayBloqueProceso3d.join("<br>")}
@@ -2682,13 +2717,10 @@ function addDatoToProceso3d(i, idTabla, qInicial, qFinal) {
                         </fieldset>
                     </form>`
     
-        const titulo = "Proceso 3D"
-        const formulario = 'formProceso3dValues'
-        const ancho = 870
-        const background = '#efefff'
-        const arrayDeOtNumber = arrayOtSelected
-        const arrayDeOpNumber = arrayOpDescriptionSelected
-        const arrayDeOtDescription = arrayOtDescriptionSelected
+        const titulo = "Proceso 3D",
+        formulario = 'formProceso3dValues',
+        ancho = 870,
+        background = '#efefff'
     
         swalFireAlert (
             titulo,
@@ -2696,9 +2728,9 @@ function addDatoToProceso3d(i, idTabla, qInicial, qFinal) {
             ancho,
             background,
             formulario,
-            arrayDeOtNumber,
-            arrayDeOpNumber,
-            arrayDeOtDescription
+            arrayOtSelected,
+            arrayOpDescriptionSelected,
+            arrayOtDescriptionSelected
         )
         disabledBtnAceptar()
     }
@@ -2746,7 +2778,7 @@ function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
                             </div>
                         </div>
                     </div>
-                    <div class="col-1 my-auto">    
+                    <div class="col-1 my-auto" style="width: 4vw;">    
                         <input type="text" value="${getValues.arrayRevisionAvDiseno[y]}" class="form-control mx-auto"
                             style="text-align: center; width: 3.5rem;" disabled readonly>
                         <input type="hidden" id="revisionAvDiseno${res.arrayOtNumber[y]}"
@@ -2764,7 +2796,7 @@ function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
                         <input type="hidden" id="av50DisenoHidden${res.arrayOtNumber[y]}" name="av50DisenoHidden${[y]}"
                             value="${(switchOptionSelected(getValues.arrayAv50Diseno[y])).variableValue}">
                     </div>
-                    <div class="col-1 my-auto">
+                    <div class="col-1 my-auto" style="width: 4vw;">
                         <input type="text" value="${getValues.arrayRevisionAv50Diseno[y]}" class="form-control mx-auto"
                             style="text-align: center; width: 3.5rem;" disabled readonly>
                         <input type="hidden" id="revisionAv50Diseno${res.arrayOtNumber[y]}"
@@ -2782,7 +2814,7 @@ function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
                         <input type="hidden" id="av80DisenoHidden${res.arrayOtNumber[y]}" name="av80DisenoHidden${[y]}"
                             value="${(switchOptionSelected(getValues.arrayAv80Diseno[y])).variableValue}">
                     </div>
-                    <div class="col-1 my-auto">
+                    <div class="col-1 my-auto" style="width: 4vw;">
                         <input type="text" value="${getValues.arrayRevisionAv80Diseno[y]}" class="form-control mx-auto"
                             style="text-align: center; width: 3.5rem;" disabled readonly>
                         <input type="hidden" id="revisionAv80Diseno${res.arrayOtNumber[y]}"
@@ -2799,7 +2831,7 @@ function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
                         <input type="hidden" id="envioClienteHidden${res.arrayOtNumber[y]}" name="envioClienteHidden${[y]}"
                             value="${(switchOptionSelected(getValues.arrayEnvioCliente[y])).variableValue}">
                     </div>
-                    <div class="col-1 my-auto">    
+                    <div class="col-1 my-auto" style="width: 4vw;">    
                         <input type="text" value="${getValues.arrayRevisionEnvioCliente[y]}" class="form-control mx-auto"
                             style="text-align: center; width: 3.5rem;" disabled readonly>
                         <input type="hidden" id="revisionEnvioCliente${res.arrayOtNumber[y]}"
@@ -2811,7 +2843,7 @@ function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
                 const divClass = isInactive ? 'pe-none' : ''
 
                 arrayBloqueDisenoPrimera.push(`<div class="row py-1 mx-auto ${divClass}" ${divStyle}>
-                        ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
+                        ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], arrayOtDescriptionSelected[y])}
                         ${dataEnArrayBloque}
                     </div>`);
                 
@@ -2823,30 +2855,7 @@ function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
                         <fieldset>
                             <div class="row mx-auto justify-content-center">
                                 ${cabeceraFormulario}
-                                <div class="col my-auto">
-                                    <label for="avDiseno"><strong>Av. Diseño</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revisionAvDiseno"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto">
-                                    <label for="primer50Rev"><strong>1° Rev 50%</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revisionPrimer50Rev"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto">
-                                    <label for="segunda80Rev"><strong>2° Rev 80%</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revisionSegunda80Rev"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto">
-                                    <label for="envCliente"><strong>Env a Cliente</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start">
-                                    <label for="revisionEnvCliente"><strong>Rev</strong></label>
-                                </div>
+                                ${htmlTitulos(qInicial, qFinal)}
                             </div>
                             <hr>
                                 ${arrayBloqueDisenoPrimera.join("<br>")}
@@ -2854,13 +2863,10 @@ function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
                         </fieldset>
                     </form>`  
     
-            const titulo = "Diseño Primera Parte"
-            const ancho = 1375
-            const background = '#dfefff'
-            const formulario = 'formDisenoPrimeraValues'
-            const arrayDeOtNumber = arrayOtSelected
-            const arrayDeOpNumber = arrayOpDescriptionSelected
-            const arrayDeOtDescription = arrayOtDescriptionSelected
+            const titulo = "Diseño (1° Parte)",
+            ancho = 1375,
+            background = '#dfefff',
+            formulario = 'formDisenoPrimeraValues'
     
             swalFireAlert (
                 titulo,
@@ -2868,9 +2874,9 @@ function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
                 ancho,
                 background,
                 formulario,
-                arrayDeOtNumber,
-                arrayDeOpNumber,
-                arrayDeOtDescription
+                arrayOtSelected,
+                arrayOpDescriptionSelected,
+                arrayOtDescriptionSelected
             )
             disabledBtnAceptar()
     }
@@ -2908,13 +2914,13 @@ function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
                         <input type="hidden" id="revisionClienteHidden${res.arrayOtNumber[y]}"
                             name="revisionClienteHidden${[y]}" value="${(switchOptionSelected(getValues.arrayRevisionCliente[y])).variableValue}">
                     </div>
-                    <div class="col-1 my-auto">
+                    <div class="col-1 my-auto" style="width: 4vw;">
                         <input type="text" value="${getValues.arrayRevisionRevisionCliente[y]}" class="form-control mx-auto"
                             style="text-align: center; width: 3.5rem;" disabled readonly>
                         <input type="hidden" id="revisionRevisionCliente${res.arrayOtNumber[y]}"
                             name="revisionRevisionCliente${[y]}" value="${getValues.arrayRevisionRevisionCliente[y]}">
                     </div>
-        
+
                     <div class="col my-auto">
                         <select id="ldmProvisoria${res.arrayOtNumber[y]}" name="ldmProvisoria${[y]}" oninput="updateInputsSelect()"    
                         class="form-select" ${colorStatusOt(res.arrayOtStatus[y]).disabled}>
@@ -2926,7 +2932,7 @@ function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
                         <input type="hidden" id="ldmProvisoriaHidden${res.arrayOtNumber[y]}"
                             name="ldmProvisoriaHidden${[y]}" value="${(switchOptionSelected(getValues.arrayLdmProvisoria[y])).variableValue}">
                     </div>
-                    <div class="col-1 my-auto">
+                    <div class="col-1 my-auto" style="width: 4vw;">
                         <input type="text" value="${getValues.arrayRevisionLdmProvisoria[y]}" class="form-control mx-auto"
                             style="text-align: center; width: 3.5rem;" disabled readonly>
                         <input type="hidden" id="revisionLdmProvisoria${res.arrayOtNumber[y]}"
@@ -2953,13 +2959,13 @@ function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
                             </div>
                         </div>
                     </div>
-                    <div class="col-1 my-auto">    
+                    <div class="col-1 my-auto" style="width: 4vw;">    
                         <input type="text" value="${getValues.arrayRevisionAv100Diseno[y]}" class="form-control mx-auto"
                             style="text-align: center; width: 3.5rem;" disabled readonly>
                         <input type="hidden" id="revisionAv100Diseno${res.arrayOtNumber[y]}"
                             name="revisionAv100Diseno${[y]}" value="${getValues.arrayRevisionAv100Diseno[y]}">
                     </div>
-        
+
                     <div class="col my-auto">
                         <select id="aprobadoCliente${res.arrayOtNumber[y]}" name="aprobadoCliente${[y]}" oninput="updateInputsSelect()"    
                         class="form-select" ${colorStatusOt(res.arrayOtStatus[y]).disabled}>
@@ -2971,7 +2977,7 @@ function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
                         <input type="hidden" id="aprobadoClienteHidden${res.arrayOtNumber[y]}"
                             name="aprobadoClienteHidden${[y]}" value="${(switchOptionSelected(getValues.arrayAprobadoCliente[y])).variableValue}">
                     </div>
-                    <div class="col-1 my-auto">    
+                    <div class="col-1 my-auto" style="width: 4vw;">    
                         <input type="text" value="${getValues.arrayRevisionAprobadoCliente[y]}" class="form-control mx-auto"
                             style="text-align: center; width: 3.5rem;" disabled readonly>
                         <input type="hidden" id="revisionAprobadoCliente${res.arrayOtNumber[y]}"
@@ -2983,7 +2989,7 @@ function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
                 const divClass = isInactive ? 'pe-none' : ''
 
                 arrayBloqueDisenoSegunda.push(`<div class="row py-1 mx-auto ${divClass}" ${divStyle}>
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
+                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], arrayOtDescriptionSelected[y])}
                     ${dataEnArrayBloque}
                 </div>`);
                 
@@ -2995,30 +3001,7 @@ function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
                     <fieldset>
                         <div class="row mx-auto justify-content-center">
                             ${cabeceraFormulario}
-                            <div class="col my-auto">
-                                <label for="revisionCliente"><strong>Rev. Cliente</strong></label>
-                            </div>
-                            <div class="col-1 my-auto align-self-start border-end border-dark">
-                                <label for="revisionRevisionCliente"><strong>Rev</strong></label>
-                            </div>
-                            <div class="col my-auto">
-                                <label for="ldmProvisoria"><strong>LDM Provisoria</strong></label>
-                            </div>
-                            <div class="col-1 my-auto align-self-start border-end border-dark">
-                                <label for="revisionLdmProvisoria"><strong>Rev</strong></label>
-                            </div>
-                            <div class="col my-auto">
-                                <label for="av100Diseno"><strong>Av. Diseño 100%</strong></label>
-                            </div>
-                            <div class="col-1 my-auto align-self-start border-end border-dark">
-                                <label for="revisionAv100Diseno"><strong>Rev</strong></label>
-                            </div>
-                            <div class="col my-auto">
-                                <label for="aprobadoCliente"><strong>Aprob. Cliente</strong></label>
-                            </div>
-                            <div class="col-1 my-auto align-self-start">
-                                <label for="revisionAprobadoCliente"><strong>Rev</strong></label>
-                            </div>
+                            ${htmlTitulos(qInicial, qFinal)}
                         </div>
                         <hr>
                             ${arrayBloqueDisenoSegunda.join("<br>")}
@@ -3026,13 +3009,10 @@ function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
                     </fieldset>
                 </form>`  
     
-            const titulo = "Diseño Segunda Parte"
-            const ancho = 1450
-            const background = '#dedede'
-            const formulario = 'formDisenoSegundaValues'
-            const arrayDeOtNumber = arrayOtSelected
-            const arrayDeOpNumber = arrayOpDescriptionSelected
-            const arrayDeOtDescription = arrayOtDescriptionSelected
+            const titulo = "Diseño (2° Parte)",
+            ancho = 1550,
+            background = '#dedede',
+            formulario = 'formDisenoSegundaValues'
     
             swalFireAlert (
                 titulo,
@@ -3040,9 +3020,9 @@ function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
                 ancho,
                 background,
                 formulario,
-                arrayDeOtNumber,
-                arrayDeOpNumber,
-                arrayDeOtDescription
+                arrayOtSelected,
+                arrayOpDescriptionSelected,
+                arrayOtDescriptionSelected
             )
             disabledBtnAceptar()
     }
@@ -3081,7 +3061,7 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                         <input type="hidden" id="ldmAvanceCGHidden${res.arrayOtNumber[y]}" name="ldmAvanceCGHidden${[y]}"
                             value="${(switchOptionSelected(getValues.arrayLdmAvanceCG[y])).variableValue}">
                     </div>
-                    <div class="col-1 my-auto">
+                    <div class="col-1 my-auto" style="width: 4vw;">
                         <input type="text" value="${getValues.arrayRevisionLdmAvanceCG[y]}" class="form-control mx-auto"
                             style="text-align: center; width: 3.5rem;" disabled readonly>
                         <input type="hidden" id="revisionLdmAvanceCG${res.arrayOtNumber[y]}"
@@ -3099,7 +3079,7 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                         <input type="hidden" id="ldmAvance2TDHidden${res.arrayOtNumber[y]}" name="ldmAvance2TDHidden${[y]}"
                             value="${(switchOptionSelected(getValues.arrayLdmAvanceTD2[y])).variableValue}">
                     </div>
-                    <div class="col-1 my-auto">
+                    <div class="col-1 my-auto" style="width: 4vw;">
                         <input type="text" value="${getValues.arrayRevisionLdmAvanceTD2[y]}" class="form-control mx-auto"
                             style="text-align: center; width: 3.5rem;" disabled readonly>
                         <input type="hidden" id="revisionLdmAvance2TD${res.arrayOtNumber[y]}"
@@ -3125,7 +3105,7 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                             </div>
                         </div>
                     </div>
-                    <div class="col-1 my-auto">    
+                    <div class="col-1 my-auto" style="width: 4vw;">    
                         <input type="text" value="${getValues.arrayRevisionLdm80[y]}" class="form-control mx-auto"
                             style="text-align: center; width: 3.5rem;" disabled readonly>
                         <input type="hidden" id="revision80Ldm${res.arrayOtNumber[y]}"
@@ -3152,7 +3132,7 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                             </div>
                         </div>
                     </div>
-                    <div class="col-1 my-auto">    
+                    <div class="col-1 my-auto" style="width: 4vw;">    
                         <input type="text" value="${getValues.arrayRevisionInfoModelo[y]}" class="form-control mx-auto"
                             style="text-align: center; width: 3.5rem;" disabled readonly>
                         <input type="hidden" id="revisionInfoModelo${res.arrayOtNumber[y]}"
@@ -3164,7 +3144,7 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                 const divClass = isInactive ? 'pe-none' : ''
 
                 arrayBloqueInfo80.push(`<div class="row py-1 mx-auto ${divClass}" ${divStyle}>
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
+                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], arrayOtDescriptionSelected[y])}
                     ${dataEnArrayBloque}
                 </div>`);
                 
@@ -3176,30 +3156,7 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                         <fieldset>
                             <div class="row mx-auto justify-content-center">
                                 ${cabeceraFormulario}
-                                <div class="col my-auto">
-                                    <label for="ldmAvanceCG"><strong>LDM Avanzada (Cilindros/Guias)</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revisionLdmAvanceCG"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto">
-                                    <label for="ldmAvance2TD"><strong>LDM Avanzada (Tacos D2)</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revisionLdmAvance2TD"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto">
-                                    <label for="80Ldm"><strong>LDM 80%</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revision80Ldm"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto">
-                                    <label for="infoModelo"><strong>Info Modelo</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start">
-                                    <label for="revisionInfoModelo"><strong>Rev</strong></label>
-                                </div>
+                                ${htmlTitulos(qInicial, qFinal)}
                             </div>
                             <hr>
                                 ${arrayBloqueInfo80.join("<br>")}
@@ -3207,23 +3164,20 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                         </fieldset>
                     </form>`  
     
-            const titulo = "Info 80%"
-            const ancho = 1550
-            const background = '#cedede'
-            const formulario = 'formInfo80Values'
-            const arrayDeOtNumber = arrayOtSelected
-            const arrayDeOpNumber = arrayOpDescriptionSelected
-            const arrayDeOtDescription = arrayOtDescriptionSelected
-    
+            const titulo = "Info 80%",
+            ancho = 1650,
+            background = '#cedede',
+            formulario = 'formInfo80Values'
+                
             swalFireAlert (
                 titulo,
                 html,
                 ancho,
                 background,
                 formulario,
-                arrayDeOtNumber,
-                arrayDeOpNumber,
-                arrayDeOtDescription
+                arrayOtSelected,
+                arrayOpDescriptionSelected,
+                arrayOtDescriptionSelected
             )
             disabledBtnAceptar()
     }
@@ -3270,7 +3224,7 @@ function addDatoToInfo100(i, idTabla, qInicial, qFinal) {
                         </div>
                     </div>
                 </div>
-                <div class="col-1 my-auto">    
+                <div class="col-1 my-auto" style="width: 4vw;">    
                     <input type="text" value="${getValues.arrayRevisionLdm100[y]}" class="form-control mx-auto"
                         style="text-align: center; width: 3.5rem;" disabled readonly>
                     <input type="hidden" id="revision100Ldm${res.arrayOtNumber[y]}"
@@ -3296,7 +3250,7 @@ function addDatoToInfo100(i, idTabla, qInicial, qFinal) {
                         </div>
                     </div>
                 </div>
-                <div class="col-1 my-auto">    
+                <div class="col-1 my-auto" style="width: 4vw;">    
                     <input type="text" value="${getValues.arrayRevisionInfo100[y]}" class="form-control mx-auto"
                         style="text-align: center; width: 3.5rem;" disabled readonly>
                     <input type="hidden" id="revision100Info${res.arrayOtNumber[y]}"
@@ -3308,7 +3262,7 @@ function addDatoToInfo100(i, idTabla, qInicial, qFinal) {
                 const divClass = isInactive ? 'pe-none' : ''
 
                 arrayBloqueInfo100.push(`<div class="row py-1 mx-auto ${divClass}" ${divStyle}>
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
+                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], arrayOtDescriptionSelected[y])}
                     ${dataEnArrayBloque}
                 </div>`);
 
@@ -3320,18 +3274,7 @@ function addDatoToInfo100(i, idTabla, qInicial, qFinal) {
                     <fieldset>
                         <div class="row mx-auto justify-content-center">
                             ${cabeceraFormulario}
-                            <div class="col my-auto">
-                                <label for="ldm100Range"><strong>LDM 100%</strong></label>
-                            </div>
-                            <div class="col-1 my-auto align-self-start border-end border-dark">
-                                <label for="revision100Ldm"><strong>Rev</strong></label>
-                            </div>
-                            <div class="col my-auto">
-                                <label for="info100Range"><strong>Info 100%</strong></label>
-                            </div>
-                            <div class="col-1 my-auto align-self-start">
-                                <label for="revision100Info"><strong>Rev</strong></label>
-                            </div>
+                            ${htmlTitulos(qInicial, qFinal)}
                         </div>
                         <hr>
                             ${arrayBloqueInfo100.join("<br>")}
@@ -3339,23 +3282,20 @@ function addDatoToInfo100(i, idTabla, qInicial, qFinal) {
                     </fieldset>
                 </form>`  
     
-            const titulo = "Info 100%"
-            const ancho = 875
-            const background = '#fefefe'
-            const formulario = 'formInfo100Values'
-            const arrayDeOtNumber = arrayOtSelected
-            const arrayDeOpNumber = arrayOpDescriptionSelected
-            const arrayDeOtDescription = arrayOtDescriptionSelected
-    
+            const titulo = "Info 100%",
+            ancho = 875,
+            background = '#fefefe',
+            formulario = 'formInfo100Values'
+                
             swalFireAlert (
                 titulo,
                 html,
                 ancho,
                 background,
                 formulario,
-                arrayDeOtNumber,
-                arrayDeOpNumber,
-                arrayDeOtDescription
+                arrayOtSelected,
+                arrayOpDescriptionSelected,
+                arrayOtDescriptionSelected
             )
             disabledBtnAceptar()
     }
@@ -3408,7 +3348,7 @@ function addDatoToInfoSim0(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="docu0SimHidden${res.arrayOtNumber[y]}" name="docu0SimHidden${[y]}"
                             value="${(switchOptionSelected(getValues.arrayDocuSim0[y])).variableValue}">
                         </div>    
-                        <div class="col-1 my-auto">  
+                        <div class="col-1 my-auto" style="width: 4vw;">  
                             <input type="text" value="${getValues.arrayRevisionDocuSim0[y]}" class="form-control"
                                 style="text-align: center;" disabled readonly">
                             <input type="hidden" id="revisionDocu0Sim${res.arrayOtNumber[y]}"
@@ -3420,7 +3360,7 @@ function addDatoToInfoSim0(i, idTabla, qInicial, qFinal) {
                 const divClass = isInactive ? 'pe-none' : ''
 
                 arrayBloqueInfoSim0.push(`<div class="row py-1 mx-auto ${divClass}" ${divStyle}>
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
+                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], arrayOtDescriptionSelected[y])}
                     ${dataEnArrayBloque}
                 </div>`);
 
@@ -3432,18 +3372,7 @@ function addDatoToInfoSim0(i, idTabla, qInicial, qFinal) {
                         <fieldset>
                             <div class="row mx-auto">
                                 ${cabeceraFormulario}
-                                <div class="col my-auto">
-                                    <label for="0Sim"><strong>Sim 0</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revision0Sim"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto">
-                                    <label for="docu0Sim"><strong>Docum. Sim 0</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start">
-                                    <label for="revisionDocu0Sim"><strong>Rev</strong></label>
-                                </div>
+                                ${htmlTitulos(qInicial, qFinal)}
                             </div>
                             <hr>
                                 ${arrayBloqueInfoSim0.join("<br>")}
@@ -3452,23 +3381,20 @@ function addDatoToInfoSim0(i, idTabla, qInicial, qFinal) {
                         </fieldset>
                     </form>`
     
-        const titulo = "Simulación 0"
-        const ancho = 870
-        const background = '#ffffff'
-        const formulario = 'formSim0Values'
-        const arrayDeOtNumber = arrayOtSelected
-        const arrayDeOpNumber = arrayOpDescriptionSelected
-        const arrayDeOtDescription = arrayOtDescriptionSelected
-    
+        const titulo = "Simulación 0",
+        ancho = 870,
+        background = '#ffffff',
+        formulario = 'formSim0Values'
+        
         swalFireAlert (
             titulo,
             html,
             ancho,
             background,
             formulario,
-            arrayDeOtNumber,
-            arrayDeOpNumber,
-            arrayDeOtDescription
+            arrayOtSelected,
+            arrayOpDescriptionSelected,
+            arrayOtDescriptionSelected
         )
         disabledBtnAceptar()
     }
@@ -3492,7 +3418,7 @@ function addDatoToInfoSim1(i, idTabla, qInicial, qFinal) {
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
 
                 const dataEnArrayBloqueSim1 = `
-                        <div class="col-1 my-auto">
+                        <div class="col my-auto">
                             <select id="1Sim${res.arrayOtNumber[y]}" name="1Sim${y}" oninput="updateInputsSelect()"
                                 class="form-select" ${(colorStatusOt(res.arrayOtStatus[y]).disabled)}>
                                 <option selected value="${(switchOptionSelected(getValues.arraySim1[y])).variableValue}" disabled>
@@ -3503,14 +3429,14 @@ function addDatoToInfoSim1(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="1SimHidden${res.arrayOtNumber[y]}" name="1SimHidden${[y]}"
                             value="${(switchOptionSelected(getValues.arraySim1[y])).variableValue}">
                         </div>
-                        <div class="col my-auto">    
+                        <div class="col-1 my-auto" style="width: 4vw;">    
                             <input type="text" value="${getValues.arrayRevisionSim1[y]}" class="form-control mx-auto"
-                                style="text-align: center; width: 3.6rem;" disabled readonly">
+                                style="text-align: center;" disabled readonly">
                             <input type="hidden" id="revision1Sim${res.arrayOtNumber[y]}"
                                 name="revision1Sim${y}" value="${getValues.arrayRevisionSim1[y]}">
                         </div>
 
-                        <div class="col-1 my-auto">
+                        <div class="col my-auto">
                             <select id="video${res.arrayOtNumber[y]}" name="video${y}" oninput="updateInputsSelect()" 
                                 class="form-select" ${(colorStatusOt(res.arrayOtStatus[y]).disabled)}>
                                 <option selected value="${(switchOptionSelected(getValues.arrayVideo[y])).variableValue}" disabled>
@@ -3521,14 +3447,14 @@ function addDatoToInfoSim1(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="videoHidden${res.arrayOtNumber[y]}" name="videoHidden${[y]}"
                                 value="${(switchOptionSelected(getValues.arrayVideo[y])).variableValue}">
                         </div>    
-                        <div class="col my-auto">  
+                        <div class="col-1 my-auto" style="width: 4vw;">  
                             <input type="text" value="${getValues.arrayRevisionVideo[y]}" class="form-control mx-auto"
-                                style="text-align: center; width: 3.6rem;" disabled readonly">
+                                style="text-align: center;" disabled readonly">
                             <input type="hidden" id="revisionVideo${res.arrayOtNumber[y]}"
                                 name="revisionVideo${y}" value="${getValues.arrayRevisionVideo[y]}">    
                         </div>
                         
-                        <div class="col-1 my-auto">
+                        <div class="col my-auto">
                             <select id="informe${res.arrayOtNumber[y]}" name="informe${y}" oninput="updateInputsSelect()" 
                                 class="form-select" ${(colorStatusOt(res.arrayOtStatus[y]).disabled)}>
                                 <option selected value="${(switchOptionSelected(getValues.arrayInforme[y])).variableValue}" disabled>
@@ -3537,16 +3463,16 @@ function addDatoToInfoSim1(i, idTabla, qInicial, qFinal) {
                                 ${(switchOptionSelected(getValues.arrayInforme[y])).optionDefined}
                             </select>
                             <input type="hidden" id="informeHidden${res.arrayOtNumber[y]}"
-                            name="informeHidden${[y]}" value="${(switchOptionSelected(getValues.arrayInforme[y])).variableValue}">
+                                name="informeHidden${[y]}" value="${(switchOptionSelected(getValues.arrayInforme[y])).variableValue}">
                         </div>    
-                        <div class="col my-auto">  
+                        <div class="col-1 my-auto" style="width: 4vw;">  
                             <input type="text" value="${getValues.arrayRevisionInforme[y]}" class="form-control mx-auto"
-                                style="text-align: center; width: 3.6rem;" disabled readonly">
+                                style="text-align: center;" disabled readonly">
                             <input type="hidden" id="revisionInforme${res.arrayOtNumber[y]}"
                                 name="revisionInforme${y}" value="${getValues.arrayRevisionInforme[y]}">    
                         </div>
                         
-                        <div class="col-1 my-auto">
+                        <div class="col my-auto">
                             <select id="ppt${res.arrayOtNumber[y]}" name="ppt${y}" oninput="updateInputsSelect()" 
                                 class="form-select" ${(colorStatusOt(res.arrayOtStatus[y]).disabled)}>
                                 <option selected value="${(switchOptionSelected(getValues.arrayPpt[y])).variableValue}" disabled>
@@ -3557,14 +3483,14 @@ function addDatoToInfoSim1(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="pptHidden${res.arrayOtNumber[y]}" name="pptHidden${[y]}"
                                 value="${(switchOptionSelected(getValues.arrayPpt[y])).variableValue}">
                         </div>    
-                        <div class="col my-auto">  
-                            <input type="text" value="${getValues.arrayRevisionPpt[y]}" class="form-control mx-auto"
-                                style="text-align: center; width: 3.6rem;" disabled readonly">
+                        <div class="col-1 my-auto" style="width: 4vw;">  
+                            <input type="text" value="${getValues.arrayRevisionPpt[y]}"
+                                class="form-control mx-auto" style="text-align: center;" disabled readonly">
                             <input type="hidden" id="revisionPpt${res.arrayOtNumber[y]}"
                                 name="revisionPpt${y}" value="${getValues.arrayRevisionPpt[y]}">    
                         </div>
                         
-                        <div class="col-1 my-auto">
+                        <div class="col my-auto">
                             <select id="s1pOp20${res.arrayOtNumber[y]}" name="s1pOp20${y}" oninput="updateInputsSelect()" 
                                 class="form-select" ${(colorStatusOt(res.arrayOtStatus[y]).disabled)}>
                                 <option selected value="${(switchOptionSelected(getValues.arrayS1pOp20[y])).variableValue}" disabled>
@@ -3575,9 +3501,9 @@ function addDatoToInfoSim1(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="s1pOp20Hidden${res.arrayOtNumber[y]}" name="s1pOp20Hidden${[y]}"
                                 value="${(switchOptionSelected(getValues.arrayS1pOp20[y])).variableValue}">
                         </div>    
-                        <div class="col my-auto">  
-                            <input type="text" value="${getValues.arrayRevisionS1pOp20[y]}" class="form-control mx-auto"
-                                style="text-align: center; width: 3.6rem;" disabled readonly">
+                        <div class="col-1 my-auto" style="width: 4vw;">  
+                            <input type="text" value="${getValues.arrayRevisionS1pOp20[y]}" 
+                                class="form-control mx-auto" style="text-align: center;" disabled readonly">
                             <input type="hidden" id="revisionS1p20Op${res.arrayOtNumber[y]}"
                                 name="revisionS1p20Op${y}" value="${getValues.arrayRevisionS1pOp20[y]}">    
                         </div>`
@@ -3587,7 +3513,7 @@ function addDatoToInfoSim1(i, idTabla, qInicial, qFinal) {
                 const divClass = isInactive ? 'pe-none' : ''
 
                 arrayBloqueInfoSim1.push(`<div class="row py-1 mx-auto ${divClass}" ${divStyle}>
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
+                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], arrayOtDescriptionSelected[y])}
                     ${dataEnArrayBloqueSim1}
                 </div>`);
 
@@ -3599,37 +3525,8 @@ function addDatoToInfoSim1(i, idTabla, qInicial, qFinal) {
                         <fieldset>
                             <div class="row mx-auto">
                                 ${cabeceraFormulario}
-                                <div class="col-1 my-auto">
-                                    <label for="1Sim"><strong>Sim 1</strong></label>
-                                </div>
-                                <div class="col my-auto align-self-start border-end border-dark">
-                                    <label for="revision1Sim"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col-1 my-auto">
-                                    <label for="video"><strong>Video</strong> <i class="fa-solid fa-video"></i></label>
-                                </div>
-                                <div class="col my-auto align-self-start border-end border-dark">
-                                    <label for="revisionVideo"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col-1 my-auto">
-                                    <label for="informe"><strong>Informe</strong></label>
-                                </div>
-                                <div class="col my-auto align-self-start border-end border-dark">
-                                    <label for="revisionInforme"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col-1 my-auto">
-                                    <label for="ppt"><strong>PPT</strong></label>
-                                </div>
-                                <div class="col my-auto align-self-start border-end border-dark">
-                                    <label for="revisionPpt"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col-1 my-auto">
-                                    <label for="s1pOp20"><strong>S1 p/Op20</strong></label>
-                                </div>
-                                <div class="col my-auto align-self-start">
-                                    <label for="revisionS1pOp20"><strong>Rev</strong></label>
-                                </div>
-                            </div>
+                                ${htmlTitulos(qInicial, qFinal)}
+                            </div>    
                             <hr>
                                 ${arrayBloqueInfoSim1.join("<br>")}
                             <hr>
@@ -3637,23 +3534,20 @@ function addDatoToInfoSim1(i, idTabla, qInicial, qFinal) {
                         </fieldset>
                     </form>`
     
-        const titulo = "Simulación 1"
-        const ancho = 1850
-        const background = '#ffffff'
-        const formulario = 'formSim1Values'
-        const arrayDeOtNumber = arrayOtSelected
-        const arrayDeOpNumber = arrayOpDescriptionSelected
-        const arrayDeOtDescription = arrayOtDescriptionSelected
-    
+        const titulo = "Simulación 1",
+        ancho = 1600,
+        background = '#ffffff',
+        formulario = 'formSim1Values'
+            
         swalFireAlert (
             titulo,
             html,
             ancho,
             background,
             formulario,
-            arrayDeOtNumber,
-            arrayDeOpNumber,
-            arrayDeOtDescription
+            arrayOtSelected,
+            arrayOpDescriptionSelected,
+            arrayOtDescriptionSelected
         )
         disabledBtnAceptar()
     }
@@ -3688,9 +3582,9 @@ function addDatoToInfoSim2_3(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="2SimHidden${res.arrayOtNumber[y]}" name="2SimHidden${[y]}"
                             value="${(switchOptionSelected(getValues.arraySim2[y])).variableValue}">
                         </div>
-                        <div class="col-1 my-auto">    
+                        <div class="col-1 my-auto" style="width: 4vw;">    
                             <input type="text" value="${getValues.arrayRevisionSim2[y]}" class="form-control mx-auto"
-                                style="text-align: center; width: 3.6rem;" disabled readonly">
+                                style="text-align: center;" disabled readonly">
                             <input type="hidden" id="revision2Sim${res.arrayOtNumber[y]}"
                                 name="revision2Sim${y}" value="${getValues.arrayRevisionSim2[y]}">
                         </div>
@@ -3706,9 +3600,9 @@ function addDatoToInfoSim2_3(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="reporteHidden${res.arrayOtNumber[y]}" name="reporteHidden${[y]}"
                             value="${(switchOptionSelected(getValues.arrayReporte[y])).variableValue}">
                         </div>    
-                        <div class="col-1 my-auto">  
+                        <div class="col-1 my-auto" style="width: 4vw;">  
                             <input type="text" value="${getValues.arrayRevisionReporte[y]}" class="form-control mx-auto"
-                                style="text-align: center; width: 3.6rem;" disabled readonly">
+                                style="text-align: center;" disabled readonly">
                             <input type="hidden" id="revisionReporte${res.arrayOtNumber[y]}"
                                 name="revisionReporte${y}" value="${getValues.arrayRevisionReporte[y]}">    
                         </div>
@@ -3724,14 +3618,14 @@ function addDatoToInfoSim2_3(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="dfnProdismoHidden${res.arrayOtNumber[y]}" name="dfnProdismoHidden${[y]}"
                                 value="${(switchOptionSelected(getValues.arrayDfnProdismo[y])).variableValue}">
                         </div>    
-                        <div class="col-1 my-auto me-2 border-dark border-end border-3">  
+                        <div class="col-1 my-auto border-dark border-end border-3" style="width: 4vw;">  
                             <input type="text" value="${getValues.arrayRevisionDfnProdismo[y]}" class="form-control mx-auto"
-                                style="text-align: center; width: 3.6rem;" disabled readonly">
+                                style="text-align: center;" disabled readonly">
                             <input type="hidden" id="revisionDfnProdismo${res.arrayOtNumber[y]}"
                                 name="revisionDfnProdismo${y}" value="${getValues.arrayRevisionDfnProdismo[y]}">    
                         </div>
                         
-                        <div class="col my-auto ms-2">
+                        <div class="col my-auto">
                             <select id="3Sim${res.arrayOtNumber[y]}" name="3Sim${y}" oninput="updateInputsSelect()" 
                                 class="form-select" ${(colorStatusOt(res.arrayOtStatus[y]).disabled)}>
                                 <option selected value="${(switchOptionSelected(getValues.arraySim3[y])).variableValue}" disabled>
@@ -3742,9 +3636,9 @@ function addDatoToInfoSim2_3(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="3SimHidden${res.arrayOtNumber[y]}" name="3SimHidden${[y]}"
                             value="${(switchOptionSelected(getValues.arraySim3[y])).variableValue}">
                         </div>    
-                        <div class="col-1 my-auto">  
+                        <div class="col-1 my-auto" style="width: 4vw;">  
                             <input type="text" value="${getValues.arrayRevisionSim3[y]}" class="form-control mx-auto"
-                                style="text-align: center; width: 3.6rem;" disabled readonly">
+                                style="text-align: center;" disabled readonly">
                             <input type="hidden" id="revisionSim3${res.arrayOtNumber[y]}"
                                 name="revisionSim3${y}" value="${getValues.arrayRevisionSim3[y]}">    
                         </div>`
@@ -3754,7 +3648,7 @@ function addDatoToInfoSim2_3(i, idTabla, qInicial, qFinal) {
                 const divClass = isInactive ? 'pe-none' : ''
 
                 arrayBloqueInfoSim2_3.push(`<div class="row py-1 mx-auto ${divClass}" ${divStyle}>
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
+                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], arrayOtDescriptionSelected[y])}
                     ${dataEnArrayBloqueSim2_3}
                 </div>`);
 
@@ -3766,31 +3660,7 @@ function addDatoToInfoSim2_3(i, idTabla, qInicial, qFinal) {
                         <fieldset>
                             <div class="row mx-auto">
                                 ${cabeceraFormulario}
-                                <div class="col my-auto">
-                                    <label for="2Sim"><strong>Sim 2</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revision2Sim"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto">
-                                    <label for="reporte"><strong>Reporte</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revisionReporte"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto">
-                                    <label for="dfnProdismo"><strong>DFN Prodismo</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start me-2 border-dark border-end border-3">
-                                    <label for="revisionDfnProdismo"><strong>Rev</strong></label>
-                                </div>
-
-                                <div class="col my-auto ms-2">
-                                    <label for="3Sim"><strong>Sim 3</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start">
-                                    <label for="revisionPpt"><strong>Rev</strong></label>
-                                </div>
+                                ${htmlTitulos(qInicial, qFinal)}
                             </div>
                             <hr>
                                 ${arrayBloqueInfoSim2_3.join("<br>")}
@@ -3799,23 +3669,20 @@ function addDatoToInfoSim2_3(i, idTabla, qInicial, qFinal) {
                         </fieldset>
                     </form>`
     
-        const titulo = "Simulación 2 y 3"
-        const ancho = 1450
-        const background = '#eeeeff'
-        const formulario = 'formSim2_3Values'
-        const arrayDeOtNumber = arrayOtSelected
-        const arrayDeOpNumber = arrayOpDescriptionSelected
-        const arrayDeOtDescription = arrayOtDescriptionSelected
-    
+        const titulo = "Simulación 2 y 3",
+        ancho = 1600,
+        background = '#eeeeff',
+        formulario = 'formSim2_3Values'
+        
         swalFireAlert (
             titulo,
             html,
             ancho,
             background,
             formulario,
-            arrayDeOtNumber,
-            arrayDeOpNumber,
-            arrayDeOtDescription
+            arrayOtSelected,
+            arrayOpDescriptionSelected,
+            arrayOtDescriptionSelected
         )
         disabledBtnAceptar()
     }
@@ -3837,7 +3704,7 @@ function addDatoToInfoSim4Primera(i, idTabla, qInicial, qFinal) {
                 arrayOtKNumber.push(res.arrayNnumber[y])
                 arrayOpDescriptionSelected.push(res.arrayOpNumber[y])
                 arrayOtDescriptionSelected.push(res.arrayDescripcionOt[y])
-                                                    
+                
                 dataEnArrayBloqueSim4Primera = `
                     <div class="col my-auto">
                         <select id="matEnsayo${res.arrayOtNumber[y]}" name="matEnsayo${y}" oninput="updateInputsSelect()"
@@ -3850,9 +3717,9 @@ function addDatoToInfoSim4Primera(i, idTabla, qInicial, qFinal) {
                         <input type="hidden" id="matEnsayoHidden${res.arrayOtNumber[y]}" name="matEnsayoHidden${[y]}"
                         value="${(switchOptionSelected(getValues.arrayMatEnsayo[y])).variableValue}">
                     </div>
-                    <div class="col-1 my-auto">    
+                    <div class="col-1 my-auto" style="width: 4vw;">    
                         <input type="text" value="${getValues.arrayRevisionMatEnsayo[y]}" class="form-control mx-auto"
-                            style="text-align: center; width: 3.6rem;" disabled readonly">
+                            style="text-align: center;" disabled readonly">
                         <input type="hidden" id="revisionMatEnsayo${res.arrayOtNumber[y]}"
                             name="revisionMatEnsayo${y}" value="${getValues.arrayRevisionMatEnsayo[y]}">
                     </div>
@@ -3868,9 +3735,9 @@ function addDatoToInfoSim4Primera(i, idTabla, qInicial, qFinal) {
                         <input type="hidden" id="masMenos10Hidden${res.arrayOtNumber[y]}" name="masMenos10Hidden${[y]}"
                         value="${(switchOptionSelected(getValues.arrayMasMenos10[y])).variableValue}">
                     </div>    
-                    <div class="col-1 my-auto">  
+                    <div class="col-1 my-auto" style="width: 4vw;">  
                         <input type="text" value="${getValues.arrayRevisionMasMenos10[y]}" class="form-control mx-auto"
-                            style="text-align: center; width: 3.6rem;" disabled readonly">
+                            style="text-align: center;" disabled readonly">
                         <input type="hidden" id="revisionMas10Menos${res.arrayOtNumber[y]}"
                             name="revisionMas10Menos${y}" value="${getValues.arrayRevisionMasMenos10[y]}">    
                     </div>
@@ -3886,14 +3753,14 @@ function addDatoToInfoSim4Primera(i, idTabla, qInicial, qFinal) {
                         <input type="hidden" id="mpAlternativoHidden${res.arrayOtNumber[y]}" name="mpAlternativoHidden${[y]}"
                         value="${(switchOptionSelected(getValues.arrayMpAlternativo[y])).variableValue}">
                     </div>    
-                    <div class="col-1 my-auto">  
+                    <div class="col-1 my-auto" style="width: 4vw;">  
                         <input type="text" value="${getValues.arrayRevisionMpAlternativo[y]}" class="form-control mx-auto"
-                            style="text-align: center; width: 3.6rem;" disabled readonly">
+                            style="text-align: center;" disabled readonly">
                         <input type="hidden" id="revisionMpAlternativo${res.arrayOtNumber[y]}"
                             name="revisionMpAlternativo${y}" value="${getValues.arrayRevisionMpAlternativo[y]}">    
                     </div>
                     
-                    <div class="col my-auto ms-2">
+                    <div class="col my-auto">
                         <select id="reunionSim${res.arrayOtNumber[y]}" name="reunionSim${y}" oninput="updateInputsSelect()" 
                             class="form-select" ${(colorStatusOt(res.arrayOtStatus[y]).disabled)}>
                             <option selected value="${(switchOptionSelected(getValues.arrayReunionSim[y])).variableValue}" disabled>
@@ -3904,9 +3771,9 @@ function addDatoToInfoSim4Primera(i, idTabla, qInicial, qFinal) {
                         <input type="hidden" id="reunionSimHidden${res.arrayOtNumber[y]}" name="reunionSimHidden${[y]}"
                         value="${(switchOptionSelected(getValues.arrayReunionSim[y])).variableValue}">
                     </div>    
-                    <div class="col-1 my-auto">  
+                    <div class="col-1 my-auto" style="width: 4vw;">  
                         <input type="text" value="${getValues.arrayRevisionReunionSim[y]}" class="form-control mx-auto"
-                            style="text-align: center; width: 3.6rem;" disabled readonly">
+                            style="text-align: center;" disabled readonly">
                         <input type="hidden" id="revisionReunionSim${res.arrayOtNumber[y]}"
                             name="revisionReunionSim${y}" value="${getValues.arrayRevisionReunionSim[y]}">    
                     </div>`
@@ -3916,7 +3783,7 @@ function addDatoToInfoSim4Primera(i, idTabla, qInicial, qFinal) {
                 const divClass = isInactive ? 'pe-none' : ''
 
                 arrayBloqueInfoSim4Prima.push(`<div class="row py-1 mx-auto ${divClass}" ${divStyle}>
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
+                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], arrayOtDescriptionSelected[y])}
                     ${dataEnArrayBloqueSim4Primera}
                 </div>`);
 
@@ -3928,30 +3795,7 @@ function addDatoToInfoSim4Primera(i, idTabla, qInicial, qFinal) {
                         <fieldset>
                             <div class="row mx-auto">
                                 ${cabeceraFormulario}
-                                <div class="col my-auto">
-                                    <label for="matEnsayo"><strong>Mat Ensayo</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revisionMatEnsayo"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto">
-                                    <label for="masMenos10"><strong><i class="fa-solid fa-plus-minus"></i>10%</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revisionMasMenos10"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto">
-                                    <label for="mpAlternativo"><strong>MP <i class="fa-solid fa-shapes"></i></strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revisionMpAlternativo"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto ms-2">
-                                    <label for="reunionSim"><strong>Reunion Sim</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start">
-                                    <label for="revisionPpt"><strong>Rev</strong></label>
-                                </div>
+                                ${htmlTitulos(qInicial, qFinal)}
                             </div>
                             <hr>
                                 ${arrayBloqueInfoSim4Prima.join("<br>")}
@@ -3960,23 +3804,20 @@ function addDatoToInfoSim4Primera(i, idTabla, qInicial, qFinal) {
                         </fieldset>
                     </form>`
     
-        const titulo = "Simulación 4 (1° Parte)"
-        const ancho = 1400
-        const background = '#ffefff'
-        const formulario = 'formSim4PrimeraValues'
-        const arrayDeOtNumber = arrayOtSelected
-        const arrayDeOpNumber = arrayOpDescriptionSelected
-        const arrayDeOtDescription = arrayOtDescriptionSelected
-    
+        const titulo = "Simulación 4 (1° Parte)",
+        ancho = 1400,
+        background = '#ffefff',
+        formulario = 'formSim4PrimeraValues'
+        
         swalFireAlert (
             titulo,
             html,
             ancho,
             background,
             formulario,
-            arrayDeOtNumber,
-            arrayDeOpNumber,
-            arrayDeOtDescription
+            arrayOtSelected,
+            arrayOpDescriptionSelected,
+            arrayOtDescriptionSelected
         )
         disabledBtnAceptar()
     }
@@ -4038,9 +3879,9 @@ function addDatoToInfoSim4Segunda(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="informe4SimHidden${res.arrayOtNumber[y]}" name="informe4SimHidden${[y]}"
                             value="${(switchOptionSelected(getValues.arrayInformeSim4[y])).variableValue}">
                         </div>
-                        <div class="col-1 my-auto">    
+                        <div class="col-1 my-auto" style="width: 4vw;">    
                             <input type="text" value="${getValues.arrayRevisionInformeSim4[y]}" class="form-control mx-auto"
-                                style="text-align: center; width: 3.6rem;" disabled readonly">
+                                style="text-align: center;" disabled readonly">
                             <input type="hidden" id="revisionInforme4Sim${res.arrayOtNumber[y]}"
                                 name="revisionInforme4Sim${y}" value="${getValues.arrayRevisionInformeSim4[y]}">
                         </div>
@@ -4056,9 +3897,9 @@ function addDatoToInfoSim4Segunda(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="geo1CopiadoHidden${res.arrayOtNumber[y]}" name="geo1CopiadoHidden${[y]}"
                             value="${(switchOptionSelected(getValues.arrayGeoCopiado1[y])).variableValue}">
                         </div>    
-                        <div class="col-1 my-auto">  
+                        <div class="col-1 my-auto" style="width: 4vw;">  
                             <input type="text" value="${getValues.arrayRevisionGeoCopiado1[y]}" class="form-control mx-auto"
-                                style="text-align: center; width: 3.6rem;" disabled readonly">
+                                style="text-align: center;" disabled readonly">
                             <input type="hidden" id="revisionGeo1Copiado${res.arrayOtNumber[y]}"
                                 name="revisionGeo1Copiado${y}" value="${getValues.arrayRevisionGeoCopiado1[y]}">    
                         </div>
@@ -4074,9 +3915,9 @@ function addDatoToInfoSim4Segunda(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="geo2CopiadoHidden${res.arrayOtNumber[y]}" name="geo2CopiadoHidden${[y]}"
                             value="${(switchOptionSelected(getValues.arrayGeoCopiado2[y])).variableValue}">
                         </div>    
-                        <div class="col-1 my-auto">  
+                        <div class="col-1 my-auto" style="width: 4vw;">  
                             <input type="text" value="${getValues.arrayRevisionGeoCopiado2[y]}" class="form-control mx-auto"
-                                style="text-align: center; width: 3.6rem;" disabled readonly">
+                                style="text-align: center;" disabled readonly">
                             <input type="hidden" id="revisionGeo2Copiado${res.arrayOtNumber[y]}"
                             name="revisionGeo2Copiado${y}" value="${getValues.arrayRevisionGeoCopiado2[y]}">    
                         </div>
@@ -4086,9 +3927,9 @@ function addDatoToInfoSim4Segunda(i, idTabla, qInicial, qFinal) {
                                 id="horasSim${res.arrayOtNumber[y]}" name="horasSim${y}" class="form-control" min="0" max="9999"
                                 style="text-align: center;" ${colorStatusOt(res.arrayOtStatus[y]).disabled} oninput="updateHsSimTotal(${i})">
                         </div>
-                        <div class="col-1 my-auto">  
+                        <div class="col-1 my-auto" style="width: 4vw;">  
                             <input type="text" value="${getValues.arrayRevisionHorasSim[y]}" class="form-control mx-auto"
-                                style="text-align: center; width: 3.6rem;" disabled readonly">
+                                style="text-align: center;" disabled readonly">
                             <input type="hidden" id="revisionHorasSim${res.arrayOtNumber[y]}"
                                 name="revisionHorasSim${y}" value="${getValues.arrayRevisionHorasSim[y]}">    
                         </div>`
@@ -4098,7 +3939,7 @@ function addDatoToInfoSim4Segunda(i, idTabla, qInicial, qFinal) {
                 const divClass = isInactive ? 'pe-none' : ''
 
                 arrayBloqueInfoSim4Seg.push(`<div class="row py-1 mx-auto ${divClass}" ${divStyle}>
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
+                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], arrayOtDescriptionSelected[y])}
                     ${dataEnArrayBloqueSim4Segunda}
                 </div>`);
 
@@ -4121,30 +3962,7 @@ function addDatoToInfoSim4Segunda(i, idTabla, qInicial, qFinal) {
                         <fieldset>
                             <div class="row mx-auto">
                                 ${cabeceraFormulario}
-                                <div class="col my-auto">
-                                    <label for="informe4Sim"><strong>Informe</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revisionInforme4Sim"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto">
-                                    <label for="geo1Copiado"><strong>Geo Copiado #1</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revisionGeoCopiado1"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto">
-                                    <label for="geo2Copiado"><strong>Geo Copiado #2</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revisionGeo2Copiado"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto ms-2">
-                                    <label for="horasSim"><strong>Horas Sim</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start">
-                                    <label for="revisionHorasSim"><strong>Rev</strong></label>
-                                </div>
+                                ${htmlTitulos(qInicial, qFinal)}
                             </div>
                             <hr>
                                 ${arrayBloqueInfoSim4Seg.join("<br>")}
@@ -4155,13 +3973,10 @@ function addDatoToInfoSim4Segunda(i, idTabla, qInicial, qFinal) {
                         </fieldset>
                     </form>`
     
-        const titulo = "Simulación 4 (2° Parte)"
-        const ancho = 1400
-        const background = '#ffefff'
-        const formulario = 'formSim4SegundaValues'
-        const arrayDeOtNumber = arrayOtSelected
-        const arrayDeOpNumber = arrayOpDescriptionSelected
-        const arrayDeOtDescription = arrayOtDescriptionSelected
+        const titulo = "Simulación 4 (2° Parte)",
+        ancho = 1400,
+        background = '#ffefff',
+        formulario = 'formSim4SegundaValues'
     
         swalFireAlert (
             titulo,
@@ -4169,9 +3984,9 @@ function addDatoToInfoSim4Segunda(i, idTabla, qInicial, qFinal) {
             ancho,
             background,
             formulario,
-            arrayDeOtNumber,
-            arrayDeOpNumber,
-            arrayDeOtDescription
+            arrayOtSelected,
+            arrayOpDescriptionSelected,
+            arrayOtDescriptionSelected
         )
         disabledBtnAceptar()
     }
@@ -4206,7 +4021,7 @@ function addDatoToInfoSim5(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="grilladoHidden${res.arrayOtNumber[y]}" name="grilladoHidden${[y]}"
                             value="${(switchOptionSelected(getValues.arrayGrillado[y])).variableValue}">
                         </div>
-                        <div class="col-1 my-auto">
+                        <div class="col-1 my-auto" style="width: 4vw;">
                             <input type="text" value="${getValues.arrayRevisionGrillado[y]}" class="form-control mx-auto"
                                 style="text-align: center;" disabled readonly">
                             <input type="hidden" id="revisionGrillado${res.arrayOtNumber[y]}"
@@ -4224,7 +4039,7 @@ function addDatoToInfoSim5(i, idTabla, qInicial, qFinal) {
                             <input type="hidden" id="mpEnsayadaHidden${res.arrayOtNumber[y]}" name="mpEnsayadaHidden${[y]}"
                             value="${(switchOptionSelected(getValues.arrayMpEnsayada[y])).variableValue}">
                         </div>    
-                        <div class="col-1 my-auto">  
+                        <div class="col-1 my-auto" style="width: 4vw;">  
                             <input type="text" value="${getValues.arrayRevisionMpEnsayada[y]}" class="form-control mx-auto"
                                 style="text-align: center;" disabled readonly">
                             <input type="hidden" id="revisionMpEnsayada${res.arrayOtNumber[y]}"
@@ -4236,7 +4051,7 @@ function addDatoToInfoSim5(i, idTabla, qInicial, qFinal) {
                 const divClass = isInactive ? 'pe-none' : ''
 
                 arrayBloqueInfoSim5.push(`<div class="row py-1 mx-auto ${divClass}" ${divStyle}>
-                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y])}
+                    ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], arrayOtDescriptionSelected[y])}
                     ${dataEnArrayBloqueSim5}
                 </div>`);
 
@@ -4249,18 +4064,7 @@ function addDatoToInfoSim5(i, idTabla, qInicial, qFinal) {
                         <fieldset>
                             <div class="row mx-auto">
                                 ${cabeceraFormulario}
-                                <div class="col my-auto">
-                                    <label for="grillado"><strong>Grillado</strong> <i class="fa-solid fa-table-cells fa-lg"></i></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start border-end border-dark">
-                                    <label for="revisionGrillado"><strong>Rev</strong></label>
-                                </div>
-                                <div class="col my-auto">
-                                    <label for="mpEnsayada"><strong>MP Ensayada</strong></label>
-                                </div>
-                                <div class="col-1 my-auto align-self-start">
-                                    <label for="revisionMpEnsayada"><strong>Rev</strong></label>
-                                </div>
+                                ${htmlTitulos(qInicial, qFinal)}
                             </div>
                             <hr>
                                 ${arrayBloqueInfoSim5.join("<br>")}
@@ -4269,13 +4073,10 @@ function addDatoToInfoSim5(i, idTabla, qInicial, qFinal) {
                         </fieldset>
                     </form>`
     
-        const titulo = "Simulación 5"
-        const ancho = 870
-        const background = '#efefff'
-        const formulario = 'formSim5Values'
-        const arrayDeOtNumber = arrayOtSelected
-        const arrayDeOpNumber = arrayOpDescriptionSelected
-        const arrayDeOtDescription = arrayOtDescriptionSelected
+        const titulo = "Simulación 5",
+        ancho = 870,
+        background = '#efefff',
+        formulario = 'formSim5Values'
     
         swalFireAlert (
             titulo,
@@ -4283,9 +4084,9 @@ function addDatoToInfoSim5(i, idTabla, qInicial, qFinal) {
             ancho,
             background,
             formulario,
-            arrayDeOtNumber,
-            arrayDeOpNumber,
-            arrayDeOtDescription
+            arrayOtSelected,
+            arrayOpDescriptionSelected,
+            arrayOtDescriptionSelected
         )
         disabledBtnAceptar()
     }
@@ -4306,8 +4107,6 @@ function updateInputsText() {
         const idInputRange = allInputsRange[y].id//.substring(0, allInputsRange[y].id.length - 4)
         const idInputTextToChange = allInputsRange[y].id.substring(0, allInputsRange[y].id.length - 4) + 'Disabled' + allInputsRange[y].id.substring(allInputsRange[y].id.length - 4)
         const idInputRangeHidden = allInputsRange[y].id.substring(0, allInputsRange[y].id.length - 4) + 'Hidden' + allInputsRange[y].id.substring(allInputsRange[y].id.length - 4)
-        // console.log('idInputTextToChange: ',idInputTextToChange)
-        // console.log('idInputRangeHidden: ',idInputRangeHidden)
         // Obtener el valor del slider   
         var valorSlider = document.getElementById(`${idInputRange}`).value
 
@@ -4332,9 +4131,7 @@ function updateInputsSelect () {
     let largoArrayInputsSelect = parseInt((allInputsSelect.length)-1)
     for (let y=0; y < largoArrayInputsSelect; y++) {
         const idInputSelectHidden = allInputsSelect[y].id.substring(0, allInputsSelect[y].id.length - 4) + 'Hidden' + allInputsSelect[y].id.substring(allInputsSelect[y].id.length - 4)
-        // console.log('idInputSelectHidden: ', idInputSelectHidden)
         let inputSelectHidden = document.getElementById(`${idInputSelectHidden}`)
-        // console.log('inputSelectHidden: ', inputSelectHidden)
         inputSelectHidden ? inputSelectHidden.value = document.getElementById(`${allInputsSelect[y].id}`).value : null
     }
 }
@@ -4538,8 +4335,6 @@ let inputsDeTexto = document.querySelectorAll('input[type="text"]')
             if (forbiddenChars.test(key)) {
                 event.preventDefault() // Cancelar el evento para evitar que se ingrese el carácter
                 input.classList.toggle("border", "border-danger", "border-2")
-                // input.classList.toggle("border-danger")
-                // input.classList.toggle("border-2")
             }
         })
     }) 

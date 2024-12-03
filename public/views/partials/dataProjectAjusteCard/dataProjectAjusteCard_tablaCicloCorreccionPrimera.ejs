@@ -24,9 +24,9 @@
             </th>
         </tr>
         <tr>
-            <th id="colData0" style="width:33vw" scope="col-1" class="text-center pb-1">Pza Medida + Reunión | Estado | Rev.</th>
-            <th id="colData1" style="width:33vw" scope="col-1" class="text-center pb-1">Máquina | Estado | Rev.</th>
-            <th id="colData2" style="width:33vw" scope="col-1" class="text-center pb-1">Ajuste | Estado | Rev.</th>
+            <th id="colData0" style="width:33vw" scope="col-1" class="text-center pb-1">Pza Medida + Reunión | Rev.</th>
+            <th id="colData1" style="width:33vw" scope="col-1" class="text-center pb-1">Máquina | Rev.</th>
+            <th id="colData2" style="width:33vw" scope="col-1" class="text-center pb-1">Ajuste | Rev.</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -44,21 +44,21 @@
                 pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
 
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-                resDatoPiezaMedidaReunionPrimera = "S/D", resEstadoPiezaMedidaReunionPrimera = 'sinDato', resRevisionPiezaMedidaReunionPrimera = 0,
-                resDatoMaquinaPrimera = "S/D", resEstadoMaquinaPrimera = 'sinDato', resRevisionMaquinaPrimera = 0,
-                resDatoAjustePrimera = "S/D", resEstadoAjustePrimera = 'sinDato', resRevisionAjustePrimera = 0;
+                resPiezaMedidaReunionPrimera = "S/D", resRevisionPiezaMedidaReunionPrimera = 0,
+                resMaquinaPrimera = "S/D", resRevisionMaquinaPrimera = 0,
+                resAjustePrimera = "S/D", resRevisionAjustePrimera = 0;
 
             if (pathMongoOtProject[n].visible) {
                 let pathToMongoOtCicloCorreccionPrimera = pathMongoOtAjuste[0].otCicloCorreccionPrimera || [],
                     largoArrayCicloCorreccionPrimera = parseInt(pathToMongoOtCicloCorreccionPrimera.length);
 
-                let arrResDatoPiezaMedidaReunionPrimera = [], arrResEstadoPiezaMedidaReunionPrimera = [], valueArrayResPiezaMedidaReunionPrimera = 0, arrResRevisionPiezaMedidaReunionPrimera = [],
+                let arrResPiezaMedidaReunionPrimera = [], valueArrayResPiezaMedidaReunionPrimera = 0, arrResRevisionPiezaMedidaReunionPrimera = [],
                     arrResCreadorPiezaMedidaReunionPrimera = [], arrResModificadorPiezaMedidaReunionPrimera = [], arrResFechaPiezaMedidaReunionPrimera = [], arrResFechaModPiezaMedidaReunionPrimera = [];
 
-                let arrResDatoMaquinaPrimera = [], arrResEstadoMaquinaPrimera = [], valueArrayResMaquinaPrimera = 0, arrResRevisionMaquinaPrimera = [],
+                let arrResMaquinaPrimera = [], valueArrayResMaquinaPrimera = 0, arrResRevisionMaquinaPrimera = [],
                     arrResCreadorMaquinaPrimera = [], arrResModificadorMaquinaPrimera = [], arrResFechaMaquinaPrimera = [], arrResFechaModMaquinaPrimera = [];
 
-                let arrResDatoAjustePrimera = [], arrResEstadoAjustePrimera = [], valueArrayResAjustePrimera = 0, arrResRevisionAjustePrimera = [],
+                let arrResAjustePrimera = [], valueArrayResAjustePrimera = 0, arrResRevisionAjustePrimera = [],
                     arrResCreadorAjustePrimera = [], arrResModificadorAjustePrimera = [], arrResFechaAjustePrimera = [], arrResFechaModAjustePrimera = [];
 
                 if (pathMongoOtProject[n].otStatus) { %>
@@ -73,12 +73,10 @@
                                         for (let i = 0; largoArrayCicloCorreccionPrimera > i; i++) {
                                             if (pathToMongoOtCicloCorreccionPrimera[i]) {
                                                 let largoArray = parseInt(largoArrayCicloCorreccionPrimera)
-                                                resDatoPiezaMedidaReunionPrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].piezaMedidaReunionPrimera == 'sinDato' ? "S/D" : pathToMongoOtCicloCorreccionPrimera[largoArray-1].piezaMedidaReunionPrimera
-                                                resEstadoPiezaMedidaReunionPrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].estadoPiezaMedidaReunionPrimera == 'sinDato' ? "S/D" : pathToMongoOtCicloCorreccionPrimera[largoArray-1].estadoPiezaMedidaReunionPrimera
+                                                resPiezaMedidaReunionPrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].piezaMedidaReunionPrimera == 'sinDato' ? "S/D" : pathToMongoOtCicloCorreccionPrimera[largoArray-1].piezaMedidaReunionPrimera
                                                 resRevisionPiezaMedidaReunionPrimera = parseInt(pathToMongoOtCicloCorreccionPrimera[largoArray-1].revisionPiezaMedidaReunionPrimera) || 0
                                                 
-                                                pathToMongoOtCicloCorreccionPrimera[i].piezaMedidaReunionPrimera == 'sinDato' ? arrResDatoPiezaMedidaReunionPrimera.push("S/D") : arrResDatoPiezaMedidaReunionPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].piezaMedidaReunionPrimera)
-                                                pathToMongoOtCicloCorreccionPrimera[i].estadoPiezaMedidaReunionPrimera == 'sinDato' ? arrResEstadoPiezaMedidaReunionPrimera.push("S/D") : arrResEstadoPiezaMedidaReunionPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].estadoPiezaMedidaReunionPrimera)
+                                                pathToMongoOtCicloCorreccionPrimera[i].piezaMedidaReunionPrimera == 'sinDato' ? arrResPiezaMedidaReunionPrimera.push("S/D") : arrResPiezaMedidaReunionPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].piezaMedidaReunionPrimera)
                                                 arrResRevisionPiezaMedidaReunionPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].revisionPiezaMedidaReunionPrimera)
 
                                                 arrResCreadorPiezaMedidaReunionPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].creator[0].username)
@@ -87,12 +85,12 @@
                                                 arrResFechaModPiezaMedidaReunionPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResPiezaMedidaReunionPrimera = parseInt(arrResDatoPiezaMedidaReunionPrimera.length-1)
+                                        valueArrayResPiezaMedidaReunionPrimera = parseInt(arrResPiezaMedidaReunionPrimera.length-1)
 
-                                        if (arrResDatoPiezaMedidaReunionPrimera.length == 1 ) {
+                                        if (arrResPiezaMedidaReunionPrimera.length == 1 ) {
                                             anteriorDisabled = "disabled"
                                             siguienteDisabled = "disabled"
-                                        } else if (arrResDatoPiezaMedidaReunionPrimera.length == arrResRevisionPiezaMedidaReunionPrimera.length) {
+                                        } else if (arrResPiezaMedidaReunionPrimera.length == arrResRevisionPiezaMedidaReunionPrimera.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -101,8 +99,7 @@
                                         }
                                         
                                     } else {
-                                        arrResDatoPiezaMedidaReunionPrimera.push(resDatoPiezaMedidaReunionPrimera)
-                                        arrResEstadoPiezaMedidaReunionPrimera.push(resEstadoPiezaMedidaReunionPrimera)
+                                        arrResPiezaMedidaReunionPrimera.push(resPiezaMedidaReunionPrimera)
                                         arrResRevisionPiezaMedidaReunionPrimera.push(resRevisionPiezaMedidaReunionPrimera)
                                         
                                         arrResCreadorPiezaMedidaReunionPrimera.push(pathMongoOtProject[n].creator[0].username)
@@ -117,8 +114,7 @@
                                             <%= anteriorDisabled %>
                                             ><i class="fa-solid fa-arrow-left"></i>
                                         </button>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoPiezaMedidaReunionPrimera %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoPiezaMedidaReunionPrimera %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPiezaMedidaReunionPrimera %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPiezaMedidaReunionPrimera %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPiezaMedidaReunionPrimera %>">
                                         <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorPiezaMedidaReunionPrimera %>">
@@ -126,15 +122,10 @@
                                         <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaPiezaMedidaReunionPrimera %>">
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModPiezaMedidaReunionPrimera %>">
 
-                                        <span id="resDatoPiezaMedidaReunionPrimera<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                            <%= resDatoPiezaMedidaReunionPrimera %>
-                                        </span> |
-                                        
-                                        <% const config = cicloCorreccionPrimeraConfig[resEstadoPiezaMedidaReunionPrimera] || cicloCorreccionPrimeraConfig.default; %>
-                                        <span id="resEstadoPiezaMedidaReunionPrimera<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoPiezaMedidaReunionPrimera%>">
+                                        <% const config = cicloCorreccionPrimeraConfig[resPiezaMedidaReunionPrimera] || cicloCorreccionPrimeraConfig.default; %>
+                                        <span id="resPiezaMedidaReunionPrimera<%=k%>_<%=n%>_<%=q%>" value="<%=resPiezaMedidaReunionPrimera%>">
                                             <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
-
                                         <span id="resRevisionPiezaMedidaReunionPrimera<%=k%>_<%=n%>_<%=q%>" name="resRevisionPiezaMedidaReunionPrimera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                             <%= resRevisionPiezaMedidaReunionPrimera %>
                                         </span>
@@ -154,12 +145,10 @@
                                         for (let i = 0; largoArrayCicloCorreccionPrimera > i; i++) {
                                             if (pathToMongoOtCicloCorreccionPrimera[i]) {
                                                 let largoArray = parseInt(largoArrayCicloCorreccionPrimera)
-                                                resDatoMaquinaPrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].maquinaPrimera == 'sinDato' ? "S/D" :  pathToMongoOtCicloCorreccionPrimera[largoArray-1].maquinaPrimera
-                                                resEstadoMaquinaPrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].estadoMaquinaPrimera == 'sinDato' ? "S/D" : pathToMongoOtCicloCorreccionPrimera[largoArray-1].estadoMaquinaPrimera
+                                                resMaquinaPrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].maquinaPrimera == 'sinDato' ? "S/D" :  pathToMongoOtCicloCorreccionPrimera[largoArray-1].maquinaPrimera
                                                 resRevisionMaquinaPrimera = parseInt(pathToMongoOtCicloCorreccionPrimera[largoArray-1].revisionMaquinaPrimera) || 0
                                                 
-                                                pathToMongoOtCicloCorreccionPrimera[i].maquinaPrimera == 'sinDato' ? arrResDatoMaquinaPrimera.push("S/D") : arrResDatoMaquinaPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].maquinaPrimera)
-                                                pathToMongoOtCicloCorreccionPrimera[i].estadoMaquinaPrimera == 'sinDato' ? arrResEstadoMaquinaPrimera.push("S/D") : arrResEstadoMaquinaPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].estadoMaquinaPrimera)
+                                                pathToMongoOtCicloCorreccionPrimera[i].maquinaPrimera == 'sinDato' ? arrResMaquinaPrimera.push("S/D") : arrResMaquinaPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].maquinaPrimera)
                                                 arrResRevisionMaquinaPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].revisionMaquinaPrimera)
                                                 
                                                 arrResCreadorMaquinaPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].creator[0].username)
@@ -168,12 +157,12 @@
                                                 arrResFechaModMaquinaPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResMaquinaPrimera = parseInt(arrResEstadoMaquinaPrimera.length-1)
+                                        valueArrayResMaquinaPrimera = parseInt(arrResMaquinaPrimera.length-1)
                                                 
-                                        if (arrResDatoMaquinaPrimera.length == 1 ) {
+                                        if (arrResMaquinaPrimera.length == 1 ) {
                                             anteriorDisabled = "disabled"
                                             siguienteDisabled = "disabled"
-                                        } else if (arrResDatoMaquinaPrimera.length == arrResRevisionMaquinaPrimera.length) {
+                                        } else if (arrResMaquinaPrimera.length == arrResRevisionMaquinaPrimera.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -182,8 +171,7 @@
                                         }
                                         
                                     } else {
-                                        arrResDatoMaquinaPrimera.push(resDatoMaquinaPrimera)
-                                        arrResEstadoMaquinaPrimera.push(resEstadoMaquinaPrimera)
+                                        arrResMaquinaPrimera.push(resMaquinaPrimera)
                                         arrResRevisionMaquinaPrimera.push(resRevisionMaquinaPrimera)
                                         
                                         arrResCreadorMaquinaPrimera.push(pathMongoOtProject[n].creator[0].username)
@@ -198,8 +186,7 @@
                                             <%= anteriorDisabled %>
                                             ><i class="fa-solid fa-arrow-left"></i>
                                         </button>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoMaquinaPrimera %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoMaquinaPrimera %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMaquinaPrimera %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMaquinaPrimera %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMaquinaPrimera %>">
                                         <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorMaquinaPrimera %>">
@@ -207,15 +194,10 @@
                                         <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMaquinaPrimera %>">
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModMaquinaPrimera %>">
 
-                                        <span id="resDatoMaquinaPrimera<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                            <%= resDatoMaquinaPrimera %>
-                                        </span> |
-
-                                        <% const config = cicloCorreccionPrimeraConfig[resEstadoMaquinaPrimera] || cicloCorreccionPrimeraConfig.default; %>
-                                        <span id="resEstadoMaquinaPrimera<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoMaquinaPrimera%>">
+                                        <% const config = cicloCorreccionPrimeraConfig[resMaquinaPrimera] || cicloCorreccionPrimeraConfig.default; %>
+                                        <span id="resMaquinaPrimera<%=k%>_<%=n%>_<%=q%>" value="<%=resMaquinaPrimera%>">
                                             <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
-
                                         <span id="resRevisionMaquinaPrimera<%=k%>_<%=n%>_<%=q%>" name="resRevisionMaquinaPrimera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                             <%= resRevisionMaquinaPrimera %>
                                         </span>
@@ -236,12 +218,10 @@
                                         for (let i = 0; largoArrayCicloCorreccionPrimera > i; i++) {
                                             if (pathToMongoOtCicloCorreccionPrimera[i]) {
                                                 let largoArray = parseInt(largoArrayCicloCorreccionPrimera)
-                                                resDatoAjustePrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].ajustePrimera == 'sinDato' ? "S/D" : pathToMongoOtCicloCorreccionPrimera[largoArray-1].ajustePrimera
-                                                resEstadoAjustePrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].estadoAjustePrimera == 'sinDato' ? 'sinDato' : pathToMongoOtCicloCorreccionPrimera[largoArray-1].estadoAjustePrimera
+                                                resAjustePrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].ajustePrimera == 'sinDato' ? "S/D" : pathToMongoOtCicloCorreccionPrimera[largoArray-1].ajustePrimera
                                                 resRevisionAjustePrimera = parseInt(pathToMongoOtCicloCorreccionPrimera[largoArray-1].revisionAjustePrimera) || 0
                                                 
-                                                pathToMongoOtCicloCorreccionPrimera[i].ajustePrimera == 'sinDato' ? arrResDatoAjustePrimera.push('S/D') : arrResDatoAjustePrimera.push(pathToMongoOtCicloCorreccionPrimera[i].ajustePrimera)
-                                                pathToMongoOtCicloCorreccionPrimera[i].estadoAjustePrimera == 'sinDato' ? arrResEstadoAjustePrimera.push('S/D') : arrResEstadoAjustePrimera.push(pathToMongoOtCicloCorreccionPrimera[i].estadoAjustePrimera)
+                                                pathToMongoOtCicloCorreccionPrimera[i].ajustePrimera == 'sinDato' ? arrResAjustePrimera.push('S/D') : arrResAjustePrimera.push(pathToMongoOtCicloCorreccionPrimera[i].ajustePrimera)
                                                 arrResRevisionAjustePrimera.push(pathToMongoOtCicloCorreccionPrimera[i].revisionAjustePrimera)
                                             
                                                 arrResCreadorAjustePrimera.push(pathToMongoOtCicloCorreccionPrimera[i].creator[0].username)
@@ -250,12 +230,12 @@
                                                 arrResFechaModAjustePrimera.push(pathToMongoOtCicloCorreccionPrimera[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResAjustePrimera = parseInt(arrResEstadoAjustePrimera.length-1)
+                                        valueArrayResAjustePrimera = parseInt(arrResAjustePrimera.length-1)
                                                 
-                                        if (arrResDatoAjustePrimera.length == 1 ) {
+                                        if (arrResAjustePrimera.length == 1 ) {
                                             siguienteDisabled = "disabled"
                                             anteriorDisabled = "disabled"
-                                        } else if (arrResDatoAjustePrimera.length == arrResRevisionAjustePrimera.length) {
+                                        } else if (arrResAjustePrimera.length == arrResRevisionAjustePrimera.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -264,8 +244,7 @@
                                         }
                                                 
                                     } else {
-                                        arrResDatoAjustePrimera.push(resDatoAjustePrimera)
-                                        arrResEstadoAjustePrimera.push(resEstadoAjustePrimera)
+                                        arrResAjustePrimera.push(resAjustePrimera)
                                         arrResRevisionAjustePrimera.push(resRevisionAjustePrimera)
                                         
                                         arrResCreadorAjustePrimera.push(pathMongoOtProject[n].creator[0].username)
@@ -280,8 +259,7 @@
                                         <%= anteriorDisabled %>
                                         ><i class="fa-solid fa-arrow-left"></i>
                                     </button>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAjustePrimera %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAjustePrimera %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResAjustePrimera %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAjustePrimera %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAjustePrimera %>">
                                     <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorAjustePrimera %>">
@@ -289,15 +267,10 @@
                                     <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaAjustePrimera %>">
                                     <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModAjustePrimera %>">
 
-                                    <span id="resDatoAjustePrimera<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                        <%= resDatoAjustePrimera %>
-                                    </span> |
-
-                                    <% const config = cicloCorreccionPrimeraConfig[resEstadoAjustePrimera] || cicloCorreccionPrimeraConfig.default; %>
-                                    <span id="resEstadoAjustePrimera<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAjustePrimera%>">
+                                    <% const config = cicloCorreccionPrimeraConfig[resAjustePrimera] || cicloCorreccionPrimeraConfig.default; %>
+                                    <span id="resAjustePrimera<%=k%>_<%=n%>_<%=q%>" value="<%=resAjustePrimera%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionAjustePrimera<%=k%>_<%=n%>_<%=q%>" name="resRevisionAjustePrimera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionAjustePrimera %>
                                     </span>
@@ -325,38 +298,28 @@
 
                                             if (pathToMongoOtCicloCorreccionPrimera[i]) {
                                                 let largoArray = parseInt(largoArrayCicloCorreccionPrimera)
-                                                resDatoPiezaMedidaReunionPrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].piezaMedidaReunionPrimera || 'S/D'
-                                                resEstadoPiezaMedidaReunionPrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].estadoPiezaMedidaReunionPrimera || 'sinDato'
+                                                resPiezaMedidaReunionPrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].piezaMedidaReunionPrimera || 'S/D'
                                                 resRevisionPiezaMedidaReunionPrimera = parseInt(pathToMongoOtCicloCorreccionPrimera[largoArray-1].revisionPiezaMedidaReunionPrimera) || 0
                                                 
-                                                arrResDatoPiezaMedidaReunionPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].piezaMedidaReunionPrimera)
-                                                arrResEstadoPiezaMedidaReunionPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].estadoPiezaMedidaReunionPrimera)
+                                                arrResPiezaMedidaReunionPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].piezaMedidaReunionPrimera)
                                                 arrResRevisionPiezaMedidaReunionPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].revisionPiezaMedidaReunionPrimera)
                                             }
                                         }
-                                        valueArrayResPiezaMedidaReunionPrimera = parseInt(arrResEstadoPiezaMedidaReunionPrimera.length-1)
-                                        resDatoPiezaMedidaReunionPrimera = pathToMongoOtCicloCorreccionPrimera[0].PiezaMedidaReunionPrimera
-                                        resEstadoPiezaMedidaReunionPrimera = pathToMongoOtCicloCorreccionPrimera[0].estadoPiezaMedidaReunionPrimera
-
+                                        valueArrayResPiezaMedidaReunionPrimera = parseInt(arrResPiezaMedidaReunionPrimera.length-1)
+                                        resPiezaMedidaReunionPrimera = pathToMongoOtCicloCorreccionPrimera[0].PiezaMedidaReunionPrimera
+                                        
                                     } else {
-                                        arrResDatoPiezaMedidaReunionPrimera.push(resDatoPiezaMedidaReunionPrimera)
-                                        arrResEstadoPiezaMedidaReunionPrimera.push(resEstadoPiezaMedidaReunionPrimera)
+                                        arrResPiezaMedidaReunionPrimera.push(resPiezaMedidaReunionPrimera)
                                         arrResRevisionPiezaMedidaReunionPrimera.push(resRevisionPiezaMedidaReunionPrimera)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoPiezaMedidaReunionPrimera %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoPiezaMedidaReunionPrimera %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPiezaMedidaReunionPrimera %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPiezaMedidaReunionPrimera %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPiezaMedidaReunionPrimera %>">
                                 
-                                    <span id="resDatoPiezaMedidaReunionPrimera<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoPiezaMedidaReunionPrimera %>
-                                    </span> |
-
-                                    <% const config = cicloCorreccionPrimeraConfig[resEstadoPiezaMedidaReunionPrimera] || cicloCorreccionPrimeraConfig.default; %>
-                                    <span id="resEstadoPiezaMedidaReunionPrimera<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoPiezaMedidaReunionPrimera%>">
+                                    <% const config = cicloCorreccionPrimeraConfig[resPiezaMedidaReunionPrimera] || cicloCorreccionPrimeraConfig.default; %>
+                                    <span id="resPiezaMedidaReunionPrimera<%=k%>_<%=n%>_<%=q%>" value="<%=resPiezaMedidaReunionPrimera%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionPiezaMedidaReunionPrimera<%=k%>_<%=n%>_<%=q%>" name="resRevisionPiezaMedidaReunionPrimera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionPiezaMedidaReunionPrimera %>
                                     </span>
@@ -370,38 +333,28 @@
                                             
                                             if (pathToMongoOtCicloCorreccionPrimera[i]) {
                                                 let largoArray = parseInt(largoArrayCicloCorreccionPrimera)
-                                                resDatoMaquinaPrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].maquinaPrimera || 'S/D'
-                                                resEstadoMaquinaPrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].maquinaPrimera || 'sinDato'
+                                                resMaquinaPrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].maquinaPrimera || 'S/D'
                                                 resRevisionMaquinaPrimera = parseInt(pathToMongoOtCicloCorreccionPrimera[largoArray-1].revisionMaquinaPrimera) || 0
                                                 
-                                                arrResDatoMaquinaPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].maquinaPrimera)
-                                                arrResEstadoMaquinaPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].maquinaPrimera)
+                                                arrResMaquinaPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].maquinaPrimera)
                                                 arrResRevisionMaquinaPrimera.push(pathToMongoOtCicloCorreccionPrimera[i].revisionMaquinaPrimera)
                                             }
                                         }
-                                        valueArrayResMaquinaPrimera = parseInt(arrResEstadoMaquinaPrimera.length-1)
-                                        resDatoMaquinaPrimera = pathToMongoOtCicloCorreccionPrimera[0].maquinaPrimera
-                                        resEstadoMaquinaPrimera = pathToMongoOtCicloCorreccionPrimera[0].estadoMaquinaPrimera
-                                    
+                                        valueArrayResMaquinaPrimera = parseInt(arrResMaquinaPrimera.length-1)
+                                        resMaquinaPrimera = pathToMongoOtCicloCorreccionPrimera[0].maquinaPrimera
+                                        
                                     } else {
-                                        arrResDatoMaquinaPrimera.push(resDatoMaquinaPrimera)
-                                        arrResEstadoMaquinaPrimera.push(resEstadoMaquinaPrimera)
+                                        arrResMaquinaPrimera.push(resMaquinaPrimera)
                                         arrResRevisionMaquinaPrimera.push(resRevisionMaquinaPrimera)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoMaquinaPrimera %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoMaquinaPrimera %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMaquinaPrimera %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMaquinaPrimera %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMaquinaPrimera %>">
 
-                                    <span id="resDatoMaquinaPrimera<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoMaquinaPrimera %>
-                                    </span> |
-                                    
-                                    <% const config = cicloCorreccionPrimeraConfig[resEstadoMaquinaPrimera] || cicloCorreccionPrimeraConfig.default; %>
-                                    <span id="resEstadoMaquinaPrimera<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoMaquinaPrimera%>">
+                                    <% const config = cicloCorreccionPrimeraConfig[resMaquinaPrimera] || cicloCorreccionPrimeraConfig.default; %>
+                                    <span id="resMaquinaPrimera<%=k%>_<%=n%>_<%=q%>" value="<%=resMaquinaPrimera%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionMaquinaPrimera<%=k%>_<%=n%>_<%=q%>" name="resRevisionMaquinaPrimera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionMaquinaPrimera %>
                                     </span>
@@ -415,38 +368,28 @@
                                             
                                             if (pathToMongoOtCicloCorreccionPrimera[i]) {
                                                 let largoArray = parseInt(largoArrayCicloCorreccionPrimera)
-                                                resDatoAjustePrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].ajustePrimera || "S/D"
-                                                resEstadoAjustePrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].estadoAjustePrimera || 'sinDato'
+                                                resAjustePrimera = pathToMongoOtCicloCorreccionPrimera[largoArray-1].ajustePrimera || "S/D"
                                                 resRevisionAjustePrimera = parseInt(pathToMongoOtCicloCorreccionPrimera[largoArray-1].revisionAjustePrimera) || 0
                                                 
-                                                arrResDatoAjustePrimera.push(pathToMongoOtCicloCorreccionPrimera[i].ajustePrimera)
-                                                arrResEstadoAjustePrimera.push(pathToMongoOtCicloCorreccionPrimera[i].estadoAjustePrimera)
+                                                arrResAjustePrimera.push(pathToMongoOtCicloCorreccionPrimera[i].ajustePrimera)
                                                 arrResRevisionAjustePrimera.push(pathToMongoOtCicloCorreccionPrimera[i].revisionAjustePrimera)
                                             }
                                         }
-                                        valueArrayResAjustePrimera = parseInt(arrResEstadoAjustePrimera.length-1)
-                                        resDatoAjustePrimera = pathToMongoOtCicloCorreccionPrimera[0].ajustePrimera
-                                        resEstadoAjustePrimera = pathToMongoOtCicloCorreccionPrimera[0].estadoAjustePrimera
-                                    
+                                        valueArrayResAjustePrimera = parseInt(arrResAjustePrimera.length-1)
+                                        resAjustePrimera = pathToMongoOtCicloCorreccionPrimera[0].ajustePrimera
+                                        
                                     } else {
-                                        arrResDatoAjustePrimera.push(resDatoAjustePrimera)
-                                        arrResEstadoAjustePrimera.push(resEstadoAjustePrimera)
+                                        arrResAjustePrimera.push(resAjustePrimera)
                                         arrResRevisionAjustePrimera.push(resRevisionAjustePrimera)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAjustePrimera %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAjustePrimera %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResAjustePrimera %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAjustePrimera %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAjustePrimera %>">
 
-                                    <span id="resDatoAjustePrimera<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoAjustePrimera %>
-                                    </span> |
-                                    
-                                    <% const config = cicloCorreccionPrimeraConfig[resEstadoAjustePrimera] || cicloCorreccionPrimeraConfig.default; %>
-                                    <span id="resEstadoAjustePrimera<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAjustePrimera%>">
+                                    <% const config = cicloCorreccionPrimeraConfig[resAjustePrimera] || cicloCorreccionPrimeraConfig.default; %>
+                                    <span id="resAjustePrimera<%=k%>_<%=n%>_<%=q%>" value="<%=resAjustePrimera%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionAjustePrimera<%=k%>_<%=n%>_<%=q%>" name="resRevisionAjustePrimera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionAjustePrimera %>
                                     </span>

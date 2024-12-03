@@ -7,9 +7,9 @@
         </div>
         <div class="col-10 d-flex align-items-center">
             <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
-                Asigna dueño de pieza de OCI# <strong><%= arrayVisibleOci[k].ociNumber %></strong>, haciendo click en
-                
+                                
                 <% if (arrayVisibleOci[k].ociOwner[0].legajoId == 0) { %>
+                    Asigna dueño de pieza de OCI# <strong><%= arrayVisibleOci[k].ociNumber %></strong>, haciendo click en
                     <button class="custom2-btn m-1"
                         id="btnAddOtFormSelected<%=k%>" aria-controls="collapseExample" data-bs-toggle="collapse"
                         data-bs-target="#collapseExample" aria-expanded="false"
@@ -18,10 +18,12 @@
                         <i class="fa-solid fa-screwdriver-wrench fa-lg" aria-hidden="true"></i>
                     </button>
                 <% } else { %>
-                    <button class="custom2-btn-disable m-1 pe-none" aria-controls="collapseExample" 
+                    <button class="custom2-btn-disable m-1 pe-none me-2" aria-controls="collapseExample" 
                         style="--bs-btn-font-size: .95rem; color: var(--bs-white);" type="button" disabled>
                         <i class="fa-solid fa-screwdriver-wrench fa-lg" aria-hidden="true"></i>
                     </button>
+                    Dueño de pieza de OCI# <strong><%= arrayVisibleOci[k].ociNumber %></strong>, asignado.
+                    Para actualizar, haz click en uno de los botones editar de la columna acciones de cada OT
                 <% } %> 
                 
             <% } else { %>

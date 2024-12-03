@@ -3611,25 +3611,25 @@ function addDatoToOtProgramacionPrimera(i, idTabla, qInicial, qFinal) {
                                 <span><strong>Estado</strong></span>
                             </div>
                             <div class="col-1 my-auto align-self-start" style="width: 4vw;">
-                                <span"><strong>Rev</strong></span>
+                                <span><strong>Rev</strong></span>
                             </div>
                             <div class="col my-auto">
-                                <spano><strong>Prep. GEO</strong></span>
+                                <span><strong>Prep. GEO</strong></span>
                             </div>
                             <div class="col my-auto align-self-start border-start border-end border-dark" style="width: 6vw;">
                                 <span><strong>Estado</strong></span>
                             </div>
                             <div class="col-1 my-auto align-self-start" style="width: 4vw;">
-                                <span"><strong>Rev</strong></span>
+                                <span><strong>Rev</strong></span>
                             </div>
                             <div class="col my-auto">
-                                <spano><strong>Programas 2D</strong></span>
+                                <span><strong>Programas 2D</strong></span>
                             </div>
                             <div class="col my-auto align-self-start border-start border-end border-dark" style="width: 6vw;">
                                 <span><strong>Estado</strong></span>
                             </div>
                             <div class="col-1 my-auto align-self-start" style="width: 4vw;">
-                                <span"><strong>Rev</strong></span>
+                                <span><strong>Rev</strong></span>
                             </div>
                         </div>
                         <hr>
@@ -3785,22 +3785,22 @@ function addDatoToOtProgramacionSegunda(i, idTabla, qInicial, qFinal) {
                                 <span><strong>Estado</strong></span>
                             </div>
                             <div class="col-1 my-auto align-self-start" style="width: 4vw;">
-                                <span"><strong>Rev</strong></span>
+                                <span><strong>Rev</strong></span>
                             </div>
                             <div class="col my-auto">
-                                <spano><strong>Programa 3d F4</strong></span>
+                                <span><strong>Programa 3d F4</strong></span>
                             </div>
                             <div class="col-1 my-auto align-self-start border-start border-end border-dark" style="width: 9vw;">
                                 <span><strong>Estado</strong></span>
                             </div>
                             <div class="col-1 my-auto align-self-start" style="width: 4vw;">
-                                <span"><strong>Rev</strong></span>
+                                <span><strong>Rev</strong></span>
                             </div>
                             <div class="col-1 my-auto border-end border-dark" style="width: 13vw;">
-                                <spano><strong>Notas</strong></span>
+                                <span><strong>Notas</strong></span>
                             </div>
                             <div class="col-1 my-auto align-self-start" style="width: 4vw;">
-                                <span"><strong>Rev</strong></span>
+                                <span><strong>Rev</strong></span>
                             </div>
                         </div>
                         <hr>
@@ -4020,25 +4020,25 @@ function addDatoToMecanizadoPrimera(i, idTabla, qInicial, qFinal) {
                                 <span><strong>Estado</strong></span>
                             </div>
                             <div class="col-1 my-auto align-self-start" style="width: 4vw;">
-                                <span"><strong>Rev</strong></span>
+                                <span><strong>Rev</strong></span>
                             </div>
                             <div class="col my-auto">
-                                <spano><strong>F1</strong></span>
+                                <span><strong>F1</strong></span>
                             </div>
                             <div class="col my-auto align-self-start border-start border-end border-dark" style="width: 7vw;">
                                 <span><strong>Estado</strong></span>
                             </div>
                             <div class="col-1 my-auto align-self-start" style="width: 4vw;">
-                                <span"><strong>Rev</strong></span>
+                                <span><strong>Rev</strong></span>
                             </div>
                             <div class="col my-auto">
-                                <spano><strong>F2</strong></span>
+                                <span><strong>F2</strong></span>
                             </div>
                             <div class="col my-auto align-self-start border-start border-end border-dark" style="width: 7vw;">
                                 <span><strong>Estado</strong></span>
                             </div>
                             <div class="col-1 my-auto align-self-start" style="width: 4vw;">
-                                <span"><strong>Rev</strong></span>
+                                <span><strong>Rev</strong></span>
                             </div>
                         </div>
                         <hr>
@@ -4193,22 +4193,22 @@ function addDatoToMecanizadoSegunda(i, idTabla, qInicial, qFinal) {
                                 <span><strong>Estado</strong></span>
                             </div>
                             <div class="col-1 my-auto align-self-start" style="width: 4vw;">
-                                <span"><strong>Rev</strong></span>
+                                <span><strong>Rev</strong></span>
                             </div>
                             <div class="col my-auto">
-                                <spano><strong>F4</strong></span>
+                                <span><strong>F4</strong></span>
                             </div>
                             <div class="col-1 my-auto align-self-start border-start border-end border-dark" style="width: 9vw;">
                                 <span><strong>Estado</strong></span>
                             </div>
                             <div class="col-1 my-auto align-self-start" style="width: 4vw;">
-                                <span"><strong>Rev</strong></span>
+                                <span><strong>Rev</strong></span>
                             </div>
                             <div class="col-1 my-auto border-end border-dark" style="width: 13vw;">
-                                <spano><strong>Notas</strong></span>
+                                <span><strong>Notas</strong></span>
                             </div>
                             <div class="col-1 my-auto align-self-start" style="width: 4vw;">
-                                <span"><strong>Rev</strong></span>
+                                <span><strong>Rev</strong></span>
                             </div>
                         </div>
                         <hr>

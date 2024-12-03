@@ -4,7 +4,7 @@
         <tr>
             <th colspan="4" class="text-center">ARMADO
                 <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
-                    <button id="posBtnAddDataOtArmado<%=k%>" type="button" name="btnOtArmado" class="btn btn-small btn-success shadow m-1 position-relative"
+                    <button id="posBtnAddDataOtArmado<%=k%>" type="button" name="btnOtArmado" class="btn btn-small btn-success shadow m-1 me-5 mb-2 position-relative"
                         style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
                         <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
                         <span id="spanCheckSelecMasiveArmado<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
@@ -13,11 +13,15 @@
                         </span>
                     </button>
                 <% } else { %>
-                    <button type="button" class="btn btn-small btn-danger shadow m-1 disabled"
-                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 me-5 mb-2 disabled" style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
                         <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>                                                    
                     </button>
                 <% } %>
+                <i class="fa-solid fa-arrows-spin fa-lg" style="color: #b09b12;"></i> En Proceso -
+                <i class="fa-solid fa-circle-check fa-lg" style="color: #008f30;"></i> Terminado -
+                <i class="fa-solid fa-circle-xmark fa-lg" style="color: #c40000;"></i> Detenido -
+                <i class="fa-solid fa-ban fa-lg"></i> No Aplica -
+                <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #1c21ac;"></i> Sin Datos
             </th>
         </tr>
         <tr>
@@ -29,12 +33,12 @@
     </thead>
     <tbody class="table-group-divider">
         <% const armadoConfig = {
-            terminado: { text: "Terminado", classes: "bg-success text-white" },
-            enProceso: { text: "En Proceso", classes: "bg-warning text-dark" },
-            detenido: { text: "Detenido", classes: "bg-danger text-white" },
-            noAplica: { text: "N/A", classes: "bg-info text-dark" },
-            default: { text: "S/D", classes: "bg-secondary text-white" }
-            };
+            enProceso: { icon: "fa-arrows-spin fa-spin", iconColor: "color:#b09b12" },
+            terminado: { icon: "fa-circle-check", iconColor: "color:#008f30" },
+            detenido: { icon: "fa-circle-xmark", iconColor: "color:#c40000" },
+            noAplica: { icon: "fa-ban", iconColor: "color:#000000" },
+            default: { icon: "fa-triangle-exclamation", iconColor: "color:#1c21ac" }
+        };
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
@@ -125,8 +129,8 @@
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModArmadoMaquina %>">
 
                                         <% const config = armadoConfig[resArmadoMaquina] || armadoConfig.default; %>
-                                        <span id="resArmadoMaquina<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
-                                            <%= config.text %>
+                                        <span id="resArmadoMaquina<%=k%>_<%=n%>_<%=q%>" value="<%=resArmadoMaquina%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
                                         <span id="resRevisionArmadoMaquina<%=k%>_<%=n%>_<%=q%>" name="resRevisionArmadoMaquina" class="badge text-dark my-2" style="cursor: help;">
                                             <%= resRevisionArmadoMaquina %>
@@ -200,8 +204,8 @@
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModPatronizado %>">
 
                                         <% const config = armadoConfig[resPatronizado] || armadoConfig.default; %>
-                                        <span id="resPatronizado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
-                                            <%= config.text %>
+                                        <span id="resPatronizado<%=k%>_<%=n%>_<%=q%>" value="<%=resPatronizado%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
                                         <span id="resRevisionPatronizado<%=k%>_<%=n%>_<%=q%>" name="resRevisionPatronizado" class="badge text-dark my-2" style="cursor: help;">
                                             <%= resRevisionPatronizado %>
@@ -276,8 +280,8 @@
 
                                         <% const config = armadoConfig[resLthArmado] || armadoConfig.default; %>
                                         
-                                        <span id="resLthArmado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
-                                        <%= config.text %>
+                                        <span id="resLthArmado<%=k%>_<%=n%>_<%=q%>" value="<%=resLthArmado%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
                                         <span id="resRevisionLthArmado<%=k%>_<%=n%>_<%=q%>" name="resRevisionLthArmado" class="badge text-dark my-2" style="cursor: help;">
                                             <%= resRevisionLthArmado %>
@@ -351,8 +355,8 @@
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModArmadoPrensa %>">
 
                                         <% const config = armadoConfig[resArmadoPrensa] || armadoConfig.default; %>
-                                        <span id="resArmadoPrensa<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
-                                            <%= config.text %>
+                                        <span id="resArmadoPrensa<%=k%>_<%=n%>_<%=q%>" value="<%=resArmadoPrensa%>">
+                                            <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
                                         <span id="resRevisionArmadoPrensa<%=k%>_<%=n%>_<%=q%>" name="resRevisionArmadoPrensa" class="badge text-dark my-2" style="cursor: help;">
                                             <%= resRevisionArmadoPrensa %>
@@ -401,8 +405,8 @@
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionArmadoMaquina %>">
                                 
                                     <% const config = armadoConfig[resArmadoMaquina] || armadoConfig.default; %>
-                                    <span id="resArmadoMaquina<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
-                                        <%= config.text %>
+                                    <span id="resArmadoMaquina<%=k%>_<%=n%>_<%=q%>" value="<%=resArmadoMaquina%>">
+                                        <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
                                     <span id="resRevisionArmadoMaquina<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2" style="cursor: help;">
                                         <%= resRevisionArmadoMaquina %>
@@ -436,8 +440,8 @@
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPatronizado %>">
 
                                     <% const config = armadoConfig[resPatronizado] || armadoConfig.default; %>
-                                    <span id="resPatronizado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
-                                        <%= config.text %>
+                                    <span id="resPatronizado<%=k%>_<%=n%>_<%=q%>" value="<%=resPatronizado%>">
+                                        <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
                                     <span id="resRevisionPatronizado<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2">
                                         <%= resRevisionPatronizado %>
@@ -471,8 +475,8 @@
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionLthArmado %>">
 
                                     <% const config = armadoConfig[resLthArmado] || armadoConfig.default; %>
-                                    <span id="resLthArmado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
-                                        <%= config.text %>
+                                    <span id="resLthArmado<%=k%>_<%=n%>_<%=q%>" value="<%=resLthArmado%>">
+                                        <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
                                     <span id="resRevisionLthArmado<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2">
                                         <%= resRevisionLthArmado %>
@@ -506,8 +510,8 @@
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionArmadoPrensa %>">
 
                                     <% const config = armadoConfig[resArmadoPrensa] || armadoConfig.default; %>
-                                    <span id="resArmadoPrensa<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
-                                        <%= config.text %>
+                                    <span id="resArmadoPrensa<%=k%>_<%=n%>_<%=q%>" value="<%=resArmadoPrensa%>">
+                                        <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
                                     <span id="resRevisionArmadoPrensa<%=k%>_<%=n%>_<%=q%>" class="badge text-dark my-2">
                                         <%= resRevisionArmadoPrensa %>

@@ -42,24 +42,24 @@ let modificatorSchema = new Schema({
 })
 
 // ------- Authorizator Schema -------------
-let authorizatorSchema = new Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Usuarios",
-    },
-    name: { 
-        type: String,
-    },
-    lastName: {
-        type: String,
-    },
-    username:{
-        type: String,
-    },
-    email: {
-        type: String,
-    }
-})
+// let authorizatorSchema = new Schema({
+//     userId: {
+//         type: mongoose.Schema.Types.ObjectId,
+//         ref: "Usuarios",
+//     },
+//     name: { 
+//         type: String,
+//     },
+//     lastName: {
+//         type: String,
+//     },
+//     username:{
+//         type: String,
+//     },
+//     email: {
+//         type: String,
+//     }
+// })
 
 // ------- OT Armado Schema ---------
 let otArmadoSchema = new Schema({
@@ -105,11 +105,11 @@ let otArmadoSchema = new Schema({
         type: String,
         default: ""
     },
-    authorizator: [authorizatorSchema],
-    authorizatedOn: {
-        type: String,
-        default: ""
-    },
+    // authorizator: [authorizatorSchema],
+    // authorizatedOn: {
+    //     type: String,
+    //     default: ""
+    // },
 })
 
 // ------- OT Etapa Primera Schema ---------
@@ -156,11 +156,11 @@ let otEtapaPrimeraSchema = new Schema({
         type: String,
         default: ""
     },
-    authorizator: [authorizatorSchema],
-    authorizatedOn: {
-        type: String,
-        default: ""
-    },
+    // authorizator: [authorizatorSchema],
+    // authorizatedOn: {
+    //     type: String,
+    //     default: ""
+    // },
 })
 
 // ------- OT Etapa Segunda Schema ---------
@@ -199,11 +199,11 @@ let otEtapaSegundaPrimeraSchema = new Schema({
         type: String,
         default: ""
     },
-    authorizator: [authorizatorSchema],
-    authorizatedOn: {
-        type: String,
-        default: ""
-    },
+    // authorizator: [authorizatorSchema],
+    // authorizatedOn: {
+    //     type: String,
+    //     default: ""
+    // },
 })
 
 // ------- OT Etapa Segunda Schema ---------
@@ -234,11 +234,11 @@ let otEtapaSegundaSegundaSchema = new Schema({
         type: String,
         default: ""
     },
-    authorizator: [authorizatorSchema],
-    authorizatedOn: {
-        type: String,
-        default: ""
-    },
+    // authorizator: [authorizatorSchema],
+    // authorizatedOn: {
+    //     type: String,
+    //     default: ""
+    // },
 })
 
 // ------- Analisis Critico Schema ---------
@@ -269,11 +269,11 @@ let otAnalisisCriticoSchema = new Schema({
         type: String,
         default: ""
     },
-    authorizator: [authorizatorSchema],
-    authorizatedOn: {
-        type: String,
-        default: ""
-    },
+    // authorizator: [authorizatorSchema],
+    // authorizatedOn: {
+    //     type: String,
+    //     default: ""
+    // },
 })
 
 // ------- Estapa Tercera Primera Schema ---------
@@ -312,11 +312,11 @@ let otEtapaTerceraPrimeraSchema = new Schema({
         type: String,
         default: ""
     },
-    authorizator: [authorizatorSchema],
-    authorizatedOn: {
-        type: String,
-        default: ""
-    },
+    // authorizator: [authorizatorSchema],
+    // authorizatedOn: {
+    //     type: String,
+    //     default: ""
+    // },
 })
 
 // ------- Estapa Tercera Segunda Schema ---------
@@ -355,11 +355,11 @@ let otEtapaTerceraSegundaSchema = new Schema({
         type: String,
         default: ""
     },
-    authorizator: [authorizatorSchema],
-    authorizatedOn: {
-        type: String,
-        default: ""
-    },
+    // authorizator: [authorizatorSchema],
+    // authorizatedOn: {
+    //     type: String,
+    //     default: ""
+    // },
 })
 
 // ------- Ciclo Correccion Primera Schema ---------
@@ -398,11 +398,11 @@ let otCicloCorreccionPrimeraSchema = new Schema({
         type: String,
         default: ""
     },
-    authorizator: [authorizatorSchema],
-    authorizatedOn: {
-        type: String,
-        default: ""
-    },
+    // authorizator: [authorizatorSchema],
+    // authorizatedOn: {
+    //     type: String,
+    //     default: ""
+    // },
 })
 
 // ------- Ciclo Correccion Segunda Schema ---------
@@ -441,11 +441,11 @@ let otCicloCorreccionSegundaSchema = new Schema({
         type: String,
         default: ""
     },
-    authorizator: [authorizatorSchema],
-    authorizatedOn: {
-        type: String,
-        default: ""
-    },
+    // authorizator: [authorizatorSchema],
+    // authorizatedOn: {
+    //     type: String,
+    //     default: ""
+    // },
 })
 
 // ------- Ciclo Correccion Tercera Schema ---------
@@ -484,11 +484,11 @@ let otCicloCorreccionTerceraSchema = new Schema({
         type: String,
         default: ""
     },
-    authorizator: [authorizatorSchema],
-    authorizatedOn: {
-        type: String,
-        default: ""
-    },
+    // authorizator: [authorizatorSchema],
+    // authorizatedOn: {
+    //     type: String,
+    //     default: ""
+    // },
 })
 
 // ------- Liberacion BuyOff Primera Schema ---------
@@ -527,11 +527,11 @@ let otLiberacionBuyOffPrimeraSchema = new Schema({
         type: String,
         default: ""
     },
-    authorizator: [authorizatorSchema],
-    authorizatedOn: {
-        type: String,
-        default: ""
-    },
+    // authorizator: [authorizatorSchema],
+    // authorizatedOn: {
+    //     type: String,
+    //     default: ""
+    // },
 })
 
 // ------- Liberacion BuyOff Segunda Schema ---------
@@ -570,11 +570,11 @@ let otLiberacionBuyOffSegundaSchema = new Schema({
         type: String,
         default: ""
     },
-    authorizator: [authorizatorSchema],
-    authorizatedOn: {
-        type: String,
-        default: ""
-    },
+    // authorizator: [authorizatorSchema],
+    // authorizatedOn: {
+    //     type: String,
+    //     default: ""
+    // },
 })
 
 // ------- Buy Off Schema ---------
@@ -605,11 +605,11 @@ let otBuyOffSchema = new Schema({
         type: String,
         default: ""
     },
-    authorizator: [authorizatorSchema],
-    authorizatedOn: {
-        type: String,
-        default: ""
-    },
+    // authorizator: [authorizatorSchema],
+    // authorizatedOn: {
+    //     type: String,
+    //     default: ""
+    // },
 })
 
 // ------- Pendientes Finales Cliente Schema ---------
@@ -655,20 +655,20 @@ let AjusteSchema = new Schema({
     otAjusteId: {
         type: mongoose.Schema.Types.ObjectId,
     },
-    otArmado: [otArmadoSchema],
-    otEtapaPrimera: [otEtapaPrimeraSchema],
-    otEtapaSegundaPrimera: [otEtapaSegundaPrimeraSchema],
-    otEtapaSegundaSegunda: [otEtapaSegundaSegundaSchema],
-    otAnalisisCritico: [otAnalisisCriticoSchema],
-    otEtapaTerceraPrimera: [otEtapaTerceraPrimeraSchema],
-    otEtapaTerceraSegunda: [otEtapaTerceraSegundaSchema],
-    otCicloCorreccionPrimera: [otCicloCorreccionPrimeraSchema],
-    otCicloCorreccionSegunda: [otCicloCorreccionSegundaSchema],
-    otCicloCorreccionTercera: [otCicloCorreccionTerceraSchema],
-    otLiberacionBuyOffPrimera: [otLiberacionBuyOffPrimeraSchema],
-    otLiberacionBuyOffSegunda: [otLiberacionBuyOffSegundaSchema],
-    otBuyOff: [otBuyOffSchema],
-    otPendientesFinales: [otPendientesFinalesSchema],
+    otInfoArmado: [otArmadoSchema],
+    otInfoEtapaPrimera: [otEtapaPrimeraSchema],
+    otInfoEtapaSegundaPrimera: [otEtapaSegundaPrimeraSchema],
+    otInfoEtapaSegundaSegunda: [otEtapaSegundaSegundaSchema],
+    otInfoAnalisisCritico: [otAnalisisCriticoSchema],
+    otInfoEtapaTerceraPrimera: [otEtapaTerceraPrimeraSchema],
+    otInfoEtapaTerceraSegunda: [otEtapaTerceraSegundaSchema],
+    otInfoCicloCorreccionPrimera: [otCicloCorreccionPrimeraSchema],
+    otInfoCicloCorreccionSegunda: [otCicloCorreccionSegundaSchema],
+    otInfoCicloCorreccionTercera: [otCicloCorreccionTerceraSchema],
+    otInfoLiberacionBuyOffPrimera: [otLiberacionBuyOffPrimeraSchema],
+    otInfoLiberacionBuyOffSegunda: [otLiberacionBuyOffSegundaSchema],
+    otInfoBuyOff: [otBuyOffSchema],
+    otInfoPendientesFinales: [otPendientesFinalesSchema],
     creator: [creatorSchema],
     timestamp: {
         type: String,

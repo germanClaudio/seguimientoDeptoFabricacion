@@ -16,7 +16,7 @@ const cookie = require('../utils/cookie.js')
 
 let data = require('../utils/variablesInicializator.js')
 
-const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty, dataUserOtOwnerEmpty } = require('../utils/generateUsers.js')
+const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty, dataUserOciOwnerEmpty } = require('../utils/generateUsers.js')
 
 const {catchError400,
     catchError400_1,
@@ -198,7 +198,7 @@ class ProjectsController {
                 if (req.files && req.files.length != 0) {
                     await uploadToGCSingleFile(req, res, next)
                 }
-// console.log('req.body: ', req.body)
+                // console.log('req.body: ', req.body)
                 let arrayOciNumber=[],
                     arrayOciDescription=[],
                     arrayOciAlias=[],
@@ -223,12 +223,12 @@ class ProjectsController {
                 let indexArrayOciNumber = 0
                 for (let h=0; h<arrayOciNumber.length; h++) {
                     const ociNumberValid = await this.projects.selectOciByOciNumber(arrayOciNumber[h], ociKNumber)
-        // console.log('ociNumberValid: ', ociNumberValid)            
+                    // console.log('ociNumberValid: ', ociNumberValid)            
                     if (!ociNumberValid) {
                         let projects = await this.projects.getAllProjects()
                         for (let x=0; x<parseInt(projects.length); x++) {
                             const otherOciNumbers = projects[0].project[0].oci.map(oci => oci.ociNumber);
-        // console.log('otherOciNumbers ', otherOciNumbers)
+                            // console.log('otherOciNumbers ', otherOciNumbers)
                             if (otherOciNumbers.includes(parseInt(ociNumberValid))) {
                                 invalidOciNumber = false
                                 indexArrayOciNumber = h
@@ -256,6 +256,7 @@ class ProjectsController {
                             ociDescription: arrayOciDescription[i],
                             ociAlias: arrayOciAlias[i],
                             ociStatus: arrayOciStatus[i] === 'on' ?  Boolean(true) : Boolean(false),
+                            ociOwner: dataUserOciOwnerEmpty(),
                             creator: dataUserCreator(userCreator),
                             timestamp: formatDate(),
                             ociImage: arrayOciImages[i] || imageNotFound,
@@ -302,7 +303,7 @@ class ProjectsController {
                         modifiedOn: "",
                         visible: true
                     }
-    // console.log('newProject:', newProject)
+                    // console.log('newProject:', newProject)
                     const newProjectCreated = await this.projects.createNewProject(newProject)
                     if (!newProjectCreated) {
                         catchError401_1(req, res, next)
@@ -422,7 +423,7 @@ class ProjectsController {
                 { prefix: 'internoSimulacion', array: arrayOtSimulation },
                 { prefix: 'externoDiseno', array: arrayOtSupplier }
             ];
-        // console.log('req.body: ', req.body)
+            // console.log('req.body: ', req.body)
             for (const key in req.body) {
                 const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
                 match ? match.array.push(req.body[key]) : null
@@ -433,8 +434,7 @@ class ProjectsController {
                 otInfoDisenoPrimera: [], otInfoDisenoSegunda: [],
                 otInfoInfo80: [], otInfoInfo100: [],
                 otInfoSim0: [], otInfoSim1: [], otInfoSim2_3: [],
-                otInfoSim4Primera: [], otInfoSim4Segunda: [], otInfoSim5: [],
-                otOwner: []
+                otInfoSim4Primera: [], otInfoSim4Segunda: [], otInfoSim5: []
             }]
 
             const arrayOtAddedToOci = []
@@ -448,7 +448,6 @@ class ProjectsController {
                         otDesign: arrayOtDesign[i],
                         otSimulation: arrayOtSimulation[i],
                         otSupplier: arrayOtSupplier[i],
-                        otOwner: dataUserOtOwnerEmpty(),
                         creator: dataUserCreator(userCreator),
                         timestamp: formatDate(),
                         modificator: dataUserModificatorEmpty(),
@@ -885,6 +884,7 @@ class ProjectsController {
                         ociStatus: arrayOciStatus[i] || true,
                         ociImage: arrayOciImages[i],
                         ociAlias: arrayOciAlias[i] || "Sin Apodo",
+                        ociOwner: dataUserOciOwnerEmpty(),
                         timestamp: formatDate(),
                         creator: dataUserCreator(userCreator),
                         modificator: dataUserModificatorEmpty(),
@@ -892,7 +892,7 @@ class ProjectsController {
                     }
                     arrayOciAddedToProject.push(infoOciAddedToProject)
                 }
-            
+                
                 await this.clients.updateClient(
                     clientId, 
                     cliente, 
@@ -904,7 +904,7 @@ class ProjectsController {
                     ociQuantity,
                     arrayOciAddedToProject
                 )
-        
+                
                 const proyectos = await this.projects.getProjectsByClientId(clientId)
                 if (!proyectos) {
                     catchError401_1(req, res, next)
@@ -922,7 +922,7 @@ class ProjectsController {
                         csrfToken
                     })
                 }, 400)
-    
+                
             } catch (err) {
                 catchError500(err, req, res, next)
             }
@@ -1399,7 +1399,7 @@ class ProjectsController {
         }
     }
 
-
+    //-------------------------------------------------------------
     addInfoR14ToOtProject = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo

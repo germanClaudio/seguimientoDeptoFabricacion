@@ -1,10 +1,10 @@
 <div class="card mx-auto" style="width: 80vw;">
     <div class="card card-body d-flex justify-content-center">
-        <div class="form-group col-12 mx-auto w-100 border px-2 py-1 text-white" style="background-color: #a3aeb4;">
+        <div class="form-group col-12 mx-auto w-100 border px-2 py-1 text-white" style="background-color: #a3aeb498;">
             <form id="formNewDuenoOt" action="/api/proyectos/newOciOwner" method="post" name="formNewDuenoOt">
                 <fieldset>
                     <h5 id="tituloForm" class="d-block mx-auto my-2 text-center text-dark">
-                        Asignar Dueño de pieza del Proyecto: "<%= proyecto[0].project[0].projectName %>"
+                        Asignar Dueño de pieza del Proyecto: <strong><%= proyecto[0].project[0].projectName %></strong>
                     </h5>
                     <hr>
                     <div class="container text-center mt-2">
@@ -20,18 +20,20 @@
                                     <div class="col-6 col-md-4 d-flex flex-column align-items-center">
                                         <div class="form-check d-flex flex-column align-items-center text-center mx-auto radio-option">
                                             <% if ( arrayOciVisibles[k].ociStatus && arrayOciVisibles[k].ociOwner[0].legajoId == 0 ) { %>
-                                                <label class="form-check-label" for="radioSelectedValue<%=k %>">
+                                                <input class="form-check-input mx-auto mb-2 radio-option" type="radio" name="ociNumber" id="radioSelectedValue<%= k %>" value="<%= arrayOciVisibles[k].ociNumber %>" value2="<%= arrayOciVisibles[k].ociAlias %>" required>
+                                                <img id="imageOciHeader<%=k%>" src="<%= arrayOciVisibles[k].ociImage %>" class="img-fluid img-thumbnail option-image m-auto" title="<%= arrayOciVisibles[k].ociDescription %>"
+                                                    alt="<%= arrayOciVisibles[k].ociDescription %>" style="width: 100px; height: 100px; object-fit: contain;">
+                                                <label class="form-check-label mt-2" for="radioSelectedValue<%=k %>">
                                                     OCI #<%= arrayOciVisibles[k].ociNumber %> - Alias: "<%= arrayOciVisibles[k].ociAlias %>"
                                                 </label>
-                                                <img id="imageOciHeader<%=k%>" src="<%= arrayOciVisibles[k].ociImage %>" class="img-fluid img-thumbnail option-image shadow m-auto shadow" title="<%= arrayOciVisibles[k].ociDescription %>"
-                                                    alt="<%= arrayOciVisibles[k].ociDescription %>" style="width: 100px; height: 100px; object-fit: contain;">
-                                                <input class="form-check-input mx-auto mt-2" type="radio" name="ociNumber" id="radioSelectedValue<%= k %>" value="<%= arrayOciVisibles[k].ociNumber %>" value2="<%= arrayOciVisibles[k].ociAlias %>" required>
                                             
                                             <% } else { %>
-                                                <label class="form-check-label text-secondary" for="radioSelectedValue<%=k %>">OCI #<%= arrayOciVisibles[k].ociNumber %> - Alias: "<%= arrayOciVisibles[k].ociAlias %>"</label>
-                                                <img id="imageOciHeader<%=k%>" src="<%= arrayOciVisibles[k].ociImage %>" class="img-fluid img-thumbnail option-image shadow m-auto shadow opacity-25" title="<%= arrayOciVisibles[k].ociDescription %>"
+                                                <input class="form-check-input mx-auto mb-2" type="radio" name="ociNumber" style="background-color: #dedede;" disabled>
+                                                <img id="imageOciHeader<%=k%>" src="<%= arrayOciVisibles[k].ociImage %>" class="img-fluid img-thumbnail option-image m-auto opacity-25" title="<%= arrayOciVisibles[k].ociDescription %>"
                                                     alt="<%= arrayOciVisibles[k].ociDescription %>" style="width: 100px; height: 100px; object-fit: contain;">
-                                                <input class="form-check-input mx-auto mt-2" type="radio" name="ociNumber" id="radioSelectedValue<%= k %>" value="<%= arrayOciVisibles[k].ociNumber %>" value2="<%= arrayOciVisibles[k].ociAlias %>" style="background-color: #dedede;" disabled>
+                                                <label class="form-check-label text-secondary mt-2" for="radioSelectedValue<%=k %>">
+                                                    OCI #<%= arrayOciVisibles[k].ociNumber %> - Alias: "<%= arrayOciVisibles[k].ociAlias %>"
+                                                </label>
                                             <% } %>
                                         </div>
                                     </div>
@@ -56,7 +58,7 @@
                             <label for="duenoOt" id="labelInternoDiseno" class="form-label d-flex justify-content-start mt-2" style="width: 160px;">Dueño de Pieza</label>
                             <div class="input-group mb-1">
                                 <input type="text" name="duenoOt" id="duenoOt" class="form-control position-relative" disabled>
-                                    <button type="button" title="Buscar Dueño de Pieza" id="searchDuenoOtUser<%=k%>"
+                                    <button type="button" title="Buscar Dueño de Pieza" id="searchDuenoOtUser"
                                         class="btn btn-sm btn-primary rounded-circle ms-1 mt-3 border shadow position-absolute top-0 start-100 translate-middle">
                                         <i class="fa-solid fa-database"></i>
                                     </button>

@@ -38,7 +38,7 @@ function dataUserAuthorizator(userCreator) {
     return user
 }
 
-function dataUserOtOwnerEmpty() {
+function dataUserOciOwnerEmpty() {
     const modificator = [{
         name: "",
         lastName: "",
@@ -55,5 +55,5 @@ module.exports = {
     dataUserModificatorEmpty,
     dataUserModificatorNotEmpty,
     dataUserAuthorizator,
-    dataUserOtOwnerEmpty
+    dataUserOciOwnerEmpty
 }

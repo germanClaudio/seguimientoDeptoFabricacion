@@ -1301,20 +1301,24 @@ form.dropzone {
   box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.3), -6px -6px 15px rgba(255, 255, 255, 0.6); /* Sombras al pasar el cursor */
 }
 
-
 .dot-separator {
   font-size: 20px; /* Ajusta el tamaño del punto */
   line-height: 1; /* Asegura que el punto no tenga espacio extra */
   margin-bottom: 0.5rem; /* Ajusta el margen inferior del punto para alinearlo */
 }
 
-/* Aplicar al seleccionar un radio */
-.radio-option:checked .option-image {
-  box-shadow: 6px 6px 15px #0047064d, -6px -6px 15px #d2ffd099;
+/* Estilo para la imagen seleccionada */
+.selected-image {
   transform: scale(1.05);
-  transition: all 0.2s ease-in-out;
+  box-shadow: 0 0 15px #002affcf;
 }
 
-.radio-option .option-image {
-  transition: all 0.2s ease-in-out;
+/* Estilo para la imagen seleccionada */
+.selected-text {
+  font-weight: bold;
+}
+
+/* Estilo inicial para las imágenes */
+.option-image {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }

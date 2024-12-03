@@ -24,9 +24,9 @@
             </th>
         </tr>
         <tr>
-            <th id="colData0" style="width:33vw" scope="col-1" class="text-center pb-1">Pza Medida + Reunión | Estado | Rev.</th>
-            <th id="colData1" style="width:33vw" scope="col-1" class="text-center pb-1">Máquina | Estado | Rev.</th>
-            <th id="colData2" style="width:33vw" scope="col-1" class="text-center pb-1">Ajuste | Estado | Rev.</th>
+            <th id="colData0" style="width:33vw" scope="col-1" class="text-center pb-1">Pza Medida + Reunión | Rev.</th>
+            <th id="colData1" style="width:33vw" scope="col-1" class="text-center pb-1">Máquina | Rev.</th>
+            <th id="colData2" style="width:33vw" scope="col-1" class="text-center pb-1">Ajuste | Rev.</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -43,21 +43,21 @@
                 pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
 
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-                resDatoPiezaMedidaReunionTercera = "S/D", resEstadoPiezaMedidaReunionTercera = 'sinDato', resRevisionPiezaMedidaReunionTercera = 0,
-                resDatoMaquinaTercera = "S/D", resEstadoMaquinaTercera = 'sinDato', resRevisionMaquinaTercera = 0,
-                resDatoAjusteTercera = "S/D", resEstadoAjusteTercera = 'sinDato', resRevisionAjusteTercera = 0;
+                resPiezaMedidaReunionTercera = "S/D", resRevisionPiezaMedidaReunionTercera = 0,
+                resMaquinaTercera = "S/D", resRevisionMaquinaTercera = 0,
+                resAjusteTercera = "S/D", resRevisionAjusteTercera = 0;
 
             if (pathMongoOtProject[n].visible) {
                 let pathToMongoOtCicloCorreccionTercera = pathMongoOtAjuste[0].otCicloCorreccionTercera || [],
                     largoArrayCicloCorreccionTercera = parseInt(pathToMongoOtCicloCorreccionTercera.length);
 
-                let arrResDatoPiezaMedidaReunionTercera = [], arrResEstadoPiezaMedidaReunionTercera = [], valueArrayResPiezaMedidaReunionTercera = 0, arrResRevisionPiezaMedidaReunionTercera = [],
+                let arrResPiezaMedidaReunionTercera = [], valueArrayResPiezaMedidaReunionTercera = 0, arrResRevisionPiezaMedidaReunionTercera = [],
                     arrResCreadorPiezaMedidaReunionTercera = [], arrResModificadorPiezaMedidaReunionTercera = [], arrResFechaPiezaMedidaReunionTercera = [], arrResFechaModPiezaMedidaReunionTercera = [];
 
-                let arrResDatoMaquinaTercera = [], arrResEstadoMaquinaTercera = [], valueArrayResMaquinaTercera = 0, arrResRevisionMaquinaTercera = [],
+                let arrResMaquinaTercera = [], valueArrayResMaquinaTercera = 0, arrResRevisionMaquinaTercera = [],
                     arrResCreadorMaquinaTercera = [], arrResModificadorMaquinaTercera = [], arrResFechaMaquinaTercera = [], arrResFechaModMaquinaTercera = [];
 
-                let arrResDatoAjusteTercera = [], arrResEstadoAjusteTercera = [], valueArrayResAjusteTercera = 0, arrResRevisionAjusteTercera = [],
+                let arrResAjusteTercera = [], valueArrayResAjusteTercera = 0, arrResRevisionAjusteTercera = [],
                     arrResCreadorAjusteTercera = [], arrResModificadorAjusteTercera = [], arrResFechaAjusteTercera = [], arrResFechaModAjusteTercera = [];
 
                 if (pathMongoOtProject[n].otStatus) { %>
@@ -72,12 +72,10 @@
                                         for (let i = 0; largoArrayCicloCorreccionTercera > i; i++) {
                                             if (pathToMongoOtCicloCorreccionTercera[i]) {
                                                 let largoArray = parseInt(largoArrayCicloCorreccionTercera)
-                                                resDatoPiezaMedidaReunionTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].piezaMedidaReunionTercera == 'sinDato' ? "S/D" : pathToMongoOtCicloCorreccionTercera[largoArray-1].piezaMedidaReunionTercera
-                                                resEstadoPiezaMedidaReunionTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].estadoPiezaMedidaReunionTercera == 'sinDato' ? "S/D" : pathToMongoOtCicloCorreccionTercera[largoArray-1].estadoPiezaMedidaReunionTercera
+                                                resPiezaMedidaReunionTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].piezaMedidaReunionTercera == 'sinDato' ? "S/D" : pathToMongoOtCicloCorreccionTercera[largoArray-1].piezaMedidaReunionTercera
                                                 resRevisionPiezaMedidaReunionTercera = parseInt(pathToMongoOtCicloCorreccionTercera[largoArray-1].revisionPiezaMedidaReunionTercera) || 0
                                                 
-                                                pathToMongoOtCicloCorreccionTercera[i].piezaMedidaReunionTercera == 'sinDato' ? arrResDatoPiezaMedidaReunionTercera.push("S/D") : arrResDatoPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].piezaMedidaReunionTercera)
-                                                pathToMongoOtCicloCorreccionTercera[i].estadoPiezaMedidaReunionTercera == 'sinDato' ? arrResEstadoPiezaMedidaReunionTercera.push("S/D") : arrResEstadoPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].estadoPiezaMedidaReunionTercera)
+                                                pathToMongoOtCicloCorreccionTercera[i].piezaMedidaReunionTercera == 'sinDato' ? arrResPiezaMedidaReunionTercera.push("S/D") : arrResPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].piezaMedidaReunionTercera)
                                                 arrResRevisionPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].revisionPiezaMedidaReunionTercera)
 
                                                 arrResCreadorPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].creator[0].username)
@@ -86,12 +84,12 @@
                                                 arrResFechaModPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResPiezaMedidaReunionTercera = parseInt(arrResDatoPiezaMedidaReunionTercera.length-1)
+                                        valueArrayResPiezaMedidaReunionTercera = parseInt(arrResPiezaMedidaReunionTercera.length-1)
 
-                                        if (arrResDatoPiezaMedidaReunionTercera.length == 1 ) {
+                                        if (arrResPiezaMedidaReunionTercera.length == 1 ) {
                                             anteriorDisabled = "disabled"
                                             siguienteDisabled = "disabled"
-                                        } else if (arrResDatoPiezaMedidaReunionTercera.length == arrResRevisionPiezaMedidaReunionTercera.length) {
+                                        } else if (arrResPiezaMedidaReunionTercera.length == arrResRevisionPiezaMedidaReunionTercera.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -100,8 +98,7 @@
                                         }
                                         
                                     } else {
-                                        arrResDatoPiezaMedidaReunionTercera.push(resDatoPiezaMedidaReunionTercera)
-                                        arrResEstadoPiezaMedidaReunionTercera.push(resEstadoPiezaMedidaReunionTercera)
+                                        arrResPiezaMedidaReunionTercera.push(resPiezaMedidaReunionTercera)
                                         arrResRevisionPiezaMedidaReunionTercera.push(resRevisionPiezaMedidaReunionTercera)
                                         
                                         arrResCreadorPiezaMedidaReunionTercera.push(pathMongoOtProject[n].creator[0].username)
@@ -116,8 +113,7 @@
                                             <%= anteriorDisabled %>
                                             ><i class="fa-solid fa-arrow-left"></i>
                                         </button>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoPiezaMedidaReunionTercera %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoPiezaMedidaReunionTercera %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPiezaMedidaReunionTercera %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPiezaMedidaReunionTercera %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPiezaMedidaReunionTercera %>">
                                         <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorPiezaMedidaReunionTercera %>">
@@ -125,15 +121,10 @@
                                         <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaPiezaMedidaReunionTercera %>">
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModPiezaMedidaReunionTercera %>">
 
-                                        <span id="resDatoPiezaMedidaReunionTercera<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                            <%= resDatoPiezaMedidaReunionTercera %>
-                                        </span> |
-                                        
-                                        <% const config = cicloCorreccionTerceraConfig[resEstadoPiezaMedidaReunionTercera] || cicloCorreccionTerceraConfig.default; %>
-                                        <span id="resEstadoPiezaMedidaReunionTercera<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoPiezaMedidaReunionTercera%>">
+                                        <% const config = cicloCorreccionTerceraConfig[resPiezaMedidaReunionTercera] || cicloCorreccionTerceraConfig.default; %>
+                                        <span id="resPiezaMedidaReunionTercera<%=k%>_<%=n%>_<%=q%>" value="<%=resPiezaMedidaReunionTercera%>">
                                             <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
-
                                         <span id="resRevisionPiezaMedidaReunionTercera<%=k%>_<%=n%>_<%=q%>" name="resRevisionPiezaMedidaReunionTercera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                             <%= resRevisionPiezaMedidaReunionTercera %>
                                         </span>
@@ -153,12 +144,10 @@
                                         for (let i = 0; largoArrayCicloCorreccionTercera > i; i++) {
                                             if (pathToMongoOtCicloCorreccionTercera[i]) {
                                                 let largoArray = parseInt(largoArrayCicloCorreccionTercera)
-                                                resDatoMaquinaTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].maquinaTercera == 'sinDato' ? "S/D" :  pathToMongoOtCicloCorreccionTercera[largoArray-1].maquinaTercera
-                                                resEstadoMaquinaTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].estadoMaquinaTercera == 'sinDato' ? "S/D" : pathToMongoOtCicloCorreccionTercera[largoArray-1].estadoMaquinaTercera
+                                                resMaquinaTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].maquinaTercera == 'sinDato' ? "S/D" :  pathToMongoOtCicloCorreccionTercera[largoArray-1].maquinaTercera
                                                 resRevisionMaquinaTercera = parseInt(pathToMongoOtCicloCorreccionTercera[largoArray-1].revisionMaquinaTercera) || 0
                                                 
-                                                pathToMongoOtCicloCorreccionTercera[i].maquinaTercera == 'sinDato' ? arrResDatoMaquinaTercera.push("S/D") : arrResDatoMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].maquinaTercera)
-                                                pathToMongoOtCicloCorreccionTercera[i].estadoMaquinaTercera == 'sinDato' ? arrResEstadoMaquinaTercera.push("S/D") : arrResEstadoMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].estadoMaquinaTercera)
+                                                pathToMongoOtCicloCorreccionTercera[i].maquinaTercera == 'sinDato' ? arrResMaquinaTercera.push("S/D") : arrResMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].maquinaTercera)
                                                 arrResRevisionMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].revisionMaquinaTercera)
                                                 
                                                 arrResCreadorMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].creator[0].username)
@@ -167,12 +156,12 @@
                                                 arrResFechaModMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResMaquinaTercera = parseInt(arrResEstadoMaquinaTercera.length-1)
+                                        valueArrayResMaquinaTercera = parseInt(arrResMaquinaTercera.length-1)
                                                 
-                                        if (arrResDatoMaquinaTercera.length == 1 ) {
+                                        if (arrResMaquinaTercera.length == 1 ) {
                                             anteriorDisabled = "disabled"
                                             siguienteDisabled = "disabled"
-                                        } else if (arrResDatoMaquinaTercera.length == arrResRevisionMaquinaTercera.length) {
+                                        } else if (arrResMaquinaTercera.length == arrResRevisionMaquinaTercera.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -181,8 +170,7 @@
                                         }
                                         
                                     } else {
-                                        arrResDatoMaquinaTercera.push(resDatoMaquinaTercera)
-                                        arrResEstadoMaquinaTercera.push(resEstadoMaquinaTercera)
+                                        arrResMaquinaTercera.push(resMaquinaTercera)
                                         arrResRevisionMaquinaTercera.push(resRevisionMaquinaTercera)
                                         
                                         arrResCreadorMaquinaTercera.push(pathMongoOtProject[n].creator[0].username)
@@ -197,8 +185,7 @@
                                             <%= anteriorDisabled %>
                                             ><i class="fa-solid fa-arrow-left"></i>
                                         </button>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoMaquinaTercera %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoMaquinaTercera %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMaquinaTercera %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMaquinaTercera %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMaquinaTercera %>">
                                         <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorMaquinaTercera %>">
@@ -206,15 +193,10 @@
                                         <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMaquinaTercera %>">
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModMaquinaTercera %>">
 
-                                        <span id="resDatoMaquinaTercera<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                            <%= resDatoMaquinaTercera %>
-                                        </span> |
-
-                                        <% const config = cicloCorreccionTerceraConfig[resEstadoMaquinaTercera] || cicloCorreccionTerceraConfig.default; %>
-                                        <span id="resEstadoMaquinaTercera<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoMaquinaTercera%>">
+                                        <% const config = cicloCorreccionTerceraConfig[resMaquinaTercera] || cicloCorreccionTerceraConfig.default; %>
+                                        <span id="resMaquinaTercera<%=k%>_<%=n%>_<%=q%>" value="<%=resMaquinaTercera%>">
                                             <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
-
                                         <span id="resRevisionMaquinaTercera<%=k%>_<%=n%>_<%=q%>" name="resRevisionMaquinaTercera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                             <%= resRevisionMaquinaTercera %>
                                         </span>
@@ -235,12 +217,10 @@
                                         for (let i = 0; largoArrayCicloCorreccionTercera > i; i++) {
                                             if (pathToMongoOtCicloCorreccionTercera[i]) {
                                                 let largoArray = parseInt(largoArrayCicloCorreccionTercera)
-                                                resDatoAjusteTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].ajusteTercera == 'sinDato' ? "S/D" : pathToMongoOtCicloCorreccionTercera[largoArray-1].ajusteTercera
-                                                resEstadoAjusteTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].estadoAjusteTercera == 'sinDato' ? 'sinDato' : pathToMongoOtCicloCorreccionTercera[largoArray-1].estadoAjusteTercera
+                                                resAjusteTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].ajusteTercera == 'sinDato' ? "S/D" : pathToMongoOtCicloCorreccionTercera[largoArray-1].ajusteTercera
                                                 resRevisionAjusteTercera = parseInt(pathToMongoOtCicloCorreccionTercera[largoArray-1].revisionAjusteTercera) || 0
                                                 
-                                                pathToMongoOtCicloCorreccionTercera[i].ajusteTercera == 'sinDato' ? arrResDatoAjusteTercera.push('S/D') : arrResDatoAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].ajusteTercera)
-                                                pathToMongoOtCicloCorreccionTercera[i].estadoAjusteTercera == 'sinDato' ? arrResEstadoAjusteTercera.push('S/D') : arrResEstadoAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].estadoAjusteTercera)
+                                                pathToMongoOtCicloCorreccionTercera[i].ajusteTercera == 'sinDato' ? arrResAjusteTercera.push('S/D') : arrResAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].ajusteTercera)
                                                 arrResRevisionAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].revisionAjusteTercera)
                                             
                                                 arrResCreadorAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].creator[0].username)
@@ -249,12 +229,12 @@
                                                 arrResFechaModAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResAjusteTercera = parseInt(arrResEstadoAjusteTercera.length-1)
+                                        valueArrayResAjusteTercera = parseInt(arrResAjusteTercera.length-1)
                                                 
-                                        if (arrResDatoAjusteTercera.length == 1 ) {
+                                        if (arrResAjusteTercera.length == 1 ) {
                                             siguienteDisabled = "disabled"
                                             anteriorDisabled = "disabled"
-                                        } else if (arrResDatoAjusteTercera.length == arrResRevisionAjusteTercera.length) {
+                                        } else if (arrResAjusteTercera.length == arrResRevisionAjusteTercera.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -263,8 +243,7 @@
                                         }
                                                 
                                     } else {
-                                        arrResDatoAjusteTercera.push(resDatoAjusteTercera)
-                                        arrResEstadoAjusteTercera.push(resEstadoAjusteTercera)
+                                        arrResAjusteTercera.push(resAjusteTercera)
                                         arrResRevisionAjusteTercera.push(resRevisionAjusteTercera)
                                         
                                         arrResCreadorAjusteTercera.push(pathMongoOtProject[n].creator[0].username)
@@ -279,8 +258,7 @@
                                         <%= anteriorDisabled %>
                                         ><i class="fa-solid fa-arrow-left"></i>
                                     </button>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAjusteTercera %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAjusteTercera %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResAjusteTercera %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAjusteTercera %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAjusteTercera %>">
                                     <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorAjusteTercera %>">
@@ -288,12 +266,8 @@
                                     <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaAjusteTercera %>">
                                     <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModAjusteTercera %>">
 
-                                    <span id="resDatoAjusteTercera<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                        <%= resDatoAjusteTercera %>
-                                    </span> |
-
-                                    <% const config = cicloCorreccionTerceraConfig[resEstadoAjusteTercera] || cicloCorreccionTerceraConfig.default; %>
-                                    <span id="resEstadoAjusteTercera<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAjusteTercera%>">
+                                    <% const config = cicloCorreccionTerceraConfig[resAjusteTercera] || cicloCorreccionTerceraConfig.default; %>
+                                    <span id="resAjusteTercera<%=k%>_<%=n%>_<%=q%>" value="<%=resAjusteTercera%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
 
@@ -324,38 +298,28 @@
 
                                             if (pathToMongoOtCicloCorreccionTercera[i]) {
                                                 let largoArray = parseInt(largoArrayCicloCorreccionTercera)
-                                                resDatoPiezaMedidaReunionTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].piezaMedidaReunionTercera || 'S/D'
-                                                resEstadoPiezaMedidaReunionTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].estadoPiezaMedidaReunionTercera || 'sinDato'
+                                                resPiezaMedidaReunionTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].piezaMedidaReunionTercera || 'S/D'
                                                 resRevisionPiezaMedidaReunionTercera = parseInt(pathToMongoOtCicloCorreccionTercera[largoArray-1].revisionPiezaMedidaReunionTercera) || 0
                                                 
-                                                arrResDatoPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].piezaMedidaReunionTercera)
-                                                arrResEstadoPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].estadoPiezaMedidaReunionTercera)
+                                                arrResPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].piezaMedidaReunionTercera)
                                                 arrResRevisionPiezaMedidaReunionTercera.push(pathToMongoOtCicloCorreccionTercera[i].revisionPiezaMedidaReunionTercera)
                                             }
                                         }
-                                        valueArrayResPiezaMedidaReunionTercera = parseInt(arrResEstadoPiezaMedidaReunionTercera.length-1)
-                                        resDatoPiezaMedidaReunionTercera = pathToMongoOtCicloCorreccionTercera[0].PiezaMedidaReunionTercera
-                                        resEstadoPiezaMedidaReunionTercera = pathToMongoOtCicloCorreccionTercera[0].estadoPiezaMedidaReunionTercera
-
+                                        valueArrayResPiezaMedidaReunionTercera = parseInt(arrResPiezaMedidaReunionTercera.length-1)
+                                        resPiezaMedidaReunionTercera = pathToMongoOtCicloCorreccionTercera[0].PiezaMedidaReunionTercera
+                                        
                                     } else {
-                                        arrResDatoPiezaMedidaReunionTercera.push(resDatoPiezaMedidaReunionTercera)
-                                        arrResEstadoPiezaMedidaReunionTercera.push(resEstadoPiezaMedidaReunionTercera)
+                                        arrResPiezaMedidaReunionTercera.push(resPiezaMedidaReunionTercera)
                                         arrResRevisionPiezaMedidaReunionTercera.push(resRevisionPiezaMedidaReunionTercera)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoPiezaMedidaReunionTercera %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoPiezaMedidaReunionTercera %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPiezaMedidaReunionTercera %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPiezaMedidaReunionTercera %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPiezaMedidaReunionTercera %>">
                                 
-                                    <span id="resDatoPiezaMedidaReunionTercera<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoPiezaMedidaReunionTercera %>
-                                    </span> |
-
-                                    <% const config = cicloCorreccionTerceraConfig[resEstadoPiezaMedidaReunionTercera] || cicloCorreccionTerceraConfig.default; %>
-                                    <span id="resEstadoPiezaMedidaReunionTercera<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoPiezaMedidaReunionTercera%>">
+                                    <% const config = cicloCorreccionTerceraConfig[resPiezaMedidaReunionTercera] || cicloCorreccionTerceraConfig.default; %>
+                                    <span id="resPiezaMedidaReunionTercera<%=k%>_<%=n%>_<%=q%>" value="<%=resPiezaMedidaReunionTercera%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionPiezaMedidaReunionTercera<%=k%>_<%=n%>_<%=q%>" name="resRevisionPiezaMedidaReunionTercera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionPiezaMedidaReunionTercera %>
                                     </span>
@@ -369,38 +333,28 @@
                                             
                                             if (pathToMongoOtCicloCorreccionTercera[i]) {
                                                 let largoArray = parseInt(largoArrayCicloCorreccionTercera)
-                                                resDatoMaquinaTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].maquinaTercera || 'S/D'
-                                                resEstadoMaquinaTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].maquinaTercera || 'sinDato'
+                                                resMaquinaTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].maquinaTercera || 'S/D'
                                                 resRevisionMaquinaTercera = parseInt(pathToMongoOtCicloCorreccionTercera[largoArray-1].revisionMaquinaTercera) || 0
                                                 
-                                                arrResDatoMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].maquinaTercera)
-                                                arrResEstadoMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].maquinaTercera)
+                                                arrResMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].maquinaTercera)
                                                 arrResRevisionMaquinaTercera.push(pathToMongoOtCicloCorreccionTercera[i].revisionMaquinaTercera)
                                             }
                                         }
-                                        valueArrayResMaquinaTercera = parseInt(arrResEstadoMaquinaTercera.length-1)
-                                        resDatoMaquinaTercera = pathToMongoOtCicloCorreccionTercera[0].maquinaTercera
-                                        resEstadoMaquinaTercera = pathToMongoOtCicloCorreccionTercera[0].estadoMaquinaTercera
-                                    
+                                        valueArrayResMaquinaTercera = parseInt(arrResMaquinaTercera.length-1)
+                                        resMaquinaTercera = pathToMongoOtCicloCorreccionTercera[0].maquinaTercera
+                                        
                                     } else {
-                                        arrResDatoMaquinaTercera.push(resDatoMaquinaTercera)
-                                        arrResEstadoMaquinaTercera.push(resEstadoMaquinaTercera)
+                                        arrResMaquinaTercera.push(resMaquinaTercera)
                                         arrResRevisionMaquinaTercera.push(resRevisionMaquinaTercera)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoMaquinaTercera %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoMaquinaTercera %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMaquinaTercera %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMaquinaTercera %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMaquinaTercera %>">
 
-                                    <span id="resDatoMaquinaTercera<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoMaquinaTercera %>
-                                    </span> |
-                                    
-                                    <% const config = cicloCorreccionTerceraConfig[resEstadoMaquinaTercera] || cicloCorreccionTerceraConfig.default; %>
-                                    <span id="resEstadoMaquinaTercera<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoMaquinaTercera%>">
+                                    <% const config = cicloCorreccionTerceraConfig[resMaquinaTercera] || cicloCorreccionTerceraConfig.default; %>
+                                    <span id="resMaquinaTercera<%=k%>_<%=n%>_<%=q%>" value="<%=resMaquinaTercera%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionMaquinaTercera<%=k%>_<%=n%>_<%=q%>" name="resRevisionMaquinaTercera" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionMaquinaTercera %>
                                     </span>
@@ -414,35 +368,26 @@
                                             
                                             if (pathToMongoOtCicloCorreccionTercera[i]) {
                                                 let largoArray = parseInt(largoArrayCicloCorreccionTercera)
-                                                resDatoAjusteTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].ajusteTercera || "S/D"
-                                                resEstadoAjusteTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].estadoAjusteTercera || 'sinDato'
+                                                resAjusteTercera = pathToMongoOtCicloCorreccionTercera[largoArray-1].ajusteTercera || "S/D"
                                                 resRevisionAjusteTercera = parseInt(pathToMongoOtCicloCorreccionTercera[largoArray-1].revisionAjusteTercera) || 0
                                                 
-                                                arrResDatoAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].ajusteTercera)
-                                                arrResEstadoAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].estadoAjusteTercera)
+                                                arrResAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].ajusteTercera)
                                                 arrResRevisionAjusteTercera.push(pathToMongoOtCicloCorreccionTercera[i].revisionAjusteTercera)
                                             }
                                         }
-                                        valueArrayResAjusteTercera = parseInt(arrResEstadoAjusteTercera.length-1)
-                                        resDatoAjusteTercera = pathToMongoOtCicloCorreccionTercera[0].ajusteTercera
-                                        resEstadoAjusteTercera = pathToMongoOtCicloCorreccionTercera[0].estadoAjusteTercera
-                                    
+                                        valueArrayResAjusteTercera = parseInt(arrResAjusteTercera.length-1)
+                                        resAjusteTercera = pathToMongoOtCicloCorreccionTercera[0].ajusteTercera
+                                        
                                     } else {
-                                        arrResDatoAjusteTercera.push(resDatoAjusteTercera)
-                                        arrResEstadoAjusteTercera.push(resEstadoAjusteTercera)
+                                        arrResAjusteTercera.push(resAjusteTercera)
                                         arrResRevisionAjusteTercera.push(resRevisionAjusteTercera)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoAjusteTercera %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoAjusteTercera %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResAjusteTercera %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAjusteTercera %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAjusteTercera %>">
 
-                                    <span id="resDatoAjusteTercera<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoAjusteTercera %>
-                                    </span> |
-                                    
-                                    <% const config = cicloCorreccionTerceraConfig[resEstadoAjusteTercera] || cicloCorreccionTerceraConfig.default; %>
-                                    <span id="resEstadoAjusteTercera<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoAjusteTercera%>">
+                                    <% const config = cicloCorreccionTerceraConfig[resAjusteTercera] || cicloCorreccionTerceraConfig.default; %>
+                                    <span id="resAjusteTercera<%=k%>_<%=n%>_<%=q%>" value="<%=resAjusteTercera%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
 

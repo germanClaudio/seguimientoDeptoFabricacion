@@ -24,8 +24,8 @@
             </th>
         </tr>
         <tr>
-            <th id="colData0" style="width:50vw" scope="col-1" class="text-center pb-1">Estático | Estado | Rev.</th>
-            <th id="colData1" style="width:50vw" scope="col-1" class="text-center pb-1">Dinámico | Estado | Rev.</th>
+            <th id="colData0" style="width:50vw" scope="col-1" class="text-center pb-1">Estático | Rev.</th>
+            <th id="colData1" style="width:50vw" scope="col-1" class="text-center pb-1">Dinámico | Rev.</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -43,17 +43,17 @@
                 pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
 
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-                resDatoEstatico = "S/D", resEstadoEstatico = 'sinDato', resRevisionEstatico = 0,
-                resDatoDinamico = "S/D", resEstadoDinamico = 'sinDato', resRevisionDinamico = 0;
+                resEstatico = "S/D", resRevisionEstatico = 0,
+                resDinamico = "S/D", resRevisionDinamico = 0;
                 
             if (pathMongoOtProject[n].visible) {
                 let pathToMongoOtAnalisisCritico = pathMongoOtAjuste[0].otAnalisisCritico || [],
                     largoArrayAnalisisCritico = parseInt(pathToMongoOtAnalisisCritico.length);
 
-                let arrResDatoEstatico = [], arrResEstadoEstatico = [], valueArrayResEstatico = 0, arrResRevisionEstatico = [],
+                let arrResEstatico = [], valueArrayResEstatico = 0, arrResRevisionEstatico = [],
                     arrResCreadorEstatico = [], arrResModificadorEstatico = [], arrResFechaEstatico = [], arrResFechaModEstatico = [];
 
-                let arrResDatoDinamico = [], arrResEstadoDinamico = [], valueArrayResDinamico = 0, arrResRevisionDinamico = [],
+                let arrResDinamico = [], valueArrayResDinamico = 0, arrResRevisionDinamico = [],
                     arrResCreadorDinamico = [], arrResModificadorDinamico = [], arrResFechaDinamico = [], arrResFechaModDinamico = [];
 
                 if (pathMongoOtProject[n].otStatus) { %>
@@ -68,12 +68,10 @@
                                         for (let i = 0; largoArrayAnalisisCritico > i; i++) {
                                             if (pathToMongoOtAnalisisCritico[i]) {
                                                 let largoArray = parseInt(largoArrayAnalisisCritico)
-                                                resDatoEstatico = pathToMongoOtAnalisisCritico[largoArray-1].estatico == 'sinDato' ? "S/D" : pathToMongoOtAnalisisCritico[largoArray-1].estatico
-                                                resEstadoEstatico = pathToMongoOtAnalisisCritico[largoArray-1].estadoEstatico == 'sinDato' ? "S/D" : pathToMongoOtAnalisisCritico[largoArray-1].estadoEstatico
+                                                resEstatico = pathToMongoOtAnalisisCritico[largoArray-1].estatico == 'sinDato' ? "S/D" : pathToMongoOtAnalisisCritico[largoArray-1].estatico
                                                 resRevisionEstatico = parseInt(pathToMongoOtAnalisisCritico[largoArray-1].revisionEstatico) || 0
                                                 
-                                                pathToMongoOtAnalisisCritico[i].estatico == 'sinDato' ? arrResDatoEstatico.push("S/D") : arrResDatoEstatico.push(pathToMongoOtAnalisisCritico[i].estatico)
-                                                pathToMongoOtAnalisisCritico[i].estadoEstatico == 'sinDato' ? arrResEstadoEstatico.push("S/D") : arrResEstadoEstatico.push(pathToMongoOtAnalisisCritico[i].estadoEstatico)
+                                                pathToMongoOtAnalisisCritico[i].estatico == 'sinDato' ? arrResEstatico.push("S/D") : arrResEstatico.push(pathToMongoOtAnalisisCritico[i].estatico)
                                                 arrResRevisionEstatico.push(pathToMongoOtAnalisisCritico[i].revisionEstatico)
 
                                                 arrResCreadorEstatico.push(pathToMongoOtAnalisisCritico[i].creator[0].username)
@@ -82,12 +80,12 @@
                                                 arrResFechaModEstatico.push(pathToMongoOtAnalisisCritico[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResEstatico = parseInt(arrResDatoEstatico.length-1)
+                                        valueArrayResEstatico = parseInt(arrResEstatico.length-1)
 
-                                        if (arrResDatoEstatico.length == 1 ) {
+                                        if (arrResEstatico.length == 1 ) {
                                             anteriorDisabled = "disabled"
                                             siguienteDisabled = "disabled"
-                                        } else if (arrResDatoEstatico.length == arrResRevisionEstatico.length) {
+                                        } else if (arrResEstatico.length == arrResRevisionEstatico.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -96,8 +94,7 @@
                                         }
                                         
                                     } else {
-                                        arrResDatoEstatico.push(resDatoEstatico)
-                                        arrResEstadoEstatico.push(resEstadoEstatico)
+                                        arrResEstatico.push(resEstatico)
                                         arrResRevisionEstatico.push(resRevisionEstatico)
                                         
                                         arrResCreadorEstatico.push(pathMongoOtProject[n].creator[0].username)
@@ -112,8 +109,7 @@
                                             <%= anteriorDisabled %>
                                             ><i class="fa-solid fa-arrow-left"></i>
                                         </button>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoEstatico %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoEstatico %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstatico %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResEstatico %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionEstatico %>">
                                         <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorEstatico %>">
@@ -121,15 +117,10 @@
                                         <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaEstatico %>">
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModEstatico %>">
 
-                                        <span id="resDatoEstatico<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                            <%= resDatoEstatico %>
-                                        </span> |
-                                        
-                                        <% const config = analisisCriticoConfig[resEstadoEstatico] || analisisCriticoConfig.default; %>
-                                        <span id="resEstadoEstatico<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoEstatico%>">
+                                        <% const config = analisisCriticoConfig[resEstatico] || analisisCriticoConfig.default; %>
+                                        <span id="resEstatico<%=k%>_<%=n%>_<%=q%>" value="<%=resEstatico%>">
                                             <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
-
                                         <span id="resRevisionEstatico<%=k%>_<%=n%>_<%=q%>" name="resRevisionEstatico" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                             <%= resRevisionEstatico %>
                                         </span>
@@ -149,12 +140,10 @@
                                         for (let i = 0; largoArrayAnalisisCritico > i; i++) {
                                             if (pathToMongoOtAnalisisCritico[i]) {
                                                 let largoArray = parseInt(largoArrayAnalisisCritico)
-                                                resDatoDinamico = pathToMongoOtAnalisisCritico[largoArray-1].dinamico == 'sinDato' ? "S/D" :  pathToMongoOtAnalisisCritico[largoArray-1].dinamico
-                                                resEstadoDinamico = pathToMongoOtAnalisisCritico[largoArray-1].estadoDinamico == 'sinDato' ? "S/D" : pathToMongoOtAnalisisCritico[largoArray-1].estadoDinamico
+                                                resDinamico = pathToMongoOtAnalisisCritico[largoArray-1].dinamico == 'sinDato' ? "S/D" :  pathToMongoOtAnalisisCritico[largoArray-1].dinamico
                                                 resRevisionDinamico = parseInt(pathToMongoOtAnalisisCritico[largoArray-1].revisionDinamico) || 0
                                                 
-                                                pathToMongoOtAnalisisCritico[i].dinamico == 'sinDato' ? arrResDatoDinamico.push("S/D") : arrResDatoDinamico.push(pathToMongoOtAnalisisCritico[i].dinamico)
-                                                pathToMongoOtAnalisisCritico[i].estadoDinamico == 'sinDato' ? arrResEstadoDinamico.push("S/D") : arrResEstadoDinamico.push(pathToMongoOtAnalisisCritico[i].estadoDinamico)
+                                                pathToMongoOtAnalisisCritico[i].dinamico == 'sinDato' ? arrResDinamico.push("S/D") : arrResDinamico.push(pathToMongoOtAnalisisCritico[i].dinamico)
                                                 arrResRevisionDinamico.push(pathToMongoOtAnalisisCritico[i].revisionDinamico)
                                                 
                                                 arrResCreadorDinamico.push(pathToMongoOtAnalisisCritico[i].creator[0].username)
@@ -163,12 +152,12 @@
                                                 arrResFechaModDinamico.push(pathToMongoOtAnalisisCritico[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResDinamico = parseInt(arrResEstadoDinamico.length-1)
+                                        valueArrayResDinamico = parseInt(arrResDinamico.length-1)
                                                 
-                                        if (arrResDatoDinamico.length == 1 ) {
+                                        if (arrResDinamico.length == 1 ) {
                                             anteriorDisabled = "disabled"
                                             siguienteDisabled = "disabled"
-                                        } else if (arrResDatoDinamico.length == arrResRevisionDinamico.length) {
+                                        } else if (arrResDinamico.length == arrResRevisionDinamico.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -177,8 +166,7 @@
                                         }
                                         
                                     } else {
-                                        arrResDatoDinamico.push(resDatoDinamico)
-                                        arrResEstadoDinamico.push(resEstadoDinamico)
+                                        arrResDinamico.push(resDinamico)
                                         arrResRevisionDinamico.push(resRevisionDinamico)
                                         
                                         arrResCreadorDinamico.push(pathMongoOtProject[n].creator[0].username)
@@ -193,8 +181,7 @@
                                             <%= anteriorDisabled %>
                                             ><i class="fa-solid fa-arrow-left"></i>
                                         </button>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoDinamico %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoDinamico %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDinamico %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResDinamico %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionDinamico %>">
                                         <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorDinamico %>">
@@ -202,15 +189,10 @@
                                         <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaDinamico %>">
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModDinamico %>">
 
-                                        <span id="resDatoDinamico<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                            <%= resDatoDinamico %>
-                                        </span> |
-
-                                        <% const config = analisisCriticoConfig[resEstadoDinamico] || analisisCriticoConfig.default; %>
-                                        <span id="resEstadoDinamico<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoDinamico%>">
+                                        <% const config = analisisCriticoConfig[resDinamico] || analisisCriticoConfig.default; %>
+                                        <span id="resDinamico<%=k%>_<%=n%>_<%=q%>" value="<%=resDinamico%>">
                                             <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
-
                                         <span id="resRevisionDinamico<%=k%>_<%=n%>_<%=q%>" name="resRevisionDinamico" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                             <%= resRevisionDinamico %>
                                         </span>
@@ -238,38 +220,28 @@
 
                                             if (pathToMongoOtAnalisisCritico[i]) {
                                                 let largoArray = parseInt(largoArrayAnalisisCritico)
-                                                resDatoEstatico = pathToMongoOtAnalisisCritico[largoArray-1].estatico || 'S/D'
-                                                resEstadoEstatico = pathToMongoOtAnalisisCritico[largoArray-1].estadoEstatico || 'sinDato'
+                                                resEstatico = pathToMongoOtAnalisisCritico[largoArray-1].estatico || 'S/D'
                                                 resRevisionEstatico = parseInt(pathToMongoOtAnalisisCritico[largoArray-1].revisionEstatico) || 0
                                                 
-                                                arrResDatoEstatico.push(pathToMongoOtAnalisisCritico[i].estatico)
-                                                arrResEstadoEstatico.push(pathToMongoOtAnalisisCritico[i].estadoEstatico)
+                                                arrResEstatico.push(pathToMongoOtAnalisisCritico[i].estatico)
                                                 arrResRevisionEstatico.push(pathToMongoOtAnalisisCritico[i].revisionEstatico)
                                             }
                                         }
-                                        valueArrayResEstatico = parseInt(arrResEstadoEstatico.length-1)
-                                        resDatoEstatico = pathToMongoOtAnalisisCritico[0].Estatico
-                                        resEstadoEstatico = pathToMongoOtAnalisisCritico[0].estadoEstatico
+                                        valueArrayResEstatico = parseInt(arrResEstatico.length-1)
+                                        resEstatico = pathToMongoOtAnalisisCritico[0].estatico
 
                                     } else {
-                                        arrResDatoEstatico.push(resDatoEstatico)
-                                        arrResEstadoEstatico.push(resEstadoEstatico)
+                                        arrResEstatico.push(resEstatico)
                                         arrResRevisionEstatico.push(resRevisionEstatico)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoEstatico %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoEstatico %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstatico %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResEstatico %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionEstatico %>">
-                                
-                                    <span id="resDatoEstatico<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoEstatico %>
-                                    </span> |
-
-                                    <% const config = analisisCriticoConfig[resEstadoEstatico] || analisisCriticoConfig.default; %>
-                                    <span id="resEstadoEstatico<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoEstatico%>">
+                                    
+                                    <% const config = analisisCriticoConfig[resEstatico] || analisisCriticoConfig.default; %>
+                                    <span id="resEstatico<%=k%>_<%=n%>_<%=q%>" value="<%=resEstatico%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionEstatico<%=k%>_<%=n%>_<%=q%>" name="resRevisionEstatico" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionEstatico %>
                                     </span>
@@ -283,35 +255,26 @@
                                             
                                             if (pathToMongoOtAnalisisCritico[i]) {
                                                 let largoArray = parseInt(largoArrayAnalisisCritico)
-                                                resDatoDinamico = pathToMongoOtAnalisisCritico[largoArray-1].dinamico || 'S/D'
-                                                resEstadoDinamico = pathToMongoOtAnalisisCritico[largoArray-1].dinamico || 'sinDato'
+                                                resDinamico = pathToMongoOtAnalisisCritico[largoArray-1].dinamico || 'S/D'
                                                 resRevisionDinamico = parseInt(pathToMongoOtAnalisisCritico[largoArray-1].revisionDinamico) || 0
                                                 
-                                                arrResDatoDinamico.push(pathToMongoOtAnalisisCritico[i].dinamico)
-                                                arrResEstadoDinamico.push(pathToMongoOtAnalisisCritico[i].dinamico)
+                                                arrResDinamico.push(pathToMongoOtAnalisisCritico[i].dinamico)
                                                 arrResRevisionDinamico.push(pathToMongoOtAnalisisCritico[i].revisionDinamico)
                                             }
                                         }
-                                        valueArrayResDinamico = parseInt(arrResEstadoDinamico.length-1)
-                                        resDatoDinamico = pathToMongoOtAnalisisCritico[0].dinamico
-                                        resEstadoDinamico = pathToMongoOtAnalisisCritico[0].estadoDinamico
+                                        valueArrayResDinamico = parseInt(arrResDinamico.length-1)
+                                        resDinamico = pathToMongoOtAnalisisCritico[0].dinamico
                                     
                                     } else {
-                                        arrResDatoDinamico.push(resDatoDinamico)
-                                        arrResEstadoDinamico.push(resEstadoDinamico)
+                                        arrResDinamico.push(resDinamico)
                                         arrResRevisionDinamico.push(resRevisionDinamico)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoDinamico %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoDinamico %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDinamico %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResDinamico %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionDinamico %>">
 
-                                    <span id="resDatoDinamico<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoDinamico %>
-                                    </span> |
-                                    
-                                    <% const config = analisisCriticoConfig[resEstadoDinamico] || analisisCriticoConfig.default; %>
-                                    <span id="resEstadoDinamico<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoDinamico%>">
+                                    <% const config = analisisCriticoConfig[resDinamico] || analisisCriticoConfig.default; %>
+                                    <span id="resDinamico<%=k%>_<%=n%>_<%=q%>" value="<%=resDinamico%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
 

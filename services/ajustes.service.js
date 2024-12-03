@@ -1,9 +1,12 @@
 const AjustesDaoFactory = require('../daos/ajustes/AjustesDaoFactory.js')
 const ajustesDao = AjustesDaoFactory.getDaoAjustes()
 
+const ProyectosDaoFactory = require('../daos/proyectos/ProyectosDaoFactory.js')
+const proyectosDao = ProyectosDaoFactory.getDao()
+
 class AjustesService {
     constructor() {
-        // this.proyectos = proyectosDao
+        this.proyectos = proyectosDao
         this.ajustes = ajustesDao
     }
 
@@ -32,77 +35,151 @@ class AjustesService {
         return this.proyectos.getAllOciProjects()
     }
 
-    // add Info Distribution to Detail - Project
-    // async addInfoOtDistribucion(projectId, otQuantity, ociNumberK, arrayOtNumberK, arrayDetalleNumberK, detallesQuantity, totalDetallesQuantity, arrayInfoAddedToDetail) {
-    //     return this.ajustes.addInfoOtDistribucion(
-    //         projectId,
-    //         otQuantity,
-    //         ociNumberK,
-    //         arrayOtNumberK,
-    //         arrayDetalleNumberK,
-    //         detallesQuantity,
-    //         totalDetallesQuantity,
-    //         arrayInfoAddedToDetail)
-    // }
-
-    // add Info Programation 1° to Detail - Project
-    // async addInfoProgramacionPrimera(projectId, otQuantity, ociNumberK, arrayOtNumberK, arrayDetalleNumberK, detallesQuantity, totalDetallesQuantity, arrayInfoAddedToDetail) {
-    //     return this.ajustes.addInfoProgramacionPrimera(
-    //         projectId,
-    //         otQuantity,
-    //         ociNumberK,
-    //         arrayOtNumberK,
-    //         arrayDetalleNumberK,
-    //         detallesQuantity,
-    //         totalDetallesQuantity,
-    //         arrayInfoAddedToDetail)
-    // }
-
-    // add Info Programation 2° to Detail - Project
-    // async addInfoProgramacionSegunda(projectId, otQuantity, ociNumberK, arrayOtNumberK, arrayDetalleNumberK, detallesQuantity, totalDetallesQuantity, arrayInfoAddedToDetail) {
-    //     return this.ajustes.addInfoProgramacionSegunda(
-    //         projectId,
-    //         otQuantity,
-    //         ociNumberK,
-    //         arrayOtNumberK,
-    //         arrayDetalleNumberK,
-    //         detallesQuantity,
-    //         totalDetallesQuantity,
-    //         arrayInfoAddedToDetail)
-    // }
-
-    // add Info Machinned 1° to Detail - Project
-    // async addInfoMecanizadoPrimera(projectId, otQuantity, ociNumberK, arrayOtNumberK, arrayDetalleNumberK, detallesQuantity, totalDetallesQuantity, arrayInfoAddedToDetail) {
-    //     return this.ajustes.addInfoMecanizadoPrimera(
-    //         projectId,
-    //         otQuantity,
-    //         ociNumberK,
-    //         arrayOtNumberK,
-    //         arrayDetalleNumberK,
-    //         detallesQuantity,
-    //         totalDetallesQuantity,
-    //         arrayInfoAddedToDetail)
-    // }
-
-    // add Info Machinned 2° to Detail - Project
-    // async addInfoMecanizadoSegunda(projectId, otQuantity, ociNumberK, arrayOtNumberK, arrayDetalleNumberK, detallesQuantity, totalDetallesQuantity, arrayInfoAddedToDetail) {
-    //     return this.ajustes.addInfoMecanizadoSegunda(
-    //         projectId,
-    //         otQuantity,
-    //         ociNumberK,
-    //         arrayOtNumberK,
-    //         arrayDetalleNumberK,
-    //         detallesQuantity,
-    //         totalDetallesQuantity,
-    //         arrayInfoAddedToDetail)
-    // }
-
-
     // Select OCI - Project
     async selectOciByOciNumber(numberOci) {
         return this.proyectos.selectOciByOciNumber(numberOci)
     }
-    
+
+    // 1 add Info Armado
+    async addInfoOtArmado(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
+        return this.ajustes.addInfoOtArmado(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            infoAddedToOt)
+    }
+
+    // 2 add Info Etapa 1
+    async addInfoOtEtapaPrimera(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
+        return this.ajustes.addInfoOtEtapaPrimera(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            infoAddedToOt)
+    }
+
+    // 3 add Info Etapa 2 1° Parte
+    async addInfoOtEtapaSegundaPrimera(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
+        return this.ajustes.addInfoOtEtapaSegundaPrimera(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            infoAddedToOt)
+    }
+
+    // 4 add Info Etapa 2 2° Parte
+    async addInfoOtEtapaSegundaSegunda(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
+        return this.ajustes.addInfoOtEtapaSegundaSegunda(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            infoAddedToOt)
+    }
+
+    // 5 add Info Analisis Critico
+    async addInfoOtAnalisisCritico(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
+        return this.ajustes.addInfoOtAnalisisCritico(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            infoAddedToOt)
+    }
+
+    // 6 add Info Etapa Tercera 1° Parte
+    async addInfoOtEtapaTerceraPrimera(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
+        return this.ajustes.addInfoOtEtapaTerceraPrimera(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            infoAddedToOt)
+    }
+
+    // 7 add Info Etapa Tercera 2° Parte
+    async addInfoOtEtapaTerceraSegunda(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
+        return this.ajustes.addInfoOtEtapaTerceraSegunda(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            infoAddedToOt)
+    }
+
+    // 8 add Info Ciclo Correccion 1
+    async addInfoOtCicloCorreccionPrimera(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
+        return this.ajustes.addInfoOtCicloCorreccionPrimera(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            infoAddedToOt)
+    }
+
+    // 9 add Info Ciclo Correccion 2
+    async addInfoOtCicloCorreccionSegunda(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
+        return this.ajustes.addInfoOtCicloCorreccionSegunda(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            infoAddedToOt)
+    }
+
+    // 10 add Info Ciclo Correccion 3
+    async addInfoOtCicloCorreccionTercera(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
+        return this.ajustes.addInfoOtCicloCorreccionTercera(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            infoAddedToOt)
+    }
+
+    // 11 add Info Liberacion BuyOff 1° Parte
+    async addInfoOtLiberacionBuyOffPrimera(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
+        return this.ajustes.addInfoOtCLiberacionBuyOffPrimera(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            infoAddedToOt)
+    }
+
+    // 12 add Info Liberacion BuyOff 2° Parte
+    async addInfoOtLiberacionBuyOffSegunda(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
+        return this.ajustes.addInfoOtCLiberacionBuyOffSegunda(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            infoAddedToOt)
+    }
+
+    // 13 add Info BuyOff
+    async addInfoOtBuyOff(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
+        return this.ajustes.addInfoOtBuyOff(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            infoAddedToOt)
+    }
+
+    // 13 add Info Pendientes Finales
+    async addInfoOtPendientesFinales(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
+        return this.ajustes.addInfoOtPendientesFinales(
+            projectId,
+            otQuantity,
+            ociNumberK,
+            arrayOtNumberK,
+            infoAddedToOt)
+    }
+
 }
 
 module.exports = AjustesService

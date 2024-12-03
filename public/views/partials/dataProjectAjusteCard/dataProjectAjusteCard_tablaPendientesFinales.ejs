@@ -24,9 +24,9 @@
             </th>
         </tr>
         <tr>
-            <th id="colData0" style="width:33vw" scope="col-1" class="text-center pb-1">Pend. Máquina | Estado | Rev.</th>
-            <th id="colData1" style="width:33vw" scope="col-1" class="text-center pb-1">Pend. Ajuste | Estado | Rev.</th>
-            <th id="colData2" style="width:33vw" scope="col-1" class="text-center pb-1">Notas | Estado | Rev.</th>
+            <th id="colData0" style="width:28vw" scope="col-1" class="text-center pb-1">Pend. Máquina | Rev.</th>
+            <th id="colData1" style="width:28vw" scope="col-1" class="text-center pb-1">Pend. Ajuste | Rev.</th>
+            <th id="colData2" style="width:43vw" scope="col-1" class="text-center pb-1">Notas | Rev.</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -44,21 +44,21 @@
                 pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
 
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-                resDatoPendientesMaquina = "S/D", resEstadoPendientesMaquina = 'sinDato', resRevisionPendientesMaquina = 0,
-                resDatoPendientesAjuste = "S/D", resEstadoPendientesAjuste = 'sinDato', resRevisionPendientesAjuste = 0,
-                resDatoNotasAjuste = "S/D", resRevisionNotasAjuste = 0;
+                resPendientesMaquina = "S/D", resRevisionPendientesMaquina = 0,
+                resPendientesAjuste = "S/D", resRevisionPendientesAjuste = 0,
+                resNotasAjuste = "S/D", resRevisionNotasAjuste = 0;
 
             if (pathMongoOtProject[n].visible) {
                 let pathToMongoOtPendientesFinales = pathMongoOtAjuste[0].otPendientesFinales || [],
                     largoArrayPendientesFinales = parseInt(pathToMongoOtPendientesFinales.length);
 
-                let arrResDatoPendientesMaquina = [], arrResEstadoPendientesMaquina = [], valueArrayResPendientesMaquina = 0, arrResRevisionPendientesMaquina = [],
+                let arrResPendientesMaquina = [], valueArrayResPendientesMaquina = 0, arrResRevisionPendientesMaquina = [],
                     arrResCreadorPendientesMaquina = [], arrResModificadorPendientesMaquina = [], arrResFechaPendientesMaquina = [], arrResFechaModPendientesMaquina = [];
 
-                let arrResDatoPendientesAjuste = [], arrResEstadoPendientesAjuste = [], valueArrayResPendientesAjuste = 0, arrResRevisionPendientesAjuste = [],
+                let arrResPendientesAjuste = [], valueArrayResPendientesAjuste = 0, arrResRevisionPendientesAjuste = [],
                     arrResCreadorPendientesAjuste = [], arrResModificadorPendientesAjuste = [], arrResFechaPendientesAjuste = [], arrResFechaModPendientesAjuste = [];
 
-                let arrResDatoNotasAjuste = [], valueArrayResNotasAjuste = 0, arrResRevisionNotasAjuste = [],
+                let arrResNotasAjuste = [], valueArrayResNotasAjuste = 0, arrResRevisionNotasAjuste = [],
                     arrResCreadorNotasAjuste = [], arrResModificadorNotasAjuste = [], arrResFechaNotasAjuste = [], arrResFechaModNotasAjuste = [];
 
                 if (pathMongoOtProject[n].otStatus) { %>
@@ -73,12 +73,10 @@
                                         for (let i = 0; largoArrayPendientesFinales > i; i++) {
                                             if (pathToMongoOtPendientesFinales[i]) {
                                                 let largoArray = parseInt(largoArrayPendientesFinales)
-                                                resDatoPendientesMaquina = pathToMongoOtPendientesFinales[largoArray-1].pendientesMaquina == 'sinDato' ? "S/D" : pathToMongoOtPendientesFinales[largoArray-1].pendientesMaquina
-                                                resEstadoPendientesMaquina = pathToMongoOtPendientesFinales[largoArray-1].estadoPendientesMaquina == 'sinDato' ? "S/D" : pathToMongoOtPendientesFinales[largoArray-1].estadoPendientesMaquina
+                                                resPendientesMaquina = pathToMongoOtPendientesFinales[largoArray-1].pendientesMaquina == 'sinDato' ? "S/D" : pathToMongoOtPendientesFinales[largoArray-1].pendientesMaquina
                                                 resRevisionPendientesMaquina = parseInt(pathToMongoOtPendientesFinales[largoArray-1].revisionPendientesMaquina) || 0
                                                 
-                                                pathToMongoOtPendientesFinales[i].pendientesMaquina == 'sinDato' ? arrResDatoPendientesMaquina.push("S/D") : arrResDatoPendientesMaquina.push(pathToMongoOtPendientesFinales[i].pendientesMaquina)
-                                                pathToMongoOtPendientesFinales[i].estadoPendientesMaquina == 'sinDato' ? arrResEstadoPendientesMaquina.push("S/D") : arrResEstadoPendientesMaquina.push(pathToMongoOtPendientesFinales[i].estadoPendientesMaquina)
+                                                pathToMongoOtPendientesFinales[i].pendientesMaquina == 'sinDato' ? arrResPendientesMaquina.push("S/D") : arrResPendientesMaquina.push(pathToMongoOtPendientesFinales[i].pendientesMaquina)
                                                 arrResRevisionPendientesMaquina.push(pathToMongoOtPendientesFinales[i].revisionPendientesMaquina)
 
                                                 arrResCreadorPendientesMaquina.push(pathToMongoOtPendientesFinales[i].creator[0].username)
@@ -87,12 +85,12 @@
                                                 arrResFechaModPendientesMaquina.push(pathToMongoOtPendientesFinales[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResPendientesMaquina = parseInt(arrResDatoPendientesMaquina.length-1)
+                                        valueArrayResPendientesMaquina = parseInt(arrResPendientesMaquina.length-1)
 
-                                        if (arrResDatoPendientesMaquina.length == 1 ) {
+                                        if (arrResPendientesMaquina.length == 1 ) {
                                             anteriorDisabled = "disabled"
                                             siguienteDisabled = "disabled"
-                                        } else if (arrResDatoPendientesMaquina.length == arrResRevisionPendientesMaquina.length) {
+                                        } else if (arrResPendientesMaquina.length == arrResRevisionPendientesMaquina.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -101,8 +99,7 @@
                                         }
                                         
                                     } else {
-                                        arrResDatoPendientesMaquina.push(resDatoPendientesMaquina)
-                                        arrResEstadoPendientesMaquina.push(resEstadoPendientesMaquina)
+                                        arrResPendientesMaquina.push(resPendientesMaquina)
                                         arrResRevisionPendientesMaquina.push(resRevisionPendientesMaquina)
                                         
                                         arrResCreadorPendientesMaquina.push(pathMongoOtProject[n].creator[0].username)
@@ -117,8 +114,7 @@
                                             <%= anteriorDisabled %>
                                             ><i class="fa-solid fa-arrow-left"></i>
                                         </button>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoPendientesMaquina %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoPendientesMaquina %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPendientesMaquina %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPendientesMaquina %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPendientesMaquina %>">
                                         <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorPendientesMaquina %>">
@@ -126,15 +122,10 @@
                                         <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaPendientesMaquina %>">
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModPendientesMaquina %>">
 
-                                        <span id="resDatoPendientesMaquina<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                            <%= resDatoPendientesMaquina %>
-                                        </span> |
-                                        
-                                        <% const config = pendientesFinalesConfig[resEstadoPendientesMaquina] || pendientesFinalesConfig.default; %>
-                                        <span id="resEstadoPendientesMaquina<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoPendientesMaquina%>">
+                                        <% const config = pendientesFinalesConfig[resPendientesMaquina] || pendientesFinalesConfig.default; %>
+                                        <span id="resPendientesMaquina<%=k%>_<%=n%>_<%=q%>" value="<%=resPendientesMaquina%>">
                                             <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
-
                                         <span id="resRevisionPendientesMaquina<%=k%>_<%=n%>_<%=q%>" name="resRevisionPendientesMaquina" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                             <%= resRevisionPendientesMaquina %>
                                         </span>
@@ -154,12 +145,10 @@
                                         for (let i = 0; largoArrayPendientesFinales > i; i++) {
                                             if (pathToMongoOtPendientesFinales[i]) {
                                                 let largoArray = parseInt(largoArrayPendientesFinales)
-                                                resDatoPendientesAjuste = pathToMongoOtPendientesFinales[largoArray-1].pendientesAjuste == 'sinDato' ? "S/D" :  pathToMongoOtPendientesFinales[largoArray-1].pendientesAjuste
-                                                resEstadoPendientesAjuste = pathToMongoOtPendientesFinales[largoArray-1].estadoPendientesAjuste == 'sinDato' ? "S/D" : pathToMongoOtPendientesFinales[largoArray-1].estadoPendientesAjuste
+                                                resPendientesAjuste = pathToMongoOtPendientesFinales[largoArray-1].pendientesAjuste == 'sinDato' ? "S/D" :  pathToMongoOtPendientesFinales[largoArray-1].pendientesAjuste
                                                 resRevisionPendientesAjuste = parseInt(pathToMongoOtPendientesFinales[largoArray-1].revisionPendientesAjuste) || 0
                                                 
-                                                pathToMongoOtPendientesFinales[i].pendientesAjuste == 'sinDato' ? arrResDatoPendientesAjuste.push("S/D") : arrResDatoPendientesAjuste.push(pathToMongoOtPendientesFinales[i].pendientesAjuste)
-                                                pathToMongoOtPendientesFinales[i].estadoPendientesAjuste == 'sinDato' ? arrResEstadoPendientesAjuste.push("S/D") : arrResEstadoPendientesAjuste.push(pathToMongoOtPendientesFinales[i].estadoPendientesAjuste)
+                                                pathToMongoOtPendientesFinales[i].pendientesAjuste == 'sinDato' ? arrResPendientesAjuste.push("S/D") : arrResPendientesAjuste.push(pathToMongoOtPendientesFinales[i].pendientesAjuste)
                                                 arrResRevisionPendientesAjuste.push(pathToMongoOtPendientesFinales[i].revisionPendientesAjuste)
                                                 
                                                 arrResCreadorPendientesAjuste.push(pathToMongoOtPendientesFinales[i].creator[0].username)
@@ -168,12 +157,12 @@
                                                 arrResFechaModPendientesAjuste.push(pathToMongoOtPendientesFinales[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResPendientesAjuste = parseInt(arrResEstadoPendientesAjuste.length-1)
+                                        valueArrayResPendientesAjuste = parseInt(arrResPendientesAjuste.length-1)
                                                 
-                                        if (arrResDatoPendientesAjuste.length == 1 ) {
+                                        if (arrResPendientesAjuste.length == 1 ) {
                                             anteriorDisabled = "disabled"
                                             siguienteDisabled = "disabled"
-                                        } else if (arrResDatoPendientesAjuste.length == arrResRevisionPendientesAjuste.length) {
+                                        } else if (arrResPendientesAjuste.length == arrResRevisionPendientesAjuste.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -182,8 +171,7 @@
                                         }
                                         
                                     } else {
-                                        arrResDatoPendientesAjuste.push(resDatoPendientesAjuste)
-                                        arrResEstadoPendientesAjuste.push(resEstadoPendientesAjuste)
+                                        arrResPendientesAjuste.push(resPendientesAjuste)
                                         arrResRevisionPendientesAjuste.push(resRevisionPendientesAjuste)
                                         
                                         arrResCreadorPendientesAjuste.push(pathMongoOtProject[n].creator[0].username)
@@ -198,8 +186,7 @@
                                             <%= anteriorDisabled %>
                                             ><i class="fa-solid fa-arrow-left"></i>
                                         </button>
-                                        <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoPendientesAjuste %>">
-                                        <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoPendientesAjuste %>">
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPendientesAjuste %>">
                                         <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPendientesAjuste %>">
                                         <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPendientesAjuste %>">
                                         <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorPendientesAjuste %>">
@@ -207,15 +194,10 @@
                                         <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaPendientesAjuste %>">
                                         <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModPendientesAjuste %>">
 
-                                        <span id="resDatoPendientesAjuste<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                            <%= resDatoPendientesAjuste %>
-                                        </span> |
-
-                                        <% const config = pendientesFinalesConfig[resEstadoPendientesAjuste] || pendientesFinalesConfig.default; %>
-                                        <span id="resEstadoPendientesAjuste<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoPendientesAjuste%>">
+                                        <% const config = pendientesFinalesConfig[resPendientesAjuste] || pendientesFinalesConfig.default; %>
+                                        <span id="resPendientesAjuste<%=k%>_<%=n%>_<%=q%>" value="<%=resPendientesAjuste%>">
                                             <i   class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                         </span> |
-
                                         <span id="resRevisionPendientesAjuste<%=k%>_<%=n%>_<%=q%>" name="resRevisionPendientesAjuste" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                             <%= resRevisionPendientesAjuste %>
                                         </span>
@@ -236,10 +218,10 @@
                                         for (let i = 0; largoArrayPendientesFinales > i; i++) {
                                             if (pathToMongoOtPendientesFinales[i]) {
                                                 let largoArray = parseInt(largoArrayPendientesFinales)
-                                                resDatoNotasAjuste = pathToMongoOtPendientesFinales[largoArray-1].notasAjuste == 'sinDato' ? "S/D" : pathToMongoOtPendientesFinales[largoArray-1].notasAjuste
+                                                resNotasAjuste = pathToMongoOtPendientesFinales[largoArray-1].notasAjuste == 'sinDato' ? "S/D" : pathToMongoOtPendientesFinales[largoArray-1].notasAjuste
                                                 resRevisionNotasAjuste = parseInt(pathToMongoOtPendientesFinales[largoArray-1].revisionNotasAjuste) || 0
                                                 
-                                                pathToMongoOtPendientesFinales[i].notasAjuste == 'sinDato' ? arrResDatoNotasAjuste.push('S/D') : arrResDatoNotasAjuste.push(pathToMongoOtPendientesFinales[i].notasAjuste)
+                                                pathToMongoOtPendientesFinales[i].notasAjuste == 'sinDato' ? arrResNotasAjuste.push('S/D') : arrResNotasAjuste.push(pathToMongoOtPendientesFinales[i].notasAjuste)
                                                 arrResRevisionNotasAjuste.push(pathToMongoOtPendientesFinales[i].revisionNotasAjuste)
                                                 
                                                 arrResCreadorNotasAjuste.push(pathToMongoOtPendientesFinales[i].creator[0].username)
@@ -248,12 +230,12 @@
                                                 arrResFechaModNotasAjuste.push(pathToMongoOtPendientesFinales[i].modifiedOn)
                                             }
                                         }
-                                        valueArrayResNotasAjuste = parseInt(arrResDatoNotasAjuste.length-1)
+                                        valueArrayResNotasAjuste = parseInt(arrResNotasAjuste.length-1)
                                                 
-                                        if (arrResDatoNotasAjuste.length == 1 ) {
+                                        if (arrResNotasAjuste.length == 1 ) {
                                             siguienteDisabled = "disabled"
                                             anteriorDisabled = "disabled"
-                                        } else if (arrResDatoNotasAjuste.length == arrResRevisionNotasAjuste.length) {
+                                        } else if (arrResNotasAjuste.length == arrResRevisionNotasAjuste.length) {
                                             anteriorDisabled = ""
                                             siguienteDisabled = "disabled"
                                         } else {
@@ -262,7 +244,7 @@
                                         }
                                                 
                                     } else {
-                                        arrResDatoNotasAjuste.push(resDatoNotasAjuste)
+                                        arrResNotasAjuste.push(resNotasAjuste)
                                         arrResRevisionNotasAjuste.push(resRevisionNotasAjuste)
                                         
                                         arrResCreadorNotasAjuste.push(pathMongoOtProject[n].creator[0].username)
@@ -277,7 +259,7 @@
                                         <%= anteriorDisabled %>
                                         ><i class="fa-solid fa-arrow-left"></i>
                                     </button>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoNotasAjuste %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResNotasAjuste %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResNotasAjuste %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionNotasAjuste %>">
                                     <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorNotasAjuste %>">
@@ -285,10 +267,9 @@
                                     <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaNotasAjuste %>">
                                     <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModNotasAjuste %>">
 
-                                    <span id="resDatoNotasAjuste<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
-                                        <%= resDatoNotasAjuste %>
+                                    <span id="resNotasAjuste<%=k%>_<%=n%>_<%=q%>" class="badge bg-light text-dark my-2">
+                                        <%= resNotasAjuste %>
                                     </span> |
-
                                     <span id="resRevisionNotasAjuste<%=k%>_<%=n%>_<%=q%>" name="resRevisionNotasAjuste" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionNotasAjuste %>
                                     </span>
@@ -316,38 +297,28 @@
 
                                             if (pathToMongoOtPendientesFinales[i]) {
                                                 let largoArray = parseInt(largoArrayPendientesFinales)
-                                                resDatoPendientesMaquina = pathToMongoOtPendientesFinales[largoArray-1].pendientesMaquina || 'S/D'
-                                                resEstadoPendientesMaquina = pathToMongoOtPendientesFinales[largoArray-1].estadoPendientesMaquina || 'sinDato'
+                                                resPendientesMaquina = pathToMongoOtPendientesFinales[largoArray-1].pendientesMaquina || 'S/D'
                                                 resRevisionPendientesMaquina = parseInt(pathToMongoOtPendientesFinales[largoArray-1].revisionPendientesMaquina) || 0
                                                 
-                                                arrResDatoPendientesMaquina.push(pathToMongoOtPendientesFinales[i].pendientesMaquina)
-                                                arrResEstadoPendientesMaquina.push(pathToMongoOtPendientesFinales[i].estadoPendientesMaquina)
+                                                arrResPendientesMaquina.push(pathToMongoOtPendientesFinales[i].pendientesMaquina)
                                                 arrResRevisionPendientesMaquina.push(pathToMongoOtPendientesFinales[i].revisionPendientesMaquina)
                                             }
                                         }
-                                        valueArrayResPendientesMaquina = parseInt(arrResEstadoPendientesMaquina.length-1)
-                                        resDatoPendientesMaquina = pathToMongoOtPendientesFinales[0].PendientesMaquina
-                                        resEstadoPendientesMaquina = pathToMongoOtPendientesFinales[0].estadoPendientesMaquina
-
+                                        valueArrayResPendientesMaquina = parseInt(arrResPendientesMaquina.length-1)
+                                        resPendientesMaquina = pathToMongoOtPendientesFinales[0].PendientesMaquina
+                                        
                                     } else {
-                                        arrResDatoPendientesMaquina.push(resDatoPendientesMaquina)
-                                        arrResEstadoPendientesMaquina.push(resEstadoPendientesMaquina)
+                                        arrResPendientesMaquina.push(resPendientesMaquina)
                                         arrResRevisionPendientesMaquina.push(resRevisionPendientesMaquina)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoPendientesMaquina %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoPendientesMaquina %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPendientesMaquina %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPendientesMaquina %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPendientesMaquina %>">
                                 
-                                    <span id="resDatoPendientesMaquina<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoPendientesMaquina %>
-                                    </span> |
-
-                                    <% const config = pendientesFinalesConfig[resEstadoPendientesMaquina] || pendientesFinalesConfig.default; %>
-                                    <span id="resEstadoPendientesMaquina<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoPendientesMaquina%>">
+                                    <% const config = pendientesFinalesConfig[resPendientesMaquina] || pendientesFinalesConfig.default; %>
+                                    <span id="resPendientesMaquina<%=k%>_<%=n%>_<%=q%>" value="<%=resPendientesMaquina%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionPendientesMaquina<%=k%>_<%=n%>_<%=q%>" name="resRevisionPendientesMaquina" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionPendientesMaquina %>
                                     </span>
@@ -361,38 +332,28 @@
                                             
                                             if (pathToMongoOtPendientesFinales[i]) {
                                                 let largoArray = parseInt(largoArrayPendientesFinales)
-                                                resDatoPendientesAjuste = pathToMongoOtPendientesFinales[largoArray-1].pendientesAjuste || 'S/D'
-                                                resEstadoPendientesAjuste = pathToMongoOtPendientesFinales[largoArray-1].pendientesAjuste || 'sinDato'
+                                                resPendientesAjuste = pathToMongoOtPendientesFinales[largoArray-1].pendientesAjuste || 'S/D'
                                                 resRevisionPendientesAjuste = parseInt(pathToMongoOtPendientesFinales[largoArray-1].revisionPendientesAjuste) || 0
                                                 
-                                                arrResDatoPendientesAjuste.push(pathToMongoOtPendientesFinales[i].pendientesAjuste)
-                                                arrResEstadoPendientesAjuste.push(pathToMongoOtPendientesFinales[i].pendientesAjuste)
+                                                arrResPendientesAjuste.push(pathToMongoOtPendientesFinales[i].pendientesAjuste)
                                                 arrResRevisionPendientesAjuste.push(pathToMongoOtPendientesFinales[i].revisionPendientesAjuste)
                                             }
                                         }
-                                        valueArrayResPendientesAjuste = parseInt(arrResEstadoPendientesAjuste.length-1)
-                                        resDatoPendientesAjuste = pathToMongoOtPendientesFinales[0].pendientesAjuste
-                                        resEstadoPendientesAjuste = pathToMongoOtPendientesFinales[0].estadoPendientesAjuste
-                                    
+                                        valueArrayResPendientesAjuste = parseInt(arrResPendientesAjuste.length-1)
+                                        resPendientesAjuste = pathToMongoOtPendientesFinales[0].pendientesAjuste
+                                        
                                     } else {
-                                        arrResDatoPendientesAjuste.push(resDatoPendientesAjuste)
-                                        arrResEstadoPendientesAjuste.push(resEstadoPendientesAjuste)
+                                        arrResPendientesAjuste.push(resPendientesAjuste)
                                         arrResRevisionPendientesAjuste.push(resRevisionPendientesAjuste)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoPendientesAjuste %>">
-                                    <input type="hidden" id="resEstadoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResEstadoPendientesAjuste %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPendientesAjuste %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPendientesAjuste %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPendientesAjuste %>">
 
-                                    <span id="resDatoPendientesAjuste<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoPendientesAjuste %>
-                                    </span> |
-                                    
-                                    <% const config = pendientesFinalesConfig[resEstadoPendientesAjuste] || pendientesFinalesConfig.default; %>
-                                    <span id="resEstadoPendientesAjuste<%=k%>_<%=n%>_<%=q%>" value="<%=resEstadoPendientesAjuste%>">
+                                    <% const config = pendientesFinalesConfig[resPendientesAjuste] || pendientesFinalesConfig.default; %>
+                                    <span id="resPendientesAjuste<%=k%>_<%=n%>_<%=q%>" value="<%=resPendientesAjuste%>">
                                         <i class="fa-solid <%= config.icon %> fa-lg" style="<%= config.iconColor %>"></i>
                                     </span> |
-
                                     <span id="resRevisionPendientesAjuste<%=k%>_<%=n%>_<%=q%>" name="resRevisionPendientesAjuste" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">
                                         <%= resRevisionPendientesAjuste %>
                                     </span>
@@ -406,28 +367,28 @@
                                             
                                             if (pathToMongoOtPendientesFinales[i]) {
                                                 let largoArray = parseInt(largoArrayPendientesFinales)
-                                                resDatoNotasAjuste = pathToMongoOtPendientesFinales[largoArray-1].notasAjuste || "S/D"
+                                                resNotasAjuste = pathToMongoOtPendientesFinales[largoArray-1].notasAjuste || "S/D"
                                                 resRevisionNotasAjuste = parseInt(pathToMongoOtPendientesFinales[largoArray-1].revisionNotasAjuste) || 0
                                                 
-                                                arrResDatoNotasAjuste.push(pathToMongoOtPendientesFinales[i].notasAjuste)
-                                                arrResEstadoNotasAjuste.push(pathToMongoOtPendientesFinales[i].estadoNotasAjuste)
+                                                arrResNotasAjuste.push(pathToMongoOtPendientesFinales[i].notasAjuste)
+                                                arrResNotasAjuste.push(pathToMongoOtPendientesFinales[i].estadoNotasAjuste)
                                                 arrResRevisionNotasAjuste.push(pathToMongoOtPendientesFinales[i].revisionNotasAjuste)
                                             }
                                         }
-                                        valueArrayResNotasAjuste = parseInt(arrResEstadoNotasAjuste.length-1)
-                                        resDatoNotasAjuste = pathToMongoOtPendientesFinales[0].notasAjuste
+                                        valueArrayResNotasAjuste = parseInt(arrResNotasAjuste.length-1)
+                                        resNotasAjuste = pathToMongoOtPendientesFinales[0].notasAjuste
                                     
                                     } else {
-                                        arrResDatoNotasAjuste.push(resDatoNotasAjuste)
-                                        arrResEstadoNotasAjuste.push(resEstadoNotasAjuste)
+                                        arrResNotasAjuste.push(resNotasAjuste)
+                                        arrResNotasAjuste.push(resNotasAjuste)
                                         arrResRevisionNotasAjuste.push(resRevisionNotasAjuste)
                                     } %>
-                                    <input type="hidden" id="resDatoHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDatoNotasAjuste %>">
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResNotasAjuste %>">
                                     <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResNotasAjuste %>">
                                     <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionNotasAjuste %>">
 
-                                    <span id="resDatoNotasAjuste<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
-                                        <%= resDatoNotasAjuste %>
+                                    <span id="resNotasAjuste<%=k%>_<%=n%>_<%=q%>" class="badge bg-secondary text-ligth my-2">
+                                        <%= resNotasAjuste %>
                                     </span> |
                                     
                                     <span id="resRevisionNotasAjuste<%=k%>_<%=n%>_<%=q%>" name="resRevisionNotasAjuste" class="badge text-dark my-2" style="cursor: help;" valueCreador="" valueFecha="" valueModificador="" valueFechaMod="">

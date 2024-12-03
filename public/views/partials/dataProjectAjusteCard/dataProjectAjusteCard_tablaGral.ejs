@@ -24,7 +24,7 @@
                                     <input id="checkSelect<%=k%>_<%=n%>" title="Checkbox  OT#<%= pathMongoOtProject[n].otNumber %>"
                                         class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect">
                                     <button id="btnEditDuenoOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="edit" name="btnEditDuenoOt"
-                                        title="Editar Dueño OT#<%= pathMongoOtProject[n].otNumber %>"
+                                        title="Editar Dueño Pieza <%= proyecto[m].project[j].oci[k].ociAlias %>"
                                         style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
@@ -34,13 +34,13 @@
                                     <input id="checkSelect<%=k%>_<%=n%>" class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect">
                                     <% if ( userInfo.area === 'fabricacion' ) { %>
                                         <button id="btnEditDuenoOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="edit" name="btnEditDuenoOt"
-                                            title="Editar Dueño OT#<%= pathMongoOtProject[n].otNumber %>"
+                                            title="Editar Dueño Pieza <%= proyecto[m].project[j].oci[k].ociAlias %>"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
 
                                     <% } else { %>
-                                        <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;"">
+                                        <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
                                         
@@ -79,7 +79,7 @@
                                 <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
                                     <input id="checkSelect<%=k%>_<%=n%>" class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect" disabled>
                                     <button id="btnEditDuenoOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="edit" name="btnEditDuenoOt"
-                                        title="Editar Dueño OT#<%= pathMongoOtProject[n].otNumber %>"
+                                        title="Editar Dueño Pieza <%= proyecto[m].project[j].oci[k].ociAlias %>"
                                         style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
@@ -90,7 +90,7 @@
                                     <input id="checkSelect<%=k%>_<%=n%>" class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect" style="background-color: #575757;" disabled>
                                     <% if ( userInfo.area === 'fabricacion' ) { %>
                                         <button id="btnEditDuenoOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="edit" name="btnEditDuenoOt"
-                                            title="Solo Admin puede Editar Dueño OT#<%= pathMongoOtProject[n].otNumber %>"
+                                            title="Solo Admin puede Editar Dueño Pieza <%= proyecto[m].project[j].oci[k].ociAlias %>"
                                             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
