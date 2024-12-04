@@ -41,7 +41,7 @@
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
-                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
+                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste[0];
 
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
                 resRebabas = "S/D", resRevisionRebabas = 0,
@@ -49,7 +49,7 @@
                 resAspecto = "S/D", resRevisionAspecto = 0;
 
             if (pathMongoOtProject[n].visible) {
-                let pathToMongoOtLiberacionBuyOffSegunda = pathMongoOtAjuste[0].otLiberacionBuyOffSegunda || [],
+                let pathToMongoOtLiberacionBuyOffSegunda = pathMongoOtAjuste.otInfoLiberacionBuyOffSegunda || [],
                     largoArrayLiberacionBuyOffSegunda = parseInt(pathToMongoOtLiberacionBuyOffSegunda.length);
 
                 let arrResRebabas = [], valueArrayResRebabas = 0, arrResRevisionRebabas = [],

@@ -40,7 +40,7 @@
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
-                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
+                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste[0];
 
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
                 resPiezaMedidaReunionTercera = "S/D", resRevisionPiezaMedidaReunionTercera = 0,
@@ -48,7 +48,7 @@
                 resAjusteTercera = "S/D", resRevisionAjusteTercera = 0;
 
             if (pathMongoOtProject[n].visible) {
-                let pathToMongoOtCicloCorreccionTercera = pathMongoOtAjuste[0].otCicloCorreccionTercera || [],
+                let pathToMongoOtCicloCorreccionTercera = pathMongoOtAjuste.otInfoCicloCorreccionTercera || [],
                     largoArrayCicloCorreccionTercera = parseInt(pathToMongoOtCicloCorreccionTercera.length);
 
                 let arrResPiezaMedidaReunionTercera = [], valueArrayResPiezaMedidaReunionTercera = 0, arrResRevisionPiezaMedidaReunionTercera = [],

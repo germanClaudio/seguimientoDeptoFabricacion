@@ -41,7 +41,7 @@
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
-                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
+                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste[0];
 
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
                 resPendientesMaquina = "S/D", resRevisionPendientesMaquina = 0,
@@ -49,7 +49,7 @@
                 resNotasAjuste = "S/D", resRevisionNotasAjuste = 0;
 
             if (pathMongoOtProject[n].visible) {
-                let pathToMongoOtPendientesFinales = pathMongoOtAjuste[0].otPendientesFinales || [],
+                let pathToMongoOtPendientesFinales = pathMongoOtAjuste.otInfoPendientesFinales || [],
                     largoArrayPendientesFinales = parseInt(pathToMongoOtPendientesFinales.length);
 
                 let arrResPendientesMaquina = [], valueArrayResPendientesMaquina = 0, arrResRevisionPendientesMaquina = [],

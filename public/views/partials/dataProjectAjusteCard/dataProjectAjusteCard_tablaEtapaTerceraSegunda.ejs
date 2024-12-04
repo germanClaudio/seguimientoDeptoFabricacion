@@ -26,7 +26,7 @@
         <tr>
             <th id="colData0" style="width:33vw" scope="col-1" class="text-center pb-1">Funcional Completa | Rev.</th>
             <th id="colData1" style="width:33vw" scope="col-1" class="text-center pb-1">LTH | Rev.</th>
-            <th id="colData2" style="width:33vw" scope="col-1" class="text-center pb-1">Liberación Pza./Metrologia | Rev.</th>
+            <th id="colData2" style="width:33vw" scope="col-1" class="text-center pb-1">Liberación Pza. p/Metrologia | Rev.</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -41,7 +41,7 @@
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
-                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
+                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste[0];
 
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
                 resFuncionalCompleta = "S/D", resRevisionFuncionalCompleta = 0,
@@ -49,7 +49,7 @@
                 resLiberarPiezaMetrologia = "S/D", resRevisionLiberarPiezaMetrologia = 0;
 
             if (pathMongoOtProject[n].visible) {
-                let pathToMongoOtEtapaTerceraSegunda = pathMongoOtAjuste[0].otEtapaTerceraSegunda || [],
+                let pathToMongoOtEtapaTerceraSegunda = pathMongoOtAjuste.otInfoEtapaTerceraSegunda || [],
                     largoArrayEtapaTerceraSegunda = parseInt(pathToMongoOtEtapaTerceraSegunda.length);
 
                 let arrResFuncionalCompleta = [], valueArrayResFuncionalCompleta = 0, arrResRevisionFuncionalCompleta = [],

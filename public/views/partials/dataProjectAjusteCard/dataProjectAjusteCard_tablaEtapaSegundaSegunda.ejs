@@ -40,14 +40,14 @@
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
-                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
+                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste[0];
             
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
                 resAzuladoAceros = "S/D", resRevisionAzuladoAceros = 0;
                 resLthEtapaSegundaSegunda = "S/D", resRevisionLthEtapaSegundaSegunda = 0;
 
             if (pathMongoOtProject[n].visible) {
-                let pathToMongoOtEtapaSegundaSegunda = pathMongoOtAjuste[0].otEtapaSegundaSegunda || [],
+                let pathToMongoOtEtapaSegundaSegunda = pathMongoOtAjuste.otInfoEtapaSegundaSegunda || [],
                     largoArrayEtapaSegundaSegunda = parseInt(pathToMongoOtEtapaSegundaSegunda.length);
 
                 let arrResAzuladoAceros = [], valueArrayResAzuladoAceros = 0, arrResRevisionAzuladoAceros = [],
@@ -141,10 +141,10 @@
                                             for (let i = 0; largoArrayEtapaSegundaSegunda > i; i++) {
                                                 if (pathToMongoOtEtapaSegundaSegunda[i]) {
                                                     let largoArray = parseInt(largoArrayEtapaSegundaSegunda)
-                                                    resLthEtapaSegundaSegunda = pathToMongoOtEtapaSegundaSegunda[largoArray-1].lthEtapaSegundaSegunda == 'sinDato' ? "S/D" : pathToMongoOtEtapaSegundaSegunda[largoArray-1].lthEtapaSegundaSegunda
+                                                    resLthEtapaSegundaSegunda = pathToMongoOtEtapaSegundaSegunda[largoArray-1].lthEtapaSegunda == 'sinDato' ? "S/D" : pathToMongoOtEtapaSegundaSegunda[largoArray-1].lthEtapaSegunda
                                                     resRevisionLthEtapaSegundaSegunda = parseInt(pathToMongoOtEtapaSegundaSegunda[largoArray-1].revisionLthEtapaSegundaSegunda) || 0
                                                     
-                                                    pathToMongoOtEtapaSegundaSegunda[i].lthEtapaSegundaSegunda == 'sinDato' ? arrResLthEtapaSegundaSegunda.push('S/D') : arrResLthEtapaSegundaSegunda.push(pathToMongoOtEtapaSegundaSegunda[i].lthEtapaSegundaSegunda)
+                                                    pathToMongoOtEtapaSegundaSegunda[i].lthEtapaSegunda == 'sinDato' ? arrResLthEtapaSegundaSegunda.push('S/D') : arrResLthEtapaSegundaSegunda.push(pathToMongoOtEtapaSegundaSegunda[i].lthEtapaSegunda)
                                                     arrResRevisionLthEtapaSegundaSegunda.push(pathToMongoOtEtapaSegundaSegunda[i].revisionLthEtapaSegundaSegunda)
                                                 
                                                     arrResCreadorLthEtapaSegundaSegunda.push(pathToMongoOtEtapaSegundaSegunda[i].creator[0].username)
@@ -221,7 +221,7 @@
                                                 
                                                 if (pathToMongoOtEtapaSegundaSegunda[i]) {
                                                     let largoArray = parseInt(largoArrayEtapaSegundaSegunda)
-                                                    resAzuladoAceros = pathToMongoOtEtapaSegundaSegunda[largoArray-1].azuladoAceros || "S/D"
+                                                    resAzuladoAceros = pathToMongoOtEtapaSegundaSegunda[largoArray-1].azuladoAceros == 'sinDato' ? "S/D" : pathToMongoOtEtapaSegundaSegunda[largoArray-1].azuladoAceros
                                                     resRevisionAzuladoAceros = parseInt(pathToMongoOtEtapaSegundaSegunda[largoArray-1].revisionAzuladoAceros) || 0
                                                     
                                                     arrResAzuladoAceros.push(pathToMongoOtEtapaSegundaSegunda[i].azuladoAceros)
@@ -256,15 +256,15 @@
                                                 
                                                 if (pathToMongoOtEtapaSegundaSegunda[i]) {
                                                     let largoArray = parseInt(largoArrayEtapaSegundaSegunda)
-                                                    resLthEtapaSegundaSegunda = pathToMongoOtEtapaSegundaSegunda[largoArray-1].lthEtapaSegundaSegunda || "S/D"
+                                                    resLthEtapaSegundaSegunda = pathToMongoOtEtapaSegundaSegunda[largoArray-1].lthEtapaSegunda == 'sinDato' ? "S/D" : pathToMongoOtEtapaSegundaSegunda[largoArray-1].lthEtapaSegunda
                                                     resRevisionLthEtapaSegundaSegunda = parseInt(pathToMongoOtEtapaSegundaSegunda[largoArray-1].revisionLthEtapaSegundaSegunda) || 0
                                                     
-                                                    arrResLthEtapaSegundaSegunda.push(pathToMongoOtEtapaSegundaSegunda[i].lthEtapaSegundaSegunda)
+                                                    arrResLthEtapaSegundaSegunda.push(pathToMongoOtEtapaSegundaSegunda[i].lthEtapaSegunda)
                                                     arrResRevisionLthEtapaSegundaSegunda.push(pathToMongoOtEtapaSegundaSegunda[i].revisionLthEtapaSegundaSegunda)
                                                 }
                                             }
                                             valueArrayResLthEtapaSegundaSegunda = parseInt(arrResLthEtapaSegundaSegunda.length-1)
-                                            resLthEtapaSegundaSegunda = pathToMongoOtEtapaSegundaSegunda[0].lthEtapaSegundaSegunda
+                                            resLthEtapaSegundaSegunda = pathToMongoOtEtapaSegundaSegunda[0].lthEtapaSegunda
                                             
                                         } else {
                                             arrResLthEtapaSegundaSegunda.push(resLthEtapaSegundaSegunda)

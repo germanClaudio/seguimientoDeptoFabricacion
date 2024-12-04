@@ -4303,8 +4303,7 @@ function updateInputsTextarea() {
     }
     
     arrayInputsTeaxArea !=[] ? allInputsTextarea = document.querySelectorAll('textarea') : null
-    //console.log('allInputsTextarea: ',allInputsTextarea)
-
+    
     allInputsTextarea.forEach(function(input) {
         input.addEventListener('keydown', function(event) {
             // Obtener el código de la tecla presionada
@@ -4318,8 +4317,6 @@ function updateInputsTextarea() {
                 // Cancelar el evento para evitar que se ingrese el carácter
                 event.preventDefault()
                 input.classList.toggle("border", "border-danger", "border-2")
-                // input.classList.toggle("border-danger")
-                // input.classList.toggle("border-2")
             }
         })
     })

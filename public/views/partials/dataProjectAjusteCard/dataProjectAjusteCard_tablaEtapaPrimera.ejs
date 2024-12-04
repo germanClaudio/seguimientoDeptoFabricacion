@@ -42,16 +42,16 @@
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
-                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
+                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste[0];
 
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-                resGuiados = "S/D", resRevisionGuiados = 0,
-                resCentradoLuzCorte = "S/D", resRevisionCentradoLuzCorte = 0,
-                resCentradoLevas = "S/D", resRevisionCentradoLevas = 0;
-                resLthEtapaPrimera = "S/D", resRevisionLthEtapaPrimera = 0;
+                resGuiados = "sinDatos", resRevisionGuiados = 0,
+                resCentradoLuzCorte = "sinDatos", resRevisionCentradoLuzCorte = 0,
+                resCentradoLevas = "sinDatos", resRevisionCentradoLevas = 0;
+                resLthEtapaPrimera = "sinDatos", resRevisionLthEtapaPrimera = 0;
 
             if (pathMongoOtProject[n].visible) {
-                let pathToMongoOtEtapa = pathMongoOtAjuste[0].otEtapaPrimera || [],
+                let pathToMongoOtEtapa = pathMongoOtAjuste.otInfoEtapaPrimera || [],
                     largoArrayEtapa = parseInt(pathToMongoOtEtapa.length);
 
                 let arrResGuiados = [], valueArrayResGuiados = 0, arrResRevisionGuiados = [],
@@ -146,7 +146,7 @@
                                 <!-- Centrado Luz Corte data Activo-->
                                 <td class="text-center align-middle">
                                     <% if (largoArrayEtapa > 0) {
-
+                                        
                                         for (let i = 0; largoArrayEtapa > i; i++) {
                                             if (pathToMongoOtEtapa[i]) {
                                                 let largoArray = parseInt(largoArrayEtapa)
@@ -228,7 +228,7 @@
                                                 
                                                 pathToMongoOtEtapa[i].centradoLevas == 'sinDato' ? arrResCentradoLevas.push('S/D') : arrResCentradoLevas.push(pathToMongoOtEtapa[i].centradoLevas)
                                                 arrResRevisionCentradoLevas.push(pathToMongoOtEtapa[i].revisionCentradoLevas)
-                                            
+                                                
                                                 arrResCreadorCentradoLevas.push(pathToMongoOtEtapa[i].creator[0].username)
                                                 arrResModificadorCentradoLevas.push(pathToMongoOtEtapa[i].modificator[0].username)
                                                 arrResFechaCentradoLevas.push(pathToMongoOtEtapa[i].timestamp)
@@ -236,7 +236,7 @@
                                             }
                                         }
                                         valueArrayResCentradoLevas = parseInt(arrResCentradoLevas.length-1)
-                                                
+                                        
                                         if (arrResCentradoLevas.length == 1 ) {
                                             siguienteDisabled = "disabled"
                                             anteriorDisabled = "disabled"
@@ -301,7 +301,7 @@
                                                 
                                                 pathToMongoOtEtapa[i].lthEtapaPrimera == 'sinDato' ? arrResLthEtapaPrimera.push('S/D') : arrResLthEtapaPrimera.push(pathToMongoOtEtapa[i].lthEtapaPrimera)
                                                 arrResRevisionLthEtapaPrimera.push(pathToMongoOtEtapa[i].revisionLthEtapaPrimera)
-                                            
+                                                
                                                 arrResCreadorLthEtapaPrimera.push(pathToMongoOtEtapa[i].creator[0].username)
                                                 arrResModificadorLthEtapaPrimera.push(pathToMongoOtEtapa[i].modificator[0].username)
                                                 arrResFechaLthEtapaPrimera.push(pathToMongoOtEtapa[i].timestamp)

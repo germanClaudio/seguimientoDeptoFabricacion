@@ -150,7 +150,7 @@ class AjustesController {
         const expires = cookie(req)
 
         try {
-            const proyecto = await this.ajustes.selectProjectByProjectId(id)
+            const proyecto = await this.projects.selectProjectByProjectId(id)
             if (!proyecto) {
                 catchError400(req, res, next)
             } 
@@ -211,35 +211,29 @@ class AjustesController {
         }
     }
 
-    //-------------------------------------------------------------
-    addInfoOtArmado = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
+    // 0-------------- infoArmado ---------------------------
+    addInfoArmado = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         const expires = cookie(req)
         
         try {
-            const clientId = req.body.clientIdHidden
-            const cliente = await this.clients.selectClientById(clientId)     
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            const clientId = req.body.clientIdHidden,
+                cliente = await this.clients.selectClientById(clientId)     
+            !cliente ? catchError401(req, res, next) : null
             
             const projectId = req.body.projectIdHidden
             let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
-            if (!proyecto) {
-                catchError401_1(req, res, next)
-            }
+            !proyecto ? catchError401_1(req, res, next) : null
 
-            const userId = userInfo.id
-            const userCreator = await this.users.getUserById(userId)
-            if (!userCreator) {
-                catchError401_3(req, res, next)
-            }
+            const userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
+            !userCreator ? catchError401_3(req, res, next) : null
             
-            const ociNumberK = parseInt(req.body.ociNumberK)
-            const otQuantity = parseInt(req.body.otQuantity)
-            const arrayOtKNumber = req.body.otNumberK.split(",")
-            const arrayOtNumberK = arrayOtKNumber.map(Number) 
+            const ociNumberK = parseInt(req.body.ociNumberK),
+                otQuantity = parseInt(req.body.otQuantity),
+                arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number) 
 
             let arrayOtNumber=[], arrayOtStatus=[],
                 arrayArmadoMaquina=[], arrayRevisionArmadoMaquina=[],
@@ -265,9 +259,9 @@ class AjustesController {
                 match ? match.array.push(req.body[key]) : null
             }
             
-            let arrayInfoAddedToOt = []
+            let arrayInfoAddedToOt = [], infoAddedToOt = {}
             for (let i=0; i<otQuantity; i++ ) {
-                var infoAddedToOt = {
+                infoAddedToOt = {
                     otStatus: arrayOtStatus[i],
                     otNumber: parseInt(arrayOtNumber[i]),
                     armadoMaquina: arrayArmadoMaquina[i] || "sinDato",
@@ -278,14 +272,14 @@ class AjustesController {
                     revisionLthArmado: parseInt(arrayRevisionLthArmado[i]) || 0,
                     armadoPrensa: arrayArmadoPrensa[i] || "sinDato",
                     revisionArmadoPrensa: parseInt(arrayRevisionArmadoPrensa[i]) || 0,
-                    timestamp: formatDate(),
                     creator: dataUserCreator(userCreator),
+                    timestamp: formatDate(),
                     modificator: dataUserModificatorEmpty(),
                     modifiedOn: "",
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
             }
-            console.log(arrayInfoAddedToOt)
+            // console.log(arrayInfoAddedToOt)
 
             const itemUpdated = await this.ajustes.addInfoOtArmado(
                 projectId,
@@ -295,16 +289,1263 @@ class AjustesController {
                 arrayInfoAddedToOt
             )
     
-            if (!itemUpdated) {
-                catchError400_3(req, res, next)
-            }
+            !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
-            if (!proyecto) {
-                catchError401_4(req, res, next)
-            }
+            !proyecto ? catchError401_4(req, res, next) : null
             
             data.slide = 0
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectAjusteSelected', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    // 1-------------- infoEtapaPrimera ---------------------------
+    addInfoEtapaPrimera = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+        
+        try {
+            const clientId = req.body.clientIdHidden,
+                cliente = await this.clients.selectClientById(clientId)     
+            !cliente ? catchError401(req, res, next) : null
+            
+            const projectId = req.body.projectIdHidden
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
+            !userCreator ? catchError401_3(req, res, next) : null
+            
+            const ociNumberK = parseInt(req.body.ociNumberK),
+                otQuantity = parseInt(req.body.otQuantity),
+                arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number) 
+
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayGuiados=[], arrayRevisionGuiados=[],
+                arrayCentradoLuzCorte=[], arrayRevisionCentradoLuzCorte=[],
+                arrayCentradoLevas=[], arrayRevisionCentradoLevas=[],
+                arrayLthEtapaPrimera=[], arrayRevisionLthEtapaPrimera=[]
+
+            const prefixes = [
+                { prefix: 'otNumberHidden', array: arrayOtNumber },
+                { prefix: 'otStatusHidden', array: arrayOtStatus },
+                { prefix: 'guiadosHidden', array: arrayGuiados },
+                { prefix: 'revisionGuiados', array: arrayRevisionGuiados },
+                { prefix: 'centradoLuzCorteHidden', array: arrayCentradoLuzCorte },
+                { prefix: 'revisionCentradoLuzCorte', array: arrayRevisionCentradoLuzCorte },
+                { prefix: 'centradoLevasHidden', array: arrayCentradoLevas },
+                { prefix: 'revisionCentradoLevas', array: arrayRevisionCentradoLevas },
+                { prefix: 'lthEtapaPrimeraHidden', array: arrayLthEtapaPrimera },
+                { prefix: 'revisionLthEtapaPrimera', array: arrayRevisionLthEtapaPrimera },
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayInfoAddedToOt = [], infoAddedToOt = {}
+            for (let i=0; i<otQuantity; i++ ) {
+                infoAddedToOt = {
+                    otStatus: arrayOtStatus[i],
+                    otNumber: parseInt(arrayOtNumber[i]),
+                    guiados: arrayGuiados[i] || "sinDato",
+                    revisionGuiados: parseInt(arrayRevisionGuiados[i]) || 0,
+                    centradoLuzCorte: arrayCentradoLuzCorte[i] || "sinDato",
+                    revisionCentradoLuzCorte: parseInt(arrayRevisionCentradoLuzCorte[i]) || 0,
+                    centradoLevas: arrayCentradoLevas[i] || "sinDato",
+                    revisionCentradoLevas: parseInt(arrayRevisionCentradoLevas[i]) || 0,
+                    lthEtapaPrimera: arrayLthEtapaPrimera[i] || "sinDato",
+                    revisionLthEtapaPrimera: parseInt(arrayRevisionLthEtapaPrimera[i]) || 0,
+                    creator: dataUserCreator(userCreator),
+                    timestamp: formatDate(),
+                    modificator: dataUserModificatorEmpty(),
+                    modifiedOn: "",
+                }
+                arrayInfoAddedToOt.push(infoAddedToOt)
+            }
+            // console.log(arrayInfoAddedToOt)
+
+            const itemUpdated = await this.ajustes.addInfoOtEtapaPrimera(
+                projectId,
+                otQuantity,
+                ociNumberK,
+                arrayOtNumberK,
+                arrayInfoAddedToOt
+            )
+    
+            !itemUpdated ? catchError400_3(req, res, next) : null
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_4(req, res, next) : null
+            
+            data.slide = 1
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectAjusteSelected', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    // 2-------------- infoEtapaSegundaPrimera ---------------------------
+    addInfoEtapaSegundaPrimera = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+        
+        try {
+            const clientId = req.body.clientIdHidden,
+                cliente = await this.clients.selectClientById(clientId)     
+            !cliente ? catchError401(req, res, next) : null
+            
+            const projectId = req.body.projectIdHidden
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
+            !userCreator ? catchError401_3(req, res, next) : null
+            
+            const ociNumberK = parseInt(req.body.ociNumberK),
+                otQuantity = parseInt(req.body.otQuantity),
+                arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number) 
+
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayAzulado=[], arrayRevisionAzulado=[],
+                arrayTachoAjuste=[], arrayRevisionTachoAjuste=[],
+                arrayAjusteFondo=[], arrayRevisionAjusteFondo=[]
+
+            const prefixes = [
+                { prefix: 'otNumberHidden', array: arrayOtNumber },
+                { prefix: 'otStatusHidden', array: arrayOtStatus },
+                { prefix: 'azuladoHidden', array: arrayAzulado },
+                { prefix: 'revisionAzulado', array: arrayRevisionAzulado },
+                { prefix: 'tachoAjusteHidden', array: arrayTachoAjuste },
+                { prefix: 'revisionTachoAjuste', array: arrayRevisionTachoAjuste },
+                { prefix: 'ajusteFondoHidden', array: arrayAjusteFondo },
+                { prefix: 'revisionAjusteFondo', array: arrayRevisionAjusteFondo }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayInfoAddedToOt = [], infoAddedToOt = {}
+            for (let i=0; i<otQuantity; i++ ) {
+                infoAddedToOt = {
+                    otStatus: arrayOtStatus[i],
+                    otNumber: parseInt(arrayOtNumber[i]),
+                    azulado: arrayAzulado[i] || "sinDato",
+                    revisionAzulado: parseInt(arrayRevisionAzulado[i]) || 0,
+                    tachoAjuste: arrayTachoAjuste[i] || "sinDato",
+                    revisionTachoAjuste: parseInt(arrayRevisionTachoAjuste[i]) || 0,
+                    ajusteFondo: arrayAjusteFondo[i] || "sinDato",
+                    revisionAjusteFondo: parseInt(arrayRevisionAjusteFondo[i]) || 0,
+                    creator: dataUserCreator(userCreator),
+                    timestamp: formatDate(),
+                    modificator: dataUserModificatorEmpty(),
+                    modifiedOn: "",
+                }
+                arrayInfoAddedToOt.push(infoAddedToOt)
+            }
+            // console.log(arrayInfoAddedToOt)
+
+            const itemUpdated = await this.ajustes.addInfoOtEtapaSegundaPrimera(
+                projectId,
+                otQuantity,
+                ociNumberK,
+                arrayOtNumberK,
+                arrayInfoAddedToOt
+            )
+    
+            !itemUpdated ? catchError400_3(req, res, next) : null
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_4(req, res, next) : null
+            
+            data.slide = 2
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectAjusteSelected', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    // 3-------------- infoEtapaSegundaSegunda ---------------------------
+    addInfoEtapaSegundaSegunda = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+        
+        try {
+            const clientId = req.body.clientIdHidden,
+                cliente = await this.clients.selectClientById(clientId)     
+            !cliente ? catchError401(req, res, next) : null
+            
+            const projectId = req.body.projectIdHidden
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
+            !userCreator ? catchError401_3(req, res, next) : null
+            
+            const ociNumberK = parseInt(req.body.ociNumberK),
+                otQuantity = parseInt(req.body.otQuantity),
+                arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number) 
+
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayAzuladoAceros=[], arrayRevisionAzuladoAceros=[],
+                arrayLthEtapaSegunda=[], arrayRevisionLthEtapaSegunda=[]
+
+            const prefixes = [
+                { prefix: 'otNumberHidden', array: arrayOtNumber },
+                { prefix: 'otStatusHidden', array: arrayOtStatus },
+                { prefix: 'azuladoAcerosHidden', array: arrayAzuladoAceros },
+                { prefix: 'revisionAzuladoAceros', array: arrayRevisionAzuladoAceros },
+                { prefix: 'lthEtapaSegundaHidden', array: arrayLthEtapaSegunda },
+                { prefix: 'revisionLthEtapaSegunda', array: arrayRevisionLthEtapaSegunda }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayInfoAddedToOt = [], infoAddedToOt = {}
+            for (let i=0; i<otQuantity; i++ ) {
+                infoAddedToOt = {
+                    otStatus: arrayOtStatus[i],
+                    otNumber: parseInt(arrayOtNumber[i]),
+                    azuladoAceros: arrayAzuladoAceros[i] || "sinDato",
+                    revisionAzuladoAceros: parseInt(arrayRevisionAzuladoAceros[i]) || 0,
+                    lthEtapaSegunda: arrayLthEtapaSegunda[i] || "sinDato",
+                    revisionLthEtapaSegunda: parseInt(arrayRevisionLthEtapaSegunda[i]) || 0,
+                    creator: dataUserCreator(userCreator),
+                    timestamp: formatDate(),
+                    modificator: dataUserModificatorEmpty(),
+                    modifiedOn: "",
+                }
+                arrayInfoAddedToOt.push(infoAddedToOt)
+            }
+            // console.log(arrayInfoAddedToOt)
+
+            const itemUpdated = await this.ajustes.addInfoOtEtapaSegundaSegunda(
+                projectId,
+                otQuantity,
+                ociNumberK,
+                arrayOtNumberK,
+                arrayInfoAddedToOt
+            )
+            
+            !itemUpdated ? catchError400_3(req, res, next) : null
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_4(req, res, next) : null
+            
+            data.slide = 3
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectAjusteSelected', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    // 4-------------- infoAnalisisCritico ---------------------------
+    addInfoAnalisisCritico = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+        
+        try {
+            const clientId = req.body.clientIdHidden,
+                cliente = await this.clients.selectClientById(clientId)     
+            !cliente ? catchError401(req, res, next) : null
+            
+            const projectId = req.body.projectIdHidden
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
+            !userCreator ? catchError401_3(req, res, next) : null
+            
+            const ociNumberK = parseInt(req.body.ociNumberK),
+                otQuantity = parseInt(req.body.otQuantity),
+                arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number) 
+
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayEstatico=[], arrayRevisionEstatico=[],
+                arrayDinamico=[], arrayRevisionDinamico=[]
+
+            const prefixes = [
+                { prefix: 'otNumberHidden', array: arrayOtNumber },
+                { prefix: 'otStatusHidden', array: arrayOtStatus },
+                { prefix: 'estaticoHidden', array: arrayEstatico },
+                { prefix: 'revisionEstatico', array: arrayRevisionEstatico },
+                { prefix: 'dinamicoHidden', array: arrayDinamico },
+                { prefix: 'revisionDinamico', array: arrayRevisionDinamico }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayInfoAddedToOt = [], infoAddedToOt = {}
+            for (let i=0; i<otQuantity; i++ ) {
+                infoAddedToOt = {
+                    otStatus: arrayOtStatus[i],
+                    otNumber: parseInt(arrayOtNumber[i]),
+                    estatico: arrayEstatico[i] || "sinDato",
+                    revisionEstatico: parseInt(arrayRevisionEstatico[i]) || 0,
+                    dinamico: arrayDinamico[i] || "sinDato",
+                    revisionDinamico: parseInt(arrayRevisionDinamico[i]) || 0,
+                    creator: dataUserCreator(userCreator),
+                    timestamp: formatDate(),
+                    modificator: dataUserModificatorEmpty(),
+                    modifiedOn: "",
+                }
+                arrayInfoAddedToOt.push(infoAddedToOt)
+            }
+            // console.log(arrayInfoAddedToOt)
+
+            const itemUpdated = await this.ajustes.addInfoOtAnalisisCritico(
+                projectId,
+                otQuantity,
+                ociNumberK,
+                arrayOtNumberK,
+                arrayInfoAddedToOt
+            )
+            
+            !itemUpdated ? catchError400_3(req, res, next) : null
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_4(req, res, next) : null
+            
+            data.slide = 4
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectAjusteSelected', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    // 5-------------- infoEtapaTerceraPrimera ---------------------------
+    addInfoEtapaTerceraPrimera = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+        
+        try {
+            const clientId = req.body.clientIdHidden,
+                cliente = await this.clients.selectClientById(clientId)     
+            !cliente ? catchError401(req, res, next) : null
+            
+            const projectId = req.body.projectIdHidden
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
+            !userCreator ? catchError401_3(req, res, next) : null
+            
+            const ociNumberK = parseInt(req.body.ociNumberK),
+                otQuantity = parseInt(req.body.otQuantity),
+                arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number) 
+
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayLocalizacionFuncional=[], arrayRevisionLocalizacionFuncional=[],
+                arrayObtencionPieza=[], arrayRevisionObtencionPieza=[],
+                arrayAzuladoFuncional=[], arrayRevisionAzuladoFuncional=[]
+
+            const prefixes = [
+                { prefix: 'otNumberHidden', array: arrayOtNumber },
+                { prefix: 'otStatusHidden', array: arrayOtStatus },
+                { prefix: 'localizacionFuncionalHidden', array: arrayLocalizacionFuncional },
+                { prefix: 'revisionLocalizacionFuncional', array: arrayRevisionLocalizacionFuncional },
+                { prefix: 'obtencionPiezaHidden', array: arrayObtencionPieza },
+                { prefix: 'revisionObtencionPieza', array: arrayRevisionObtencionPieza },
+                { prefix: 'azuladoFuncionalHidden', array: arrayAzuladoFuncional },
+                { prefix: 'revisionAzuladoFuncional', array: arrayRevisionAzuladoFuncional }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayInfoAddedToOt = [], infoAddedToOt = {}
+            for (let i=0; i<otQuantity; i++ ) {
+                infoAddedToOt = {
+                    otStatus: arrayOtStatus[i],
+                    otNumber: parseInt(arrayOtNumber[i]),
+                    localizacionFuncional: arrayLocalizacionFuncional[i] || "sinDato",
+                    revisionLocalizacionFuncional: parseInt(arrayRevisionLocalizacionFuncional[i]) || 0,
+                    obtencionPieza: arrayObtencionPieza[i] || "sinDato",
+                    revisionObtencionPieza: parseInt(arrayRevisionObtencionPieza[i]) || 0,
+                    azuladoFuncional: arrayAzuladoFuncional[i] || "sinDato",
+                    revisionAzuladoFuncional: parseInt(arrayRevisionAzuladoFuncional[i]) || 0,
+                    creator: dataUserCreator(userCreator),
+                    timestamp: formatDate(),
+                    modificator: dataUserModificatorEmpty(),
+                    modifiedOn: "",
+                }
+                arrayInfoAddedToOt.push(infoAddedToOt)
+            }
+            // console.log(arrayInfoAddedToOt)
+
+            const itemUpdated = await this.ajustes.addInfoOtEtapaTerceraPrimera(
+                projectId,
+                otQuantity,
+                ociNumberK,
+                arrayOtNumberK,
+                arrayInfoAddedToOt
+            )
+    
+            !itemUpdated ? catchError400_3(req, res, next) : null
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_4(req, res, next) : null
+            
+            data.slide = 5
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectAjusteSelected', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    // 6-------------- infoEtapaTerceraSegunda ---------------------------
+    addInfoEtapaTerceraSegunda = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+        
+        try {
+            const clientId = req.body.clientIdHidden,
+                cliente = await this.clients.selectClientById(clientId)     
+            !cliente ? catchError401(req, res, next) : null
+            
+            const projectId = req.body.projectIdHidden
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
+            !userCreator ? catchError401_3(req, res, next) : null
+            
+            const ociNumberK = parseInt(req.body.ociNumberK),
+                otQuantity = parseInt(req.body.otQuantity),
+                arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number) 
+
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayFuncionalCompleta=[], arrayRevisionFuncionalCompleta=[],
+                arrayLthEtapaTercera=[], arrayRevisionLthEtapaTercera=[],
+                arrayLiberarPiezaMetrologia=[], arrayRevisionLiberarPiezaMetrologia=[]
+
+            const prefixes = [
+                { prefix: 'otNumberHidden', array: arrayOtNumber },
+                { prefix: 'otStatusHidden', array: arrayOtStatus },
+                { prefix: 'funcionalCompletaHidden', array: arrayFuncionalCompleta },
+                { prefix: 'revisionFuncionalCompleta', array: arrayRevisionFuncionalCompleta },
+                { prefix: 'lthEtapaTerceraHidden', array: arrayLthEtapaTercera },
+                { prefix: 'revisionLthEtapaTercera', array: arrayRevisionLthEtapaTercera },
+                { prefix: 'liberarPiezaMetrologiaHidden', array: arrayLiberarPiezaMetrologia },
+                { prefix: 'revisionLiberarPiezaMetrologia', array: arrayRevisionLiberarPiezaMetrologia }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayInfoAddedToOt = [], infoAddedToOt = {}
+            for (let i=0; i<otQuantity; i++ ) {
+                infoAddedToOt = {
+                    otStatus: arrayOtStatus[i],
+                    otNumber: parseInt(arrayOtNumber[i]),
+                    funcionalCompleta: arrayFuncionalCompleta[i] || "sinDato",
+                    revisionFuncionalCompleta: parseInt(arrayRevisionFuncionalCompleta[i]) || 0,
+                    lthEtapaTercera: arrayLthEtapaTercera[i] || "sinDato",
+                    revisionLthEtapaTercera: parseInt(arrayRevisionLthEtapaTercera[i]) || 0,
+                    liberarPiezaMetrologia: arrayLiberarPiezaMetrologia[i] || "sinDato",
+                    revisionLiberarPiezaMetrologia: parseInt(arrayRevisionLiberarPiezaMetrologia[i]) || 0,
+                    creator: dataUserCreator(userCreator),
+                    timestamp: formatDate(),
+                    modificator: dataUserModificatorEmpty(),
+                    modifiedOn: "",
+                }
+                arrayInfoAddedToOt.push(infoAddedToOt)
+            }
+            // console.log(arrayInfoAddedToOt)
+
+            const itemUpdated = await this.ajustes.addInfoOtEtapaTerceraSegunda(
+                projectId,
+                otQuantity,
+                ociNumberK,
+                arrayOtNumberK,
+                arrayInfoAddedToOt
+            )
+    
+            !itemUpdated ? catchError400_3(req, res, next) : null
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_4(req, res, next) : null
+            
+            data.slide = 6
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectAjusteSelected', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    // 7-------------- infoCicloCorreccionPrimera ---------------------------
+    addInfoCicloCorreccionPrimera = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+        
+        try {
+            const clientId = req.body.clientIdHidden,
+                cliente = await this.clients.selectClientById(clientId)     
+            !cliente ? catchError401(req, res, next) : null
+            
+            const projectId = req.body.projectIdHidden
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
+            !userCreator ? catchError401_3(req, res, next) : null
+            
+            const ociNumberK = parseInt(req.body.ociNumberK),
+                otQuantity = parseInt(req.body.otQuantity),
+                arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number) 
+
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayPiezaMedidaReunionPrimera=[], arrayRevisionPiezaMedidaReunionPrimera=[],
+                arrayMaquinaPrimera=[], arrayRevisionMaquinaPrimera=[],
+                arrayAjustePrimera=[], arrayRevisionAjustePrimera=[]
+
+            const prefixes = [
+                { prefix: 'otNumberHidden', array: arrayOtNumber },
+                { prefix: 'otStatusHidden', array: arrayOtStatus },
+                { prefix: 'piezaMedidaReunionPrimeraHidden', array: arrayPiezaMedidaReunionPrimera },
+                { prefix: 'revisionPiezaMedidaReunionPrimera', array: arrayRevisionPiezaMedidaReunionPrimera },
+                { prefix: 'maquinaPrimeraHidden', array: arrayMaquinaPrimera },
+                { prefix: 'revisionMaquinaPrimera', array: arrayRevisionMaquinaPrimera },
+                { prefix: 'ajustePrimeraHidden', array: arrayAjustePrimera },
+                { prefix: 'revisionAjustePrimera', array: arrayRevisionAjustePrimera }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayInfoAddedToOt = [], infoAddedToOt = {}
+            for (let i=0; i<otQuantity; i++ ) {
+                infoAddedToOt = {
+                    otStatus: arrayOtStatus[i],
+                    otNumber: parseInt(arrayOtNumber[i]),
+                    piezaMedidaReunionPrimera: arrayPiezaMedidaReunionPrimera[i] || "sinDato",
+                    revisionPiezaMedidaReunionPrimera: parseInt(arrayRevisionPiezaMedidaReunionPrimera[i]) || 0,
+                    maquinaPrimera: arrayMaquinaPrimera[i] || "sinDato",
+                    revisionMaquinaPrimera: parseInt(arrayRevisionMaquinaPrimera[i]) || 0,
+                    ajustePrimera: arrayAjustePrimera[i] || "sinDato",
+                    revisionAjustePrimera: parseInt(arrayRevisionAjustePrimera[i]) || 0,
+                    creator: dataUserCreator(userCreator),
+                    timestamp: formatDate(),
+                    modificator: dataUserModificatorEmpty(),
+                    modifiedOn: "",
+                }
+                arrayInfoAddedToOt.push(infoAddedToOt)
+            }
+            // console.log(arrayInfoAddedToOt)
+
+            const itemUpdated = await this.ajustes.addInfoOtCicloCorreccionPrimera(
+                projectId,
+                otQuantity,
+                ociNumberK,
+                arrayOtNumberK,
+                arrayInfoAddedToOt
+            )
+    
+            !itemUpdated ? catchError400_3(req, res, next) : null
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_4(req, res, next) : null
+            
+            data.slide = 7
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectAjusteSelected', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    // 8-------------- infoCicloCorreccionSegunda ---------------------------
+    addInfoCicloCorreccionSegunda = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+        
+        try {
+            const clientId = req.body.clientIdHidden,
+                cliente = await this.clients.selectClientById(clientId)     
+            !cliente ? catchError401(req, res, next) : null
+            
+            const projectId = req.body.projectIdHidden
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
+            !userCreator ? catchError401_3(req, res, next) : null
+            
+            const ociNumberK = parseInt(req.body.ociNumberK),
+                otQuantity = parseInt(req.body.otQuantity),
+                arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number) 
+
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayPiezaMedidaReunionSegunda=[], arrayRevisionPiezaMedidaReunionSegunda=[],
+                arrayMaquinaSegunda=[], arrayRevisionMaquinaSegunda=[],
+                arrayAjusteSegunda=[], arrayRevisionAjusteSegunda=[]
+
+            const prefixes = [
+                { prefix: 'otNumberHidden', array: arrayOtNumber },
+                { prefix: 'otStatusHidden', array: arrayOtStatus },
+                { prefix: 'piezaMedidaReunionSegundaHidden', array: arrayPiezaMedidaReunionSegunda },
+                { prefix: 'revisionPiezaMedidaReunionSegunda', array: arrayRevisionPiezaMedidaReunionSegunda },
+                { prefix: 'maquinaSegundaHidden', array: arrayMaquinaSegunda },
+                { prefix: 'revisionMaquinaSegunda', array: arrayRevisionMaquinaSegunda },
+                { prefix: 'ajusteSegundaHidden', array: arrayAjusteSegunda },
+                { prefix: 'revisionAjusteSegunda', array: arrayRevisionAjusteSegunda }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayInfoAddedToOt = [], infoAddedToOt = {}
+            for (let i=0; i<otQuantity; i++ ) {
+                infoAddedToOt = {
+                    otStatus: arrayOtStatus[i],
+                    otNumber: parseInt(arrayOtNumber[i]),
+                    piezaMedidaReunionSegunda: arrayPiezaMedidaReunionSegunda[i] || "sinDato",
+                    revisionPiezaMedidaReunionSegunda: parseInt(arrayRevisionPiezaMedidaReunionSegunda[i]) || 0,
+                    maquinaSegunda: arrayMaquinaSegunda[i] || "sinDato",
+                    revisionMaquinaSegunda: parseInt(arrayRevisionMaquinaSegunda[i]) || 0,
+                    ajusteSegunda: arrayAjusteSegunda[i] || "sinDato",
+                    revisionAjusteSegunda: parseInt(arrayRevisionAjusteSegunda[i]) || 0,
+                    creator: dataUserCreator(userCreator),
+                    timestamp: formatDate(),
+                    modificator: dataUserModificatorEmpty(),
+                    modifiedOn: "",
+                }
+                arrayInfoAddedToOt.push(infoAddedToOt)
+            }
+            // console.log(arrayInfoAddedToOt)
+
+            const itemUpdated = await this.ajustes.addInfoOtCicloCorreccionSegunda(
+                projectId,
+                otQuantity,
+                ociNumberK,
+                arrayOtNumberK,
+                arrayInfoAddedToOt
+            )
+    
+            !itemUpdated ? catchError400_3(req, res, next) : null
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_4(req, res, next) : null
+            
+            data.slide = 8
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectAjusteSelected', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    // 9-------------- infoCicloCorreccionTercera ---------------------------
+    addInfoCicloCorreccionTercera = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+        
+        try {
+            const clientId = req.body.clientIdHidden,
+                cliente = await this.clients.selectClientById(clientId)     
+            !cliente ? catchError401(req, res, next) : null
+            
+            const projectId = req.body.projectIdHidden
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
+            !userCreator ? catchError401_3(req, res, next) : null
+            
+            const ociNumberK = parseInt(req.body.ociNumberK),
+                otQuantity = parseInt(req.body.otQuantity),
+                arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number) 
+
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayPiezaMedidaReunionTercera=[], arrayRevisionPiezaMedidaReunionTercera=[],
+                arrayMaquinaTercera=[], arrayRevisionMaquinaTercera=[],
+                arrayAjusteTercera=[], arrayRevisionAjusteTercera=[]
+
+            const prefixes = [
+                { prefix: 'otNumberHidden', array: arrayOtNumber },
+                { prefix: 'otStatusHidden', array: arrayOtStatus },
+                { prefix: 'piezaMedidaReunionTerceraHidden', array: arrayPiezaMedidaReunionTercera },
+                { prefix: 'revisionPiezaMedidaReunionTercera', array: arrayRevisionPiezaMedidaReunionTercera },
+                { prefix: 'maquinaTerceraHidden', array: arrayMaquinaTercera },
+                { prefix: 'revisionMaquinaTercera', array: arrayRevisionMaquinaTercera },
+                { prefix: 'ajusteTerceraHidden', array: arrayAjusteTercera },
+                { prefix: 'revisionAjusteTercera', array: arrayRevisionAjusteTercera }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayInfoAddedToOt = [], infoAddedToOt = {}
+            for (let i=0; i<otQuantity; i++ ) {
+                infoAddedToOt = {
+                    otStatus: arrayOtStatus[i],
+                    otNumber: parseInt(arrayOtNumber[i]),
+                    piezaMedidaReunionTercera: arrayPiezaMedidaReunionTercera[i] || "sinDato",
+                    revisionPiezaMedidaReunionTercera: parseInt(arrayRevisionPiezaMedidaReunionTercera[i]) || 0,
+                    maquinaTercera: arrayMaquinaTercera[i] || "sinDato",
+                    revisionMaquinaTercera: parseInt(arrayRevisionMaquinaTercera[i]) || 0,
+                    ajusteTercera: arrayAjusteTercera[i] || "sinDato",
+                    revisionAjusteTercera: parseInt(arrayRevisionAjusteTercera[i]) || 0,
+                    creator: dataUserCreator(userCreator),
+                    timestamp: formatDate(),
+                    modificator: dataUserModificatorEmpty(),
+                    modifiedOn: "",
+                }
+                arrayInfoAddedToOt.push(infoAddedToOt)
+            }
+            // console.log(arrayInfoAddedToOt)
+
+            const itemUpdated = await this.ajustes.addInfoOtCicloCorreccionTercera(
+                projectId,
+                otQuantity,
+                ociNumberK,
+                arrayOtNumberK,
+                arrayInfoAddedToOt
+            )
+    
+            !itemUpdated ? catchError400_3(req, res, next) : null
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_4(req, res, next) : null
+            
+            data.slide = 9
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectAjusteSelected', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    // 10------------- infoLiberacionBuyOffPrimera ---------------------------
+    addInfoLiberacionBuyOffPrimera = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+        
+        try {
+            const clientId = req.body.clientIdHidden,
+                cliente = await this.clients.selectClientById(clientId)     
+            !cliente ? catchError401(req, res, next) : null
+            
+            const projectId = req.body.projectIdHidden
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
+            !userCreator ? catchError401_3(req, res, next) : null
+            
+            const ociNumberK = parseInt(req.body.ociNumberK),
+                otQuantity = parseInt(req.body.otQuantity),
+                arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number) 
+
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayAzuladosFondoPieza=[], arrayRevisionAzuladosFondoPieza=[],
+                arrayRoces=[], arrayRevisionRoces=[],
+                arrayAzuladoGuias=[], arrayRevisionAzuladoGuias=[]
+
+            const prefixes = [
+                { prefix: 'otNumberHidden', array: arrayOtNumber },
+                { prefix: 'otStatusHidden', array: arrayOtStatus },
+                { prefix: 'azuladosFondoPiezaHidden', array: arrayAzuladosFondoPieza },
+                { prefix: 'revisionAzuladosFondoPieza', array: arrayRevisionAzuladosFondoPieza },
+                { prefix: 'rocesHidden', array: arrayRoces },
+                { prefix: 'revisionRoces', array: arrayRevisionRoces },
+                { prefix: 'azuladoGuiasHidden', array: arrayAzuladoGuias },
+                { prefix: 'revisionAzuladoGuias', array: arrayRevisionAzuladoGuias }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayInfoAddedToOt = [], infoAddedToOt = {}
+            for (let i=0; i<otQuantity; i++ ) {
+                infoAddedToOt = {
+                    otStatus: arrayOtStatus[i],
+                    otNumber: parseInt(arrayOtNumber[i]),
+                    azuladosFondoPieza: arrayAzuladosFondoPieza[i] || "sinDato",
+                    revisionAzuladosFondoPieza: parseInt(arrayRevisionAzuladosFondoPieza[i]) || 0,
+                    roces: arrayRoces[i] || "sinDato",
+                    revisionRoces: parseInt(arrayRevisionRoces[i]) || 0,
+                    azuladoGuias: arrayAzuladoGuias[i] || "sinDato",
+                    revisionAzuladoGuias: parseInt(arrayRevisionAzuladoGuias[i]) || 0,
+                    creator: dataUserCreator(userCreator),
+                    timestamp: formatDate(),
+                    modificator: dataUserModificatorEmpty(),
+                    modifiedOn: "",
+                }
+                arrayInfoAddedToOt.push(infoAddedToOt)
+            }
+            // console.log(arrayInfoAddedToOt)
+
+            const itemUpdated = await this.ajustes.addInfoOtLiberacionBuyOffPrimera(
+                projectId,
+                otQuantity,
+                ociNumberK,
+                arrayOtNumberK,
+                arrayInfoAddedToOt
+            )
+    
+            !itemUpdated ? catchError400_3(req, res, next) : null
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_4(req, res, next) : null
+            
+            data.slide = 10
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectAjusteSelected', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    // 11------------- infoLiberacionBuyOffSegunda ---------------------------
+    addInfoLiberacionBuyOffSegunda = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+        
+        try {
+            const clientId = req.body.clientIdHidden,
+                cliente = await this.clients.selectClientById(clientId)     
+            !cliente ? catchError401(req, res, next) : null
+            
+            const projectId = req.body.projectIdHidden
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
+            !userCreator ? catchError401_3(req, res, next) : null
+            
+            const ociNumberK = parseInt(req.body.ociNumberK),
+                otQuantity = parseInt(req.body.otQuantity),
+                arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number) 
+
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayRebabas=[], arrayRevisionRebabas=[],
+                arrayCaidasScrap=[], arrayRevisionCaidasScrap=[],
+                arrayAspecto=[], arrayRevisionAspecto=[]
+
+            const prefixes = [
+                { prefix: 'otNumberHidden', array: arrayOtNumber },
+                { prefix: 'otStatusHidden', array: arrayOtStatus },
+                { prefix: 'rebabasHidden', array: arrayRebabas },
+                { prefix: 'revisionRebabas', array: arrayRevisionRebabas },
+                { prefix: 'caidasScrapHidden', array: arrayCaidasScrap },
+                { prefix: 'revisionCaidasScrap', array: arrayRevisionCaidasScrap },
+                { prefix: 'aspectoHidden', array: arrayAspecto },
+                { prefix: 'revisionAspecto', array: arrayRevisionAspecto }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayInfoAddedToOt = [], infoAddedToOt = {}
+            for (let i=0; i<otQuantity; i++ ) {
+                infoAddedToOt = {
+                    otStatus: arrayOtStatus[i],
+                    otNumber: parseInt(arrayOtNumber[i]),
+                    rebabas: arrayRebabas[i] || "sinDato",
+                    revisionRebabas: parseInt(arrayRevisionRebabas[i]) || 0,
+                    caidasScrap: arrayCaidasScrap[i] || "sinDato",
+                    revisionCaidasScrap: parseInt(arrayRevisionCaidasScrap[i]) || 0,
+                    aspecto: arrayAspecto[i] || "sinDato",
+                    revisionAspecto: parseInt(arrayRevisionAspecto[i]) || 0,
+                    creator: dataUserCreator(userCreator),
+                    timestamp: formatDate(),
+                    modificator: dataUserModificatorEmpty(),
+                    modifiedOn: "",
+                }
+                arrayInfoAddedToOt.push(infoAddedToOt)
+            }
+            // console.log(arrayInfoAddedToOt)
+
+            const itemUpdated = await this.ajustes.addInfoOtLiberacionBuyOffSegunda(
+                projectId,
+                otQuantity,
+                ociNumberK,
+                arrayOtNumberK,
+                arrayInfoAddedToOt
+            )
+    
+            !itemUpdated ? catchError400_3(req, res, next) : null
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_4(req, res, next) : null
+            
+            data.slide = 11
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectAjusteSelected', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    // 12------------- info BuyOff ---------------------------
+    addInfoBuyOff = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+        
+        try {
+            const clientId = req.body.clientIdHidden,
+                cliente = await this.clients.selectClientById(clientId)     
+            !cliente ? catchError401(req, res, next) : null
+            
+            const projectId = req.body.projectIdHidden
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
+            !userCreator ? catchError401_3(req, res, next) : null
+            
+            const ociNumberK = parseInt(req.body.ociNumberK),
+                otQuantity = parseInt(req.body.otQuantity),
+                arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number) 
+
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayBuyOffEstatico=[], arrayRevisionBuyOffEstatico=[],
+                arrayBuyOffDinamico=[], arrayRevisionBuyOffDinamico=[]
+
+            const prefixes = [
+                { prefix: 'otNumberHidden', array: arrayOtNumber },
+                { prefix: 'otStatusHidden', array: arrayOtStatus },
+                { prefix: 'buyOffEstaticoHidden', array: arrayBuyOffEstatico },
+                { prefix: 'revisionBuyOffEstatico', array: arrayRevisionBuyOffEstatico },
+                { prefix: 'buyOffDinamicoHidden', array: arrayBuyOffDinamico },
+                { prefix: 'revisionBuyOffDinamico', array: arrayRevisionBuyOffDinamico }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayInfoAddedToOt = [], infoAddedToOt = {}
+            for (let i=0; i<otQuantity; i++ ) {
+                infoAddedToOt = {
+                    otStatus: arrayOtStatus[i],
+                    otNumber: parseInt(arrayOtNumber[i]),
+                    buyOffEstatico: arrayBuyOffEstatico[i] || "sinDato",
+                    revisionBuyOffEstatico: parseInt(arrayRevisionBuyOffEstatico[i]) || 0,
+                    buyOffDinamico: arrayBuyOffDinamico[i] || "sinDato",
+                    revisionBuyOffDinamico: parseInt(arrayRevisionBuyOffDinamico[i]) || 0,
+                    creator: dataUserCreator(userCreator),
+                    timestamp: formatDate(),
+                    modificator: dataUserModificatorEmpty(),
+                    modifiedOn: "",
+                }
+                arrayInfoAddedToOt.push(infoAddedToOt)
+            }
+            // console.log(arrayInfoAddedToOt)
+
+            const itemUpdated = await this.ajustes.addInfoOtBuyOff(
+                projectId,
+                otQuantity,
+                ociNumberK,
+                arrayOtNumberK,
+                arrayInfoAddedToOt
+            )
+    
+            !itemUpdated ? catchError400_3(req, res, next) : null
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_4(req, res, next) : null
+            
+            data.slide = 12
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectAjusteSelected', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 500)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    // 13------------- infoPendientesFinales ---------------------------
+    addInfoPendientesFinales = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+        
+        try {
+            const clientId = req.body.clientIdHidden,
+                cliente = await this.clients.selectClientById(clientId)     
+            !cliente ? catchError401(req, res, next) : null
+            
+            const projectId = req.body.projectIdHidden
+            let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
+            !userCreator ? catchError401_3(req, res, next) : null
+            
+            const ociNumberK = parseInt(req.body.ociNumberK),
+                otQuantity = parseInt(req.body.otQuantity),
+                arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number) 
+
+            let arrayOtNumber=[], arrayOtStatus=[],
+                arrayPendientesMaquina=[], arrayRevisionPendientesMaquina=[],
+                arrayPendientesAjuste=[], arrayRevisionPendientesAjuste=[],
+                arrayNotasAjuste=[], arrayRevisionNotasAjuste=[]
+
+            const prefixes = [
+                { prefix: 'otNumberHidden', array: arrayOtNumber },
+                { prefix: 'otStatusHidden', array: arrayOtStatus },
+                { prefix: 'pendientesMaquinaHidden', array: arrayPendientesMaquina },
+                { prefix: 'revisionPendientesMaquina', array: arrayRevisionPendientesMaquina },
+                { prefix: 'pendientesAjusteHidden', array: arrayPendientesAjuste },
+                { prefix: 'revisionPendientesAjuste', array: arrayRevisionPendientesAjuste },
+                { prefix: 'notasAjusteHidden', array: arrayNotasAjuste },
+                { prefix: 'revisionNotasAjuste', array: arrayRevisionNotasAjuste }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayInfoAddedToOt = [], infoAddedToOt = {}
+            for (let i=0; i<otQuantity; i++ ) {
+                infoAddedToOt = {
+                    otStatus: arrayOtStatus[i],
+                    otNumber: parseInt(arrayOtNumber[i]),
+                    pendientesMaquina: arrayPendientesMaquina[i] || "sinDato",
+                    revisionPendientesMaquina: parseInt(arrayRevisionPendientesMaquina[i]) || 0,
+                    pendientesAjuste: arrayPendientesAjuste[i] || "sinDato",
+                    revisionPendientesAjuste: parseInt(arrayRevisionPendientesAjuste[i]) || 0,
+                    notasAjuste: arrayNotasAjuste[i] || "sinDato",
+                    revisionNotasAjuste: parseInt(arrayRevisionNotasAjuste[i]) || 0,
+                    creator: dataUserCreator(userCreator),
+                    timestamp: formatDate(),
+                    modificator: dataUserModificatorEmpty(),
+                    modifiedOn: "",
+                }
+                arrayInfoAddedToOt.push(infoAddedToOt)
+            }
+            console.log(arrayInfoAddedToOt)
+
+            const itemUpdated = await this.ajustes.addInfoOtPendientesFinales(
+                projectId,
+                otQuantity,
+                ociNumberK,
+                arrayOtNumberK,
+                arrayInfoAddedToOt
+            )
+    
+            !itemUpdated ? catchError400_3(req, res, next) : null
+
+            proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto ? catchError401_4(req, res, next) : null
+            
+            data.slide = 13
             const csrfToken = csrfTokens.create(req.csrfSecret);
             setTimeout(() => {
                 return res.render('projectAjusteSelected', {

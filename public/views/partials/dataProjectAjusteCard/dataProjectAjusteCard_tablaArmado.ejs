@@ -42,16 +42,16 @@
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
-                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
+                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste[0];
 
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
-                resArmadoMaquina = 'S/D', resRevisionArmadoMaquina = 0,
-                resPatronizado = 'S/D', resRevisionPatronizado = 0,
-                resLthArmado = 'S/D', resRevisionLthArmado = 0,
-                resArmadoPrensa = 'S/D', resRevisionArmadoPrensa = 0;
+                resArmadoMaquina = 'sinDato', resRevisionArmadoMaquina = 0,
+                resPatronizado = 'sinDato', resRevisionPatronizado = 0,
+                resLthArmado = 'sinDato', resRevisionLthArmado = 0,
+                resArmadoPrensa = 'sinDato', resRevisionArmadoPrensa = 0;
 
             if (pathMongoOtProject[n].visible) {
-                let pathMongoOtArmado = pathMongoOtAjuste[0].otArmado || [],
+                let pathMongoOtArmado = pathMongoOtAjuste.otInfoArmado || [],
                     largoArrayArmado = parseInt(pathMongoOtArmado.length);
 
                 let arrResArmadoMaquina = [], arrResRevisionArmadoMaquina = [], valueArrayResArmadoMaquina = 0,
@@ -71,17 +71,17 @@
                     <tr name="rowSelected<%=k%>_<%=n%>" class="border-bottom" style="height: 7vh;">
                         <% for (let q = 0; totalColDataOtArmado > q; q++) {
                             if (q==0) { %>
-                                <!-- Armado Maquina data Activo--> 
+                                <!-- Armado Maquina data Activo --> 
                                 <td class="text-center align-middle">
                                     <% if (largoArrayArmado > 0) {
                                         
                                         for (let i = 0; largoArrayArmado > i; i++) {
                                             if (pathMongoOtArmado[i]) {
                                                 let largoArray = parseInt(largoArrayArmado)
-                                                resArmadoMaquina = pathMongoOtArmado[largoArray-1].armadoMaquina || 'S/D'
+                                                resArmadoMaquina = pathMongoOtArmado[largoArray-1].armadoMaquina == 'sinDato' ? "S/D" : pathMongoOtArmado[largoArray-1].armadoMaquina
                                                 resRevisionArmadoMaquina = parseInt(pathMongoOtArmado[largoArray-1].revisionArmadoMaquina) || 0
 
-                                                arrResArmadoMaquina.push(pathMongoOtArmado[i].armadoMaquina)
+                                                pathMongoOtArmado[i].armadoMaquina == 'sinDato' ? arrResArmadoMaquina.push("S/D") : arrResArmadoMaquina.push(pathMongoOtArmado[i].armadoMaquina)
                                                 arrResRevisionArmadoMaquina.push(pathMongoOtArmado[i].revisionArmadoMaquina)
 
                                                 arrResCreadorArmadoMaquina.push(pathMongoOtArmado[i].creator[0].username)
@@ -153,10 +153,10 @@
                                         for (let i = 0; largoArrayArmado > i; i++) {
                                             if (pathMongoOtArmado[i]) {
                                                 let largoArray = parseInt(largoArrayArmado)
-                                                resPatronizado = pathMongoOtArmado[largoArray-1].patronizado || 'S/D'
+                                                resPatronizado = pathMongoOtArmado[largoArray-1].patronizado == 'sinDato' ? "S/D" : pathMongoOtArmado[largoArray-1].patronizado
                                                 resRevisionPatronizado = parseInt(pathMongoOtArmado[largoArray-1].revisionPatronizado) || 0
-
-                                                arrResPatronizado.push(pathMongoOtArmado[i].patronizado)
+                                                
+                                                pathMongoOtArmado[i].patronizado == 'sinDato' ? arrResPatronizado.push("S/D") : arrResPatronizado.push(pathMongoOtArmado[i].patronizado)
                                                 arrResRevisionPatronizado.push(pathMongoOtArmado[i].revisionPatronizado)
 
                                                 arrResCreadorPatronizado.push(pathMongoOtArmado[i].creator[0].username)
@@ -228,10 +228,10 @@
                                         for (let i = 0; largoArrayArmado > i; i++) {
                                             if (pathMongoOtArmado[i]) {
                                                 let largoArray = parseInt(largoArrayArmado)
-                                                resLthArmado = pathMongoOtArmado[largoArray-1].lthArmado || 'S/D'
+                                                resLthArmado = pathMongoOtArmado[largoArray-1].lthArmado == 'sinDato' ? "S/D" : pathMongoOtArmado[largoArray-1].lthArmado
                                                 resRevisionLthArmado = parseInt(pathMongoOtArmado[largoArray-1].revisionLthArmado) || 0
-
-                                                arrResLthArmado.push(pathMongoOtArmado[i].lthArmado)
+                                                
+                                                pathMongoOtArmado[i].lthArmado == 'sinDato' ? arrResLthArmado.push("S/D") : arrResLthArmado.push(pathMongoOtArmado[i].lthArmado)
                                                 arrResRevisionLthArmado.push(pathMongoOtArmado[i].revisionLthArmado)
 
                                                 arrResCreadorLthArmado.push(pathMongoOtArmado[i].creator[0].username)
@@ -304,10 +304,10 @@
                                         for (let i = 0; largoArrayArmado > i; i++) {
                                             if (pathMongoOtArmado[i]) {
                                                 let largoArray = parseInt(largoArrayArmado)
-                                                resArmadoPrensa = pathMongoOtArmado[largoArray-1].armadoPrensa || 'S/D'
+                                                resArmadoPrensa = pathMongoOtArmado[largoArray-1].armadoPrensa == 'sinDato' ? "S/D" : pathMongoOtArmado[largoArray-1].armadoPrensa
                                                 resRevisionArmadoPrensa = parseInt(pathMongoOtArmado[largoArray-1].revisionArmadoPrensa) || 0
                                                 
-                                                arrResArmadoPrensa.push(pathMongoOtArmado[i].armadoPrensa)
+                                                pathMongoOtArmado[i].armadoPrensa == 'sinDato' ? arrResArmadoPrensa.push("S/D") : arrResArmadoPrensa.push(pathMongoOtArmado[i].armadoPrensa)
                                                 arrResRevisionArmadoPrensa.push(pathMongoOtArmado[i].revisionArmadoPrensa)
 
                                                 arrResCreadorArmadoPrensa.push(pathMongoOtArmado[i].creator[0].username)
@@ -386,10 +386,10 @@
 
                                             if (pathMongoOtArmado[i]) {
                                                 let largoArray = parseInt(largoArrayArmado)
-                                                resArmadoMaquina = pathMongoOtArmado[largoArray-1].armadoMaquina || 'S/D'
+                                                resArmadoMaquina = pathMongoOtArmado[largoArray-1].armadoMaquina == 'sinDato' ? "S/D" : pathMongoOtArmado[largoArray-1].armadoMaquina
                                                 resRevisionArmadoMaquina = parseInt(pathMongoOtArmado[largoArray-1].revisionArmadoMaquina) || 0
                                                 
-                                                arrResArmadoMaquina.push(pathToMongoDBOtArmado[i].armadoMaquina)
+                                                pathMongoOtArmado[i].armadoMaquina == 'sinDato' ? arrResArmadoMaquina.push("S/D") : arrResArmadoMaquina.push(pathMongoOtArmado[i].armadoMaquina)
                                                 arrResRevisionArmadoMaquina.push(pathToMongoDBOtArmado[i].revisionArmadoMaquina)
                                             }
                                         }
@@ -421,10 +421,10 @@
                                             
                                             if (pathMongoOtArmado[i]) {
                                                 let largoArray = parseInt(largoArrayArmado)
-                                                resPatronizado = pathMongoOtArmado[largoArray-1].patronizado || 'S/D'
+                                                resPatronizado = pathMongoOtArmado[largoArray-1].patronizado == 'sinDato' ? "S/D" : pathMongoOtArmado[largoArray-1].patronizado
                                                 resRevisionPatronizado = parseInt(pathMongoOtArmado[largoArray-1].revisionPatronizado) || 0
                                                 
-                                                arrResPatronizado.push(pathToMongoDBOtArmado[i].patronizado)
+                                                pathMongoOtArmado[i].patronizado == 'sinDato' ? arrResPatronizado.push("S/D") : arrResPatronizado.push(pathMongoOtArmado[i].patronizado)
                                                 arrResRevisionPatronizado.push(pathToMongoDBOtArmado[i].revisionPatronizado)
                                             }
                                         }
@@ -456,10 +456,10 @@
                                             
                                             if (pathMongoOtArmado[i]) {
                                                 let largoArray = parseInt(largoArrayArmado)
-                                                resLthArmado = pathMongoOtArmado[largoArray-1].lthArmado || 'S/D'
+                                                resLthArmado = pathMongoOtArmado[largoArray-1].lthArmado == 'sinDato' ? "S/D" : pathMongoOtArmado[largoArray-1].lthArmado
                                                 resRevisionLthArmado = parseInt(pathMongoOtArmado[largoArray-1].revisionLthArmado) || 0
                                                 
-                                                arrResLthArmado.push(pathToMongoDBOtArmado[i].lthArmado)
+                                                pathMongoOtArmado[i].lthArmado == 'sinDato' ? arrResLthArmado.push("S/D") : arrResLthArmado.push(pathMongoOtArmado[i].lthArmado)
                                                 arrResRevisionLthArmado.push(pathToMongoDBOtArmado[i].revisionLthArmado)
                                             }
                                         }
@@ -491,10 +491,10 @@
                                             
                                             if (pathMongoOtArmado[i]) {
                                                 let largoArray = parseInt(largoArrayArmado)
-                                                resArmadoPrensa = pathMongoOtArmado[largoArray-1].armadoPrensa || 'S/D'
+                                                resArmadoPrensa = pathMongoOtArmado[largoArray-1].armadoPrensa == 'sinDato' ? "S/D" : pathMongoOtArmado[largoArray-1].armadoPrensa
                                                 resRevisionArmadoPrensa = parseInt(pathMongoOtArmado[largoArray-1].revisionArmadoPrensa) || 0
                                                 
-                                                arrResArmadoPrensa.push(pathToMongoDBOtArmado[i].armadoPrensa)
+                                                pathMongoOtArmado[i].armadoPrensa == 'sinDato' ? arrResArmadoPrensa.push("S/D") : arrResArmadoPrensa.push(pathMongoOtArmado[i].armadoPrensa)
                                                 arrResRevisionArmadoPrensa.push(pathToMongoDBOtArmado[i].revisionArmadoPrensa)
                                             }
                                         }

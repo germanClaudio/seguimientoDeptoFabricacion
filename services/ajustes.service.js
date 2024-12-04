@@ -40,7 +40,7 @@ class AjustesService {
         return this.proyectos.selectOciByOciNumber(numberOci)
     }
 
-    // 1 add Info Armado
+    // 0 add Info Armado
     async addInfoOtArmado(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return this.ajustes.addInfoOtArmado(
             projectId,
@@ -50,7 +50,7 @@ class AjustesService {
             infoAddedToOt)
     }
 
-    // 2 add Info Etapa 1
+    // 1 add Info Etapa 1
     async addInfoOtEtapaPrimera(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return this.ajustes.addInfoOtEtapaPrimera(
             projectId,
@@ -60,7 +60,7 @@ class AjustesService {
             infoAddedToOt)
     }
 
-    // 3 add Info Etapa 2 1° Parte
+    // 2 add Info Etapa 2 1° Parte
     async addInfoOtEtapaSegundaPrimera(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return this.ajustes.addInfoOtEtapaSegundaPrimera(
             projectId,
@@ -70,7 +70,7 @@ class AjustesService {
             infoAddedToOt)
     }
 
-    // 4 add Info Etapa 2 2° Parte
+    // 3 add Info Etapa 2 2° Parte
     async addInfoOtEtapaSegundaSegunda(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return this.ajustes.addInfoOtEtapaSegundaSegunda(
             projectId,
@@ -80,7 +80,7 @@ class AjustesService {
             infoAddedToOt)
     }
 
-    // 5 add Info Analisis Critico
+    // 4 add Info Analisis Critico
     async addInfoOtAnalisisCritico(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return this.ajustes.addInfoOtAnalisisCritico(
             projectId,
@@ -90,7 +90,7 @@ class AjustesService {
             infoAddedToOt)
     }
 
-    // 6 add Info Etapa Tercera 1° Parte
+    // 5 add Info Etapa Tercera 1° Parte
     async addInfoOtEtapaTerceraPrimera(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return this.ajustes.addInfoOtEtapaTerceraPrimera(
             projectId,
@@ -100,7 +100,7 @@ class AjustesService {
             infoAddedToOt)
     }
 
-    // 7 add Info Etapa Tercera 2° Parte
+    // 6 add Info Etapa Tercera 2° Parte
     async addInfoOtEtapaTerceraSegunda(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return this.ajustes.addInfoOtEtapaTerceraSegunda(
             projectId,
@@ -110,7 +110,7 @@ class AjustesService {
             infoAddedToOt)
     }
 
-    // 8 add Info Ciclo Correccion 1
+    // 7 add Info Ciclo Correccion 1
     async addInfoOtCicloCorreccionPrimera(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return this.ajustes.addInfoOtCicloCorreccionPrimera(
             projectId,
@@ -120,7 +120,7 @@ class AjustesService {
             infoAddedToOt)
     }
 
-    // 9 add Info Ciclo Correccion 2
+    // 8 add Info Ciclo Correccion 2
     async addInfoOtCicloCorreccionSegunda(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return this.ajustes.addInfoOtCicloCorreccionSegunda(
             projectId,
@@ -130,7 +130,7 @@ class AjustesService {
             infoAddedToOt)
     }
 
-    // 10 add Info Ciclo Correccion 3
+    // 9 add Info Ciclo Correccion 3
     async addInfoOtCicloCorreccionTercera(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return this.ajustes.addInfoOtCicloCorreccionTercera(
             projectId,
@@ -140,9 +140,9 @@ class AjustesService {
             infoAddedToOt)
     }
 
-    // 11 add Info Liberacion BuyOff 1° Parte
+    // 10 add Info Liberacion BuyOff 1° Parte
     async addInfoOtLiberacionBuyOffPrimera(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
-        return this.ajustes.addInfoOtCLiberacionBuyOffPrimera(
+        return this.ajustes.addInfoOtLiberacionBuyOffPrimera(
             projectId,
             otQuantity,
             ociNumberK,
@@ -150,9 +150,9 @@ class AjustesService {
             infoAddedToOt)
     }
 
-    // 12 add Info Liberacion BuyOff 2° Parte
+    // 11 add Info Liberacion BuyOff 2° Parte
     async addInfoOtLiberacionBuyOffSegunda(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
-        return this.ajustes.addInfoOtCLiberacionBuyOffSegunda(
+        return this.ajustes.addInfoOtLiberacionBuyOffSegunda(
             projectId,
             otQuantity,
             ociNumberK,
@@ -160,7 +160,7 @@ class AjustesService {
             infoAddedToOt)
     }
 
-    // 13 add Info BuyOff
+    // 12 add Info BuyOff
     async addInfoOtBuyOff(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return this.ajustes.addInfoOtBuyOff(
             projectId,

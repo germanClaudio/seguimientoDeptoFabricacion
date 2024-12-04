@@ -40,7 +40,7 @@
 
         proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
             let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
-                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste;
+                pathMongoOtAjuste = pathMongoOtProject[n].otAjuste[0];
             
             let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
                 resAzulados = "S/D", resRevisionAzulados = 0,
@@ -48,7 +48,7 @@
                 resAjusteFondo = "S/D", resRevisionAjusteFondo = 0;
 
             if (pathMongoOtProject[n].visible) {
-                let pathToMongoOtEtapaSegundaPrimera = pathMongoOtAjuste[0].otEtapaSegundaPrimera || [],
+                let pathToMongoOtEtapaSegundaPrimera = pathMongoOtAjuste.otInfoEtapaSegundaPrimera || [],
                     largoArrayEtapaSegundaPrimera = parseInt(pathToMongoOtEtapaSegundaPrimera.length);
 
                 let arrResAzulados = [], valueArrayResAzulados = 0, arrResRevisionAzulados = [],
@@ -156,7 +156,7 @@
                                                     arrResFechaModTachoAjuste.push(pathToMongoOtEtapaSegundaPrimera[i].modifiedOn)
                                                 }
                                             }
-                                            valueArrayResTachoAjuste = parseInt(arrresTachoAjuste.length-1)
+                                            valueArrayResTachoAjuste = parseInt(arrResTachoAjuste.length-1)
                                                     
                                             if (arrResTachoAjuste.length == 1 ) {
                                                 anteriorDisabled = "disabled"
