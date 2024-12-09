@@ -5,7 +5,7 @@ const Maquinas = require('../../models/maquinas.models.js')
 const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000 }
 
 const formatDate = require('../../utils/formatDate.js')
-const util = require('util')
+// const util = require('util')
 const { switchFilterTools } = require('../../utils/switchFilterTools.js')
 
 
@@ -69,6 +69,24 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
         }
     }
 
+    async getToolByCode(model) {
+        if(model){
+            try {
+                const tool = await Maquinas.findOne( {model: `${model}`} )
+                if (tool) {
+                    return null
+                } else {
+                    return tool
+                }
+
+            } catch (error) {
+                console.error(error)
+            }
+        } else {
+            return new Error (`Error en modelo ${model}!`)
+        }
+    }
+
     async getToolByTyoe(type) {
         if(type){
             try {
@@ -109,6 +127,7 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
         let filter
         var designationAndCodeQuery = [{ 'designation': { $regex: `${query.queryTool}`, $options: 'i' } }, 
                                         { 'code': { $regex: `${query.queryTool}`, $options: 'i' } },
+                                        { 'model': { $regex: `${query.queryTool}`, $options: 'i' } },
                                     ]
 
         if (query.queryTool === '') {
@@ -192,11 +211,12 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
     }
 
     async getExistingTool(newTool) {
-        const codeIdNum = newTool.code
+        const codeIdNum = newTool.code,
+            modelIdNum = newTool.model
         
         if (newTool) {
             const tool = await Maquinas.findOne(
-                { $or: [ {designation: `${newTool.designation}`}, {code: codeIdNum} ] });
+                { $or: [ {designation: `${newTool.designation}`}, {code: codeIdNum}, {model: modelIdNum} ] });
             if (tool) {
                 return tool
             } else {
@@ -210,8 +230,9 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
     
     async createNewTool(newTool) {
         if (newTool) {
-            let designation = newTool.designation || "";
-            let code = newTool.code || "";    
+            let designation = newTool.designation || "",
+                code = newTool.code || "",
+                model = newTool.model || "";
 
             if (!designation || !code ) {
                 process.exit(1)
@@ -220,6 +241,7 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
                     const nuevaMaquina = {
                         designation: newTool.designation,
                         code: newTool.code,
+                        model: newTool.model,
                         type: newTool.type,
                         characteristics: newTool.characteristics,
                         imageTool: newTool.imageTool,
@@ -250,13 +272,14 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
         if (id && updatedTool && userModificator) {
             try {
                 const toolMongoDB = await Maquinas.findById( { _id: id } )
-                let imageUrl = '', designation = '', characteristics = '', code = '', type = ''
+                let imageUrl = '', designation = '', characteristics = '', code = '', model = '', type = ''
                 // console.log('updatedTool: ', updatedTool)
                 // console.log('toolMongoDB: ', toolMongoDB)
                 updatedTool.imageTool !== '' ? imageUrl = updatedTool.imageTool : imageUrl = toolMongoDB.imageTool
                 updatedTool.designation !== '' ? designation = updatedTool.designation : designation = toolMongoDB.designation
                 updatedTool.characteristics !== '' ? characteristics = updatedTool.characteristics : characteristics = toolMongoDB.characteristics
                 updatedTool.code !== '' ? code = updatedTool.code : code = toolMongoDB.code
+                updatedTool.model !== '' ? model = updatedTool.model : model = toolMongoDB.model
                 updatedTool.type !== '' ? type = updatedTool.type : code = toolMongoDB.type
                 
                 if(toolMongoDB) {
@@ -266,6 +289,7 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
                             $set: {
                                 designation: designation,
                                 code: code,
+                                model: model,
                                 type: type,
                                 characteristics: characteristics,
                                 imageTool: imageUrl,

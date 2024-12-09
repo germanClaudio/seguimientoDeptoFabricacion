@@ -50,34 +50,26 @@ socket.on('toolsAll', (arrTools, arrUsers) => {
     let index = arrUsers.findIndex(el=> el.name == name.trim())
     
     if(index !== -1) {
-        let user = arrUsers[index].admin
-        let userId = arrUsers[index]._id
+        let user = arrUsers[index].admin,
+            userId = arrUsers[index]._id
         user ? renderToolsAdmin(arrTools, userId) : renderToolsUser(arrTools)
     }   
 })
 
 // --------------- Render Admin ----------------------------
 const renderToolsAdmin = (arrTools) => {
-    const arrayTool = arrTools
-    const green = 'success'
-    const red = 'danger'
-    const blue = 'primary'
-    const grey = 'secondary'
-    const black = 'dark'
-    const white = 'light'
-    const active = 'Activa'
-    const inactive = 'Mantenimiento'
-    const info = 'info'
-    const cnc = 'CNC'
-    const press = 'Prensa'
-    let textColor
+    const arrayTool = arrTools,
+        green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', black = 'dark', white = 'light',
+        active = 'Activa', inactive = 'Mantenimiento', info = 'info',
+        cnc = 'CNC', press = 'Prensa'
+    let textColor,
+        html
     
-    let html
     if (arrTools.length>0) {
         html = arrTools.map((element) => {
-            let optionStatus = element.status ? green : red
-            let optionType 
-            let showType
+            let optionStatus = element.status ? green : red,
+                optionType,
+                showType
             if(element.type === 'cnc') {
                 optionType = info
                 showType = cnc
@@ -99,6 +91,7 @@ const renderToolsAdmin = (arrTools) => {
                 return (`<tr>
                             <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
                             <td class="text-center" id="codigo_${element._id}">${element.code}</td>
+                            <td class="text-center" id="model_${element._id}">${element.model}</td>
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
                             <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
                             <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageTool}' width="150px" height="150px"></td>
@@ -143,10 +136,10 @@ const renderToolsAdmin = (arrTools) => {
     document.getElementById('toolTable').style.display = 'block';
 
     // ---- mensaje confirmacion eliminar Usuario -----------
-    function messageDeleteTool(id, code, designation) {
+    function messageDeleteTool(id, code, model, designation) {
 
         const htmlForm = `
-                La maquina ${designation} - Codigo: ${code}, se eliminará completamente.<br>
+                La maquina ${designation} - Modelo: ${model} Codigo: ${code}, se eliminará completamente.<br>
                 Está seguro que desea continuar?<br>
                 <form id="formDeleteTool" action="/api/maquinas/delete/${id}" method="get">
                     <fieldset>
@@ -192,11 +185,12 @@ const renderToolsAdmin = (arrTools) => {
         if (btn.id) {
             btn.addEventListener("click", (event) => {
                 event.preventDefault()
-                const idTool = btn.id
-                const designation = document.getElementById(`designation_${idTool}`).innerText
-                const code = document.getElementById(`codigo_${idTool}`).innerText
+                const idTool = btn.id,
+                    designation = document.getElementById(`designation_${idTool}`).innerText,
+                    code = document.getElementById(`codigo_${idTool}`).innerText,
+                    model = document.getElementById(`modelo_${idTool}`).innerText
 
-                idTool && designation && code ? messageDeleteTool(idTool, designation, code) : null
+                idTool && designation && code && model ? messageDeleteTool(idTool, code, model, designation) : null
             })
         }
     })
@@ -204,26 +198,17 @@ const renderToolsAdmin = (arrTools) => {
 
 //----------------------- Render User -------------------------------
 const renderToolsUser = (arrTools) => {
-    const arrayTool = arrTools
-    const green = 'success'
-    const red = 'danger'
-    const blue = 'primary'
-    const grey = 'secondary'
-    const black = 'dark'
-    const white = 'light'
-    const active = 'Activa'
-    const inactive = 'Mantenimiento'
-    const info = 'info'
-    const cnc = 'CNC'
-    const press = 'Prensa'
-    let textColor
-    
-    let html
+    const arrayTool = arrTools,
+        green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', black = 'dark', white = 'light',
+        active = 'Activa', inactive = 'Mantenimiento', info = 'info', cnc = 'CNC', press = 'Prensa'
+    let textColor,
+        html
+
     if (arrTools.length>0) {
         html = arrTools.map((element) => {
-            let optionStatus = element.status ? green : red
-            let optionType 
-            let showType
+            let optionStatus = element.status ? green : red,
+                optionType,
+                showType
             if(element.type === 'cnc') {
                 optionType = info
                 showType = cnc
@@ -245,6 +230,7 @@ const renderToolsUser = (arrTools) => {
                 return (`<tr>
                             <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
                             <td class="text-center" id="codigo_${element._id}">${element.code}</td>
+                            <td class="text-center" id="modelo_${element._id}">${element.model}</td>
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
                             <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
                             <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageTool}' width="150px" height="150px"></td>

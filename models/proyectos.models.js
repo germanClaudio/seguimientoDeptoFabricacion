@@ -77,6 +77,10 @@ let duenoOciSchema = new Schema({
     },
     legajoId: {
         type: Number,
+    },
+    avatar: {
+        type: String,
+        maxlength: 1000
     }
 })
 

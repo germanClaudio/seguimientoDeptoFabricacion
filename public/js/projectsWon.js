@@ -85,19 +85,18 @@ const renderProjectsWonForAdmin = (arrayProjects) => {
     let arrayProyectos = arrayProjects
         
     const html = arrayProyectos.map((element) => {
-        let green = 'success'
-        let red = 'danger'
-        let text = "Cotizado"
-        let grey = 'secondary'
-        let yellow = 'warning'
-        let white = 'white'
-        let colorResult = grey
-        let colorLevel
-                        
+        let green = 'success',
+            red = 'danger',
+            text = "Cotizado",
+            grey = 'secondary',
+            yellow = 'warning',
+            white = 'white',
+            colorResult = grey,
+            colorLevel
+        
         // ----------- Loops de Array OCI ----------------
         function loopOci(j) {
-            let ociArr = []
-            let otVisibleLength = 0
+            let ociArr = [], otVisibleLength = 0
             for (let i=0; i < element.project[0].oci[j].otProject.length; i++) {
                 if (element.project[0].oci[j].otProject[i].visible) {
                     otVisibleLength++
@@ -150,8 +149,7 @@ const renderProjectsWonForAdmin = (arrayProjects) => {
 
         //************* Loop  Alias de Oci *******************
         function loopAliasOci(j) {
-            let ociAliasArr = []
-            let otVisibleLength = 0
+            let ociAliasArr = [], otVisibleLength = 0
             for (let i=0; i < element.project[0].oci[j].otProject.length; i++) {
                 if (element.project[0].oci[j].otProject[i].visible) {
                     otVisibleLength++
@@ -346,10 +344,10 @@ const renderProjectsWonForAdmin = (arrayProjects) => {
                         </td>
                         <td class="text-center border-start" data-column="fecha">${element.timestamp}</td>
                         <td class="text-center border-start">
-                            <div class="d-block align-items-center">
-                                <a href="/api/clientes/${element.client[0]._id}" class="btn btn-secondary btn-sm me-1 my-2" data-toggle="tooltip" data-placement="top" title="Ver proyecto"><i class="fa-solid fa-eye"></i></a>
-                                <a href="/api/programas/selectWonProjects/${element.project[0]._id}" class="btn btn-primary btn-sm mx-1 my-2" title="Editar datos de Programación"><i class="fa-solid fa-pencil"></i></a>
-                                <a href="/api/ajustes/selectAjusteProjects/${element.project[0]._id}" class="btn btn-info btn-sm ms-1 my-2" title="Editar datos de Ajuste"><i class="fa-solid fa-file-pen"></i></a>
+                            <div class="d-flex flex-column align-items-center">
+                                <a href="/api/clientes/${element.client[0]._id}" class="btn btn-secondary btn-sm my-2 shadow-lg" data-toggle="tooltip" data-placement="top" title="Ver proyecto"><i class="fa-solid fa-eye"></i></a>
+                                <a href="/api/programas/selectWonProjects/${element.project[0]._id}" class="btn btn-primary btn-sm my-2 shadow-lg" title="Editar datos de Programación"><i class="fa-solid fa-pencil"></i></a>
+                                <a href="/api/ajustes/selectAjusteProjects/${element.project[0]._id}" class="btn btn-warning btn-sm my-2 shadow-lg" title="Editar datos de Ajuste"><i class="fa-solid fa-file-pen"></i></a>
                             </div>
                         </td>
                     </tr>`)
@@ -654,10 +652,10 @@ const renderProjectsWonForUser = (arrayProjects) => {
 
                         <td class="text-center border-start" data-column="fecha">${element.timestamp}</td>
                         <td class="text-center border-start">
-                            <div class="d-block align-items-center">
-                                <a href="/api/proyectos/${element.client[0]._id}" class="btn btn-secondary btn-sm me-1" data-toggle="tooltip" data-placement="top" title="Ver proyecto"><i class="fa-solid fa-eye"></i></a>
-                                <a href="/api/programas/selectWonProjects/${element.project[0]._id}" class="btn btn-primary btn-sm ms-1" title="Editar datos de OCI/OT/Ítems"><i class="fa-solid fa-pencil"></i></a>
-                                <a href="/api/ajustes/selectAjusteProjects/${element.project[0]._id}" class="btn btn-info btn-sm ms-1 my-2" title="Editar datos de Ajuste"><i class="fa-solid fa-file-pen"></i></a>
+                            <div class="d-flex flex-column align-items-center">
+                                <a href="/api/proyectos/${element.client[0]._id}" class="btn btn-secondary btn-sm my-2 shadow-lg" data-toggle="tooltip" data-placement="top" title="Ver proyecto"><i class="fa-solid fa-eye"></i></a>
+                                <a href="/api/programas/selectWonProjects/${element.project[0]._id}" class="btn btn-primary btn-sm my-2 shadow-lg" title="Editar datos de OCI/OT/Ítems"><i class="fa-solid fa-pencil"></i></a>
+                                <a href="/api/ajustes/selectAjusteProjects/${element.project[0]._id}" class="btn btn-warning btn-sm my-2 shadow-lg" title="Editar datos de Ajuste"><i class="fa-solid fa-file-pen"></i></a>
                             </div>
                         </td>
                     </tr>`)

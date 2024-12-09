@@ -1,7 +1,7 @@
 <div class="card mx-auto" style="width: 80vw;">
     <div class="card card-body d-flex justify-content-center">
         <div class="form-group col-12 mx-auto w-100 border px-2 py-1 text-white" style="background-color: #a3aeb498;">
-            <form id="formNewDuenoOt" action="/api/proyectos/newOciOwner" method="post" name="formNewDuenoOt">
+            <form id="formNewDuenoOt" action="/api/ajustes/newOciOwner" method="post" name="formNewDuenoOt">
                 <fieldset>
                     <h5 id="tituloForm" class="d-block mx-auto my-2 text-center text-dark">
                         Asignar Dueño de pieza del Proyecto: <strong><%= proyecto[0].project[0].projectName %></strong>
@@ -38,11 +38,11 @@
                                         </div>
                                     </div>
                                 <% } %>
-                                <input class="form-input" type="hidden" name="ociNumberK" id="ociNumberK" value="">
-                                <input class="form-input" type="hidden" name="ociNumberHidden" id="ociNumberHidden" value="">
-                                <input class="form-control" type="hidden" name="projectIdHidden" id="projectIdHidden" value="<%= proyecto[0]._id %>">
-                                <input class="form-control" type="hidden" name="projectNameHidden" id="projectNameHidden" value="<%= proyecto[0].project[0].projectName %>">
-                                
+                                <input type="hidden" name="ociNumberK" id="ociNumberK" value="">
+                                <input type="hidden" name="ociNumberHidden" id="ociNumberHidden" value="">
+                                <input type="hidden" name="projectIdHidden" id="projectIdHidden" value="<%= proyecto[0]._id %>">
+                                <input type="hidden" name="projectNameHidden" id="projectNameHidden" value="<%= proyecto[0].project[0].projectName %>">
+
                             <% } else { %>
                                 <div class="col-6 col-md-4 d-flex flex-column align-items-center">
                                     <span class="badge rounded-pill bg-danger text-white"> No hay datos cargados aún</span>
@@ -67,8 +67,8 @@
                     </div>
                     <hr>
                     <% if ( proyecto.length > 0 ) { %>
-                        <input type="hidden" name="idHidden" id="idHidden" class="form-control" value="<%= userInfo.id %>" hidden>
-                        <input type="hidden" name="clientIdHidden" id="clientIdHidden" class="form-control" value="<%= proyecto[0].client[0]._id %>" hidden>
+                        <input type="hidden" name="idHidden" id="idHidden" value="<%= userInfo.id %>" hidden>
+                        <input type="hidden" name="clientIdHidden" id="clientIdHidden" value="<%= proyecto[0].client[0]._id %>" hidden>
                         <br>
                     <% } %>
                         <div class="d-flex justify-content-center mb-2">

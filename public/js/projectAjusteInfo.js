@@ -86,13 +86,16 @@ function extractNumbers(str) {
 }
 
 function cleanString(cadena) {
-    // Eliminar espacios en blanco al principio y al final
-    let cadenaSinEspaciosInit = cadena.trim()
-    // Eliminar etiquetas HTML
-    let cadenaSinEtiquetas = cadenaSinEspaciosInit.replace(/<[^>]*>/g, '')
-    // Eliminar espacios en blanco al principio y al final
-    let cadenaSinEspaciosEnd = cadenaSinEtiquetas.trim()
+    let cadenaSinEspaciosInit = cadena.trim(), // Eliminar espacios en blanco al principio y al final
+        cadenaSinEtiquetas = cadenaSinEspaciosInit.replace(/<[^>]*>/g, ''), // Eliminar etiquetas HTML
+        cadenaSinEspaciosEnd = cadenaSinEtiquetas.trim()
     return cadenaSinEspaciosEnd
+}
+
+function cleanStringOnly(cadena) {
+    let cadenaSinEspaciosInit = cadena.trim(), // Eliminar espacios en blanco al principio y al final
+        cadenaSinEtiquetas = cadenaSinEspaciosInit.replace(/<[^>]*>/g, '') // Eliminar etiquetas HTML
+    return cadenaSinEtiquetas
 }
 
 // Ocultar tablas cabeceras
@@ -328,23 +331,25 @@ radios.forEach(radio => {
 function messageUpdateDuenoOt(
     idProjectSelected,
     ociKNumber,
+    ociNumber,
     otNumber,
     otKNumber,
     opNumber,
     statusOt,
     otDescription,
-    otDueno,  
+    otDueno,
     imageOci,
     ociAlias,
     ociDescription,
     flag
 ) {
     
-    let numberKOci = parseInt(ociKNumber)
-    let numberKOt = parseInt(otKNumber)
-    let numberOt = parseInt(otNumber)
-    let numberOp = parseInt(opNumber)
-    let checked = 'checked'
+    let numberKOci = parseInt(ociKNumber),
+        numberOci = parseInt(ociNumber),
+        numberKOt = parseInt(otKNumber),
+        numberOt = parseInt(otNumber),
+        numberOp = parseInt(opNumber),
+        checked = 'checked'
     statusOt=='Activo' ? checked : checked = ''
     
     let initialFlag = false
@@ -361,7 +366,7 @@ function messageUpdateDuenoOt(
         timerProgressBar: false,
     })
 
-    let html = `<form id="formUpdateDuenoOt${idProjectSelected}" action="/api/proyectos/updateDuenoOt/${idProjectSelected}" method="post">
+    let html = `<form id="formUpdateDuenoOt${idProjectSelected}" action="/api/ajustes/updateDuenoOt/${idProjectSelected}" method="post">
                     <fieldset>
                         <div class="row justify-content-between mb-3 mx-1 px-1">
                             <div class="col-3">
@@ -396,23 +401,24 @@ function messageUpdateDuenoOt(
 
                         <div class="row justify-content-evenly mb-3 mx-1 px-1">
                             <div class="col-4">
-                                <label for="duenoOt" class="form-label d-flex justify-content-start ms-1">Seleccionar Dueño Pieza</label>                                
+                                <label for="duenoOciModal" class="form-label d-flex justify-content-start ms-1">Seleccionar Dueño Pieza</label>                                
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control position-relative" id="duenoOt" name="duenoOt" placeholder="Dueño de Pieza"
+                                    <input type="text" class="form-control position-relative" id="duenoOciModal" name="duenoOciModal" placeholder="Dueño de Pieza"
                                         aria-label="Dueño de Pieza" aria-describedby="searchDuenoOtUserModal" value="${otDueno}" disabled required>
                                     <button type="button" title="Buscar Dueño de Pieza" class="btn btn-sm btn-primary rounded-circle ms-1 mt-3 border shadow position-absolute top-0 start-100 translate-middle" id="searchDuenoOtUserModal">
                                         <i class="fa-solid fa-database"></i>
                                     </button>
                                 </div>
                             </div>
-                        </div> 
+                        </div>
                             <input type="hidden" name="ociKNumberHidden" id="ociKNumberHidden${numberKOci}" value="${numberKOci}">
+                            <input type="hidden" name="ociNumberHidden" id="ociNumberHidden${numberOci}" value="${numberOci}">
                             <input type="hidden" name="otKNumberHidden" id="otKNumberHidden${numberKOt}" value="${numberKOt}">
                             <input type="hidden" name="otNumberHidden" id="otNumberHidden${numberKOt}" value="${numberOt}">
                     </fieldset>
                 </form>`
 
-    if(idProjectSelected && numberOt) {
+    if(idProjectSelected && numberOci && numberOt && otDueno) {
         Swal.fire({
             title: `Actualizar Dueño Pieza ${ociDescription}`,
             position: 'center',
@@ -438,7 +444,7 @@ function messageUpdateDuenoOt(
                 async function cargarUsuarioDuenoOtModal(idPermiso) {
                     const permisos = {
                         'searchDuenoOtUserModal': {
-                            permisoUsuario: 'fabricacion',
+                            permisoUsuario: 'ajuste',
                             tituloSeguimiento: 'Dueño de Pieza',
                             inputTarget: 'duenoOt'
                         }
@@ -465,8 +471,8 @@ function messageUpdateDuenoOt(
                             throw new Error(`Error en la solicitud`);
                         }
 
-                        const users = await response.json();
-                        const arrayUsuariosEspecificos = [], arrayUsersAll = [];
+                        const users = await response.json(),
+                            arrayUsuariosEspecificos = [], arrayUsersAll = [];
                         
                         if (users && users.length > 0) {
                             users.forEach((user, i) => {
@@ -528,17 +534,17 @@ function messageUpdateDuenoOt(
                                         flag = true
                                     }
                                     // Al cerrar el segundo modal, reabrir el primer modal
-                                    messageUpdateDuenoOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDueno, imageOci, ociAlias, ociDescription, flag);
+                                    messageUpdateDuenoOt(idProjectSelected, ociKNumber, numberOci, otNumber, otKNumber, opNumber, statusOt, otDescription, otDueno, imageOci, ociAlias, ociDescription, flag);
 
                                 } else {
-                                    const titulo = 'Usuario no seleccionado'
-                                    const message = 'No ha seleccionado ningún usuario!'
-                                    const icon = 'warning'
+                                    const titulo = 'Usuario no seleccionado',
+                                        message = 'No ha seleccionado ningún usuario!',
+                                        icon = 'warning'
                                     messageAlertUser(titulo, message, icon)
                                     flag = false
                                     // Al cerrar el segundo modal, reabrir el primer modal
                                     setTimeout(() => {
-                                        messageUpdateDuenoOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDueno, imageOci, ociAlias, ociDescription, flag);
+                                        messageUpdateDuenoOt(idProjectSelected, ociKNumber, numberOci, otNumber, otKNumber, opNumber, statusOt, otDescription, otDueno, imageOci, ociAlias, ociDescription, flag);
                                     }, 300)
                                 }
                             });
@@ -548,9 +554,9 @@ function messageUpdateDuenoOt(
                         }
                 
                     } catch (error) {
-                        const titulo = 'Error'
-                        const message = `${error}`
-                        const icon = 'error'
+                        const titulo = 'Error',
+                            message = `${error}`,
+                            icon = 'error'
                         messageAlertUser(titulo, message, icon)
                     }
                 }
@@ -566,9 +572,9 @@ function messageUpdateDuenoOt(
                         await cargarUsuarioDuenoOtModal(idPermiso);
 
                     } catch (error) {
-                        const titulo = 'Error al cargar los usuarios'
-                        const message = error
-                        const icon = 'error'
+                        const titulo = 'Error al cargar los usuarios',
+                            message = error,
+                            icon = 'error'
                         messageAlertUser(titulo, message, icon)
                     }
                 });
@@ -582,14 +588,12 @@ function messageUpdateDuenoOt(
             
         }).then((result) => {
             if (result.isConfirmed) {
-                if (otNumber) {
-                    document.getElementById(`duenoOt`).removeAttribute('disabled')
-                }
+                otNumber && numberOci ? document.getElementById(`duenoOciModal`).removeAttribute('disabled') : null
                 document.getElementById(`formUpdateDuenoOt${idProjectSelected}`).submit()
                 setTimeout(() => {
                     Toast.fire({
                         icon: 'success',
-                        title: `El Dueño de pieza <b>${ociDescription}</b>, ${otDueno}, se asignó con éxito!`
+                        title: `El Dueño de pieza <b>${ociDescription}</b>, Leg. #${otDueno}, se asignó con éxito!`
                     })
                 }, 1000)
 
@@ -619,9 +623,8 @@ function messageUpdateDuenoOt(
     let inputsDeTexto = document.querySelectorAll('input[type="text"]')
     inputsDeTexto.forEach(function(input) {
         input.addEventListener('keydown', function(event) {
-            let key = event.key;
-            let forbiddenChars = /[#"$%?¡¿^/()=!'~`\\*{}\[\]<>@]/;
-
+            let key = event.key,
+                forbiddenChars = /[#"$%?¡¿^/()=!'~`\\*{}\[\]<>@]/;
             if (forbiddenChars.test(key)) {
                 event.preventDefault()
                 input.classList.add("border", "border-danger", "border-2")
@@ -689,30 +692,31 @@ arrayBtnUpdateDuenoOt.forEach(function(elemento) {
 
             // Eliminar el texto inicial de la cadena
             let idOtOci = elementoId.replace(regex, '')
-            const arrayOciOtSelected = idOtOci.split('_')
-            
-            const idProjectSelected = document.getElementById('projectIdHidden').value
-            const ociKNumber = parseInt(arrayOciOtSelected[0])
-            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent)
-            const otKNumber = parseInt(arrayOciOtSelected[1])       
-            const opNumber = parseInt(document.getElementById(`lastOpNumber${idOtOci}`).textContent)
-            const statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent
-            const otDescription = document.getElementById(`lastOpDescription${idOtOci}`).textContent
-            const otDueno =  document.getElementById(`ociDueno${ociKNumber}`).textContent
-            const ociImage = document.getElementById(`imageOciHeader${ociKNumber}`).src
-            const ociAlias =  document.getElementById(`ociAlias${parseInt(arrayOciOtSelected[0])}`).textContent
-            const ociDescription =  document.getElementById(`ociDescription${parseInt(arrayOciOtSelected[0])}`).textContent
+            const arrayOciOtSelected = idOtOci.split('_'),
+                idProjectSelected = document.getElementById('projectIdHidden').value,
+                ociKNumber = parseInt(arrayOciOtSelected[0]),
+                ociNumber = parseInt(document.getElementById(`ociNumber${ociKNumber}`).textContent),
+                otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent),
+                otKNumber = parseInt(arrayOciOtSelected[1]),
+                opNumber = parseInt(document.getElementById(`lastOpNumber${idOtOci}`).textContent),
+                statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent,
+                otDescription = document.getElementById(`lastOpDescription${idOtOci}`).textContent,
+                otDueno =  document.getElementById(`ociDueno${ociKNumber}`).textContent,
+                ociImage = document.getElementById(`imageOciHeader${ociKNumber}`).src,
+                ociAlias =  document.getElementById(`ociAlias${parseInt(arrayOciOtSelected[0])}`).textContent,
+                ociDescription =  document.getElementById(`ociDescription${parseInt(arrayOciOtSelected[0])}`).textContent
             let flag = false
 
             messageUpdateDuenoOt(
                 idProjectSelected,
                 ociKNumber,
+                ociNumber,
                 otNumber,
                 otKNumber,
                 opNumber,
                 cleanString(statusOt),
                 cleanString(otDescription),
-                cleanString(otDueno),
+                cleanStringOnly(otDueno),
                 ociImage,
                 ociAlias,
                 ociDescription,
@@ -837,12 +841,12 @@ function messageAlertUser(titulo, message, icon){
 async function cargarUsuarioDuenoOt(idPermiso) {
     const permisos = {
         'searchDuenoOtUser': {
-            permisoUsuario: 'fabricacion',
+            permisoUsuario: 'ajuste',
             tituloSeguimiento: 'Dueño de Pieza',
             inputTarget: `duenoOt`
         },
         'searchDuenoOtModal': {
-            permisoUsuario: 'fabricacion',
+            permisoUsuario: 'ajuste',
             tituloSeguimiento: 'Dueño de Pieza',
             inputTarget: `duenoOt`
         }
@@ -877,7 +881,8 @@ async function cargarUsuarioDuenoOt(idPermiso) {
                 const userHTML = `
                     <label>
                         <span id="${user._id}" class="badge rounded-pill ${user.permiso === `${permisoUsuario}` ? 'bg-info' : 'bg-light'} text-dark my-2">
-                            <input id="${i}" class="form-check-input mb-1" type="radio" name="radioUsuarios" value="${user.legajoId}, ${user.name}, ${user.lastName}">
+                            <input id="${i}" class="form-check-input mb-1" type="radio" name="radioUsuarios"
+                                value="${user.legajoId}, ${user.name}, ${user.lastName}">
                             #${user.legajoId}-${user.name} ${user.lastName}
                         </span>
                     </label>`;

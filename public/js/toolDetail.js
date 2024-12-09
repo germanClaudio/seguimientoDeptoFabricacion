@@ -9,12 +9,12 @@ fetch('/api/config')
     .catch(error => console.error('Error fetching config:', error));
 
 function formatDate(date) {
-    const DD = String(date.getDate()).padStart(2, '0');
-    const MM = String(date.getMonth() + 1).padStart(2, '0');
-    const YY = date.getFullYear();
-    const hh = String(date.getHours()).padStart(2, '0');
-    const mm = String(date.getMinutes()).padStart(2, '0');
-    const ss = String(date.getSeconds()).padStart(2, '0');
+    const DD = String(date.getDate()).padStart(2, '0'),
+        MM = String(date.getMonth() + 1).padStart(2, '0'),
+        YY = date.getFullYear(),
+        hh = String(date.getHours()).padStart(2, '0'),
+        mm = String(date.getMinutes()).padStart(2, '0'),
+        ss = String(date.getSeconds()).padStart(2, '0');
     return DD + MM + YY + "_" + hh + mm + ss
 }
 
@@ -61,42 +61,51 @@ btnUpdateTool.addEventListener('click', (event)=>{
 
 // --------------- Update Tool ------------------------
 // ----------- Tool  Image behavior ---------------
-const dropAreaToolUpdate = document.getElementById('drop-areaToolUpdate')
-const fileInputToolUpdate = document.getElementById('fileInputToolUpdate')
-const fileImputTextToolUpdate = document.getElementById('fileInputTextImageToolUpdate')
-const removeImageButtonToolUpdate = document.getElementById('removeImageToolUpdate')
-const alertToolUpdate = document.getElementById('alertImageToolUpdate')
-const alertToolSize = document.getElementById('alertSizeImageToolUpdate')
+const dropAreaToolUpdate = document.getElementById('drop-areaToolUpdate'),
+    fileInputToolUpdate = document.getElementById('fileInputToolUpdate'),
+    fileImputTextToolUpdate = document.getElementById('fileInputTextImageToolUpdate'),
+    removeImageButtonToolUpdate = document.getElementById('removeImageToolUpdate'),
+    alertToolUpdate = document.getElementById('alertImageToolUpdate'),
+    alertToolSize = document.getElementById('alertSizeImageToolUpdate')
 
-dropAreaToolUpdate.style.width = "70%"
-dropAreaToolUpdate.style.height = "200px"
-dropAreaToolUpdate.style.border = "2px dashed #ccc"
-dropAreaToolUpdate.style.textAlign = "center"
-dropAreaToolUpdate.style.margin = "0 auto 0 50px"
-dropAreaToolUpdate.style.borderRadius = "5px"
-dropAreaToolUpdate.style.lineHeight = "200px"
-dropAreaToolUpdate.style.cursor = "pointer"
+    Object.assign(dropAreaToolUpdate.style, {
+        width: "70%",
+        height: "200px",
+        border: "2px dashed #ccc",
+        textAlign: "center",
+        margin: "0 auto 0 50px",
+        borderRadius:"5px",
+        lineHeight: "200px",
+        cursor: "pointer"
+    });
 
 dropAreaToolUpdate.addEventListener('dragover', (e) => {
     e.preventDefault()
-    dropAreaToolUpdate.style.border = '2px dashed #77d'
-    dropAreaToolUpdate.style.backgroundColor = '#7777dd10'
+    Object.assign(dropAreaToolUpdate.style, {
+        border: "2px dashed #77d",
+        backgroundColor: '#7777dd10'
+    })
 })
 
 dropAreaToolUpdate.addEventListener('dragleave', (e) => {
     e.preventDefault()
-    dropAreaToolUpdate.style.border = '2px dashed #ccc'
-    dropAreaToolUpdate.style.backgroundColor = '#9a9a9a'
+    Object.assign(dropAreaToolUpdate.style, {
+        border: "2px dashed #ccc",
+        backgroundColor: '#9a9a9a'
+    })
 })
 
 function alertRefresh() {
     removeImageButtonToolUpdate.style.display = 'none'
     fileImputTextToolUpdate.value = ''
     fileInputToolUpdate.value = ''
-    dropAreaToolUpdate.style.border = "2px dashed #ccc"
-    dropAreaToolUpdate.style.textAlign = "center"
-    dropAreaToolUpdate.style.backgroundColor = '#9a9a9a'
-    dropAreaToolUpdate.style.display = 'block'
+
+    Object.assign(dropAreaToolUpdate.style, {
+        border: "2px dashed #ccc",
+        textAlign: "center",
+        backgroundColor: "#9a9a9a",
+        display: "block"
+    });
     dropAreaToolUpdate.innerHTML = 'Haz click o arrastra y suelta una imagen aquí'
 }
 
@@ -117,9 +126,10 @@ dropAreaToolUpdate.addEventListener('drop', (e) => {
     const file = e.dataTransfer.files[0]
     
     if (file && file.type.startsWith('image/')) {
-        dropAreaToolUpdate.style.border = '3px dashed #2d2'
-        dropAreaToolUpdate.style.backgroundColor = '#22dd2210'
-        
+        Object.assign(dropAreaToolUpdate.style, {
+            border: "3px dashed #2d2",
+            backgroundColor: "#22dd2210"
+        });        
         handleFileUploadToolUpdate(file)
 
     } else {
@@ -136,9 +146,10 @@ fileInputToolUpdate.addEventListener('change', (e) => {
     const file = fileInputToolUpdate.files[0]
     console.log('file: ', file)
     if (file && file.type.startsWith('image/')) {
-        dropAreaToolUpdate.style.border = '3px dashed #2d2'
-        dropAreaToolUpdate.style.backgroundColor = '#22dd2210'
-
+        Object.assign(dropAreaToolUpdate.style, {
+            border: "3px dashed #2d2",
+            backgroundColor: "#22dd2210"
+        });
         handleFileUploadToolUpdate(file)
 
     } else {
@@ -147,17 +158,17 @@ fileInputToolUpdate.addEventListener('change', (e) => {
 })
 
 function handleFileUploadToolUpdate(file) {
-    const fileSize = file.size
-    const fileSizeInMb = fileSize / (1024 * 1024)
+    const fileSize = file.size,
+        fileSizeInMb = fileSize / (1024 * 1024)
 
     if (fileSizeInMb < 3) {
         let pathToImage = URL_GOOGLE_STORE_TOOLIMAGE
         // Separar el nombre del archivo y la extensión
-        const dotIndex = file.name.lastIndexOf('.');
-        const name = file.name.substring(0, dotIndex);
-        const extension = file.name.substring(dotIndex);
+        const dotIndex = file.name.lastIndexOf('.'),
+            name = file.name.substring(0, dotIndex),
+            extension = file.name.substring(dotIndex)
+        
         fileImputTextToolUpdate.value = pathToImage + name.replace(/[^a-zA-Z0-9./_ ]/g, '-') + "-" + formatDate(new Date()) + extension
-        //console.log('fileImputTextToolUpdate: ', fileImputTextToolUpdate.value)
         removeImageButtonToolUpdate.style.display = 'flex'
         
         const reader = new FileReader()
@@ -182,8 +193,8 @@ removeImageButtonToolUpdate.addEventListener('click', (e)=> {
     e.stopPropagation()
 })
 
-const typeHidden = document.getElementById('typeHidden')
-const type = document.getElementById('type')
+const typeHidden = document.getElementById('typeHidden'),
+    type = document.getElementById('type')
 
 document.addEventListener('DOMContentLoaded', ()=> {
     typeHidden.value = type.value
@@ -198,8 +209,8 @@ let inputsDeTexto = document.querySelectorAll('input[type="text"], textarea, inp
     inputsDeTexto.forEach(function(input) {
         if (input) {
             input.addEventListener('keydown', function(event) {
-                let key = event.key; // Obtener el código de la tecla presionada
-                let forbiddenChars = /["$%?¡¿^=!'~`\\*{}\[\]<>@]/; // Lista de caracteres especiales prohibidos
+                let key = event.key, // Obtener el código de la tecla presionada
+                    forbiddenChars = /["$%?¡¿^=!'~`\\*{}\[\]<>@]/; // Lista de caracteres especiales prohibidos
 
                 if (forbiddenChars.test(key)) {  // Verificar si la tecla presionada es un carácter especial
                     // Cancelar el evento para evitar que se ingrese el carácter
@@ -247,7 +258,6 @@ let inputsDeTexto = document.querySelectorAll('input[type="text"], textarea, inp
         for(let mutation of mutationsList) {
             // Verificar si la mutación fue una inserción o eliminación de nodos
             if (mutation.type === 'childList') {
-                // Realizar acciones en respuesta al cambio
                 btnUpdateTool.removeAttribute('disabled')
                 btnUpdateTool.style = "cursor: pointer;"
             }

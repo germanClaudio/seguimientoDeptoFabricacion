@@ -5,17 +5,11 @@ const ProgramasService = require("../services/programms.service.js")
 const AjustesService = require("../services/ajustes.service.js")
 const ToolService = require("../services/tools.service.js")
 
-// const { uploadToGCS, uploadToGCSingleFile } = require("../utils/uploadFilesToGSC.js")
-// const { uploadMulterMultiImages, uploadMulterSingleImageProject, uploadMulterSingleImageOci } = require("../utils/uploadMulter.js")
-// const multer = require('multer')
-
 let formatDate = require('../utils/formatDate.js')
-let tieneNumeros = require('../utils/gotNumbers.js')
-let esStringUObjeto = require('../utils/isNumberOrObject.js')
+
 const csrf = require('csrf');
 const csrfTokens = csrf();
 
-// let imageNotFound = "../../../src/images/upload/LogoClientImages/noImageFound.png"
 const cookie = require('../utils/cookie.js')
 
 let data = require('../utils/variablesInicializator.js')
@@ -180,8 +174,8 @@ class AjustesController {
     }
 
     getAllOciProjects = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         const expires = cookie(req)
         
         try {
@@ -209,6 +203,192 @@ class AjustesController {
         } catch (err) {
             catchError500(err, req, res, next)
         }
+    }
+
+    addNewDuenoOci = async (req, res, next) => {
+        const id = req.body.projectIdHidden
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+
+        let csrfToken = req.csrfSecret;
+        if (csrfTokens.verify(req.csrfSecret, csrfToken)) {
+            catchError403(req, res, next)
+        }
+        
+        try {
+            const userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
+            if (!userCreator) {
+                catchError401_3(req, res, next)
+            }
+
+            let proyecto = await this.projects.selectProjectsByMainProjectId(id)
+            if (!proyecto) {
+                catchError401_4(req, res, next)
+            }
+            const projectId = proyecto[0]._id,
+                clientId = proyecto[0].client[0]._id,
+                cliente = await this.clients.selectClientById(clientId)
+            if (!cliente) {
+                catchError401(req, res, next)
+            }
+
+            let arrayOciKNumber=[], arrayOciNumber=[], arrayOciDueno=[]
+            
+            const prefixes = [
+                { prefix: 'ociNumberK', array: arrayOciKNumber },
+                { prefix: 'ociNumber', array: arrayOciNumber },
+                { prefix: 'duenoOt', array: arrayOciDueno }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+
+            let ociNumberValid = await this.projects.selectOciByOciNumber(arrayOciNumber[0], arrayOciKNumber[0])
+            if (!ociNumberValid) {
+                const err = new Error (`No existe una OCI# ${arrayOciNumber[0]} o Número de OCI inválido!`)
+                err.dirNumber = 400
+                return next(err);
+            }
+
+            let legajoIdUser = parseInt(arrayOciDueno[0].split(',')[0].trim()),
+                ociOwnerUser = await this.users.getUserByLegajoId(legajoIdUser)
+
+                if (!ociOwnerUser) {
+                    catchError401_3(req, res, next)
+                }
+
+            let infoOciAddedToProject = [
+                {
+                    ociOwner: ociOwnerUser,
+                    modificator: dataUserModificatorNotEmpty(userCreator),
+                    modifiedOn: formatDate(),
+                }
+            ]
+            
+            await this.ajustes.addNewDuenoOci(
+                projectId,
+                arrayOciKNumber,
+                infoOciAddedToProject
+            )
+            
+            proyecto = await this.projects.getProjectsByClientId(clientId)
+            if (!proyecto) {
+                catchError401_1(req, res, next)
+            }
+
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectAjusteSelected', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 400)
+            
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+        
+    }
+
+    updateDuenoOci = async (req, res, next) => {
+        const id = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo,
+            csrfToken = req.csrfSecret;
+        if (csrfTokens.verify(req.csrfSecret, csrfToken)) {
+            catchError403(req, res, next)
+        }
+        
+        try {
+            const userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
+            if (!userCreator) {
+                catchError401_3(req, res, next)
+            }
+
+            let proyecto = await this.projects.selectProjectsByMainProjectId(id)
+            if (!proyecto) {
+                catchError401_4(req, res, next)
+            }
+            const projectId = proyecto[0]._id,
+                clientId = proyecto[0].client[0]._id,
+                cliente = await this.clients.selectClientById(clientId)
+            if (!cliente) {
+                catchError401(req, res, next)
+            }
+
+            let arrayOciKNumber=[], arrayOciNumber=[], arrayOciDueno=[]
+            
+            const prefixes = [
+                { prefix: 'ociKNumberHidden', array: arrayOciKNumber },
+                { prefix: 'ociNumberHidden', array: arrayOciNumber },
+                { prefix: 'duenoOciModal', array: arrayOciDueno }
+            ];
+            
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let ociNumberValid = await this.projects.selectOciByOciNumber(arrayOciNumber[0], arrayOciKNumber[0])
+            if (!ociNumberValid) {
+                const err = new Error (`No existe una OCI# ${arrayOciNumber[0]} o Número de OCI inválido!`)
+                err.dirNumber = 400
+                return next(err);
+            }
+
+            let legajoIdUser = parseInt(arrayOciDueno[0].split(',')[0].trim()),
+                ociOwnerUser = await this.users.getUserByLegajoId(legajoIdUser)
+            if (!ociOwnerUser) {
+                catchError401_3(req, res, next)
+            }
+
+            let infoOciAddedToProject = [
+                {
+                    ociOwner: ociOwnerUser,
+                    modificator: dataUserModificatorNotEmpty(userCreator),
+                    modifiedOn: formatDate(),
+                }
+            ]
+            
+            await this.ajustes.updateDuenoOci(
+                projectId,
+                arrayOciKNumber,
+                infoOciAddedToProject
+            )
+            
+            proyecto = await this.projects.getProjectsByClientId(clientId)
+            if (!proyecto) {
+                catchError401_1(req, res, next)
+            }
+
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('projectAjusteSelected', {
+                    username,
+                    userInfo,
+                    expires,
+                    cliente,
+                    proyecto,
+                    data,
+                    csrfToken
+                })
+            }, 300)
+            
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+        
     }
 
     // 0-------------- infoArmado ---------------------------

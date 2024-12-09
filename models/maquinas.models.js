@@ -14,6 +14,10 @@ const maquinasSchema = new Schema({
         type: String,
         maxlength: 50
     },
+    model: {
+        type: String,
+        maxlength: 50
+    },
     imageTool: { 
         type: String,
         maxlength: 1000

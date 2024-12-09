@@ -97,7 +97,7 @@ routerProyectos.post('/deleteOt/:id', checkAuthentication, projects.deleteOt)
 // -------------------  Eliminar Proyecto por Id (Visible = false) ------------------ 
 routerProyectos.post('/deleteProject/:id', checkAuthentication, authUserMiddleware, projects.deleteProjectById)
 
-// -------------------  Agregar Nuev Detalle a OT por Id Proyecto ------------------ 
-// routerProyectos.post('/addOtDetalle/:id', checkAuthentication, authUserMiddleware, projects.addNewOtDetalle)
+// // -------------------  Agregar Nuevo Dueño de OCI a Proyecto por Id Proyecto ------------------ 
+// routerProyectos.post('/newOciOwner/:id', checkAuthentication, authUserMiddleware, projects.addNewDuenoOci)
 
 module.exports = routerProyectos

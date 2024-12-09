@@ -17,6 +17,95 @@ class AjustesDaoMongoDB extends ContenedorMongoDB {
         mongoose.connect(this.cnxStr, advancedOptions)
     }
 
+    // Add new Dueño Oci to Project
+    async addNewDuenoOci(idProjectTarget, ociKNumber, arrayOciAddedToProject) {
+        let numberKOci = parseInt(ociKNumber)
+        if (idProjectTarget && arrayOciAddedToProject) {
+            try {
+                const itemMongoDB = await Proyectos.findById({ _id: idProjectTarget })
+                if (itemMongoDB) {
+                    
+                    // Se agregan las estructuras al arbol de MongoDB ---
+                    let ociAddedToProyecto = await Proyectos.updateOne(
+                        { _id: itemMongoDB._id },
+                        {
+                            $set: {
+                                [`project.0.oci.${numberKOci}.ociOwner.0`] : arrayOciAddedToProject[0].ociOwner,
+                                [`project.0.oci.${numberKOci}.modificator.0`] : arrayOciAddedToProject[0].modificator,
+                                [`project.0.oci.${numberKOci}.modifiedOn`] : formatDate()
+                            }
+                        },
+                        { new: true }
+                    )
+                    // console.info('Dueno Oci agregada a Proyecto ', ociAddedToProyecto)
+
+                    // Si se agrega correctamente las OCI => true ---
+                    if (ociAddedToProyecto.acknowledged) {
+                        const itemUpdated = await Proyectos.findById({ _id: idProjectTarget })
+                        return itemUpdated
+
+                    } else {
+                        return new Error(`No se agregó el dueño: ${itemMongoDB._id}`)
+                    }
+
+                } else {
+                    return new Error(`No se encontró la proyect`)
+                }
+
+            } catch (error) {
+                console.error("Error MongoDB adding Dueño OCI to a Project: ", error)
+            }
+
+        } else {
+            return new Error(`No se pudo agregar dueño a la OCI del Proyecto!`)
+        }
+    }
+
+    // Update Dueño Oci to Project
+    async updateDuenoOci(idProjectTarget, ociKNumber, arrayOciAddedToProject) {
+        console.log('arrayOciAddedToProject[0].modificator: ', arrayOciAddedToProject[0].modificator)
+        let numberKOci = parseInt(ociKNumber)
+        if (idProjectTarget && arrayOciAddedToProject) {
+            try {
+                const itemMongoDB = await Proyectos.findById({ _id: idProjectTarget })
+                if (itemMongoDB) {
+                    
+                    // Se agregan las estructuras al arbol de MongoDB ---
+                    let ociAddedToProyecto = await Proyectos.updateOne(
+                        { _id: itemMongoDB._id },
+                        {
+                            $set: {
+                                [`project.0.oci.${numberKOci}.ociOwner.0`] : arrayOciAddedToProject[0].ociOwner,
+                                [`project.0.oci.${numberKOci}.modificator.0`] : arrayOciAddedToProject[0].modificator,
+                                [`project.0.oci.${numberKOci}.modifiedOn`] : formatDate()
+                            }
+                        },
+                        { new: true }
+                    )
+                    // console.info('Dueno Oci agregada a Proyecto ', ociAddedToProyecto)
+                    
+                    // Si se agrega correctamente las OCI => true ---
+                    if (ociAddedToProyecto.acknowledged) {
+                        const itemUpdated = await Proyectos.findById({ _id: idProjectTarget })
+                        return itemUpdated
+
+                    } else {
+                        return new Error(`No se agregó el dueño: ${itemMongoDB._id}`)
+                    }
+
+                } else {
+                    return new Error(`No se encontró la proyect`)
+                }
+
+            } catch (error) {
+                console.error("Error MongoDB adding Dueño OCI to a Project: ", error)
+            }
+
+        } else {
+            return new Error(`No se pudo agregar dueño a la OCI del Proyecto!`)
+        }
+    }
+
     // get all Projects w/ status & visible true and level won form DB ----------------
     async getAllProjectsWon() {
         try {

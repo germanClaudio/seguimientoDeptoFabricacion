@@ -794,8 +794,8 @@ class ProjectsController {
 
     addNewOciToProject = async (req, res, next) => {
         const id = req.params.id
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         const expires = cookie(req)
 
         const csrfToken = req.csrfSecret;
@@ -858,8 +858,7 @@ class ProjectsController {
                 }
 
                 const ociKNumber = 0
-                let invalidOciNumber = true
-                let indexArrayOciNumber = 0
+                let invalidOciNumber = true, indexArrayOciNumber = 0
                 for (let h=0; h<arrayOciNumber.length; h++) {
                     const ociNumberValid = await this.projects.selectOciByOciNumber(arrayOciNumber[h], ociKNumber)
                     const otherOciNumbers = proyecto[0].project[0].oci.map(oci => oci.ociNumber);

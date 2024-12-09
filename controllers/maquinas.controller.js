@@ -116,12 +116,13 @@ class ToolsController {
                 }
 
                 let userManager = await this.users.getUserByUsername(username);
-                const userId = userManager._id;
-                const userCreator = await this.users.getUserById(userId);
+                const userId = userManager._id,
+                    userCreator = await this.users.getUserById(userId)
                 !userCreator ? catchError401_3(req, res, next) : null
 
-                const designationInput = req.body.designation.replace(/[!@#$%^&*]/g, "");
-                const codeInput = req.body.code;
+                const designationInput = req.body.designation.replace(/[!@#$%^&*]/g, ""),
+                    codeInput = req.body.code,
+                    modelInput = req.body-model
 
                 const newToolValid = {
                     designation: designationInput,
@@ -135,6 +136,7 @@ class ToolsController {
                         const newTool = {
                         designation: designationInput,
                         code: codeInput,
+                        model: modelInput,
                         type: req.body.type,
                         characteristics: req.body.characteristics,
                         imageTool: req.body.imageTextImageTool || toolPictureNotFound,
@@ -170,26 +172,22 @@ class ToolsController {
     }
     
     updateTool = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         uploadMulterSingleImageTool(req, res, async (err) => {
             try {
-                // console.log('req.body: ', req.body)
-                // console.log('req.file: ', req.file)
-                if (req.file) {
-                    await uploadToGCS(req, res, next)
-                }
+                req.file ? await uploadToGCS(req, res, next) : null
 
-                const toolId = id
-                const toolToModify = await this.tools.getToolById(toolId)
+                const toolId = id,
+                    toolToModify = await this.tools.getToolById(toolId)
 
-                const toolInput = req.body.designation.replace(/[!@#$%^&* ]/g, "")
                 let maquinasRestantes
-                const designationValid = await this.tools.getToolByDesignation(toolInput)
-                const otherTools = await this.tools.getAllTools()
+                const toolInput = req.body.designation.replace(/[!@#$%^&* ]/g, ""),
+                    designationValid = await this.tools.getToolByDesignation(toolInput),
+                    otherTools = await this.tools.getAllTools()
                 
                 // Función para eliminar una maquina de la lista si coincide con la maquina a comparar
                 function eliminarMaquina(lista, maquina) {
@@ -209,11 +207,20 @@ class ToolsController {
                         return next(err);
                     }
 
-                    const codeInput = req.body.code
-                    const codesId = maquinasRestantes.map(maquina => maquina.code);
+                    const codeInput = req.body.code,
+                        codesId = maquinasRestantes.map(maquina => maquina.code);
                     
                     if (codesId.includes(toolToModify.code)) {
                         const err = new Error (`Ya existe una Maquina con este Código #${codeInput}!`)
+                        err.statusCode = 400
+                        return next(err);
+                    }
+
+                    const modelInput = req.body.model,
+                        modelsId = maquinasRestantes.map(maquina => maquina.model);
+                    
+                    if (modelsId.includes(toolToModify.model)) {
+                        const err = new Error (`Ya existe una Maquina con este Modelo #${modelInput}!`)
                         err.statusCode = 400
                         return next(err);
                     }
@@ -225,6 +232,7 @@ class ToolsController {
                 let updatedTool = {
                     designation: req.body.designation,
                     code: req.body.code,
+                    model: req.body.model,
                     type: req.body.typeHidden,
                     characteristics: req.body.characteristics,
                     imageTool: req.body.imageTextImageTool,
@@ -234,7 +242,6 @@ class ToolsController {
                 }
 
                 const maquina = await this.tools.updateTool(toolId, updatedTool, dataUserModificatorNotEmpty(userLogged))
-                // console.log('maquina: ', maquina)
                 !maquina ? catchError400_3(req, res, next) : null
                         
                 const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -265,17 +272,17 @@ class ToolsController {
     }
 
     deleteToolById = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
             const toolToDelete = await this.tools.getToolById(id)
             !toolToDelete ? catchError401_3(req, res, next) : null
 
-            const userId = userInfo.id
-            const userLogged = await this.users.getUserById(userId)
+            const userId = userInfo.id,
+                userLogged = await this.users.getUserById(userId)
             !userLogged ? catchError401_3(req, res, next) : null
 
             const maquina = await this.tools.deleteToolById(id, dataUserModificatorNotEmpty(userLogged))

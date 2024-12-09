@@ -9,7 +9,7 @@
             <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
                                 
                 <% if (arrayVisibleOci[k].ociOwner[0].legajoId == 0) { %>
-                    Asigna dueño de pieza de OCI# <strong><%= arrayVisibleOci[k].ociNumber %></strong>, haciendo click en
+                    Asigna el dueño de pieza de la OCI# <strong><%= arrayVisibleOci[k].ociNumber %></strong>, haciendo click en
                     <button class="custom2-btn m-1"
                         id="btnAddOtFormSelected<%=k%>" aria-controls="collapseExample" data-bs-toggle="collapse"
                         data-bs-target="#collapseExample" aria-expanded="false"
@@ -22,7 +22,10 @@
                         style="--bs-btn-font-size: .95rem; color: var(--bs-white);" type="button" disabled>
                         <i class="fa-solid fa-screwdriver-wrench fa-lg" aria-hidden="true"></i>
                     </button>
-                    Dueño de pieza de OCI# <strong><%= arrayVisibleOci[k].ociNumber %></strong>, asignado.
+                    Dueño de pieza de OCI# <strong><%= arrayVisibleOci[k].ociNumber %></strong>, asignado a
+                    <img id="imageOciOwner<%=k%>" src="<%= arrayVisibleOci[k].ociOwner[0].avatar %>"
+                        class="img-fluid img-thumbnail shadow my-auto mx-1 shadow" title="<%= arrayVisibleOci[k].ociOwner[0].name %>, <%= arrayVisibleOci[k].ociOwner[0].lastName %>"
+                        alt="<%= arrayVisibleOci[k].ociOwner[0].name %>, <%= arrayVisibleOci[k].ociOwner[0].lastName %> " style="width: 80px; height: 80px; object-fit: contain;">.
                     Para actualizar, haz click en uno de los botones editar de la columna acciones de cada OT
                 <% } %> 
                 

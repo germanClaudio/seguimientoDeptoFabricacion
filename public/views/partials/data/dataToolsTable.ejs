@@ -2,7 +2,7 @@
     
         <div class="card mx-auto shadow p-1 mt-4 mb-4 bg-body rounded w-auto table-responsive">
             <div id="loading-spinner" class="mt-2" style="display: none;">
-                <i class="fa fa-spinner fa-pulse" style="font-size: 3rem;"></i>
+                <%- include('../../partials/spinners/spinner_1'); %>
                 <p>Cargando...</p>
             </div>
 
@@ -11,17 +11,18 @@
                 <thead class="border-bottom">
                     <tr>
                         <th style="width:4vw" scope="col-1" class="text-center"> Id </th>
+                        <th style="width:6vw" scope="col-1" class="text-center"> Código </th>
                         <th style="width:6vw" scope="col-1" class="text-center"> Modelo </th>
                         <th style="width:6vw" scope="col-1" class="text-center"> Tipo </th>
-                        <th style="width:8vw" scope="col-1" class="text-center"> Designación </th>
+                        <th style="width:7vw" scope="col-1" class="text-center"> Designación </th>
                         <th style="width:8vw" scope="col-1" class="text-center"> Imagen </th>
-                        <th style="width:8vw" scope="col-1" class="text-center"> Status </th>
-                        <th style="width:18vw" scope="col-1" class="text-center"> Características </th>
+                        <th style="width:7vw" scope="col-1" class="text-center"> Status </th>
+                        <th style="width:16vw" scope="col-1" class="text-center"> Características </th>
                         <th style="width:8vw" scope="col-1" class="text-center"> Creado por </th>
                         <th style="width:8vw" scope="col-1" class="text-center"> Fecha </th>
                         <th style="width:8vw" scope="col-1" class="text-center"> Modif. por </th>
                         <th style="width:8vw" scope="col-1" class="text-center"> Fecha modif. </th>
-                        <th style="width:10vw" scope="col-2" class="text-center"> Acciones </th>
+                        <th style="width:8vw" scope="col-2" class="text-center"> Acciones </th>
                     </tr>
                 </thead>
                         <tbody id="mostrarMaquinas">

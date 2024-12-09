@@ -528,10 +528,6 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
     ) {
         const ociKNumber = parseInt(ociNumberK) || 0
         const quantityOt = parseInt(otQuantity)
-        // console.log('1-otQuantity-Dao:', quantityOt)
-        // console.log('2-ociNumberK-Dao: ', ociNumberK)
-        // console.log('A-arrayOtNumberK-Dao:', arrayOtNumberK)
-        // console.log('B-infoAddedToOt-Dao: ', infoAddedToOt)
 
         // compara si el proyecto existe --------
         if (idProjectTarget) {

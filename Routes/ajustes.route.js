@@ -14,6 +14,11 @@ routerAjustes.get('/', checkAuthentication, ajustes.getAllProjectsWon)
 // -------------------  Ver detalles del Proyecto Ganado por Id del proyecto ------------------ 
 routerAjustes.get('/selectAjusteProjects/:id', checkAuthentication, ajustes.selectProjectById)
 
+// -------------------  Agregar Nuevo Dueño de OCI a Proyecto por Id Proyecto ------------------ 
+routerAjustes.post('/newOciOwner', checkAuthentication, ajustes.addNewDuenoOci)
+
+// -------------------  Actualizar Dueño de OCI a Proyecto por Id Proyecto ------------------ 
+routerAjustes.post('/updateDuenoOt/:id', checkAuthentication, ajustes.updateDuenoOci)
 
 // 0 -------------------  Agregar informacion Armado --------------------------- 
 routerAjustes.post('/otInfoArmado/:id', checkAuthentication, ajustes.addInfoArmado)

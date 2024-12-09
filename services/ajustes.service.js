@@ -40,6 +40,24 @@ class AjustesService {
         return this.proyectos.selectOciByOciNumber(numberOci)
     }
 
+    // add New Dueño Oci To Project
+    async addNewDuenoOci(id, ociKNumber, duenoOciInfo) {
+        return await this.ajustes.addNewDuenoOci(
+            id,
+            ociKNumber,
+            duenoOciInfo
+        )
+    }
+
+    // update Dueño Oci To Project
+    async updateDuenoOci(id, ociKNumber, duenoOciInfo) {
+        return await this.ajustes.updateDuenoOci(
+            id,
+            ociKNumber,
+            duenoOciInfo
+        )
+    }
+
     // 0 add Info Armado
     async addInfoOtArmado(projectId, otQuantity, ociNumberK, arrayOtNumberK, infoAddedToOt) {
         return this.ajustes.addInfoOtArmado(
