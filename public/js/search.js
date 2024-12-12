@@ -1,5 +1,5 @@
-let clientNotFound = "../../../src/images/upload/LogoClientImages/dead-emoji-face.jpg"
-let allClientsFound = "../../../src/images/upload/LogoClientImages/indiceAbajo.jpeg"
+let clientNotFound = "../../../src/images/upload/LogoClientImages/dead-emoji-face.jpg",
+    allClientsFound = "../../../src/images/upload/LogoClientImages/indiceAbajo.jpeg"
 
 // -------------- Show Searched Clients Index page----------------
 socket.on('searchClientsAll', async (arrClientSearch) => {
@@ -7,9 +7,9 @@ socket.on('searchClientsAll', async (arrClientSearch) => {
 })
 
 const searchClient = () => {
-    const query = document.getElementById('query').value
-    const status = document.getElementById('status').value
-    const proyectosRadio = document.getElementsByName('projects')
+    const query = document.getElementById('query').value,
+        status = document.getElementById('status').value,
+        proyectosRadio = document.getElementsByName('projects')
     
     for (let i=0; i<proyectosRadio.length; i++) {
         if (proyectosRadio[i].checked) {
@@ -52,7 +52,6 @@ const renderSearchedClients = (arrClientSearch) => {
                 </div>
             </div>`
         )
-        
         document.getElementById('showClientSearch').innerHTML = htmlSearchClientNull
     
     } else if (arrClientSearch.length === 1 && arrClientSearch[0] === 'vacio') {
@@ -82,19 +81,12 @@ const renderSearchedClients = (arrClientSearch) => {
                 </div>
             </div>`
         )
-        
         document.getElementById('showClientSearch').innerHTML = htmlSearchClientNull
 
     } else {
         const htmlSearchClient = arrClientSearch.map((element) => {
-            let disabled = 'disabled'
-            let green = 'success'
-            let red = 'danger'
-            let text = "Activo"
-            let grey = 'secondary'
-            let blue = 'primary'
-            let result = 'S/P'
-            colorResult = grey
+            let disabled = 'disabled', text = "Activo", result = 'S/P',
+                green = 'success', red = 'danger', grey = 'secondary', blue = 'primary', colorResult = grey
 
             if ( element.status === true && element.project > 0 ) {
                 disabled = ''
@@ -157,6 +149,7 @@ const renderSearchedClients = (arrClientSearch) => {
                         </div>
                     </div>`
                 )
+
             } else {
                 return (`
                     <div class="col mx-auto">
@@ -205,16 +198,15 @@ const renderSearchedClients = (arrClientSearch) => {
     }
 }
 
-
 // -------------- Show Searched Clients AddNewClient page----------------
 socket.on('searchClientsNew', async (arrClientNewSearch) => {
     renderSearchedNewClients (await arrClientNewSearch)
 })
 
 const searchClientNew = () => {
-    const query = document.getElementById('query').value
-    const status = document.getElementById('status').value
-    const proyectosRadio = document.getElementsByName('projects')
+    const query = document.getElementById('query').value,
+        status = document.getElementById('status').value,
+        proyectosRadio = document.getElementsByName('projects')
     
     for (let i=0; i<proyectosRadio.length; i++) {
         if (proyectosRadio[i].checked) {
@@ -290,14 +282,8 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
     } else {
         const htmlSearchNewClient = arrClientNewSearch.map((element) => {
             // Definir los valores por defecto
-            let disabled = 'disabled';
-            let green = 'success';
-            let red = 'danger';
-            let text = "Activo";
-            let grey = 'secondary';
-            let blue = 'primary';
-            let result = 'S/P';
-            let colorResult = grey;
+            let disabled = 'disabled', text = "Activo", result = 'S/P',
+                green = 'success', red = 'danger', grey = 'secondary', blue = 'primary', colorResult = grey
 
             const config = {
                 true: {
@@ -311,10 +297,9 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
             };
 
             // Verificar las condiciones y asignar los valores correspondientes
-            const statusKey = element.status ? 'true' : 'false';
-            const projectKey = element.project > 0 ? 'true' : 'false';
-
-            const configValues = config[statusKey][projectKey];
+            const statusKey = element.status ? 'true' : 'false',
+                projectKey = element.project > 0 ? 'true' : 'false',
+                configValues = config[statusKey][projectKey];
 
             // Asignar los valores desde el objeto de configuración
             disabled = configValues.disabled !== undefined ? configValues.disabled : disabled;
@@ -399,7 +384,7 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
                                                         <i class="fa-regular fa-pen-to-square"></i>
                                                 </a>
                                             </div>
-    
+
                                             <div class="col m-auto">
                                                 <a class="btn text-light small ${disabled}" type="submit" href="/api/clientes/projects/${element._id}"
                                                     style="background-color: #0d6efd; font-size: .85rem; width: 4em;" title="Ver proyectos cliente ${element.name}">
@@ -423,11 +408,9 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
             }
             
         }).join(" ");
-
         document.getElementById('showClientSearch').innerHTML = htmlSearchNewClient
     }
 }
-
 
 //*******************************************************/
 // -------------- Show Searched Users ----------------
@@ -436,11 +419,11 @@ socket.on('searchUsersAll', async (arrUsersSearch) => {
 })
 
 const searchUsers = () => {
-    const queryUser = document.getElementById('queryUsers').value
-    let statusUser = document.getElementById('statusUser').value
-    let rolUser = document.getElementById('rolUser').value
-    const areaUser = document.getElementById('areaUser').value
-    const permisoUser = document.getElementById('permisoUser').value
+    let statusUser = document.getElementById('statusUser').value,
+        rolUser = document.getElementById('rolUser').value
+    const queryUser = document.getElementById('queryUsers').value,
+        areaUser = document.getElementById('areaUser').value,
+        permisoUser = document.getElementById('permisoUser').value
 
     if (statusUser != 'todos') {
         statusUser === 'activos' ? statusUser = true : statusUser = false
@@ -518,28 +501,17 @@ const renderSearchedUsers = (arrUsersSearch) => {
 
     } else {
         const htmlSearchUsers = arrUsersSearch.map((element) => {
-            console.log('element', element)
-            let disabled = 'disabled'
-            let green = 'success'
-            let red = 'danger'
-            let grey = 'secondary'
-            let blue = 'primary'
-            let cian = 'info'
-            let yellow = 'warning'
-            let white = 'light'
-            let black = 'dark'
+            let disabled = 'disabled', green = 'success', red = 'danger', grey = 'secondary', blue = 'primary',
+                cian = 'info', yellow = 'warning', white = 'light', black = 'dark'
 
-            const active = 'Activo'
-            const inactive = 'Inactivo'
-            const admin = 'Admin'
-            const user = 'User'
+            const active = 'Activo', inactive = 'Inactivo', admin = 'Admin', user = 'User'
 
-            let optionStatus = element.status ? green : red
-            let optionAdmin = element.admin ? black : grey
-            let optionPermiso = element.permiso ? grey : red
-            let optionArea = element.area ? cian : green
-            let showStatus = element.status ? active : inactive
-            let showAdmin = element.admin ? admin : user
+            let optionStatus = element.status ? green : red,
+                optionAdmin = element.admin ? black : grey,
+                optionPermiso = element.permiso ? grey : red,
+                optionArea = element.area ? cian : green,
+                showStatus = element.status ? active : inactive,
+                showAdmin = element.admin ? admin : user
 
             const areaMap = {
                 'ingenieria': { show: 'Ingeniería', option: cian },
@@ -614,7 +586,6 @@ const renderSearchedUsers = (arrUsersSearch) => {
                 </div>`
             )
         }).join(" ");
-
         document.getElementById('showUsersSearch').innerHTML = htmlSearchUsers
     }
 }
@@ -628,12 +599,10 @@ socket.on('searchToolsAll', async (arrToolSearch) => {
 
 const searchTools = () => {
     const queryTool = document.getElementById('queryTools').value
-    let statusTool = document.getElementById('statusTool').value
-    let typeTool = document.getElementById('typeTool').value
-console.log('typeTool:', typeTool)
-    statusTool != 'todas' ?
-        statusTool === 'activas' ? statusTool = true : statusTool = false
-    : null
+    let statusTool = document.getElementById('statusTool').value,
+        typeTool = document.getElementById('typeTool').value
+
+    statusTool != 'todas' ? statusTool === 'activas' ? statusTool = true : statusTool = false : null
         
     socket.emit('searchMaquinaAll', {
         queryTool,
@@ -703,24 +672,13 @@ const renderSearchedTools = (arrToolSearch) => {
 
     } else {
         const htmlSearchTools = arrToolSearch.map((element) => {
-            let disabled = 'disabled'
-            let green = 'success'
-            let red = 'danger'
-            let info = 'info'
-            let blue = 'primary'
-            let grey = 'secondary'
-
-            const active = 'Activo'
-            const inactive = 'Mantenimiento'
-
-            const cnc = 'CNC'
-            const press = 'Prensa'
-            const other = 'Otras'
+            let disabled = 'disabled', green = 'success', red = 'danger', info = 'info', blue = 'primary', grey = 'secondary'
+            const active = 'Activo', inactive = 'Mantenimiento'
+            const cnc = 'CNC', press = 'Prensa', other = 'Otras'
             
-            let optionStatus = element.status ? green : red
-
-            let showType
-            let optionType
+            let optionStatus = element.status ? green : red,
+                showType, optionType
+            
             if (element.type === 'cnc') {
                 optionType = info
                 showType = cnc
@@ -733,7 +691,6 @@ const renderSearchedTools = (arrToolSearch) => {
             }
 
             let showStatus = element.status ? active : inactive
-            
             element.visible ? disabled = '' : null
 
             return (`

@@ -16,6 +16,12 @@ const containerUser = ContainerUsers.getDaoUsers()
 const ContainerTools = require("../daos/maquinas/MaquinasDaoFactory.js")
 const containerTool = ContainerTools.getDaoTools()
 
+const ContainerCuttingTools = require("../daos/herramientas/HerramientasDaoFactory.js")
+const containerCuttingTool = ContainerCuttingTools.getDaoCuttingTools()
+
+const ContainerConsumibles = require("../daos/consumibles/ConsumiblesDaoFactory.js")
+const containerConsumibles = ContainerConsumibles.getDaoConsumibles()
+
 const ContainerSuppliers = require("../daos/proveedores/ProveedoresDaoFactory.js")
 const containerSupplier = ContainerSuppliers.getDaoSuppliers()
 
@@ -85,6 +91,26 @@ const initSocket = (io) => {
             io.sockets.emit('searchToolsAll', await containerTool.getToolsBySearching(query))
         })
 
+        //-------------------------------- CuttingTools  ----------------------------------
+        socket.on('newHerramienta', async (herramienta) => {
+            await containerCuttingTool.createNewCuttingTool(herramienta)
+            io.sockets.emit('cuttingToolsAll', await containerCuttingTool.getAllCuttingTools())
+        })
+        
+        socket.on('searchHerramientaAll', async (query) => {
+            io.sockets.emit('searchCuttingToolsAll', await containerCuttingTool.getCuttingToolsBySearching(query))
+        })
+
+        //-------------------------------- Consumibles  ----------------------------------
+        socket.on('newConsumibles', async (consumibles) => {
+            await containerConsumibles.createNewConsumibles(consumibles)
+            io.sockets.emit('cuttingToolsAll', await containerConsumibles.getAllConsumibles())
+        })
+        
+        socket.on('searchConsumiblesAll', async (query) => {
+            io.sockets.emit('searchConsumiblesAll', await containerConsumibles.getConsumiblesBySearching(query))
+        })
+
         //-------------------------------- Suppliers  ----------------------------------
         socket.on('newProveedor', async (proveedor) => {
             await containerSupplier.createNewSupplier(proveedor)
@@ -145,6 +171,42 @@ const initSocket = (io) => {
 
         socket.on('searchToolNew', async (query) => {
             io.sockets.emit('searchToolsNew', await containerTool.getToolsBySearching(query))
+        })
+
+        //-------------------- herramientas ----------------------
+        socket.emit('cuttingToolsAll', await containerCuttingTool.getAllCuttingTools(),
+            await containerUser.getAllUsers()
+        )
+
+        socket.on('newHerramienta', async (herramienta) => {
+            await containerCuttingTool.createNewTool(herramienta)
+            io.sockets.emit('cuttingToolsAll', await containerCuttingTool.getAllCuttingTools())
+        })
+
+        socket.on('searchCuttingToolAll', async (query) => {
+            io.sockets.emit('searchCuttingToolsAll', await containerCuttingTool.getCuttingToolsBySearching(query))
+        })
+
+        socket.on('searchCuttingToolNew', async (query) => {
+            io.sockets.emit('searchCuttingToolsNew', await containerCuttingTool.getCuttingToolsBySearching(query))
+        })
+
+        //-------------------- consumibles ----------------------
+        socket.emit('consumiblesAll', await containerConsumibles.getAllConsumibles(),
+            await containerUser.getAllUsers()
+        )
+
+        socket.on('newConsumible', async (consumible) => {
+            await containerConsumibles.createNewConsumible(consumible)
+            io.sockets.emit('consumiblesAll', await containerConsumibles.getAllConsumibles())
+        })
+
+        socket.on('searchConsumibleAll', async (query) => {
+            io.sockets.emit('searchConsumiblesAll', await containerConsumibles.getConsumiblesBySearching(query))
+        })
+
+        socket.on('searchConsumibleNew', async (query) => {
+            io.sockets.emit('searchConsumiblesNew', await containerConsumibles.getConsumiblesBySearching(query))
         })
 
         //-------------------- proveedores ----------------------

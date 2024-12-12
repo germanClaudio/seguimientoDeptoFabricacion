@@ -1,13 +1,13 @@
-const { Storage } = require('@google-cloud/storage');
-const sharp = require('sharp');
+const { Storage } = require('@google-cloud/storage'),
+    sharp = require('sharp');
 
 // @ts-ignore
 //**************** */
 const { readEncodedFile } = require('../options/fileHandler.js');
 //********************** */
 
-const csrf = require('csrf');
-const csrfTokens = csrf();
+const csrf = require('csrf'),
+    csrfTokens = csrf();
 
 //------Almacenar una sola imagen en GSC ---------
 async function uploadToGCS(req, res, next) {
@@ -24,14 +24,14 @@ async function uploadToGCS(req, res, next) {
         return next(err)
     }
 
-    const credentials = await readEncodedFile();
-    const storageToGCS = new Storage({
+    const credentials = await readEncodedFile(),
+        storageToGCS = new Storage({
         projectId: process.env.PROJECT_ID_GCS,
         credentials: credentials,
     });
 
-    let bucket = storageToGCS.bucket(process.env.STORE_BUCKET_GCS); // Nombre bucket en Google Cloud Storage
-    let folderName = 'upload', subFolderName = '', newItemOrUpdate = ''
+    let bucket = storageToGCS.bucket(process.env.STORE_BUCKET_GCS), // Nombre bucket en Google Cloud Storage
+        folderName = 'upload', subFolderName = '', newItemOrUpdate = ''
 
     const mapping = {
         imageTextAvatarUser: 'AvatarUsersImages',
@@ -39,6 +39,8 @@ async function uploadToGCS(req, res, next) {
         imageProjectFileName: 'projectImages',
         imageOciFileName: 'projectImages',
         imageTextImageTool: 'ToolsImages',
+        imageTextImageCuttingTool: 'CuttingToolsImages',
+        imageTextImageConsumibles: 'Consumibles',
         imageTextImageSupplier: 'SuppliersImages'
     };
     
@@ -51,14 +53,14 @@ async function uploadToGCS(req, res, next) {
         }
     }
 
-    let originalname = (newItemOrUpdate).match(/[^\/]+$/)[0]
-    let cleanOriginalName = originalname.replace(/[^a-zA-Z0-9./_ ]/g, '-');
+    let originalname = (newItemOrUpdate).match(/[^\/]+$/)[0],
+        cleanOriginalName = originalname.replace(/[^a-zA-Z0-9./_ ]/g, '-');
     const blob = bucket.file(`${folderName}/${subFolderName}/${cleanOriginalName}`);
 
     //**************Comprimir imagenes********************/
     // Detectar el formato de la imagen
-    const image = sharp(req.file.buffer);
-    const metadata = await image.metadata();
+    const image = sharp(req.file.buffer),
+        metadata = await image.metadata();
 
     // Procesar la imagen según su formato
     let processedImage;
@@ -129,18 +131,18 @@ async function uploadToGCSingleFile(req, res, next) {
         credentials: credentials,
     });
     
-    let bucket = storageToGCS.bucket(process.env.STORE_BUCKET_GCS); // Nombre bucket en Google Cloud Storage
-    let folderName = 'upload';
-    let subFolderName = 'projectImages';
-    let updateProjectOrOci = []
-    let originalname
-    let blob
+    let bucket = storageToGCS.bucket(process.env.STORE_BUCKET_GCS), // Nombre bucket en Google Cloud Storage
+        folderName = 'upload',
+        subFolderName = 'projectImages',
+        updateProjectOrOci = [],
+        originalname,
+        blob
 
     async function compressAndUpload(blob, originalname, f) {
         //**************Comprimir imagenes********************/
         // Detectar el formato de la imagen
-        const image = sharp(req.files[f].buffer);
-        const metadata = await image.metadata();
+        const image = sharp(req.files[f].buffer),
+            metadata = await image.metadata();
 
         // Procesar la imagen según su formato
         let processedImage;

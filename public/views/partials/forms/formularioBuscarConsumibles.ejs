@@ -1,0 +1,47 @@
+<div class="shadow-lg col-md-5 mx-auto my-2 w-50 border rounded p-3 text-white bg-opacity-50" style="background-color: #272787;">
+    <form class="row align-items-center" id="searchFormConsumible" onsubmit="return searchConsumibles(this)">
+        <div class="col-md-4">
+            <label class="form-check-label ms-2 text-white" for="queryTools">Buscar</label>
+            <input class="form-control" type="text" id="queryConsumibles" name="queryConsumibles" placeholder="Buscar Herramientas">
+        </div>
+
+        <div class="col-md-3 ms-2">
+            <label class="form-check-label ms-2 text-white" for="enUsoConsumible">Status</label>
+            <select class="form-select small" aria-label=".form-select" name="enUsoConsumible" id="enUsoConsumible" style="font-size: 13px;">
+                <option selected value="todas">Todas</option>
+                <option value="activas">En Uso</option>
+                <option value="mantenimiento">Sin Usar</option>
+            </select>
+        </div>
+
+        <div class="col-md-3 ms-2">
+            <label class="form-check-label ms-2 text-white" for="enUsoConsumible">Stock</label>
+            <select class="form-select small" aria-label=".form-select" name="enUsoConsumible" id="enUsoConsumible" style="font-size: 13px;">
+                <option selected value="todas">Todas</option>
+                <option value="activas">Con Stock</option>
+                <option value="mantenimiento">Sin Stock</option>
+            </select>
+        </div>
+
+        <div class="col-md-2 ms-2">
+            <label class="form-check-label ms-2 text-white" for="typeConsumible">Tipo</label>
+            <select class="form-select small" aria-label=".form-select" name="typeConsumible" id="typeConsumible" style="font-size: 13px;">
+                <option selected value="todas">Todas</option>
+                <option value="epp">EPP</option>
+                <option value="insertos">Insertos</option>
+                <option value="consumiblesAjuste">Consumibles Ajuste</option>
+                <option value="consumiblesMeca">Consumibles Mecanizado</option>
+                <option value="otros">Otros</option>
+            </select>
+        </div>
+
+        <div class="col-md">
+            <button class="btn rounded-circle bg-white me-2 text-dark" title="Buscar" type="submit">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <button class="btn rounded-circle bg-white ms-2 text-dark" title="Eliminar filtros" type="reset">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </div>
+    </form>
+</div>

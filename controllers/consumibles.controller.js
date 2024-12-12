@@ -1,15 +1,15 @@
 const UserService = require("../services/users.service.js")
-const ToolService = require("../services/tools.service.js")
+const ConsumibleService = require("../services/consumibles.service.js")
 
 const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
-const { uploadMulterSingleImageTool } = require("../utils/uploadMulter.js")
+const { uploadMulterSingleImageConsumible } = require("../utils/uploadMulter.js")
 
 let formatDate = require('../utils/formatDate.js')
 
 const csrf = require('csrf');
 const csrfTokens = csrf();
 
-let toolPictureNotFound = "../../../src/images/upload/ToolsImages/noImageFound.png"
+let consumiblePictureNotFound = "../../../src/images/upload/ConsumiblesImages/noImageFound.png"
 const cookie = require('../utils/cookie.js')
 
 const data = require('../utils/variablesInicializator.js')
@@ -23,27 +23,27 @@ const {catchError400_3,
         catchError500
 } = require('../utils/catchErrors.js')
 
-class ToolsController {  
+class ConsumiblesController {  
     constructor(){
         this.users = new UserService()
-        this.tools = new ToolService()
+        this.consumibles = new ConsumibleService()
     }
 
-    getAllTools = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
+    getAllConsumibles = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         const expires = cookie(req)
         
         try {
-            const maquinas = await this.tools.getAllTools()
-            !maquinas ? catchError400_5(req, res, next) : null
+            const consumibles = await this.consumibles.getAllConsumibles()
+            !consumibles ? catchError400_5(req, res, next) : null
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('addNewTool', {
+            res.render('addNewConsumible', {
                 username,
                 userInfo,
                 expires,
-                maquinas,
+                consumibles,
                 data,
                 csrfToken
             })
@@ -53,22 +53,22 @@ class ToolsController {
         }
     }
 
-    getToolById = async (req, res, next) => {
+    getConsumibleById = async (req, res, next) => {
         const { id } = req.params
         let username = res.locals.username
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
         
         try {
-            const maquina = await this.tools.getToolById(id)           
-            !maquina ? catchError401_3(req, res, next) : null
+            const consumible = await this.consumibles.getConsumibleById(id)           
+            !consumible ? catchError401_3(req, res, next) : null
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('toolDetails', {
+            res.render('consumibleDetails', {
                 username,
                 userInfo,
                 expires,
-                maquina,
+                consumible,
                 data,
                 csrfToken
             })
@@ -78,18 +78,18 @@ class ToolsController {
         }
     }
 
-    getToolByDesignation = async (req, res, next) => {
+    getConsumibleByDesignation = async (req, res, next) => {
         const { designation } = req.params
         let userInfo = res.locals.userInfo
         const expires = cookie(req)
         
         try {
-            const maquina = await this.tools.getToolByToolname(designation)
-            !maquina ? catchError401_3(req, res, next) : null
+            const consumible = await this.consumibles.getConsumibleByConsumiblename(designation)
+            !consumible ? catchError401_3(req, res, next) : null
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('toolDetails', {
-                maquina,
+            res.render('consumibleDetails', {
+                consumible,
                 username,
                 userInfo,
                 expires,
@@ -102,13 +102,13 @@ class ToolsController {
         }
     }
 
-    createNewTool = async (req, res, next) => {
+    createNewConsumible = async (req, res, next) => {
         let username = res.locals.username;
         let userInfo = res.locals.userInfo;
         const expires = cookie(req)
 
-        //------ Storage New Tool Image in Google Store --------        
-        uploadMulterSingleImageTool(req, res, async (err) => {
+        //------ Storage New Consumible Image in Google Store --------        
+        uploadMulterSingleImageConsumible(req, res, async (err) => {
             try {
                 console.log('req.file: ', req.file)
                 if (req.file) {
@@ -122,24 +122,24 @@ class ToolsController {
 
                 const designationInput = req.body.designation.replace(/[!@#$%^&*]/g, ""),
                     codeInput = req.body.code,
-                    modelInput = req.body.model
+                    modelInput = req.body-model
 
-                const newToolValid = {
+                const newConsumibleValid = {
                     designation: designationInput,
                     code: codeInput
                 };
 
-                const toolExist = await this.tools.getExistingTool(newToolValid);
-                if (toolExist) {
+                const consumibleExist = await this.consumibles.getExistingConsumible(newConsumibleValid);
+                if (consumibleExist) {
                     catchError400_6(req, res, next)
                 } else {
-                        const newTool = {
+                        const newConsumible = {
                         designation: designationInput,
                         code: codeInput,
                         model: modelInput,
                         type: req.body.type,
                         characteristics: req.body.characteristics,
-                        imageTool: req.body.imageTextImageTool || toolPictureNotFound,
+                        imageConsumible: req.body.imageTextImageConsumible || consumiblePictureNotFound,
                         status: req.body.status === 'on' ? Boolean(true) : Boolean(false) || Boolean(true),
                         creator: dataUserCreator(userCreator),
                         timestamp: formatDate(),
@@ -148,20 +148,20 @@ class ToolsController {
                         visible: true
                     };
 
-                    const maquina = await this.tools.addNewTool(newTool);
-                    !maquina ? catchError400_6(req, res, next) : null
+                    const consumible = await this.consumibles.addNewConsumible(newConsumible);
+                    !consumible ? catchError400_6(req, res, next) : null
 
                     const usuarioLog = await this.users.getUserByUsername(username);
                     !usuarioLog.visible ? catchError401_3(req, res, next) : null
 
                     const csrfToken = csrfTokens.create(req.csrfSecret);
-                    return res.render('addNewTool', {
+                    return res.render('addNewConsumible', {
                         username,
                         userInfo,
                         expires,
                         data,
                         csrfToken,
-                        maquina
+                        consumible
                     });
                 }
 
@@ -171,56 +171,47 @@ class ToolsController {
         })
     }
     
-    updateTool = async (req, res, next) => {
+    updateConsumible = async (req, res, next) => {
         const { id } = req.params,
             expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
 
-        uploadMulterSingleImageTool(req, res, async (err) => {
+        uploadMulterSingleImageConsumible(req, res, async (err) => {
             try {
                 req.file ? await uploadToGCS(req, res, next) : null
 
-                const toolId = id,
-                    toolToModify = await this.tools.getToolById(toolId)
+                const consumibleId = id,
+                    consumibleToModify = await this.consumibles.getConsumibleById(consumibleId)
 
-                let maquinasRestantes
-                const toolInput = req.body.designation.replace(/[!@#$%^&* ]/g, ""),
-                    designationValid = await this.tools.getToolByDesignation(toolInput),
-                    otherTools = await this.tools.getAllTools()
+                let consumiblesRestantes
+                const consumibleInput = req.body.designation.replace(/[!@#$%^&* ]/g, ""),
+                    designationValid = await this.consumibles.getConsumibleByDesignation(consumibleInput),
+                    otherCutting = await this.consumibles.getAllConsumibles()
                 
-                // Función para eliminar una maquina de la lista si coincide con la maquina a comparar
-                function eliminarMaquina(lista, maquina) {
+                // Función para eliminar un consumible de la lista si coincide con el consumible a comparar
+                function eliminarConsumible(lista, consumible) {
                     return lista.filter(h => {
-                        return h._id.toString() !== maquina._id.toString()
+                        return h._id.toString() !== consumible._id.toString()
                     })
                 }
                 
-                // Eliminar la maquina de la lista
+                // Eliminar el consumible de la lista
                 if (designationValid) {
-                    maquinasRestantes = eliminarMaquina(otherTools, designationValid)
+                    consumiblesRestantes = eliminarConsumible(otherConsumibles, designationValid)
 
-                    const designations = maquinasRestantes.map(maquina => maquina.designation)
-                    if (designations.includes(toolToModify.designation)) {
-                        const err = new Error (`Ya existe una Maquina con esta designación: ${toolInput}!`)
+                    const designations = consumiblesRestantes.map(consumible => consumible.designation)
+                    if (designations.includes(consumibleToModify.designation)) {
+                        const err = new Error (`Ya existe un Consumible con esta designación: ${consumibleInput}!`)
                         err.statusCode = 400
                         return next(err);
                     }
 
                     const codeInput = req.body.code,
-                        codesId = maquinasRestantes.map(maquina => maquina.code);
+                        codesId = consumiblesRestantes.map(consumible => consumible.code);
                     
-                    if (codesId.includes(toolToModify.code)) {
-                        const err = new Error (`Ya existe una Maquina con este Código #${codeInput}!`)
-                        err.statusCode = 400
-                        return next(err);
-                    }
-
-                    const modelInput = req.body.model,
-                        modelsId = maquinasRestantes.map(maquina => maquina.model);
-                    
-                    if (modelsId.includes(toolToModify.model)) {
-                        const err = new Error (`Ya existe una Maquina con este Modelo #${modelInput}!`)
+                    if (codesId.includes(consumibleToModify.code)) {
+                        const err = new Error (`Ya existe un Consumible con este Código #${codeInput}!`)
                         err.statusCode = 400
                         return next(err);
                     }
@@ -229,27 +220,27 @@ class ToolsController {
                 const userLogged = await this.users.getUserByUsername(username);
                 !userLogged.visible ? catchError401_3(req, res, next) : null
 
-                let updatedTool = {
+                let updatedConsumible = {
                     designation: req.body.designation,
                     code: req.body.code,
                     model: req.body.model,
                     type: req.body.typeHidden,
                     characteristics: req.body.characteristics,
-                    imageTool: req.body.imageTextImageTool,
+                    imageConsumible: req.body.imageTextImageConsumible,
                     status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
                     modificator: dataUserModificatorNotEmpty(userLogged),
                     modifiedOn: formatDate()
                 }
 
-                const maquina = await this.tools.updateTool(toolId, updatedTool, dataUserModificatorNotEmpty(userLogged))
-                !maquina ? catchError400_3(req, res, next) : null
+                const consumible = await this.consumibles.updateConsumible(consumibleId, updatedConsumible, dataUserModificatorNotEmpty(userLogged))
+                !consumible ? catchError400_3(req, res, next) : null
                         
                 const csrfToken = csrfTokens.create(req.csrfSecret);
-                return res.render('addNewTool', {
+                return res.render('addNewConsumible', {
                     username,
                     userInfo,
                     expires,
-                    maquina,
+                    consumible,
                     data,
                     csrfToken,
                 })
@@ -260,40 +251,40 @@ class ToolsController {
         })
     }
 
-    searchTools = async (req, res, next) => {
+    searchConsumibles = async (req, res, next) => {
         try {
-            const tools = await this.tools.getAllTools()
-            !tools ? catchError400_5(req, res, next) : null
-            res.send(tools)
+            const consumibles = await this.consumibles.getAllConsumibles()
+            !consumibles ? catchError400_5(req, res, next) : null
+            res.send(consumibles)
 
         } catch (err) {
             catchError500(err, req, res, next)
         }
     }
 
-    deleteToolById = async (req, res, next) => {
+    deleteConsumibleById = async (req, res, next) => {
         const { id } = req.params,
             expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
 
         try {
-            const toolToDelete = await this.tools.getToolById(id)
-            !toolToDelete ? catchError401_3(req, res, next) : null
+            const consumibleToDelete = await this.consumibles.getConsumibleById(id)
+            !consumibleToDelete ? catchError401_3(req, res, next) : null
 
             const userId = userInfo.id,
                 userLogged = await this.users.getUserById(userId)
             !userLogged ? catchError401_3(req, res, next) : null
 
-            const maquina = await this.tools.deleteToolById(id, dataUserModificatorNotEmpty(userLogged))
-            !maquina ? catchError401_3(req, res, next) : null
+            const consumible = await this.consumibles.deleteConsumibleById(id, dataUserModificatorNotEmpty(userLogged))
+            !consumible ? catchError401_3(req, res, next) : null
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('addNewTool', {
+            res.render('addNewConsumible', {
                 username,
                 userInfo,
                 expires,
-                maquina,
+                consumible,
                 data,
                 csrfToken
             })
@@ -305,4 +296,4 @@ class ToolsController {
 
 }
 
-module.exports = { ToolsController }
+module.exports = { ConsumiblesController }

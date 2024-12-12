@@ -375,10 +375,16 @@ html body .display-7 {
 .card {
   margin-bottom: 5px;
   margin-top: 12px;
+  width: 20vw;
+  align-content: center;
   border: none;
   -webkit-box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
   -moz-box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
   box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
+}
+
+.card_dashboard{
+  width: 20vw;
 }
 
 .card_dashboard:hover{
@@ -1322,3 +1328,117 @@ form.dropzone {
 .option-image {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
+    /* Contenedor principal */
+    .range-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding-left: 3rem;
+      gap: 1rem;
+      width: 35vw;
+      height: 14vh;
+      background-color: #0083bf50;
+  }
+
+  /* Input range */
+  .form-range {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 75%;
+      height: 6px;
+      /* background: #ddd; */
+      background: linear-gradient(to right, #007bff 0%, #007bff 0%, #ddd 0%);
+      overflow: hidden;
+      border-radius: 3px;
+      outline: none;
+      position: relative;
+      z-index: 2;
+  }
+
+  /* Cambia el color de la barra pintada */
+  .form-range::-webkit-slider-runnable-track {
+      -webkit-appearance: none;
+      height: 6px;
+      background: transparent;
+  }
+
+  .form-range::-moz-range-track {
+  background: transparent;
+  height: 6px;
+  }
+
+  .range-value {
+      display: flex;
+      flex-direction: row;
+      width: 6vw;
+  }
+
+  .form-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #830000;
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      position: relative;
+      z-index: 3;
+      border: none;
+      transform: rotate(90deg); /* Inicialmente apuntando hacia la derecha */
+      transition: transform 0.2s ease;
+      cursor: pointer;
+  }
+
+  .form-range::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: #830000;
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      border: none;
+      transform: rotate(90deg); /* Inicialmente apuntando hacia la derecha */
+      transition: transform 0.2s ease;
+      cursor: pointer;
+  }
+
+  /* Ajusta el color de la barra en navegadores compatibles con WebKit */
+  .form-range::-webkit-slider-runnable-track:before {
+      content: "";
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(to right, #005bbb var(--progress), #fafafa var(--progress));
+      position: absolute;
+      left: 0;
+      top: 0;
+  }
+
+  /* Estilo del track en navegadores Firefox */
+  .form-range::-moz-range-track {
+          background: transparent;
+          height: 6px;
+  }
+
+  /* SVG para el círculo */
+  .circle-container {
+      position: absolute;
+      top: 0%;
+      height: 14vh;
+      left: 0; /* Ajustar al inicio del input range */
+      pointer-events: none;
+      z-index: 1;
+  }
+
+  .circle-container circle {
+      fill: none;
+      stroke: #005bbb;
+      stroke-width: 4px; /* Cambiar aquí para ajustar el grosor del círculo */
+      transform: translateY(12.5%);
+  }
+
+  .circle-container text {
+      fill: #005bbb;
+      font-size: 32px; /* Ajustar tamaño del símbolo "+" */
+      font-weight: lighter; /*bold;*/
+      dominant-baseline: middle;
+      text-anchor: middle;
+  }

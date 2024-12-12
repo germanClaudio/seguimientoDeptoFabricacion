@@ -1,12 +1,12 @@
 const socket = io.connect()
 
 function formatDate(date) {
-    const DD = String(date.getDate()).padStart(2, '0');
-    const MM = String(date.getMonth() + 1).padStart(2, '0');
-    const YY = date.getFullYear();
-    const hh = String(date.getHours()).padStart(2, '0');
-    const mm = String(date.getMinutes()).padStart(2, '0');
-    const ss = String(date.getSeconds()).padStart(2, '0');
+    const DD = String(date.getDate()).padStart(2, '0'),
+        MM = String(date.getMonth() + 1).padStart(2, '0'),
+        YY = date.getFullYear(),
+        hh = String(date.getHours()).padStart(2, '0'),
+        mm = String(date.getMinutes()).padStart(2, '0'),
+        ss = String(date.getSeconds()).padStart(2, '0');
     return DD + "-" + MM + "-" + YY + " " + hh + "." + mm + "." + ss
 }
 
@@ -36,14 +36,8 @@ const addClient = () => {
 const renderClient = (arrClient) => {
     
     const html = arrClient.map((element) => {
-        let disabled = 'disabled'
-        let green = 'success'
-        let red = 'danger'
-        let text = "Activo"
-        let grey = 'secondary'
-        let black = 'dark'
-        let blue = 'primary'
-        let result = 'S/P'
+        let disabled = 'disabled', result = 'S/P', text = "Activo",
+            green = 'success', red = 'danger', grey = 'secondary', black = 'dark', blue = 'primary'
         colorResult = grey
 
         if ( element.status === true && element.project > 0 ) {
@@ -64,7 +58,7 @@ const renderClient = (arrClient) => {
             colorStatus = red
             text = "Inactivo"
         }
- 
+
         if(element.visible) {
             return (`<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
                         <div class="card shadow-lg rounded-3 mx-auto my-4" style="width: 15rem; height: 25rem;">

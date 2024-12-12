@@ -69,7 +69,7 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
         }
     }
 
-    async getToolByCode(model) {
+    async getToolByModel(model) {
         if(model){
             try {
                 const tool = await Maquinas.findOne( {model: `${model}`} )
@@ -87,7 +87,7 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
         }
     }
 
-    async getToolByTyoe(type) {
+    async getToolByType(type) {
         if(type){
             try {
                 const tool = await Maquinas.findOne( {type: `${type}`} )

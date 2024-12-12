@@ -22,7 +22,10 @@ const routerProgramas = require('./Routes/programas.route.js')
 const routerAjustes = require('./Routes/ajustes.route.js')
 const routerMensajes = require('./Routes/mensajes.route.js')
 const routerTools = require('./Routes/maquinas.route.js')
+const routerCuttingTools = require('./Routes/herramientas.route.js')
+const routerConsumibles = require('./Routes/consumibles.route.js')
 const routerSuppliers = require('./Routes/proveedores.route.js')
+
 
 const { infoRouter } = require('./Routes/info.routes.js')
 const { authRouter } = require('./Routes/auth.routes.js')
@@ -80,6 +83,8 @@ const initServer = () => {
             URL_GOOGLE_STORE_AVATARS: process.env.URL_GOOGLE_STORE_AVATARS,
             URL_GOOGLE_STORE_LOGOCLIENTS: process.env.URL_GOOGLE_STORE_LOGOCLIENTS,
             URL_GOOGLE_STORE_TOOLIMAGE: process.env.URL_GOOGLE_STORE_TOOLIMAGE,
+            URL_GOOGLE_STORE_CUTTINGTOOLIMAGE: process.env.URL_GOOGLE_STORE_CUTTINGTOOLIMAGE,
+            URL_GOOGLE_STORE_CONSUMIBLEIMAGE: process.env.URL_GOOGLE_STORE_CONSUMIBLEIMAGE,
             URL_GOOGLE_STORE_SUPPLIERIMAGE: process.env.URL_GOOGLE_STORE_SUPPLIERIMAGE
         });
     });
@@ -119,6 +124,8 @@ const initServer = () => {
     app.use('/info', infoRouter)
     app.use('/api/webchat', routerMensajes)
     app.use('/api/maquinas', routerTools)
+    app.use('/api/herramientas', routerCuttingTools)
+    app.use('/api/consumibles', routerConsumibles)
     app.use('/api/proveedores', routerSuppliers)
     ///////////////////////////////////////////////////
 

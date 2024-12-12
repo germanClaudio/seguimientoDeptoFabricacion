@@ -10,25 +10,13 @@
     <div class="container" style="padding-top: 70px;"></div>
     <br>
     <% if (userInfo.superAdmin) { %>
-        <%- include('../partials/mainCharts/adminChartDemo'); %>
+        <%- include('../partials/mainCharts/toolShoopAdminChart'); %>
     <% } else if (userInfo.admin && !userInfo.superAdmin) { %>
-        <%- include('../partials/mainCharts/adminChartDemo'); %>
+        <%- include('../partials/mainCharts/toolShoopAdminChart'); %>
     <% } else { %>
-        <%- include('../partials/mainCharts/userChartDemo'); %>
+        <%- include('../partials/mainCharts/toolShoopUserChart'); %>
     <% } %>
     
-    <div class="d-block mx-auto mt-1 text-center bg-primary-light">    
-        <%- include('../partials/forms/formularioBuscarCliente'); %>
-        <%- include('../partials/data/dataClientSearch'); %>
-    </div>
-    <!-- ------------ Lista de Clientes ------------ -->
-    <%- include('../partials/sections/sectionClientList'); %>
-    
-    <div class="d-block mx-auto mb-3 text-center w-75">
-        <%- include('../partials/data/dataClientList'); %>
-    </div>
-    <!-- ---------- Fin Lista de Clientes ---------- -->
-
     <div class="d-block mx-auto mt-1 text-center bg-primary-light">    
         <%- include('../partials/forms/formularioBuscarConsumibles'); %>
         <%- include('../partials/data/dataConsumiblesSearch'); %>

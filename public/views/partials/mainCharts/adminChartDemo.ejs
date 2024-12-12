@@ -1,7 +1,7 @@
-<div class="container-fluid" style="background-color: #F5F7FA;">
+<div class="container-fluid mx-auto" style="background-color: #F5F7FA;">
     <%- include('../../partials/sections/sectionMainAppTitle'); %>
     <!-- first Row -->
-    <div class="row justify-content-evenly">
+    <div class="row justify-content-evenly ms-4">
         <!-- clientes -->
         <div class="col-xl-3 col-sm-6 col-12">
             <a href="/api/clientes" style="text-decoration: none;">
@@ -103,8 +103,9 @@
             </a>
         </div>
     </div>
+
     <!-- Second Row -->
-    <div class="row justify-content-evenly">
+    <div class="row justify-content-evenly ms-4">
         <!-- Estado de Programación / Mecanizado -->
         <div class="col-xl-3 col-sm-6 col-12">
             <a href="/api/programas" style="text-decoration: none;">
@@ -118,7 +119,7 @@
                                         proyectos[i].project[0].levelProject === 'ganado' ? arrayActiveProject.push(proyectos[i].project) : null
                                     } %>
                                     <h3><%= arrayActiveProject.length %></h3>
-                                    <span>Programación Cad-Cam Mecanizado Ajuste</span>
+                                    <span>Programación Mecanizado Ajuste</span>
                                 </div>
                                 <div class="align-self-center ms-auto">
                                     <i class="icon-calendar font-large-2 float-right"></i>
@@ -129,34 +130,28 @@
                 </div>
             </a>
         </div>
-        <!-- oci's -->
+        <!-- Herramientas -->
         <div class="col-xl-3 col-sm-6 col-12">
-            <a href="/api/proyectos/oci-list/all" style="text-decoration: none;">
+            <a href="/api/herramientas" style="text-decoration: none;">
                 <div class="card rounded-3 card_dashboard">
                     <div class="card-content">
                         <div class="card-body">
                             <div class="media d-flex mx-2">
                                 <div class="media-body text-left">
-                                    <% let arrayOci = []
-                                    for (let i=0; proyectos.length>i; i++ ) {
-                                        proyectos[i].visible ? arrayOci.push(proyectos[i].project[0]) : null
-                                    }
-
-                                    let arrayVisibleOci = []
-                                    for (let j=0; arrayOci.length>j; j++ ) {
-                                        arrayOci[j].visible ? arrayVisibleOci.push(arrayOci[j].oci) : null
-                                    }
-
-                                    let arrayActiveOci = [].concat(...arrayVisibleOci)
-                                    let resultArrayOci = []
-                                    for (let k=0; arrayActiveOci.length>k; k++ ) {
-                                        arrayActiveOci[k].visible ? resultArrayOci.push(arrayActiveOci[k].ociNumber) : null
-                                    } %>
-                                    <h3 class="font-medium"><%= resultArrayOci.length %>/<span style="font-size: 0.95rem;" ><%=arrayActiveOci.length%></span></h3>
-                                    <span>Cantidad de OCI's</span>
+                                    <% let herramientasVisibles = [], herramientasEnUso = [];
+                                        for (let h=0; herramientas.length > h ; h++) {
+                                            herramientas[h].status ? herramientasVisibles.push(herramientas[h]) : herramientasEnUso.push(herramientas[h])
+                                        } %>
+                                        <h3 class="font-medium"><%= parseInt(herramientasVisibles.length) %>/<span style="font-size: 0.95rem;" ><%= parseInt(herramientas.length) %></span></h3>
+                                        <% if ( herramientasEnUso.length != 0 ) { %>
+                                            <span><%= parseInt(herramientasVisibles.length) %> Herramientas En Uso</span> / <span class="badge rounded-pill text-bg-danger"><%= herramientasEnUso.length %> en Uso</span>
+                                            <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #b09b12;"></i>
+                                        <% } else { %>
+                                            <span class="badge rounded-pill text-bg-success">Herramientas En Uso</span>
+                                        <% } %>
                                 </div>
                                 <div class="align-self-center ms-auto">
-                                    <i class="icon-settings success font-large-2 float-right"></i>
+                                    <i class="icon-wrench success font-large-2 float-right"></i>
                                 </div>
                             </div>
                         </div>
@@ -178,14 +173,137 @@
                                         } %>
                                         <h3 class="font-medium"><%= parseInt(maquinasVisibles.length) %>/<span style="font-size: 0.95rem;" ><%= parseInt(maquinas.length) %></span></h3>
                                         <% if ( maquinasEnMantenimiento.length != 0 ) { %>
-                                            <span><%= parseInt(maquinasVisibles.length) %> Maquinas Activas</span> / <span class="badge rounded-pill text-bg-danger"><%= maquinasEnMantenimiento.length %> en Mantenimiento</span>
+                                            <span class="badge rounded-pill text-bg-danger"><%= maquinasEnMantenimiento.length %> en Mantenimiento</span>
                                             <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #b09b12;"></i>
                                         <% } else { %>
                                             <span class="badge rounded-pill text-bg-success">Maquinas Activas</span>
                                         <% } %>
                                 </div>
                                 <div class="align-self-center ms-auto">
-                                    <i class="icon-wrench success font-large-2 float-right"></i>
+                                    <i class="icon-bulb success font-large-2 float-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!-- Proveedores -->
+        <div class="col-xl-3 col-sm-6 col-12">
+            <a href="/api/proveedores" style="text-decoration: none;">
+                <div class="card rounded-3 card_dashboard">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="media d-flex mx-2">
+                                <div class="media-body text-left">
+                                    <% let proveedoresVisibles = [], proveedoresInactivos = [];
+                                        for (let h=0; proveedores.length > h ; h++) {
+                                            proveedores[h].status ? proveedoresVisibles.push(proveedores[h]) : proveedoresInactivos.push(proveedores[h])
+                                        } %>
+                                        <h3 class="font-medium"><%= parseInt(proveedoresVisibles.length) %>/<span style="font-size: 0.95rem;" ><%= parseInt(proveedores.length) %></span></h3>
+                                        <% if ( proveedoresInactivos.length != 0 ) { %>
+                                            <span><%= parseInt(proveedoresVisibles.length) %> Proveedores Activos</span> / <span class="badge rounded-pill text-bg-danger"><%= proveedoresInactivos.length %> en Mantenimiento</span>
+                                        <% } else { %>
+                                            <span class="badge rounded-pill text-bg-success">Proveedores Activos</span>
+                                        <% } %>
+                                </div>
+                                <div class="align-self-center ms-auto">
+                                    <i class="icon-energy font-large-2 float-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Third Row -->
+    <div class="row justify-content-evenly ms-4">
+        <!-- Configuración Herramientas -->
+        <div class="col-xl-3 col-sm-6 col-12">
+            <a href="/api/herramientasConfig" style="text-decoration: none;">
+                <div class="card rounded-3 card_dashboard">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="media d-flex mx-2">
+                                <div class="media-body text-left">
+                                    <% for (let i=0; proyectos.length>i; i++ ) {
+                                        proyectos[i].project[0].levelProject === 'ganado' ? arrayActiveProject.push(proyectos[i].project) : null
+                                    } %>
+                                    <h3><%= arrayActiveProject.length %></h3>
+                                    <span>Configuración Herramientas</span>
+                                </div>
+                                <div class="align-self-center ms-auto">
+                                    <i class="icon-equalizer font-large-2 float-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!-- Consumibles -->
+        <div class="col-xl-3 col-sm-6 col-12">
+            <a href="/api/consumibles" style="text-decoration: none;">
+                <div class="card rounded-3 card_dashboard">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="media d-flex mx-2">
+                                <div class="media-body text-left">
+                                    <% let arrayConsumibles = [], arrayVisibleConsumible = []
+                                    for (let i=0; consumibles.length>i; i++ ) {
+                                        consumibles[i].visible ? arrayConsumibles.push(consumibles[i].designation) : null
+                                    }
+
+                                    for (let j=0; arrayConsumibles.length>j; j++ ) {
+                                        arrayConsumibles[j].visible ? arrayVisibleConsumible.push(arrayConsumibles[j].designation) : null
+                                    }
+
+                                    let arrayActiveConsumible = [].concat(...arrayVisibleConsumible)
+                                    let resultArrayConsumible = []
+                                    for (let k=0; arrayActiveConsumible.length>k; k++ ) {
+                                        arrayActiveConsumible[k].visible ? resultArrayConsumible.push(arrayActiveConsumible[k].designation) : null
+                                    } %>
+                                    <h3 class="font-medium"><%= resultArrayConsumible.length %>/<span style="font-size: 0.95rem;" ><%=arrayActiveConsumible.length%></span></h3>
+                                    <span>Consumibles - EPP</span>
+                                </div>
+                                <div class="align-self-center ms-auto">
+                                    <i class="icon-basket font-large-2 float-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!-- oci's -->
+        <div class="col-xl-3 col-sm-6 col-12">
+            <a href="/api/proyectos/oci-list/all" style="text-decoration: none;">
+                <div class="card rounded-3 card_dashboard">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="media d-flex mx-2">
+                                <div class="media-body text-left">
+                                    <% let arrayOci = [], arrayVisibleOci = []
+                                    for (let i=0; proyectos.length>i; i++ ) {
+                                        proyectos[i].visible ? arrayOci.push(proyectos[i].project[0]) : null
+                                    }
+
+                                    for (let j=0; arrayOci.length>j; j++ ) {
+                                        arrayOci[j].visible ? arrayVisibleOci.push(arrayOci[j].oci) : null
+                                    }
+
+                                    arrayActiveOci = [].concat(...arrayVisibleOci)
+                                    resultArrayOci = []
+                                    for (let k=0; arrayActiveOci.length>k; k++ ) {
+                                        arrayActiveOci[k].visible ? resultArrayOci.push(arrayActiveOci[k].ociNumber) : null
+                                    } %>
+                                    <h3 class="font-medium"><%= resultArrayOci.length %>/<span style="font-size: 0.95rem;" ><%=arrayActiveOci.length%></span></h3>
+                                    <span>Cantidad de OCI's</span>
+                                </div>
+                                <div class="align-self-center ms-auto">
+                                    <i class="icon-settings success font-large-2 float-right"></i>
                                 </div>
                             </div>
                         </div>
@@ -212,8 +330,9 @@
             </div>
         </div>
     </div>
-    <!-- Thrird Row -->
-    <div class="row justify-content-evenly">
+
+    <!-- Fourth Row -->
+    <div class="row justify-content-evenly ms-4">
         <!-- Tasa de Conversion -->
         <div class="col-xl-3 col-sm-6 col-12">
             <div class="card rounded-3 card_dashboard">
@@ -242,79 +361,39 @@
                 </div>
             </div>
         </div>
-        <!-- cantidad de OT -->
-        <!-- <div class="col-xl-3 col-sm-6 col-12">
+        <!-- Cutting Tools Rate -->
+        <div class="col-xl-3 col-sm-6 col-12">
             <div class="card rounded-3 card_dashboard">
                 <div class="card-content">
                     <div class="card-body">
                         <div class="media d-flex mx-2">
                             <div class="media-body text-left">
-                                <% let arrayOt = []
-                                for (let i=0; proyectos.length>i; i++ ) {
-                                    proyectos[i].visible ? arrayOt.push(proyectos[i].project[0]) : null
-                                }
-
-                                let arrayVisibleOt = []
-                                for (let j=0; arrayOt.length>j; j++ ) {
-                                    arrayOt[j].visible ? arrayVisibleOt.push(arrayOt[j].oci) : null
-                                }
-
-                                let arrayActiveOt = [].concat(...arrayVisibleOt)
-                                let resultArrayOt = []
-                                for (let k=0; arrayActiveOt.length>k; k++ ) {
-                                    arrayActiveOt[k].visible ? resultArrayOt.push(arrayActiveOt[k].otProject) : null
-                                }
-
-                                const arraysNoVacios = resultArrayOt.filter(subarray => subarray.length > 0);
-                                let arrayResultOt = [].concat(...arraysNoVacios)
-                                let arrayFinalOt = []
-                                for (let p=0; arrayResultOt.length>p; p++ ) {
-                                    arrayResultOt[p].visible ? arrayFinalOt.push(arrayResultOt[p].visible) : null
-                                } %>
-
-                                <h3 class="font-medium"><%= arrayFinalOt.length %>/<span style="font-size: 0.95rem;" ><%=arrayResultOt.length%></span></h3>
-                                <span>Cantidad de OT's</span>
+                                <% let countActiveCuttingTools = 0; let countVisibleCuttingTools = 0
+                                for (let i=0; herramientas.length>i; i++ ) {
+                                    herramientas[i].status ? herramientas[i].visible ? countActiveCuttingTools++ : null : null
+                                    countVisibleCuttingTools++
+                                } 
+                                let valueRateCuttingTools = parseFloat((countActiveCuttingTools / countVisibleCuttingTools)*100).toFixed(2) %>
+                                <h3 class="success"><%= valueRateCuttingTools %>%</h3>
+                                <span>Herramientas Rate</span>
                             </div>
                             <div class="align-self-center ms-auto">
-                                <i class="icon-list primary font-large-2 float-right"></i>
+                                <i class="icon-cup success font-large-2 float-right"></i>
                             </div>
                         </div>
                         <div class="progress mt-1 mb-0" style="height: 7px;">
-                            <div class="progress-bar bg-warning" style="width: <%= arrayFinalOt.length %>%" role="progressbar" aria-valuenow="<%= arrayFinalOt.length %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <% if (valueRateCuttingTools > 90 ) { %>
+                                <div class="progress-bar bg-success" role="progressbar" style="width: <%= valueRateCuttingTools %>%" aria-valuenow="<%= valueRateCuttingTools %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <% } else if (90 > valueRateCuttingTools && valueRateCuttingTools > 80) { %>
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: <%= valueRateCuttingTools %>%" aria-valuenow="<%= valueRateCuttingTools %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <% } else { %>
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: <%= valueRateCuttingTools %>%" aria-valuenow="<%= valueRateCuttingTools %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <% } %>
                         </div>
                     </div>
                 </div>
             </div>
-        </div> -->
-        
-        <div class="col-xl-3 col-sm-6 col-12">
-            <a href="/api/proveedores" style="text-decoration: none;">
-                <div class="card rounded-3 card_dashboard">
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="media d-flex mx-2">
-                                <div class="media-body text-left">
-                                    <% let proveedoresVisibles = [], proveedoresInactivos = [];
-                                        for (let h=0; proveedores.length > h ; h++) {
-                                            proveedores[h].status ? proveedoresVisibles.push(proveedores[h]) : proveedoresInactivos.push(proveedores[h])
-                                        } %>
-                                        <h3 class="font-medium"><%= parseInt(proveedoresVisibles.length) %>/<span style="font-size: 0.95rem;" ><%= parseInt(proveedores.length) %></span></h3>
-                                        <% if ( proveedoresInactivos.length != 0 ) { %>
-                                            <span><%= parseInt(proveedoresVisibles.length) %> Proveedores Activos</span> / <span class="badge rounded-pill text-bg-danger"><%= proveedoresInactivos.length %> en Mantenimiento</span>
-                                        <% } else { %>
-                                            <span class="badge rounded-pill text-bg-success">Proveedores Activos</span>
-                                        <% } %>
-                                </div>
-                                <div class="align-self-center ms-auto">
-                                    <i class="icon-energy font-large-2 float-right"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
         </div>
-
         <!-- Tools Rate -->
         <div class="col-xl-3 col-sm-6 col-12">
             <div class="card rounded-3 card_dashboard">

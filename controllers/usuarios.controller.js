@@ -3,6 +3,8 @@ const ProyectosService = require("../services/projects.service.js")
 const ClientesService = require("../services/clients.service.js")
 const MessagesService = require("../services/messages.service.js")
 const ToolsService = require("../services/tools.service.js")
+const CuttingToolsService = require("../services/cuttingTools.service.js")
+const ConsumiblesService = require("../services/consumibles.service.js")
 const SuppliersService = require("../services/suppliers.service.js")
 
 const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
@@ -12,15 +14,14 @@ const { generateToken } = require('../utils/generateToken')
 let formatDate = require('../utils/formatDate.js')
 const bCrypt = require('bcrypt')
 
-const csrf = require('csrf');
-const csrfTokens = csrf();
+const csrf = require('csrf'),
+    csrfTokens = csrf();
 
 let userPictureNotFound = "../../../src/images/upload/AvatarUsersImages/incognito.jpg"
 const cookie = require('../utils/cookie.js')
 
-const data = require('../utils/variablesInicializator.js')
-
-const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
+const data = require('../utils/variablesInicializator.js'),
+    { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
 
 const sessionTime = parseInt(process.env.SESSION_TIME) // 12 HORAS
 
@@ -56,6 +57,8 @@ class UsersController {
         this.users = new UserService()
         this.messages = new MessagesService()
         this.tools = new ToolsService()
+        this.cuttingTools = new CuttingToolsService()
+        this.consumibles = new ConsumiblesService()
         this.suppliers = new SuppliersService()
     }
 
@@ -486,10 +489,9 @@ class UsersController {
     }
 
     login = async (req, res, next) => {
-        const { username, password, sessionStarted } = req.body
-            
-        const cookie = req.session.cookie
-        const time = cookie.expires
+        const { username, password, sessionStarted } = req.body,
+            cookie = req.session.cookie,
+            time = cookie.expires
         let expires = new Date(time)
 
         const csrfToken = req.body._csrf;
@@ -515,16 +517,18 @@ class UsersController {
 
             boolean = isValidPassword(user, password)
             if (boolean) {
-                const usuarioUandP = await this.users.getUserByUsernameAndPassword(user.username, user.password)
-                const userInfo = await this.users.getUserByUsername(user.username)
+                const usuarioUandP = await this.users.getUserByUsernameAndPassword(user.username, user.password),
+                    userInfo = await this.users.getUserByUsername(user.username)
 
-                const clientes = await this.clients.getAllClients()
-                const usuarios = await this.users.getAllUsers()
-                const proyectos = await this.projects.getAllProjects()
-                const mensajes = await this.messages.getAllMessages()
-                const sessionLogin = await this.users.getAllSessions()
-                const maquinas = await this.tools.getAllTools()
-                const proveedores = await this.suppliers.getAllSuppliers()
+                const clientes = await this.clients.getAllClients(),
+                    usuarios = await this.users.getAllUsers(),
+                    proyectos = await this.projects.getAllProjects(),
+                    mensajes = await this.messages.getAllMessages(),
+                    sessionLogin = await this.users.getAllSessions(),
+                    maquinas = await this.tools.getAllTools(),
+                    herramientas = await this.cuttingTools.getAllCuttingTools(),
+                    consumibles = await this.consumibles.getAllConsumibles(),
+                    proveedores = await this.suppliers.getAllSuppliers()
                 
                 const sessions = parseInt(sessionLogin.length+1)
 
@@ -544,7 +548,7 @@ class UsersController {
 
                     await this.users.updateUserVisits(userInfo._id, usuarioUandP)
                     const usuario = await this.users.getUserById(userInfo._id)
-                    // console.log('usuario: ', usuario)
+                    console.log('usuario: ', usuario)
                     setTimeout(() => {
                         return res.render('index', {
                             usuario,
@@ -558,6 +562,8 @@ class UsersController {
                             data,
                             sessions,
                             maquinas,
+                            herramientas,
+                            consumibles,
                             proveedores,
                         })
                     }, 250)
@@ -573,9 +579,9 @@ class UsersController {
                 }
             
             } else {
-                const flag = true
-                const fail = true
-                const csrfToken = csrfTokens.create(req.csrfSecret);
+                const flag = true,
+                    fail = true,
+                    csrfToken = csrfTokens.create(req.csrfSecret);
                 setTimeout(() => {
                     return res.render('login', {
                         flag,
@@ -624,19 +630,18 @@ class UsersController {
     }
 
     updatePasswordByUser = async (req, res, next) => {
-        const id = req.params.id
-        const newPassword = req.body.password
-        const confirmNewPassword = req.body.confirmPassword
-        let userInfo = res.locals.userInfo
+        const id = req.params.id,
+            newPassword = req.body.password,
+            confirmNewPassword = req.body.confirmPassword,
+            userInfo = res.locals.userInfo
 
         const csrfToken = req.body._csrf;
         !csrfTokens.verify(req.csrfSecret, csrfToken) ? catchError403(req, res, next) : null
         
         if (newPassword === confirmNewPassword) {
-            const userToModify = await this.users.getUserById(id)
-
-            const userId = userInfo.id
-            const userLogged = await this.users.getUserById(userId)
+            const userToModify = await this.users.getUserById(id),
+                userId = userInfo.id,
+                userLogged = await this.users.getUserById(userId)
             !userLogged ? catchError401_3(req, res, next) : null
         
             if(userToModify.visible && userToModify.status) {
@@ -678,8 +683,8 @@ class UsersController {
     }
 
     userLogout = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         const expires = cookie(req)
         
         try {
@@ -705,8 +710,8 @@ class UsersController {
     }
 
     authBloq = async (req, res, next) => {
-        let username = req.query.username || ""
-        let password = req.query.password || ""
+        let username = req.query.username || "",
+            password = req.query.password || ""
         username = username.replace(/[!@#$%^&*]/g, "")
     
         try {
@@ -752,14 +757,16 @@ class UsersController {
         const expires = cookie(req)
         
         try {
-            const clientes = await this.clients.getAllClients()
-            const usuarios = await this.users.getAllUsers()
-            const maquinas = await this.tools.getAllTools()
-            const proveedores = await this.suppliers.getAllSuppliers()
-            const proyectos = await this.projects.getAllProjects()
-            const mensajes = await this.messages.getAllMessages()
-            const sessionsIndex = await this.users.getAllSessions()
-            const sessions = sessionsIndex.length
+            const clientes = await this.clients.getAllClients(),
+                usuarios = await this.users.getAllUsers(),
+                maquinas = await this.tools.getAllTools(),
+                herramientas = await this.cuttingTools.getAllCuttingTools(),
+                consumibles = await this.consumibles.getAllConsumibles(),
+                proveedores = await this.suppliers.getAllSuppliers(),
+                proyectos = await this.projects.getAllProjects(),
+                mensajes = await this.messages.getAllMessages(),
+                sessionsIndex = await this.users.getAllSessions(),
+                sessions = sessionsIndex.length
 
             const { flag, fail } = true
 
@@ -796,6 +803,8 @@ class UsersController {
                         data,
                         sessions,
                         maquinas,
+                        herramientas,
+                        consumibles,
                         proveedores,
                         csrfToken
                     })
@@ -818,11 +827,11 @@ class UsersController {
     }
 
     clientes = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
-        const visits = req.session.visits
-        const { flag, fail } = true
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req),
+            visits = req.session.visits,
+            { flag, fail } = true
 
         const csrfToken = req.body._csrf;
         !csrfTokens.verify(req.csrfSecret, csrfToken) ? catchError403(req, res, next) : null

@@ -49,11 +49,23 @@ function dataUserOciOwnerEmpty() {
     return modificator
 }
 
+function dataToolEmpty() {
+    const tool = [{
+        designation: "",
+        code: "",
+        type: "",
+        model: "",
+        imageTool: "",
+    }]
+    return tool
+}
+
 
 module.exports = {
     dataUserCreator,
     dataUserModificatorEmpty,
     dataUserModificatorNotEmpty,
     dataUserAuthorizator,
-    dataUserOciOwnerEmpty
+    dataUserOciOwnerEmpty,
+    dataToolEmpty
 }
