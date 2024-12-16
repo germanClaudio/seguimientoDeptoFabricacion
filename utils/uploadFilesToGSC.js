@@ -76,6 +76,9 @@ async function uploadToGCS(req, res, next) {
         processedImage = image
             .resize({ width: 1024, withoutEnlargement: true })
             .bmp({ quality: 80, compressionLevel: 9 }); // Ajustar la compresión
+    } else {
+        processedImage = image
+        .resize({ width: 1024, withoutEnlargement: true })
     }
 
     const data = await processedImage.toBuffer();
@@ -160,6 +163,9 @@ async function uploadToGCSingleFile(req, res, next) {
             processedImage = image
                 .resize({ width: 1024, withoutEnlargement: true })
                 .bmp({ quality: 80, compressionLevel: 9 }); // Ajustar la compresión
+        } else {
+            processedImage = image
+            .resize({ width: 1024, withoutEnlargement: true })
         }
     
         const data = await processedImage.toBuffer();

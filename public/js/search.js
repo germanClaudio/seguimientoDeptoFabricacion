@@ -622,11 +622,11 @@ const renderSearchedTools = (arrToolSearch) => {
                             <img src="${clientNotFound}"
                                 style="max-width=170vw; object-fit: contain;"
                                 class="img-fluid rounded p-1"
-                                alt="Maquina no encontrada">
+                                alt="Máquina no encontrada">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
-                                <h5 class="card-title">Maquina no encontrada</h5>
+                                <h5 class="card-title">Máquina no encontrada</h5>
                                 <p class="card-text">Lo siento, no pudimos encontrar la Maquina</p>
                                 <p class="card-text">
                                     <small class="text-muted">
@@ -727,5 +727,151 @@ const renderSearchedTools = (arrToolSearch) => {
             )
         }).join(" ");
         document.getElementById('showToolsSearch').innerHTML = htmlSearchTools
+    }
+}
+
+
+//*******************************************************/
+// -------------- Show Searched CuttingTools ----------------
+socket.on('searchCuttingToolsAll', async (arrCuttingToolSearch) => {
+    renderSearchedCuttingTool (await arrCuttingToolSearch)
+})
+
+const searchCuttingTools = () => {
+    let queryCuttingTool = document.getElementById('queryCuttingTools').value,
+        statusCuttingTool = document.getElementById('statusCuttingTool').value,
+        typeCuttingTool = document.getElementById('typeCuttingTool').value,
+        diamCuttingTool = document.getElementById('diamCuttingTool').value
+
+    statusCuttingTool != 'todas' ? statusCuttingTool === 'activas' ? statusCuttingTool = true : statusCuttingTool = false : null
+        
+    socket.emit('searchHerramientaAll', {
+        queryCuttingTool,
+        statusCuttingTool,
+        typeCuttingTool,
+        typeCuttingTool,
+        diamCuttingTool
+    })
+    return false
+}
+
+const renderSearchedCuttingTool = (arrCuttingToolSearch) => {
+    console.log('arrCuttingToolSearch: ', arrCuttingToolSearch)
+    
+    if(!arrCuttingToolSearch) { //arrCuttingToolSearch.length === 0
+        const htmlSearchCuttingToolNull = (
+            `<div class="col mx-auto">
+                <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4 my-auto px-1">
+                            <img src="${clientNotFound}"
+                                style="max-width=170vw; object-fit: contain;"
+                                class="img-fluid rounded p-1"
+                                alt="Herramienta no encontrada">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Herramienta no encontrada</h5>
+                                <p class="card-text">Lo siento, no pudimos encontrar la Herramienta</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Pruebe nuevamente con una designación, tipo o código diferente.
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`)
+        
+        const showCuttingTool = document.getElementById('showCuttingToolsSearch')
+        showCuttingTool ? showCuttingTool.innerHTML = htmlSearchCuttingToolNull : null
+
+    } else if (arrCuttingToolSearch.length === 1 && arrCuttingToolSearch[0] === 'vacio') {     
+        const htmlSearchCuttingToolsNull = (
+            `<div class="col mx-auto">
+                <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4 my-auto px-1">
+                            <img src="${allClientsFound}"
+                                style="max-width=170vw; object-fit: contain;"
+                                class="img-fluid rounded p-1"
+                                alt="Todas las Herramientas">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Todas las Herramientas</h5>
+                                <p class="card-text">Todas las Herramientas están listadas en la tabla de abajo</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Pruebe nuevamente con un nombre o código diferente o haga scroll hacia abajo
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+        )
+        document.getElementById('showCuttingToolsSearch').innerHTML = htmlSearchCuttingToolsNull
+
+    } else {
+        const htmlSearchCuttingTools = arrCuttingToolSearch.map((element) => {
+            const statusClasses = { true: 'success', false: 'danger' };
+            const typeMapping = {
+                toricas: { label: 'Toricas', class: 'info', text: 'dark' },
+                planas: { label: 'Planas', class: 'secondary', text: 'light' },
+                esfericas: { label: 'Esfericas', class: 'primary', text: 'light' },
+                final: { label: 'Final', class: 'success', text: 'light' },
+                altoAvance: { label: 'Alto Avance', class: 'danger', text: 'dark' },
+                default: { label: 'Otras', class: 'primary', text: 'light' },
+            };
+            const diamMapping = {
+                16: 16, 20: 20, 25: 25, 32: 32, 50: 50, 52: 52, 63: 63, 80: 80, 100: 100, 125: 125,
+                default: 0,
+            };
+        
+            // Determinar valores dinámicos
+            const optionStatus = statusClasses[element.status] || 'danger',
+                { label: showType, class: optionType, text: optionText } = typeMapping[element.type] || typeMapping.default,
+                showDiam = diamMapping[element.diam] || diamMapping.default,
+                showStatus = element.status ? 'Activo' : 'Inactiva',
+                disabled = element.visible ? '' : 'disabled';
+        
+            // Retornar el HTML generado
+            return (`
+                <div class="col mx-auto">
+                    <div class="card mx-auto rounded-2 shadow-lg" style="max-width: 540px;">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 text-center">
+                                <img src="${element.imageCuttingTool}" style="max-width=170vw; object-fit: contain;"
+                                    class="img-fluid rounded p-2 mx-auto" alt="Herramienta">
+                            </div>
+                            <div class="col-md-8 border-start">
+                                <div class="card-body">
+                                    <h6 class="card-title"><strong>${element.designation}</strong></h6>
+                                    Código: <span class="my-1"><strong>${element.code}</strong></span><br>
+                                    Tipo: <span class="badge rounded-pill bg-${optionType} text-${optionText} my-1">${showType}</span><br>
+                                    Diámetro: <span class="my-1">${showDiam}mm.</span><br>
+                                    Status: <span class="badge rounded-pill bg-${optionStatus} my-1">${showStatus}</span><br>
+                                </div>
+                                <div class="card-footer px-2">
+                                    <div class="row">
+                                        <div class="col m-auto">
+                                            <a class="btn text-light small" ${disabled} type="submit" href="/api/herramientas/${element._id}"
+                                                style="background-color: #272787; font-size: .85rem; width: auto;">
+                                                <i class="fa-solid fa-info-circle"></i> Info Herramienta
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+            );
+        }).join(" ");
+        
+        document.getElementById('showCuttingToolsSearch').innerHTML = htmlSearchCuttingTools
     }
 }

@@ -6,7 +6,5 @@ function formatDate() {
     return rightNow.toString()
   }
 
-// let now = formatDate()
-
 module.exports = 
   formatDate

@@ -142,12 +142,11 @@
                                         for (let h=0; herramientas.length > h ; h++) {
                                             herramientas[h].status ? herramientasVisibles.push(herramientas[h]) : herramientasEnUso.push(herramientas[h])
                                         } %>
-                                        <h3 class="font-medium"><%= parseInt(herramientasVisibles.length) %>/<span style="font-size: 0.95rem;" ><%= parseInt(herramientas.length) %></span></h3>
+                                        <h3 class="font-medium"><%= parseInt(herramientasVisibles.length) %>/<span style="font-size: 0.95rem;"><%= parseInt(herramientas.length) %></span></h3>
+                                        <span class="me-1">Herramientas</span>
                                         <% if ( herramientasEnUso.length != 0 ) { %>
                                             <span><%= parseInt(herramientasVisibles.length) %> Herramientas En Uso</span> / <span class="badge rounded-pill text-bg-danger"><%= herramientasEnUso.length %> en Uso</span>
                                             <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #b09b12;"></i>
-                                        <% } else { %>
-                                            <span class="badge rounded-pill text-bg-success">Herramientas En Uso</span>
                                         <% } %>
                                 </div>
                                 <div class="align-self-center ms-auto">
@@ -173,10 +172,11 @@
                                         } %>
                                         <h3 class="font-medium"><%= parseInt(maquinasVisibles.length) %>/<span style="font-size: 0.95rem;" ><%= parseInt(maquinas.length) %></span></h3>
                                         <% if ( maquinasEnMantenimiento.length != 0 ) { %>
+                                            <span class="me-1">Máquinas</span>
                                             <span class="badge rounded-pill text-bg-danger"><%= maquinasEnMantenimiento.length %> en Mantenimiento</span>
                                             <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #b09b12;"></i>
                                         <% } else { %>
-                                            <span class="badge rounded-pill text-bg-success">Maquinas Activas</span>
+                                            <span class="badge rounded-pill text-bg-success">Máquinas Activas</span>
                                         <% } %>
                                 </div>
                                 <div class="align-self-center ms-auto">

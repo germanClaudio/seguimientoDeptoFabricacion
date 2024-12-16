@@ -190,7 +190,11 @@ async function switchFilterTools(filter, Maquinas, designationAndCodeQuery) {
         }
     }
     return resultados
+
 }
+
+
+
 
 module.exports = {
     switchFilterTools

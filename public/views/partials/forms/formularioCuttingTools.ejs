@@ -34,16 +34,17 @@
                 
                 <div class="range-container">
                     <svg class="circle-container" width="94%" height="80%">
-                        <circle id="dynamicCircle" cx="95" cy="45" r="50"></circle>
-                        <text id="circleCenter" x="96" y="61">+</text>
+                        <circle id="dynamicCircle" cx="82" cy="45" r="50"></circle>
+                        <text id="circleCenter" x="83" y="61">+</text>
                     </svg>
                     <!-- Input Range -->
                     <label class="form-label" for="customRange" style="width:16rem;">Selecciona un Ø para la herramienta</label>
                     <input class="form-range" id="customRange" type="range" min="0" max="9" step="1" value="0">
                     <!-- Display Value -->
                     <div class="range-value">
-                        <input id="rangeValue" name="diam" class="form-control text-center" value="16" disabled>
+                        <input type="text" id="rangeValue" name="diam" class="form-control text-center" value="16" disabled>
                         <label class="form-label ms-2 my-auto" for="rangeValue">mm</label>
+                        <input style="display: none;" type="number" id="diamHidden" name="diamHidden" value="16">
                     </div>
                 </div>
 
@@ -95,14 +96,15 @@
                             <label class="form-check-label" for="status">En Uso</label>
                         </div>
                     </div>
-                    <div class="col-2 mx-2 my-auto">
+
+                    <!-- <div class="col-2 mx-2 my-auto">
                         <label class="form-label" for="usingBy">Solicitada por</label>
                         <input type="text" name="usingBy" id="usingBy" value="" class="form-control" disabled>
                     </div>
                     <div class="col-2 mx-2 my-auto">
                         <label class="form-label" for="usingByTool">En máquina</label>
                         <input type="text" name="usingByTool" id="usingByTool" value="" class="form-control" disabled>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             

@@ -19,7 +19,7 @@ const herramientasSchema = new Schema({
         type: Number,
         default: 16,
         min: 1,
-        max: 250,
+        max: 300,
         validate: {
             validator: Number.isInteger,
             message: `El diámetro debe ser un número entero.`
@@ -84,11 +84,9 @@ const herramientasSchema = new Schema({
     },
     usingStart: {
         type: Date,
-        default: null,
     },
     usingEnd: {
         type: Date,
-        default: null,
     },
 })
 

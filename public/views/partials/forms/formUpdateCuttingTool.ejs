@@ -38,12 +38,12 @@
                     <input type="text" name="designation" id="designation" class="form-control" value="<%=herramienta.designation %>" autocomplete="on" placeholder="Designación herramienta" required>
                 </div>
                 
-                <div class="col-3 my-1 mx-auto">
+                <div class="col-2 my-1 mx-auto">
                     <label class="form-label" for="code">Código</label>
                     <input type="text" name="code" id="code" class="form-control" value="<%=herramienta.code%>" placeholder="Código" required>
                 </div>
 
-                <div class="col-3 my-1 mx-auto">
+                <div class="col-2 my-1 mx-auto">
                     <label class="form-label" for="stock">Stock</label>
                     <input type="number" name="stock" id="stock" class="form-control" value="<%=herramienta.stock%>" placeholder="Código" required>
                 </div>
@@ -71,11 +71,11 @@
                     <div class="col-3 my-1 mx-auto" style="background-color: #55dd5560;">
                         <label for="status">Status Herramienta</label>
                         <div class="">
-                            <label class="form-check-label" for="status">En Mantenimiento</label>
+                            <label class="form-check-label" for="status">Inactiva</label>
                             <div class="form-check form-switch d-inline-block mt-2">
                                 <input id="status" class="form-check-input" type="checkbox" role="switch"
                                     name="status" style="cursor: pointer;" checked>
-                                <label class="form-check-label" for="status">Activo</label>
+                                <label class="form-check-label" for="status">Activa</label>
                             </div>    
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                     <div class="col-3 my-1 mx-auto" style="background-color: #ffee0085;">
                         <label for="status">Status Herramienta</label>
                         <div class="">
-                            <label class="form-check-label" for="status">En Mantenimiento</label>
+                            <label class="form-check-label" for="status">Inactiva</label>
                             <div class="form-check form-switch d-inline-block mt-2">
                                 <input id="status" class="form-check-input" type="checkbox" role="switch"
                                     name="status" style="cursor: pointer;">
@@ -126,7 +126,7 @@
                     </div>
                 </div>        
                 <div class="col mb-auto">
-                    <label for="fileInputCuttingToolUpdate">Imagen máquina actual </label>
+                    <label for="fileInputCuttingToolUpdate">Imagen herramienta actual </label>
                     <div class="container-fluid my-1 p-1 text-center">
                         <img id="fileInputCuttingToolUpdate" src="<%=herramienta.imageCuttingTool%>" class="img-thumbnail rounded mx-auto" alt="Imagen máquina" width="200px" height="200px">
                     </div>

@@ -26,6 +26,7 @@ function validateSelectField(value) {
 const {catchError400_3,
         catchError400_5,
         catchError400_6,
+        catchError400_7,
         catchError401_3,
         catchError500
 } = require('../utils/catchErrors.js')
@@ -117,7 +118,7 @@ class CuttingToolsController {
         //------ Storage New CuttingTool Image in Google Store --------        
         uploadMulterSingleImageCuttingTool(req, res, async (err) => {
             try {
-                console.log('req.file: ', req.file)
+                // console.log('req.file: ', req.file)
                 if (req.file) {
                     await uploadToGCS(req, res, next)
                 }
@@ -127,22 +128,22 @@ class CuttingToolsController {
                     userCreator = await this.users.getUserById(userId)
                 !userCreator ? catchError401_3(req, res, next) : null
 
-                const designationInput = req.body.designation.replace(/[!@#$%^&*]/g, ""),
+                const designationInput = req.body.designation.replace(/[!@$%^&*]/g, ""),
                     codeInput = req.body.code,
-                    diamInput = req.body.diam,
+                    diamInput = parseInt(req.body.diamHidden),
                     typeInput = req.body.type,
                     stockInput = req.body.stock
 
                 const newCuttingToolValid = {
                     designation: designationInput,
                     code: codeInput,
-                    diam: diamInput,
+                    diam: parseInt(diamInput),
                     type: typeInput
                 };
 
                 const cuttingToolExist = await this.herramientas.getExistingCuttingTool(newCuttingToolValid);
                 if (cuttingToolExist) {
-                    catchError400_6(req, res, next)
+                    catchError400_7(req, res, next)
 
                 } else {
                     if (validateSelectField(newCuttingToolValid.type) && validateSelectField(newCuttingToolValid.diam)) {
@@ -164,7 +165,7 @@ class CuttingToolsController {
                             usingBy: dataUserModificatorEmpty(),
                             usingByTool: dataToolEmpty()
                         };
-
+                        
                         const herramienta = await this.herramientas.addNewCuttingTool(newCuttingTool);
                         !herramienta ? catchError400_6(req, res, next) : null
 
@@ -184,7 +185,6 @@ class CuttingToolsController {
                     } else {
                         catchError400_3(req, res, next)
                     }
-                    validateSelectField(value)
                 }
 
             } catch (err) {
@@ -245,13 +245,17 @@ class CuttingToolsController {
                 let updatedTool = {
                     designation: req.body.designation,
                     code: req.body.code,
-                    model: req.body.model,
+                    diam: diamInput,
                     type: req.body.typeHidden,
                     characteristics: req.body.characteristics,
-                    imageCuttingTool: req.body.imageTextImageTool,
+                    imageCuttingTool: req.body.imageTextImageCuttingTool,
                     status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
                     modificator: dataUserModificatorNotEmpty(userLogged),
-                    modifiedOn: formatDate()
+                    modifiedOn: formatDate(),
+                    stock: stockInput,
+                    onUse: Boolean(false),
+                    usingBy: dataUserModificatorEmpty(),
+                    usingByTool: dataToolEmpty()                    
                 }
 
                 const herramienta = await this.herramientas.updateCuttingTool(cuttingToolId, updatedTool, dataUserModificatorNotEmpty(userLogged))
@@ -264,7 +268,7 @@ class CuttingToolsController {
                     expires,
                     herramienta,
                     data,
-                    csrfToken,
+                    csrfToken
                 })
 
             } catch (err) {

@@ -199,11 +199,7 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
 
         try {
             const resultados = await switchFilterTools(filter, Maquinas, designationAndCodeQuery)
-            if (resultados) {
-                return resultados
-            } else {
-                return false
-            }
+            return resultados.length ? resultados : false;
 
         } catch (error) {
             console.error("Error MongoDB getToolsBySearching: ",error)

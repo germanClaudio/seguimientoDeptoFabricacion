@@ -9,6 +9,7 @@ fetch('/api/config')
     .catch(error => console.error('Error fetching config:', error));
 
 function formatDate(date) {
+    
     const DD = String(date.getDate()).padStart(2, '0'),
         MM = String(date.getMonth() + 1).padStart(2, '0'),
         YY = date.getFullYear(),
@@ -17,6 +18,20 @@ function formatDate(date) {
         ss = String(date.getSeconds()).padStart(2, '0');
     return DD + MM + YY + "_" + hh + mm + ss
 }
+
+// function formatDateUsing(dateString) {
+//     const date = new Date(dateString); // Convierte la cadena a un objeto Date
+
+//     const day = String(date.getDate()).padStart(2, '0'); // Día con 2 dígitos
+//     const month = String(date.getMonth() + 1).padStart(2, '0'); // Mes con 2 dígitos (0-indexado)
+//     const year = date.getFullYear(); // Año completo
+
+//     const hours = String(date.getHours()).padStart(2, '0'); // Horas con 2 dígitos
+//     const minutes = String(date.getMinutes()).padStart(2, '0'); // Minutos con 2 dígitos
+//     const seconds = String(date.getSeconds()).padStart(2, '0'); // Segundos con 2 dígitos
+
+//     return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+// }
 
 //-------------------------------------------
 const inputName = document.getElementById('designation')
@@ -35,19 +50,18 @@ function mostrarNombre() {
         })
     }
 //-------------------------------------
-
+// Mostrar el spinner y ocultar la tabla al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
-    // Mostrar el spinner y ocultar la tabla al cargar la página
     document.getElementById('loading-spinner').style.display = 'block';
     document.getElementById('cuttingToolTable').style.display = 'none';
 });
 
 //  ----------- CuttingTools list ----------------
 socket.on('cuttingToolsAll', (arrCuttingTools, arrUsers) => {
-    const cadena = document.getElementById('mostrarUserName').innerText
-    let indice = cadena.indexOf(",");
-    const name = cadena.substring(0,indice)
-    let index = arrUsers.findIndex(el=> el.name == name.trim())
+    let cadena = document.getElementById('mostrarUserName').innerText,
+        indice = cadena.indexOf(","),
+        name = cadena.substring(0,indice),
+        index = arrUsers.findIndex(el=> el.name == name.trim())
     
     if(index !== -1) {
         let user = arrUsers[index].admin,
@@ -90,11 +104,13 @@ const renderCuttingToolsAdmin = (arrCuttingTools) => {
                             <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
                             <td class="text-center" id="codigo_${element._id}">${element.code}</td>
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
+                            <td class="text-center" id="diam_${element._id}"><span>Ø${element.diam}</span>mm</td>
                             <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
-                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageCuttingTool}' width="150px" height="150px"></td>
-                            <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
                             <td class="text-center" id="characteristics_${element._id}">${element.characteristics}</td>
-                            <td class="text-center">${element.creator[0].name}, ${element.creator[0].lastName}</td>
+                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageCuttingTool}' width="150px" height="150px"></td>
+                            <td class="text-center" id="stock_${element._id}"><span class="badge bg-${black} text-light">${element.stock}</span></td>
+                            <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
+                            <td class="text-center">${element.creator[0].name} ${element.creator[0].lastName}</td>
                             <td class="text-center">${element.timestamp}</td>
                             <td class="text-center">${element.modificator[0].name} ${element.modificator[0].lastName}</td>
                             <td class="text-center">${element.modifiedOn}</td>
@@ -136,7 +152,6 @@ const renderCuttingToolsAdmin = (arrCuttingTools) => {
 
     // ---- mensaje confirmacion eliminar Usuario -----------
     function messageDeleteCuttingTool(id, code, designation) {
-
         const htmlForm =
             `La herramienta ${designation} - Código: ${code}, se eliminará completamente.<br>
                 Está seguro que desea continuar?<br>
@@ -185,9 +200,11 @@ const renderCuttingToolsAdmin = (arrCuttingTools) => {
                 event.preventDefault()
                 const idCuttingTool = btn.id,
                     designation = document.getElementById(`designation_${idCuttingTool}`).innerText,
-                    code = document.getElementById(`codigo_${idCuttingTool}`).innerText
+                    code = document.getElementById(`codigo_${idCuttingTool}`).innerText,
+                    type = document.getElementById(`tipo_${idCuttingTool}`).innerText,
+                    diam = document.getElementById(`diam_${idCuttingTool}`).innerText
 
-                idCuttingTool && designation && code? messageDeleteCuttingTool(idCuttingTool, code, designation) : null
+                idCuttingTool && designation && code && type && diam ? messageDeleteCuttingTool(idCuttingTool, designation, code, type, diam) : null
             })
         }
     })
@@ -199,7 +216,7 @@ const renderCuttingToolsUser = (arrCuttingTools) => {
         green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', black = 'dark', white = 'light',
         active = 'Activa', inactive = 'En uso', info = 'info',
         toricas = 'Tóricas', planas = 'Planas', esfericas = 'Esféricas', final = 'final', altoAvance = 'altoAvance'
-    let textColor, html
+    let html
 
     if (arrCuttingTools.length>0) {
         html = arrCuttingTools.map((element) => {
@@ -227,11 +244,13 @@ const renderCuttingToolsUser = (arrCuttingTools) => {
                             <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
                             <td class="text-center" id="codigo_${element._id}">${element.code}</td>
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
+                            <td class="text-center" id="diam_${element._id}"><span>Ø${element.diam}</span>mm</td>
                             <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
-                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageCuttingTool}' width="150px" height="150px"></td>
-                            <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
                             <td class="text-center" id="characteristics_${element._id}">${element.characteristics}</td>
-                            <td class="text-center">${element.creator[0].name}, ${element.creator[0].lastName}</td>
+                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageCuttingTool}' width="150px" height="150px"></td>
+                            <td class="text-center" id="stock_${element._id}"><span class="badge bg-${black} text-light">${element.stock}</span></td>
+                            <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
+                            <td class="text-center">${element.creator[0].name} ${element.creator[0].lastName}</td>
                             <td class="text-center">${element.timestamp}</td>
                             <td class="text-center">${element.modificator[0].name} ${element.modificator[0].lastName}</td>
                             <td class="text-center">${element.modifiedOn}</td>
@@ -242,7 +261,6 @@ const renderCuttingToolsUser = (arrCuttingTools) => {
                                 </div>
                             </td>
                         </tr>`)
-
             }
         }).join(" ");
         document.getElementById('mostrarHerramientas').innerHTML = html
@@ -324,9 +342,11 @@ const renderCuttingToolsUser = (arrCuttingTools) => {
                 event.preventDefault()
                 const idCuttingTool = btn.id,
                     designation = document.getElementById(`designation_${idCuttingTool}`).innerText,
-                    code = document.getElementById(`codigo_${idCuttingTool}`).innerText
+                    code = document.getElementById(`codigo_${idCuttingTool}`).innerText,
+                    type = document.getElementById(`tipo_${idCuttingTool}`).innerText,
+                    diam = document.getElementById(`diam_${idCuttingTool}`).innerText
 
-                idCuttingTool && designation && code ? messageDeleteCuttingTool(idCuttingTool, designation, code) : null
+                idCuttingTool && designation && code && type && diam ? messageDeleteCuttingTool(idCuttingTool, designation, code, type, diam) : null
             })
         }
     })
@@ -464,29 +484,30 @@ removeImageButtonImageCuttingTool.addEventListener('click', (e)=> {
 })
 
 
-function messageNewCuttingTool(designation, code, type) {
-    if (designation, code, type) {
+function messageNewCuttingTool(designation, code, type, diam, stock) {
+    if (designation, code, type, diam, stock) {
         Swal.fire({
             title: `Nueva Herramienta <b>${designation}</b>`,
-            text: `La herramienta ${designation}, tipo: ${type}, código: ${code} será registrada!`,
+            text: `La herramienta ${designation}, tipo: ${type}, código: ${code}, stock: ${stock}, será registrada!`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             focusConfirm: true,
-            confirmButtonText: 'Registrarla! <i class="fa-solid fa-user-gear"></i>',
+            confirmButtonText: 'Registrarla! <i class="fa-solid fa-screwdriver-wrench"></i>',
             cancelButtonText: 'Cancelar <i class="fa-solid fa-user-xmark"></i>'
     
         }).then((result) => {
             if (result.isConfirmed) {
+                // document.getElementById('rangeValue').removeAttribute('disabled')
                 Swal.fire(
                     'Creada!',
-                    `La herramienta ${designation} (${type}) , código #:${code}, ha sido registrada exitosamente.`,
+                    `La herramienta ${designation} (${type}) Ø${diam}mm, código #:${code}, stock: ${stock}, ha sido registrada exitosamente.`,
                     'success'
                 )
                 setTimeout(() => {
                     document.getElementById("newCuttingToolForm").submit()
-                }, 1000)
+                }, 800)
                 
             } else {
                 Swal.fire(
@@ -511,13 +532,14 @@ function messageNewCuttingTool(designation, code, type) {
     }
 }
 
-function messageWarningEmptyFields(designation, code) {
+function messageWarningEmptyFields(designation, code, type, diam, stock) {
     const formFields =[]
     
     designation == "" ? formFields.push('Designacion') : null
     code == "" ? formFields.push('Código') : null
     type == "" ? formFields.push('Tipo') : null
     diam == "" ? formFields.push('Diam') : null
+    stock == "" ? formFields.push('Stock') : null 
 
     formFields.length == 1 ?
         Swal.fire({
@@ -547,10 +569,13 @@ btnAddNewCuttingTool.addEventListener('click', (event) => {
     event.preventDefault()
     const designation = document.getElementById('designation').value,
         code = document.getElementById('code').value,
-        type = document.getElementById('type').value
-        diam = document.getElementById('diam').value
+        type = document.getElementById('type').value,
+        diam = document.getElementById('rangeValue').value,
+        stock = document.getElementById('stock').value
 
-    designation && code && type ?  messageNewCuttingTool(designation, code, type.toUpperCase()) :  messageWarningEmptyFields(designation, code, type.toUpperCase())
+    designation && code && type && diam && stock ? 
+        messageNewCuttingTool(designation, code, type.toUpperCase(), diam, stock) :
+        messageWarningEmptyFields(designation, code, type.toUpperCase(), diam, stock)
 })
 
 const btnResetFormNewCuttingTool = document.getElementById('btnResetFormNewCuttingTool')
@@ -620,9 +645,10 @@ function disabledBtnAceptar () {
 disabledBtnAceptar()
 
 const valores = [16, 20, 25, 32, 50, 52, 63, 80, 100, 125], // Valores para los radios de los círculos
-        avances = [50, 100, 149, 199, 247, 295, 343, 393, 443, 491], // Valores de los radios de los círculos
+      avances = [52, 92, 134, 175, 216, 256, 297, 338, 379, 420], // Valores de los radios de los círculos
         range = document.getElementById("customRange"),
         displayValue = document.getElementById("rangeValue"),
+        diamHidden = document.getElementById("diamHidden"),
         dynamicCircle = document.getElementById("dynamicCircle")
 
     range.addEventListener("input", () => {
@@ -630,17 +656,20 @@ const valores = [16, 20, 25, 32, 50, 52, 63, 80, 100, 125], // Valores para los 
             value = valores[index];
 
         displayValue.value = value; // Actualizar el valor mostrado
+        diamHidden.value = value
+        
         dynamicCircle.setAttribute("r", parseInt(avances[index])) // Actualizar el radio del círculo
-        dynamicCircle.setAttribute("cx", 95); // Mantener el centro fijo desplazado 95px desde el inicio del input range
+        dynamicCircle.setAttribute("cx", 82); // Mantener el centro fijo desplazado 75px desde el inicio del input range
 
         const valueRange = range.value,
             max = 9
             progress = (valueRange / max) * 100
 
         range.style.background = `linear-gradient(to right, #005bbb ${progress}%, #ddd ${progress}%)`;
+        
     });
 
-    // Inicialización del círculo
-    dynamicCircle.setAttribute("cx", 95); // Centro fijo en X al inicio del input range
-    dynamicCircle.setAttribute("cy", 45); // Centro fijo en Y
-    dynamicCircle.setAttribute("r", 50);
+// Inicialización del círculo
+dynamicCircle.setAttribute("cx", 82); //95 Centro fijo en X al inicio del input range
+dynamicCircle.setAttribute("cy", 45); // Centro fijo en Y
+dynamicCircle.setAttribute("r", 50);

@@ -40,6 +40,12 @@ function catchError400_6(req, res, next) {
     return next(err);
 }
 
+function catchError400_7(req, res, next) {
+    const err = new Error(`Ya existe una Herramienta con estos datos.`)
+    err.statusCode = 400;
+    return next(err);
+}
+
 function catchError401(req, res, next) {
     const err = new Error('Cliente no encontrado!')
     err.statusCode = 401
@@ -89,6 +95,7 @@ module.exports = {
     catchError400_4,
     catchError400_5,
     catchError400_6,
+    catchError400_7,
     catchError401,
     catchError401_1,
     catchError401_2,
