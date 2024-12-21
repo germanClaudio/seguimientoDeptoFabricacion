@@ -106,90 +106,44 @@ class ProveedoresDaoMongoDB extends ContainerMongoDB {
     }
 
     async getSuppliersBySearching(query) {
-        let filter
-        var designationAndCodeQuery = [{ 'designation': { $regex: `${query.querySupplier}`, $options: 'i' } }, 
-                                        { 'code': { $regex: `${query.querySupplier}`, $options: 'i' } },
-                                    ]
-
-        if (query.querySupplier === '') {
-            if (query.statusSupplier === 'todas') {
-                if (query.typeSupplier === 'todas') {
-                    filter = 'nullAllAll'
-                } else if (query.typeSupplier === 'diseno') {
-                    filter = 'nullAllDiseno'
-                } else if (query.typeSupplier === 'simulacion') {
-                    filter = 'nullAllSimulacion'
-                } else {
-                    filter = 'nullAllOther'
-                }
-            } else if (query.statusSupplier) {
-                if (query.typeSupplier === 'todas') {
-                    filter = 'nullActiveAll'
-                } else if (query.typeSupplier === 'diseno') {
-                    filter = 'nullActiveDiseno'
-                } else if (query.typeSupplier === 'simulacion') {
-                    filter = 'nullActiveSimulacion'
-                } else {
-                    filter = 'nullActiveOther'
-                }
-            } else if (!query.statusSupplier) {
-                if (query.typeSupplier === 'todas') {
-                    filter = 'nullInactiveAll'
-                } else if (query.typeSupplier === 'diseno') {
-                    filter = 'nullInactiveDiseno'
-                } else if (query.typeSupplier === 'simulacion') {
-                    filter = 'nullInactiveSimulacion'
-                } else {
-                    filter = 'nullInactiveOther'
-                }
-            }
-
-        } else {
-            if (query.statusSupplier === 'todas') {
-                if (query.typeSupplier === 'todas') {
-                    filter = 'notNullAllAll'
-                } else if (query.typeSupplier === 'diseno') {
-                    filter = 'notNullAllDiseno'
-                } else if (query.typeSupplier === 'simulacion') {
-                    filter = 'notNullAllSimulacion'
-                } else {
-                    filter = 'notNullAllOther'
-                }
-            } else if (query.statusSupplier) {
-                if (query.typeSupplier === 'todas') {
-                    filter = 'notNullActiveAll'
-                } else if (query.typeSupplier === 'diseno') {
-                    filter = 'notNullActiveDiseno'
-                } else if (query.typeSupplier === 'simulacion') {
-                    filter = 'notNullActiveSimulacion'
-                } else {
-                    filter = 'notNullActiveOther'
-                }
-            } else if (!query.statusSupplier) {
-                if (query.typeSupplier === 'todas') {
-                    filter = 'notNullInactiveAll'
-                } else if (query.typeSupplier === 'diseno') {
-                    filter = 'notNullInactiveDiseno'
-                } else if (query.typeSupplier === 'simulacion') {
-                    filter = 'notNullInactiveSimulacion'
-                } else {
-                    filter = 'notNullInactiveOther'
-                }
-            }
-        }
-
+        let filter;
+        const designationAndCodeQuery = [
+            { designation: { $regex: `${query.querySupplier}`, $options: 'i' } },
+            { code: { $regex: `${query.querySupplier}`, $options: 'i' } },
+        ];
+    
+        // Definir mappings para las combinaciones posibles
+        const statusMapping = {
+            todas: 'All',
+            true: 'Active',
+            false: 'Inactive',
+        };
+    
+        const typeMapping = {
+            todas: 'All',
+            diseno: 'Diseno',
+            simulacion: 'Simulacion',
+            otras: 'Other',
+        };
+    
+        // Obtener valores a partir del mapping
+        const queryType = query.querySupplier === '' ? 'null' : 'notNull',
+            statusKey = statusMapping[query.statusSupplier],
+            typeKey = typeMapping[query.typeSupplier];
+    
+        // Construir el filtro combinando los valores obtenidos
+        filter = `${queryType}${statusKey}${typeKey}`;
+    
         try {
-            const resultados = await switchFilterSuppliers(filter, Proveedores, designationAndCodeQuery)
-            if (resultados) {
-                return resultados
-            } else {
-                return false
-            }
+            // Llamar a la función de filtrado
+            const resultados = await switchFilterSuppliers(filter, Proveedores, designationAndCodeQuery);
+            return resultados || false;
 
         } catch (error) {
-            console.error("Error MongoDB getSuppliersBySearching: ",error)
+            console.error('Error MongoDB getSuppliersBySearching: ', error);
         }
     }
+    
 
     async getExistingSupplier(newSupplier) {
         const codeIdNum = newSupplier.code
@@ -303,8 +257,8 @@ class ProveedoresDaoMongoDB extends ContainerMongoDB {
                 const supplierMongoDB = await Proveedores.findById({_id: id })
             
                 if(supplierMongoDB) {
-                    let inactive = Boolean(false)
-                    var supplierDeleted = await Proveedores.updateOne(
+                    let inactive = Boolean(false),
+                        supplierDeleted = await Proveedores.updateOne(
                         { _id: id }, 
                         {
                             $set: {

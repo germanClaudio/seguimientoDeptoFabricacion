@@ -1,10 +1,10 @@
 const socket = io.connect()
-let URL_GOOGLE_STORE_CUTTINGTOOLIMAGE
+let URL_GOOGLE_STORE_IMAGESCUTTINGTOOLS
 
 fetch('/api/config')
     .then(response => response.json())
     .then(config => {
-        URL_GOOGLE_STORE_CUTTINGTOOLIMAGE = config.URL_GOOGLE_STORE_CUTTINGTOOLIMAGE
+        URL_GOOGLE_STORE_IMAGESCUTTINGTOOLS = config.URL_GOOGLE_STORE_IMAGESCUTTINGTOOLS
     })
     .catch(error => console.error('Error fetching config:', error));
 
@@ -266,3 +266,33 @@ let inputsDeTexto = document.querySelectorAll('input[type="text"], textarea, inp
 
     // Configurar el observador para que observe los cambios en los nodos hijos del div
     observer.observe(dropAreaCuttingToolUpdate, { childList: true });
+
+const diam = document.getElementById("diam"),
+    diamHidden = document.getElementById("diamHidden"),
+    largo = document.getElementById("largo"),
+    largoHidden = document.getElementById("largoHidden"),
+    codeInput = document.getElementById('code'),
+    codeHidden = document.getElementById("codeHidden"),
+    typeInput = document.getElementById('type').value
+
+diam.addEventListener("change", () => {
+    updateValues(type)
+});
+
+largo.addEventListener("change", () => {
+    updateValues(type)
+});
+
+type.addEventListener("change", () => {
+    updateValues(type)
+});
+
+function updateValues(type) {
+    value = parseInt(diam.value, 10)
+    valueLargo = parseInt(largo.value, 10)
+
+    diamHidden.value = value;
+    largoHidden.value = valueLargo;
+
+    codeInput.value = codeHidden.value = type.value.toUpperCase() + value + '_L' + valueLargo
+}

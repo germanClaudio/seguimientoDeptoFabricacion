@@ -17,8 +17,12 @@ const data = require('../utils/variablesInicializator.js')
 const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty, dataToolEmpty } = require('../utils/generateUsers.js')
 
 function validateSelectField(value) {
-    const validOptions = ['toricas', 'planas', 'esfericas', 'final', 'altoAvance', 'otras', 
-        16, 20, 25, 32, 50, 52, 63, 80, 100, 125
+    const validOptions = ['TOR', 'PLA', 'ESF', 
+        2, 3, 4, 6, 10, 15, 16, 20, 25, 30, 32, 40, 45, 50, 52, 57, 60, 63, 65, 66, 68, 70, 75, 76, 77, 78, 80, 81, 86, 88, 89, 90, 91, 94, 96, 97, 98,
+        100, 102, 107, 108, 110, 111, 113, 116, 119, 120, 121, 123, 125, 128, 130, 131, 132, 138, 140, 142, 143, 144, 146, 147, 148,
+        152, 154, 155, 158, 163, 164, 165, 170, 173, 175, 176, 177, 180, 182, 183, 186, 188, 191, 192, 196, 197, 198,
+        204, 210, 214, 216, 217, 220, 221, 223, 225, 226, 230, 231, 233, 238, 241, 248, 254, 264, 265, 269, 270, 276, 277, 286, 291, 296,
+        302, 310, 311, 321, 330, 331, 341, 342, 343, 351, 376, 377, 386, 391, 394, 442
     ]
     return validOptions.includes(value);
 }
@@ -114,14 +118,12 @@ class CuttingToolsController {
         let username = res.locals.username,
             userInfo = res.locals.userInfo
         const expires = cookie(req)
-
+        // console.log('req.body', req.body)
         //------ Storage New CuttingTool Image in Google Store --------        
         uploadMulterSingleImageCuttingTool(req, res, async (err) => {
             try {
                 // console.log('req.file: ', req.file)
-                if (req.file) {
-                    await uploadToGCS(req, res, next)
-                }
+                req.file ? await uploadToGCS(req, res, next) : null
 
                 let userManager = await this.users.getUserByUsername(username);
                 const userId = userManager._id,
@@ -129,16 +131,21 @@ class CuttingToolsController {
                 !userCreator ? catchError401_3(req, res, next) : null
 
                 const designationInput = req.body.designation.replace(/[!@$%^&*]/g, ""),
-                    codeInput = req.body.code,
+                    codeInput = req.body.codeHidden,
                     diamInput = parseInt(req.body.diamHidden),
+                    largoInput = parseInt(req.body.rectHidden),
                     typeInput = req.body.type,
+                    radioInput = req.body.radio,
+                    conoInput = req.body.cono,
+                    reduccionInput = req.body.reduccion,
+                    prolongacionInput = req.body.prolongacion,
+                    arrastreInput = req.body.arrastre,
+                    terminacionInput = req.body.terminacion,
                     stockInput = req.body.stock
 
                 const newCuttingToolValid = {
                     designation: designationInput,
-                    code: codeInput,
-                    diam: parseInt(diamInput),
-                    type: typeInput
+                    code: codeInput
                 };
 
                 const cuttingToolExist = await this.herramientas.getExistingCuttingTool(newCuttingToolValid);
@@ -146,12 +153,19 @@ class CuttingToolsController {
                     catchError400_7(req, res, next)
 
                 } else {
-                    if (validateSelectField(newCuttingToolValid.type) && validateSelectField(newCuttingToolValid.diam)) {
+                    if (validateSelectField(typeInput) && validateSelectField(diamInput) && validateSelectField(largoInput)) {
                         const newCuttingTool = {
                             designation: designationInput,
                             code: codeInput,
                             type: typeInput,
                             diam: diamInput,
+                            largo: largoInput,
+                            radio: radioInput || '',
+                            cono: conoInput || '',
+                            reduccion: reduccionInput || '',
+                            prolongacion: prolongacionInput || '',
+                            arrastre: arrastreInput || '', 
+                            terminacion: terminacionInput || '',
                             characteristics: req.body.characteristics,
                             imageCuttingTool: req.body.imageTextImageCuttingTool || cuttingToolPictureNotFound,
                             status: req.body.status === 'on' ? Boolean(true) : Boolean(false) || Boolean(true),
@@ -198,9 +212,10 @@ class CuttingToolsController {
             expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-
-        uploadMulterSingleImageTool(req, res, async (err) => {
-            try {
+            console.log('req.body', req.body)
+            uploadMulterSingleImageCuttingTool(req, res, async (err) => {
+                try {
+                console.log('req.file: ', req.file)
                 req.file ? await uploadToGCS(req, res, next) : null
 
                 const cuttingToolId = id,
@@ -229,7 +244,7 @@ class CuttingToolsController {
                         return next(err);
                     }
 
-                    const codeInput = req.body.code,
+                    const codeInput = req.body.codeHidden,
                         codesId = herramientasRestantes.map(herramienta => herramienta.code);
                     
                     if (codesId.includes(cuttingToolToModify.code)) {
@@ -242,34 +257,49 @@ class CuttingToolsController {
                 const userLogged = await this.users.getUserByUsername(username);
                 !userLogged.visible ? catchError401_3(req, res, next) : null
 
-                let updatedTool = {
-                    designation: req.body.designation,
-                    code: req.body.code,
-                    diam: diamInput,
-                    type: req.body.typeHidden,
-                    characteristics: req.body.characteristics,
-                    imageCuttingTool: req.body.imageTextImageCuttingTool,
-                    status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
-                    modificator: dataUserModificatorNotEmpty(userLogged),
-                    modifiedOn: formatDate(),
-                    stock: stockInput,
-                    onUse: Boolean(false),
-                    usingBy: dataUserModificatorEmpty(),
-                    usingByTool: dataToolEmpty()                    
-                }
+                const designationInput = req.body.designation,
+                    codeInput = req.body.codeHidden,
+                    diamInput = req.body.diamHidden,
+                    largoInput = req.body.largoHidden,
+                    stockInput = req.body.stock,
+                    typeInput = req.body.typeHidden,
+                    characteristicsInput = req.body.characteristics,
+                    imagenInput = req.body.imageTextImageCuttingTool
 
-                const herramienta = await this.herramientas.updateCuttingTool(cuttingToolId, updatedTool, dataUserModificatorNotEmpty(userLogged))
-                !herramienta ? catchError400_3(req, res, next) : null
+                if (validateSelectField(typeInput) && validateSelectField(diamInput) && validateSelectField(largoInput)) {
+                    let updatedTool = {
+                        designation: designationInput,
+                        code: codeInput,
+                        diam: diamInput,
+                        largo: largoInput,
+                        type: typeInput,
+                        characteristics: characteristicsInput,
+                        imageCuttingTool: imagenInput,
+                        status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
+                        modificator: dataUserModificatorNotEmpty(userLogged),
+                        modifiedOn: formatDate(),
+                        stock: stockInput,
+                        onUse: Boolean(false),
+                        usingBy: dataUserModificatorEmpty(),
+                        usingByTool: dataToolEmpty()                    
+                    }
+
+                    const herramienta = await this.herramientas.updateCuttingTool(cuttingToolId, updatedTool, dataUserModificatorNotEmpty(userLogged))
+                    !herramienta ? catchError400_3(req, res, next) : null
                         
-                const csrfToken = csrfTokens.create(req.csrfSecret);
-                return res.render('addNewCuttingTool', {
-                    username,
-                    userInfo,
-                    expires,
-                    herramienta,
-                    data,
-                    csrfToken
-                })
+                    const csrfToken = csrfTokens.create(req.csrfSecret);
+                    return res.render('addNewCuttingTool', {
+                        username,
+                        userInfo,
+                        expires,
+                        herramienta,
+                        data,
+                        csrfToken
+                    })
+
+                } else {
+                    catchError400_3(req, res, next)
+                }
 
             } catch (err) {
                 catchError500(err, req, res, next)

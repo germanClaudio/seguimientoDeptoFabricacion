@@ -9,12 +9,12 @@ fetch('/api/config')
     .catch(error => console.error('Error fetching config:', error));
 
 function formatDate(date) {
-    const DD = String(date.getDate()).padStart(2, '0');
-    const MM = String(date.getMonth() + 1).padStart(2, '0');
-    const YY = date.getFullYear();
-    const hh = String(date.getHours()).padStart(2, '0');
-    const mm = String(date.getMinutes()).padStart(2, '0');
-    const ss = String(date.getSeconds()).padStart(2, '0');
+    const DD = String(date.getDate()).padStart(2, '0'),
+        MM = String(date.getMonth() + 1).padStart(2, '0'),
+        YY = date.getFullYear(),
+        hh = String(date.getHours()).padStart(2, '0'),
+        mm = String(date.getMinutes()).padStart(2, '0'),
+        ss = String(date.getSeconds()).padStart(2, '0');
     return DD + MM + YY + "_" + hh + mm + ss
 }
 
@@ -58,17 +58,18 @@ socket.on('suppliersAll', (arrSuppliers, arrUsers) => {
 
 // --------------- Render Admin ----------------------------
 const renderSuppliersAdmin = (arrSuppliers) => {
-    const arraySupplier = arrSuppliers
-    const green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', black = 'dark', white = 'light', info = 'info'
-    const active = 'Activo', inactive = 'Inactivo'
-    const diseno = 'Diseño', simulacion = 'Simulación'
+    const arraySupplier = arrSuppliers,
+        green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', black = 'dark', white = 'light', info = 'info',
+        active = 'Activo', inactive = 'Inactivo',
+        diseno = 'Diseño', simulacion = 'Simulación'
     let textColor, html
 
     if (arrSuppliers.length>0) {
         html = arrSuppliers.map((element) => {
-            let optionStatus = element.status ? green : red
-            let optionType 
-            let showType
+            let optionStatus = element.status ? green : red,
+                optionType,
+                showType
+
             if(element.type === 'diseno') {
                 optionType = info
                 showType = diseno
@@ -197,16 +198,16 @@ const renderSuppliersAdmin = (arrSuppliers) => {
 
 //----------------------- Render User -------------------------------
 const renderSuppliersUser = (arrSuppliers) => {
-    const arraySupplier = arrSuppliers
-    const green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', black = 'dark', white = 'light', info = 'info'
-    const active = 'Activo', inactive = 'Inactivo'
-    const diseno = 'Diseño', simulacion = 'Simulación'
+    const arraySupplier = arrSuppliers,
+        green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', black = 'dark', white = 'light', info = 'info',
+        active = 'Activo', inactive = 'Inactivo',
+        diseno = 'Diseño', simulacion = 'Simulación'
     let textColor, html
 
     if (arrSuppliers.length>0) {
         html = arrSuppliers.map((element) => {
-            let optionStatus = element.status ? green : red
-            let optionType, showType
+            let optionStatus = element.status ? green : red,
+                optionType, showType
             
             if(element.type === 'diseno') {
                 optionType = info
@@ -557,9 +558,8 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
     inputsDeTexto.forEach(function(input) {
         input.addEventListener('keydown', function(event) {
             // Obtener el código de la tecla presionada
-            let key = event.key;
-
-            let forbiddenChars = /["$%?¡¿^=!'~`\\*{}\[\]<>@]/;
+            let key = event.key,
+                forbiddenChars = /["$%?¡¿^=!'~`\\*{}\[\]<>@]/;
 
             // Verificar si la tecla presionada es un carácter especial
             if (forbiddenChars.test(key)) {
@@ -576,10 +576,7 @@ var inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
     inpuntDeNumeros.forEach(function(input) {
         input.addEventListener('input', function(event) {
             // Obtener el valor actual del input
-            let value = input.value;
-
-            // Obtener el código de la tecla presionada
-            let key = event.key;
+            let value = input.value
 
             // Expresión regular para números enteros de hasta cuatro cifras (0 a 9999)
             const regexp = /^[0-9]{1,4}$/;

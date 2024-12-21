@@ -2,58 +2,138 @@
     <h3 id="titleNewCuttingTool" class="mx-auto my-2 text-center">Agregar Nueva Herramienta</h3>
     <form action="/api/herramientas/newCuttingTool" enctype="multipart/form-data" method="post" id="newCuttingToolForm">
         <fieldset>
-            <div class="row justify-content-around align-items-start my-3 mx-auto">
+            <div class="row justify-content-around align-items-start mt-3 mb-4 mx-auto">
                 <div class="col-3">
                     <label class="form-label" for="designation">Designación</label>
                     <input type="text" name="designation" id="designation" class="form-control" placeholder="Designación herramienta" required>
                 </div>
 
-                <div class="col-2">
-                    <label class="form-label" for="code">Código</label>
-                    <input type="text" name="code" id="code" class="form-control" placeholder="Código" required>
-                </div>
-                
                 <div class="col-4">
                     <label class="form-label" for="characteristics">Características</label>
                     <textarea type="text" name="characteristics" id="characteristics" placeholder="Características de herramienta" class="form-control" rows="3"></textarea>
                 </div>
             </div>
+            <div class="row justify-content-around align-items-center" style="background-color: #afafff99;">
+                <div class="row justify-content-around align-items-center my-3 mx-auto">
+                    <div class="col-2">
+                        <label class="form-label" for="type">Tipo</label>
+                        <select class="form-select" aria-label=".form-select" name="type" id="type">
+                            <option selected value="ESF">Esféricas</option>
+                            <option value="PLA">Planas</option>
+                            <option value="TOR">Tóricas</option>
+                        </select>
+                    </div>
+                    
+                    <div class="range-container">
+                        <svg class="circle-container" width="94%" height="80%">
+                            <circle id="dynamicCircle" cx="82" cy="45" r="50"></circle>
+                            <text id="circleCenter" x="83" y="61">+</text>
+                        </svg>
+                        <!-- Input Range -->
+                        <label class="form-label" for="customRange" style="width:16rem;">Selecciona un Ø para la herramienta</label>
+                        <input class="form-range" id="customRange" type="range" min="0" max="14" step="1" value="0">
+                        <!-- Display Value -->
+                        <div class="range-value">
+                            <input type="text" id="rangeValue" name="diam" class="form-control text-center" value="2" disabled>
+                            <label class="form-label ms-2 my-auto" for="rangeValue">mm</label>
+                            <input style="display: none;" type="hidden" id="diamHidden" name="diamHidden" value="2">
+                        </div>
+                    </div>
 
-            <div class="row justify-content-around align-items-center my-3 mx-auto">
-                <div class="col-2">
-                    <label class="form-label" for="type">Tipo</label>
-                    <select class="form-select form-select" aria-label=".form-select" name="type" id="type">
-                        <option selected value="toricas">Tóricas</option>
-                        <option value="planas">Planas</option>
-                        <option value="esfericas">Esféricas</option>
-                        <option value="final">Final</option>
-                        <option value="altoAvance">Alto avance</option>
-                        <option value="otras">Otras</option>
-                    </select>
-                </div>
-                
-                <div class="range-container">
-                    <svg class="circle-container" width="94%" height="80%">
-                        <circle id="dynamicCircle" cx="82" cy="45" r="50"></circle>
-                        <text id="circleCenter" x="83" y="61">+</text>
-                    </svg>
-                    <!-- Input Range -->
-                    <label class="form-label" for="customRange" style="width:16rem;">Selecciona un Ø para la herramienta</label>
-                    <input class="form-range" id="customRange" type="range" min="0" max="9" step="1" value="0">
-                    <!-- Display Value -->
-                    <div class="range-value">
-                        <input type="text" id="rangeValue" name="diam" class="form-control text-center" value="16" disabled>
-                        <label class="form-label ms-2 my-auto" for="rangeValue">mm</label>
-                        <input style="display: none;" type="number" id="diamHidden" name="diamHidden" value="16">
+                    <div class="range_rect-container">
+                        <svg class="rect-container" width="94%" height="80%">
+                            <rect id="dynamicRect" x="70" y="25" width="60" height="40"></rect>
+                        </svg>
+                        <!-- Input Range -->
+                        <label class="form-label" for="customRangeRect" style="width:17rem;">Selecciona el largo de la herramienta</label>
+                        <input class="form-range" id="customRangeRect" type="range" min="0" max="106" step="1" value="0">
+                        <!-- Display Value -->
+                        <div class="range-value">
+                            <input type="text" id="rangeValueRect" name="rect" class="form-control text-center" value="15" disabled>
+                            <label class="form-label ms-2 my-auto" for="rangeValueRect">mm</label>
+                            <input style="display: none;" type="hidden" id="rectHidden" name="rectHidden" value="15">
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-2">
-                    <label class="form-label" for="stock">Stock</label>
-                    <input type="number" name="stock" id="stock" min="0" max="5000" class="form-control text-center" placeholder="Stock" value="1" required>
+                <div class="row justify-content-around align-items-center my-4 mx-auto">
+                    <!-- Radios -->
+                    <div class="col-2">
+                        <label class="form-label" for="type">Radios (solo Tóricas)</label>
+                        <select disabled class="form-select" aria-label=".form-select" name="radio" id="radio">
+                            <option selected value=""></option>
+                            <option value="R5">R5</option>
+                        </select>
+                    </div>
+                    <!-- Conos -->
+                    <div class="col-2">
+                        <label class="form-label" for="type">Conos</label>
+                        <select class="form-select" aria-label=".form-select" name="cono" id="cono">
+                            <option selected value=""></option>
+                            <option value="BT1">BT1</option>
+                            <option value="BT2">BT2</option>
+                        </select>
+                    </div>
+                    <!-- Reducción -->
+                    <div class="col-2">
+                        <label class="form-label" for="type">Reducción</label>
+                        <select class="form-select" aria-label=".form-select" name="reduccion" id="reduccion">
+                            <option selected value=""></option>
+                            <option value="R1">R1</option>
+                            <option value="R2 C">R2 C</option>
+                            <option value="R2 L">R2 L</option>
+                            <option value="C6">C6</option>
+                            <option value="C8">C8</option>
+                        </select>
+                    </div>
+                    <!-- Prolongación/Extensión -->
+                    <div class="col-2">
+                        <label class="form-label" for="type">Prolongación</label>
+                        <select class="form-select" aria-label=".form-select" name="prolongacion" id="prolongacion">
+                            <option selected value=""></option>
+                            <option value="PC">PC</option>
+                            <option value="PL">PL</option>
+                            <option value="EC5">EC5</option>
+                            <option value="EC6">EC6</option>
+                        </select>
+                    </div>
+                    <!-- Arrastre -->
+                    <div class="col-2">
+                        <label class="form-label" for="type">Arrastre</label>
+                        <select class="form-select" aria-label=".form-select" name="arrastre" id="arrastre">
+                            <option selected value=""></option>
+                            <option value="AC">AC</option>
+                            <option value="AM">AM</option>
+                            <option value="AL">AL</option>
+                            <option value="AF">AF</option>
+                        </select>
+                    </div>
+                    <!-- Terminación -->
+                    <div class="col-2">
+                        <label class="form-label" for="type">Terminación</label>
+                        <select class="form-select" aria-label=".form-select" name="terminacion" id="terminacion">
+                            <option selected value=""></option>
+                            <option value="PF">PF - Prefinal</option>
+                            <option value="F">F - Final</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row justify-content-around align-items-center my-3 mx-auto">
+                    <!-- codigo herramienta -->
+                    <div class="col-3">
+                        <label class="form-label" for="code">Código (autogenerado)</label>
+                        <input type="text" name="code" id="code" class="form-control border-none" required disabled>
+                        <input style="display: none;" type="hidden" name="codeHidden" id="codeHidden" value="">
+                    </div>
+
+                    <div class="col-2">
+                        <label class="form-label" for="stock">Stock</label>
+                        <input type="number" name="stock" id="stock" min="0" max="5000" class="form-control text-center" placeholder="Stock" value="1" required>
+                    </div>
                 </div>
             </div>
-
+            <!-- imagen herramienta -->
             <div class="row justify-content-start align-items-center my-3 mx-auto">
                 <div class="col">
                     <label for="fileInputImageCuttingTool" class="form-label">
@@ -79,8 +159,9 @@
                 </div>
             </div>
 
+            <!-- status herramienta -->
             <div class="container-fluid my-1"><h5><strong>Status de Herramienta</strong></h5>
-                <div class="row my-3 mx-auto justify-content-between align-items-center">
+                <div class="row my-3 mx-auto justify-content-around align-items-center">
                     <div class="col-3 ms-2 my-auto" style="background-color: #00900c56;">
                         <label class="form-check-label" for="status">Status</label>
                         <div class="form-check form-switch">

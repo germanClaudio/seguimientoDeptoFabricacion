@@ -1,197 +1,35 @@
-async function switchFilterTools(filter, Proveedores, designationAndCodeQuery) {
-    switch (filter) {
-        case 'nullAllAll': {
-            var resultados = ['vacio']
-        break;
-        }
-        case 'nullAllDiseno': {
-            var resultados = await Proveedores.find({
-                'type': 'diseno'
-            })
-        break;
-        }
-        case 'nullAllSimulacion': {
-            var resultados = await Proveedores.find({
-                'type': 'simulacion'
-            })
-        break;
-        }
-        case 'nullAllOther': {
-            var resultados = await Proveedores.find({
-                'type': 'otras'
-            })
-        break;
-        }
-        case 'nullActiveAll': {
-            var resultados = await Proveedores.find({
-                'status': true,
-            })
-        break;
-        }
-        case 'nullActiveDiseno': {
-            var resultados = await Proveedores.find({
-                'status': true,
-                'type': 'diseno'
-            })
-        break;
-        }
-        case 'nullActiveSimulacion': {
-            var resultados = await Proveedores.find({
-                'status': true,
-                'type': 'simulacion',
-            })
-        break;
-        }
-        case 'nullActiveOther': {
-            var resultados = await Proveedores.find({
-                'status': true,
-                'type': 'otras',
-            })
-        break;
-        }
-        case 'nullInactiveAll': {
-            var resultados = await Proveedores.find({
-                'status': false
-            })
-        break;
-        }
-        case 'nullInactiveDiseno': {
-            var resultados = await Proveedores.find({
-                'status': false,
-                'type': 'diseno'
-            })
-        break;
-        }
-        case 'nullInactiveSimulacion': {
-            var resultados = await Proveedores.find({
-                'status': false,
-                'type': 'simulacion'
-            })
-        break;
-        }
-        case 'nullInactiveOther': {
-            var resultados = await Proveedores.find({
-                'status': false,
-                'type': 'otras'
-            })
-        break;
-        }
-        //--------------- input w/text ----------
-        case 'notNullAllAll': {
-            var resultados = await Proveedores.find({
-                $or: designationAndCodeQuery
-            })
-        break;
-        }
-        case 'notNullAllDiseno': {
-            var resultados = await Proveedores.find({
-                $or: designationAndCodeQuery,
-                $and: [
-                    { 'type': 'diseno' }
-                ]
-            })
-            break;
-        }
-        case 'notNullAllSimulacion': {
-            var resultados = await Proveedores.find({
-                $or: designationAndCodeQuery,
-                $and: [
-                    { 'type': 'simulacion' }
-                ]
-            })
-            break;
-        }
-        case 'notNullAllOther': {
-            var resultados = await Proveedores.find({
-                $or: designationAndCodeQuery,
-                $and: [
-                    { 'type': 'otras' }
-                ]
-            })
-            break;
-        }
-        case 'notNullActiveAll': {
-            var resultados = await Proveedores.find({
-                $or: designationAndCodeQuery,
-                $and: [
-                    { 'status': true }
-                ]
-            })
-            break;
-        }
-        case 'notNullActiveDiseno': {
-            var resultados = await Proveedores.find({
-                $or: designationAndCodeQuery,
-                $and: [
-                    { 'status': true },
-                    { 'type': 'diseno' }
-                ]
-            })
-            break;
-        }
-        case 'notNullActiveSimulacion': {
-            var resultados = await Proveedores.find({
-                $or: designationAndCodeQuery,
-                $and: [
-                    { 'status': true },
-                    { 'type': 'simulacion' }
-                ]
-            })
-            break;
-        }
-        case 'notNullActiveOther': {
-            var resultados = await Proveedores.find({
-                $or: designationAndCodeQuery,
-                $and: [
-                    { 'status': true },
-                    { 'type': 'otras' }
-                ]
-            })
-            break;
-        }
-        case 'notNullInactiveAll': {
-            var resultados = await Proveedores.find({
-                $or: designationAndCodeQuery,
-                $and: [
-                    { 'status': false }
-                ]
-            })
-            break;
-        }
-        case 'notNullInactiveDiseno': {
-            var resultados = await Proveedores.find({
-                $or: designationAndCodeQuery,
-                $and: [
-                    { 'status': false },
-                    { 'type': 'diseno' }
-                ]
-            })
-            break;
-        }
-        case 'notNullInactiveSimulacion': {
-            var resultados = await Proveedores.find({
-                $or: designationAndCodeQuery,
-                $and: [
-                    { 'status': false },
-                    { 'type': 'simulacion' }
-                ]
-            })
-            break;
-        }
-        case 'notNullInactiveOther': {
-            var resultados = await Proveedores.find({
-                $or: designationAndCodeQuery,
-                $and: [
-                    { 'status': false },
-                    { 'type': 'otras' }
-                ]
-            })
-            break;
-        }
+async function switchFilterSuppliers(filter, Proveedores, designationAndCodeQuery) {
+    let resultados;
+
+    // Descomponer el filtro en sus partes
+    const [queryType, status, type] = filter.match(/(null|notNull)(Active|Inactive|All)(Diseno|Simulacion|Other|All)/).slice(1);
+
+    // Construir la consulta base
+    const query = {};
+
+    if (queryType === 'notNull') {
+        query.$or = designationAndCodeQuery;
     }
-    return resultados
+
+    if (status === 'Active') {
+        query.status = true;
+    } else if (status === 'Inactive') {
+        query.status = false;
+    }
+
+    if (type !== 'All') {
+        query.type = type.toLowerCase();
+    }
+
+    // Realizar la consulta o asignar un valor por defecto
+    resultados = Object.keys(query).length > 0
+        ? await Proveedores.find(query)
+        : ['vacio'];
+
+    return resultados;
 }
 
+
 module.exports = {
-    switchFilterTools
+    switchFilterSuppliers
 }

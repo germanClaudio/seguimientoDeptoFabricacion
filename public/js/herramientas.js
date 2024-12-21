@@ -9,7 +9,6 @@ fetch('/api/config')
     .catch(error => console.error('Error fetching config:', error));
 
 function formatDate(date) {
-    
     const DD = String(date.getDate()).padStart(2, '0'),
         MM = String(date.getMonth() + 1).padStart(2, '0'),
         YY = date.getFullYear(),
@@ -19,19 +18,19 @@ function formatDate(date) {
     return DD + MM + YY + "_" + hh + mm + ss
 }
 
-// function formatDateUsing(dateString) {
-//     const date = new Date(dateString); // Convierte la cadena a un objeto Date
+const green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', yellow = 'warning', black = 'dark', white = 'light',
+        active = 'Activa', inactive = 'Inactiva', info = 'info',
+        toricas = 'Tóricas', planas = 'Planas', esfericas = 'Esféricas'
+let html, stock
 
-//     const day = String(date.getDate()).padStart(2, '0'); // Día con 2 dígitos
-//     const month = String(date.getMonth() + 1).padStart(2, '0'); // Mes con 2 dígitos (0-indexado)
-//     const year = date.getFullYear(); // Año completo
+const typeConfigurations = {
+    TOR: { optionType: yellow, showType: toricas, textColor: black },
+    PLA: { optionType: grey, showType: planas, textColor: white },
+    ESF: { optionType: blue, showType: esfericas, textColor: white }
+};
 
-//     const hours = String(date.getHours()).padStart(2, '0'); // Horas con 2 dígitos
-//     const minutes = String(date.getMinutes()).padStart(2, '0'); // Minutos con 2 dígitos
-//     const seconds = String(date.getSeconds()).padStart(2, '0'); // Segundos con 2 dígitos
-
-//     return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
-// }
+// Configuración por defecto
+const defaultConfig = { optionType: blue, showType: 'Otras', textColor: white };
 
 //-------------------------------------------
 const inputName = document.getElementById('designation')
@@ -72,26 +71,11 @@ socket.on('cuttingToolsAll', (arrCuttingTools, arrUsers) => {
 
 // --------------- Render Admin ----------------------------
 const renderCuttingToolsAdmin = (arrCuttingTools) => {
-    const arrayCuttingTool = arrCuttingTools,
-        green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', black = 'dark', white = 'light',
-        active = 'Activa', inactive = 'Mantenimiento', info = 'info',
-        toricas = 'Tóricas', planas = 'Planas', esfericas = 'Esféricas', final = 'final', altoAvance = 'altoAvance'
-    let html
-    
+    const arrayCuttingTool = arrCuttingTools
     if (arrCuttingTools.length > 0) {
         html = arrCuttingTools.map((element) => {
-            let optionStatus = element.status ? green : red
-            
-            const typeConfigurations = {
-                toricas: { optionType: info, showType: toricas, textColor: black },
-                planas: { optionType: grey, showType: planas, textColor: white },
-                esfericas: { optionType: grey, showType: esfericas, textColor: white },
-                final: { optionType: grey, showType: final, textColor: white },
-                altoAvance: { optionType: grey, showType: altoAvance, textColor: white },
-            };
-            
-            // Configuración por defecto
-            const defaultConfig = { optionType: blue, showType: 'Otras', textColor: white };
+            let optionStatus = element.status ? green : red,
+                optionStock = element.stock>0 ? black : red
             
             // Obtener configuración según el tipo o usar la configuración por defecto
             const { optionType, showType, textColor } = typeConfigurations[element.type] || defaultConfig;
@@ -100,15 +84,17 @@ const renderCuttingToolsAdmin = (arrCuttingTools) => {
                 idChain = element._id.substring(19)
 
             if (element.visible) {
-                return (`<tr>
+                element.stock > 0 ? stock = '<tr>' : stock ='<tr style="background-color:rgba(32, 32, 32, 0.25);">'
+                return (`${stock}
                             <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
-                            <td class="text-center" id="codigo_${element._id}">${element.code}</td>
+                            <td class="text-center" id="codigo_${element._id}"><strong>${element.code}</strong></td>
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
-                            <td class="text-center" id="diam_${element._id}"><span>Ø${element.diam}</span>mm</td>
+                            <td class="text-center" id="diam_${element._id}"><span>Ø${element.diam}</span> mm</td>
+                            <td class="text-center" id="largo_${element._id}"><span>${element.largo}</span> mm</td>
                             <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
                             <td class="text-center" id="characteristics_${element._id}">${element.characteristics}</td>
                             <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageCuttingTool}' width="150px" height="150px"></td>
-                            <td class="text-center" id="stock_${element._id}"><span class="badge bg-${black} text-light">${element.stock}</span></td>
+                            <td class="text-center" id="stock_${element._id}"><span class="badge bg-${optionStock} text-light">${element.stock}</span></td>
                             <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
                             <td class="text-center">${element.creator[0].name} ${element.creator[0].lastName}</td>
                             <td class="text-center">${element.timestamp}</td>
@@ -150,8 +136,8 @@ const renderCuttingToolsAdmin = (arrCuttingTools) => {
     document.getElementById('loading-spinner').style.display = 'none';
     document.getElementById('cuttingToolTable').style.display = 'block';
 
-    // ---- mensaje confirmacion eliminar Usuario -----------
-    function messageDeleteCuttingTool(id, code, designation) {
+    // ---- mensaje confirmacion eliminar Herramienta -----------
+    function messageDeleteCuttingTool(id, designation, code) {
         const htmlForm =
             `La herramienta ${designation} - Código: ${code}, se eliminará completamente.<br>
                 Está seguro que desea continuar?<br>
@@ -161,7 +147,7 @@ const renderCuttingToolsAdmin = (arrCuttingTools) => {
                 </form>`
     
         Swal.fire({
-            title: `Eliminar Herramienta <b>${designation}</b>?`,
+            title: `Eliminar Herramienta <b>${designation}</b> - ${code}?`,
             position: 'center',
             html: htmlForm,
             icon: 'warning',
@@ -202,9 +188,10 @@ const renderCuttingToolsAdmin = (arrCuttingTools) => {
                     designation = document.getElementById(`designation_${idCuttingTool}`).innerText,
                     code = document.getElementById(`codigo_${idCuttingTool}`).innerText,
                     type = document.getElementById(`tipo_${idCuttingTool}`).innerText,
-                    diam = document.getElementById(`diam_${idCuttingTool}`).innerText
+                    diam = document.getElementById(`diam_${idCuttingTool}`).innerText,
+                    largo = document.getElementById(`largo_${idCuttingTool}`).innerText
 
-                idCuttingTool && designation && code && type && diam ? messageDeleteCuttingTool(idCuttingTool, designation, code, type, diam) : null
+                idCuttingTool && designation && code && type && diam && largo ? messageDeleteCuttingTool(idCuttingTool, designation, code) : null
             })
         }
     })
@@ -212,26 +199,11 @@ const renderCuttingToolsAdmin = (arrCuttingTools) => {
 
 //----------------------- Render User -------------------------------
 const renderCuttingToolsUser = (arrCuttingTools) => {
-    const arrayCuttingTool = arrCuttingTools,
-        green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', black = 'dark', white = 'light',
-        active = 'Activa', inactive = 'En uso', info = 'info',
-        toricas = 'Tóricas', planas = 'Planas', esfericas = 'Esféricas', final = 'final', altoAvance = 'altoAvance'
-    let html
-
+    const arrayCuttingTool = arrCuttingTools
     if (arrCuttingTools.length>0) {
         html = arrCuttingTools.map((element) => {
-            let optionStatus = element.status ? green : red
-            
-            const typeConfigurations = {
-                toricas: { optionType: info, showType: toricas, textColor: black },
-                planas: { optionType: grey, showType: planas, textColor: white },
-                esfericas: { optionType: grey, showType: esfericas, textColor: white },
-                final: { optionType: grey, showType: final, textColor: white },
-                altoAvance: { optionType: grey, showType: altoAvance, textColor: white },
-            };
-            
-            // Configuración por defecto
-            const defaultConfig = { optionType: blue, showType: 'Otras', textColor: white };
+            let optionStatus = element.status ? green : red,
+            optionStock = element.stock>0 ? black : red
             
             // Obtener configuración según el tipo o usar la configuración por defecto
             const { optionType, showType, textColor } = typeConfigurations[element.type] || defaultConfig;
@@ -240,15 +212,17 @@ const renderCuttingToolsUser = (arrCuttingTools) => {
                 idChain = element._id.substring(19)
 
             if (element.visible) {
-                return (`<tr>
+                element.stock > 0 ? stock = '<tr>' : stock ='<tr style="background-color:rgba(32, 32, 32, 0.25);">'
+                return (`${stock}
                             <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
-                            <td class="text-center" id="codigo_${element._id}">${element.code}</td>
+                            <td class="text-center" id="codigo_${element._id}"><strong>${element.code}</strong></td>
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
-                            <td class="text-center" id="diam_${element._id}"><span>Ø${element.diam}</span>mm</td>
+                            <td class="text-center" id="diam_${element._id}"><span>Ø${element.diam}</span> mm</td>
+                            <td class="text-center" id="largo_${element._id}"><span>${element.largo}</span> mm</td>
                             <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
                             <td class="text-center" id="characteristics_${element._id}">${element.characteristics}</td>
                             <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageCuttingTool}' width="150px" height="150px"></td>
-                            <td class="text-center" id="stock_${element._id}"><span class="badge bg-${black} text-light">${element.stock}</span></td>
+                            <td class="text-center" id="stock_${element._id}"><span class="badge bg-${optionStock} text-light">${element.stock}</span></td>
                             <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
                             <td class="text-center">${element.creator[0].name} ${element.creator[0].lastName}</td>
                             <td class="text-center">${element.timestamp}</td>
@@ -303,7 +277,7 @@ const renderCuttingToolsUser = (arrCuttingTools) => {
                         `
     
         Swal.fire({
-            title: `Eliminar Herramienta <b>${designation}</b>?`,
+            title: `Eliminar Herramienta <b>${designation}</b> - ${code}?`,
             position: 'center',
             html: htmlForm,
             icon: 'warning',
@@ -344,9 +318,10 @@ const renderCuttingToolsUser = (arrCuttingTools) => {
                     designation = document.getElementById(`designation_${idCuttingTool}`).innerText,
                     code = document.getElementById(`codigo_${idCuttingTool}`).innerText,
                     type = document.getElementById(`tipo_${idCuttingTool}`).innerText,
-                    diam = document.getElementById(`diam_${idCuttingTool}`).innerText
+                    diam = document.getElementById(`diam_${idCuttingTool}`).innerText,
+                    largo = document.getElementById(`largo_${idCuttingTool}`).innerText
 
-                idCuttingTool && designation && code && type && diam ? messageDeleteCuttingTool(idCuttingTool, designation, code, type, diam) : null
+                idCuttingTool && designation && code && type && diam && largo? messageDeleteCuttingTool(idCuttingTool, designation, code) : null
             })
         }
     })
@@ -484,11 +459,11 @@ removeImageButtonImageCuttingTool.addEventListener('click', (e)=> {
 })
 
 
-function messageNewCuttingTool(designation, code, type, diam, stock) {
+function messageNewCuttingTool(designation, code, type, diam, largo, stock) {
     if (designation, code, type, diam, stock) {
         Swal.fire({
             title: `Nueva Herramienta <b>${designation}</b>`,
-            text: `La herramienta ${designation}, tipo: ${type}, código: ${code}, stock: ${stock}, será registrada!`,
+            text: `La herramienta ${designation} (${type}), código: ${code}, stock: ${stock}, será registrada!`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -502,7 +477,7 @@ function messageNewCuttingTool(designation, code, type, diam, stock) {
                 // document.getElementById('rangeValue').removeAttribute('disabled')
                 Swal.fire(
                     'Creada!',
-                    `La herramienta ${designation} (${type}) Ø${diam}mm, código #:${code}, stock: ${stock}, ha sido registrada exitosamente.`,
+                    `La herramienta ${designation} (${type}) Ø${diam}mm, largo: ${largo}, código: ${code}, stock: ${stock}, ha sido registrada exitosamente.`,
                     'success'
                 )
                 setTimeout(() => {
@@ -523,7 +498,7 @@ function messageNewCuttingTool(designation, code, type, diam, stock) {
         swal.fire({
             title: 'Error',
             position: 'center',
-            timer: 3500,
+            timer: 2500,
             text: `La Herramienta no se creó correctamente!`,
             icon: 'error',
             showCancelButton: true,
@@ -532,7 +507,7 @@ function messageNewCuttingTool(designation, code, type, diam, stock) {
     }
 }
 
-function messageWarningEmptyFields(designation, code, type, diam, stock) {
+function messageWarningEmptyFields(designation, code, type, diam, largo, stock) {
     const formFields =[]
     
     designation == "" ? formFields.push('Designacion') : null
@@ -540,6 +515,7 @@ function messageWarningEmptyFields(designation, code, type, diam, stock) {
     type == "" ? formFields.push('Tipo') : null
     diam == "" ? formFields.push('Diam') : null
     stock == "" ? formFields.push('Stock') : null 
+    largo == "" ? formFields.push('Largo') : null
 
     formFields.length == 1 ?
         Swal.fire({
@@ -549,7 +525,7 @@ function messageWarningEmptyFields(designation, code, type, diam, stock) {
             showCancelButton: true,
             showConfirmButton: false,
             cancelButtonColor: '#d33',
-            cancelButtonText: 'Volver al Formulario <i class="fa-solid fa-user-gear"></i>'
+            cancelButtonText: 'Volver al Formulario <i class="fa-solid fa-screwdriver-wrench"></i>'
         })
     :
         Swal.fire({
@@ -559,7 +535,7 @@ function messageWarningEmptyFields(designation, code, type, diam, stock) {
             showCancelButton: true,
             showConfirmButton: false,
             cancelButtonColor: '#d33',
-            cancelButtonText: 'Volver al Formulario <i class="fa-solid fa-user-gear"></i>'
+            cancelButtonText: 'Volver al Formulario <i class="fa-solid fa-screwdriver-wrench"></i>'
         })
 }
 
@@ -568,26 +544,16 @@ const btnAddNewCuttingTool = document.getElementById('btnAddNewCuttingTool')
 btnAddNewCuttingTool.addEventListener('click', (event) => {
     event.preventDefault()
     const designation = document.getElementById('designation').value,
-        code = document.getElementById('code').value,
+        code = document.getElementById('codeHidden').value,
         type = document.getElementById('type').value,
         diam = document.getElementById('rangeValue').value,
+        largo = document.getElementById('rangeValueRect').value,
         stock = document.getElementById('stock').value
 
-    designation && code && type && diam && stock ? 
-        messageNewCuttingTool(designation, code, type.toUpperCase(), diam, stock) :
-        messageWarningEmptyFields(designation, code, type.toUpperCase(), diam, stock)
+    designation && code && type && diam && stock && largo? 
+        messageNewCuttingTool(designation, code, type.toUpperCase(), diam, largo, stock) :
+        messageWarningEmptyFields(designation, code, type.toUpperCase(), diam, largo, stock)
 })
-
-const btnResetFormNewCuttingTool = document.getElementById('btnResetFormNewCuttingTool')
-if (btnResetFormNewCuttingTool) {
-    btnResetFormNewCuttingTool.addEventListener('click', () => {
-        btnAddNewCuttingTool.disabled = true
-        btnAddNewCuttingTool.style.opacity = (0.4)
-        alertImageCuttingTool.style.display = 'none'
-        alertSizeImageCuttingTool.style.display = 'none'
-        alertRefresh()
-    })
-}
 
 let inputsDeTexto = document.querySelectorAll('input[type="text"]')
     // Agregar un listener de evento a cada input
@@ -629,6 +595,154 @@ let inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
         })
     })
 
+const valores = [2, 3, 4, 6, 10, 16, 20, 25, 32, 50, 52, 63, 80, 100, 125], // Valores para los radios de los círculos
+    avances = [52, 76, 102, 128, 156, 182, 208, 234, 260, 286, 312, 338, 364, 390, 420], // Valores de los radios de los círculos
+
+    largos = [15, 20, 25, 30, 40, 45, 50, 57, 60, 63, 65, 66, 68, 70, 75, 76, 77, 78, 81, 86, 88, 89, 90, 91, 94, 96, 97, 98,
+            102, 107, 108, 110, 111, 113, 116, 119, 120, 121, 123, 125, 128, 130, 131, 132, 138, 140, 142, 143, 144, 146, 147, 148,
+            152, 154, 155, 158, 163, 164, 165, 170, 173, 175, 176, 177, 180, 182, 183, 186, 188, 191, 192, 196, 197, 198,
+            204, 210, 214, 216, 217, 220, 221, 223, 225, 226, 230, 231, 233, 238, 241, 248, 254, 264, 265, 269, 270, 276, 277, 286, 291, 296,
+            302, 310, 311, 321, 330, 331, 341, 342, 343, 351, 376, 377, 386, 391, 394, 442 ],
+
+    avancesLargos = [0, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 36, 38, 40, 42, 44, 46, 48,
+                    50, 52, 54, 56, 58, 60, 62, 63, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98,
+                    100, 102, 104, 106, 108, 110, 112, 114, 116, 118, 120, 122, 124, 126, 128, 130, 132, 134, 136, 138, 140, 142, 144, 146, 148,
+                    150, 152, 154, 156, 158, 160, 162, 164, 166, 167, 169, 170, 172, 173, 175, 177, 179, 181, 183, 185, 187, 189, 190, 192, 194, 196, 198,
+                    200, 202, 204, 206 ],
+
+    range = document.getElementById("customRange"),
+    displayValue = document.getElementById("rangeValue"),
+    diamHidden = document.getElementById("diamHidden"),
+    dynamicCircle = document.getElementById("dynamicCircle"),
+
+    rangeRect = document.getElementById("customRangeRect"),
+    displayValueRect = document.getElementById("rangeValueRect"),
+    rectHidden = document.getElementById("rectHidden"),
+    dynamicRect = document.getElementById("dynamicRect"),
+
+    codeInput = document.getElementById('code'),
+    codeHidden = document.getElementById("codeHidden"),
+
+    type = document.getElementById('type'),
+    radio = document.getElementById('radio'),
+    cono = document.getElementById('cono'),
+    reduccion = document.getElementById('reduccion'),
+    prolongacion = document.getElementById('prolongacion'),
+    arrastre = document.getElementById('arrastre'),
+    terminacion = document.getElementById('terminacion')
+
+let typeInput = document.getElementById('type').value,
+    radioInput = document.getElementById('radio').value,
+    conoInput = document.getElementById('cono').value,
+    reduccionInput = document.getElementById('reduccion').value,
+    prolongacionInput = document.getElementById('prolongacion').value,
+    arrastreInput = document.getElementById('arrastre').value,
+    terminacionInput = document.getElementById('terminacion').value
+
+    radioInput.value = conoInput.value = reduccionInput.value = prolongacionInput.value = arrastreInput.value = terminacionInput.value = ''
+
+    codeInput.value = codeHidden.value = typeInput.toUpperCase() + valores[0] + '_L' + largos[0]
+
+    // Inicialización del círculo
+    dynamicCircle.setAttribute("cx", 82); //82 Centro fijo en X al inicio del input range
+    dynamicCircle.setAttribute("cy", 45); // Centro fijo en Y
+    dynamicCircle.setAttribute("r", 50);
+
+    // Inicialización del rectángulo
+    dynamicRect.setAttribute("width", 60)
+    dynamicRect.setAttribute("height", 38)
+    dynamicRect.setAttribute("x", 70); // Centrado inicial
+    dynamicRect.setAttribute("y", 25)
+
+    range.addEventListener("input", () => {
+        let valor = updateValues(type, radio, cono, reduccion, prolongacion, arrastre, terminacion)
+
+        displayValue.value = valor.value; // Actualizar el valor mostrado
+        diamHidden.value = valor.value
+        dynamicCircle.setAttribute("r", parseInt(avances[valor.index])) // Actualizar el radio del círculo
+        dynamicCircle.setAttribute("cx", 82); // Mantener el centro fijo desplazado 82px desde el inicio del input range
+
+        const valueRange = range.value, max = 14, progress = Math.trunc((valueRange / max) * 100)
+
+        range.style.background = `linear-gradient(to right, #005bbb ${progress}%, #ddd ${progress}%)`;
+    });
+
+    rangeRect.addEventListener("input", () => {        
+        let valor = updateValues(type, radio, cono, reduccion, prolongacion, arrastre, terminacion)
+
+        displayValueRect.value = valor.valueRect; // Actualizar el valor mostrado
+        rectHidden.value = valor.valueRect
+        
+        // Centrar el rectángulo
+        dynamicRect.setAttribute("x", 70)
+        dynamicRect.setAttribute("y", 25)
+
+        const valueRangeRect = rangeRect.value, max = 106, progress = Math.trunc((valueRangeRect / max) * 100)
+
+        rangeRect.style.background = `linear-gradient(to right, #005bbb ${progress}%, #ddd ${progress}%)`;
+        
+        // Actualizar el tamaño del rectángulo
+        dynamicRect.setAttribute("width", parseInt(60 + avancesLargos[valor.indexRect]*1.8))
+        
+    });
+
+    type.addEventListener("change", () => {
+        if (type.value === 'TOR') {
+            radio.removeAttribute('disabled')
+        } else {
+            radio.setAttribute('disabled', true)
+            radio.value = ''
+        }
+        updateValues(type, radio, cono, reduccion, prolongacion, arrastre, terminacion)
+    });
+
+    radio.addEventListener("change", () => {
+        updateValues(type, radio, cono, reduccion, prolongacion, arrastre, terminacion)
+    });
+
+    cono.addEventListener("change", () => {
+        updateValues(type, radio, cono, reduccion, prolongacion, arrastre, terminacion)
+    });
+
+    reduccion.addEventListener("change", () => {
+        updateValues(type, radio, cono, reduccion, prolongacion, arrastre, terminacion)
+    });
+
+    prolongacion.addEventListener("change", () => {
+        updateValues(type, radio, cono, reduccion, prolongacion, arrastre, terminacion)
+    });
+
+    arrastre.addEventListener("change", () => {
+        updateValues(type, radio, cono, reduccion, prolongacion, arrastre, terminacion)
+    });
+
+    terminacion.addEventListener("change", () => {
+        updateValues(type, radio, cono, reduccion, prolongacion, arrastre, terminacion)
+    });
+    
+    function updateValues(type, radio, cono, reduccion, prolongacion, arrastre, terminacion) {
+        const index = parseInt(range.value, 10), // Índice del valor actual
+            value = valores[index];
+
+        const indexRect = parseInt(rangeRect.value, 10), // Índice del valor actual
+            valueRect = largos[indexRect];
+
+        let valorRadio, valorCono, valorReduccion, valorProlongacion, valorArrastre, valorTerminacion
+        
+        radio.value !== '' ? valorRadio = `_${radio.value}` : valorRadio = radio.value
+        cono.value !== '' ? valorCono = `_${cono.value}` : valorCono = cono.value
+        reduccion.value !== '' ? valorReduccion = `_${reduccion.value}` : valorReduccion = reduccion.value
+        prolongacion.value !== '' ? valorProlongacion = `_${prolongacion.value}` : valorProlongacion = prolongacion.value
+        arrastre.value !== '' ? valorArrastre = `_${arrastre.value}` : valorArrastre = arrastre.value
+        terminacion.value !== '' ? valorTerminacion = `_${terminacion.value}` : valorTerminacion = terminacion.value
+
+        codeInput.value = codeHidden.value = type.value + value + valorRadio + '_L' + valueRect +
+                                            valorCono + valorReduccion + valorProlongacion + valorArrastre + valorTerminacion
+        
+        return {value, valueRect, index, indexRect}
+    }
+
+
 function disabledBtnAceptar () {
     let btnAceptarFrom = document.getElementById('btnAddNewCuttingTool');
     const allInputs = document.querySelectorAll('input[type="text"], textarea, input[type="file"], input[type="hidden"], input[type="select"]')
@@ -642,34 +756,6 @@ function disabledBtnAceptar () {
             })        
     })
 }
+
 disabledBtnAceptar()
 
-const valores = [16, 20, 25, 32, 50, 52, 63, 80, 100, 125], // Valores para los radios de los círculos
-      avances = [52, 92, 134, 175, 216, 256, 297, 338, 379, 420], // Valores de los radios de los círculos
-        range = document.getElementById("customRange"),
-        displayValue = document.getElementById("rangeValue"),
-        diamHidden = document.getElementById("diamHidden"),
-        dynamicCircle = document.getElementById("dynamicCircle")
-
-    range.addEventListener("input", () => {
-        const index = parseInt(range.value, 10), // Índice del valor actual
-            value = valores[index];
-
-        displayValue.value = value; // Actualizar el valor mostrado
-        diamHidden.value = value
-        
-        dynamicCircle.setAttribute("r", parseInt(avances[index])) // Actualizar el radio del círculo
-        dynamicCircle.setAttribute("cx", 82); // Mantener el centro fijo desplazado 75px desde el inicio del input range
-
-        const valueRange = range.value,
-            max = 9
-            progress = (valueRange / max) * 100
-
-        range.style.background = `linear-gradient(to right, #005bbb ${progress}%, #ddd ${progress}%)`;
-        
-    });
-
-// Inicialización del círculo
-dynamicCircle.setAttribute("cx", 82); //95 Centro fijo en X al inicio del input range
-dynamicCircle.setAttribute("cy", 45); // Centro fijo en Y
-dynamicCircle.setAttribute("r", 50);

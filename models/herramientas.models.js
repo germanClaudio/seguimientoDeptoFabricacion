@@ -25,6 +25,82 @@ const herramientasSchema = new Schema({
             message: `El diámetro debe ser un número entero.`
         }
     },
+    largo: {
+        type: Number,
+        default: 15,
+        min: 1,
+        max: 500,
+        validate: {
+            validator: Number.isInteger,
+            message: `El largo debe ser un número entero.`
+        }
+    },
+    radio: {
+        type: String,
+        maxlength: 2,
+        validate: {
+            validator: function (v) {
+                // Expresión regular: acepta letras mayúsculas (A-Z), números (0-9) y espacios
+                return /^[A-Z0-9\s]+$/.test(v);
+            },
+            message: props => `${props.value} no es válido. Solo se permiten letras mayúsculas, números enteros y espacios en blanco.`
+        }
+    },
+    cono: {
+        type: String,
+        maxlength: 3,
+        validate: {
+            validator: function (v) {
+                // Expresión regular: acepta letras mayúsculas (A-Z), números (0-9) y espacios
+                return /^[A-Z0-9\s]+$/.test(v);
+            },
+            message: props => `${props.value} no es válido. Solo se permiten letras mayúsculas, números enteros y espacios en blanco.`
+        }
+    },
+    reduccion: {
+        type: String,
+        maxlength: 4,
+        validate: {
+            validator: function (v) {
+                 // Expresión regular: acepta letras mayúsculas (A-Z), números (0-9) y espacios
+                return /^[A-Z0-9\s]+$/.test(v);
+            },
+            message: props => `${props.value} no es válido. Solo se permiten letras mayúsculas, números enteros y espacios en blanco.`
+        }
+    },
+    prolongacion: {
+        type: String,
+        maxlength: 3,
+        validate: {
+            validator: function (v) {
+                // Expresión regular: acepta letras mayúsculas (A-Z), números (0-9) y espacios
+                return /^[A-Z0-9\s]+$/.test(v);
+            },
+            message: props => `${props.value} no es válido. Solo se permiten letras mayúsculas, números enteros y espacios en blanco.`
+        }
+    },
+    arrastre: {
+        type: String,
+        maxlength: 2,
+        validate: {
+            validator: function (v) {
+                // Expresión regular: acepta letras mayúsculas (A-Z), números (0-9) y espacios
+                return /^[A-Z0-9\s]+$/.test(v);
+            },
+            message: props => `${props.value} no es válido. Solo se permiten letras mayúsculas, números enteros y espacios en blanco.`
+        }
+    },
+    terminacion: {
+        type: String,
+        maxlength: 2,
+        validate: {
+            validator: function (v) {
+                // Expresión regular: acepta letras mayúsculas (A-Z), números (0-9) y espacios
+                return /^[A-Z0-9\s]+$/.test(v);
+            },
+            message: props => `${props.value} no es válido. Solo se permiten letras mayúsculas, números enteros y espacios en blanco.`
+        }
+    },
     imageCuttingTool: { 
         type: String,
         maxlength: 1000

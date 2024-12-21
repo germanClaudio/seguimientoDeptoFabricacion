@@ -1,6 +1,6 @@
-<div class="shadow-lg mx-auto my-2 w-50 border rounded p-3 text-white bg-opacity-50" style="background-color: #272787;">
+<div class="shadow-lg mx-auto my-2 w-75 border rounded p-3 text-white bg-opacity-50" style="background-color: #272787;">
     <form class="row align-items-center" id="searchFormCuttingTool" onsubmit="return searchCuttingTools(this)">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <label class="form-check-label ms-2 text-white" for="queryTools">Buscar</label>
             <input class="form-control" type="text" id="queryCuttingTools" name="queryCuttingTools" placeholder="Buscar Herramientas">
         </div>
@@ -18,12 +18,9 @@
             <label class="form-check-label ms-2 text-white" for="typeCuttingTool">Tipo</label>
             <select class="form-select small" aria-label=".form-select" name="typeCuttingTool" id="typeCuttingTool" style="font-size: 13px;">
                 <option selected value="todas">Todas</option>
-                <option value="toricas">Tóricas</option>
-                <option value="planas">Planas</option>
-                <option value="esfericas">Esféricas</option>
-                <option value="final">Final</option>
-                <option value="altoAvance">Alto avance</option>
-                <option value="otras">Otras</option>
+                <option value="TOR">Tóricas</option>
+                <option value="PLA">Planas</option>
+                <option value="ESF">Esféricas</option>
             </select>
         </div>
 
@@ -44,7 +41,24 @@
             </select>
         </div>
 
-        <div class="col-md">
+        <div class="col-md-2 ms-2">
+            <label class="form-check-label ms-2 text-white" for="largoCuttingTool">Largo</label>
+            <select class="form-select small" aria-label=".form-select" name="largoCuttingTool" id="largoCuttingTool" style="font-size: 13px;">
+                <option selected value="todas">Todas</option>
+                <option value="50"><50</option>
+                <option value="100">51-100</option>
+                <option value="150">101-150</option>
+                <option value="200">151-200</option>
+                <option value="250">201-250</option>
+                <option value="300">251-300</option>
+                <option value="350">301-350</option>
+                <option value="400">351-400</option>
+                <option value="450">401-450</option>
+                <option value="500">>451</option>
+            </select>
+        </div>
+
+        <div class="col-md ms-2">
             <button class="btn rounded-circle bg-white me-2 text-dark" title="Buscar" type="submit">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>

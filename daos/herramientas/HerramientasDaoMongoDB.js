@@ -123,217 +123,52 @@ class HerramientasDaoMongoDB extends ContainerMongoDB {
         }
     }
 
-    // async getCuttingToolsBySearching(query) {
-    //     let filter
-    //     var design_Code_Type_Diam_OnUseQuery = [{ 'designation': { $regex: `${query.queryCuttingTool}`, $options: 'i' } }, 
-    //                                     { 'code': { $regex: `${query.queryCuttingTool}`, $options: 'i' } },
-    //                                     { 'type': { $regex: `${query.queryCuttingTool}`, $options: 'i' } },
-    //                                     { 'diam': { $regex: `${query.queryCuttingTool}`, $options: 'i' } },
-    //                                     { 'onUse': { $regex: `${query.queryCuttingTool}`, $options: 'i' } },
-    //                                 ]
-
-    //     if (query.queryCuttingTool === '') {
-    //         if (query.statusCuttingTool === 'todas') {
-    //             if (query.typeCuttingTool === 'todas') {
-    //                 filter = 'nullAllAll'
-    //             } else if (query.typeCuttingTool === 'toricas') {
-    //                 filter = 'nullAllToricas'
-    //             } else if (query.typeCuttingTool === 'planas') {
-    //                 filter = 'nullAllPlanas'
-    //             } else if (query.typeCuttingTool === 'esfericas') {
-    //                 filter = 'nullAllEsfericas'
-    //             } else if (query.typeCuttingTool === 'final') {
-    //                 filter = 'nullAllFinal'
-    //             } else if (query.typeCuttingTool === 'altoAvance') {
-    //                 filter = 'nullAllAltoAvance'
-    //             } else {
-    //                 filter = 'nullAllOther'
-    //             }
-
-    //         } else if (query.statusCuttingTool) {
-    //             if (query.typeCuttingTool === 'todas') {
-    //                 filter = 'nullActiveAll'
-    //             } else if (query.typeCuttingTool === 'toricas') {
-    //                 filter = 'nullActiveToricas'
-    //             } else if (query.typeCuttingTool === 'planas') {
-    //                 filter = 'nullActivePlanas'
-    //             } else if (query.typeCuttingTool === 'esfericas') {
-    //                 filter = 'nullActiveEsfericas'
-    //             } else if (query.typeCuttingTool === 'final') {
-    //                 filter = 'nullActiveFinal'
-    //             } else if (query.typeCuttingTool === 'altoAvance') {
-    //                 filter = 'nullActiveAltoAvance'
-    //             } else {
-    //                 filter = 'nullActiveOther'
-    //             }
-
-    //         } else if (!query.statusCuttingTool) {
-    //             if (query.typeCuttingTool === 'todas') {
-    //                 filter = 'nullInactiveAll'
-    //             } else if (query.typeCuttingTool === 'toricas') {
-    //                 filter = 'nullInactiveToricas'
-    //             } else if (query.typeCuttingTool === 'planas') {
-    //                 filter = 'nullInactivePlanas'
-    //             } else if (query.typeCuttingTool === 'esfericas') {
-    //                 filter = 'nullInactiveEsfericas'
-    //             } else if (query.typeCuttingTool === 'final') {
-    //                 filter = 'nullInactiveFinal'
-    //             } else if (query.typeCuttingTool === 'altoAvance') {
-    //                 filter = 'nullInactiveAltoAvance'
-    //             } else {
-    //                 filter = 'nullInactiveOther'
-    //             }
-    //         }
-
-    //     } else {
-    //         if (query.statusCuttingTool === 'todas') {
-    //             if (query.typeCuttingTool === 'todas') {
-    //                 filter = 'notNullAllAll'
-    //             } else if (query.typeCuttingTool === 'toricas') {
-    //                 filter = 'notNullAllToricas'
-    //             } else if (query.typeCuttingTool === 'planas') {
-    //                 filter = 'notNullAllPlanas'
-    //             } else if (query.typeCuttingTool === 'esfericas') {
-    //                 filter = 'notNullAllEsfericas'
-    //             } else if (query.typeCuttingTool === 'final') {
-    //                 filter = 'notNullAllFinal'
-    //             } else if (query.typeCuttingTool === 'altoavance') {
-    //                 filter = 'notNullAllAltoavance'
-    //             } else {
-    //                 filter = 'notNullAllOther'
-    //             }
-    //         } else if (query.statusCuttingTool) {
-    //             if (query.typeCuttingTool === 'todas') {
-    //                 filter = 'notNullActiveAll'
-    //             } else if (query.typeCuttingTool === 'toricas') {
-    //                 filter = 'notNullActiveToricas'
-    //             } else if (query.typeCuttingTool === 'planas') {
-    //                 filter = 'notNullActivePlanas'
-    //             } else if (query.typeCuttingTool === 'esfericas') {
-    //                 filter = 'notNullActiveEsfericas'
-    //             } else if (query.typeCuttingTool === 'final') {
-    //                 filter = 'notNullActiveFinal'
-    //             } else if (query.typeCuttingTool === 'AltoAvance') {
-    //                 filter = 'notNullActiveAltoAvance'
-    //             } else {
-    //                 filter = 'notNullActiveOther'
-    //             }
-    //         } else if (!query.statusCuttingTool) {
-    //             if (query.typeCuttingTool === 'todas') {
-    //                 filter = 'notNullInactiveAll'
-    //             } else if (query.typeCuttingTool === 'toricas') {
-    //                 filter = 'notNullInactiveToricas'
-    //             } else if (query.typeCuttingTool === 'planas') {
-    //                 filter = 'notNullInactivePlanas'
-    //             } else if (query.typeCuttingTool === 'esfericas') {
-    //                 filter = 'notNullInactiveEsfericas'
-    //             } else if (query.typeCuttingTool === 'final') {
-    //                 filter = 'notNullInactiveFinal'
-    //             } else if (query.typeCuttingTool === 'altoAvance') {
-    //                 filter = 'notNullInactiveAltoAvance'
-    //             } else {
-    //                 filter = 'notNullInactiveOther'
-    //             }
-    //         }
-    //     }
-
-    //     try {
-    //         const resultados = await switchFilterCuttingTools(filter, Herramientas, design_Code_Type_Diam_OnUseQuery)
-    //         if (resultados) {
-    //             return resultados
-    //         } else {
-    //             return false
-    //         }
-
-    //     } catch (error) {
-    //         console.error("Error MongoDB getCuttingToolsBySearching: ",error)
-    //     }
-    // }
-
     async getCuttingToolsBySearching(query) {
-        // Construir consulta dinámica basada en el texto de búsqueda
         const buildQuery = (queryText) => {
-            const parsedNumber = parseInt(query.diamCuttingTool),
-                conditions = [
-                { 'designation': { $regex: `${queryText}`, $options: 'i' } },
-                { 'status': { $regex: `${queryText}`, $options: 'i' } },
-                { 'type': { $regex: `${queryText}`, $options: 'i' } },
+            const conditions = [
+                queryText ? { designation: { $regex: queryText, $options: 'i' } } : null,
+                queryText ? { code: { $regex: queryText, $options: 'i' } } : null,
             ];
-            
-            // Si queryText es un número válido, agregar condición para "diam"
-            !isNaN(parsedNumber) ? conditions.push({ 'diam': parsedNumber }) : null
-            
-            return conditions
-        };
-        // Mapeo para combinar status y tipo
-        const filterMapping = {
-            null: {
-                todas: 'nullAllAll',
-                toricas: 'nullAllToricas',
-                planas: 'nullAllPlanas',
-                esfericas: 'nullAllEsfericas',
-                final: 'nullAllFinal',
-                altoAvance: 'nullAllAltoAvance',
-                otras: 'nullAllOther',
-            },
-            true: {
-                todas: 'nullActiveAll',
-                toricas: 'nullActiveToricas',
-                planas: 'nullActivePlanas',
-                esfericas: 'nullActiveEsfericas',
-                final: 'nullActiveFinal',
-                altoAvance: 'nullActiveAltoAvance',
-                otras: 'nullActiveOther',
-            },
-            false: {
-                todas: 'nullInactiveAll',
-                toricas: 'nullInactiveToricas',
-                planas: 'nullInactivePlanas',
-                esfericas: 'nullInactiveEsfericas',
-                final: 'nullInactiveFinal',
-                altoAvance: 'nullInactiveAltoAvance',
-                otras: 'nullInactiveOther',
-            },
-        };
-    
-        // Mapeo para búsquedas con texto
-        const textFilterMapping = {
-            todas: 'notNullAllAll',
-            toricas: 'notNullAllToricas',
-            planas: 'notNullAllPlanas',
-            esfericas: 'notNullAllEsfericas',
-            final: 'notNullAllFinal',
-            altoAvance: 'notNullAllAltoAvance',
-            otras: 'notNullAllOther',
+            return conditions.filter(Boolean);
         };
     
         try {
-            // Determinar filtro según las condiciones
-            let filter;
-            !query.queryCuttingTool ?
-                // Sin texto de búsqueda
-                filter = filterMapping[query.statusCuttingTool]?.[query.typeCuttingTool] || 'nullAllAll'
-            :
-                // Con texto de búsqueda
-                filter = textFilterMapping[query.typeCuttingTool] || 'notNullAllAll'
-            
-            // Construir query para MongoDB
-            const searchQuery = query.queryCuttingTool ?
-                { $or: buildQuery(query.queryCuttingTool) } : {}
-            
-            query.statusCuttingTool !== 'todas' ?
-                searchQuery.status = query.statusCuttingTool === 'true' : {}
-            query.typeCuttingTool !== 'todas' ?
-                searchQuery.type = query.typeCuttingTool : {}
-            query.diamCuttingTool !== 'todas' ?
-                searchQuery.diam = query.diamCuttingTool : {}
+            const searchQuery = {};
+            if (query.queryCuttingTool) {
+                const orConditions = buildQuery(query.queryCuttingTool);
+                if (orConditions.length > 0) {
+                    searchQuery.$or = orConditions;
+                }
+            }
+
+            // Manejar campo statusCuttingTool
+            if (query.statusCuttingTool !== 'todas') {
+                if (query.statusCuttingTool === true || query.statusCuttingTool === false) {
+                    searchQuery.status = query.statusCuttingTool === true;
+                } else {
+                    throw new Error(`Valor inválido para statusCuttingTool: ${query.statusCuttingTool}`);
+                }
+            }
+
+            // Manejar otros campos
+            if (query.typeCuttingTool !== 'todas') {
+                searchQuery.type = query.typeCuttingTool;
+            }
+            if (query.diamCuttingTool !== 'todas') {
+                const parsedDiam = parseInt(query.diamCuttingTool);
+                if (!isNaN(parsedDiam)) searchQuery.diam = parsedDiam;
+            }
+            if (query.largoCuttingTool !== 'todas') {
+                const parsedLargo = parseInt(query.largoCuttingTool);
+                if (!isNaN(parsedLargo)) searchQuery.largo = parsedLargo;
+            }
             
             // Ejecutar consulta
-            const resultados = await switchFilterCuttingTools(filter, Herramientas, searchQuery) //await Herramientas.find(searchQuery);
+            const resultados = await switchFilterCuttingTools(Herramientas, searchQuery);
             return resultados.length ? resultados : false;
-
+    
         } catch (error) {
-            console.error('Error MongoDB getCuttingToolsBySearching: ', error);
+            console.error("Error MongoDB getCuttingToolsBySearching: ", error);
             return false;
         }
     }
@@ -354,7 +189,7 @@ class HerramientasDaoMongoDB extends ContainerMongoDB {
             }
 
         } else {
-            return new Error (`No se pudo encontrar la maquina!`)
+            return new Error (`No se pudo encontrar la Herramienta!`)
         }
     }
     
@@ -363,9 +198,16 @@ class HerramientasDaoMongoDB extends ContainerMongoDB {
             let designation = newCuttingTool.designation || "",
                 code = newCuttingTool.code || "",
                 type = newCuttingTool.type || "",
-                diam = newCuttingTool.diam || ""
+                diam = newCuttingTool.diam || "",
+                largo = newCuttingTool.largo || "",
+                radio = newCuttingTool.radio || "",
+                cono = newCuttingTool.cono || "",
+                reduccion = newCuttingTool.reduccion || "",
+                prolongacion = newCuttingTool.prolongacion || "",
+                arrastre = newCuttingTool.arrastre || "",
+                terminacion = newCuttingTool.terminacion || ""
 
-            if (!designation || !code || !type || !diam) {
+            if (!designation || !code || !type || !diam || !largo) {
                 process.exit(1)
             
             } else {
@@ -375,6 +217,13 @@ class HerramientasDaoMongoDB extends ContainerMongoDB {
                         code: newCuttingTool.code,
                         type: newCuttingTool.type,
                         diam: newCuttingTool.diam,
+                        largo: newCuttingTool.largo,
+                        radio: radio,
+                        cono: cono,
+                        reduccion: reduccion,
+                        prolongacion: prolongacion,
+                        arrastre: arrastre,
+                        terminacion: terminacion,
                         characteristics: newCuttingTool.characteristics,
                         imageCuttingTool: newCuttingTool.imageCuttingTool,
                         status: newCuttingTool.status,

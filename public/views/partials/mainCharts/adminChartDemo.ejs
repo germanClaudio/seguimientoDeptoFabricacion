@@ -143,9 +143,8 @@
                                             herramientas[h].status ? herramientasVisibles.push(herramientas[h]) : herramientasEnUso.push(herramientas[h])
                                         } %>
                                         <h3 class="font-medium"><%= parseInt(herramientasVisibles.length) %>/<span style="font-size: 0.95rem;"><%= parseInt(herramientas.length) %></span></h3>
-                                        <span class="me-1">Herramientas</span>
                                         <% if ( herramientasEnUso.length != 0 ) { %>
-                                            <span><%= parseInt(herramientasVisibles.length) %> Herramientas En Uso</span> / <span class="badge rounded-pill text-bg-danger"><%= herramientasEnUso.length %> en Uso</span>
+                                            <span><%= parseInt(herramientasVisibles.length) %> Herramientas</span> / <span class="badge rounded-pill text-bg-danger"><%= herramientasEnUso.length %> de Baja</span>
                                             <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #b09b12;"></i>
                                         <% } %>
                                 </div>

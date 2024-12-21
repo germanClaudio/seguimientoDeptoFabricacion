@@ -25,7 +25,8 @@ const searchClient = () => {
     return false
 }
 
-const renderSearchedClients = (arrClientSearch) => { 
+const renderSearchedClients = (arrClientSearch) => {
+
     if(arrClientSearch.length === 0) {
         const htmlSearchClientNull = (
             `<div class="col mx-auto">
@@ -55,7 +56,6 @@ const renderSearchedClients = (arrClientSearch) => {
         document.getElementById('showClientSearch').innerHTML = htmlSearchClientNull
     
     } else if (arrClientSearch.length === 1 && arrClientSearch[0] === 'vacio') {
-        
         const htmlSearchClientNull = (
             `<div class="col mx-auto">
                 <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
@@ -223,6 +223,8 @@ const searchClientNew = () => {
 }
 
 const renderSearchedNewClients = (arrClientNewSearch) => {
+    document.getElementById('showCountClientSearch').innerHTML = ''
+    
     if(arrClientNewSearch.length === 0) {
         const htmlSearchClientNewNull = (
             `<div class="col mx-auto">
@@ -335,7 +337,6 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
                                                         <i class="fa-regular fa-pen-to-square"></i>
                                                 </a>
                                             </div>
-
                                             <div class="col m-auto">
                                                 <a class="btn text-light small ${disabled}" type="submit" href="/api/clientes/projects/${element._id}"
                                                     style="background-color: #0d6efd; font-size: .85rem; width: 4em;" title="Ver proyectos cliente ${element.name}">
@@ -384,7 +385,6 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
                                                         <i class="fa-regular fa-pen-to-square"></i>
                                                 </a>
                                             </div>
-
                                             <div class="col m-auto">
                                                 <a class="btn text-light small ${disabled}" type="submit" href="/api/clientes/projects/${element._id}"
                                                     style="background-color: #0d6efd; font-size: .85rem; width: 4em;" title="Ver proyectos cliente ${element.name}">
@@ -408,6 +408,20 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
             }
             
         }).join(" ");
+
+        let mensaje = ''
+        arrClientNewSearch.length ===1
+        ? mensaje = `Se encontró <strong>${arrClientNewSearch.length}</strong> resultado.`
+        : mensaje = `Se encontraron <strong>${arrClientNewSearch.length}</strong> resultados.`
+        
+        const htmlResultados = `<div class="row align-items-center">
+                                    <div class="col mx-auto">
+                                        <span class="my-1">${mensaje}</span>
+                                    </div>
+                                </div>`
+
+        document.getElementById('showCountClientSearch').innerHTML = htmlResultados
+
         document.getElementById('showClientSearch').innerHTML = htmlSearchNewClient
     }
 }
@@ -443,6 +457,8 @@ const searchUsers = () => {
 }
 
 const renderSearchedUsers = (arrUsersSearch) => {
+    document.getElementById('showCountUsersSearch').innerHTML = ''
+
     if(arrUsersSearch.length === 0) {
         const htmlSearchUserNull = (
             `<div class="col mx-auto">
@@ -586,7 +602,175 @@ const renderSearchedUsers = (arrUsersSearch) => {
                 </div>`
             )
         }).join(" ");
+
+        let mensaje = ''
+        arrUsersSearch.length ===1
+        ? mensaje = `Se encontró <strong>${arrUsersSearch.length}</strong> resultado.`
+        : mensaje = `Se encontraron <strong>${arrUsersSearch.length}</strong> resultados.`
+        
+        const htmlResultados = `<div class="row align-items-center">
+                                    <div class="col mx-auto">
+                                        <span class="my-1">${mensaje}</span>
+                                    </div>
+                                </div>`
+
+        document.getElementById('showCountUsersSearch').innerHTML = htmlResultados
+
         document.getElementById('showUsersSearch').innerHTML = htmlSearchUsers
+    }
+}
+
+//*******************************************************/
+// -------------- Show Searched Suppliers ----------------
+socket.on('searchSuppliersAll', async (arrSupplierSearch) => {
+    renderSearchedSuppliers (await arrSupplierSearch)
+})
+
+const searchSuppliers = () => {
+    let querySupplier = document.getElementById('querySuppliers').value,
+        statusSupplier = document.getElementById('statusSupplier').value,
+        typeSupplier = document.getElementById('typeSupplier').value
+
+    statusSupplier != 'todas' ? statusSupplier === 'activos' ? statusSupplier = true : statusSupplier = false : null
+        
+    socket.emit('searchProveedorAll', {
+        querySupplier,
+        statusSupplier,
+        typeSupplier
+    })
+    return false
+}
+
+const renderSearchedSuppliers = (arrSupplierSearch) => {
+    document.getElementById('showCountSuppliersSearch').innerHTML = ''
+    
+    if(arrSupplierSearch.length === 0) {
+        const htmlSearchSupplierNull = (
+            `<div class="col mx-auto">
+                <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4 my-auto px-1">
+                            <img src="${clientNotFound}"
+                                style="max-width=170vw; object-fit: contain;"
+                                class="img-fluid rounded p-1"
+                                alt="Proveedor no encontrado">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Proveedor no encontrado</h5>
+                                <p class="card-text">Lo siento, no pudimos encontrar el Proveedor</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Pruebe nuevamente con un nombre o código diferente.
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`)
+        
+        const showSupplier = document.getElementById('showSuppliersSearch')
+        showSupplier ? showSupplier.innerHTML = htmlSearchSupplierNull : null
+
+    } else if (arrSupplierSearch.length === 1 && arrSupplierSearch[0] === 'vacio') {     
+        const htmlSearchSuppliersNull = (
+            `<div class="col mx-auto">
+                <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4 my-auto px-1">
+                            <img src="${allClientsFound}"
+                                style="max-width=170vw; object-fit: contain;"
+                                class="img-fluid rounded p-1"
+                                alt="Todas las Proveedores">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Todas las Proveedores</h5>
+                                <p class="card-text">Todas las Proveedors están listadas en la tabla de abajo</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Pruebe nuevamente con un nombre o código diferente o haga scroll hacia abajo
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+        )
+        document.getElementById('showSuppliersSearch').innerHTML = htmlSearchSuppliersNull
+
+    } else {
+        const htmlSearchSuppliers = arrSupplierSearch.map((element) => {
+            let disabled = 'disabled', green = 'success', red = 'danger', info = 'info', blue = 'primary', grey = 'secondary'
+            const active = 'Activo', inactive = 'Mantenimiento'
+            const cnc = 'CNC', press = 'Prensa', other = 'Otras'
+            
+            let optionStatus = element.status ? green : red,
+                showType, optionType
+            
+            if (element.type === 'cnc') {
+                optionType = info
+                showType = cnc
+            } else if (element.type === 'prensa') {
+                optionType = grey
+                showType = press
+            } else {
+                optionType = blue
+                showType = other
+            }
+
+            let showStatus = element.status ? active : inactive
+            element.visible ? disabled = '' : null
+
+            return (`
+                <div class="col mx-auto">
+                    <div class="card mx-auto rounded-2 shadow-lg" style="max-width: 540px;">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 text-center">
+                                <img src="${element.imageSupplier}"
+                                    style="max-width=160vw; object-fit: contain;"
+                                    class="img-fluid rounded p-3 mx-auto"
+                                    alt="Proveedor">
+                            </div>
+                            <div class="col-md-8 border-start">
+                                <div class="card-body">
+                                    <h6 class="card-title"><strong>${element.designation}</strong></h6>
+                                    <h7 class="card-title">Código #<strong>${element.code}</strong></h7><br>
+                                    Tipo: <span class="badge rounded-pill bg-${optionType} my-1">${showType}</span><br>
+                                    Status: <span class="badge rounded-pill bg-${optionStatus} my-1">${showStatus}</span><br>
+                                </div>
+                                <div class="card-footer px-2">
+                                    <div class="row">
+                                        <div class="col m-auto">
+                                            <a class="btn text-light small" ${disabled} type="submit" href="/api/maquinas/${element._id}"
+                                                style="background-color: #272787; font-size: .85rem; width: 15em;">
+                                                    <i class="fa-solid fa-info-circle"></i> Info Proveedor
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+            )
+        }).join(" ");
+
+        let mensaje = ''
+        arrSupplierSearch.length ===1
+        ? mensaje = `Se encontró <strong>${arrSupplierSearch.length}</strong> resultado.`
+        : mensaje = `Se encontraron <strong>${arrSupplierSearch.length}</strong> resultados.`
+        
+        const htmlResultados = `<div class="row align-items-center">
+                                    <div class="col mx-auto">
+                                        <span class="my-1">${mensaje}</span>
+                                    </div>
+                                </div>`
+
+        document.getElementById('showCountSuppliersSearch').innerHTML = htmlResultados
+        document.getElementById('showSuppliersSearch').innerHTML = htmlSearchSuppliers
     }
 }
 
@@ -595,7 +779,6 @@ const renderSearchedUsers = (arrUsersSearch) => {
 socket.on('searchToolsAll', async (arrToolSearch) => {
     renderSearchedTools (await arrToolSearch)
 })
-
 
 const searchTools = () => {
     const queryTool = document.getElementById('queryTools').value
@@ -613,6 +796,8 @@ const searchTools = () => {
 }
 
 const renderSearchedTools = (arrToolSearch) => {
+    document.getElementById('showCountToolsSearch').innerHTML = ''
+    
     if(arrToolSearch.length === 0) {
         const htmlSearchToolNull = (
             `<div class="col mx-auto">
@@ -726,6 +911,19 @@ const renderSearchedTools = (arrToolSearch) => {
                 </div>`
             )
         }).join(" ");
+
+        let mensaje = ''
+        arrToolSearch.length ===1
+        ? mensaje = `Se encontró <strong>${arrToolSearch.length}</strong> resultado.`
+        : mensaje = `Se encontraron <strong>${arrToolSearch.length}</strong> resultados.`
+        
+        const htmlResultados = `<div class="row align-items-center">
+                                    <div class="col mx-auto">
+                                        <span class="my-1">${mensaje}</span>
+                                    </div>
+                                </div>`
+
+        document.getElementById('showCountToolsSearch').innerHTML = htmlResultados
         document.getElementById('showToolsSearch').innerHTML = htmlSearchTools
     }
 }
@@ -742,6 +940,7 @@ const searchCuttingTools = () => {
         statusCuttingTool = document.getElementById('statusCuttingTool').value,
         typeCuttingTool = document.getElementById('typeCuttingTool').value,
         diamCuttingTool = document.getElementById('diamCuttingTool').value
+        largoCuttingTool = document.getElementById('largoCuttingTool').value
 
     statusCuttingTool != 'todas' ? statusCuttingTool === 'activas' ? statusCuttingTool = true : statusCuttingTool = false : null
         
@@ -749,16 +948,16 @@ const searchCuttingTools = () => {
         queryCuttingTool,
         statusCuttingTool,
         typeCuttingTool,
-        typeCuttingTool,
-        diamCuttingTool
+        diamCuttingTool,
+        largoCuttingTool,
     })
     return false
 }
 
 const renderSearchedCuttingTool = (arrCuttingToolSearch) => {
-    console.log('arrCuttingToolSearch: ', arrCuttingToolSearch)
-    
-    if(!arrCuttingToolSearch) { //arrCuttingToolSearch.length === 0
+    document.getElementById('showCountCuttingToolsSearch').innerHTML = ''
+
+    if(!arrCuttingToolSearch) {
         const htmlSearchCuttingToolNull = (
             `<div class="col mx-auto">
                 <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
@@ -819,15 +1018,21 @@ const renderSearchedCuttingTool = (arrCuttingToolSearch) => {
         const htmlSearchCuttingTools = arrCuttingToolSearch.map((element) => {
             const statusClasses = { true: 'success', false: 'danger' };
             const typeMapping = {
-                toricas: { label: 'Toricas', class: 'info', text: 'dark' },
-                planas: { label: 'Planas', class: 'secondary', text: 'light' },
-                esfericas: { label: 'Esfericas', class: 'primary', text: 'light' },
-                final: { label: 'Final', class: 'success', text: 'light' },
-                altoAvance: { label: 'Alto Avance', class: 'danger', text: 'dark' },
-                default: { label: 'Otras', class: 'primary', text: 'light' },
+                TOR: { label: 'Toricas', class: 'warning', text: 'dark' },
+                PLA: { label: 'Planas', class: 'secondary', text: 'light' },
+                ESF: { label: 'Esfericas', class: 'primary', text: 'light' }
             };
             const diamMapping = {
                 16: 16, 20: 20, 25: 25, 32: 32, 50: 50, 52: 52, 63: 63, 80: 80, 100: 100, 125: 125,
+                default: 0,
+            };
+
+            const largoMapping = {
+                15: 15, 20: 20, 25: 25, 30: 30, 40: 40, 45: 45, 50: 50, 57: 57, 60: 60, 63: 63, 65: 65, 66: 66, 68: 68, 70: 70, 75: 75, 76: 76, 77: 77, 78: 78, 81: 81, 86: 86, 88: 88, 89: 89, 90: 90, 91: 91, 94: 94, 96: 96, 97: 97, 98: 98,
+                100: 100, 102: 102, 107: 107, 108: 108, 110: 110, 111: 111, 113: 113, 116: 116, 119: 119, 120: 120, 121: 121, 123: 123, 125: 125, 128: 128, 130: 130, 131: 131, 132: 132, 138: 138, 140: 140, 142: 142, 143: 143, 144: 144, 146: 146, 147: 147, 148: 148,
+                150: 150, 152: 152, 154: 154, 155: 155, 158: 158, 163: 163, 164: 164, 165: 165, 170: 170, 173: 173, 175: 175, 176: 176, 177: 177, 180: 180, 182: 182, 183: 183, 186: 186, 188: 188, 191: 191, 192: 192, 196: 196, 197: 197, 198: 198,
+                200: 200, 204: 204, 210: 210, 214: 214, 216: 216, 217: 217, 220: 220, 221: 221, 223: 223, 225: 225, 226: 226, 230: 230, 231: 231, 233: 233, 238: 238, 241: 241, 248: 248, 254: 254, 264: 264, 265: 265, 269: 269, 270: 270, 276: 276, 277: 277, 286: 286, 291: 291, 296: 296,
+                300: 300, 302: 302, 210: 310, 311: 311, 321: 321, 330: 330, 331: 331, 341: 341, 342: 342, 343: 343, 350: 350, 351: 351, 376: 376, 377: 377, 386: 386, 391: 391, 394: 394, 400:400, 442: 442, 450: 450, 500:500,
                 default: 0,
             };
         
@@ -835,7 +1040,9 @@ const renderSearchedCuttingTool = (arrCuttingToolSearch) => {
             const optionStatus = statusClasses[element.status] || 'danger',
                 { label: showType, class: optionType, text: optionText } = typeMapping[element.type] || typeMapping.default,
                 showDiam = diamMapping[element.diam] || diamMapping.default,
+                showLargo = largoMapping[element.largo] || largoMapping.default,
                 showStatus = element.status ? 'Activo' : 'Inactiva',
+                optionStock = element.stock > 0 ? 'dark' : 'danger',
                 disabled = element.visible ? '' : 'disabled';
         
             // Retornar el HTML generado
@@ -853,8 +1060,10 @@ const renderSearchedCuttingTool = (arrCuttingToolSearch) => {
                                     Código: <span class="my-1"><strong>${element.code}</strong></span><br>
                                     Tipo: <span class="badge rounded-pill bg-${optionType} text-${optionText} my-1">${showType}</span><br>
                                     Diámetro: <span class="my-1">${showDiam}mm.</span><br>
+                                    Largo: <span class="my-1">${showLargo}mm.</span><br>
                                     Status: <span class="badge rounded-pill bg-${optionStatus} my-1">${showStatus}</span><br>
-                                </div>
+                                    Stock: <span class="badge bg-${optionStock} text-light">${element.stock}</span><br>
+                                    </div>
                                 <div class="card-footer px-2">
                                     <div class="row">
                                         <div class="col m-auto">
@@ -871,7 +1080,19 @@ const renderSearchedCuttingTool = (arrCuttingToolSearch) => {
                 </div>`
             );
         }).join(" ");
+
+        let mensaje = ''
+        arrCuttingToolSearch.length ===1
+        ? mensaje = `Se encontró <strong>${arrCuttingToolSearch.length}</strong> resultado.`
+        : mensaje = `Se encontraron <strong>${arrCuttingToolSearch.length}</strong> resultados.`
         
+        const htmlResultados = `<div class="row align-items-center">
+                                    <div class="col mx-auto">
+                                        <span class="my-1">${mensaje}</span>
+                                    </div>
+                                </div>`
+
         document.getElementById('showCuttingToolsSearch').innerHTML = htmlSearchCuttingTools
+        document.getElementById('showCountCuttingToolsSearch').innerHTML = htmlResultados
     }
 }
