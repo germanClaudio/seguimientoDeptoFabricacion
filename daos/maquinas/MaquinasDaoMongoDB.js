@@ -124,87 +124,51 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
     }
 
     async getToolsBySearching(query) {
-        let filter
-        var designationAndCodeQuery = [{ 'designation': { $regex: `${query.queryTool}`, $options: 'i' } }, 
-                                        { 'code': { $regex: `${query.queryTool}`, $options: 'i' } },
-                                        { 'model': { $regex: `${query.queryTool}`, $options: 'i' } },
-                                    ]
-
-        if (query.queryTool === '') {
-            if (query.statusTool === 'todas') {
-                if (query.typeTool === 'todas') {
-                    filter = 'nullAllAll'
-                } else if (query.typeTool === 'cnc') {
-                    filter = 'nullAllCnc'
-                } else if (query.typeTool === 'prensa') {
-                    filter = 'nullAllPress'
-                } else {
-                    filter = 'nullAllOther'
-                }
-            } else if (query.statusTool) {
-                if (query.typeTool === 'todas') {
-                    filter = 'nullActiveAll'
-                } else if (query.typeTool === 'cnc') {
-                    filter = 'nullActiveCnc'
-                } else if (query.typeTool === 'prensa') {
-                    filter = 'nullActivePress'
-                } else {
-                    filter = 'nullActiveOther'
-                }
-            } else if (!query.statusTool) {
-                if (query.typeTool === 'todas') {
-                    filter = 'nullInactiveAll'
-                } else if (query.typeTool === 'cnc') {
-                    filter = 'nullInactiveCnc'
-                } else if (query.typeTool === 'prensa') {
-                    filter = 'nullInactivePress'
-                } else {
-                    filter = 'nullInactiveOther'
-                }
-            }
-
-        } else {
-            if (query.statusTool === 'todas') {
-                if (query.typeTool === 'todas') {
-                    filter = 'notNullAllAll'
-                } else if (query.typeTool === 'cnc') {
-                    filter = 'notNullAllCnc'
-                } else if (query.typeTool === 'prensa') {
-                    filter = 'notNullAllPress'
-                } else {
-                    filter = 'notNullAllOther'
-                }
-            } else if (query.statusTool) {
-                if (query.typeTool === 'todas') {
-                    filter = 'notNullActiveAll'
-                } else if (query.typeTool === 'cnc') {
-                    filter = 'notNullActiveCnc'
-                } else if (query.typeTool === 'prensa') {
-                    filter = 'notNullActivePress'
-                } else {
-                    filter = 'notNullActiveOther'
-                }
-            } else if (!query.statusTool) {
-                if (query.typeTool === 'todas') {
-                    filter = 'notNullInactiveAll'
-                } else if (query.typeTool === 'cnc') {
-                    filter = 'notNullInactiveCnc'
-                } else if (query.typeTool === 'prensa') {
-                    filter = 'notNullInactivePress'
-                } else {
-                    filter = 'notNullInactiveOther'
-                }
-            }
-        }
-
+        const designationAndCodeQuery = [
+            { 'designation': { $regex: query.queryTool, $options: 'i' } },
+            { 'code': { $regex: query.queryTool, $options: 'i' } },
+            { 'model': { $regex: query.queryTool, $options: 'i' } },
+        ];
+    
+        // Mapeo de combinaciones de query a valores de filter
+        const filtersMap = {
+            'nullAllAll': () => query.queryTool === '' && query.statusTool === 'todas' && query.typeTool === 'todas',
+            'nullAllCnc': () => query.queryTool === '' && query.statusTool === 'todas' && query.typeTool === 'cnc',
+            'nullAllPress': () => query.queryTool === '' && query.statusTool === 'todas' && query.typeTool === 'prensa',
+            'nullAllOther': () => query.queryTool === '' && query.statusTool === 'todas' && !['todas', 'cnc', 'prensa'].includes(query.typeTool),
+            'nullActiveAll': () => query.queryTool === '' && query.statusTool && query.typeTool === 'todas',
+            'nullActiveCnc': () => query.queryTool === '' && query.statusTool && query.typeTool === 'cnc',
+            'nullActivePress': () => query.queryTool === '' && query.statusTool && query.typeTool === 'prensa',
+            'nullActiveOther': () => query.queryTool === '' && query.statusTool && !['todas', 'cnc', 'prensa'].includes(query.typeTool),
+            'nullInactiveAll': () => query.queryTool === '' && !query.statusTool && query.typeTool === 'todas',
+            'nullInactiveCnc': () => query.queryTool === '' && !query.statusTool && query.typeTool === 'cnc',
+            'nullInactivePress': () => query.queryTool === '' && !query.statusTool && query.typeTool === 'prensa',
+            'nullInactiveOther': () => query.queryTool === '' && !query.statusTool && !['todas', 'cnc', 'prensa'].includes(query.typeTool),
+            'notNullAllAll': () => query.queryTool !== '' && query.statusTool === 'todas' && query.typeTool === 'todas',
+            'notNullAllCnc': () => query.queryTool !== '' && query.statusTool === 'todas' && query.typeTool === 'cnc',
+            'notNullAllPress': () => query.queryTool !== '' && query.statusTool === 'todas' && query.typeTool === 'prensa',
+            'notNullAllOther': () => query.queryTool !== '' && query.statusTool === 'todas' && !['todas', 'cnc', 'prensa'].includes(query.typeTool),
+            'notNullActiveAll': () => query.queryTool !== '' && query.statusTool && query.typeTool === 'todas',
+            'notNullActiveCnc': () => query.queryTool !== '' && query.statusTool && query.typeTool === 'cnc',
+            'notNullActivePress': () => query.queryTool !== '' && query.statusTool && query.typeTool === 'prensa',
+            'notNullActiveOther': () => query.queryTool !== '' && query.statusTool && !['todas', 'cnc', 'prensa'].includes(query.typeTool),
+            'notNullInactiveAll': () => query.queryTool !== '' && !query.statusTool && query.typeTool === 'todas',
+            'notNullInactiveCnc': () => query.queryTool !== '' && !query.statusTool && query.typeTool === 'cnc',
+            'notNullInactivePress': () => query.queryTool !== '' && !query.statusTool && query.typeTool === 'prensa',
+            'notNullInactiveOther': () => query.queryTool !== '' && !query.statusTool && !['todas', 'cnc', 'prensa'].includes(query.typeTool),
+        };
+    
+        // Encontrar el filtro correspondiente
+        const filter = Object.keys(filtersMap).find(key => filtersMap[key]());
+    
         try {
-            const resultados = await switchFilterTools(filter, Maquinas, designationAndCodeQuery)
+            const resultados = await switchFilterTools(filter, Maquinas, designationAndCodeQuery);
             return resultados.length ? resultados : false;
-
         } catch (error) {
-            console.error("Error MongoDB getToolsBySearching: ",error)
+            console.error("Error MongoDB getToolsBySearching: ", error);
         }
     }
+    
 
     async getExistingTool(newTool) {
         const codeIdNum = newTool.code,

@@ -1,10 +1,10 @@
 const socket = io.connect()
-let URL_GOOGLE_STORE_IMAGESCUTTINGTOOLS
+let URL_GOOGLE_STORE_IMAGESCONSUMIBLES
 
 fetch('/api/config')
     .then(response => response.json())
     .then(config => {
-        URL_GOOGLE_STORE_IMAGESCUTTINGTOOLS = config.URL_GOOGLE_STORE_IMAGESCUTTINGTOOLS
+        URL_GOOGLE_STORE_IMAGESCONSUMIBLES = config.URL_GOOGLE_STORE_IMAGESCONSUMIBLES
     })
     .catch(error => console.error('Error fetching config:', error));
 

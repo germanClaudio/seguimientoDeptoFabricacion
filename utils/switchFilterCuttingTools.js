@@ -40,7 +40,7 @@ async function switchFilterCuttingTools(Herramientas, designationAndCodeQuery) {
                         $lte: designationAndCodeQuery.largo
                     }
     }
-    console.log('query: ', query)
+    // console.log('query: ', query)
 
     // Ejecutar consulta
     const resultados = Object.keys(query).length > 0

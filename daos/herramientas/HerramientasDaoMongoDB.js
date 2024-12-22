@@ -69,24 +69,6 @@ class HerramientasDaoMongoDB extends ContainerMongoDB {
         }
     }
 
-    async getCuttingToolByCode(model) {
-        if(model){
-            try {
-                const cuttingTool = await Herramientas.findOne( {model: `${model}`} )
-                if (!cuttingTool) {
-                    return null
-                } else {
-                    return cuttingTool
-                }
-
-            } catch (error) {
-                console.error(error)
-            }
-        } else {
-            return new Error (`Error en modelo ${model}!`)
-        }
-    }
-
     async getCuttingToolByTyoe(type) {
         if(type){
             try {
@@ -110,7 +92,7 @@ class HerramientasDaoMongoDB extends ContainerMongoDB {
             try {        
                 const cuttingTool = await Herramientas.findOne( {designation: `${designation}`} );
                 if (!cuttingTool) {
-                    return false
+                    return null
                 } else {
                     return cuttingTool
                 }
@@ -195,17 +177,17 @@ class HerramientasDaoMongoDB extends ContainerMongoDB {
     
     async createNewCuttingTool(newCuttingTool) {
         if (newCuttingTool) {
-            let designation = newCuttingTool.designation || "",
-                code = newCuttingTool.code || "",
-                type = newCuttingTool.type || "",
-                diam = newCuttingTool.diam || "",
-                largo = newCuttingTool.largo || "",
-                radio = newCuttingTool.radio || "",
-                cono = newCuttingTool.cono || "",
-                reduccion = newCuttingTool.reduccion || "",
-                prolongacion = newCuttingTool.prolongacion || "",
-                arrastre = newCuttingTool.arrastre || "",
-                terminacion = newCuttingTool.terminacion || ""
+            let designation = newCuttingTool.designation || "Sin designación",
+                code = newCuttingTool.code,
+                type = newCuttingTool.type,
+                diam = newCuttingTool.diam || 2,
+                largo = newCuttingTool.largo || 15,
+                radio = newCuttingTool.radio || " ",
+                cono = newCuttingTool.cono || " ",
+                reduccion = newCuttingTool.reduccion || " ",
+                prolongacion = newCuttingTool.prolongacion || " ",
+                arrastre = newCuttingTool.arrastre || " ",
+                terminacion = newCuttingTool.terminacion || " "
 
             if (!designation || !code || !type || !diam || !largo) {
                 process.exit(1)
@@ -213,11 +195,11 @@ class HerramientasDaoMongoDB extends ContainerMongoDB {
             } else {
                 try {
                     const nuevaHerramienta = {
-                        designation: newCuttingTool.designation,
-                        code: newCuttingTool.code,
-                        type: newCuttingTool.type,
-                        diam: newCuttingTool.diam,
-                        largo: newCuttingTool.largo,
+                        designation: designation,
+                        code: code,
+                        type: type,
+                        diam: diam,
+                        largo: largo,
                         radio: radio,
                         cono: cono,
                         reduccion: reduccion,
@@ -253,20 +235,29 @@ class HerramientasDaoMongoDB extends ContainerMongoDB {
         }
     }
 
-    //FIXME:
     async updateCuttingTool(id, updatedCuttingTool, userModificator) {    
         if (id && updatedCuttingTool && userModificator) {
             try {
                 const toolMongoDB = await Herramientas.findById( { _id: id } )
-                let imageUrl = '', designation = '', characteristics = '', code = '', model = '', type = ''
+                let imageUrl = '', designation = '', characteristics = '', code = '', type = '', stock = 0,
+                    diam = 0, largo = 0, radio = '', cono = '', reduccion = '', prolongacion = '',
+                    arrastre = '', terminacion = ''
                 
                 updatedCuttingTool.imageCuttingTool !== '' ? imageUrl = updatedCuttingTool.imageCuttingTool : imageUrl = toolMongoDB.imageCuttingTool
                 updatedCuttingTool.designation !== '' ? designation = updatedCuttingTool.designation : designation = toolMongoDB.designation
                 updatedCuttingTool.characteristics !== '' ? characteristics = updatedCuttingTool.characteristics : characteristics = toolMongoDB.characteristics
                 updatedCuttingTool.code !== '' ? code = updatedCuttingTool.code : code = toolMongoDB.code
-                updatedCuttingTool.model !== '' ? model = updatedCuttingTool.model : model = toolMongoDB.model
-                updatedCuttingTool.type !== '' ? type = updatedCuttingTool.type : code = toolMongoDB.type
-                
+                updatedCuttingTool.type !== '' ? type = updatedCuttingTool.type : type = toolMongoDB.type
+                updatedCuttingTool.stock !== '' ? stock = updatedCuttingTool.stock : stock = toolMongoDB.stock
+                updatedCuttingTool.diam !== 0 ? diam = updatedCuttingTool.diam : diam = toolMongoDB.diam
+                updatedCuttingTool.largo !== 0 ? largo = updatedCuttingTool.largo : largo = toolMongoDB.largo
+                updatedCuttingTool.radio !== 0 ? radio = updatedCuttingTool.radio : radio = toolMongoDB.radio
+                updatedCuttingTool.cono !== 0 ? cono = updatedCuttingTool.cono : cono = toolMongoDB.cono
+                updatedCuttingTool.reduccion !== 0 ? reduccion = updatedCuttingTool.reduccion : reduccion = toolMongoDB.reduccion
+                updatedCuttingTool.prolongacion !== 0 ? prolongacion = updatedCuttingTool.prolongacion : prolongacion = toolMongoDB.prolongacion
+                updatedCuttingTool.arrastre !== 0 ? arrastre = updatedCuttingTool.arrastre : arrastre = toolMongoDB.arrastre
+                updatedCuttingTool.terminacion !== 0 ? terminacion = updatedCuttingTool.terminacion : terminacion = toolMongoDB.terminacion
+
                 if(toolMongoDB) {
                     var updatedFinalCuttingTool = await Herramientas.updateOne(
                         { _id: toolMongoDB._id  },
@@ -274,8 +265,16 @@ class HerramientasDaoMongoDB extends ContainerMongoDB {
                             $set: {
                                 designation: designation,
                                 code: code,
-                                model: model,
                                 type: type,
+                                stock: parseInt(stock),
+                                diam: parseInt(diam),
+                                largo: parseInt(largo),
+                                radio: radio,
+                                cono: cono,
+                                reduccion: reduccion,
+                                prolongacion: prolongacion,
+                                arrastre: arrastre,
+                                terminacion: terminacion,
                                 characteristics: characteristics,
                                 imageCuttingTool: imageUrl,
                                 status: updatedCuttingTool.status,
@@ -306,7 +305,6 @@ class HerramientasDaoMongoDB extends ContainerMongoDB {
         }
     }
 
-    //FIXME:
     async deleteCuttingToolById(id, userModificator) {
         if(id){
             try {
@@ -326,12 +324,10 @@ class HerramientasDaoMongoDB extends ContainerMongoDB {
                         },
                         { new: true }
                     )
-
                     return toolDeleted.acknowledged 
                     ? await Herramientas.findById({ _id: id }) 
                     : new Error(`No se eliminó el item: ${userMongoDB._id}`);
 
-                    
                 } else {
                     return new Error (`La Herramienta no existe con ese Id: ${id}!`)
                 }
@@ -347,7 +343,7 @@ class HerramientasDaoMongoDB extends ContainerMongoDB {
 
     async disconnet() {
         await this.disconnection
-        console.log('Disconnected from MongoDB Server')
+        // console.log('Disconnected from MongoDB Server')
     }
 }
 

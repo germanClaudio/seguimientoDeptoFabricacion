@@ -9,33 +9,39 @@
                 
                 <div class="col mx-auto my-1">
                     <label for="idCreator">Creado por</label>
-                    <input type="text" name="idCreator" id="idCreator" class="form-control-plaintext text-white small" value="<%=maquina.creator[0].name%> <%=maquina.creator[0].lastName%>" disabled>
+                    <input type="text" name="idCreator" id="idCreator" class="form-control-plaintext text-white small"
+                        value="<%=maquina.creator[0].name%> <%=maquina.creator[0].lastName%>" disabled>
                 </div>
                 
                 <div class="col mx-auto my-1">
                     <label for="timestampDisable">Fecha creación</label>
-                    <input type="text" name="timestampDisable" id="timestampDisable" class="form-control-plaintext text-white small" value="<%=maquina.timestamp%>" disabled>
+                    <input type="text" name="timestampDisable" id="timestampDisable" class="form-control-plaintext text-white small"
+                        value="<%=maquina.timestamp%>" disabled>
                 </div>
                 
                 <div class="col mx-auto my-1">
                     <label for="modificatorDisable">Modificado por</label>
                     <% if (maquina.modificator[0].name !== "") { %>
-                        <input type="text" name="modificatorDisable" id="modificatorDisable" class="form-control-plaintext text-white small" value="<%=maquina.modificator[0].name%> <%=maquina.modificator[0].lastName%>" disabled>
+                        <input type="text" name="modificatorDisable" id="modificatorDisable" class="form-control-plaintext text-white small"
+                            value="<%=maquina.modificator[0].name%> <%=maquina.modificator[0].lastName%>" disabled>
                     <% } else { %>
-                        <input type="text" name="modificatorDisable" id="modificatorDisable" class="form-control-plaintext text-white small" value="" disabled>
+                        <input type="text" name="modificatorDisable" id="modificatorDisable" class="form-control-plaintext text-white small"
+                            value="" disabled>
                     <% } %>        
                 </div>
                 
                 <div class="col-auto mx-auto my-1">
                     <label for="modifiedOnDisable">Fecha modificación</label>
-                    <input type="text" name="modifiedOnDisable" id="modifiedOnDisable" class="form-control-plaintext text-white small" value="<%=maquina.modifiedOn%>" disabled>
+                    <input type="text" name="modifiedOnDisable" id="modifiedOnDisable" class="form-control-plaintext text-white small"
+                        value="<%=maquina.modifiedOn%>" disabled>
                 </div>
             </div>
             <hr class="border my-1">
             <div class="row justify-content-between align-items-center my-2">
                 <div class="col my-1 mx-auto">
                     <label class="form-label" for="designation">Designación</label>
-                    <input type="text" name="designation" id="designation" class="form-control" value="<%=maquina.designation %>" autocomplete="on" placeholder="Designación maquina" required>
+                    <input type="text" name="designation" id="designation" class="form-control" value="<%=maquina.designation %>" autocomplete="on"
+                        placeholder="Designación maquina" required>
                 </div>
                 
                 <div class="col-3 my-1 mx-auto">
@@ -125,7 +131,8 @@
                 <div class="col mb-auto">
                     <label for="fileInputToolUpdate">Imagen máquina actual </label>
                     <div class="container-fluid my-1 p-1 text-center">
-                        <img id="fileInputToolUpdate" src="<%=maquina.imageTool%>" class="img-thumbnail rounded mx-auto" alt="Imagen máquina" width="200px" height="200px">
+                        <img id="fileInputToolUpdate" src="<%=maquina.imageTool%>" class="img-thumbnail rounded mx-auto" alt="Imagen máquina"
+                            width="200px" height="200px">
                     </div>
                 </div>
             </div>

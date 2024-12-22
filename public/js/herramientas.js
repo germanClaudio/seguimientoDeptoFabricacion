@@ -86,7 +86,6 @@ const renderCuttingToolsAdmin = (arrCuttingTools) => {
             if (element.visible) {
                 element.stock > 0 ? stock = '<tr>' : stock ='<tr style="background-color:rgba(32, 32, 32, 0.25);">'
                 return (`${stock}
-                            <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
                             <td class="text-center" id="codigo_${element._id}"><strong>${element.code}</strong></td>
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
                             <td class="text-center" id="diam_${element._id}"><span>Ø${element.diam}</span> mm</td>
@@ -102,7 +101,7 @@ const renderCuttingToolsAdmin = (arrCuttingTools) => {
                             <td class="text-center">${element.modifiedOn}</td>
                             <td class="text-center">
                                 <div class="d-block align-items-center text-center">
-                                    <a href="/api/herramientas/${element._id}" class="btn btn-primary btn-sm me-1" title="Editar Herramienta ${element.designation}"><i class="fa-solid fa-gears"></i></a>
+                                    <a href="/api/herramientas/${element._id}" class="btn btn-primary btn-sm me-1" title="Editar Herramienta ${element.designation}"><i class="fa-solid fa-screwdriver-wrench"></i></a>
                                     <button id="${element._id}" name="btnDeleteCuttingTool" type="button" class="btn btn-danger btn-sm ms-1" title="Eliminar Herramienta ${element.designation}"><i class="fa-regular fa-trash-can"></i></button>
                                 </div>
                             </td>
@@ -167,7 +166,7 @@ const renderCuttingToolsAdmin = (arrCuttingTools) => {
                         `La herramienta ${designation}, ha sido eliminada exitosamente.`,
                         'success'
                     )
-                }, 1500)
+                }, 600)
             } else {
                 Swal.fire(
                     'No eliminada!',
@@ -214,7 +213,6 @@ const renderCuttingToolsUser = (arrCuttingTools) => {
             if (element.visible) {
                 element.stock > 0 ? stock = '<tr>' : stock ='<tr style="background-color:rgba(32, 32, 32, 0.25);">'
                 return (`${stock}
-                            <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
                             <td class="text-center" id="codigo_${element._id}"><strong>${element.code}</strong></td>
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
                             <td class="text-center" id="diam_${element._id}"><span>Ø${element.diam}</span> mm</td>
@@ -230,7 +228,7 @@ const renderCuttingToolsUser = (arrCuttingTools) => {
                             <td class="text-center">${element.modifiedOn}</td>
                             <td class="text-center">
                                 <div class="d-blck align-items-center text-center mx-1">
-                                    <a href="/api/herramientas/${element._id}" class="btn btn-primary btn-sm me-1" title="Editar Herramienta ${element.designation}"><i class="fa-solid fa-gears"></i></a>
+                                    <a href="/api/herramientas/${element._id}" class="btn btn-primary btn-sm me-1" title="Editar Herramienta ${element.designation}"><i class="fa-solid fa-screwdriver-wrench"></i></a>
                                     <button type="button" class="btn btn-danger btn-sm ms-1 disabled" title="Solo Admin puede modificar esto"><i class="fa-solid fa-info-circle"></i></button>
                                 </div>
                             </td>
@@ -474,7 +472,6 @@ function messageNewCuttingTool(designation, code, type, diam, largo, stock) {
     
         }).then((result) => {
             if (result.isConfirmed) {
-                // document.getElementById('rangeValue').removeAttribute('disabled')
                 Swal.fire(
                     'Creada!',
                     `La herramienta ${designation} (${type}) Ø${diam}mm, largo: ${largo}, código: ${code}, stock: ${stock}, ha sido registrada exitosamente.`,
@@ -482,7 +479,7 @@ function messageNewCuttingTool(designation, code, type, diam, largo, stock) {
                 )
                 setTimeout(() => {
                     document.getElementById("newCuttingToolForm").submit()
-                }, 800)
+                }, 600)
                 
             } else {
                 Swal.fire(
@@ -745,7 +742,7 @@ let typeInput = document.getElementById('type').value,
 
 function disabledBtnAceptar () {
     let btnAceptarFrom = document.getElementById('btnAddNewCuttingTool');
-    const allInputs = document.querySelectorAll('input[type="text"], textarea, input[type="file"], input[type="hidden"], input[type="select"]')
+    const allInputs = document.querySelectorAll('input[type="text"], textarea, input[type="file"], input[type="hidden"]')
     
     allInputs.forEach(function(input) {
             input.addEventListener('change', (event) => {

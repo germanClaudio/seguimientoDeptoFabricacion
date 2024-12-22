@@ -39,9 +39,9 @@ const herramientasSchema = new Schema({
         type: String,
         maxlength: 2,
         validate: {
-            validator: function (v) {
+            validator: function (radio) {
                 // Expresión regular: acepta letras mayúsculas (A-Z), números (0-9) y espacios
-                return /^[A-Z0-9\s]+$/.test(v);
+                return /^[A-Z0-9\s]+$/.test(radio);
             },
             message: props => `${props.value} no es válido. Solo se permiten letras mayúsculas, números enteros y espacios en blanco.`
         }

@@ -1,5 +1,5 @@
 <div class="form-group col-12 mx-auto mt-2 mb-5 w-75 border px-5 py-1 text-white bg-opacity-75" style="background-color: #9a9a9abb;">
-    <form id="formUpdateCuttingTool" enctype="multipart/form-data" action="/api/herramientas/update/<%=herramienta._id%>" method="post">
+    <form id="formUpdateCutTool" enctype="multipart/form-data" action="/api/herramientas/update/<%=herramienta._id%>" method="post">
         <fieldset>
             <div class="row justify-content-between align-items-center mt-2">
                 <div class="col-3 mx-auto my-2">
@@ -9,115 +9,42 @@
                 
                 <div class="col mx-auto my-1">
                     <label for="idCreator">Creado por</label>
-                    <input type="text" name="idCreator" id="idCreator" class="form-control-plaintext text-white small" value="<%=herramienta.creator[0].name%> <%=herramienta.creator[0].lastName%>" disabled>
+                    <input type="text" name="idCreator" id="idCreator" class="form-control-plaintext text-white small"
+                        value="<%=herramienta.creator[0].name%> <%=herramienta.creator[0].lastName%>" disabled>
                 </div>
                 
                 <div class="col mx-auto my-1">
                     <label for="timestampDisable">Fecha creación</label>
-                    <input type="text" name="timestampDisable" id="timestampDisable" class="form-control-plaintext text-white small" value="<%=herramienta.timestamp%>" disabled>
+                    <input type="text" name="timestampDisable" id="timestampDisable" class="form-control-plaintext text-white small"
+                        value="<%=herramienta.timestamp%>" disabled>
                 </div>
                 
                 <div class="col mx-auto my-1">
                     <label for="modificatorDisable">Modificado por</label>
                     <% if (herramienta.modificator[0].name !== "") { %>
-                        <input type="text" name="modificatorDisable" id="modificatorDisable" class="form-control-plaintext text-white small" value="<%=herramienta.modificator[0].name%> <%=herramienta.modificator[0].lastName%>" disabled>
+                        <input type="text" name="modificatorDisable" id="modificatorDisable" class="form-control-plaintext text-white small"
+                            value="<%=herramienta.modificator[0].name%> <%=herramienta.modificator[0].lastName%>" disabled>
                     <% } else { %>
-                        <input type="text" name="modificatorDisable" id="modificatorDisable" class="form-control-plaintext text-white small" value="" disabled>
+                        <input type="text" name="modificatorDisable" id="modificatorDisable" class="form-control-plaintext text-white small"
+                            value="" disabled>
                     <% } %>        
                 </div>
                 
                 <div class="col-auto mx-auto my-1">
                     <label for="modifiedOnDisable">Fecha modificación</label>
-                    <input type="text" name="modifiedOnDisable" id="modifiedOnDisable" class="form-control-plaintext text-white small" value="<%=herramienta.modifiedOn%>" disabled>
+                    <input type="text" name="modifiedOnDisable" id="modifiedOnDisable" class="form-control-plaintext text-white small"
+                        value="<%=herramienta.modifiedOn%>" disabled>
                 </div>
             </div>
             <hr class="border my-1">
-            <div class="row justify-content-between align-items-center my-2">
-                <div class="col-2 my-1 mx-auto">
-                    <label class="form-label" for="code">Código</label>
-                    <input type="text" name="code" id="code" class="form-control" value="<%=herramienta.code%>" placeholder="Código" required disabled>
-                    <input type="hidden" name="codeHidden" id="codeHidden" value="<%=herramienta.code%>">
-                </div>
-
-                <div class="col-2">
-                    <label class="form-check-label" for="type">Tipo</label>
-                    <select class="form-select form-select" aria-label=".form-select" name="type" id="type" required>
-                        <% 
-                        const opcionesUpdate = [
-                            { value: "TOR", text: "Tóricas" },
-                            { value: "PLA", text: "Planas" },
-                            { value: "ESF", text: "Esféricas" }
-                        ];
-                        opcionesUpdate.forEach(opcion => { %>
-                            <option value="<%= opcion.value %>" <%= opcion.value === herramienta.type ? 'selected disabled' : '' %> > <%= opcion.text %> </option>
-                        <% }) %>
-                    </select>
-                    <input type="hidden" id="typeHidden" name="typeHidden" value="" style="display: none;">
-                </div>
-
+            <!-- Designacion Características status -->
+            <div class="row justify-content-between align-items-start my-2">
                 <div class="col my-1 mx-auto">
                     <label class="form-label" for="designation">Designación</label>
-                    <input type="text" name="designation" id="designation" class="form-control" value="<%=herramienta.designation %>" autocomplete="on" placeholder="Designación herramienta" required>
+                    <input type="text" name="designation" id="designation" class="form-control" value="<%=herramienta.designation %>"
+                        autocomplete="on" placeholder="Designación herramienta" required>
                 </div>
-
-                <div class="col-2">
-                    <label class="form-check-label" for="diam">Diámetro</label>
-                    <select class="form-select form-select" aria-label=".form-select" name="diam" id="diam" required>
-                        <%
-                        const opcionesDiam = [
-                            { value: 2, text: "Ø2mm" },
-                            { value: 3, text: "Ø3mm" },
-                            { value: 4, text: "Ø4mm" },
-                            { value: 6, text: "Ø6mm" },
-                            { value: 10, text: "Ø10mm" },
-                            { value: 16, text: "Ø16mm" },
-                            { value: 20, text: "Ø20mm" },
-                            { value: 25, text: "Ø25mm" },
-                            { value: 32, text: "Ø32mm" },
-                            { value: 50, text: "Ø50mm" },
-                            { value: 52, text: "Ø52mm" },
-                            { value: 63, text: "Ø63mm" },
-                            { value: 80, text: "Ø80mm" },
-                            { value: 100, text: "Ø100mm" },
-                            { value: 125, text: "Ø125mm" },
-                        ];
-                        opcionesDiam.forEach(opcion => { %>
-                            <option value="<%= opcion.value %>" <%= opcion.value === herramienta.diam ? 'selected disabled' : '' %> > <%= opcion.text %> </option>
-                        <% }) %>
-                    </select>
-                    <input type="hidden" id="diamHidden" name="diamHidden" value="" style="display: none;">
-                </div>
-
-                <div class="col-2">
-                    <label class="form-check-label" for="largo">Largo</label>
-                    <select class="form-select form-select" aria-label=".form-select" name="largo" id="largo" required>
-                        <% 
-                        const opcionesLargo = [
-                            { value: 50, text: '<50mm' },
-                            { value: 100, text: '51-100mm' },
-                            { value: 150, text: '101-150mm' },
-                            { value: 200, text: '151-200mm' },
-                            { value: 250, text: '201-250mm' },
-                            { value: 300, text: '251-300mm' },
-                            { value: 400, text: '351-400mm' },
-                            { value: 450, text: '401-450mm' },
-                            { value: 500, text: '>451mm" },
-                        ];
-                        opcionesLargo.forEach(opcion => { %>
-                            <option value="<%= opcion.value %>" <%= opcion.value === herramienta.largo ? 'selected disabled' : '' %> > <%= opcion.text %> </option>
-                        <% }) %>
-                    </select>
-                    <input type="hidden" id="largoHidden" name="largoHidden" value="" style="display: none;">
-                </div>
-
-                <div class="col-1 my-1 mx-auto">
-                    <label class="form-label" for="stock">Stock</label>
-                    <input type="number" name="stock" id="stock" class="form-control" value="<%=herramienta.stock%>" required>
-                </div>
-            </div>
-
-            <div class="row justify-content-between align-items-center my-2">
-                <div class="col-8 my-1 mx-auto">
+                <div class="col-6 my-1 mx-auto">
                     <label for="characteristics">Características</label>
                     <textarea type="text" name="characteristics" id="characteristics" class="form-control" rows="3"><%=herramienta.characteristics%></textarea>
                 </div>
@@ -145,9 +72,179 @@
                             </div>    
                         </div>
                     </div>
-                <% } %>   
+                <% } %>
+            </div>
+            <!-- codigo -->
+            <div class="row justify-content-between align-items-center my-3" style="background-color: #afafff99;">
+                <!-- codigo tipo Ø largo stock -->
+                <div class="row justify-content-between align-items-center my-3">
+                    <div class="col-4">
+                        <label class="form-label" for="code">Código (autogenerado)</label>
+                        <input type="text" name="code" id="code" class="form-control" value="<%=herramienta.code%>" placeholder="Código" required disabled>
+                        <input type="hidden" name="codeHidden" id="codeHidden" value="<%=herramienta.code%>">
+                    </div>
+
+                    <div class="col-2">
+                        <label class="form-check-label" for="type">Tipo</label>
+                        <select class="form-select form-select" aria-label=".form-select" name="type" id="type" required>
+                            <%
+                            const opcionesUpdate = [
+                                { value: "TOR", text: "Tóricas" },
+                                { value: "PLA", text: "Planas" },
+                                { value: "ESF", text: "Esféricas" }
+                            ];
+                            opcionesUpdate.forEach(opcion => { %>
+                                <option value="<%= opcion.value %>" <%= opcion.value == herramienta.type ? 'selected' : '' %> > <%= opcion.text %> </option>
+                            <% }) %>
+                        </select>
+                        <input type="hidden" id="typeHidden" name="typeHidden" value="" style="display: none;">
+                    </div>
+                    
+                    <div class="col-2">
+                        <label class="form-check-label" for="diam">Diámetro</label>
+                        <select class="form-select form-select" aria-label=".form-select" name="diam" id="diam" required>
+                            <%
+                            const diam = [2, 3, 4, 6, 10, 16, 20, 25, 32, 50, 52, 63, 80, 100, 125]
+                            const opcionesDiam = diam.map(value => ({ value, text: `Ø${value}mm` }));
+
+                            opcionesDiam.forEach(opcion => { %>
+                                <option value="<%= opcion.value %>" <%= opcion.value == herramienta.diam ? 'selected' : '' %> > <%= opcion.text %> </option>
+                            <% }) %>
+                        </select>
+                        <input type="hidden" id="diamHidden" name="diamHidden" value="" style="display: none;">
+                    </div>
+
+                    <div class="col-2">
+                        <label class="form-check-label" for="largo">Largo</label>
+                        <select class="form-select form-select" aria-label=".form-select" name="largo" id="largo" required>
+                            
+                            <% const largo = [15, 20, 25, 30, 40, 45, 50, 57, 60, 63, 65, 66, 68, 70, 75, 76, 77, 78, 81, 86, 88, 89, 90, 91, 94, 96, 97, 98,
+                                            102, 107, 108, 110, 111, 113, 116, 119, 120, 121, 123, 125, 128, 130, 131, 132, 138, 140, 142, 143, 144, 146, 147, 148, 152,
+                                            154, 155, 158, 163, 164, 165, 170, 173, 175, 176, 177, 180, 182, 183, 186, 188, 191, 192, 196, 197, 198,
+                                            204, 210, 214, 216, 217, 220, 221, 223, 225, 226, 230, 231, 233, 238, 241, 248, 254, 264, 265, 269, 270, 276, 277, 286, 291, 296,
+                                            302, 310, 311, 321, 330, 331, 341, 342, 343, 351, 376, 377, 386, 391, 394, 442];
+                            const opcionesLargo = largo.map(value => ({ value, text: `${value}mm` }));
+
+                            opcionesLargo.forEach(opcion => { %>
+                                <option value="<%= opcion.value %>" <%= opcion.value == herramienta.largo ? "selected" : "" %> > <%= opcion.text %> </option>
+                            <% }) %>
+                        </select>
+                        <input type="hidden" id="largoHidden" name="largoHidden" value="" style="display: none;">
+                    </div>
+
+                    <div class="col-2">
+                        <label class="form-label" for="stock">Stock</label>
+                        <input type="number" name="stock" id="stock" min="0" max="500" class="form-control" value="<%=herramienta.stock%>" required>
+                    </div>
+                </div>
+                <!-- Opciones de código -->
+                <div class="row justify-content-between align-items-center my-3">
+                    <!-- Radios -->
+                    <div class="col-2">
+                        <label class="form-label" for="type">Radio (solo Tóricas)</label>
+                        <select disabled class="form-select" aria-label=".form-select" name="radio" id="radio">
+                            <% 
+                            const opcionesRadio = [
+                                { value: "", text: "" },
+                                { value: "R5", text: "R5" },
+                            ];
+                            opcionesRadio.forEach(opcion => { %>
+                                <option value="<%= opcion.value %>" <%= opcion.value == herramienta.radio ? "selected" : "" %> > <%= opcion.text %> </option>
+                            <% }) %>
+                        </select>
+                        <input type="hidden" id="radioHidden" name="radioHidden" value="" style="display: none;">
+                    </div>
+                    <!-- Conos -->
+                    <div class="col-2">
+                        <label class="form-label" for="type">Conos</label>
+                        <select class="form-select" aria-label=".form-select" name="cono" id="cono">
+                            <% 
+                            const opcionesCono = [
+                                { value: "", text: "" },
+                                { value: "BT1", text: "BT1" },
+                                { value: "BT2", text: "BT2" },
+                            ];
+                            opcionesCono.forEach(opcion => { %>
+                                <option value="<%= opcion.value %>" <%= opcion.value == herramienta.cono ? "selected" : "" %> > <%= opcion.text %> </option>
+                            <% }) %>
+                        </select>
+                        <input type="hidden" id="conoHidden" name="conoHidden" value="" style="display: none;">
+                    </div>
+                    <!-- Reducción -->
+                    <div class="col-2">
+                        <label class="form-label" for="type">Reducción</label>
+                        <select class="form-select" aria-label=".form-select" name="reduccion" id="reduccion">
+                            <% 
+                            const opcionesReduccion = [
+                                { value: "", text: "" },
+                                { value: "R1", text: "R1" },
+                                { value: "R2 C", text: "R2 C" },
+                                { value: "R2 L", text: "R2 L" },
+                                { value: "C6", text: "C6" },
+                                { value: "C8", text: "C8" },
+                            ];
+                            opcionesReduccion.forEach(opcion => { %>
+                                <option value="<%= opcion.value %>" <%= opcion.value == herramienta.reduccion ? "selected" : "" %> > <%= opcion.text %> </option>
+                            <% }) %>
+                        </select>
+                        <input type="hidden" id="reduccionHidden" name="reduccionHidden" value="" style="display: none;">
+                    </div>
+                    <!-- Prolongación/Extensión -->
+                    <div class="col-2">
+                        <label class="form-label" for="type">Prolongación</label>
+                        <select class="form-select" aria-label=".form-select" name="prolongacion" id="prolongacion">
+                            <% 
+                            const opcionesProlongacion = [
+                                { value: "", text: "" },
+                                { value: "PC", text: "PC" },
+                                { value: "PL", text: "PL" },
+                                { value: "EC5", text: "EC5" },
+                                { value: "EC6", text: "EC6" },
+                            ];
+                            opcionesProlongacion.forEach(opcion => { %>
+                                <option value="<%= opcion.value %>" <%= opcion.value == herramienta.prolongacion ? "selected" : "" %> > <%= opcion.text %> </option>
+                            <% }) %>
+                        </select>
+                        <input type="hidden" id="prolongacionHidden" name="prolongacionHidden" value="" style="display: none;">
+                    </div>
+                    <!-- Arrastre -->
+                    <div class="col-2">
+                        <label class="form-label" for="type">Arrastre</label>
+                        <select class="form-select" aria-label=".form-select" name="arrastre" id="arrastre">
+                            <% 
+                            const opcionesArrastre = [
+                                { value: "", text: "" },
+                                { value: "AC", text: "AC" },
+                                { value: "AM", text: "AM" },
+                                { value: "AL", text: "AL" },
+                                { value: "AF", text: "AF" },
+                            ];
+                            opcionesArrastre.forEach(opcion => { %>
+                                <option value="<%= opcion.value %>" <%= opcion.value == herramienta.arrastre ? "selected" : "" %> > <%= opcion.text %> </option>
+                            <% }) %>
+                        </select>
+                        <input type="hidden" id="arrastreHidden" name="arrastreHidden" value="" style="display: none;">
+                    </div>
+                    <!-- Terminación -->
+                    <div class="col-2">
+                        <label class="form-label" for="type">Terminación</label>
+                        <select class="form-select" aria-label=".form-select" name="terminacion" id="terminacion">
+                            <% 
+                            const opcionesTerminacion = [
+                                { value: "", text: "" },
+                                { value: "PF", text: "PF - Prefinal" },
+                                { value: "F", text: "F - Final" },
+                            ];
+                            opcionesTerminacion.forEach(opcion => { %>
+                                <option value="<%= opcion.value %>" <%= opcion.value == herramienta.terminacion ? "selected" : "" %> > <%= opcion.text %> </option>
+                            <% }) %>
+                        </select>
+                        <input type="hidden" id="terminacionHidden" name="terminacionHidden" value="" style="display: none;">
+                    </div>
+                </div>
             </div>
 
+            <!-- Imagen -->
             <div class="row justify-content-between align-items-center my-2">
                 <div class="col-6">
                     <label for="fileInputImageCuttingTool" class="form-label">
@@ -173,16 +270,17 @@
                     </div>
                 </div>        
                 <div class="col mb-auto">
-                    <label for="fileInputCuttingToolUpdate">Imagen herramienta actual </label>
+                    <label for="fileInputCuttingToolUpdate">Imagen herramienta actual</label>
                     <div class="container-fluid my-1 p-1 text-center">
                         <img id="fileInputCuttingToolUpdate" src="<%=herramienta.imageCuttingTool%>" class="img-thumbnail rounded mx-auto" alt="Imagen máquina" width="200px" height="200px">
                     </div>
                 </div>
             </div>
             <hr class="border my-1">
+            <!-- botones -->
             <div class="row justify-content-between align-items-center my-2">
                 <div class="col">
-                    <% if( userInfo.admin || userInfo.area === 'fabricacion' ) { %>        
+                    <% if( userInfo.admin || userInfo.area === "fabricación" ) { %>        
                         <div class="d-flex justify-content-center m-2">
                             <button id="btnUpdateCuttingTool" class="btn btn-success mx-auto my-2 shadow" disabled>Actualizar <i class="fa-solid fa-save"></i></button>
                             <a class="btn btn-primary mx-auto my-2 shadow" href="/api/herramientas">Volver <i class="fa-solid fa-arrow-left"></i></a>

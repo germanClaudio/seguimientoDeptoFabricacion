@@ -103,17 +103,15 @@ class ToolsController {
     }
 
     createNewTool = async (req, res, next) => {
-        let username = res.locals.username;
-        let userInfo = res.locals.userInfo;
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo;
         const expires = cookie(req)
 
         //------ Storage New Tool Image in Google Store --------        
         uploadMulterSingleImageTool(req, res, async (err) => {
             try {
-                console.log('req.file: ', req.file)
-                if (req.file) {
-                    await uploadToGCS(req, res, next)
-                }
+                // console.log('req.file: ', req.file)
+                req.file ? await uploadToGCS(req, res, next) : null
 
                 let userManager = await this.users.getUserByUsername(username);
                 const userId = userManager._id,

@@ -51,9 +51,9 @@ const consumiblesSchema = new Schema({
     },
     stock: {
         type: Number,
-        default: 0,
+        default: 1,
         min: 0,
-        max: 8000,
+        max: 100000,
         validate: {
             validator: Number.isInteger,
             message: `La canitdad debe ser un número entero.`

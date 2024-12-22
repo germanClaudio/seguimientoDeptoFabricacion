@@ -28,35 +28,35 @@ function message(designation) {
     cancelButtonColor: '#d33',
     confirmButtonText: 'Si, modificala!'
     
-}).then((result) => {
-    if (result.isConfirmed) {
-        document.getElementById("formUpdateTool").submit()
-        setTimeout(() => {
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById("formUpdateTool").submit()
+            setTimeout(() => {
+                Swal.fire(
+                    'Modificada!',
+                    `La máquina ${designation}, ha sido modificada exitosamente.`,
+                    'success'
+                )
+            }, 500)
+            
+        } else {
             Swal.fire(
-                'Modificada!',
-                `La máquina ${designation}, ha sido modificada exitosamente.`,
-                'success'
+                'No modificado!',
+                `La máquina ${designation}, no ha sido modificada.`,
+                'info'
             )
-        }, 500)
-        
-    } else {
-        Swal.fire(
-            'No modificado!',
-            `La máquina ${designation}, no ha sido modificada.`,
-            'info'
-        )
-        return false
-    }
-})
+            return false
+        }
+    })
 }
 
 const btnUpdateTool = document.getElementById('btnUpdateTool')
 if (btnUpdateTool) {
-btnUpdateTool.addEventListener('click', (event)=>{
-    event.preventDefault()
-    const desigantion = document.getElementById('designation').value
-    message(desigantion)
-})
+    btnUpdateTool.addEventListener('click', (event)=>{
+        event.preventDefault()
+        const desigantion = document.getElementById('designation').value
+        message(desigantion)
+    })
 }
 
 // --------------- Update Tool ------------------------
