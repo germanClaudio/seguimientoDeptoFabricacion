@@ -122,16 +122,13 @@ const btnAddNewUserPassword = document.getElementById('btnAddNewUserPassword')
 
 btnAddNewUserPassword.addEventListener('click', (event) => {
     event.preventDefault()
-    const password = document.getElementById('password').value
-    const confirmPassword = document.getElementById('confirmPassword').value
+    const password = document.getElementById('password').value,
+        confirmPassword = document.getElementById('confirmPassword').value
 
-    if (password && confirmPassword) {
-        messageResetUserPassword()
-    }
+    password && confirmPassword ? messageResetUserPassword() : null
 })
 
 const btnResetFormNewUserPassword = document.getElementById('btnResetFormNewUserPassword')
-
 btnResetFormNewUserPassword.addEventListener('click', () => {
     document.getElementById('messagePass').innerHTML = ""
     document.getElementById('messageConfirmPass').innerHTML = ""
@@ -140,7 +137,7 @@ btnResetFormNewUserPassword.addEventListener('click', () => {
     document.getElementById('confirmPassword').disabled = true
 })
 
-var inputsDeTexto = document.querySelectorAll('input[type="password"]')
+let inputsDeTexto = document.querySelectorAll('input[type="password"]')
 
     // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
@@ -149,19 +146,27 @@ var inputsDeTexto = document.querySelectorAll('input[type="password"]')
             let key = event.key;
 
             // Lista de caracteres especiales prohibidos
-            let forbiddenChars = /["?¡¿^/'~`\\*{}\[\]<>@]/;
+            let forbiddenChars = /["?¡¿^/'~`´Ø\\*{}\[\]<>@]/;
 
             // Verificar si la tecla presionada es un carácter especial
             if (forbiddenChars.test(key)) {
                 // Cancelar el evento para evitar que se ingrese el carácter
                 event.preventDefault()
-                input.classList.add("border")
-                input.classList.add("border-danger")
-                input.classList.add("border-2")
+                input.classList.add("border", "border-danger", "border-2")
             } else {
-                input.classList.remove("border")
-                input.classList.remove("border-danger")
-                input.classList.remove("border-2")
+                input.classList.remove("border", "border-danger", "border-2")
             }
         })
+
+        // Reemplazar caracteres prohibidos al pegar o modificar el contenido
+        input.addEventListener('input', function(event) {
+            let forbiddenChars = /["$%?¡¿^=!'~`´Ø\\*{}\[\]<>@]/g; // Caracteres prohibidos
+            
+            // Reemplazar caracteres prohibidos
+            let newValue = input.value.replace(forbiddenChars, '');
+
+            // Actualizar el valor del input
+            input.value = newValue;
+        });
+
     })

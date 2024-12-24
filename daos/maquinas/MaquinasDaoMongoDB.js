@@ -191,8 +191,7 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
     async createNewTool(newTool) {
         if (newTool) {
             let designation = newTool.designation || "",
-                code = newTool.code || "",
-                model = newTool.model || "";
+                code = newTool.code || "";
 
             if (!designation || !code ) {
                 process.exit(1)
@@ -210,7 +209,7 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
                         timestamp: newTool.timestamp,
                         modificator: newTool.modificator,
                         modifiedOn: '',
-                        visible: newTool.visible
+                        visible: true
                     }             
 
                     const newToolCreated = new Maquinas(nuevaMaquina)
@@ -233,14 +232,13 @@ class MaquinasDaoMongoDB extends ContainerMongoDB {
             try {
                 const toolMongoDB = await Maquinas.findById( { _id: id } )
                 let imageUrl = '', designation = '', characteristics = '', code = '', model = '', type = ''
-                // console.log('updatedTool: ', updatedTool)
-                // console.log('toolMongoDB: ', toolMongoDB)
+                
                 updatedTool.imageTool !== '' ? imageUrl = updatedTool.imageTool : imageUrl = toolMongoDB.imageTool
                 updatedTool.designation !== '' ? designation = updatedTool.designation : designation = toolMongoDB.designation
                 updatedTool.characteristics !== '' ? characteristics = updatedTool.characteristics : characteristics = toolMongoDB.characteristics
                 updatedTool.code !== '' ? code = updatedTool.code : code = toolMongoDB.code
                 updatedTool.model !== '' ? model = updatedTool.model : model = toolMongoDB.model
-                updatedTool.type !== '' ? type = updatedTool.type : code = toolMongoDB.type
+                updatedTool.type !== '' ? type = updatedTool.type : type = toolMongoDB.type
                 
                 if(toolMongoDB) {
                     var updatedFinalTool = await Maquinas.updateOne(

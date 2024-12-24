@@ -2,7 +2,7 @@ const UserService = require("../services/users.service.js")
 const ConsumibleService = require("../services/consumibles.service.js")
 
 const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
-const { uploadMulterSingleImageConsumible } = require("../utils/uploadMulter.js")
+const { uploadMulterSingleImageConsumibles } = require("../utils/uploadMulter.js")
 
 let formatDate = require('../utils/formatDate.js')
 
@@ -103,14 +103,15 @@ class ConsumiblesController {
     }
 
     createNewConsumible = async (req, res, next) => {
-        let username = res.locals.username;
-        let userInfo = res.locals.userInfo;
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo;
         const expires = cookie(req)
 
         //------ Storage New Consumible Image in Google Store --------        
-        uploadMulterSingleImageConsumible(req, res, async (err) => {
+        uploadMulterSingleImageConsumibles(req, res, async (err) => {
             try {
-                console.log('req.file: ', req.file)
+                // console.log('req.body: ', req.body)
+                // console.log('req.file: ', req.file)
                 if (req.file) {
                     await uploadToGCS(req, res, next)
                 }
@@ -121,8 +122,7 @@ class ConsumiblesController {
                 !userCreator ? catchError401_3(req, res, next) : null
 
                 const designationInput = req.body.designation.replace(/[!@#$%^&*]/g, ""),
-                    codeInput = req.body.code,
-                    modelInput = req.body-model
+                    codeInput = req.body.code                    
 
                 const newConsumibleValid = {
                     designation: designationInput,
@@ -133,13 +133,14 @@ class ConsumiblesController {
                 if (consumibleExist) {
                     catchError400_6(req, res, next)
                 } else {
-                        const newConsumible = {
+                    const newConsumible = {
                         designation: designationInput,
                         code: codeInput,
-                        model: modelInput,
                         type: req.body.type,
                         characteristics: req.body.characteristics,
-                        imageConsumible: req.body.imageTextImageConsumible || consumiblePictureNotFound,
+                        qrCode: req.body.qrConsumibleInput || '',
+                        stock: req.body.stock || 1,
+                        imageConsumible: req.body.imageTextImageConsumibles || consumiblePictureNotFound,
                         status: req.body.status === 'on' ? Boolean(true) : Boolean(false) || Boolean(true),
                         creator: dataUserCreator(userCreator),
                         timestamp: formatDate(),
@@ -147,10 +148,11 @@ class ConsumiblesController {
                         modifiedOn: '',
                         visible: true
                     };
-
+                    
                     const consumible = await this.consumibles.addNewConsumible(newConsumible);
                     !consumible ? catchError400_6(req, res, next) : null
-
+                    // console.log('Consumible: ', consumible)
+                    
                     const usuarioLog = await this.users.getUserByUsername(username);
                     !usuarioLog.visible ? catchError401_3(req, res, next) : null
 
@@ -177,7 +179,7 @@ class ConsumiblesController {
         let username = res.locals.username,
             userInfo = res.locals.userInfo
 
-        uploadMulterSingleImageConsumible(req, res, async (err) => {
+        uploadMulterSingleImageConsumibles(req, res, async (err) => {
             try {
                 req.file ? await uploadToGCS(req, res, next) : null
 
@@ -187,7 +189,7 @@ class ConsumiblesController {
                 let consumiblesRestantes
                 const consumibleInput = req.body.designation.replace(/[!@#$%^&* ]/g, ""),
                     designationValid = await this.consumibles.getConsumibleByDesignation(consumibleInput),
-                    otherCutting = await this.consumibles.getAllConsumibles()
+                    otherConsumibles = await this.consumibles.getAllConsumibles()
                 
                 // Función para eliminar un consumible de la lista si coincide con el consumible a comparar
                 function eliminarConsumible(lista, consumible) {
@@ -223,15 +225,16 @@ class ConsumiblesController {
                 let updatedConsumible = {
                     designation: req.body.designation,
                     code: req.body.code,
-                    model: req.body.model,
-                    type: req.body.typeHidden,
+                    type: req.body.type,
+                    qrCode: req.body.qrConsumibleInput,
+                    stock: req.body.stock,
                     characteristics: req.body.characteristics,
-                    imageConsumible: req.body.imageTextImageConsumible,
+                    imageConsumible: req.body.imageTextImageConsumibles,
                     status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
                     modificator: dataUserModificatorNotEmpty(userLogged),
                     modifiedOn: formatDate()
                 }
-
+console.log('updatedConsumible: ', updatedConsumible)
                 const consumible = await this.consumibles.updateConsumible(consumibleId, updatedConsumible, dataUserModificatorNotEmpty(userLogged))
                 !consumible ? catchError400_3(req, res, next) : null
                         

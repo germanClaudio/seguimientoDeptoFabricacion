@@ -1,11 +1,11 @@
-<div class="shadow-lg col-md-5 mx-auto my-1 w-50 border rounded p-3 text-white bg-opacity-50" style="background-color: #272787;">
+<div class="shadow-lg col-md-5 mx-auto my-1 w-75 border rounded p-3 text-white bg-opacity-50" style="background-color: #272787;">
     <form class="row align-items-center" id="searchFormConsumible" onsubmit="return searchConsumibles(this)">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label class="form-check-label ms-2 text-white" for="queryConsumibles">Buscar</label>
             <input class="form-control" type="text" id="queryConsumibles" name="queryConsumibles" placeholder="Buscar Consumibles">
         </div>
 
-        <div class="col-md-3 ms-2">
+        <div class="col-md-2 ms-2">
             <label class="form-check-label ms-2 text-white" for="statusConsumible">Status</label>
             <select class="form-select small" aria-label=".form-select" name="statusConsumible" id="statusConsumible" style="font-size: 13px;">
                 <option selected value="todas">Todos</option>
@@ -14,7 +14,7 @@
             </select>
         </div>
 
-        <div class="col-md-2 ms-2">
+        <div class="col-md ms-2">
             <label class="form-check-label ms-2 text-white" for="typeConsumible">Tipo</label>
             <select class="form-select small" aria-label=".form-select" name="typeConsumible" id="typeConsumible" style="font-size: 13px;">
                 <option selected value="todas">Todos</option>
@@ -23,6 +23,15 @@
                 <option value="consumiblesAjuste">Consumibles Ajuste</option>
                 <option value="consumiblesMeca">Consumibles Mecanizado</option>
                 <option value="otros">Otros</option>
+            </select>
+        </div>
+
+        <div class="col-md ms-2">
+            <label class="form-check-label ms-2 text-white" for="stockConsumible">Stock</label>
+            <select class="form-select small" aria-label=".form-select" name="stockConsumible" id="stockConsumible" style="font-size: 13px;">
+                <option selected value="todas">Todos</option>
+                <option value="sinStock">Sin Stock</option>
+                <option value="conStock">Con Stock</option>
             </select>
         </div>
 

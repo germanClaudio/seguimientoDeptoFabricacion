@@ -1,10 +1,7 @@
-const orderNumberElement = document.getElementById('orderNumber').value
-
-const orderNumber = orderNumberElement.replace(/\s/g, "")
-
-const filename = `Invoice_${orderNumber}.pdf`
-
-const downloadBtn = document.getElementById('download-btn')
+const orderNumberElement = document.getElementById('orderNumber').value,
+orderNumber = orderNumberElement.replace(/\s/g, ""),
+filename = `Invoice_${orderNumber}.pdf`,
+downloadBtn = document.getElementById('download-btn')
 
 function downloadPdf() {
   // Replace "pdf-file-name.pdf" with the name of your PDF file
@@ -14,7 +11,7 @@ function downloadPdf() {
   const link = document.createElement("a");
   //link.href = pdfUrl;
   link.setAttribute('href', pdfUrl);
- 
+  
   // Set the download attribute to force download
   link.setAttribute("download", filename);
   

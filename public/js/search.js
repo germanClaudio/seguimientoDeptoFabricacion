@@ -26,7 +26,6 @@ const searchClient = () => {
 }
 
 const renderSearchedClients = (arrClientSearch) => {
-
     if(arrClientSearch.length === 0) {
         const htmlSearchClientNull = (
             `<div class="col mx-auto">
@@ -1094,5 +1093,152 @@ const renderSearchedCuttingTool = (arrCuttingToolSearch) => {
 
         document.getElementById('showCuttingToolsSearch').innerHTML = htmlSearchCuttingTools
         document.getElementById('showCountCuttingToolsSearch').innerHTML = htmlResultados
+    }
+}
+
+//*******************************************************/
+// -------------- Show Searched Consumibles ----------------
+socket.on('searchConsumiblesAll', async (arrConsumiblesSearch) => {
+    renderSearchedConsumibles (await arrConsumiblesSearch)
+})
+
+const searchConsumibles = () => {
+    let queryConsumibles = document.getElementById('queryConsumibles').value,
+        statusConsumibles = document.getElementById('statusConsumible').value,
+        typeConsumibles = document.getElementById('typeConsumible').value,
+        stockConsumibles = document.getElementById('stockConsumible').value
+        
+    statusConsumibles != 'todas' ? statusConsumibles === 'activos' ? statusConsumibles = true : statusConsumibles = false : null
+        
+    socket.emit('searchConsumibleAll', {
+        queryConsumibles,
+        statusConsumibles,
+        typeConsumibles,
+        stockConsumibles
+    })
+    return false
+}
+
+const renderSearchedConsumibles = (arrConsumiblesSearch) => {
+    document.getElementById('showCountConsumiblesSearch').innerHTML = ''
+
+    if(!arrConsumiblesSearch) {
+        const htmlSearchConsumiblesNull = (
+            `<div class="col mx-auto">
+                <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4 my-auto px-1">
+                            <img src="${clientNotFound}" style="max-width=170vw; object-fit: contain;"
+                                class="img-fluid rounded p-1" alt="Consumible no encontrado">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Consumible no encontrado</h5>
+                                <p class="card-text">Lo siento, no pudimos encontrar el consumible</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Pruebe nuevamente con una designación, tipo o código diferente.
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`)
+        
+        const showConsumibles = document.getElementById('showConsumiblesSearch')
+        showConsumibles ? showConsumibles.innerHTML = htmlSearchConsumiblesNull : null
+
+    } else if (arrConsumiblesSearch.length === 1 && arrConsumiblesSearch[0] === 'vacio') {     
+        const htmlSearchConsumiblesNull = (
+            `<div class="col mx-auto">
+                <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4 my-auto px-1">
+                            <img src="${allClientsFound}" style="max-width=170vw; object-fit: contain;"
+                                class="img-fluid rounded p-1" alt="Todos los Consumibles o EPP">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Todos los Consumibles</h5>
+                                <p class="card-text">Todos los Consumibles o EPP están listados en la tabla de abajo</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Pruebe nuevamente con un nombre o código diferente o haga scroll hacia abajo
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+        )
+        document.getElementById('showConsumiblesSearch').innerHTML = htmlSearchConsumiblesNull
+
+    } else {
+        const htmlSearchConsumibles = arrConsumiblesSearch.map((element) => {
+            const statusClasses = { true: 'success', false: 'danger' };
+            const typeMapping = {
+                epp: { label: 'EPP', class: 'warning', text: 'dark' },
+                insertos: { label: 'Insertos', class: 'secondary', text: 'light' },
+                consumiblesAjuste: { label: 'Consumibles Ajuste', class: 'primary', text: 'light' },
+                consumiblesMeca: { label: 'Consumibles Mecanizado', class: 'success', text: 'light' },
+                otros: { label: 'Otros', class: 'info', text: 'dark' }
+            };
+        
+            // Determinar valores dinámicos
+            const optionStatus = statusClasses[element.status] || 'danger',
+                { label: showType, class: optionType, text: optionText } = typeMapping[element.type] || typeMapping.default,
+                showStatus = element.status ? 'Activo' : 'Inactivo',
+                optionStock = element.stock > 0 ? 'dark' : 'danger',
+                disabled = element.visible ? '' : 'disabled';
+        
+            // Retornar el HTML generado
+            return (`
+                <div class="col mx-auto">
+                    <div class="card mx-auto rounded-2 shadow-lg" style="max-width: 540px;">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 text-center">
+                                <img src="${element.imageConsumible}" style="max-width=170px; object-fit: contain;"
+                                    class="img-fluid rounded p-2 mx-auto" alt="Consumibles">
+                            </div>
+                            <div class="col-md-8 border-start">
+                                <div class="card-body">
+                                    <h6 class="card-title"><strong>${element.designation}</strong></h6>
+                                    Código: <span class="my-1"><strong>${element.code}</strong></span><br>
+                                    Tipo: <span class="badge rounded-pill bg-${optionType} text-${optionText} my-1">${showType}</span><br>
+                                    Status: <span class="badge rounded-pill bg-${optionStatus} my-1">${showStatus}</span><br>
+                                    Stock: <span class="badge bg-${optionStock} text-light">${element.stock}</span><br>
+                                    </div>
+                                <div class="card-footer px-2">
+                                    <div class="row">
+                                        <div class="col m-auto">
+                                            <a class="btn text-light small" ${disabled} type="submit" href="/api/consumibles/${element._id}"
+                                                style="background-color: #272787; font-size: .85rem; width: auto;">
+                                                <i class="fa-solid fa-info-circle"></i> Info Consumible
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+            );
+        }).join(" ");
+
+        let mensaje = ''
+        arrConsumiblesSearch.length ===1
+        ? mensaje = `Se encontró <strong>${arrConsumiblesSearch.length}</strong> resultado.`
+        : mensaje = `Se encontraron <strong>${arrConsumiblesSearch.length}</strong> resultados.`
+        
+        const htmlResultados = `<div class="row align-items-center">
+                                    <div class="col mx-auto">
+                                        <span class="my-1">${mensaje}</span>
+                                    </div>
+                                </div>`
+
+        document.getElementById('showConsumiblesSearch').innerHTML = htmlSearchConsumibles
+        document.getElementById('showCountConsumiblesSearch').innerHTML = htmlResultados
     }
 }

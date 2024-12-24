@@ -38,7 +38,7 @@ const defaultConfig = { optionType: blue, showType: 'Otro', textColor: white };
 const inputName = document.getElementById('designation')
 function mostrarNombre() {
     const titleNewConsumible = document.getElementById('titleNewConsumibles')
-    titleNewConsumible.innerText = 'Agregar Nuevo Consumible o EPP '+ inputName.value
+    titleNewConsumible.innerText = 'Agregar Nuevo Consumible o EPP: '+ inputName.value
 }
 
     if(inputName) {
@@ -92,7 +92,8 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
                             <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
                             <td class="text-center" id="characteristics_${element._id}">${element.characteristics}</td>
-                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageConsumible}' width="150px" height="150px"></td>
+                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageConsumible}' width="140px" height="140px"></td>
+                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="QR" src='${element.qrCode}' width="125px" height="125px"></td>
                             <td class="text-center" id="stock_${element._id}"><span class="badge bg-${optionStock} text-light">${element.stock}</span></td>
                             <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
                             <td class="text-center">${element.creator[0].name} ${element.creator[0].lastName}</td>
@@ -116,10 +117,10 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
         }
 
         const htmlConsumibleList = 
-            ( `<caption id="capConsumibleList">Cantidad de Consumibles: ${parseInt(consumiblesActiveQty.length)}</caption><br>
-            <caption id="capDeleteConsumibleList">Cantidad de Consumibles Eliminados: ${parseInt(arrayConsumible.length - consumiblesActiveQty.length)}</caption>`)
+            ( `<caption id="capConsumiblesList">Cantidad de Consumibles: ${parseInt(consumiblesActiveQty.length)}</caption><br>
+            <caption id="capDeleteConsumiblesList">Cantidad de Consumibles Eliminados: ${parseInt(arrayConsumible.length - consumiblesActiveQty.length)}</caption>`)
 
-        document.getElementById('capConsumibleList').innerHTML = htmlConsumibleList
+        document.getElementById('capConsumiblesList').innerHTML = htmlConsumibleList
         
     } else {
         html = (`<tr>
@@ -154,7 +155,7 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             focusConfirm: false,
-            confirmButtonText: 'Eliminarla! <i class="fa-regular fa-trash-can"></i>',
+            confirmButtonText: 'Eliminarlo! <i class="fa-regular fa-trash-can"></i>',
             cancelButtonText: 'Cancelar <i class="fa-solid fa-user-shield"></i>'
     
         }).then((result) => {
@@ -215,7 +216,8 @@ const renderConsumiblesUser = (arrConsumibles) => {
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
                             <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
                             <td class="text-center" id="characteristics_${element._id}">${element.characteristics}</td>
-                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageConsumible}' width="150px" height="150px"></td>
+                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageConsumible}' width="140px" height="140px"></td>
+                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="QR" src='${element.qrCode}' width="125px" height="125px"></td>
                             <td class="text-center" id="stock_${element._id}"><span class="badge bg-${optionStock} text-light">${element.stock}</span></td>
                             <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
                             <td class="text-center">${element.creator[0].name} ${element.creator[0].lastName}</td>
@@ -239,10 +241,10 @@ const renderConsumiblesUser = (arrConsumibles) => {
         }
 
         const htmlConsumibleList = 
-            ( `<caption id="capConsumibleList">Cantidad de Consumibles: ${parseInt(consumiblesActiveQty.length)}</caption><br>
-            <caption id="capDeleteConsumibleList">Cantidad de Consumibles Eliminados: ${parseInt(arrayConsumible.length - consumiblesActiveQty.length)}</caption>`)
+            ( `<caption id="capConsumiblesList">Cantidad de Consumibles: ${parseInt(consumiblesActiveQty.length)}</caption><br>
+            <caption id="capDeleteConsumiblesList">Cantidad de Consumibles Eliminados: ${parseInt(arrayConsumible.length - consumiblesActiveQty.length)}</caption>`)
 
-        document.getElementById('capConsumibleList').innerHTML = htmlConsumibleList
+        document.getElementById('capConsumiblesList').innerHTML = htmlConsumibleList
         
     } else {
         html = (`<tr>
@@ -449,17 +451,17 @@ removeImageButtonImageConsumible.addEventListener('click', (e)=> {
 })
 
 
-function messageNewConsumible(designation, code, type, diam, largo, stock) {
-    if (designation, code, type, diam, stock) {
+function messageNewConsumible(designation, code, type, stock) {
+    if (designation, code, type, stock) {
         Swal.fire({
             title: `Nuevo Consumible <b>${designation}</b>`,
-            text: `El consumible ${designation} (${type}), código: ${code}, stock: ${stock}, será registrada!`,
+            text: `El consumible ${designation} (${type}), código: ${code}, stock: ${stock}, será registrado!`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             focusConfirm: true,
-            confirmButtonText: 'Registrarla! <i class="fa-solid fa-screwdriver-wrench"></i>',
+            confirmButtonText: 'Registrarlo! <i class="fa-solid fa-microchip"></i>',
             cancelButtonText: 'Cancelar <i class="fa-solid fa-user-xmark"></i>'
     
         }).then((result) => {
@@ -470,13 +472,13 @@ function messageNewConsumible(designation, code, type, diam, largo, stock) {
                     'success'
                 )
                 setTimeout(() => {
-                    document.getElementById("newConsumibleForm").submit()
+                    document.getElementById("newConsumiblesForm").submit()
                 }, 600)
                 
             } else {
                 Swal.fire(
-                    'No registrada!',
-                    `El consumible ${designation}, no ha sido registrada.`,
+                    'No registrado!',
+                    `El consumible ${designation}, no ha sido registrado.`,
                     'info'
                 )
                 return false
@@ -531,13 +533,13 @@ const btnAddNewConsumible = document.getElementById('btnAddNewConsumibles')
 btnAddNewConsumible.addEventListener('click', (event) => {
     event.preventDefault()
     const designation = document.getElementById('designation').value,
-        code = document.getElementById('codeHidden').value,
+        code = document.getElementById('code').value,
         type = document.getElementById('type').value,
         stock = document.getElementById('stock').value
 
     designation && code && type && stock? 
-        messageNewConsumible(designation, code, type.toUpperCase(), stock) :
-        messageWarningEmptyFields(designation, code, type.toUpperCase(), stock)
+        messageNewConsumible(designation, code, type, stock) :
+        messageWarningEmptyFields(designation, code, type, stock)
 })
 
 let inputsDeTexto = document.querySelectorAll('input[type="text"]')
@@ -557,6 +559,23 @@ let inputsDeTexto = document.querySelectorAll('input[type="text"]')
                 input.classList.remove("border", "border-danger", "border-2")
             }
         })
+
+        // Reemplazar caracteres prohibidos al pegar o modificar el contenido
+        input.addEventListener('input', function(event) {
+            let forbiddenChars = /["$%?¡¿^=!'~`´Ø\\*{}\[\]<>@]/g; // Caracteres prohibidos
+            let accentedChars = { á: 'a', é: 'e', í: 'i', ó: 'o', ú: 'u', Á: 'A', É: 'E', Í: 'I', Ó: 'O', Ú: 'U', ñ: 'n', Ñ: 'N' }; // Vocales con acentos
+
+            // Reemplazar caracteres prohibidos
+            let newValue = input.value.replace(forbiddenChars, '');
+
+            // Reemplazar vocales con acento por las equivalentes sin acento
+            newValue = newValue.replace(/[áéíóúÁÉÍÓÚñÑ]/g, function(match) {
+                return accentedChars[match];
+            });
+
+            // Actualizar el valor del input
+            input.value = newValue;
+        });
     })
 
 let inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
@@ -601,39 +620,61 @@ function disabledBtnAceptar () {
 disabledBtnAceptar()
 
 // -------- QR code generator ---------------
+const MAX_QR_LENGTH = 1000; // Límite máximo para Versión 40 con nivel M 2331
+const versionQR = 10; //1-10-20-40 Establece la versión máxima
+
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("newConsumiblesForm"),
         qrContainer = document.getElementById("qrConsumible"),
-        downloadButton = document.getElementById('downloadQR');
+        downloadButton = document.getElementById('downloadQR'),
+        loader = document.getElementById("loader"), // Asegúrate de tener un elemento con ID 'loader'
+        qrLabel = document.getElementById("qrLabel"),
+        qrConsumibleInput = document.getElementById("qrConsumibleInput");
+
+    let isGeneratingQR = false;
 
     // Mostrar loader mientras se genera el QR
     function generateQRCodeWithLoader(data) {
-        loader.style.display = 'block'; // Muestra el spinner
-        qrContainer.style.display = 'none'
-        qrContainer.innerHTML = ''; // Limpia cualquier contenido previo
+        qrLabel.innerText = `QR (autogenerado) ${data.length}/${MAX_QR_LENGTH} caracteres`
+        if (data.length > MAX_QR_LENGTH) {
+            Swal.fire(
+                `El contenido excede el límite permitido (${MAX_QR_LENGTH} caracteres) para el código QR.`,
+                'info'
+            );
+            return; // Detiene la generación del QR
+        }
 
-        // Simula un retardo para mostrar el loader (por ejemplo, 2 segundos)
-        setTimeout(() => {
-            const qr = new QRCode(qrContainer, {
-                text: data,
-                width: 160,
-                height: 160,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.Q,
-            });
+        if (isGeneratingQR) return; // Evita generar múltiples QRs
+        isGeneratingQR = true;
 
-            loader.style.display = 'none'; // Oculta el spinner
-            qrContainer.style.display = 'flex'
-        }, 1000); // Cambia el tiempo según el procesamiento real
-        
-        // Espera un pequeño tiempo para asegurarse de que el QR se haya generado
+        loader.classList.add('active'); // Muestra el loader
+        qrContainer.classList.add('faded'); // Hace el QR semitransparente
+
+        // Simula un retardo para mostrar el loader
         setTimeout(() => {
-            const qrCanvas = qrContainer.querySelector('canvas');
-            if (qrCanvas) {
-                downloadButton.style.display = 'block'; // Muestra el botón de descarga
+            qrContainer.innerHTML = ''; // Limpia cualquier contenido previo
+
+            // Usar la librería qrCode-generator
+            const qr = qrcode(versionQR, 'L'); // Versión 40 y Nivel M
+            qr.addData(data);
+            qr.make();
+
+            // Genera el código QR como un elemento <img>
+            qrContainer.innerHTML = qr.createImgTag(6); // Tamaño del módulo ajustado (6)
+            loader.classList.remove('active'); // Oculta el loader
+            qrContainer.classList.remove('faded'); // Restaura la opacidad del QR
+            
+            isGeneratingQR = false; // Resetea el indicador
+
+            // Habilitar el botón de descarga
+            const qrImage = qrContainer.querySelector('img');
+            if (qrImage) {
+                qrImage.id = "qrImage";
+                qrConsumibleInput.value = qrImage.src
+                downloadButton.style.display = 'block';
+                downloadButton.addEventListener("click", () => downloadQRCode(qrImage.src));
             }
-        }, 1500); // Ajusta el tiempo si es necesario
+        }, 800); // Cambia el tiempo según el procesamiento real
     }
 
     // Evento para capturar datos y generar el QR
@@ -643,19 +684,16 @@ document.addEventListener("DOMContentLoaded", () => {
             type = document.getElementById("type").value,
             characteristics = document.getElementById("characteristics").value.trim();
 
-        let qrType = ''
+        // Mapeo de tipos a sus correspondientes descripciones
+        const typeMapping = {
+            epp: 'EPP',
+            insertos: 'Insertos',
+            consumiblesAjuste: 'Consumibles Ajuste',
+            consumiblesMeca: 'Consumibles Mecanizado',
+        };
 
-        if (type === 'epp') {
-            qrType = 'EPP'
-        } else if (type === 'insertos') {
-            qrType = 'Insertos'
-        } else if (type === 'consumiblesAjuste') {
-            qrType = "Consumibles Ajuste"
-        } else if (type === 'consumiblesMeca') {
-            qrType = "Consumibles Mecanizado"
-        } else {
-            qrType = "Otros Consumibles"
-        }
+        // Obtener el valor correspondiente o asignar un valor predeterminado
+        const qrType = typeMapping[type] || "Otros Consumibles";
 
         // Datos a incluir en el QR
         const qrData = JSON.stringify({
@@ -667,10 +705,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Generar QR si hay datos válidos
         if (designation && code) {
-            // generateQRCode(qrData);
-            generateQRCodeWithLoader(qrData)
+            generateQRCodeWithLoader(qrData);
         } else {
             qrContainer.innerHTML = "Faltan datos para generar el código QR.";
+            qrConsumibleInput.value = ''
         }
     });
 
@@ -680,7 +718,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (qrCanvas) {
             const link = document.createElement('a');
             link.href = qrCanvas.toDataURL(); // Convierte el canvas a un formato de imagen
-            link.download = 'codigo-qr.png';
+            link.download = `codigo-qr${type.value}.png`;
             link.click(); // Dispara el evento de descarga
         } else {
             Swal.fire(
@@ -691,5 +729,5 @@ document.addEventListener("DOMContentLoaded", () => {
             return false
         }
     });
-});
 
+});

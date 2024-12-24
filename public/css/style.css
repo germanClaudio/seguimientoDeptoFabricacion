@@ -305,7 +305,7 @@ label {
 
 
 /*--------------------
- Font Weight
+  Font Weight
 ---------------------*/
 
 html body .font-bold {
@@ -416,6 +416,13 @@ html body .display-7 {
   font-size: .875rem;
   margin-top: 6px;
   color: inherit;
+}
+
+.card-title {
+  font-size: clamp(0.8rem, 2vw, 1rem); /* Ajusta el tamaño entre 0.8rem y 1rem basado en el ancho del viewport */
+  white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Muestra puntos suspensivos si el texto es demasiado largo */
 }
 
 .figure-img {
@@ -1480,9 +1487,10 @@ height: 4px;
 
 /* -- imagen codigo QR --*/
 #qrConsumible {
+  position: relative;
   border: 1px solid #ccc;
   max-width: 350px;
-  height: 22vh;
+  height: 200px;
   padding: 10px;
   border-radius: 10px;
   background-color: #f9f9f9;
@@ -1491,25 +1499,116 @@ height: 4px;
   justify-content: center;
   text-align: center;
   align-items: center;
-  margin: auto;
   overflow: hidden;
+  margin: 0 auto; /* Centra el contenedor si es necesario */
+  visibility: hidden; /* Oculta el contenido pero reserva el espacio */
 }
+
+#qrConsumibleUpdate {
+  position: relative;
+  border: none;
+  max-width: 350px;
+  height: 200px;
+  padding: 10px;
+  color: #000;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  overflow: hidden;
+  margin: 0 auto; /* Centra el contenedor si es necesario */
+  visibility: visible;
+}
+
+/* Semitransparencia para el contenedor del QR */
+#qrConsumibleUpdate.faded {
+  opacity: 0.3;
+  pointer-events: none; /* Deshabilitar interacciones mientras genera */
+  transition: opacity 0.25s ease;
+}
+
+/* Semitransparencia para el contenedor del QR */
+#qrConsumible.faded {
+  opacity: 0.3;
+  pointer-events: none; /* Deshabilitar interacciones mientras genera */
+  transition: opacity 0.25s ease;
+}
+
+#qrContainer.visible {
+  visibility: visible; /* Muestra el contenido */
+}
+
+#qrContainerUpdate.visible {
+  visibility: visible;
+}
+
 
 @media (max-width: 768px) {
   #qrConsumible {
       max-width: 200px;
   }
+
+  #qrConsumibleUpdate {
+    max-width: 200px;
+}
+}
+
+#qrImage {
+  max-width: 200px;
+  height: 200px;
+  text-align: center;
+  align-items: center;
+  visibility: visible
+}
+
+#qrImageUpdated {
+  max-width: 200px;
+  height: 200px;
+  text-align: center;
+  align-items: center;
+  visibility: visible
 }
 
 /* Loader Spinner */
 .loader {
+  position: absolute;
+  top: 54.7%;
+  left: 73%;
+  transform: translate(-54.7%, -73%);
+  z-index: 10; /* Asegúrate de que esté encima del QR */
+  display: none; /* Se muestra solo cuando tiene la clase 'active' */
+  width: 50px; /* Ajusta el tamaño según lo necesario */
+  height: 50px;
   border: 4px solid #f3f3f3; /* Fondo del spinner */
   border-top: 4px solid #3498db; /* Color principal */
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
   animation: spin 1s linear infinite;
-  margin: 0 auto;
+}
+
+/* Loader activo */
+#loader.active {
+  display: block;
+}
+
+/* LoaderUpdate Spinner */
+.loaderUpdate {
+  position: absolute;
+  top: 60%;
+  left: 73%;
+  transform: translate(-60%, -73%);
+  z-index: 10; /* Asegúrate de que esté encima del QR */
+  display: none; /* Se muestra solo cuando tiene la clase 'active' */
+  width: 50px; /* Ajusta el tamaño según lo necesario */
+  height: 50px;
+  border: 4px solid #f3f3f3; /* Fondo del spinner */
+  border-top: 4px solid #3498db; /* Color principal */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* LoaderUpdate activo */
+#loaderUpdate.active {
+  display: block;
 }
 
 @keyframes spin {

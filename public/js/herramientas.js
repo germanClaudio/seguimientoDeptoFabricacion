@@ -569,6 +569,17 @@ let inputsDeTexto = document.querySelectorAll('input[type="text"]')
                 input.classList.remove("border", "border-danger", "border-2")
             }
         })
+
+        // Reemplazar caracteres prohibidos al pegar o modificar el contenido
+        input.addEventListener('input', function(event) {
+            let forbiddenChars = /["$%?¡¿^=!'~`´\\*{}\[\]<>@]/g; // Caracteres prohibidos
+
+            // Reemplazar caracteres prohibidos
+            let newValue = input.value.replace(forbiddenChars, '');
+
+            // Actualizar el valor del input
+            input.value = newValue;
+        });
     })
 
 let inpuntDeNumeros = document.querySelectorAll('input[type="number"]')

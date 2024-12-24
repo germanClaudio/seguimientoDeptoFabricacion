@@ -9,12 +9,12 @@ fetch('/api/config')
     .catch(error => console.error('Error fetching config:', error));
 
 function formatDate(date) {
-    const DD = String(date.getDate()).padStart(2, '0');
-    const MM = String(date.getMonth() + 1).padStart(2, '0');
-    const YY = date.getFullYear();
-    const hh = String(date.getHours()).padStart(2, '0');
-    const mm = String(date.getMinutes()).padStart(2, '0');
-    const ss = String(date.getSeconds()).padStart(2, '0');
+    const DD = String(date.getDate()).padStart(2, '0'),
+        MM = String(date.getMonth() + 1).padStart(2, '0'),
+        YY = date.getFullYear(),
+        hh = String(date.getHours()).padStart(2, '0'),
+        mm = String(date.getMinutes()).padStart(2, '0'),
+        ss = String(date.getSeconds()).padStart(2, '0');
     return DD + MM + YY + "_" + hh + mm + ss
 }
 
@@ -50,8 +50,8 @@ socket.on('clientsAll', (arrClient, arrUsers) => {
     let index = arrUsers.findIndex(el=> el.name == name.trim())
     
     if(index !== -1) {
-        let user = arrUsers[index].admin
-        let userId = arrUsers[index]._id
+        let user = arrUsers[index].admin,
+            userId = arrUsers[index]._id
         user ? renderClientAdmin(arrClient, userId) : renderClientUser(arrClient)
     }   
 })
@@ -61,16 +61,8 @@ const renderClientAdmin = (arrClient) => {
     const arrayClient = arrClient
     
     const html = arrClient.map((element) => {
-        let green = 'success'
-        let red = 'danger'
-        let text = "Activo"
-        let grey = 'secondary'
-        let black = 'dark'
-        let blue = 'primary'
-        let result = 'S/P'
-        let colorResult = grey
-        let colorStatus = green
-        let idChain = element._id.substring(19)
+        let green = 'success', red = 'danger', text = "Activo", grey = 'secondary', black = 'dark',
+            blue = 'primary', result = 'S/P', colorResult = grey, colorStatus = green, idChain = element._id.substring(19)
         
         let userArr = []
         function loopUserId() {
@@ -104,9 +96,7 @@ const renderClientAdmin = (arrClient) => {
         }
 
         // Asignar text solo si está inactivo
-        if (!element.status) {
-            text = "Inactivo";
-        }
+        !element.status ? text = "Inactivo" : text = ''
 
         if(element.visible) {
             return (`<tr>
@@ -135,9 +125,7 @@ const renderClientAdmin = (arrClient) => {
 
     const clientsActiveQty = []
     for(let c=0; c<arrClient.length; c++) {
-        if (arrayClient[c].visible) {
-            clientsActiveQty.push(c)
-        }
+        arrayClient[c].visible ? clientsActiveQty.push(c) : null
     }
 
     const htmlClientList = 
@@ -156,15 +144,8 @@ const renderClientUser = (arrClient) => {
     const arrayClient = arrClient
     
     const html = arrClient.map((element) => {
-        let green = 'success'
-        let red = 'danger'
-        let text = "Activo"
-        let grey = 'secondary'
-        let black = 'dark'
-        let blue = 'primary'
-        let result = 'S/P'
-        let colorResult = grey
-        let idChain = element._id.substring(19)
+        let green = 'success', red = 'danger', text = "Activo", grey = 'secondary', black = 'dark',
+            blue = 'primary', result = 'S/P', colorResult = grey, idChain = element._id.substring(19)
 
         let userArr = []
         function loopUserId() {
@@ -249,12 +230,11 @@ const renderClientUser = (arrClient) => {
 
 // ---- mensaje confirmacion eliminar Cliente
 function messageDeleteClient(id, name, logo, ) {
-    const htmlForm = `
-            El cliente ${name}, se eliminará completamente.<br>
-            <img class="img-fluid rounded-2 m-2" alt="Logo Cliente" src='${logo}' width="90px" height="75px"><br>
-            Está seguro que desea continuar?<br>
-            <form id="formDeleteClient" action="/api/clientes/delete/${id}" method="get">
-            </form>`
+    const htmlForm = `El cliente ${name}, se eliminará completamente.<br>
+                        <img class="img-fluid rounded-2 m-2" alt="Logo Cliente" src='${logo}' width="90px" height="75px"><br>
+                        Está seguro que desea continuar?<br>
+                        <form id="formDeleteClient" action="/api/clientes/delete/${id}" method="get">
+                        </form>`
 
     Swal.fire({
         title: `Eliminar Cliente <b>${name}</b>?`,
@@ -291,10 +271,10 @@ const nodeList = document.querySelectorAll('button[name="btnDeleteClient"]')
 nodeList.forEach(function(btn){
     if (btn) {
         btn.addEventListener('click', (event) => {
-            const idClient = btn.id
-            const name = document.getElementById(`name_${idClient}`).innerText
-            const logo = document.getElementById(`logo_${idClient}`).src
-            const projectQty = parseInt(document.getElementById(`projectQty_${idClient}`).innerText)
+            const idClient = btn.id,
+                name = document.getElementById(`name_${idClient}`).innerText,
+                logo = document.getElementById(`logo_${idClient}`).src,
+                projectQty = parseInt(document.getElementById(`projectQty_${idClient}`).innerText)
 
             if (!isNaN(projectQty)) {
                 let plText = ''
@@ -329,42 +309,51 @@ nodeList.forEach(function(btn){
 
 // --------------- Create New Client ------------------------
 // ----------- Logo Client Image behavior ---------------
-const dropAreaLogoClient = document.getElementById('drop-areaLogoClient')
-const fileInputLogoClient = document.getElementById('fileInputLogoClient')
-const fileImputTextLogoClient = document.getElementById('fileInputTextLogoClient')
-const removeImageButtonLogoClient = document.getElementById('removeImageLogoClient')
-const alertLogoClient = document.getElementById('alertLogoClient')
-const alertLogoClientSize = document.getElementById('alertLogoClientSize')
+const dropAreaLogoClient = document.getElementById('drop-areaLogoClient'),
+    fileInputLogoClient = document.getElementById('fileInputLogoClient'),
+    fileImputTextLogoClient = document.getElementById('fileInputTextLogoClient'),
+    removeImageButtonLogoClient = document.getElementById('removeImageLogoClient'),
+    alertLogoClient = document.getElementById('alertLogoClient'),
+    alertLogoClientSize = document.getElementById('alertLogoClientSize')
 
-dropAreaLogoClient.style.width = "40%"
-dropAreaLogoClient.style.height = "200px"
-dropAreaLogoClient.style.border = "2px dashed #ccc"
-dropAreaLogoClient.style.margin = "0 auto 0 50px"
-dropAreaLogoClient.style.borderRadius = "10px"
-dropAreaLogoClient.style.textAlign = "center"
-dropAreaLogoClient.style.lineHeight = "200px"
-dropAreaLogoClient.style.cursor = "pointer"
+    Object.assign(dropAreaLogoClient.style, {
+        width: "40%",
+        height: "200px",
+        border: "2px dashed #ccc",
+        textAlign: "center",
+        margin: "0 auto 0 50px",
+        borderRadius:"10px",
+        lineHeight: "200px",
+        cursor: "pointer"
+    });
 
 dropAreaLogoClient.addEventListener('dragover', (e) => {
     e.preventDefault()
-    dropAreaLogoClient.style.border = '2px dashed #77d'
-    dropAreaLogoClient.style.backgroundColor = '#7777dd10'
+    Object.assign(dropAreaLogoClient.style, {
+        border: "2px dashed #77d",
+        backgroundColor: '#7777dd10'
+    })
 })
 
 dropAreaLogoClient.addEventListener('dragleave', (e) => {
     e.preventDefault()
-    dropAreaLogoClient.style.border = '2px dashed #ccc'
-    dropAreaLogoClient.style.backgroundColor = '#9c9c9c'
+    Object.assign(dropAreaLogoClient.style, {
+        border: "2px dashed #ccc",
+        backgroundColor: '#9c9c9c'
+    })
 })
 
 function alertRefresh() {
     removeImageButtonLogoClient.style.display = 'none'
     fileImputTextLogoClient.value = ''
     fileInputLogoClient.value = ''
-    dropAreaLogoClient.style.border = "2px dashed #ccc"
-    dropAreaLogoClient.style.textAlign = "center"
-    dropAreaLogoClient.style.backgroundColor = '#9c9c9c'
-    dropAreaLogoClient.style.display = 'block'
+
+    Object.assign(dropAreaLogoClient.style, {
+        border: "2px dashed #ccc",
+        textAlign: "center",
+        backgroundColor: "#9c9c9c",
+        display: "block"
+    });
     dropAreaLogoClient.innerHTML = 'Haz click o arrastra y suelta una imagen aquí'
 }
 
@@ -385,9 +374,10 @@ dropAreaLogoClient.addEventListener('drop', (e) => {
     const file = e.dataTransfer.files[0]
 
     if (file && file.type.startsWith('image/')) {
-        dropAreaLogoClient.style.border = '3px dashed #2d2'
-        dropAreaLogoClient.style.backgroundColor = '#22dd2210'
-
+        Object.assign(dropAreaLogoClient.style, {
+            border: "3px dashed #2d2",
+            backgroundColor: "#22dd2210"
+        });
         handleFileUploadLogoClient(file)
         
     } else {
@@ -404,9 +394,10 @@ fileInputLogoClient.addEventListener('change', (e) => {
     const file = fileInputLogoClient.files[0]
     
     if (file && file.type.startsWith('image/')) {
-        dropAreaLogoClient.style.border = '3px dashed #2d2'
-        dropAreaLogoClient.style.backgroundColor = '#22dd2210'
-
+        Object.assign(dropAreaLogoClient.style, {
+            border: "3px dashed #2d2",
+            backgroundColor: "#22dd2210"
+        });
         handleFileUploadLogoClient(file)
         
     } else {
@@ -421,9 +412,9 @@ function handleFileUploadLogoClient(file) {
     if (fileSizeInMb < 3) {
         let pathToImage = URL_GOOGLE_STORE_LOGOCLIENTS
         // Separar el nombre del archivo y la extensión
-        const dotIndex = file.name.lastIndexOf('.');
-        const name = file.name.substring(0, dotIndex);
-        const extension = file.name.substring(dotIndex);
+        const dotIndex = file.name.lastIndexOf('.'),
+            name = file.name.substring(0, dotIndex),
+            extension = file.name.substring(dotIndex);
         fileImputTextLogoClient.value = pathToImage + name + "-" + formatDate(new Date()) + extension
         removeImageButtonLogoClient.style.display = 'flex'
 
@@ -449,42 +440,64 @@ removeImageButtonLogoClient.addEventListener('click', (e)=> {
     e.stopPropagation()
 })
 
-var inputsDeTexto = document.querySelectorAll('input[type="text"]')
 const btnNewClient = document.getElementById('btnNewClient')
 
-    // Agregar un listener de evento a cada input
-    inputsDeTexto.forEach(function(input) {
-        if (input) {
-            input.addEventListener('keydown', function(event) {
-                // Obtener el código de la tecla presionada
-                let key = event.key;
-    
-                // Lista de caracteres especiales prohibidos
-                let forbiddenChars = /["$%?¡¿^/()=!'~`\\*{}\[\]<>@]/;
-    
-                // Verificar si la tecla presionada es un carácter especial
-                if (forbiddenChars.test(key)) {
-                    // Cancelar el evento para evitar que se ingrese el carácter
-                    event.preventDefault()
-                    input.classList.add("border")
-                    input.classList.add("border-danger")
-                    input.classList.add("border-2")
-                } else {
-                    input.classList.remove("border")
-                    input.classList.remove("border-danger")
-                    input.classList.remove("border-2")
-                }
-            })
-            input.addEventListener('input', (event) => {
+let inputsDeTexto = document.querySelectorAll('input[type="text"]')
+.forEach(function(input) {
+    if (input) {
+        input.addEventListener('keydown', function(event) {
+            // Obtener el código de la tecla presionada
+            let key = event.key;
+
+            // Lista de caracteres especiales prohibidos
+            let forbiddenChars = /["$%?¡¿^/()=!'~`\\*{}\[\]<>@]/;
+
+            // Verificar si la tecla presionada es un carácter especial
+            if (forbiddenChars.test(key)) {
+                // Cancelar el evento para evitar que se ingrese el carácter
                 event.preventDefault()
-                input.classList.add("border-primary")
-                input.classList.add("border-2")
-                input.classList.add("shadow")
-                btnNewClient.removeAttribute('disabled')
-                btnNewClient.style = "cursor: pointer;"
-            })
-        }
-    })
+                input.classList.add("border", "border-danger","border-2")
+            } else {
+                input.classList.remove("border", "border-danger","border-2")
+            }
+        })
+
+        // Reemplazar caracteres prohibidos al pegar o modificar el contenido
+        input.addEventListener('input', function(event) {
+            let forbiddenChars = /["$%?¡¿^=!'~`´Ø\\*{}\[\]<>@]/g; // Caracteres prohibidos
+            
+            // Reemplazar caracteres prohibidos
+            let newValue = input.value.replace(forbiddenChars, '');
+
+            // Actualizar el valor del input
+            input.value = newValue;
+        });
+
+        input.addEventListener('input', (event) => {
+            event.preventDefault()
+            input.classList.add("border-primary", "border-2","shadow")
+            btnNewClient.removeAttribute('disabled')
+            btnNewClient.style = "cursor: pointer;"
+        })
+
+        // Reemplazar caracteres prohibidos al pegar o modificar el contenido
+        input.addEventListener('input', function(event) {
+            let forbiddenChars = /["$%?¡¿^=!'~`´Ø\\*{}\[\]<>@]/g; // Caracteres prohibidos
+            let accentedChars = { á: 'a', é: 'e', í: 'i', ó: 'o', ú: 'u', Á: 'A', É: 'E', Í: 'I', Ó: 'O', Ú: 'U', ñ: 'n', Ñ: 'N' }; // Vocales con acentos
+
+            // Reemplazar caracteres prohibidos
+            let newValue = input.value.replace(forbiddenChars, '');
+
+            // Reemplazar vocales con acento por las equivalentes sin acento
+            newValue = newValue.replace(/[áéíóúÁÉÍÓÚñÑ]/g, function(match) {
+                return accentedChars[match];
+            });
+
+            // Actualizar el valor del input
+            input.value = newValue;
+        });
+    }
+})
 
 
 // Crear una nueva instancia de MutationObserver y pasar una función de callback

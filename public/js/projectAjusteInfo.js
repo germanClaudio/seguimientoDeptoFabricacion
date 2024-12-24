@@ -20,10 +20,10 @@ for (let i = 0; i<varLimMaxOciProyecto; i++) { //25
 }
 
 function hiddeTableGeneral(k) {
-    const tablaGeneral = document.getElementById(`tablaGeneral${k}`)
-    const tablaDuenoOt = document.getElementById(`tablaDuenoOt${k}`)
-    const btnHiddeTableGeneral = document.getElementById(`btnHiddeTableGeneral${k}`)
-    const posBtnHiddeTableGeneral = document.getElementById(`posBtnHiddeTableGeneral${k}`)
+    const tablaGeneral = document.getElementById(`tablaGeneral${k}`),
+        tablaDuenoOt = document.getElementById(`tablaDuenoOt${k}`),
+        btnHiddeTableGeneral = document.getElementById(`btnHiddeTableGeneral${k}`),
+        posBtnHiddeTableGeneral = document.getElementById(`posBtnHiddeTableGeneral${k}`)
 
     if (tablaGeneral.style.display === 'none') {
         tablaGeneral.style.display = ''
@@ -125,9 +125,9 @@ if (arrBtnHidde !=[]) {
 }
 
 // Inicialización de arrays
-let checkSelect = document.querySelectorAll('input[name="checkSelect"]');
-let maxOtQuantity = checkSelect ? checkSelect.length : 0;
-let ociTotalQty = parseInt(document.getElementById('ociTotalQty').innerText);
+let checkSelect = document.querySelectorAll('input[name="checkSelect"]'),
+    maxOtQuantity = checkSelect ? checkSelect.length : 0,
+    ociTotalQty = parseInt(document.getElementById('ociTotalQty').innerText);
 
 let arrayBtnUpdateDuenoOt = [], arrayCheckBoxSelect = [],
     arrayRowsOtDuenoOt = [], arrayBtnCheckSelectionAll = [], arrayBtnCheckSelecMasive = [],
@@ -164,8 +164,8 @@ for (let m = 0; m < ociTotalQty; m++) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const projectNameHidden = document.getElementById('projectNameHidden').value
-    const projectNameTitle = document.getElementById('projectNameTitle')
+    const projectNameHidden = document.getElementById('projectNameHidden').value,
+        projectNameTitle = document.getElementById('projectNameTitle')
     projectNameTitle.innerHTML = `Proyecto <strong>${projectNameHidden}</strong>`
 })
 

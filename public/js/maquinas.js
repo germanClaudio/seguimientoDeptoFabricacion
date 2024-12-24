@@ -9,12 +9,12 @@ fetch('/api/config')
     .catch(error => console.error('Error fetching config:', error));
 
 function formatDate(date) {
-    const DD = String(date.getDate()).padStart(2, '0');
-    const MM = String(date.getMonth() + 1).padStart(2, '0');
-    const YY = date.getFullYear();
-    const hh = String(date.getHours()).padStart(2, '0');
-    const mm = String(date.getMinutes()).padStart(2, '0');
-    const ss = String(date.getSeconds()).padStart(2, '0');
+    const DD = String(date.getDate()).padStart(2, '0'),
+        MM = String(date.getMonth() + 1).padStart(2, '0'),
+        YY = date.getFullYear(),
+        hh = String(date.getHours()).padStart(2, '0'),
+        mm = String(date.getMinutes()).padStart(2, '0'),
+        ss = String(date.getSeconds()).padStart(2, '0');
     return DD + MM + YY + "_" + hh + mm + ss
 }
 
@@ -277,14 +277,11 @@ const renderToolsUser = (arrTools) => {
     // ---- mensaje confirmacion eliminar maquina -----------
     function messageDeleteTool(id, code, designation) {
 
-        const htmlForm = `
-                La maquina ${designation} - Codigo: ${code}, se eliminará completamente.<br>
-                Está seguro que desea continuar?<br>
-                <form id="formDeleteTool" action="/api/maquinas/delete/${id}" method="get">
-                    <fieldset>
-                    </fieldset>
-                </form>
-                        `
+        const htmlForm = `La maquina ${designation} - Codigo: ${code}, se eliminará completamente.<br>
+                            Está seguro que desea continuar?<br>
+                            <form id="formDeleteTool" action="/api/maquinas/delete/${id}" method="get">
+                                <fieldset></fieldset>
+                            </form>`
     
         Swal.fire({
             title: `Eliminar Máquina <b>${designation}</b>?`,
@@ -308,6 +305,7 @@ const renderToolsUser = (arrTools) => {
                         'success'
                     )
                 }, 1500)
+
             } else {
                 Swal.fire(
                     'No eliminada!',
@@ -342,35 +340,44 @@ const removeImageButtonImageTool = document.getElementById('removeImageTool')
 const alertImageTool = document.getElementById('alertImageTool')
 const alertSizeImageTool = document.getElementById('alertSizeImageTool')
 
-dropAreaImageTool.style.width = "300px"
-dropAreaImageTool.style.height = "200px"
-dropAreaImageTool.style.border = "2px dashed #ccc"
-dropAreaImageTool.style.margin = "0 auto 0 50px"
-dropAreaImageTool.style.borderRadius = "5px"
-dropAreaImageTool.style.textAlign = "center"
-dropAreaImageTool.style.lineHeight = "200px"
-dropAreaImageTool.style.cursor = "pointer"
+Object.assign(dropAreaImageTool.style, {
+    width: "300px",
+    height: "200px",
+    border: "2px dashed #ccc",
+    textAlign: "center",
+    margin: "0 auto 0 50px",
+    borderRadius:"5px",
+    lineHeight: "200px",
+    cursor: "pointer"
+});
 
 dropAreaImageTool.addEventListener('dragover', (e) => {
     e.preventDefault()
-    dropAreaImageTool.style.border = '2px dashed #77d'
-    dropAreaImageTool.style.backgroundColor = '#7777dd10'
+    Object.assign(dropAreaImageTool.style, {
+        border: "2px dashed #77d",
+        backgroundColor: '#7777dd10'
+    })
 })
 
 dropAreaImageTool.addEventListener('dragleave', (e) => {
     e.preventDefault()
-    dropAreaImageTool.style.border = '2px dashed #ccc'
-    dropAreaImageTool.style.backgroundColor = '#B6B6B6'
+    Object.assign(dropAreaImageTool.style, {
+        border: "2px dashed #ccc",
+        backgroundColor: '#B6B6B6'
+    })
 })
 
 function alertRefresh() {
     removeImageButtonImageTool.style.display = 'none'
     fileInputImageTool.value = ''
     fileImputTextImageTool.value = ''
-    dropAreaImageTool.style.border = "2px dashed #ccc"
-    dropAreaImageTool.style.textAlign = "center"
-    dropAreaImageTool.style.backgroundColor = '#B6B6B6'
-    dropAreaImageTool.style.display = 'block'
+
+    Object.assign(dropAreaImageTool.style, {
+        border: "2px dashed #ccc",
+        textAlign: "center",
+        backgroundColor: "#B6B6B6",
+        display: "block"
+    });
     dropAreaImageTool.innerHTML = 'Haz click o arrastra y suelta una imagen aquí'
 }
 
@@ -391,8 +398,10 @@ dropAreaImageTool.addEventListener('drop', (e) => {
     const file = e.dataTransfer.files[0]
     
     if (file && file.type.startsWith('image/')) {
-        dropAreaImageTool.style.border = '3px dashed #2d2'
-        dropAreaImageTool.style.backgroundColor = '#22dd2210'        
+        Object.assign(dropAreaImageTool.style, {
+            border: "3px dashed #2d2",
+            backgroundColor: "#22dd2210"
+        });      
         handleFileUploadImageTool(file)
 
     } else {
@@ -408,9 +417,11 @@ fileInputImageTool.addEventListener('change', (e) => {
     e.preventDefault()
     const file = fileInputImageTool.files[0]
     
-    if (file && file.type.startsWith('image/')) { 
-        dropAreaImageTool.style.border = '3px dashed #2d2'
-        dropAreaImageTool.style.backgroundColor = '#22dd2210'
+    if (file && file.type.startsWith('image/')) {
+        Object.assign(dropAreaImageTool.style, {
+            border: "3px dashed #2d2",
+            backgroundColor: "#22dd2210"
+        });
         handleFileUploadImageTool(file)
 
     } else {
@@ -419,15 +430,15 @@ fileInputImageTool.addEventListener('change', (e) => {
 })
 
 function handleFileUploadImageTool(file) {
-    const fileSize = file.size
-    const fileSizeInMb = fileSize / (1024 * 1024)
+    const fileSize = file.size,
+        fileSizeInMb = fileSize / (1024 * 1024)
 
     if (fileSizeInMb < 3) {
         let pathToImage = URL_GOOGLE_STORE_IMAGESTOOLS
         // Separar el nombre del archivo y la extensión
-        const dotIndex = file.name.lastIndexOf('.');
-        const name = file.name.substring(0, dotIndex);
-        const extension = file.name.substring(dotIndex);
+        const dotIndex = file.name.lastIndexOf('.'),
+            name = file.name.substring(0, dotIndex),
+            extension = file.name.substring(dotIndex);
         fileImputTextImageTool.value = pathToImage + name + "-" + formatDate(new Date()) + extension
         removeImageButtonImageTool.style.display = 'flex'
 
@@ -534,9 +545,9 @@ const btnAddNewTool = document.getElementById('btnAddNewTool')
 
 btnAddNewTool.addEventListener('click', (event) => {
     event.preventDefault()
-    const designation = document.getElementById('designation').value
-    const code = document.getElementById('code').value
-    const type = document.getElementById('type').value
+    const designation = document.getElementById('designation').value,
+        code = document.getElementById('code').value,
+        type = document.getElementById('type').value
 
     designation && code && type ?  messageNewTool(designation, code, type.toUpperCase()) :  messageWarningEmptyFields(designation, code, type.toUpperCase())
 })
@@ -559,7 +570,7 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
             // Obtener el código de la tecla presionada
             let key = event.key;
 
-            let forbiddenChars = /["$%?¡¿^=!'~`\\*{}\[\]<>@]/;
+            let forbiddenChars = /["$%?¡¿^=!'~`´Ø\\*{}\[\]<>@]/;
 
             // Verificar si la tecla presionada es un carácter especial
             if (forbiddenChars.test(key)) {
@@ -570,6 +581,17 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
                 input.classList.remove("border", "border-danger", "border-2")
             }
         })
+
+        // Reemplazar caracteres prohibidos al pegar o modificar el contenido
+        input.addEventListener('input', function(event) {
+            let forbiddenChars = /["$%?¡¿^=!'~`´Ø\\*{}\[\]<>@]/g; // Caracteres prohibidos
+            
+            // Reemplazar caracteres prohibidos
+            let newValue = input.value.replace(forbiddenChars, '');
+
+            // Actualizar el valor del input
+            input.value = newValue;
+        });
     })
 
 var inpuntDeNumeros = document.querySelectorAll('input[type="number"]')

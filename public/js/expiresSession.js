@@ -1,14 +1,14 @@
-const countdownElement = document.getElementById('countdown')
-const expires = (document.getElementById('expires').innerText)
+const countdownElement = document.getElementById('countdown'),
+    expires = (document.getElementById('expires').innerText)
 
     function updateCountdown() {
-        const countdownDate = new Date(`${expires}`).getTime()
-        const now = new Date().getTime()
+        const countdownDate = new Date(`${expires}`).getTime(),
+            now = new Date().getTime();
         let distance = countdownDate - now
         
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000)
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+            minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+            seconds = Math.floor((distance % (1000 * 60)) / 1000)
         
         if (distance > 3600000) {
             countdownElement.innerHTML = "<span class=\"badge rounded-pill bg-success\">Sessión Ilimitada</span>"
@@ -30,19 +30,16 @@ function confirmLogout({userName, rolUser, avatarUser}) {
     const rol = rolUser
     let spanToShow = ''
 // console.log('nameUser: ', nameUser, 'rol: ', rol)
-    rol === "Admin"? spanToShow = `<span class="badge rounded-pill bg-primary">${rol}</span>`
-                        :
-                     spanToShow = `<span class="badge rounded-pill bg-info text-dark">${rol}</span>`
+    rol === "Admin"
+    ? spanToShow = `<span class="badge rounded-pill bg-primary">${rol}</span>`
+    : spanToShow = `<span class="badge rounded-pill bg-info text-dark">${rol}</span>`
 
-    const htmlForm = `
-                    <div>${nameUser} - ${spanToShow}?</div>
-                    <img class="img-fluid rounded-circle float-center my-3"
-                        alt="Avatar" src="${avatarUser}"
-                        width="50px" height="50px"><br>
-                    Está seguro que desea continuar?<br>
-                    <form id="formLogout" action="/api/auth/logout" method="post">
-                    </form>
-                    `
+    const htmlForm = `<div>${nameUser} - ${spanToShow}?</div>
+                        <img class="img-fluid rounded-circle float-center my-3"
+                            alt="Avatar" src="${avatarUser}" width="50px" height="50px"><br>
+                        Está seguro que desea continuar?<br>
+                        <form id="formLogout" action="/api/auth/logout" method="post">
+                        </form>`
     
         Swal.fire({
             title: `Cerrar sesión de `,
@@ -64,8 +61,8 @@ function confirmLogout({userName, rolUser, avatarUser}) {
         })
 }
 
-const logoutSidebar = document.getElementById('logoutSidebar')
-const logoutBanner = document.getElementById('logoutBanner')
+const logoutSidebar = document.getElementById('logoutSidebar'),
+    logoutBanner = document.getElementById('logoutBanner')
 
 function getUserNameAndAvatar(bar) {
     const userName = (document.getElementById('mostrarUserName').innerText).split('-')

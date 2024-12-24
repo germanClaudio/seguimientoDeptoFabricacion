@@ -69,24 +69,6 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
         }
     }
 
-    async getConsumibleByCode(model) {
-        if(model){
-            try {
-                const consumible = await Consumibles.findOne( {model: `${model}`} )
-                if (consumible) {
-                    return null
-                } else {
-                    return consumible
-                }
-
-            } catch (error) {
-                console.error(error)
-            }
-        } else {
-            return new Error (`Error en modelo ${model}!`)
-        }
-    }
-
     async getConsumibleByType(type) {
         if(type){
             try {
@@ -123,100 +105,65 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
         }
     }
 
-    async getConsumiblesBySearching(query) {
-        let filter
-        var designationAndCodeQuery = [{ 'designation': { $regex: `${query.queryConsumible}`, $options: 'i' } }, 
-                                        { 'code': { $regex: `${query.queryConsumible}`, $options: 'i' } },
-                                        { 'model': { $regex: `${query.queryConsumible}`, $options: 'i' } },
-                                    ]
-
-        if (query.queryConsumible === '') {
-            if (query.statusConsumible === 'todas') {
-                if (query.typeConsumible === 'todas') {
-                    filter = 'nullAllAll'
-                } else if (query.typeConsumible === 'cnc') {
-                    filter = 'nullAllCnc'
-                } else if (query.typeConsumible === 'prensa') {
-                    filter = 'nullAllPress'
-                } else {
-                    filter = 'nullAllOther'
-                }
-            } else if (query.statusConsumible) {
-                if (query.typeConsumible === 'todas') {
-                    filter = 'nullActiveAll'
-                } else if (query.typeConsumible === 'cnc') {
-                    filter = 'nullActiveCnc'
-                } else if (query.typeConsumible === 'prensa') {
-                    filter = 'nullActivePress'
-                } else {
-                    filter = 'nullActiveOther'
-                }
-            } else if (!query.statusConsumible) {
-                if (query.typeConsumible === 'todas') {
-                    filter = 'nullInactiveAll'
-                } else if (query.typeConsumible === 'cnc') {
-                    filter = 'nullInactiveCnc'
-                } else if (query.typeConsumible === 'prensa') {
-                    filter = 'nullInactivePress'
-                } else {
-                    filter = 'nullInactiveOther'
-                }
-            }
-
-        } else {
-            if (query.statusConsumible === 'todas') {
-                if (query.typeConsumible === 'todas') {
-                    filter = 'notNullAllAll'
-                } else if (query.typeConsumible === 'cnc') {
-                    filter = 'notNullAllCnc'
-                } else if (query.typeConsumible === 'prensa') {
-                    filter = 'notNullAllPress'
-                } else {
-                    filter = 'notNullAllOther'
-                }
-            } else if (query.statusConsumible) {
-                if (query.typeConsumible === 'todas') {
-                    filter = 'notNullActiveAll'
-                } else if (query.typeConsumible === 'cnc') {
-                    filter = 'notNullActiveCnc'
-                } else if (query.typeConsumible === 'prensa') {
-                    filter = 'notNullActivePress'
-                } else {
-                    filter = 'notNullActiveOther'
-                }
-            } else if (!query.statusConsumible) {
-                if (query.typeConsumible === 'todas') {
-                    filter = 'notNullInactiveAll'
-                } else if (query.typeConsumible === 'cnc') {
-                    filter = 'notNullInactiveCnc'
-                } else if (query.typeConsumible === 'prensa') {
-                    filter = 'notNullInactivePress'
-                } else {
-                    filter = 'notNullInactiveOther'
-                }
-            }
-        }
-
+    async getConsumiblesBySearching(query) {      
+        const buildQuery = (queryText) => {
+            const conditions = [
+                queryText ? { designation: { $regex: queryText, $options: 'i' } } : null,
+                queryText ? { code: { $regex: queryText, $options: 'i' } } : null,
+            ];
+            return conditions.filter(Boolean);
+        };
+    
         try {
-            const resultados = await switchFilterConsumibles(filter, Consumibles, designationAndCodeQuery)
-            if (resultados) {
-                return resultados
-            } else {
-                return false
+            const searchQuery = {};
+            if (query.queryConsumibles) {
+                const orConditions = buildQuery(query.queryConsumibles);
+                if (orConditions.length > 0) {
+                    searchQuery.$or = orConditions;
+                }
             }
 
+            // Manejar campo statusConsumible
+            if (query.statusConsumibles !== 'todas') {
+                if (query.statusConsumibles === true) {
+                    searchQuery.status = true;
+                } else if (query.statusConsumibles === false) {
+                    searchQuery.status = false;
+                } else {
+                    throw new Error(`Valor inválido para statusConsumible: ${query.statusConsumible}`);
+                }
+            }
+
+            // Manejar otros campos
+            if (query.typeConsumibles !== 'todas') {
+                searchQuery.type = query.typeConsumibles;
+            }
+            if (query.stockConsumibles !== 'todas') {
+                if (query.stockConsumibles == 'conStock') {
+                    searchQuery.stock = true;
+                } else if(query.stockConsumibles == 'sinStock') {
+                    searchQuery.stock = false;
+                } else {
+                    throw new Error(`Valor inválido para stockConsumible: ${query.stockConsumible}`);
+                }
+            }
+
+            // Ejecutar consulta
+            const resultados = await switchFilterConsumibles(Consumibles, searchQuery);
+            return resultados.length ? resultados : false;
+    
         } catch (error) {
-            console.error("Error MongoDB getConsumiblesBySearching: ",error)
+            console.error("Error MongoDB getConsumiblesBySearching: ", error);
+            return false;
         }
     }
 
     async getExistingConsumible(newConsumible) {
-        const codeIdNum = newConsumible.code,
-            modelIdNum = newConsumible.model
+        const codeIdNum = newConsumible.code
         
         if (newConsumible) {
             const consumible = await Consumibles.findOne(
-                { $or: [ {designation: `${newConsumible.designation}`}, {code: codeIdNum}, {model: modelIdNum} ] });
+                { $or: [ {designation: `${newConsumible.designation}`}, {code: codeIdNum} ] });
             if (consumible) {
                 return consumible
             } else {
@@ -231,18 +178,20 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
     async createNewConsumible(newConsumible) {
         if (newConsumible) {
             let designation = newConsumible.designation || "",
-                code = newConsumible.code || ""
-                // model = newConsumible.model || "";
-
-            if (!designation || !code ) {
+                code = newConsumible.code || "",
+                stockNumber = parseInt(newConsumible.stock) || 1;
+            
+            if (!designation || !code || stockNumber === 0 ) {
                 process.exit(1)
+
             } else {
                 try {
-                    const nuevaConsumible = {
+                    const nuevoConsumible = {
                         designation: newConsumible.designation,
                         code: newConsumible.code,
-                        // model: newConsumible.model,
                         type: newConsumible.type,
+                        stock: stockNumber || 1,
+                        qrCode: newConsumible.qrCode || '',
                         characteristics: newConsumible.characteristics,
                         imageConsumible: newConsumible.imageConsumible,
                         status: newConsumible.status,
@@ -250,10 +199,10 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
                         timestamp: newConsumible.timestamp,
                         modificator: newConsumible.modificator,
                         modifiedOn: '',
-                        visible: newConsumible.visible
+                        visible: true
                     }             
 
-                    const newConsumibleCreated = new Consumibles(nuevaConsumible)
+                    const newConsumibleCreated = new Consumibles(nuevoConsumible)
                     await newConsumibleCreated.save()
                     return true
 
@@ -272,15 +221,17 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
         if (id && updatedConsumible && userModificator) {
             try {
                 const consumibleMongoDB = await Consumibles.findById( { _id: id } )
-                let imageUrl = '', designation = '', characteristics = '', code = '', model = '', type = ''
-                // console.log('updatedConsumible: ', updatedConsumible)
-                // console.log('consumibleMongoDB: ', consumibleMongoDB)
+                let imageUrl = '', designation = '', characteristics = '', code = '', type = '', qrCode = '', status = '', stock = ''
+                
                 updatedConsumible.imageConsumible !== '' ? imageUrl = updatedConsumible.imageConsumible : imageUrl = consumibleMongoDB.imageConsumible
                 updatedConsumible.designation !== '' ? designation = updatedConsumible.designation : designation = consumibleMongoDB.designation
                 updatedConsumible.characteristics !== '' ? characteristics = updatedConsumible.characteristics : characteristics = consumibleMongoDB.characteristics
                 updatedConsumible.code !== '' ? code = updatedConsumible.code : code = consumibleMongoDB.code
-                // updatedConsumible.model !== '' ? model = updatedConsumible.model : model = consumibleMongoDB.model
-                updatedConsumible.type !== '' ? type = updatedConsumible.type : code = consumibleMongoDB.type
+                updatedConsumible.type !== '' ? type = updatedConsumible.type : type = consumibleMongoDB.type
+                updatedConsumible.qrCode !== '' ? qrCode = updatedConsumible.qrCode : qrCode = consumibleMongoDB.qrCode
+                updatedConsumible.stock !== '' ? stock = updatedConsumible.stock : stock = consumibleMongoDB.stock
+                updatedConsumible.status !== '' ? status = updatedConsumible.status : status = consumibleMongoDB.status
+
                 
                 if(consumibleMongoDB) {
                     var updatedFinalConsumible = await Consumibles.updateOne(
@@ -289,11 +240,12 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
                             $set: {
                                 designation: designation,
                                 code: code,
-                                model: model,
                                 type: type,
+                                qrCode: qrCode,
+                                stock: parseInt(stock),
                                 characteristics: characteristics,
                                 imageConsumible: imageUrl,
-                                status: updatedConsumible.status,
+                                status: status,
                                 modificator: userModificator,
                                 modifiedOn: formatDate()
                             }
@@ -327,8 +279,8 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
                 const consumibleMongoDB = await Consumibles.findById({_id: id })
             
                 if(consumibleMongoDB) {
-                    let inactive = Boolean(false)
-                    var consumibleDeleted = await Consumibles.updateOne(
+                    let inactive = Boolean(false),
+                        consumibleDeleted = await Consumibles.updateOne(
                         { _id: id }, 
                         {
                             $set: {
@@ -345,7 +297,6 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
                     ? await Consumibles.findById({ _id: id }) 
                     : new Error(`No se eliminó el item: ${userMongoDB._id}`);
 
-                    
                 } else {
                     return new Error (`El Consumible no existe con ese Id: ${id}!`)
                 }

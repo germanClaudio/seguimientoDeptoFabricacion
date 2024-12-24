@@ -8,12 +8,12 @@ fetch('/api/config')
     .catch(error => console.error('Error fetching config:', error));
 
 function formatDate(date) {
-    const DD = String(date.getDate()).padStart(2, '0');
-    const MM = String(date.getMonth() + 1).padStart(2, '0');
-    const YY = date.getFullYear();
-    const hh = String(date.getHours()).padStart(2, '0');
-    const mm = String(date.getMinutes()).padStart(2, '0');
-    const ss = String(date.getSeconds()).padStart(2, '0');
+    const DD = String(date.getDate()).padStart(2, '0'),
+        MM = String(date.getMonth() + 1).padStart(2, '0'),
+        YY = date.getFullYear(),
+        hh = String(date.getHours()).padStart(2, '0'),
+        mm = String(date.getMinutes()).padStart(2, '0'),
+        ss = String(date.getSeconds()).padStart(2, '0');
     return DD + MM + YY + "_" + hh + mm + ss
 }
 
@@ -341,8 +341,8 @@ function messageNewProject(imgCliente,idCliente) {
     }
 
     //----------------------------------------------------------------------------------------------
-    const btnAddNewRow = document.getElementById("btnAddNewRow")
-    const buttonOne = document.getElementById('buttonOne')
+    const btnAddNewRow = document.getElementById("btnAddNewRow"),
+        buttonOne = document.getElementById('buttonOne')
 
     if (buttonOne) {
         buttonOne.addEventListener('click', () => {
@@ -377,14 +377,14 @@ function messageNewProject(imgCliente,idCliente) {
             const parentDiv = document.getElementById('div_body')
             let i = parentDiv.childElementCount
             
-            const lastChild = parentDiv.children[i - 1]
-            const lastChildId = lastChild.id
+            const lastChild = parentDiv.children[i - 1],
+                lastChildId = lastChild.id
         
             if (lastChildId < i || i == 1) {
                 i = parentDiv.childElementCount
             } else {
-                const numberId1 = parseInt(lastChildId.slice(-1))
-                const numberId2 = parseInt(lastChildId.slice(-2))
+                const numberId1 = parseInt(lastChildId.slice(-1)),
+                    numberId2 = parseInt(lastChildId.slice(-2))
                 let numberIdLastChild
         
                 numberId1 >= 0 && numberId2 ? numberIdLastChild = numberId2 : numberIdLastChild = numberId1;
@@ -393,9 +393,8 @@ function messageNewProject(imgCliente,idCliente) {
                 // console.log('i line 50: ', i)
             }
             
-            const ociNumberValue = parseInt(document.getElementById('ociNumber').value)
-        
-            const originalDiv = (
+            const ociNumberValue = parseInt(document.getElementById('ociNumber').value),
+                originalDiv = (
                     `<div class="row text-start">
                         <strong>#${i+1}</strong>
                     </div>
@@ -536,14 +535,16 @@ function messageNewProject(imgCliente,idCliente) {
             }
         
             arrayDropAreas.forEach(function(elemento) {
-                elemento.style.width = "100%"
-                elemento.style.height = "160px"
-                elemento.style.border = "2px dashed #ccc"
-                elemento.style.margin = "0 auto 0 25px"
-                elemento.style.borderRadius = "10px"
-                elemento.style.textAlign = "center"
-                elemento.style.lineHeight = "40px"
-                elemento.style.cursor = "pointer"
+                Object.assign(elemento.style, {
+                    width: "100%",
+                    height: "160px",
+                    border: "2px dashed #ccc",
+                    margin: "0 auto 0 25px",
+                    borderRadius: "10px",
+                    textAlign: "center",
+                    lineHeight: "40px",
+                    cursor: "pointer",
+                });
         
                 elemento.addEventListener('dragover', (e) => {
                     e.preventDefault()
@@ -559,8 +560,8 @@ function messageNewProject(imgCliente,idCliente) {
         
                 elemento.addEventListener('drop', (e) => {
                     e.preventDefault()
-                    const file = e.dataTransfer.files[0]
-                    const number = parseInt(extractNumbers(elemento.id)-1)
+                    const file = e.dataTransfer.files[0],
+                        number = parseInt(extractNumbers(elemento.id)-1)
                     
                     if (file && file.type.startsWith('image/')) {
                         elemento.style.border = '3px dashed #2d2'
@@ -583,9 +584,9 @@ function messageNewProject(imgCliente,idCliente) {
             arrayFileInputNewOci.forEach(function(elemento) {
                 elemento.addEventListener('change', (e) => {
                     e.preventDefault()
-                    const file = elemento.files[0]
-                    const number = parseInt(extractNumbers(elemento.id)-1) //-1
-                    // console.log('arrayDropAreas: ', arrayDropAreas, 'number: ', number)
+                    const file = elemento.files[0],
+                        number = parseInt(extractNumbers(elemento.id)-1)
+
                         if (file && file.type.startsWith('image/')) {
                             arrayDropAreas[number].style.border = '3px dashed #2d2'
                             arrayDropAreas[number].style.backgroundColor = '#22dd2210'
@@ -599,16 +600,16 @@ function messageNewProject(imgCliente,idCliente) {
             })
             
             function handleFileUploadNewOci(file, number) {
-                const fileSize = file.size
-                const fileSizeInMb = fileSize / (1024 * 1024)
+                const fileSize = file.size,
+                    fileSizeInMb = fileSize / (1024 * 1024)
         
                 if (fileSizeInMb < 3) {
                     let pathToImage = URL_GOOGLE_STORE_IMGPROJECTS
                     // Separar el nombre del archivo y la extensión
-                    const dotIndex = file.name.lastIndexOf('.');
-                    const name = file.name.substring(0, dotIndex);
-                    const extension = file.name.substring(dotIndex);
-                    arrayImageOciFileName[number].value = pathToImage + name.replace(/[^a-zA-Z0-9./_ ]/g, '-') + "-" + formatDate(new Date()) + extension
+                    const dotIndex = file.name.lastIndexOf('.'),
+                        name = file.name.substring(0, dotIndex),
+                        extension = file.name.substring(dotIndex);
+                    arrayOciFileName[number].value = pathToImage + name.replace(/[^a-zA-Z0-9./_ ]/g, '-') + "-" + formatDate(new Date()) + extension
                     arrayBtnRemoveOciImage[number].style.display = 'flex'
         
                     const reader = new FileReader()
@@ -677,8 +678,8 @@ function messageNewProject(imgCliente,idCliente) {
 
         if (extractNumbers(e) && i > 1) {
             let btnRemoveRow = e
-            const numberId1 = parseInt(btnRemoveRow.slice(-1))
-            const numberId2 = parseInt(btnRemoveRow.slice(-2))
+            const numberId1 = parseInt(btnRemoveRow.slice(-1)),
+                numberId2 = parseInt(btnRemoveRow.slice(-2))
             let numberIdToDelete
 
             numberId1 >= 0 && numberId2 ? numberIdToDelete = numberId2 : numberIdToDelete = numberId1;
@@ -741,23 +742,26 @@ function messageNewProject(imgCliente,idCliente) {
     }
 
     // ------------------ New Project Image behavior ---------------
-    const dropAreaProject = document.getElementById('drop-areaProject')
-    const fileInputProject = document.getElementById('fileInputProject')
-    const fileImputTextProject = document.getElementById('fileInputTextProject')
-    const removeImageButtonProject = document.getElementById('removeImageProject')
-    const alertProject = document.getElementById('alertProject')
-    const alertProjectSize = document.getElementById('alertProjectSize')
+    const dropAreaProject = document.getElementById('drop-areaProject'),
+        fileInputProject = document.getElementById('fileInputProject'),
+        fileImputTextProject = document.getElementById('fileInputTextProject'),
+        removeImageButtonProject = document.getElementById('removeImageProject'),
+        alertProject = document.getElementById('alertProject'),
+        alertProjectSize = document.getElementById('alertProjectSize')
 
     if (dropAreaProject) {
-        dropAreaProject.style.width = "50%"
-        dropAreaProject.style.height = "200px"
-        dropAreaProject.style.border = "2px dashed #ccc"
-        dropAreaProject.style.margin = "0 auto 0 50px"
-        dropAreaProject.style.borderRadius = "10px"
-        dropAreaProject.style.textAlign = "center"
-        dropAreaProject.style.lineHeight = "50px"
-        dropAreaProject.style.cursor = "pointer"
-        dropAreaProject.style.textWrap = "wrap"
+    
+        Object.assign(dropAreaProject.style, {
+            width: "50%",
+            height: "200px",
+            border: "2px dashed #ccc",
+            margin: "0 auto 0 50px",
+            borderRadius: "10px",
+            textAlign: "center",
+            lineHeight: "50px",
+            cursor: "pointer",
+            textWrap: "wrap"
+        });
 
         dropAreaProject.addEventListener('dragover', (e) => {
             e.preventDefault()
@@ -775,11 +779,13 @@ function messageNewProject(imgCliente,idCliente) {
             removeImageButtonProject.style.display = 'none'
             fileInputProject.value = ''
             fileImputTextProject.value = ''
-            dropAreaProject.style.border = "2px dashed #ccc"
-            dropAreaProject.style.textAlign = "center"
-            dropAreaProject.style.backgroundColor = '#FFFFFF'
-            dropAreaProject.style.display = 'block'
-            dropAreaProject.style.fontSize = '.75em'
+            Object.assign(dropAreaProject.style, {
+                border: "2px dashed #ccc",
+                textAlign: "center",
+                backgroundColor: '#FFFFFF',
+                display: 'block',
+                fontSize: '.75em'
+            });
             dropAreaProject.innerHTML = 'Seleccione una imagen para el Proyecto <br>Haz click o arrastra y suelta una imagen aquí'
         }
 
@@ -802,7 +808,6 @@ function messageNewProject(imgCliente,idCliente) {
             if (file && file.type.startsWith('image/')) {
                 dropAreaProject.style.border = '3px dashed #2d2'
                 dropAreaProject.style.backgroundColor = '#22dd2210'
-                
                 handleFileUploadProject(file)
 
             } else {
@@ -836,9 +841,9 @@ function messageNewProject(imgCliente,idCliente) {
             if (fileSizeInMb < 3) {
                 let pathToImage = URL_GOOGLE_STORE_IMGPROJECTS
                 // Separar el nombre del archivo y la extensión
-                const dotIndex = file.name.lastIndexOf('.');
-                const name = file.name.substring(0, dotIndex);
-                const extension = file.name.substring(dotIndex);
+                const dotIndex = file.name.lastIndexOf('.'),
+                    name = file.name.substring(0, dotIndex),
+                    extension = file.name.substring(dotIndex);
                 fileImputTextProject.value = pathToImage + name.replace(/[^a-zA-Z0-9./_ ]/g, '-') + "-" + formatDate(new Date()) + extension
                 removeImageButtonProject.style.display = 'flex'
 
@@ -866,22 +871,24 @@ function messageNewProject(imgCliente,idCliente) {
     }
 
     // -------------------- Oci Image behavior ---------------
-    const dropAreaOci = document.getElementById('drop-area-oci')
-    const fileInputNewOci = document.getElementById('fileInputNewOci')
-    const fileInputNewOciText = document.getElementById('fileInputNewOciText')
-    const btnRemoveOciImage = document.getElementById('btnRemoveOciImage0')
-    const alertOci = document.getElementById('alertOci')
-    const alertOciSize = document.getElementById(`alertOciSize`)
+    const dropAreaOci = document.getElementById('drop-area-oci'),
+        fileInputNewOci = document.getElementById('fileInputNewOci'),
+        fileInputNewOciText = document.getElementById('fileInputNewOciText'),
+        btnRemoveOciImage = document.getElementById('btnRemoveOciImage0'),
+        alertOci = document.getElementById('alertOci'),
+        alertOciSize = document.getElementById(`alertOciSize`)
 
     if (dropAreaOci) {
-        dropAreaOci.style.width = "100%"
-        dropAreaOci.style.height = "160px"
-        dropAreaOci.style.border = "2px dashed #ccc"
-        dropAreaOci.style.margin = "0 auto 0 25px"
-        dropAreaOci.style.borderRadius = "10px"
-        dropAreaOci.style.textAlign = "center"
-        dropAreaOci.style.lineHeight = "40px"
-        dropAreaOci.style.cursor = "pointer"
+        Object.assign(dropAreaOci.style, {
+            width: "100%",
+            height: "160px",
+            border: "2px dashed #ccc",
+            margin: "0 auto 0 25px",
+            borderRadius: "10px",
+            textAlign: "center",
+            lineHeight: "40px",
+            cursor: "pointer"
+        });
 
         dropAreaOci.addEventListener('dragover', (e) => {
             e.preventDefault()
@@ -899,12 +906,15 @@ function messageNewProject(imgCliente,idCliente) {
             fileInputNewOci.value = ''
             fileInputNewOciText.value = ''
             btnRemoveOciImage.style.display = 'none'
-            dropAreaOci.style.border = "2px dashed #ccc"
-            dropAreaOci.style.textAlign = "center"
-            dropAreaOci.style.backgroundColor = '#fff'
-            dropAreaOci.style.display = 'block'
-            dropAreaOci.style.fontSize = '.75em'
-            dropAreaOci.style.overflowWrap = 'break-word'
+
+            Object.assign(dropAreaOci.style, {
+                border: "2px dashed #ccc",
+                textAlign: "center",
+                backgroundColor: '#fff',
+                display: 'block',
+                fontSize: '.75em',
+                overflowWrap: 'break-word',
+            });
             dropAreaOci.innerHTML = 'Seleccione una imagen para la OCI <br>Haz click o arrastra y suelta una imagen aquí'
         }
 
@@ -927,7 +937,6 @@ function messageNewProject(imgCliente,idCliente) {
             if (file && file.type.startsWith('image/')) {
                 dropAreaOci.style.border = '3px dashed #2d2'
                 dropAreaOci.style.backgroundColor = '#22dd2210'
-                
                 handleFileUploadNewOci(file)
 
             } else {
@@ -946,7 +955,6 @@ function messageNewProject(imgCliente,idCliente) {
             if (file && file.type.startsWith('image/')) {
                 dropAreaOci.style.border = '3px dashed #2d2'
                 dropAreaOci.style.backgroundColor = '#22dd2210'
-
                 handleFileUploadNewOci(file)
 
             } else {
@@ -955,16 +963,16 @@ function messageNewProject(imgCliente,idCliente) {
         })
 
         function handleFileUploadNewOci(file) {
-            const fileSize = file.size
-            const fileSizeInMb = fileSize / (1024 * 1024)
+            const fileSize = file.size,
+                fileSizeInMb = fileSize / (1024 * 1024)
 
             if (fileSizeInMb < 3) {
                 // fileInputNewOci.files = e.dataTransfer.files
                 let pathToImage = URL_GOOGLE_STORE_IMGPROJECTS
                 // Separar el nombre del archivo y la extensión
-                const dotIndex = file.name.lastIndexOf('.');
-                const name = file.name.substring(0, dotIndex);
-                const extension = file.name.substring(dotIndex);
+                const dotIndex = file.name.lastIndexOf('.'),
+                    name = file.name.substring(0, dotIndex),
+                    extension = file.name.substring(dotIndex);
                 fileInputNewOciText.value = pathToImage + name.replace(/[^a-zA-Z0-9./_ ]/g, '-') + "-" + formatDate(new Date()) + extension
                 btnRemoveOciImage.style.display = 'flex'
                 const reader = new FileReader()
@@ -999,8 +1007,8 @@ if (btnCreateNewProject) {
 
     btnCreateNewProject.addEventListener('click', (event) => {
         event.preventDefault()
-        const imgCliente = document.getElementById('imgCliente').src
-        const idCliente = document.getElementById('idCliente').value
+        const imgCliente = document.getElementById('imgCliente').src,
+            idCliente = document.getElementById('idCliente').value
         
         messageNewProject( imgCliente, idCliente )
     })
@@ -1064,8 +1072,7 @@ function messageChangeProjectStatus(projectName, statusProject, k) {
 
 const projectQuantity = parseInt(document.getElementById('projectQuantity').innerText)
 
-var arrayBtnChangeStatusProject = []
-let j=0
+let arrayBtnChangeStatusProject = [], j=0
 for (let k=0; k<projectQuantity; k++) {
     let btnChangeStatusProject = document.getElementById(`btnChangeStatusProyect${k}_${j}`)
     btnChangeStatusProject ? arrayBtnChangeStatusProject.push(btnChangeStatusProject) : null
@@ -1091,11 +1098,10 @@ function messageChangeProjectLevel(projectName, levelProject, k, idProject) {
         timer: 4000,
         timerProgressBar: false,
     })
-    
     if(projectName) {
-
+        let html
         if(levelProject=='ganado') {
-            var html = `<form id="formChangeLevelProject${k}_0" action="/api/proyectos/updateLevelProject/${idProject}" method="post">
+            html = `<form id="formChangeLevelProject${k}_0" action="/api/proyectos/updateLevelProject/${idProject}" method="post">
                             <fieldset>
                                 El nivel del proyecto <b>${projectName}</b> se modificará a
                                 <div class="container mt-2 mx-auto">
@@ -1108,12 +1114,10 @@ function messageChangeProjectLevel(projectName, levelProject, k, idProject) {
                                     </div>
                                 </div>
                             </fieldset>
-                        </form>
-                        `
+                        </form>`
 
         } else if (levelProject=='paraCotizar') {
-            
-            var html = `<form id="formChangeLevelProject${k}_0" action="/api/proyectos/updateLevelProject/${idProject}" method="post">
+                html = `<form id="formChangeLevelProject${k}_0" action="/api/proyectos/updateLevelProject/${idProject}" method="post">
                             <fieldset>
                                 El nivel del proyecto <b>${projectName}</b> se modificará a
                                 <div class="container mt-2 mx-auto">
@@ -1129,7 +1133,7 @@ function messageChangeProjectLevel(projectName, levelProject, k, idProject) {
                         </form>`
 
         } else {
-            var html = `<form id="formChangeLevelProject${k}_0" action="/api/proyectos/updateLevelProject/${idProject}" method="post">
+                html = `<form id="formChangeLevelProject${k}_0" action="/api/proyectos/updateLevelProject/${idProject}" method="post">
                             <fieldset>
                                 El nivel del proyecto <b>${projectName}</b> se modificará a
                                 <div class="container mt-2 mx-auto">
@@ -1142,8 +1146,7 @@ function messageChangeProjectLevel(projectName, levelProject, k, idProject) {
                                     </div>
                                 </div>
                             </fieldset>
-                        </form>
-                        `
+                        </form>`
         }
 
         
@@ -1167,22 +1170,20 @@ function messageChangeProjectLevel(projectName, levelProject, k, idProject) {
 
         }).then((result) => {
             if (result.isConfirmed) {
-
-                const levelProjectSelected = document.getElementById('levelProjectSelection').value
-                //console.log(levelProjectSelected)
-                
+                let levelProjectBadge, levelProjectColor, levelProjectMessage
+                const levelProjectSelected = document.getElementById('levelProjectSelection').value                
                 if(levelProjectSelected =='ganado') {
-                    var levelProjectBadge = 'Ganado'
-                    var levelProjectColor = 'success text-white'
-                    var levelProjectMessage = 'podrá ingresar o modificar todos los datos de este proyecto!'
+                    levelProjectBadge = 'Ganado'
+                    levelProjectColor = 'success text-white'
+                    levelProjectMessage = 'podrá ingresar o modificar todos los datos de este proyecto!'
                 } else if (levelProjectSelected =='paraCotizar') {
-                    var levelProjectBadge = 'Para Cotizar'
-                    var levelProjectColor = 'secondary text-warning'
-                    var levelProjectMessage = 'solo podrá ingresar o modificar datos de S0 y proceso 3D en este proyecto!'
+                    levelProjectBadge = 'Para Cotizar'
+                    levelProjectColor = 'secondary text-warning'
+                    levelProjectMessage = 'solo podrá ingresar o modificar datos de S0 y proceso 3D en este proyecto!'
                 } else {
-                    var levelProjectBadge = 'A Riesgo'
-                    var levelProjectColor = 'danger text-white'
-                    var levelProjectMessage = 'solo podrá ingresar o modificar datos hasta S3 en este proyecto!'
+                    levelProjectBadge = 'A Riesgo'
+                    levelProjectColor = 'danger text-white'
+                    levelProjectMessage = 'solo podrá ingresar o modificar datos hasta S3 en este proyecto!'
                 }
 
                 document.getElementById(`formChangeLevelProject${k}_0`).submit()
@@ -1190,8 +1191,8 @@ function messageChangeProjectLevel(projectName, levelProject, k, idProject) {
                 Toast.fire({
                     icon: 'success',
                     title: `El nivel del proyecto <b>${projectName}</b>,
-                    se modificó a <span class="badge rounded-pill bg-${levelProjectColor}">${levelProjectBadge}</span> con éxito!
-                    Y ${levelProjectMessage}                    `
+                        se modificó a <span class="badge rounded-pill bg-${levelProjectColor}">${levelProjectBadge}</span> con éxito!
+                        Y ${levelProjectMessage}                    `
                 })
 
             } else {
@@ -1217,8 +1218,7 @@ function messageChangeProjectLevel(projectName, levelProject, k, idProject) {
     }
 }
 
-var arrayBtnChangeLevelProject = []
-let x=0
+let arrayBtnChangeLevelProject = [], x=0
 for (let k=0; k<projectQuantity; k++) {
     let btnChangeLevelProject = document.getElementById(`btnChangeLevelProyect${k}_${x}`)
     btnChangeLevelProject ? arrayBtnChangeLevelProject.push(btnChangeLevelProject) : null
@@ -1226,14 +1226,13 @@ for (let k=0; k<projectQuantity; k++) {
     arrayBtnChangeLevelProject.length !=0 ?
         arrayBtnChangeLevelProject[k].addEventListener('click', (event) => {
             event.preventDefault()
-            const projectName = document.getElementById(`projectNameHidden${k}_${x}`).value
-            const levelProject = document.getElementById(`levelProjectHidden${k}_${x}`).value
-            const idProject = document.getElementById(`projectIdHidden${k}_${x}`).value
+            const projectName = document.getElementById(`projectNameHidden${k}_${x}`).value,
+                levelProject = document.getElementById(`levelProjectHidden${k}_${x}`).value,
+                idProject = document.getElementById(`projectIdHidden${k}_${x}`).value
             messageChangeProjectLevel(projectName, levelProject, k, idProject)
         })
     : null
 }
-
 
 //------- Change OCI status ----------------
 function messageChangeOciStatus(statusOci, ociNumber, elementoId) {
@@ -1290,10 +1289,10 @@ function messageUpdateOci(
     k
 ) {
     
-    let descriptionOci = ociDescription.slice(13)
-    let aliasOci = ociAlias.slice(7)
-    let numberOci = parseInt(ociNumber)
-    let checked = 'checked'
+    let descriptionOci = ociDescription.slice(13),
+        aliasOci = ociAlias.slice(7),
+        numberOci = parseInt(ociNumber),
+        checked = 'checked'
     statusOci=='true' ? checked : checked = ''
 
     let bgColorStatus
@@ -1445,23 +1444,19 @@ function messageUpdateOci(
             if (forbiddenChars.test(key)) {
                 // Cancelar el evento para evitar que se ingrese el carácter
                 event.preventDefault()
-                input.classList.add("border")
-                input.classList.add("border-danger")
-                input.classList.add("border-2")
+                input.classList.add("border", "border-danger", "border-2")
             } else {
-                input.classList.remove("border")
-                input.classList.remove("border-danger")
-                input.classList.remove("border-2")
+                input.classList.remove("border", "border-danger", "border-2")
             }
         })
     })
 
-    const dropAreaUpdate = document.getElementById('drop-areaUpdate')
-    const fileInputUpdate = document.getElementById('fileInputUpdate')
-    const fileImputTextUpdate = document.getElementById('fileInputTextUpdate')
-    const removeImageButtonUpdate = document.getElementById('removeImageUpdate')
-    const alertUpdate = document.getElementById('alertUpdate')
-    const alertOciSizeFileUpdate = document.getElementById('alertOciSizeFileUpdate')
+    const dropAreaUpdate = document.getElementById('drop-areaUpdate'),
+        fileInputUpdate = document.getElementById('fileInputUpdate'),
+        fileImputTextUpdate = document.getElementById('fileInputTextUpdate'),
+        removeImageButtonUpdate = document.getElementById('removeImageUpdate'),
+        alertUpdate = document.getElementById('alertUpdate'),
+        alertOciSizeFileUpdate = document.getElementById('alertOciSizeFileUpdate')
 
     dropAreaUpdate.style.width = "50%"
     dropAreaUpdate.style.height = "200px"
@@ -1477,7 +1472,7 @@ function messageUpdateOci(
         dropAreaUpdate.style.border = '2px dashed #77a'
         dropAreaUpdate.style.backgroundColor = '#7777aa10'
     })
-  
+
     dropAreaUpdate.addEventListener('dragleave', (e) => {
         e.preventDefault()
         dropAreaUpdate.style.border = '2px dashed #ccc'
@@ -1488,12 +1483,14 @@ function messageUpdateOci(
         fileInputUpdate.value = ''
         fileImputTextUpdate.value = ''
         removeImageButtonUpdate.style.display = 'none'
+
         dropAreaUpdate.style.border = "2px dashed #ccc"
         dropAreaUpdate.style.textAlign = "center"
         dropAreaUpdate.style.backgroundColor = '#fff'
         dropAreaUpdate.style.display = 'block'
         dropAreaUpdate.style.fontSize = '.85em'
         dropAreaUpdate.style.overflowWrap = 'break-word'
+
         dropAreaUpdate.innerHTML = 'Seleccione una imagen para la OCI <br>Haz click o arrastra y suelta una imagen aquí'
     }
 
@@ -1516,7 +1513,6 @@ function messageUpdateOci(
         if (file && file.type.startsWith('image/')) {
             dropAreaUpdate.style.border = '3px dashed #2a2'
             dropAreaUpdate.style.backgroundColor = '#22aa2210'
-
             handleFileUploadUpdate(file)
 
         } else {
@@ -1535,7 +1531,6 @@ function messageUpdateOci(
         if (file && file.type.startsWith('image/')) {
             dropAreaUpdate.style.border = '3px dashed #2a2'
             dropAreaUpdate.style.backgroundColor = '#22aa2210'
-
             handleFileUploadUpdate(file)
 
         } else {
@@ -1544,8 +1539,8 @@ function messageUpdateOci(
     })
 
     function handleFileUploadUpdate(file) {
-        const fileSize = file.size
-        const fileSizeInMb = fileSize / (1024 * 1024)
+        const fileSize = file.size,
+            fileSizeInMb = fileSize / (1024 * 1024)
 
         if (fileSizeInMb < 3) {
             let pathToImage = URL_GOOGLE_STORE_IMGPROJECTS
@@ -1677,37 +1672,25 @@ document.getElementById('totalOciQtyHidden') ?
     :
     maxOciQuantity=0
 
-var arrayBtnChangeStatusOci = []
-var arrayBtnUpdateOci = []
-var arrayBtnDeleteOci = []
-
+let arrayBtnChangeStatusOci = [], arrayBtnUpdateOci = [], arrayBtnDeleteOci = []
 for (let m=0; m<maxOciQuantity; m++) {
     for (let n=0; n<maxOciQuantity; n++) {
         let btnChangeStatusOci = document.getElementById(`${m}_${n}`)
-        
-        if (btnChangeStatusOci) {
-            arrayBtnChangeStatusOci.push(btnChangeStatusOci)
-        }
+        btnChangeStatusOci ? arrayBtnChangeStatusOci.push(btnChangeStatusOci) : null
 
         let btnUpdateOci = document.getElementById(`btnUpdateOci${m}_${n}`)
-
-        if(btnUpdateOci) {
-            arrayBtnUpdateOci.push(btnUpdateOci)
-        }
+        btnUpdateOci ? arrayBtnUpdateOci.push(btnUpdateOci) : null
 
         let btnDeleteOci = document.getElementById(`btnDeleteOci${m}_${n}`)
-
-        if(btnDeleteOci) {
-            arrayBtnDeleteOci.push(btnDeleteOci)
-        }
+        btnDeleteOci ? arrayBtnDeleteOci.push(btnDeleteOci) : null
     }
 }
 
 arrayBtnChangeStatusOci.forEach(function(elemento) {
     elemento.addEventListener('click', (event) => {
         event.preventDefault()
-        const statusOci = document.getElementById(`statusOciHidden${elemento.id}`).value
-        const ociNumber = document.getElementById(`ociNumberHidden${elemento.id}`).value
+        const statusOci = document.getElementById(`statusOciHidden${elemento.id}`).value,
+            ociNumber = document.getElementById(`ociNumberHidden${elemento.id}`).value
         
         messageChangeOciStatus(
             statusOci, 
@@ -1720,13 +1703,13 @@ arrayBtnChangeStatusOci.forEach(function(elemento) {
 arrayBtnUpdateOci.forEach(function(element) {
     element.addEventListener('click', (event) => {
         event.preventDefault()
-        const projectId = document.getElementById(`projectIdHidden${element.id.slice(12)}`).value
-        const statusOci = document.getElementById(`statusOciHidden${element.id.slice(12)}`).value
-        const imageOci = document.getElementById(`imageOci${element.id.slice(12)}`).src
-        const ociDescription = document.getElementById(`ociDescription${element.id.slice(12)}`).innerText
-        const ociAlias = document.getElementById(`ociAlias${element.id.slice(12)}`).innerText
-        const ociNumber = document.getElementById(`ociNumberHidden${element.id.slice(12)}`).value
-        const ociKNumber = document.getElementById(`ociKNumberHidden${element.id.slice(12)}`).value
+        const projectId = document.getElementById(`projectIdHidden${element.id.slice(12)}`).value,
+            statusOci = document.getElementById(`statusOciHidden${element.id.slice(12)}`).value,
+            imageOci = document.getElementById(`imageOci${element.id.slice(12)}`).src,
+            ociDescription = document.getElementById(`ociDescription${element.id.slice(12)}`).innerText,
+            ociAlias = document.getElementById(`ociAlias${element.id.slice(12)}`).innerText,
+            ociNumber = document.getElementById(`ociNumberHidden${element.id.slice(12)}`).value,
+            ociKNumber = document.getElementById(`ociKNumberHidden${element.id.slice(12)}`).value
 
         messageUpdateOci(
             projectId,
@@ -1743,12 +1726,12 @@ arrayBtnUpdateOci.forEach(function(element) {
 arrayBtnDeleteOci.forEach(function(element) {
     element.addEventListener('click', (event) => {
         event.preventDefault()
-        const projectId = document.getElementById(`projectIdHidden${element.id.slice(12)}`).value
-        const ociNumber = document.getElementById(`ociNumberHidden${element.id.slice(12)}`).value
-        const ociKNumber = document.getElementById(`ociKNumberHidden${element.id.slice(12)}`).value
-        const ociDescription = document.getElementById(`ociDescription${element.id.slice(12)}`).innerText
-        const ociAlias = document.getElementById(`ociAlias${element.id.slice(12)}`).innerText
-        const imageOci = document.getElementById(`imageOci${element.id.slice(12)}`).src
+        const projectId = document.getElementById(`projectIdHidden${element.id.slice(12)}`).value,
+            ociNumber = document.getElementById(`ociNumberHidden${element.id.slice(12)}`).value,
+            ociKNumber = document.getElementById(`ociKNumberHidden${element.id.slice(12)}`).value,
+            ociDescription = document.getElementById(`ociDescription${element.id.slice(12)}`).innerText,
+            ociAlias = document.getElementById(`ociAlias${element.id.slice(12)}`).innerText,
+            imageOci = document.getElementById(`imageOci${element.id.slice(12)}`).src
         
         messageDeleteOci(
             projectId,
@@ -1904,16 +1887,15 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
         }
     })
     disabledBtnAceptar()
-    var inputsDeTexto = document.querySelectorAll('input[type="text"]')
+    let inputsDeTexto = document.querySelectorAll('input[type="text"]')
 
-    // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
         input.addEventListener('keydown', function(event) {
             // Obtener el código de la tecla presionada
             let key = event.key;
 
             // Lista de caracteres especiales prohibidos
-            let forbiddenChars = /["$%&?¡¿^/()=!'~`\\*{}\[\]<>@]/;
+            let forbiddenChars = /["$%&?¡¿^/()=!'~`´Ø\\*{}\[\]<>@]/;
 
             // Verificar si la tecla presionada es un carácter especial
             if (forbiddenChars.test(key)) {
@@ -1924,15 +1906,26 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
                 input.classList.remove("border", "border-danger", "border-2")
             }
         })
+
+        // Reemplazar caracteres prohibidos al pegar o modificar el contenido
+        input.addEventListener('input', function(event) {
+            let forbiddenChars = /["$%?¡¿^=!'~`´Ø\\*{}\[\]<>@]/g; // Caracteres prohibidos
+            
+            // Reemplazar caracteres prohibidos
+            let newValue = input.value.replace(forbiddenChars, '');
+
+            // Actualizar el valor del input
+            input.value = newValue;
+        });
     })
 
     //----------------------------
-    let dropAreasOciFileModal0 = document.getElementById(`drop-area-ociModal0`)
-    let btnRemoveOciImageFileModal0 = document.getElementById(`btnRemoveOciImageModal0`)
-    let alertOciFileModal0 = document.getElementById(`alertOciModal0`)
-    let fileInputNewOciTextFileModal0 = document.getElementById(`fileInputNewOciTextModal0`)
-    let fileInputNewOciFileModal0 = document.getElementById(`fileInputNewOciModal0`)
-    let alertSizeOciModal0 = document.getElementById('alertSizeOciModal0')
+    let dropAreasOciFileModal0 = document.getElementById(`drop-area-ociModal0`),
+        btnRemoveOciImageFileModal0 = document.getElementById(`btnRemoveOciImageModal0`),
+        alertOciFileModal0 = document.getElementById(`alertOciModal0`),
+        fileInputNewOciTextFileModal0 = document.getElementById(`fileInputNewOciTextModal0`),
+        fileInputNewOciFileModal0 = document.getElementById(`fileInputNewOciModal0`),
+        alertSizeOciModal0 = document.getElementById('alertSizeOciModal0')
 
     dropAreasOciFileModal0.style.width = "100%"
     dropAreasOciFileModal0.style.height = "160px"
@@ -2150,51 +2143,41 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
             }
             
             //---------------------New Oci Imges behavior ------------------------------
-            let arrayDropAreasModal = []
-            let arrayBtnRemoveOciImageModal = []
-            let arrayAlertOciModal = []
-            let arrayAlertSizeOciModal = []
-            let arrayImageOciFileNameModal = []
-            let arrayFileInputNewOciModal = []
+            let arrayDropAreasModal = [],
+                arrayBtnRemoveOciImageModal = [],
+                arrayAlertOciModal = [],
+                arrayAlertSizeOciModal = [],
+                arrayImageOciFileNameModal = [],
+                arrayFileInputNewOciModal = []
             
             for (let m=0; m<parseInt(ociQty.value); m++) {
-                let dropAreasOciFileModal = document.getElementById(`drop-area-ociModal${m}`)
-                let btnRemoveOciImageFileModal = document.getElementById(`btnRemoveOciImageModal${m}`)
-                let alertOciFileModal = document.getElementById(`alertOciModal${m}`)
-                let alertSizeOciModal = document.getElementById(`alertSizeOciModal${m}`)
-                let fileInputNewOciTextFileModal = document.getElementById(`fileInputNewOciTextModal${m}`)
-                let fileInputNewOciFileModal = document.getElementById(`fileInputNewOciModal${m}`)
+                let dropAreasOciFileModal = document.getElementById(`drop-area-ociModal${m}`),
+                    btnRemoveOciImageFileModal = document.getElementById(`btnRemoveOciImageModal${m}`),
+                    alertOciFileModal = document.getElementById(`alertOciModal${m}`),
+                    alertSizeOciModal = document.getElementById(`alertSizeOciModal${m}`),
+                    fileInputNewOciTextFileModal = document.getElementById(`fileInputNewOciTextModal${m}`),
+                    fileInputNewOciFileModal = document.getElementById(`fileInputNewOciModal${m}`)
                 
-                if (dropAreasOciFileModal) {
-                    arrayDropAreasModal.push(dropAreasOciFileModal)
-                }
-                if (btnRemoveOciImageFileModal) {
-                    arrayBtnRemoveOciImageModal.push(btnRemoveOciImageFileModal)
-                }
-                if (alertOciFileModal) {
-                    arrayAlertOciModal.push(alertOciFileModal)
-                }
-                if (alertSizeOciModal) {
-                    arrayAlertSizeOciModal.push(alertSizeOciModal)
-                }
-                if (fileInputNewOciTextFileModal) {
-                    arrayImageOciFileNameModal.push(fileInputNewOciTextFileModal)
-                }
-                if (fileInputNewOciFileModal) {
-                    arrayFileInputNewOciModal.push(fileInputNewOciFileModal)
-                }
+                dropAreasOciFileModal ? arrayDropAreasModal.push(dropAreasOciFileModal) : null
+                btnRemoveOciImageFileModal ? arrayBtnRemoveOciImageModal.push(btnRemoveOciImageFileModal) : null
+                alertOciFileModal ? arrayAlertOciModal.push(alertOciFileModal) : null
+                alertSizeOciModal ? arrayAlertSizeOciModal.push(alertSizeOciModal) : null
+                fileInputNewOciTextFileModal ? arrayImageOciFileNameModal.push(fileInputNewOciTextFileModal) : null
+                fileInputNewOciFileModal ? arrayFileInputNewOciModal.push(fileInputNewOciFileModal) : null
             }
 
             function alertNewOciModalRefresh(number) {
                 arrayImageOciFileNameModal[number].value = ''
                 arrayBtnRemoveOciImageModal[number].style.display = 'none'
                 arrayImageOciFileNameModal[number].value = ''
+
                 arrayDropAreasModal[number].style.border = "2px dashed #ccc"
                 arrayDropAreasModal[number].style.textAlign = "center"
                 arrayDropAreasModal[number].style.backgroundColor = '#efefef'
                 arrayDropAreasModal[number].style.display = 'block'
                 arrayDropAreasModal[number].style.fontSize = '.75em'
                 arrayDropAreasModal[number].style.overflowWrap = 'break-word'
+
                 arrayDropAreasModal[number].innerHTML = 'Seleccione una imagen para la OCI <br>Haz click o arrastra y suelta una imagen aquí'
             }
 
@@ -2275,15 +2258,15 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
             })
             
             function handleFileUploadNewOciModal(file, number) {
-                const fileSize = file.size
-                const fileSizeInMb = fileSize / (1024 * 1024)
+                const fileSize = file.size,
+                    fileSizeInMb = fileSize / (1024 * 1024)
 
                 if (fileSizeInMb < 3) {
                     let pathToImage = URL_GOOGLE_STORE_IMGPROJECTS
                     // Separar el nombre del archivo y la extensión
-                    const dotIndex = file.name.lastIndexOf('.');
-                    const name = file.name.substring(0, dotIndex);
-                    const extension = file.name.substring(dotIndex);
+                    const dotIndex = file.name.lastIndexOf('.'),
+                        name = file.name.substring(0, dotIndex),
+                        extension = file.name.substring(dotIndex);
                     arrayImageOciFileNameModal[number].value = pathToImage + name.replace(/[^a-zA-Z0-9./_ ]/g, '-') + "-" + formatDate(new Date()) + extension
                     arrayBtnRemoveOciImageModal[number].style.display = 'flex'
 
@@ -2321,8 +2304,8 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
         
         if (extractNumbers(e) && i > 1) {
             let btnRemoveRow = e
-            const numberId1 = parseInt(btnRemoveRow.slice(-1))
-            const numberId2 = parseInt(btnRemoveRow.slice(-2))
+            const numberId1 = parseInt(btnRemoveRow.slice(-1)),
+                numberId2 = parseInt(btnRemoveRow.slice(-2))
             let numberIdToDelete
             
             numberId1 >= 0 && numberId2 ? numberIdToDelete = numberId2 : numberIdToDelete = numberId1;
@@ -2372,9 +2355,9 @@ const arrayProjectList = []
             if (btn) {
                 btn.addEventListener("click", (event) => {
                     event.preventDefault()           
-                    const btnValue = extractNumbers(btn.id) //event.target.id)
-                    const projectName = document.getElementById(`projectNameHidden${btnValue}_0`).value
-                    const projectIdHidden = document.getElementById(`projectIdHidden${btnValue}_0`).value
+                    const btnValue = extractNumbers(btn.id),
+                        projectName = document.getElementById(`projectNameHidden${btnValue}_0`).value,
+                        projectIdHidden = document.getElementById(`projectIdHidden${btnValue}_0`).value
 
                     let arrayLastOciNumber=[]
                     for(let n=0; n<maxOciQuantity; n++) { 
@@ -2407,14 +2390,15 @@ function messageUpdateProject(
     k
     ) {
                 
-        let projectDescription = descriptionProject.slice(13)
-        let projectPrio = parseInt(prioProject.slice(5))
-        let checked = 'checked'
-        let bgColorStatus
+        let projectDescription = descriptionProject.slice(13),
+            projectPrio = parseInt(prioProject.slice(5)),
+            checked = 'checked',
+            bgColorStatus
         statusProject=='true' ? checked : checked = ''
-        statusProject=='true' ? bgColorStatus='background-color: #55dd5560;'
-                                : 
-                                bgColorStatus='background-color: #dd555560;'
+
+        statusProject=='true'
+            ? bgColorStatus='background-color: #55dd5560;'
+            : bgColorStatus='background-color: #dd555560;'
         
         let projectLevel
         if (levelProject==='ganado') {
@@ -2573,7 +2557,7 @@ function messageUpdateProject(
         })
     }
 
-    var inputsDeTexto = document.querySelectorAll('input[type="text"]')
+    let inputsDeTexto = document.querySelectorAll('input[type="text"]')
 
     // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
@@ -2582,29 +2566,37 @@ function messageUpdateProject(
             let key = event.key;
 
             // Lista de caracteres especiales prohibidos
-            let forbiddenChars = /[#"$%&?¡¿^/()=!'~`\\*{}\[\]<>@]/;
+            let forbiddenChars = /[#"$%&?¡¿^/()=!'~`´Ø\\*{}\[\]<>@]/;
 
             // Verificar si la tecla presionada es un carácter especial
             if (forbiddenChars.test(key)) {
                 // Cancelar el evento para evitar que se ingrese el carácter
                 event.preventDefault()
-                input.classList.add("border")
-                input.classList.add("border-danger")
-                input.classList.add("border-2")
+                input.classList.add("border", "border-danger", "border-2")
             } else {
-                input.classList.remove("border")
-                input.classList.remove("border-danger")
-                input.classList.remove("border-2")
+                input.classList.remove("border", "border-danger", "border-2")
             }
         })
+
+        // Reemplazar caracteres prohibidos al pegar o modificar el contenido
+        input.addEventListener('input', function(event) {
+            let forbiddenChars = /[#"$%?¡¿^=!/()'~`´Ø\\*{}\[\]<>@]/g; // Caracteres prohibidos
+            // Reemplazar caracteres prohibidos
+            let newValue = input.value.replace(forbiddenChars, '');
+
+            // Actualizar el valor del input
+            input.value = newValue;
+        });
+
+
     })
 
-    const dropArea = document.getElementById('drop-area')
-    const fileInput = document.getElementById('fileInput')
-    const fileImputText = document.getElementById('fileInputText')
-    const removeImageButton = document.getElementById('removeImage')
-    const alertImage = document.getElementById('alertImage')
-    const alertProjectImageSize = document.getElementById('alertProjectImageSize')
+    const dropArea = document.getElementById('drop-area'),
+        fileInput = document.getElementById('fileInput'),
+        fileImputText = document.getElementById('fileInputText'),
+        removeImageButton = document.getElementById('removeImage'),
+        alertImage = document.getElementById('alertImage'),
+        alertProjectImageSize = document.getElementById('alertProjectImageSize')
     
     dropArea.style.width = "50%"
     dropArea.style.height = "200px"
@@ -2620,7 +2612,7 @@ function messageUpdateProject(
         dropArea.style.border = '2px dashed #77a'
         dropArea.style.backgroundColor = '#7777aa10'
     })
-  
+
     dropArea.addEventListener('dragleave', (e) => {
         e.preventDefault()
         dropArea.style.border = '2px dashed #ccc'
@@ -2631,12 +2623,14 @@ function messageUpdateProject(
         fileInput.value = ''
         fileImputText.value = ''
         removeImageButton.style.display = 'none'
+
         dropArea.style.border = "2px dashed #ccc"
         dropArea.style.textAlign = "center"
         dropArea.style.backgroundColor = '#fff'
         dropArea.style.display = 'block'
         dropArea.style.fontSize = '.85em'
         dropArea.style.overflowWrap = 'break-word'
+
         dropArea.innerHTML = 'Seleccione una imagen para el Proyecto <br>Haz click o arrastra y suelta una imagen aquí'
     }
 
@@ -2733,14 +2727,14 @@ for (let k=0; k<projectQuantity; k++) {
     arrayBtnUpdateProject.length !=0 ?
         arrayBtnUpdateProject[k].addEventListener('click', (event) => {
             event.preventDefault()
-            const projectName = document.getElementById(`projectNameHidden${k}_${l}`).value
-            const levelProject = document.getElementById(`levelProjectHidden${k}_${l}`).value
-            const idProject = document.getElementById(`projectIdHidden${k}_${l}`).value
-            const statusProject = document.getElementById(`statusProjectHidden${k}_${l}`).value
-            const descriptionProject = document.getElementById(`projectDescription${k}`).innerText
-            const prioProject = document.getElementById(`prioProject${k}`).innerText
-            const codeProject = document.getElementById(`codeProject${k}`).innerText
-            const imgProject = document.getElementById(`imageProject${k}`).src
+            const projectName = document.getElementById(`projectNameHidden${k}_${l}`).value,
+                levelProject = document.getElementById(`levelProjectHidden${k}_${l}`).value,
+                idProject = document.getElementById(`projectIdHidden${k}_${l}`).value,
+                statusProject = document.getElementById(`statusProjectHidden${k}_${l}`).value,
+                descriptionProject = document.getElementById(`projectDescription${k}`).innerText,
+                prioProject = document.getElementById(`prioProject${k}`).innerText,
+                codeProject = document.getElementById(`codeProject${k}`).innerText,
+                imgProject = document.getElementById(`imageProject${k}`).src
             
             messageUpdateProject(
                 idProject,
@@ -2768,27 +2762,26 @@ function messageDeleteProject(projectName, id, k, imgProject) {
         timerProgressBar: false,
     })
 
-    const htmlForm = `
-            El proyecto <b>${projectName}</b> y toda su información interna
-            <br>
-            <b>se eliminará completamente</b>.
-            <br>
-            <div id="alertDelete" class="alert alert-danger d-flex align-items-center justify-content-center mx-4 mt-3" role="alert">
-                <i class="fa-solid fa-triangle-exclamation me-2"></i>
-                <div>
-                    <strong class="me-2">Atención!</strong> Esta acción no se puede deshacer!
-                </div>
-            </div>
-            <div id="imageProjectPreview" class="p-1 my-1 mx-auto w-50">
-                <img class="m-auto mt-3" src="${imgProject}" style="max-width: 50%; max-height: 50%;">
-            </div>
-            Está seguro que desea continuar?
-            <form id="formDeleteProject${k}_0" action="/api/proyectos/deleteProject/${id}" method="post">
-                <fieldset>
-                    <input type="hidden" name="projectNameHidden" value="${projectName}">
-                    <input type="hidden" name="projectIdHidden" value="${id}">
-                </fieldset>
-            </form>`
+    const htmlForm = `El proyecto <b>${projectName}</b> y toda su información interna
+                        <br>
+                        <b>se eliminará completamente</b>.
+                        <br>
+                        <div id="alertDelete" class="alert alert-danger d-flex align-items-center justify-content-center mx-4 mt-3" role="alert">
+                            <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                            <div>
+                                <strong class="me-2">Atención!</strong> Esta acción no se puede deshacer!
+                            </div>
+                        </div>
+                        <div id="imageProjectPreview" class="p-1 my-1 mx-auto w-50">
+                            <img class="m-auto mt-3" src="${imgProject}" style="max-width: 50%; max-height: 50%;">
+                        </div>
+                        Está seguro que desea continuar?
+                        <form id="formDeleteProject${k}_0" action="/api/proyectos/deleteProject/${id}" method="post">
+                            <fieldset>
+                                <input type="hidden" name="projectNameHidden" value="${projectName}">
+                                <input type="hidden" name="projectIdHidden" value="${id}">
+                            </fieldset>
+                        </form>`
     
     if(projectName) {
         Swal.fire({
@@ -2835,8 +2828,7 @@ function messageDeleteProject(projectName, id, k, imgProject) {
     }
 }
 
-var arrayBtnDeleteProject = []
-let p=0
+let arrayBtnDeleteProject = [], p=0
 for (let k=0; k<projectQuantity; k++) {
     let btnDeleteProject = document.getElementById(`btnDeleteProject${k}_${p}`)
     btnDeleteProject ? arrayBtnDeleteProject.push(btnDeleteProject) :null
@@ -2844,9 +2836,9 @@ for (let k=0; k<projectQuantity; k++) {
     arrayBtnDeleteProject.length !=0 ?
         arrayBtnDeleteProject[k].addEventListener('click', (event) => {
             event.preventDefault()
-            const projectName = document.getElementById(`projectNameHidden${k}_${p}`).value
-            const idProject = document.getElementById(`projectIdHidden${k}_${p}`).value
-            const imgProject = document.getElementById(`imageProject${k}`).src
+            const projectName = document.getElementById(`projectNameHidden${k}_${p}`).value,
+                idProject = document.getElementById(`projectIdHidden${k}_${p}`).value,
+                imgProject = document.getElementById(`imageProject${k}`).src
             messageDeleteProject(projectName, idProject, k, imgProject)
         })
     : null
@@ -2878,7 +2870,7 @@ btnOtNumberSpot.forEach(function(btnSpot) {
 
 
 //*********Invalida ingreso de carateres especiales en inputs de texto*********** */
-var inputsDeTexto = document.querySelectorAll('input[type="text"]')
+let inputsDeTexto = document.querySelectorAll('input[type="text"]')
 
 // Agregar un listener de evento a cada input
 inputsDeTexto.forEach(function(input) {
@@ -2887,7 +2879,7 @@ inputsDeTexto.forEach(function(input) {
         let key = event.key;
 
         // Lista de caracteres especiales prohibidos
-        let forbiddenChars = /["$%?¡¿^/()=!'~`\\*{}\[\]<>@]/;
+        let forbiddenChars = /["$%?¡¿^/()=!'~`´Ø\\*{}\[\]<>@]/;
 
         // Verificar si la tecla presionada es un carácter especial
         if (forbiddenChars.test(key)) {
@@ -2896,21 +2888,32 @@ inputsDeTexto.forEach(function(input) {
             input.classList.toggle("border", "border-danger", "border-2")
         }
     })
+
+    // Reemplazar caracteres prohibidos al pegar o modificar el contenido
+    input.addEventListener('input', function(event) {
+        let forbiddenChars = /["$%?¡¿^=!'~`´Ø\\*{}\[\]<>@]/g; // Caracteres prohibidos
+
+        // Reemplazar caracteres prohibidos
+        let newValue = input.value.replace(forbiddenChars, '');
+
+        // Actualizar el valor del input
+        input.value = newValue;
+    });
 })
 
 function disabledBtnAceptar () {
     let btnAceptarModal = document.getElementsByClassName('swal2-confirm');
-    const allInputs = document.querySelectorAll('input[type="number"],select')
-    const allInputsText = document.querySelectorAll('input[type="text"],textarea')
-    const allInputsRange = document.querySelectorAll('input[type="range"]')
-    const allInputsCheck = document.querySelectorAll('input[type="checkbox"]')
-    const dropAreaUpdate = document.getElementById('drop-areaUpdate')
-    const dropArea = document.getElementById('drop-area')
-    const dropAreasOciFileModal0 = document.getElementById(`drop-area-ociModal0`)
-    const dropAreaOci = document.getElementById('drop-area-oci')
-    const dropAreaProject = document.getElementById('drop-areaProject')
-    const checkbox = document.getElementById('confirmationNumberOci')
-    const ociNumberDisabled = document.getElementById('numberOciModal')
+    const allInputs = document.querySelectorAll('input[type="number"],select'),
+        allInputsText = document.querySelectorAll('input[type="text"],textarea'),
+        allInputsRange = document.querySelectorAll('input[type="range"]'),
+        allInputsCheck = document.querySelectorAll('input[type="checkbox"]'),
+        dropAreaUpdate = document.getElementById('drop-areaUpdate'),
+        dropArea = document.getElementById('drop-area'),
+        dropAreasOciFileModal0 = document.getElementById(`drop-area-ociModal0`),
+        dropAreaOci = document.getElementById('drop-area-oci'),
+        dropAreaProject = document.getElementById('drop-areaProject'),
+        checkbox = document.getElementById('confirmationNumberOci'),
+        ociNumberDisabled = document.getElementById('numberOciModal')
 
     const removeBtnImage = document.getElementById('removeImage')
     if (removeBtnImage) {

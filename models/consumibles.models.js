@@ -9,7 +9,7 @@ const consumiblesSchema = new Schema({
     },
     code: {
         type: String,
-        maxlength: 50
+        maxlength: 100
     },
     type: {
         type: String,
@@ -21,7 +21,7 @@ const consumiblesSchema = new Schema({
     },
     qrCode: { 
         type: String,
-        maxlength: 1000
+        maxlength: 50000
     },
     characteristics: { 
         type: String,
@@ -58,7 +58,11 @@ const consumiblesSchema = new Schema({
             validator: Number.isInteger,
             message: `La canitdad debe ser un número entero.`
         }
-    }
+    },
+    status:{
+        type: Boolean,
+        default: true
+    },
 })
 
 module.exports = model('Consumibles', consumiblesSchema)

@@ -1,5 +1,5 @@
-const passwordInput = document.getElementById('password')
-const showPasswordBtn = document.getElementById('show-password-btn')
+const passwordInput = document.getElementById('password'),
+	showPasswordBtn = document.getElementById('show-password-btn')
 
 showPasswordBtn.addEventListener('click', () => {
     const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password'

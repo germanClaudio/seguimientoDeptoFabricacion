@@ -40,7 +40,7 @@ async function uploadToGCS(req, res, next) {
         imageOciFileName: 'projectImages',
         imageTextImageTool: 'ToolsImages',
         imageTextImageCuttingTool: 'CuttingToolsImages',
-        imageTextImageConsumibles: 'Consumibles',
+        imageTextImageConsumibles: 'ConsumiblesImages',
         imageTextImageSupplier: 'SuppliersImages'
     };
     

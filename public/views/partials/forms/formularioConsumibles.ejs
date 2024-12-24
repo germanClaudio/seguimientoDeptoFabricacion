@@ -61,12 +61,13 @@
                         </div>
                 </div>
                 <div class="col">
-                    <label for="qrInputImageConsumibles" class="form-label">QR (autogenerado)</label>
-                    <div id="loader" class="loader" style="display: none;"></div>
+                    <label id="qrLabel" for="qrInputImageConsumibles" class="form-label">QR (autogenerado)</label>
+                    <div id="loader" class="loader"></div>
                     <div id="qrConsumible" class="my-3 mx-auto text-center">
                         Aquí se generará el código QR automaticamente
                     </div>
-                    <button id="downloadQR" class="btn btn-success mt-3" style="display: none;">Descargar QR</button>
+                    <input id="qrConsumibleInput" type="hidden" value="" name="qrConsumibleInput" style="display: none;">
+                    <button id="downloadQR" class="btn btn-success mt-3 mx-auto" style="display: none;">Descargar QR</button>
                 </div>
             </div> 
             
@@ -84,10 +85,9 @@
 
             <br>  
             <div class="d-flex justify-content-center">
-                <button type="button" class="btn btn-primary mx-auto" id="btnAddNewConsumibles" disabled>Guardar
-                    <i class="fa-solid fa-save"></i></button>
-                <button type="reset" id="btnResetFormNewConsumibles" class="btn btn-danger mx-auto">Reset
-                    <i class="fa-solid fa-rotate-left"></i></button>
+                <button type="button" class="btn btn-primary mx-auto" id="btnAddNewConsumibles" disabled>
+                    Guardar <i class="fa-solid fa-save"></i>
+                </button>
             </div>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         </fieldset>

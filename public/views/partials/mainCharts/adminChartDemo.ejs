@@ -252,17 +252,14 @@
                                 <div class="media-body text-left">
                                     <% let arrayConsumibles = [], arrayVisibleConsumible = []
                                     for (let i=0; consumibles.length>i; i++ ) {
-                                        consumibles[i].visible ? arrayConsumibles.push(consumibles[i].designation) : null
+                                        consumibles[i].visible ? arrayConsumibles.push(consumibles[i]) : null
                                     }
-
                                     for (let j=0; arrayConsumibles.length>j; j++ ) {
-                                        arrayConsumibles[j].visible ? arrayVisibleConsumible.push(arrayConsumibles[j].designation) : null
+                                        arrayConsumibles[j].stock > 0 ? arrayVisibleConsumible.push(arrayConsumibles[j]) : null
                                     }
-
-                                    let arrayActiveConsumible = [].concat(...arrayVisibleConsumible)
-                                    let resultArrayConsumible = []
+                                    let arrayActiveConsumible = [].concat(...arrayVisibleConsumible), resultArrayConsumible = [];
                                     for (let k=0; arrayActiveConsumible.length>k; k++ ) {
-                                        arrayActiveConsumible[k].visible ? resultArrayConsumible.push(arrayActiveConsumible[k].designation) : null
+                                        arrayActiveConsumible[k].visible ? resultArrayConsumible.push(arrayActiveConsumible[k]) : null
                                     } %>
                                     <h3 class="font-medium"><%= resultArrayConsumible.length %>/<span style="font-size: 0.95rem;" ><%=arrayActiveConsumible.length%></span></h3>
                                     <span>Consumibles - EPP</span>

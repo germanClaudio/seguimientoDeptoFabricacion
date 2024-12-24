@@ -1,0 +1,174 @@
+<div class="form-group col-12 mx-auto mt-2 mb-5 w-75 border px-5 py-1 text-white bg-opacity-75" style="background-color: #9a9a9abb;">
+    <form id="formUpdateConsumibles" enctype="multipart/form-data" action="/api/consumibles/update/<%=consumible._id%>" method="post">
+        <fieldset>
+            <div class="row justify-content-between align-items-center mt-2">
+                <div class="col-3 mx-auto my-2">
+                    <label for="idDisable">Id#</label>
+                    <input type="text" name="idDisable" id="idDisable" class="form-control-plaintext text-white" value="<%=consumible._id%>" disabled>
+                </div>
+                
+                <div class="col mx-auto my-1">
+                    <label for="idCreator">Creado por</label>
+                    <input type="text" name="idCreator" id="idCreator" class="form-control-plaintext text-white small"
+                        value="<%=consumible.creator[0].name%> <%=consumible.creator[0].lastName%>" disabled>
+                </div>
+                
+                <div class="col mx-auto my-1">
+                    <label for="timestampDisable">Fecha creación</label>
+                    <input type="text" name="timestampDisable" id="timestampDisable" class="form-control-plaintext text-white small"
+                        value="<%=consumible.timestamp%>" disabled>
+                </div>
+                
+                <div class="col mx-auto my-1">
+                    <label for="modificatorDisable">Modificado por</label>
+                    <% if (consumible.modificator[0].name !== "") { %>
+                        <input type="text" name="modificatorDisable" id="modificatorDisable" class="form-control-plaintext text-white small"
+                            value="<%=consumible.modificator[0].name%> <%=consumible.modificator[0].lastName%>" disabled>
+                    <% } else { %>
+                        <input type="text" name="modificatorDisable" id="modificatorDisable" class="form-control-plaintext text-white small"
+                            value="" disabled>
+                    <% } %>        
+                </div>
+                
+                <div class="col-auto mx-auto my-1">
+                    <label for="modifiedOnDisable">Fecha modificación</label>
+                    <input type="text" name="modifiedOnDisable" id="modifiedOnDisable" class="form-control-plaintext text-white small"
+                        value="<%=consumible.modifiedOn%>" disabled>
+                </div>
+            </div>
+            <hr class="border my-1">
+            <!-- Designacion Características status -->
+            <div class="row justify-content-between align-items-start my-2">
+                <div class="col mx-auto">
+                    <label class="form-label" for="designation">Designación</label>
+                    <input type="text" name="designation" id="designation" class="form-control" value="<%=consumible.designation %>"
+                        autocomplete="on" placeholder="Designación consumible" required>
+                </div>
+                
+                <div class="col-3 mx-auto">
+                    <label class="form-check-label" for="type">Tipo</label>
+                    <select class="form-select form-select" aria-label=".form-select" name="type" id="type" required>
+                        <%
+                        const opcionesUpdate = [
+                            { value: "epp", text: "EPP" },
+                            { value: "insertos", text: "Insertos" },
+                            { value: "consumiblesAjuste", text: "Consum. Ajuste" },
+                            { value: "consumiblesMeca", text: "Consum. Mecanizado" },
+                            { value: "otros", text: "Otros" }
+                        ];
+                        opcionesUpdate.forEach(opcion => { %>
+                            <option value="<%= opcion.value %>" <%= opcion.value == consumible.type ? 'selected' : '' %> > <%= opcion.text %> </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <% if (consumible.status) { %>
+                    <div class="col-3 mx-auto" style="background-color: #55dd5560;">
+                        <label for="status">Status Consumible</label>
+                        <div class="">
+                            <label class="form-check-label" for="status">Inactivo</label>
+                            <div class="form-check form-switch d-inline-block mt-2">
+                                <input id="status" class="form-check-input" type="checkbox" role="switch"
+                                    name="status" style="cursor: pointer;" checked>
+                                <label class="form-check-label" for="status">Activo</label>
+                            </div>    
+                        </div>
+                    </div>
+                <% } else { %>
+                    <div class="col-3 mx-auto" style="background-color: #ff00006f;">
+                        <label for="status">Status Consumible</label>
+                        <div class="">
+                            <label class="form-check-label" for="status">Inactivo</label>
+                            <div class="form-check form-switch d-inline-block mt-2">
+                                <input id="status" class="form-check-input" type="checkbox" role="switch"
+                                    name="status" style="cursor: pointer;">
+                                <label class="form-check-label" for="status">Activo</label>
+                            </div>    
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+            
+            <!-- codigo tipo -->
+            <div class="row justify-content-between align-items-start my-3">
+                <div class="col-4 mx-auto">
+                    <label class="form-label" for="code">Código</label>
+                    <input type="text" name="code" id="code" class="form-control" value="<%=consumible.code%>" placeholder="Código" required>
+                </div>
+
+                <div class="col-6 mx-auto">
+                    <label for="characteristics">Características</label>
+                    <textarea type="text" name="characteristics" id="characteristics" class="form-control" rows="3"><%=consumible.characteristics%></textarea>
+                </div>
+                
+                <div class="col-2 mx-auto">
+                    <label class="form-label" for="stock">Stock</label>
+                    <input type="number" name="stock" id="stock" min="0" max="500" class="form-control" value="<%=consumible.stock%>" required>
+                </div>
+            </div>
+
+            <!-- Imagen nueva - actual - QR -->
+            <div class="row justify-content-between align-items-start my-2">
+                <!-- Imagen nueva -->
+                <div class="col-5">
+                    <label for="fileInputImageConsumibles" class="form-label">
+                        Seleccione una nueva imagen del Consumible o EPP
+                    </label>
+                    <input type="text" id="fileInputTextImageConsumiblesUpdate" name="imageTextImageConsumibles" value="<%=consumible.imageConsumibles %>" style="display: none;">
+                    <input type="file" id="fileInputConsumiblesUpdate" name="imageImageConsumibles" value="" accept="image/*" style="display: none;">
+                    <div id="drop-areaConsumiblesUpdate" class="my-1 mx-auto">
+                        <p>Haz click o arrastra y suelta una imagen aquí</p>
+                    </div>
+                    <button title="Eliminar Imagen"
+                        type="button" class="btn btn-danger rounded-circle mx-auto" id="removeImageConsumiblesUpdate" style="display: none;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    
+                    <div id="alertImageConsumiblesUpdate" class="alert alert-warning align-items-center mx-auto" role="alert"
+                        style="display: none; font-size: 0.85rem; height: 1.15rem; width: 26rem;">
+                        <strong class="me-2">Error!</strong> Solo puedes ingresar una imagen jpg, png, bmp o jpeg.
+                    </div>
+                    <div id="alertSizeImageConsumiblesUpdate" class="alert alert-warning align-items-center mx-auto" role="alert"
+                        style="display: none; font-size: 0.85rem; height: 1.15rem; width: 25rem;">
+                        <strong class="me-2">Atención!</strong> El tamaño de la imagen debe ser menor a 3Mb.
+                    </div>
+                </div>    
+                <!-- Imagen actual -->    
+                <div class="col mb-auto">
+                    <label for="fileInputConsumiblesUpdate">Imagen consumible actual</label>
+                    <div class="container-fluid my-1 p-1 text-center">
+                        <img id="fileInputConsumiblesUpdate" src="<%=consumible.imageConsumible%>" class="my-1 img-thumbnail rounded mx-auto" alt="Imagen consumible" width="200px" height="200px">
+                    </div>
+                </div>
+                <!-- Imagen QR -->
+                <div class="col">
+                    <label id="qrLabel" for="qrInputImageConsumibles" class="form-label">QR (autogenerado)</label>
+                    <div id="loaderUpdate" class="loader"></div>
+                    <div id="qrConsumibleUpdate" class="my-1 mx-auto text-center">
+                        <img id="qrImageUpdated" src="<%=consumible.qrCode%>" class="img-thumbnail rounded my-1 mx-auto text-center" alt="QR code" width="200px" height="200px">
+                    </div>
+                    <input id="qrConsumibleInput" type="hidden" value="<%=consumible.qrCode%>" name="qrConsumibleInput" style="display: none;">
+                    <button id="downloadQR" class="btn btn-success mt-3 mx-auto">Descargar QR</button>
+                </div>
+            </div>
+            <hr class="border my-1">
+            <!-- botones -->
+            <div class="row justify-content-between align-items-center my-2">
+                <div class="col">
+                    <% if( userInfo.admin || userInfo.area === "fabricación" ) { %>        
+                        <div class="d-flex justify-content-center m-2">
+                            <button id="btnUpdateConsumibles" class="btn btn-success mx-auto my-2 shadow" disabled>Actualizar <i class="fa-solid fa-save"></i></button>
+                            <a class="btn btn-primary mx-auto my-2 shadow" href="/api/consumibles">Volver <i class="fa-solid fa-arrow-left"></i></a>
+                        </div>
+                    <% } else { %>
+                        <div class="d-flex justify-content-center m-2">
+                            <button id="btnUpdateConsumibles" class="btn btn-success mx-auto my-2 shadow disabled" disabled>Actualizar <i class="fa-solid fa-ban"></i></button>
+                            <a class="btn btn-primary mx-auto my-2 shadow" href="/api/consumibles">Volver <i class="fa-solid fa-arrow-left"></i></a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        </fieldset>
+    </form>
+</div>

@@ -104,7 +104,7 @@ const initSocket = (io) => {
         //-------------------------------- Consumibles  ----------------------------------
         socket.on('newConsumibles', async (consumibles) => {
             await containerConsumibles.createNewConsumibles(consumibles)
-            io.sockets.emit('cuttingToolsAll', await containerConsumibles.getAllConsumibles())
+            io.sockets.emit('ConsumiblesAll', await containerConsumibles.getAllConsumibles())
         })
         
         socket.on('searchConsumiblesAll', async (query) => {
