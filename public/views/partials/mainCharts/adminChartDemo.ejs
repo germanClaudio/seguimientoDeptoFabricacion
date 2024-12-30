@@ -250,18 +250,16 @@
                         <div class="card-body">
                             <div class="media d-flex mx-2">
                                 <div class="media-body text-left">
-                                    <% let arrayConsumibles = [], arrayVisibleConsumible = []
+                                    <% let arrayConsumibles = [], arrayVisibleConsumible = [], arrayActiveConsumible = []
                                     for (let i=0; consumibles.length>i; i++ ) {
                                         consumibles[i].visible ? arrayConsumibles.push(consumibles[i]) : null
                                     }
                                     for (let j=0; arrayConsumibles.length>j; j++ ) {
                                         arrayConsumibles[j].stock > 0 ? arrayVisibleConsumible.push(arrayConsumibles[j]) : null
                                     }
-                                    let arrayActiveConsumible = [].concat(...arrayVisibleConsumible), resultArrayConsumible = [];
-                                    for (let k=0; arrayActiveConsumible.length>k; k++ ) {
-                                        arrayActiveConsumible[k].visible ? resultArrayConsumible.push(arrayActiveConsumible[k]) : null
-                                    } %>
-                                    <h3 class="font-medium"><%= resultArrayConsumible.length %>/<span style="font-size: 0.95rem;" ><%=arrayActiveConsumible.length%></span></h3>
+                                    arrayActiveConsumible = [].concat(...arrayVisibleConsumible)
+                                    %>
+                                    <h3 class="font-medium"><%= arrayActiveConsumible.length %>/<span style="font-size: 0.95rem;" ><%=arrayConsumibles.length%></span></h3>
                                     <span>Consumibles - EPP</span>
                                 </div>
                                 <div class="align-self-center ms-auto">
@@ -404,7 +402,7 @@
                                 } 
                                 let valueRateTool = parseFloat((countActiveTools / countVisibleTools)*100).toFixed(2) %>
                                 <h3 class="success"><%= valueRateTool %>%</h3>
-                                <span>Tools Rate</span>
+                                <span>Máquinas Rate</span>
                             </div>
                             <div class="align-self-center ms-auto">
                                 <i class="icon-cup success font-large-2 float-right"></i>

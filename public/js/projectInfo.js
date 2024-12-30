@@ -122,9 +122,9 @@ if (arrBtnHidde !=[]) {
 }
 
 // Inicialización de arrays
-let checkSelect = document.querySelectorAll('input[name="checkSelect"]');
-let maxOtQuantity = checkSelect ? checkSelect.length : 0;
-let ociTotalQty = parseInt(document.getElementById('ociTotalQty').innerText);
+let checkSelect = document.querySelectorAll('input[name="checkSelect"]'),
+    maxOtQuantity = checkSelect ? checkSelect.length : 0,
+    ociTotalQty = parseInt(document.getElementById('ociTotalQty').innerText);
 
 let arrayBtnChangeStatusOt = [], arrayBtnUpdateOt = [],
     arrayBtnDeleteOt = [], arrayCheckBoxSelect = [],
@@ -167,8 +167,8 @@ for (let m = 0; m < ociTotalQty; m++) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const projectNameHidden = document.getElementById('projectNameHidden').value
-    const projectNameTitle = document.getElementById('projectNameTitle')
+    const projectNameHidden = document.getElementById('projectNameHidden').value,
+        projectNameTitle = document.getElementById('projectNameTitle')
     projectNameTitle.innerHTML = `Proyecto <strong>${projectNameHidden}</strong>`
 })
 
@@ -213,8 +213,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
     }
 })
 
-let slidesCarousel = document.getElementsByClassName('carousel-item')
-let btnInferiorCarousel = document.getElementsByName('btnInferiorCarousel')
+let slidesCarousel = document.getElementsByClassName('carousel-item'),
+    btnInferiorCarousel = document.getElementsByName('btnInferiorCarousel')
 
 // Función para dividir un array en subarrays de tamaño especificado
 function dividirArrayEnSubarrays(array, tamanoSubarray) {
@@ -225,12 +225,12 @@ function dividirArrayEnSubarrays(array, tamanoSubarray) {
     return subarrays
 }
 
-const arrayOriginal = Array.from(slidesCarousel)
-const arrayOriginalBtn = Array.from(btnInferiorCarousel)
+const arrayOriginal = Array.from(slidesCarousel),
+    arrayOriginalBtn = Array.from(btnInferiorCarousel)
 
 // Dividir el array en subarrays de 12 elementos cada uno
-const subarrays = dividirArrayEnSubarrays(arrayOriginal, 12);
-const subarrayBtns = dividirArrayEnSubarrays(arrayOriginalBtn, 12);
+const subarrays = dividirArrayEnSubarrays(arrayOriginal, 12),
+    subarrayBtns = dividirArrayEnSubarrays(arrayOriginalBtn, 12);
 
 function activarElemento(subarray, index) {
     if (subarray.length > 0) {
@@ -255,17 +255,14 @@ if(subarrays, subarrayBtns) {
 }
 
 // ---------------- Event Add New Ot Row to OCI --------------------
-const btnAddNewRow = document.getElementById("btnAddNewRow")
-const buttonOne = document.getElementById('buttonOne')
+const btnAddNewRow = document.getElementById("btnAddNewRow"),
+    buttonOne = document.getElementById('buttonOne')
 btnAddNewRow.disabled = true 
 
 buttonOne.addEventListener('click', () => {
     let ariaExpanded = buttonOne.getAttribute('aria-expanded')
 
-    ariaExpanded==='true' ?
-        btnAddNewRow.removeAttribute('disabled')
-    :
-        btnAddNewRow.disabled = true
+    ariaExpanded==='true' ? btnAddNewRow.removeAttribute('disabled') : btnAddNewRow.disabled = true
 })
 
 //*********** */
@@ -294,8 +291,8 @@ btnAddNewRow.addEventListener('click', () => {
     if (lastChildId < i || i == 1) {
         i = parseInt(parentDiv.childElementCount)
     } else {
-        const numberId1 = parseInt(lastChildId.slice(-1))
-        const numberId2 = parseInt(lastChildId.slice(-2))
+        const numberId1 = parseInt(lastChildId.slice(-1)),
+            numberId2 = parseInt(lastChildId.slice(-2))
         let numberIdLastChild
 
         numberId1 >= 0 && numberId2 ? numberIdLastChild = numberId2 : numberIdLastChild = numberId1;
@@ -303,11 +300,11 @@ btnAddNewRow.addEventListener('click', () => {
         i = parseInt(numberIdLastChild + 1)
     }
 
-    let otNumberValue = parseInt(document.getElementById('otNumber').value)
-    let opNumberValue = parseInt(document.getElementById('opNumber').value)
-    const internoDisenoValue = document.getElementById(`internoDiseno${i-1}`).value
-    const internoSimulacion = document.getElementById(`internoSimulacion${i-1}`).value
-    const externoDiseno = document.getElementById(`externoDiseno${i-1}`).value
+    let otNumberValue = parseInt(document.getElementById('otNumber').value),
+        opNumberValue = parseInt(document.getElementById('opNumber').value),
+        internoDisenoValue = document.getElementById(`internoDiseno${i-1}`).value,
+        internoSimulacion = document.getElementById(`internoSimulacion${i-1}`).value,
+        externoDiseno = document.getElementById(`externoDiseno${i-1}`).value
 
     const originalDiv = (
             `<div class="row">
@@ -398,18 +395,16 @@ btnAddNewRow.addEventListener('click', () => {
     newDiv.id = `otItemRow${i}`;
 
     // Configurar el contenido del nuevo div según el valor de i
-    i === 1 ?
-        newDiv.innerHTML = `<hr class="my-2"> ${originalDiv} <hr class="my-2">`
-    :
-        newDiv.innerHTML = i === 10 ? originalDiv : originalDiv + `<hr class="my-2">`
-    
+    i === 1
+    ? newDiv.innerHTML = `<hr class="my-2"> ${originalDiv} <hr class="my-2">`
+    : newDiv.innerHTML = i === 10 ? originalDiv : originalDiv + `<hr class="my-2">`
 
     parentDiv.appendChild(newDiv)
     const otQty = document.getElementById("otQuantity")
     otQty.value = i+1
 
-    let removeButtons = document.querySelectorAll('button[name="btnRemoveRow"]')
-    let lastRemoveButton = removeButtons[removeButtons.length-1]
+    let removeButtons = document.querySelectorAll('button[name="btnRemoveRow"]'),
+        lastRemoveButton = removeButtons[removeButtons.length-1]
     
         if (lastRemoveButton) {
             lastRemoveButton.addEventListener("click", (event) => {
@@ -471,9 +466,9 @@ btnAddNewRow.addEventListener('click', () => {
                     await cargarUsuario(idPermiso, idPermisoNumero);
 
                 } catch (error) {
-                    const titulo = 'Error al cargar los usuarios'
-                    const message = error
-                    const icon = 'error'
+                    const titulo = 'Error al cargar los usuarios',
+                        message = error,
+                        icon = 'error'
                     messageAlertUser(titulo, message, icon)
                 }
             }, { once: true });
@@ -592,7 +587,6 @@ function removeRow(e) {
         })
     }
 
-
     if (i > 1 && i <= 9) {
         let tippyFormula = (10-i)+1
         tippyLabel(i, tippyFormula)
@@ -603,31 +597,30 @@ function removeRow(e) {
     }
 }
 
-const formulario = document.getElementById("formNewOt")
-const radios = document.querySelectorAll('[name="ociNumber"]') //formulario.elements["ociNumber"]
-const tituloForm = document.getElementById('tituloForm')
-const projectNameHidden = document.getElementById('projectNameHidden').value
-const projectNumberId = document.getElementById(`projectIdHidden`).value
-const ociNumberK = document.getElementById('ociNumberK')
-const ociNumberHidden = document.getElementById('ociNumberHidden')
-const aliasNameHidden = document.getElementById('ociAliasHidden')
-const clientId = document.getElementById('clientIdHidden')
+const formulario = document.getElementById("formNewOt"),
+    radios = document.querySelectorAll('[name="ociNumber"]'),
+    tituloForm = document.getElementById('tituloForm'),
+    projectNameHidden = document.getElementById('projectNameHidden').value,
+    projectNumberId = document.getElementById(`projectIdHidden`).value,
+    ociNumberK = document.getElementById('ociNumberK'),
+    ociNumberHidden = document.getElementById('ociNumberHidden'),
+    aliasNameHidden = document.getElementById('ociAliasHidden'),
+    clientId = document.getElementById('clientIdHidden')
 
 // ------------- function bucle do/while para encontrar ultima OT ----------
 function lastOtNumberFn(i) {
-    let n = varLimMaxOciProyecto
-    let k = i || varLimMaxOciProyecto
+    let n = varLimMaxOciProyecto,
+        k = i || varLimMaxOciProyecto
 
     do {
-        var lastOtNumber = document.getElementById(`lastOtNumber${k}_${n}`)
-        var lastOpNumber = document.getElementById(`lastOpNumber${k}_${n}`)
+        let lastOtNumber = document.getElementById(`lastOtNumber${k}_${n}`),
+            lastOpNumber = document.getElementById(`lastOpNumber${k}_${n}`)
 
         if (lastOtNumber && lastOpNumber) {
-            var otNumberValue = document.getElementById('otNumber')
-            var opNumberValue = document.getElementById('opNumber')
-
-            let lastOtNumberValue = parseInt(document.getElementById(`lastOtNumber${k}_${n}`).innerHTML)
-            let lastOpNumberValue = parseInt(document.getElementById(`lastOpNumber${k}_${n}`).innerHTML)
+            let otNumberValue = document.getElementById('otNumber'),
+                opNumberValue = document.getElementById('opNumber'),
+                lastOtNumberValue = parseInt(document.getElementById(`lastOtNumber${k}_${n}`).innerHTML),
+                lastOpNumberValue = parseInt(document.getElementById(`lastOpNumber${k}_${n}`).innerHTML)
 
             otNumberValue.value = lastOtNumberValue + 1
             opNumberValue.value = lastOpNumberValue + 10
@@ -657,7 +650,7 @@ function radioSelected(radioSelectedValue, elementoId) {
     //console.log('ociNumberHidden.value', ociNumberHidden.value)
     aliasNameHidden.value = radioSelected.getAttribute('value2')
     lastOtNumberFn(extractNumbers(elementoId))
-    formulario.scrollTo({ behavior: 'smooth', block: 'start', left:0, top:0 }) //.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    formulario.scrollTo({ behavior: 'smooth', block: 'start', left:0, top:0 })
 
     return (ociNumberHidden.value)
 }
@@ -677,7 +670,7 @@ arrayBtnAddOtFormSelected.forEach(function(elemento) {
             let radioSelectedAlias = document.getElementById(`radioSelectedValue${elemento.value}`)
             aliasNameHidden.value = radioSelectedAlias.getAttribute('value2')
             lastOtNumberFn(elemento.id)
-            formulario.scrollIntoView({ behavior: 'smooth', top:0 }) //scrollTo({ behavior: 'smooth', block: 'start' })
+            formulario.scrollIntoView({ behavior: 'smooth', top:0 })
         })
     }
 })
@@ -769,12 +762,12 @@ function messageUpdateOt(
     flag
 ) {
     
-    let numberKOci = parseInt(ociKNumber)
-    let numberKOt = parseInt(otKNumber)
-    let numberOt = parseInt(otNumber)
-    let numberOp = parseInt(opNumber)
-    let checked = 'checked'
-    statusOt=='Activo' ? checked : checked = ''
+    let numberKOci = parseInt(ociKNumber),
+        numberKOt = parseInt(otKNumber),
+        numberOt = parseInt(otNumber),
+        numberOp = parseInt(opNumber),
+        checked = 'checked'
+    statusOt === 'Activo' ? checked : checked = ''
 
     let initialFlag = false
     flag ? initialFlag = flag : initialFlag = false
@@ -1134,9 +1127,9 @@ function messageUpdateOt(
                                     messageUpdateOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDesign, otSimulation, otSupplier, imageOci, flag);
                                     
                                 } else {
-                                    const titulo = 'Proveedor no seleccionado'
-                                    const message = 'No ha seleccionado ningún usuario!'
-                                    const icon = 'warning'
+                                    const titulo = 'Proveedor no seleccionado',
+                                        message = 'No ha seleccionado ningún usuario!',
+                                        icon = 'warning'
                                     messageAlertUser(titulo, message, icon)
                                     flag = false
                                     // Al cerrar el segundo modal, reabrir el primer modal
@@ -1151,9 +1144,9 @@ function messageUpdateOt(
                         }
                 
                     } catch (error) {
-                        const titulo = 'Error'
-                        const message = `${error}`
-                        const icon = 'error'
+                        const titulo = 'Error',
+                            message = `${error}`,
+                            icon = 'error'
                         messageAlertUser(titulo, message, icon)
                     }
                 }
@@ -1169,9 +1162,9 @@ function messageUpdateOt(
                         await cargarUsuarioModal(idPermiso);
 
                     } catch (error) {
-                        const titulo = 'Error al cargar los usuarios'
-                        const message = error
-                        const icon = 'error'
+                        const titulo = 'Error al cargar los usuarios',
+                            message = error,
+                            icon = 'error'
                         messageAlertUser(titulo, message, icon)
                     }
                 });
@@ -1187,9 +1180,9 @@ function messageUpdateOt(
                         await cargarUsuarioModal(idPermiso);
 
                     } catch (error) {
-                        const titulo = 'Error al cargar los usuarios'
-                        const message = error
-                        const icon = 'error'
+                        const titulo = 'Error al cargar los usuarios',
+                            message = error,
+                            icon = 'error'
                         messageAlertUser(titulo, message, icon)
                     }
                 });
@@ -1205,9 +1198,9 @@ function messageUpdateOt(
                         await cargarProveedorModal(idPermiso);
 
                     } catch (error) {
-                        const titulo = 'Error al cargar los proveedores'
-                        const message = error
-                        const icon = 'error'
+                        const titulo = 'Error al cargar los proveedores',
+                            message = error,
+                            icon = 'error'
                         messageAlertUser(titulo, message, icon)
                     }
                 });
@@ -1260,8 +1253,8 @@ function messageUpdateOt(
     let inputsDeTexto = document.querySelectorAll('input[type="text"]')
     inputsDeTexto.forEach(function(input) {
         input.addEventListener('keydown', function(event) {
-            let key = event.key;
-            let forbiddenChars = /[#"$%?¡¿^/()=!'~`\\*{}\[\]<>@]/;
+            let key = event.key,
+                forbiddenChars = /[#"$%?¡¿^/()=!'~`\\*{}\[\]<>@]/;
 
             if (forbiddenChars.test(key)) {
                 event.preventDefault()
@@ -1367,12 +1360,11 @@ function updateBtnCheckSelecMasive(idOci) {
         "spanCheckSelecMasiveSim5"
     ];
 
-    const spans = spanIds.map(id => document.getElementById(`${id}${idOci}`));
-    const btnMasive = document.getElementById(`btnCheckSelecMasive${idOci}`);
-    const btnSelectAll = document.getElementById(`btnCheckSelectionAll${idOci}`);
-
-    const cantidadSeleccionados = document.querySelectorAll(`#tablaGeneral${idOci} input[name="checkSelect"]:checked`).length;
-    const cantidadTotalXTabla = document.querySelectorAll(`#tablaGeneral${idOci} input[name="checkSelect"]:not(:disabled)`).length;
+    const spans = spanIds.map(id => document.getElementById(`${id}${idOci}`)),
+        btnMasive = document.getElementById(`btnCheckSelecMasive${idOci}`),
+        btnSelectAll = document.getElementById(`btnCheckSelectionAll${idOci}`),
+        cantidadSeleccionados = document.querySelectorAll(`#tablaGeneral${idOci} input[name="checkSelect"]:checked`).length,
+        cantidadTotalXTabla = document.querySelectorAll(`#tablaGeneral${idOci} input[name="checkSelect"]:not(:disabled)`).length;
 
     // Función para actualizar el estado de los spans
     const updateSpans = (value) => {
@@ -1414,12 +1406,12 @@ arrayBtnChangeStatusOt.forEach(function(elemento) {
             let idOtOci = elementoId.replace(regex, '')
             const arrayOciOtSelected = idOtOci.split('_')
             
-            const statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent
-            const otDescription = document.getElementById(`lastOpDescription${idOtOci}`).textContent
-            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent)
-            const idProjectSelected = document.getElementById('projectIdHidden').value
-            const ociKNumber = parseInt(arrayOciOtSelected[0])
-            const otKNumber = parseInt(arrayOciOtSelected[1])
+            const statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent,
+                otDescription = document.getElementById(`lastOpDescription${idOtOci}`).textContent,
+                otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent),
+                idProjectSelected = document.getElementById('projectIdHidden').value,
+                ociKNumber = parseInt(arrayOciOtSelected[0]),
+                otKNumber = parseInt(arrayOciOtSelected[1])
             
             messageChangeOtStatus(
                 cleanString(statusOt),
@@ -1442,19 +1434,18 @@ arrayBtnUpdateOt.forEach(function(elemento) {
 
             // Eliminar el texto inicial de la cadena
             let idOtOci = elementoId.replace(regex, '')
-            const arrayOciOtSelected = idOtOci.split('_')
-
-            const idProjectSelected = document.getElementById('projectIdHidden').value
-            const ociKNumber = parseInt(arrayOciOtSelected[0])
-            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent)
-            const otKNumber = parseInt(arrayOciOtSelected[1])       
-            const opNumber = parseInt(document.getElementById(`lastOpNumber${idOtOci}`).textContent)
-            const statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent
-            const otDescription = document.getElementById(`lastOpDescription${idOtOci}`).textContent
-            const otDesign =  document.getElementById(`otDesign${idOtOci}`).textContent
-            const otSimulation =  document.getElementById(`otSimulation${idOtOci}`).textContent
-            const otSupplier =  document.getElementById(`otSupplier${idOtOci}`).textContent
-            const ociImage = document.getElementById(`imageOciHeader${ociKNumber}`).src
+            const arrayOciOtSelected = idOtOci.split('_'),
+                idProjectSelected = document.getElementById('projectIdHidden').value,
+                ociKNumber = parseInt(arrayOciOtSelected[0]),
+                otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent),
+                otKNumber = parseInt(arrayOciOtSelected[1]),
+                opNumber = parseInt(document.getElementById(`lastOpNumber${idOtOci}`).textContent),
+                statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent,
+                otDescription = document.getElementById(`lastOpDescription${idOtOci}`).textContent,
+                otDesign =  document.getElementById(`otDesign${idOtOci}`).textContent,
+                otSimulation =  document.getElementById(`otSimulation${idOtOci}`).textContent,
+                otSupplier =  document.getElementById(`otSupplier${idOtOci}`).textContent,
+                ociImage = document.getElementById(`imageOciHeader${ociKNumber}`).src
             let flag = false
 
             messageUpdateOt(
@@ -1484,14 +1475,13 @@ arrayBtnDeleteOt.forEach(function(elemento) {
 
             // Eliminar el texto inicial de la cadena
             let idOtOci = elementoId.replace(regex, '')
-            const arrayOciOtSelected = idOtOci.split('_')
-            
-            const statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent
-            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent)
-            const idProjectSelected = document.getElementById('projectIdHidden').value
-            const ociKNumber = parseInt(arrayOciOtSelected[0])
-            const otKNumber = parseInt(arrayOciOtSelected[1])       
-            const otDescription = document.getElementById(`lastOpDescription${idOtOci}`).textContent
+            const arrayOciOtSelected = idOtOci.split('_'),
+                statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent,
+                otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent),
+                idProjectSelected = document.getElementById('projectIdHidden').value,
+                ociKNumber = parseInt(arrayOciOtSelected[0]),
+                otKNumber = parseInt(arrayOciOtSelected[1]),
+                otDescription = document.getElementById(`lastOpDescription${idOtOci}`).textContent
             
             messageDeleteOt(
                 cleanString(statusOt),
@@ -1521,38 +1511,36 @@ arrayCheckBoxSelect.forEach(function(element) {
         updateBtnCheckSelecMasive(idOci)
 
         for (let q=0; q<rowSelectCheck.length; q++) { //12
-            rowSelectCheck[q] && rowSelectCheck[q].style.cssText === "height: 7vh;" ? 
-                rowSelectCheck[q].setAttribute('style', "height: 7vh; background-color: #c4f0fd;")
-            :
-                rowSelectCheck[q].setAttribute('style', "height: 7vh;")
+            rowSelectCheck[q] && rowSelectCheck[q].style.cssText === "height: 7vh;"
+            ? rowSelectCheck[q].setAttribute('style', "height: 7vh; background-color: #c4f0fd;")
+            : rowSelectCheck[q].setAttribute('style', "height: 7vh;")
         }
     })
 })
 
 arrayBtnCheckSelectionAll.forEach(element => {
-    let seleccionados = false;
-    let seleccionarFilas = false;
+    let seleccionados = seleccionarFilas = false;
 
     if (element) {
         element.addEventListener('click', (event) => {
             event.preventDefault();
-            const idOci = parseInt(element.id.slice(20));
-            const checkboxes = Array.from(document.querySelectorAll(`#tablaGeneral${idOci} tbody input[type="checkbox"]`));
-            const spanIds = [
+            const idOci = parseInt(element.id.slice(20)),
+                checkboxes = Array.from(document.querySelectorAll(`#tablaGeneral${idOci} tbody input[type="checkbox"]`)),
+                spanIds = [
                 "spanCheckSelecMasive", "spanCheckSelecMasiveR14", "spanCheckSelecMasiveProc3d",
                 "spanCheckSelecMasiveInfo80", "spanCheckSelecMasiveInfo100", "spanCheckSelecMasiveDisPrima",
                 "spanCheckSelecMasiveDisSeg", "spanCheckSelecMasiveSim0", "spanCheckSelecMasiveSim1",
                 "spanCheckSelecMasiveSim2_3", "spanCheckSelecMasiveSim4Prima", "spanCheckSelecMasiveSim4Seg",
-                "spanCheckSelecMasiveSim5"
-            ];
+                "spanCheckSelecMasiveSim5" ];
+            
             const spans = spanIds.map(id => document.getElementById(`${id}${idOci}`));
 
             let arrQueryRows = [];
             checkboxes.forEach(checkbox => {
                 if (checkbox.id) {
-                    const idOciOt = checkbox.id.slice(11);
-                    const rowsSelectCheck = document.getElementsByName(`rowSelected${idOciOt}`);
-                    const statusOt = document.getElementById(`lastOtStatus${idOciOt}`);
+                    const idOciOt = checkbox.id.slice(11),
+                        rowsSelectCheck = document.getElementsByName(`rowSelected${idOciOt}`),
+                        statusOt = document.getElementById(`lastOtStatus${idOciOt}`);
 
                     if (rowsSelectCheck && statusOt.innerText === 'Activo') {
                         arrQueryRows.push(rowsSelectCheck);
@@ -1592,6 +1580,7 @@ arrayBtnCheckSelectionAll.forEach(element => {
                 element.value = 1;
                 element.title = 'Des-Seleccionar todos los ítems';
                 updateSpans(arrQueryRows.length);
+
             } else {
                 element.classList.replace("btn-danger", "btn-primary");
                 element.title = 'Seleccionar todas las OT';
@@ -1663,8 +1652,8 @@ async function cargarUsuario(idPermiso, idPermisoNumero) {
             throw new Error(`Error en la solicitud`);
         }
 
-        const users = await response.json();
-        const arrayUsuariosEspecificos = [], arrayUsersAll = [];
+        const users = await response.json(),
+            arrayUsuariosEspecificos = [], arrayUsersAll = [];
 
         if (users && users.length > 0) {
             users.forEach((user, i) => {
@@ -1725,9 +1714,9 @@ async function cargarUsuario(idPermiso, idPermisoNumero) {
                     inputUserSelected.value = radioSelected.value;
 
                 } else {
-                    const titulo = 'Usuario no seleccionado'
-                    const message = 'No ha seleccionado ningún usuario!'
-                    const icon = 'warning'
+                    const titulo = 'Usuario no seleccionado',
+                        message = 'No ha seleccionado ningún usuario!',
+                        icon = 'warning'
                     messageAlertUser(titulo, message, icon)
                 }
             });
@@ -1785,8 +1774,8 @@ async function cargarProveedor(idPermiso, idPermisoNumero) {
             throw new Error(`Error en la solicitud`);
         }
 
-        const suppliers = await response.json();
-        const arrayProveedoresEspecificos = [], arraySuppliersAll = [];
+        const suppliers = await response.json(),
+            arrayProveedoresEspecificos = [], arraySuppliersAll = [];
 
         if (suppliers && suppliers.length > 0) {
             suppliers.forEach((supplier, i) => {
@@ -1959,10 +1948,10 @@ function messageNewOt(ociNumber, otArray, ociAlias) {
         timerProgressBar: false,
     });
 
-    const otText = otArray.length > 1 ? `OT's ${otArray.join(" - ")}` : `OT ${otArray[0]}`;
-    const confirmMessage = `Se agregará${otArray.length > 1 ? 'n' : ''} ${otText} a la OCI# ${ociNumber} - Alias: ${ociAlias}`;
-    const successMessage = `${otText}, agregada${otArray.length > 1 ? 's' : ''} con éxito!`;
-    const errorMessage = `${otText}, no fue${otArray.length > 1 ? 'ron' : ''} agregada${otArray.length > 1 ? 's' : ''} a la OCI# ${ociNumber}`;
+    const otText = otArray.length > 1 ? `OT's ${otArray.join(" - ")}` : `OT ${otArray[0]}`,
+        confirmMessage = `Se agregará${otArray.length > 1 ? 'n' : ''} ${otText} a la OCI# ${ociNumber} - Alias: ${ociAlias}`,
+        successMessage = `${otText}, agregada${otArray.length > 1 ? 's' : ''} con éxito!`,
+        errorMessage = `${otText}, no fue${otArray.length > 1 ? 'ron' : ''} agregada${otArray.length > 1 ? 's' : ''} a la OCI# ${ociNumber}`;
 
     Swal.fire({
         title: 'Ingreso de datos!',
@@ -2027,10 +2016,10 @@ btnCreateNewOt.addEventListener('click', (event) => {
 
 //---------- Obtiene la lista de OT ------------
 function getOtList(i) {
-    const parentDiv = document.getElementById(`tablaGeneral${i}`)
-    const tableBody = parentDiv.lastElementChild
-    const lastChild = parseInt(tableBody.childElementCount)
-    const k = i
+    const parentDiv = document.getElementById(`tablaGeneral${i}`),
+        tableBody = parentDiv.lastElementChild,
+        lastChild = parseInt(tableBody.childElementCount),
+        k = i
 
     // Función auxiliar para obtener el texto de un elemento si existe
     const getElementText = id => document.getElementById(id)?.innerText || null;
@@ -2049,10 +2038,10 @@ function getOtList(i) {
 
     for (let n=0; n < lastChild; n++) {
         mappings.forEach(({ prefix, array, isOt }) => {
-            const id = `${prefix}${k}_${n}`;
-            const text = getElementText(id);
-            const checkId = `checkSelect${k}_${n}`;
-            const selectCheck = document.getElementById(checkId);
+            const id = `${prefix}${k}_${n}`,
+                text = getElementText(id),
+                checkId = `checkSelect${k}_${n}`,
+                selectCheck = document.getElementById(checkId);
 
             selectCheck?.checked ? arraySelectedCheck.push(`${k}_${n}`) : null
 
@@ -2065,8 +2054,8 @@ function getOtList(i) {
     }
 
     // Eliminar duplicados y vacíos
-    const uniqueSelectedCheck = [...new Set(arraySelectedCheck)];
-    const uniqueONumberSelect = [...new Set(arrayOnumber)];
+    const uniqueSelectedCheck = [...new Set(arraySelectedCheck)],
+        uniqueONumberSelect = [...new Set(arrayOnumber)];
 
     // Encontrar índices de los elementos seleccionados
     const indicesSelected = uniqueSelectedCheck.map(selected => uniqueONumberSelect.indexOf(selected)).filter(index => index !== -1);
@@ -2098,12 +2087,11 @@ function getOtList(i) {
 
 //---------- Obtiene los valores de la lista de OT ------------
 function getOtListValues(i, idTabla, qInicial, qFinal) {
-    const parentDiv = document.getElementById(idTabla);
-    const tableBody = parentDiv.lastElementChild;
-    const lastChild = parseInt(tableBody.childElementCount);
-
-    const qInicialX = parseInt(qInicial);
-    const qFinalX = parseInt(qFinal);
+    const parentDiv = document.getElementById(idTabla),
+        tableBody = parentDiv.lastElementChild,
+        lastChild = parseInt(tableBody.childElementCount),
+        qInicialX = parseInt(qInicial),
+        qFinalX = parseInt(qFinal);
     
     let k = i;
     
@@ -2245,8 +2233,8 @@ function changeValueFromArray(arrayFromValues) {
 }
 
 function colorStatusOt(valorStatusOt) {
-    let disabled = 'required'
-    let color = ''
+    let disabled = 'required',
+        color = ''
     valorStatusOt==='Activo' ? color = 'success' : color = 'danger'
 
     return {
@@ -2257,34 +2245,27 @@ function colorStatusOt(valorStatusOt) {
 
 function optionSelect(option) {
     const options = {
-        ok: `
-            <option value="noOk">No OK</option>
+        ok: `<option value="noOk">No OK</option>
             <option value="pendiente">Pendiente</option>
-            <option value="noAplica">N/A</option>
-        `,
-        noOk: `
-            <option value="ok">OK</option>
-            <option value="pendiente">Pendiente</option>
-            <option value="noAplica">N/A</option>
-        `,
-        pendiente: `
-            <option value="ok">OK</option>
-            <option value="noOk">No OK</option>
-            <option value="noAplica">N/A</option>
-        `,
-        noAplica: `
-            <option value="ok">OK</option>
-            <option value="noOk">No OK</option>
-            <option value="pendiente">Pendiente</option>
-        `,
-        default: `
-            <option value="ok">OK</option>
-            <option value="noOk">No OK</option>
-            <option value="pendiente">Pendiente</option>
-            <option value="noAplica">N/A</option>
-        `
+            <option value="noAplica">N/A</option>`
+        ,
+        noOk: `<option value="ok">OK</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="noAplica">N/A</option>`
+        ,
+        pendiente: `<option value="ok">OK</option>
+                    <option value="noOk">No OK</option>
+                    <option value="noAplica">N/A</option>`
+        ,
+        noAplica: `<option value="ok">OK</option>
+                    <option value="noOk">No OK</option>
+                    <option value="pendiente">Pendiente</option>`
+        ,
+        default: `<option value="ok">OK</option>
+                    <option value="noOk">No OK</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="noAplica">N/A</option>`
     };
-
     return options[option] || options.default;
 }
 
@@ -2474,9 +2455,9 @@ function swalFireAlert(
             resultadoElement.classList.add('listDetailNum')
         })
         
-        let htmlLista = resultadoElement.outerHTML;
-        let outputOk = `La información ${titulo}, fue agregada a las Ot's: ${htmlLista}`
-        let outputNok = `La información ${titulo}, no fue agregada a las Ot's: ${htmlLista}`
+        let htmlLista = resultadoElement.outerHTML,
+            outputOk = `La información ${titulo}, fue agregada a las Ot's: ${htmlLista}`,
+            outputNok = `La información ${titulo}, no fue agregada a las Ot's: ${htmlLista}`
 
         if (result.isConfirmed) {
             const formValues = document.getElementById(formulario)
@@ -2606,9 +2587,9 @@ function addDatoToR14(i, idTabla, qInicial, qFinal) {
 function updateTotal(i) {
     let iFromi = parseInt(i)
     if (!isNaN(iFromi)) {
-        let res = getOtList(iFromi)
-        let arrayTotalHorasProceso3d = []
-        let inputDisabled = document.getElementById("totalHsProceso3d")
+        let res = getOtList(iFromi),
+            arrayTotalHorasProceso3d = [],
+            inputDisabled = document.getElementById("totalHsProceso3d")
         inputDisabled.removeAttribute('disabled')
         // console.log('res.arrayOtNumber: ', res.arrayOtNumber)    
         for (let y=0; y < res.arrayOtNumber.length; y++) {    
@@ -2632,9 +2613,9 @@ function updateTotal(i) {
 //***** addDatoToProceso3d ******
 function addDatoToProceso3d(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal, getOtList(i)) {
-        let res = getOtList(i)
-        let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-        var arrayBloqueProceso3d = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
+        let res = getOtList(i),
+            getValues = getOtListValues(i, idTabla, qInicial, qFinal),
+            arrayBloqueProceso3d = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
 
         res.arraySelectedCheck.forEach(selected => {
             let index = res.arrayONumberSelect.indexOf(selected);  // Encontrar el índice del valor en arrayONumberSelect
@@ -2740,9 +2721,9 @@ function addDatoToProceso3d(i, idTabla, qInicial, qFinal) {
 //***** addDatoToDisenoPrimera ******
 function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal, getOtList(i)) {
-        let res = getOtList(i)
-        let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-        let arrayBloqueDisenoPrimera = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
+        let res = getOtList(i),
+            getValues = getOtListValues(i, idTabla, qInicial, qFinal),
+            arrayBloqueDisenoPrimera = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
     
         res.arraySelectedCheck.forEach(selected => {
             let index = res.arrayONumberSelect.indexOf(selected);  // Encontrar el índice del valor en arrayONumberSelect
@@ -2864,9 +2845,9 @@ function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
                     </form>`  
     
             const titulo = "Diseño (1° Parte)",
-            ancho = 1375,
-            background = '#dfefff',
-            formulario = 'formDisenoPrimeraValues'
+                ancho = 1375,
+                background = '#dfefff',
+                formulario = 'formDisenoPrimeraValues'
     
             swalFireAlert (
                 titulo,
@@ -2886,9 +2867,9 @@ function addDatoToDisenoPrimera(i, idTabla, qInicial, qFinal) {
 //***** addDatoToDisenoSegunda ******
 function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal, getOtList(i)) {
-        let res = getOtList(i)
-        let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-        let arrayBloqueDisenoSegunda = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
+        let res = getOtList(i),
+            getValues = getOtListValues(i, idTabla, qInicial, qFinal),
+            arrayBloqueDisenoSegunda = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
 
         res.arraySelectedCheck.forEach(selected => {
             let index = res.arrayONumberSelect.indexOf(selected);  // Encontrar el índice del valor en arrayONumberSelect
@@ -3010,9 +2991,9 @@ function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
                 </form>`  
     
             const titulo = "Diseño (2° Parte)",
-            ancho = 1550,
-            background = '#dedede',
-            formulario = 'formDisenoSegundaValues'
+                ancho = 1550,
+                background = '#dedede',
+                formulario = 'formDisenoSegundaValues'
     
             swalFireAlert (
                 titulo,
@@ -3032,9 +3013,9 @@ function addDatoToDisenoSegunda(i, idTabla, qInicial, qFinal) {
 //***** addDatoToInfo80 ******
 function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
     if (i, idTabla, qInicial, qFinal, getOtList(i)) {
-        let res = getOtList(i)
-        let getValues = getOtListValues(i, idTabla, qInicial, qFinal)
-        let arrayBloqueInfo80 = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
+        let res = getOtList(i),
+            getValues = getOtListValues(i, idTabla, qInicial, qFinal),
+            arrayBloqueInfo80 = [], arrayOtSelected = [], arrayOpDescriptionSelected = [], arrayOtKNumber=[], arrayOtDescriptionSelected = []
     
         res.arraySelectedCheck.forEach(selected => {
             let index = res.arrayONumberSelect.indexOf(selected);  // Encontrar el índice del valor en arrayONumberSelect
@@ -3139,9 +3120,9 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                             name="revisionInfoModelo${[y]}" value="${getValues.arrayRevisionInfoModelo[y]}">
                     </div>`
 
-                const isInactive = res.arrayOtStatus[y] === 'Inactivo';
-                const divStyle = isInactive ? 'style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5"' : ''
-                const divClass = isInactive ? 'pe-none' : ''
+                const isInactive = res.arrayOtStatus[y] === 'Inactivo',
+                    divStyle = isInactive ? 'style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5"' : '',
+                    divClass = isInactive ? 'pe-none' : ''
 
                 arrayBloqueInfo80.push(`<div class="row py-1 mx-auto ${divClass}" ${divStyle}>
                     ${datosCabeceraFormulario (res.arrayOtStatus[y], y, res.arrayOtNumber[y], res.arrayOpNumber[y], arrayOtDescriptionSelected[y])}
@@ -3165,9 +3146,9 @@ function addDatoToInfo80(i, idTabla, qInicial, qFinal) {
                     </form>`  
     
             const titulo = "Info 80%",
-            ancho = 1650,
-            background = '#cedede',
-            formulario = 'formInfo80Values'
+                ancho = 1650,
+                background = '#cedede',
+                formulario = 'formInfo80Values'
                 
             swalFireAlert (
                 titulo,

@@ -19,8 +19,8 @@ const permisoConfig = {
     default: { text: "N/A", classes: "bg-secondary text-dark" }
 };
 
-    const configArea = areaConfig[userInfo.area] || areaConfig.default;
-    const configPermiso = permisoConfig[userInfo.permiso] || permisoConfig.default;
+    const configArea = areaConfig[userInfo.area] || areaConfig.default,
+        configPermiso = permisoConfig[userInfo.permiso] || permisoConfig.default;
 
     if (userInfo.superAdmin) { %>
         <div class="mx-auto small text-center">

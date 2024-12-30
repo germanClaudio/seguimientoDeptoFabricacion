@@ -1,5 +1,6 @@
 const socket = io.connect()
-let URL_GOOGLE_STORE_IMAGESCONSUMIBLES
+let URL_GOOGLE_STORE_IMAGESCONSUMIBLES,
+    imagenLazy = '../src/images/upload/ConsumiblesImages/loader.gif';
 
 fetch('/api/config')
     .then(response => response.json())
@@ -26,13 +27,13 @@ let html, stock
 const typeConfigurations = {
     epp: { optionType: yellow, showType: epp, textColor: black },
     insertos: { optionType: grey, showType: insertos, textColor: white },
-    consumibleAjuste: { optionType: blue, showType: consumibleAjuste, textColor: white },
-    consumibleMeca: { optionType: black, showType: consumibleMeca, textColor: white },
+    consumiblesAjuste: { optionType: blue, showType: consumibleAjuste, textColor: white },
+    consumiblesMeca: { optionType: black, showType: consumibleMeca, textColor: white },
     otros: { optionType: green, showType: otros, textColor: white }
 };
 
 // Configuración por defecto
-const defaultConfig = { optionType: blue, showType: 'Otro', textColor: white };
+const defaultConfig = { optionType: info, showType: 'Otro', textColor: black };
 
 //-------------------------------------------
 const inputName = document.getElementById('designation')
@@ -41,15 +42,15 @@ function mostrarNombre() {
     titleNewConsumible.innerText = 'Agregar Nuevo Consumible o EPP: '+ inputName.value
 }
 
-    if(inputName) {
-        inputName.addEventListener('keyup', () => {
-            mostrarNombre()    
-        })
-        
-        inputName.addEventListener('blur', () => {
-            mostrarNombre()    
-        })
-    }
+if(inputName) {
+    inputName.addEventListener('keyup', () => {
+        mostrarNombre()    
+    })
+    
+    inputName.addEventListener('blur', () => {
+        mostrarNombre()    
+    })
+}
 //-------------------------------------
 // Mostrar el spinner y ocultar la tabla al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
@@ -86,15 +87,16 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
                 idChain = element._id.substring(19)
 
             if (element.visible) {
-                element.stock > 0 ? stock = '<tr>' : stock ='<tr style="background-color:rgba(32, 32, 32, 0.25);">'
+                element.stock > 0 ? stock = `<tr id="consumibleRow_${element._id}">` : stock =`<tr id="consumibleRow_${element._id}" class="row-highlight-stockCero">`
                 return (`${stock}
+                            <td class="text-center" id="checkSelect_${element._id}" name="checkSelect"><input class="form-check-input border border-2 border-primary shadow-lg rounded" type="checkbox" value="" id="inputCheckConsumible_${element._id}" name="inputCheckConsumible"></td>
                             <td class="text-center" id="codigo_${element._id}"><strong>${element.code}</strong></td>
-                            <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
+                            <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}">${showType}</span></td>
                             <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
                             <td class="text-center" id="characteristics_${element._id}">${element.characteristics}</td>
-                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageConsumible}' width="140px" height="140px"></td>
-                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="QR" src='${element.qrCode}' width="125px" height="125px"></td>
-                            <td class="text-center" id="stock_${element._id}"><span class="badge bg-${optionStock} text-light">${element.stock}</span></td>
+                            <td class="text-center" id="imagenConsumible_${element._id}"><img id="imagen_${element._id}" class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageConsumible}' width="125px" height="125px"></td>
+                            <td class="text-center"><img class="imgLazyLoad py-2" alt="QRCode" data-src="${element.qrCode}" src='${imagenLazy}' width="100px" height="100px" loading="lazy"></td>
+                            <td class="text-center" id="stock_${element._id}"><span id="spanStock_${element._id} name="stock" class="badge bg-${optionStock} text-light">${element.stock}</span></td>
                             <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
                             <td class="text-center">${element.creator[0].name} ${element.creator[0].lastName}</td>
                             <td class="text-center">${element.timestamp}</td>
@@ -102,7 +104,7 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
                             <td class="text-center">${element.modifiedOn}</td>
                             <td class="text-center">
                                 <div class="d-block align-items-center text-center">
-                                    <a href="/api/consumibles/${element._id}" class="btn btn-primary btn-sm me-1" title="Editar Consumible ${element.designation}"><i class="fa-solid fa-microchip"></i></a>
+                                    <a href="/api/consumibles/${element._id}" class="btn btn-primary btn-sm me-1" title="Editar Consumible ${element.designation}"><i class="fa-solid fa-cart-shopping"></i></a>
                                     <button id="${element._id}" name="btnDeleteConsumible" type="button" class="btn btn-danger btn-sm ms-1" title="Eliminar Consumible ${element.designation}"><i class="fa-regular fa-trash-can"></i></button>
                                 </div>
                             </td>
@@ -135,6 +137,31 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
     // Ocultar el spinner y mostrar la tabla
     document.getElementById('loading-spinner').style.display = 'none';
     document.getElementById('consumiblesTable').style.display = 'block';
+
+    //------------- LazyLoad Images ------------------
+    const lazyImages = document.querySelectorAll("img[data-src]");
+    if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries, observer) => {
+            setTimeout(() => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src; // Sustituye data-src por src
+                        img.onload = () => img.classList.add("loaded");
+                        img.removeAttribute("data-src"); // Limpia el atributo
+                        observer.unobserve(img); // Deja de observar esta imagen
+                    }
+                });
+            }, 2000);
+        });
+        lazyImages.forEach(img => observer.observe(img));
+        
+    } else {
+        // Fallback para navegadores sin IntersectionObserver
+        lazyImages.forEach(img => {
+            img.src = img.dataset.src;
+        });
+    }
 
     // ---- mensaje confirmacion eliminar Consumible -----------
     function messageDeleteConsumible(id, designation, code) {
@@ -210,8 +237,9 @@ const renderConsumiblesUser = (arrConsumibles) => {
                 idChain = element._id.substring(19)
 
             if (element.visible) {
-                element.stock > 0 ? stock = '<tr>' : stock ='<tr style="background-color:rgba(32, 32, 32, 0.25);">'
+                element.stock > 0 ? stock = `<tr id="consumibleRow_${element._id}" name="checkSelect">` : stock =`<tr id="consumibleRow_${element._id}" style="background-color:rgba(32, 32, 32, 0.25);">`
                 return (`${stock}
+                            <td class="text-center" id="checkSelect_${element._id}"><input type="check" id="inputCheckConsumible_${element._id}" name="inputCheckConsumible_${element._id}" class="input-check" ></td>
                             <td class="text-center" id="codigo_${element._id}"><strong>${element.code}</strong></td>
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
                             <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
@@ -226,7 +254,7 @@ const renderConsumiblesUser = (arrConsumibles) => {
                             <td class="text-center">${element.modifiedOn}</td>
                             <td class="text-center">
                                 <div class="d-blck align-items-center text-center mx-1">
-                                    <a href="/api/consumibles/${element._id}" class="btn btn-primary btn-sm me-1" title="Editar Consumible ${element.designation}"><i class="fa-solid fa-microchip"></i></a>
+                                    <a href="/api/consumibles/${element._id}" class="btn btn-primary btn-sm me-1" title="Editar Consumible ${element.designation}"><i class="fa-solid fa-cart-shopping"></i></a>
                                     <button type="button" class="btn btn-danger btn-sm ms-1 disabled" title="Solo Admin puede modificar esto"><i class="fa-solid fa-info-circle"></i></button>
                                 </div>
                             </td>
@@ -450,7 +478,6 @@ removeImageButtonImageConsumible.addEventListener('click', (e)=> {
     e.stopPropagation()
 })
 
-
 function messageNewConsumible(designation, code, type, stock) {
     if (designation, code, type, stock) {
         Swal.fire({
@@ -461,7 +488,7 @@ function messageNewConsumible(designation, code, type, stock) {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             focusConfirm: true,
-            confirmButtonText: 'Registrarlo! <i class="fa-solid fa-microchip"></i>',
+            confirmButtonText: 'Registrarlo! <i class="fa-solid fa-cart-shopping"></i>',
             cancelButtonText: 'Cancelar <i class="fa-solid fa-user-xmark"></i>'
     
         }).then((result) => {
@@ -514,7 +541,7 @@ function messageWarningEmptyFields(designation, code, type, stock) {
             showCancelButton: true,
             showConfirmButton: false,
             cancelButtonColor: '#d33',
-            cancelButtonText: 'Volver al Formulario <i class="fa-solid fa-microchip"></i>'
+            cancelButtonText: 'Volver al Formulario <i class="fa-solid fa-cart-shopping"></i>'
         })
     :
         Swal.fire({
@@ -524,12 +551,11 @@ function messageWarningEmptyFields(designation, code, type, stock) {
             showCancelButton: true,
             showConfirmButton: false,
             cancelButtonColor: '#d33',
-            cancelButtonText: 'Volver al Formulario <i class="fa-solid fa-microchip"></i>'
+            cancelButtonText: 'Volver al Formulario <i class="fa-solid fa-cart-shopping"></i>'
         })
 }
 
 const btnAddNewConsumible = document.getElementById('btnAddNewConsumibles')
-
 btnAddNewConsumible.addEventListener('click', (event) => {
     event.preventDefault()
     const designation = document.getElementById('designation').value,
@@ -605,19 +631,41 @@ let codeInput = document.getElementById('code'),
     typeInput = document.getElementById('type').value
 
 function disabledBtnAceptar () {
-    let btnAceptarFrom = document.getElementById('btnAddNewConsumibles');
-    const allInputs = document.querySelectorAll('input[type="text"], textarea, input[type="file"], input[type="hidden"]')
+    let btnAceptarFrom = document.getElementById('btnAddNewConsumibles')
+    const allInputs = document.querySelectorAll('input[type="text"], textarea, input[type="file"], input[type="hidden"], input[type="number"]')
+
+    function stylesButtons (btnAceptar, input) {
+        input.classList.add("border-primary", "border-2", "shadow")
+        btnAceptar.removeAttribute('disabled')
+        btnAceptar.style = "cursor: pointer;"
+    }
     
     allInputs.forEach(function(input) {
-            input.addEventListener('change', (event) => {
-                event.preventDefault()
-                input.classList.add("border-primary", "border-2", "shadow")
-                btnAceptarFrom.removeAttribute('disabled')
-                btnAceptarFrom.style = "cursor: pointer;"
-            })        
-    })
+        input.addEventListener('input', (event) => {
+            event.preventDefault()
+            btnAceptarFrom ? stylesButtons (btnAceptarFrom, input) : null
+        })
+    })    
 }
 disabledBtnAceptar()
+
+function disabledBtnModificar () {
+    let allInputs = document.querySelectorAll('input[type="number"]'),
+        btnModificarStock = document.getElementById('btnAceptarModalStock')
+
+    function stylesButtons (btnModificarStock, input) {
+        input.classList.add("border-primary", "border-2", "shadow")
+        btnModificarStock.removeAttribute('disabled')
+        btnModificarStock.style = "cursor: pointer;"
+    }
+    
+    allInputs.forEach(function(input) {
+        input.addEventListener('input', (event) => {
+            event.preventDefault()
+            btnModificarStock ? stylesButtons (btnModificarStock, input) : null
+        })
+    })    
+}
 
 // -------- QR code generator ---------------
 const MAX_QR_LENGTH = 1000; // Límite máximo para Versión 40 con nivel M 2331
@@ -655,7 +703,7 @@ document.addEventListener("DOMContentLoaded", () => {
             qrContainer.innerHTML = ''; // Limpia cualquier contenido previo
 
             // Usar la librería qrCode-generator
-            const qr = qrcode(versionQR, 'L'); // Versión 40 y Nivel M
+            const qr = qrcode(versionQR, 'L'); // Versión ?? y Nivel L
             qr.addData(data);
             qr.make();
 
@@ -730,4 +778,245 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+});
+
+
+//------------- Rows & Cards selected ------------------
+document.addEventListener("DOMContentLoaded", () => {
+    const tableId = "consumiblesTable",
+        table = document.getElementById(tableId),
+        cardsContainer = document.getElementById("showConsumiblesSearch"),
+        btnCheckSelectionAll = document.getElementById("btnCheckSelectionAll"),
+        spanCheckSelecMasive = document.getElementById("spanCheckSelecMasive");
+
+    // Función para inicializar eventos en checkboxes de filas
+    function initializeRowCheckboxes() {
+        const rowCheckboxes = table.querySelectorAll('input[type="checkbox"]');
+        rowCheckboxes.forEach((checkbox) => {
+            checkbox.addEventListener("change", () => {
+                syncCheckboxWithCard(checkbox);
+                updateSelectionState();
+                updateRowStyle(checkbox);
+            });
+        });
+    }
+
+    // Función para inicializar eventos en checkboxes de cards
+    function initializeCardCheckboxes() {
+        const cardCheckboxes = cardsContainer.querySelectorAll('input.form-check-input');
+        cardCheckboxes.forEach((checkbox) => {
+            if (!checkbox.dataset.initialized) {
+                checkbox.dataset.initialized = true;
+                checkbox.addEventListener("change", () => {
+                    syncCheckboxWithRow(checkbox);
+                    updateSelectionState();
+                });
+            }
+        });
+    }
+
+    // Sincronizar checkbox de fila con card correspondiente
+    function syncCheckboxWithCard(rowCheckbox) {
+        const extractIdNumber = (id) => id.split('_').pop()
+        let idInputCard = extractIdNumber(rowCheckbox.id)
+        const cardCheckbox = cardsContainer.querySelector(`#inputCheckConsumibleCard_${idInputCard}`);
+        if (cardCheckbox) {
+            if (rowCheckbox.checked) {
+                cardCheckbox.checked = true;
+                cardCheckbox.disabled = true; // Deshabilitar para evitar duplicados
+            } else {
+                cardCheckbox.checked = false;
+                cardCheckbox.disabled = false; // Habilitar nuevamente
+            }
+            updateCardStyle(cardCheckbox);
+            updateRowStyle(rowCheckbox);
+        }
+    }
+
+    // Sincronizar checkbox de card con fila correspondiente
+    function syncCheckboxWithRow(cardCheckbox) {
+        const extractIdNumber = (id) => id.split('_').pop()
+        let idInputRow = extractIdNumber(cardCheckbox.id)
+        const rowCheckbox = table.querySelector(`#inputCheckConsumible_${idInputRow}`)
+        if (rowCheckbox) {
+            if (cardCheckbox.checked) {
+                rowCheckbox.checked = true;
+                rowCheckbox.disabled = true; // Deshabilitar para evitar duplicados
+            } else {
+                rowCheckbox.checked = false;
+                rowCheckbox.disabled = false; // Habilitar nuevamente
+            }
+            updateRowStyle(rowCheckbox);
+            updateCardStyle(cardCheckbox);
+        }
+    }
+
+    // Actualizar estilo de las filas al cambiar el estado del checkbox
+    function updateRowStyle(rowCheckbox) {
+        const row = rowCheckbox.closest("tr");
+        console.log('row: ', row)
+        if (rowCheckbox.checked) {
+            row.classList.add("row-highlight");
+            row.classList.remove("row-highlight-stockCero");
+        } else {
+            row.classList.remove("row-highlight");
+        }
+    }
+
+    // Actualizar estilo de las cards al cambiar el estado del checkbox
+    function updateCardStyle(cardCheckbox) {
+        const card = cardCheckbox.closest("div[id^='cardSelected_']");
+        if (cardCheckbox.checked) {
+            card.classList.add("cardSelected");
+            card.classList.remove("shadow-lg");
+        } else {
+            card.classList.remove("cardSelected");
+            card.classList.add("shadow-lg");
+        }
+    }
+
+    // Actualizar contador y estado del botón masivo
+    function updateSelectionState() {
+        const selectedRowCheckboxes = table.querySelectorAll('input[type="checkbox"]:checked');
+        // const selectedCardCheckboxes = cardsContainer.querySelectorAll('input.form-check-input:checked')
+        let totalSelected = selectedRowCheckboxes.length //+ selectedCardCheckboxes.length;
+
+        spanCheckSelecMasive.textContent = totalSelected;
+        btnCheckSelectionAll.disabled = totalSelected === 0;
+        spanCheckSelecMasive.classList.toggle("bg-danger", totalSelected === 0);
+        spanCheckSelecMasive.classList.toggle("bg-success", totalSelected > 0);
+    }
+
+    // Configurar MutationObservers
+    const rowObserver = new MutationObserver(() => {
+        initializeRowCheckboxes();
+    });
+
+    const cardObserver = new MutationObserver(() => {
+        initializeCardCheckboxes();
+    });
+
+    rowObserver.observe(table, { childList: true, subtree: true });
+    cardObserver.observe(cardsContainer, { childList: true, subtree: true });
+
+    // Inicializar eventos al cargar
+    initializeRowCheckboxes();
+    initializeCardCheckboxes();
+
+    // Botón de SweetAlert2
+    btnCheckSelectionAll.addEventListener("click", () => {
+        const extractIdNumber = (id) => id.split('_').pop(); // Función para extraer el número del ID
+
+        const selectedCheckboxes = Array.from(table.querySelectorAll('input[type="checkbox"]:checked'))
+            .concat(Array.from(cardsContainer.querySelectorAll('input.form-check-input:checked')))
+            .reduce((accumulator, checkbox) => {
+                const row = checkbox.closest("tr"),
+                    card = checkbox.closest("div[id^='cardSelected_']"),
+                    idNumber = extractIdNumber(checkbox.id); // Extrae el número del ID
+
+                // Verifica si el ID (número) ya fue procesado
+                if (accumulator.some(item => item.idNumber === idNumber)) {
+                    return accumulator; // No agregar duplicados
+                }
+
+                // Agrega al acumulador según corresponda (row o card)
+                if (card) {
+                    accumulator.push({
+                        idNumber: idNumber,
+                        id: checkbox.id,
+                        codigo: card.querySelector(`[id^="cardCodigo_"]`).textContent.trim(),
+                        tipo: card.querySelector(`[id^="cardTipo_"]`).textContent.trim(),
+                        descripcion: card.querySelector(`[id^="cardDesignation_"]`).textContent.trim(),
+                        imageConsumible: card.querySelector("img").src.trim(),
+                        stock: card.querySelector(`[id^="cardStock_"]`).textContent.trim(),
+                    });
+
+                } else if (row) {
+                    accumulator.push({
+                        idNumber: idNumber,
+                        id: checkbox.id,
+                        codigo: row.querySelector(`[id^="codigo_"]`).textContent.trim(),
+                        tipo: row.querySelector(`[id^="tipo_"]`).textContent.trim(),
+                        descripcion: row.querySelector(`[id^="designation_"]`).textContent.trim(),
+                        imageConsumible: row.querySelector("img").src.trim(),
+                        stock: row.querySelector(`[id^="stock_"] span`).textContent.trim(),
+                    });
+                }
+                return accumulator;
+            }, []);
+
+        // Generar SweetAlert2 con los datos seleccionados
+        const tableHtml = `
+            <form id="formStockValues" action="/api/consumibles/modificarStock" method="post">
+                <fieldset>
+                    <table id="stockConsumiblesTable" class="table align-middle" style="font-size: 11pt";>
+                        <thead>
+                            <tr>
+                                <th style="width:15vw" class="text-center">Código</th>
+                                <th style="width:25vw" class="text-center">Tipo</th>
+                                <th style="width:25vw" class="text-center">Designación</th>
+                                <th style="width:15vw" class="text-center">Imagen</th>
+                                <th style="width:15vw" class="text-center">Stock</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${selectedCheckboxes.map((data) =>
+                                `<tr>
+                                    <td><strong>${data.codigo}</strong></td>
+                                    <td><span class="common-style ${data.tipo.replace(/\s+/g, "").toLowerCase()}">${data.tipo}</span></td>
+                                    <td>${data.descripcion}</td>
+                                    <td><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${data.imageConsumible}' width="60px" height="60px"></td>
+                                    <td><input type="number" name="inputStockNumber_${extractIdNumber(data.id)}" class="form-control" value="${data.stock}" data-id="${data.id}" min="0" max="5000">
+                                        <input type="hidden" name="idItemHidden_${extractIdNumber(data.id)}" value="${extractIdNumber(data.id)}" style="display: none;"></td>
+                                </tr>`).join("")}
+                        </tbody>
+                    </table>
+                </fieldset>
+            </form>`;
+
+        Swal.fire({
+            title: "Modificar Stock",
+            html: tableHtml,
+            confirmButtonText: 'Modificar <i class="fa-regular fa-save"></i>',
+            confirmButtonColor: '#3085d6',
+            showCancelButton: true,
+            showCloseButton: true,
+            cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>',
+            cancelButtonColor: '#d33',
+            width: 1000,
+            position: "center",
+            didOpen: ()=> {
+                let btnAceptar = document.getElementsByClassName('swal2-confirm');
+                btnAceptar[0].setAttribute('id','btnAceptarModalStock')
+                btnAceptar[0].style = "cursor: not-allowed;"
+                btnAceptar[0].disabled = true
+            }
+        }).then((result) => {
+            const formStockValues = document.getElementById('formStockValues')
+            if (result.isConfirmed) {
+                formStockValues.submit()
+
+                setTimeout(() => {
+                    Swal.fire({
+                        title: `Cambios Stock realizados!`,
+                        html: 'El stock ha sido actualizado con éxito',
+                        icon: 'success',
+                        width: 600
+                    })
+                }, 500)
+
+            } else {
+                Swal.fire({
+                    title: `Cambios Stock no guardado!`,
+                    html: 'El stock no ha sido actualizado',
+                    icon: 'warning',
+                    width: 600
+                })
+                return false
+            }
+        });
+        setTimeout(() => {
+            disabledBtnModificar ()
+        }, 300)
+    });
 });

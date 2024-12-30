@@ -1,12 +1,11 @@
-const ContenedorMongoDB = require('../../contenedores/containerMongoDB.js')
-const mongoose = require('mongoose')
-const Proyectos = require('../../models/proyectos.models.js')
-const Clientes = require('../../models/clientes.models.js')
+const ContenedorMongoDB = require('../../contenedores/containerMongoDB.js'),
+    mongoose = require('mongoose'),
+    Proyectos = require('../../models/proyectos.models.js'),
+    Clientes = require('../../models/clientes.models.js')
+    advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000},
+    { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty, dataUserOciOwnerEmpty } = require('../../utils/generateUsers.js')
 
 let formatDate = require('../../utils/formatDate.js')
-const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000}
-
-const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty, dataUserOciOwnerEmpty } = require('../../utils/generateUsers.js')
 
 class ProyectosDaoMongoDB extends ContenedorMongoDB {
     constructor(cnxStr) {
@@ -25,9 +24,11 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
             
             if (projects === undefined || projects === null) {
                 return new Error('No hay proyectos cargados en ningún cliente!')
+
             } else {
                 return projects
             }
+
         } catch (error) {
             console.error("Error MongoDB getClients: ", error)
             return new Error('No hay proyectos en la DB!')
@@ -40,11 +41,13 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
         try {
             const clients = await Clientes.find({ $or: [{ clientName: query }, { clientCode: query }] }).exec()
 
-            if (clients === undefined || clients === null) {
+            if (!clients) {
                 return null
+
             } else {
                 return clients
             }
+
         } catch (error) {
             console.error("Error MongoDB searched Clientes: ", error)
             return new Error('No hay clientes en la DB!')
@@ -55,19 +58,18 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
     async getProjectsByClientId(id) {
         if (id) {
             try {
-                const project = await Proyectos.find({
-                    'client.0._id': id
-                })
-
+                const project = await Proyectos.find({ 'client.0._id': id })
                 return project
 
             } catch (error) {
                 console.error("Error MongoDB getProjectsByClientId: ", error)
             }
+
         } else {
             try {
                 const project = await Proyectos.find()
                 return project
+
             } catch (error) {
                 console.error("Error MongoDB getOneClientById: ", error)
             }
@@ -78,19 +80,18 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
     async selectProjectsByMainProjectId(id) {
         if (id) {
             try {
-                const project = await Proyectos.find({
-                    '_id': id
-                })
-                // console.log('project...',project)
+                const project = await Proyectos.find({ '_id': id })
                 return project
 
             } catch (error) {
                 console.error("Error MongoDB getProjectsByClientId: ", error)
             }
+
         } else {
             try {
                 const projects = await Proyectos.find()
                 return projects
+
             } catch (error) {
                 console.error("Error MongoDB getOneProjectById: ", error)
             }
@@ -99,22 +100,20 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
 
     // Select one project by project Id ----------------
     async selectProjectByProjectId(id) {
-        
         if (id) {
             try {
-                const project = await Proyectos.find({
-                    'project.0._id': id
-                })
-                
+                const project = await Proyectos.find({ 'project.0._id': id })
                 return project
 
             } catch (error) {
                 console.error("Error MongoDB getProjectsByProjectId: ", error)
             }
+
         } else {
             try {
                 const projects = await Proyectos.find()
                 return projects
+
             } catch (error) {
                 console.error("Error MongoDB getOneProjectById: ", error)
             }
@@ -127,17 +126,18 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
             try {
                 const itemMongoDB = await Proyectos.findOne({ projectName: `${project.name}` })
                 if (itemMongoDB) {
-                    // console.error("Proyecto con Nombre existente!! ")
                     return false
+
                 } else {
                     const newProject = new Proyectos(project)
                     await newProject.save()
-                    // console.info('Project created')
                     return newProject
                 }
+
             } catch (error) {
                 console.error("Error MongoDB createProject: ", error)
             }
+
         } else {
             return new Error(`No se pudo crear el Proyecto!`)
         }
@@ -150,9 +150,11 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
             
             if (projects === undefined || projects === null) {
                 return new Error('No hay proyectos cargados en ningún cliente!')
+
             } else {
                 return projects
             }
+
         } catch (error) {
             console.error("Error MongoDB getAllOciProjects: ", error)
             return new Error('No hay proyectos en la DB!')
@@ -162,12 +164,10 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
     // Get all OCI from all projects -----------
     async getAllOciNumbers() {
         try {
-            const ocis = await Proyectos.find(
-                'project.0.oci.' 
-            )
-            //console.log('ocis: ', ocis)    
-            if (ocis === undefined || ocis === null) {
-                    return new Error('No hay ocis cargadas en este proyecto!')
+            const ocis = await Proyectos.find( 'project.0.oci.' )
+            if (!ocis) {
+                return new Error('No hay ocis cargadas en este proyecto!')
+
             } else {
                 return ocis
             }
@@ -180,36 +180,29 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
 
     // Select one OCI by Oci Number and k OCI number----------------
     async selectOciByOciNumber(numberOci, ociKNumber) {
-        const numberOciParsed = parseInt(numberOci)
-        const numberKOciParsed = parseInt(ociKNumber)
+        const numberOciParsed = parseInt(numberOci),
+            numberKOciParsed = parseInt(ociKNumber)
 
         if (numberOciParsed) {
             try {
-                const project = await Proyectos.find({
-                    [`project.0.oci.${numberKOciParsed}.ociNumber`]: numberOciParsed
-                })
-                // const projects = await Proyectos.find()
-                // console.log('projectDao: ', project)
+                const project = await Proyectos.find({ [`project.0.oci.${numberKOciParsed}.ociNumber`]: numberOciParsed })
                 return project ? numberOciParsed : false
 
             } catch (error) {
                 console.error("Error MongoDB selectOciByOciNumber: ", error)
             }
-
         }
     }
 
     // Select one OT by OT Number and k OT number----------------
     async selectOtByOtNumber(numberOt, otKNumber, ociKNumber) {
-        const numberKOciParsed = parseInt(ociKNumber)
-        const numberOtParsed = parseInt(numberOt)
-        const numberKOtParsed = parseInt(otKNumber)
+        const numberKOciParsed = parseInt(ociKNumber),
+            numberOtParsed = parseInt(numberOt),
+            numberKOtParsed = parseInt(otKNumber)
 
         if (numberOtParsed) {
             try {
-                const project = await Proyectos.find({
-                    [`project.0.oci.${numberKOciParsed}.otProject.${numberKOtParsed}.otNumber`]: numberOtParsed
-                })
+                const project = await Proyectos.find({ [`project.0.oci.${numberKOciParsed}.otProject.${numberKOtParsed}.otNumber`]: numberOtParsed })
                 return project ? numberOtParsed : null
 
             } catch (error) {
@@ -220,6 +213,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
             try {
                 const projects = await Proyectos.find()
                 return projects
+
             } catch (error) {
                 console.error("Error MongoDB selectOtByOtNumber: ", error)
             }
@@ -227,7 +221,6 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
     }
 
     async getExistingProject(projectInput, projectCodeInput) {
-                
         if (projectInput && projectCodeInput) {
             const existingProject = await Proyectos.findOne(
                 { $or: [ {projectName: `${projectInput}`},
@@ -250,7 +243,6 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
 
     // Add Ot's to Oci Number ----------------
     async addOtToOciProject(idProjectTarget, numberOci, ociNumberK, arrayOtAddedToOci) {
-        //console.log('arrayOtAddedToOci: ', arrayOtAddedToOci)
         if (idProjectTarget) {
             try {
                 const itemMongoDB = await Proyectos.findById({ _id: idProjectTarget })
@@ -350,12 +342,8 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
         arrayOtNumberK,
         infoAddedToOt
     ) {
-        const ociKNumber = parseInt(ociNumberK) || 0
-        const quantityOt = parseInt(otQuantity)
-        // console.log('1-otQuantity-Dao:', quantityOt)
-        // console.log('2-ociNumberK-Dao: ', ociNumberK)
-        // console.log('A-arrayOtNumberK-Dao:', arrayOtNumberK)
-        // console.log('B-infoAddedToOt-Dao: ', infoAddedToOt)
+        const ociKNumber = parseInt(ociNumberK) || 0,
+            quantityOt = parseInt(otQuantity)
 
         // compara si el proyecto existe --------
         if (idProjectTarget) {

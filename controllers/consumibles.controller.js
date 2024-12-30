@@ -19,6 +19,7 @@ const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty }
 const {catchError400_3,
         catchError400_5,
         catchError400_6,
+        catchError400_1,
         catchError401_3,
         catchError500
 } = require('../utils/catchErrors.js')
@@ -234,7 +235,7 @@ class ConsumiblesController {
                     modificator: dataUserModificatorNotEmpty(userLogged),
                     modifiedOn: formatDate()
                 }
-console.log('updatedConsumible: ', updatedConsumible)
+
                 const consumible = await this.consumibles.updateConsumible(consumibleId, updatedConsumible, dataUserModificatorNotEmpty(userLogged))
                 !consumible ? catchError400_3(req, res, next) : null
                         
@@ -295,6 +296,64 @@ console.log('updatedConsumible: ', updatedConsumible)
         } catch (err) {
             catchError500(err, req, res, next)
         }
+    }
+
+    modificarStockConsumibles = async (req, res, next) => {
+        const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+
+        try {
+            const userLogged = await this.users.getUserByUsername(username);
+            !userLogged.visible ? catchError401_3(req, res, next) : null
+
+            let idConsumibles = [], stocksConsumibles = [];
+
+            const prefixes = [
+                { prefix: 'inputStockNumber_', array: stocksConsumibles },
+                { prefix: 'idItemHidden_', array: idConsumibles }
+            ];
+    
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+            
+            let arrayItemsToModify = [], updatedConsumible ={}
+            if (idConsumibles.length>0) {
+                for(let i=0; i<idConsumibles.length; i++) {
+                    updatedConsumible = {
+                        id: idConsumibles[i],
+                        stock: stocksConsumibles[i],
+                        modificator: dataUserModificatorNotEmpty(userLogged),
+                        modifiedOn: formatDate()                            
+                    }
+                    arrayItemsToModify.push(updatedConsumible)
+                }
+
+            } else {
+                catchError400_1(req, res, next)
+            }
+
+            const consumible = await this.consumibles.modificarStockConsumibles(arrayItemsToModify)
+            !consumible ? catchError400_3(req, res, next) : null
+                    
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                return res.render('addNewConsumible', {
+                    username,
+                    userInfo,
+                    expires,
+                    consumible,
+                    data,
+                    csrfToken,
+                })
+            }, 400)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+        
     }
 
 }

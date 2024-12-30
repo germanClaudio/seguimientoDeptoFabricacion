@@ -1177,14 +1177,15 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
 
     } else {
         const htmlSearchConsumibles = arrConsumiblesSearch.map((element) => {
-            const statusClasses = { true: 'success', false: 'danger' };
-            const typeMapping = {
+            const statusClasses = { true: 'success', false: 'danger' },
+                typeMapping = {
                 epp: { label: 'EPP', class: 'warning', text: 'dark' },
                 insertos: { label: 'Insertos', class: 'secondary', text: 'light' },
                 consumiblesAjuste: { label: 'Consumibles Ajuste', class: 'primary', text: 'light' },
                 consumiblesMeca: { label: 'Consumibles Mecanizado', class: 'success', text: 'light' },
                 otros: { label: 'Otros', class: 'info', text: 'dark' }
             };
+            let color = '';
         
             // Determinar valores dinámicos
             const optionStatus = statusClasses[element.status] || 'danger',
@@ -1193,23 +1194,26 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
                 optionStock = element.stock > 0 ? 'dark' : 'danger',
                 disabled = element.visible ? '' : 'disabled';
         
+                element.stock === 0 ? color = 'background-color: #ca000030' : color
             // Retornar el HTML generado
             return (`
                 <div class="col mx-auto">
-                    <div class="card mx-auto rounded-2 shadow-lg" style="max-width: 540px;">
+                    <div class="card mx-auto rounded-2 shadow-lg" id="cardSelected_${element._id}" style="max-width: 540px; ${color}">
                         <div class="row align-items-center">
                             <div class="col-md-4 text-center">
                                 <img src="${element.imageConsumible}" style="max-width=170px; object-fit: contain;"
-                                    class="img-fluid rounded p-2 mx-auto" alt="Consumibles">
+                                    class="img-fluid rounded p-2 mx-auto ms-2" alt="Consumibles">
+                                <input class="form-check-input border border-2 border-primary shadow-lg rounded mt-auto" type="checkbox" value=""
+                                    id="inputCheckConsumibleCard_${element._id}" name="inputCheckConsumibleCard">
                             </div>
                             <div class="col-md-8 border-start">
                                 <div class="card-body">
-                                    <h6 class="card-title"><strong>${element.designation}</strong></h6>
-                                    Código: <span class="my-1"><strong>${element.code}</strong></span><br>
-                                    Tipo: <span class="badge rounded-pill bg-${optionType} text-${optionText} my-1">${showType}</span><br>
+                                    <h6 id="cardDesignation_${element._id}" class="card-title"><strong>${element.designation}</strong></h6>
+                                    Código: <span id="cardCodigo_${element._id}" class="my-1"><strong>${element.code}</strong></span><br>
+                                    Tipo: <span id="cardTipo_${element._id}" class="badge rounded-pill bg-${optionType} text-${optionText} my-1">${showType}</span><br>
                                     Status: <span class="badge rounded-pill bg-${optionStatus} my-1">${showStatus}</span><br>
-                                    Stock: <span class="badge bg-${optionStock} text-light">${element.stock}</span><br>
-                                    </div>
+                                    Stock: <span id="cardStock_${element._id}" class="badge bg-${optionStock} text-light">${element.stock}</span><br>
+                                </div>
                                 <div class="card-footer px-2">
                                     <div class="row">
                                         <div class="col m-auto">

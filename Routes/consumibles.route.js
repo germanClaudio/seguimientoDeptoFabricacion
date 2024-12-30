@@ -26,4 +26,7 @@ routerConsumibles.get('/delete/:id', checkAuthentication, consumibles.deleteCons
 //---------------- Search a Consumible sort by designation -----------------------
 routerConsumibles.get('/searchConsumibles/all', checkAuthentication, consumibles.searchConsumibles)
 
+//---------------- Modify stock items selected by id -----------------------
+routerConsumibles.post('/modificarStock', checkAuthentication, consumibles.modificarStockConsumibles)
+
 module.exports = routerConsumibles

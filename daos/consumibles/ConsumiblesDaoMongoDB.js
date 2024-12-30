@@ -310,10 +310,54 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
         }    
     }
 
+    // ------------Modify stock items----------------
+    async modificarStockConsumibles(arrayItemsToModify) {
+        const lengthArray = parseInt(arrayItemsToModify.length) || 0
+
+        if (lengthArray>0) {
+            for (let i=0; i<lengthArray; i++) {
+                try {
+                    const itemMongoDB = await Consumibles.findById({ _id: arrayItemsToModify[i].id })
+                    
+                    // Si encontro el proyecto en la BBDD ----- 
+                    if (itemMongoDB) {
+                        // Recupero los datos originales y comparo,
+                        let stockInitial = itemMongoDB.stock 
+                        
+                        if (stockInitial !== parseInt(arrayItemsToModify[i].stock)) {
+                            await Consumibles.updateOne(
+                                { _id: itemMongoDB._id },
+                                {
+                                    stock: parseInt(arrayItemsToModify[i].stock),
+                                    modificator: arrayItemsToModify[i].modificator,
+                                    modifiedOn: formatDate()
+                                },
+                                { new: true }
+                            )
+                        }
+                        
+                    } else {
+                        return new Error(`No se encontró el Consumible id# ${arrayItemsToModify[i].id}`)
+                    }
+                    
+                } catch (error) {
+                    console.error("Error MongoDB modifing stock: ", error)
+                }
+            }
+            const itemsUpdated = await Consumibles.find()
+            return itemsUpdated
+
+        } else {
+            return new Error(`No se modificó el stock en el item. Largo array: ${lengthArray}`)
+        }
+        
+    }
+
     async disconnet() {
         await this.disconnection
         console.log('Disconnected from MongoDB Server')
     }
+    
 }
 
 module.exports = ConsumiblesDaoMongoDB 

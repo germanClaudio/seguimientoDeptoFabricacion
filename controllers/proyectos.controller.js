@@ -388,31 +388,22 @@ class ProjectsController {
         const expires = cookie(req)
 
         try {
-            const clientId = req.body.clientIdHidden
-            const cliente = await this.clients.selectClientById(clientId)
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            const clientId = req.body.clientIdHidden,
+                cliente = await this.clients.selectClientById(clientId)
+            !cliente ? catchError401(req, res, next) : null
             
-            const numberOci = parseInt(req.body.ociNumber)
-            const ociNumberK = parseInt(req.body.ociNumberK)
-            
-            const projectId = id || req.body.projectIdHidden
-            const otQuantity = parseInt(req.body.otQuantity)
+            const numberOci = parseInt(req.body.ociNumber),
+                ociNumberK = parseInt(req.body.ociNumberK),
+                projectId = id || req.body.projectIdHidden,
+                otQuantity = parseInt(req.body.otQuantity),
+                userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
 
-            const userId = userInfo.id
-            const userCreator = await this.users.getUserById(userId)
-            if (!userCreator) {
-                catchError401_3(req, res, next)
-            }
+            !userCreator ? catchError401_3(req, res, next) : null
         
-            let arrayOtNumber=[],
-                arrayOpNumber=[],
-                arrayOpDescription=[],
-                arrayOtStatus=[],
-                arrayOtDesign=[],
-                arrayOtSimulation=[],
-                arrayOtSupplier=[]
+            let arrayOtNumber=[], arrayOpNumber=[],
+                arrayOpDescription=[], arrayOtStatus=[],
+                arrayOtDesign=[], arrayOtSimulation=[], arrayOtSupplier=[]
 
             const prefixes = [
                 { prefix: 'otNumber', array: arrayOtNumber },

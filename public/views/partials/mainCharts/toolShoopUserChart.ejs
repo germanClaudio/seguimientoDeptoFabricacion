@@ -1,28 +1,24 @@
 <div class="container-fluid" style="background-color: #F5F7FA;">
     <%- include('../../partials/sections/sectionMainAppTitle'); %>
     <!-- first Row -->
-    <div class="row justify-content-evenly">
+    <div class="row justify-content-evenly ms-4">
         <!-- consumibles ERP -->
         <div class="col-xl-3 col-sm-6 col-12">
-            <a href="/api/consumibles" style="text-decoration: none;">
+            <a href="/api/consumibles/solicitud" style="text-decoration: none;">
                 <div class="card rounded-3 card_dashboard">
                     <div class="card-content">
                         <div class="card-body">
                             <div class="media d-flex mx-2">
                                 <div class="media-body text-left">
-                                    <% let countClient=0
-                                    for (let i=0; clientes.length>i; i++ ) {
-                                        if (clientes[i].visible) {
-                                            countClient++
-                                        }
+                                    <% let countConsumibles=0
+                                    for (let i=0; consumibles.length>i; i++ ) {
+                                        consumibles[i].visible ? countConsumibles++ : null
                                     } %>
-                                    <h3 class="font-medium">
-                                        <%= parseInt(countClient) %>
-                                    </h3>
-                                    <span>Consumibles - ERP</span>
+                                    <h3 class="font-medium"><%= parseInt(countConsumibles) %></h3>
+                                    <span>Solicitar Consumible o EPP</span>
                                 </div>
                                 <div class="align-self-center ms-auto">
-                                    <i class="fa-regular fa-handshake fa-3x primary float-right"></i>
+                                    <i class="icon-basket font-large-2 float-right"></i>
                                 </div>
                             </div>
                         </div>
@@ -32,42 +28,51 @@
         </div>
         <!-- pedidos configuración de herramientas -->
         <div class="col-xl-3 col-sm-6 col-12">
-            <a href="/api/pedidosHerramientas" style="text-decoration: none;">
+            <a href="/api/herramientas/solicitud" style="text-decoration: none;">
                 <div class="card rounded-3 card_dashboard">
                     <div class="card-content">
                         <div class="card-body">
                             <div class="media d-flex mx-2">
                                 <div class="media-body text-left">
-                                    <% let arrayOci=[]
-                                    for (let i=0; proyectos.length>i; i++ ) {
-                                        if (proyectos[i].visible) {
-                                        arrayOci.push(proyectos[i].project[0])
-                                        }
-                                    }
-
-                                    let arrayVisibleOci = []
-                                    for (let j=0; arrayOci.length>j; j++ ) {
-                                        if (arrayOci[j].visible) {
-                                            arrayVisibleOci.push(arrayOci[j].oci)
-                                        }
-                                    }
-
-                                    let arrayActiveOci = [].concat(...arrayVisibleOci)
-                                    let resultArrayOci = []
-                                    for (let k=0; arrayActiveOci.length>k; k++ ) {
-                                        if (arrayActiveOci[k].visible) {
-                                            resultArrayOci.push(arrayActiveOci[k].ociNumber)
-                                        }
+                                    <% let herramientasVisibles = [], herramientasEnUso = [];
+                                    for (let h=0; herramientas.length > h ; h++) {
+                                        herramientas[h].status ? herramientasVisibles.push(herramientas[h]) : herramientasEnUso.push(herramientas[h])
                                     } %>
-                                    <h3 class="font-medium">
-                                        <%= resultArrayOci.length %>/<span style="font-size: 0.95rem;">
-                                                <%=arrayActiveOci.length%>
-                                            </span>
-                                    </h3>
-                                    <span>Configuración de Herramientas - Pedidos</span>
+                                    <h3 class="font-medium"><%= parseInt(herramientasVisibles.length) %>/<span style="font-size: 0.95rem;"><%= parseInt(herramientas.length) %></span></h3>
+                                    <span>Solicitar Herramienta</span>
                                 </div>
                                 <div class="align-self-center ms-auto">
-                                    <i class="icon-settings success font-large-2 float-right"></i>
+                                    <i class="icon-wrench font-large-2 float-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!-- Maquinas -->
+        <div class="col-xl-3 col-sm-6 col-12">
+            <a href="/api/maquinas" style="text-decoration: none;">
+                <div class="card rounded-3 card_dashboard">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="media d-flex mx-2">
+                                <div class="media-body text-left">
+                                    <% let maquinasVisibles=[], maquinasEnMantenimiento=[];
+                                    for (let h=0; maquinas.length> h ; h++) {
+                                        maquinas[h].status ? maquinasVisibles.push(maquinas[h]) : maquinasEnMantenimiento.push(maquinas[h])
+                                    } %>
+                                    <h3 class="font-medium"><%= parseInt(maquinasVisibles.length) %>/<span style="font-size: 0.95rem;"><%= parseInt(maquinas.length) %></span></h3>
+                                    <% if ( maquinasEnMantenimiento.length !=0 ) { %>
+                                        <span>Máquinas Activas</span>
+                                        /<span class="badge rounded-pill text-bg-danger"><%= maquinasEnMantenimiento.length %> en Mantenimiento</span>
+                                        <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #b79f08;"></i>
+                                    <% } else { %>
+                                        <span class="badge rounded-pill text-bg-success">Máquinas Activas</span>
+                                    <% } %>
+                                </div>
+                                <div class="align-self-center ms-auto">
+                                    <i class="icon-bulb font-large-2 float-right"></i>
                                 </div>
                             </div>
                         </div>
@@ -77,7 +82,7 @@
         </div>
         <!-- pedidos - mensajes -->
         <div class="col-xl-3 col-sm-6 col-12">
-            <a href="/api/webchatSolicitudes/" style="text-decoration: none;">
+            <a href="/api/webchat/solicitud" style="text-decoration: none;">
                 <div class="card rounded-3 card_dashboard">
                     <div class="card-content">
                         <div class="card-body">
@@ -105,75 +110,105 @@
         </div>
     </div>
     <!-- Second Row -->
-    <div class="row justify-content-evenly">
-        <!-- Maquinas -->
+    <div class="row justify-content-evenly ms-4">
+        <!-- Consumibles Rate -->
         <div class="col-xl-3 col-sm-6 col-12">
-            <a href="/api/maquinas" style="text-decoration: none;">
-                <div class="card rounded-3 card_dashboard">
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="media d-flex mx-2">
-                                <div class="media-body text-left">
-                                    <% let maquinasVisibles=[], maquinasEnMantenimiento=[];
-                                    for (let h=0; maquinas.length> h ; h++) {
-                                        maquinas[h].status ? maquinasVisibles.push(maquinas[h]) : maquinasEnMantenimiento.push(maquinas[h])
-                                    } %>
-                                    <h3 class="font-medium">
-                                        <%= parseInt(maquinasVisibles.length) %>/
-                                            <span style="font-size: 0.95rem;">
-                                                <%= parseInt(maquinas.length) %>
-                                            </span>
-                                    </h3>
-                                    <% if ( maquinasEnMantenimiento.length !=0 ) { %>
-                                        <span>
-                                            <%= parseInt(maquinasVisibles.length) %> Maquinas Activas
-                                        </span> / <span class="badge rounded-pill text-bg-danger">
-                                            <%= maquinasEnMantenimiento.length %> en Mantenimiento
-                                        </span>
-                                        <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #b09b12;"></i>
-                                    <% } else { %>
-                                        <span class="badge rounded-pill text-bg-success">Maquinas
-                                            Activas</span>
-                                    <% } %>
-                                </div>
-                                <div class="align-self-center ms-auto">
-                                    <i class="icon-wrench success font-large-2 float-right"></i>
-                                </div>
+            <div class="card rounded-3 card_dashboard">
+                <div class="card-content">
+                    <div class="card-body">
+                        <div class="media d-flex mx-2">
+                            <div class="media-body text-left">
+                                <% let countActiveConsumibles = 0; let countVisibleConsumibles = 0
+                                for (let i=0; consumibles.length>i; i++ ) {
+                                    consumibles[i].status ? consumibles[i].visible ? countActiveConsumibles++ : null : null
+                                    countVisibleConsumibles++
+                                } 
+                                let valueRateConsumibles = parseFloat((countActiveConsumibles / countVisibleConsumibles)*100).toFixed(2) %>
+                                <h3 class="success"><%= valueRateConsumibles %>%</h3>
+                                <span>Consumibles Rate</span>
                             </div>
+                            <div class="align-self-center ms-auto">
+                                <i class="icon-cup success font-large-2 float-right"></i>
+                            </div>
+                        </div>
+                        <div class="progress mt-1 mb-0" style="height: 7px;">
+                            <% if (valueRateConsumibles > 90 ) { %>
+                                <div class="progress-bar bg-success" role="progressbar" style="width: <%= valueRateConsumibles %>%" aria-valuenow="<%= valueRateConsumibles %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <% } else if (90 > valueRateConsumibles && valueRateConsumibles > 80) { %>
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: <%= valueRateConsumibles %>%" aria-valuenow="<%= valueRateConsumibles %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <% } else { %>
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: <%= valueRateConsumibles %>%" aria-valuenow="<%= valueRateConsumibles %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <% } %>
                         </div>
                     </div>
                 </div>
-            </a>
+            </div>
         </div>
-        <!-- herramientas -->
+        <!-- Cutting Tools Rate -->
         <div class="col-xl-3 col-sm-6 col-12">
-            <a href="/api/herramientas/" style="text-decoration: none;">
-                <div class="card rounded-3 card_dashboard">
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="media d-flex mx-2">
-                                <div class="media-body text-left">
-                                    <% let arrayProject=[]
-                                    for (let i=0; clientes.length>i; i++ ) {
-                                        arrayProject.push(clientes[i].project)
-                                    }
-                                    function sumarArray(arr) {
-                                        return arr.reduce((suma, numero) => suma + numero, 0);
-                                    }
-                                    const resultado = sumarArray(arrayProject); %>
-                                    <h3 class="font-medium">
-                                        <%= resultado %>
-                                    </h3>
-                                    <span>Herramientas</span>
-                                </div>
-                                <div class="align-self-center ms-auto">
-                                    <i class="icon-rocket danger font-large-2 float-right"></i>
-                                </div>
+            <div class="card rounded-3 card_dashboard">
+                <div class="card-content">
+                    <div class="card-body">
+                        <div class="media d-flex mx-2">
+                            <div class="media-body text-left">
+                                <% let countActiveCuttingTools = 0; let countVisibleCuttingTools = 0
+                                for (let i=0; herramientas.length>i; i++ ) {
+                                    herramientas[i].status ? herramientas[i].visible ? countActiveCuttingTools++ : null : null
+                                    countVisibleCuttingTools++
+                                } 
+                                let valueRateCuttingTools = parseFloat((countActiveCuttingTools / countVisibleCuttingTools)*100).toFixed(2) %>
+                                <h3 class="success"><%= valueRateCuttingTools %>%</h3>
+                                <span>Herramientas Rate</span>
                             </div>
+                            <div class="align-self-center ms-auto">
+                                <i class="icon-cup success font-large-2 float-right"></i>
+                            </div>
+                        </div>
+                        <div class="progress mt-1 mb-0" style="height: 7px;">
+                            <% if (valueRateCuttingTools > 90 ) { %>
+                                <div class="progress-bar bg-success" role="progressbar" style="width: <%= valueRateCuttingTools %>%" aria-valuenow="<%= valueRateCuttingTools %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <% } else if (90 > valueRateCuttingTools && valueRateCuttingTools > 80) { %>
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: <%= valueRateCuttingTools %>%" aria-valuenow="<%= valueRateCuttingTools %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <% } else { %>
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: <%= valueRateCuttingTools %>%" aria-valuenow="<%= valueRateCuttingTools %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <% } %>
                         </div>
                     </div>
                 </div>
-            </a>
+            </div>
+        </div>
+        <!-- Tools Rate -->
+        <div class="col-xl-3 col-sm-6 col-12">
+            <div class="card rounded-3 card_dashboard">
+                <div class="card-content">
+                    <div class="card-body">
+                        <div class="media d-flex mx-2">
+                            <div class="media-body text-left">
+                                <% let countActiveTools = 0; let countVisibleTools = 0
+                                for (let i=0; maquinas.length>i; i++ ) {
+                                    maquinas[i].status ? maquinas[i].visible ? countActiveTools++ : null : null
+                                    countVisibleTools++
+                                } 
+                                let valueRateTool = parseFloat((countActiveTools / countVisibleTools)*100).toFixed(2) %>
+                                <h3 class="success"><%= valueRateTool %>%</h3>
+                                <span>Máquinas Rate</span>
+                            </div>
+                            <div class="align-self-center ms-auto">
+                                <i class="icon-cup success font-large-2 float-right"></i>
+                            </div>
+                        </div>
+                        <div class="progress mt-1 mb-0" style="height: 7px;">
+                            <% if (valueRateTool > 90 ) { %>
+                                <div class="progress-bar bg-success" role="progressbar" style="width: <%= valueRateTool %>%" aria-valuenow="<%= valueRateTool %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <% } else if (90 > valueRateTool && valueRateTool > 80) { %>
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: <%= valueRateTool %>%" aria-valuenow="<%= valueRateTool %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <% } else { %>
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: <%= valueRateTool %>%" aria-valuenow="<%= valueRateTool %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- total visitas -->
         <div class="col-xl-3 col-sm-6 col-12">

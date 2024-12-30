@@ -6,26 +6,24 @@
 </head>
 
 <body>
-        <%- include('../partials/header/header'); %>
+        <%- include('../partials/header/headerToolShop'); %>
     <div class="container" style="padding-top: 70px;"></div>
     <br>
-    <% if (userInfo.superAdmin) { %>
-        <%- include('../partials/mainCharts/toolShoopAdminChart'); %>
-    <% } else if (userInfo.admin && !userInfo.superAdmin) { %>
+    <% if (userInfo.admin && !userInfo.superAdmin) { %>
         <%- include('../partials/mainCharts/toolShoopAdminChart'); %>
     <% } else { %>
         <%- include('../partials/mainCharts/toolShoopUserChart'); %>
     <% } %>
     
     <div class="d-block mx-auto mt-1 text-center bg-primary-light">    
-        <%- include('../partials/forms/formularioBuscarConsumibles'); %>
+        <%- include('../partials/forms/formularioBuscarConsumible'); %>
         <%- include('../partials/data/dataConsumiblesSearch'); %>
     </div>
     <!-- ------------ Lista de ERP/Consumibles ------------ -->
     <%- include('../partials/sections/sectionConsumiblesList'); %>
     
     <div class="d-block mx-auto mb-3 text-center w-75">
-        <%- include('../partials/data/dataConsumiblesList'); %>
+        <%- include('../partials/data/dataConsumiblesListAsk'); %>
     </div>
     <!-- ---------- Fin Lista de ERP/Consumibles ---------- -->
     <br>
@@ -37,8 +35,8 @@
     </footer>
 
     <!--    scripts     -->
-    <script type="text/javascript" src="/js/index.js"></script>
-    <script type="text/javascript" src="/js/search.js"></script>
+    <script type="text/javascript" src="/js/indexListAsk.js"></script>
+    <script type="text/javascript" src="/js/searchListAsk.js"></script>
 
 </body>
 </html>

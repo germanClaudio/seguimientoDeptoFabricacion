@@ -397,6 +397,10 @@ html body .display-7 {
   background: #fcfcff;
 }
 
+.footer_disabled {
+  background: none;
+}
+
 .card-figure {
   position: relative;
   padding: 6px;
@@ -1618,4 +1622,86 @@ height: 4px;
   100% {
       transform: rotate(360deg);
   }
+}
+
+.cardSelected {
+  box-shadow: 0 0 15px #002affcf !important;
+}
+
+.row-highlight-stockCero {
+  background-color:#20202040;
+}
+
+.row-highlight {
+  background-color: #69dcff99;
+}
+.input-highlight-blue {
+  border: 2px solid blue;
+}
+.input-highlight-red {
+  border: 2px solid red;
+}
+.input-stock-zero {
+  background-color: #ffcccc;
+}
+
+
+.common-style {
+  display: inline-block;
+  padding: 3px 7px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25rem;
+}
+
+.epp {
+  background-color: #fcdc3c;
+  color: #000;
+}
+
+.consumibleajuste {
+  background-color: #001ee3;
+  color: #ffffff;
+}
+
+.consumiblemecanziado {
+  background-color: #00031a;
+  color: #ffffff;
+}
+
+.insertos {
+  background-color: #5f5f5f;
+  color: #ffffff;
+}
+
+.otros {
+  background-color: #009a1f;
+  color: #ffffff;
+}
+
+
+.imgLazyLoad {
+  width: 50%;
+  height: auto;
+  transition: opacity 0.4s ease-in-out; /* Suaviza la aparición */
+  opacity: 1;
+}
+
+.imgLazyLoad.loaded {
+  width: 75%;
+  height: auto;
+  opacity: 1;
+}
+
+.cartEmpty {
+  box-shadow: 5px 0 10px #fff;
+}
+
+.cartEmpty:hover {
+  box-shadow: -5px 0 10px #fff;
+  scale: 1.05
 }

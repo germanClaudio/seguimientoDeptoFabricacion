@@ -50,6 +50,11 @@ class ConsumibleService {
     async getConsumiblesBySearching(query) {
         return await this.consumible.getConsumiblesBySearching(query)
     }
+
+    // Modify stock from selected items
+    async modificarStockConsumibles(infoStock) {
+        return await this.consumible.modificarStockConsumibles(infoStock)
+    }
 }
 
 module.exports = ConsumibleService

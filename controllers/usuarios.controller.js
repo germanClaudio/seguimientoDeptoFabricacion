@@ -549,24 +549,47 @@ class UsersController {
                     await this.users.updateUserVisits(userInfo._id, usuarioUandP)
                     const usuario = await this.users.getUserById(userInfo._id)
                     console.log('usuario: ', usuario)
-                    setTimeout(() => {
-                        return res.render('index', {
-                            usuario,
-                            username,
-                            userInfo,
-                            expires,
-                            clientes,
-                            usuarios,
-                            proyectos,
-                            mensajes,
-                            data,
-                            sessions,
-                            maquinas,
-                            herramientas,
-                            consumibles,
-                            proveedores,
-                        })
-                    }, 250)
+
+                    if (usuario.area === 'fabricacion') {
+                        setTimeout(() => {
+                            return res.render('indexToolShop', {
+                                usuario,
+                                username,
+                                userInfo,
+                                expires,
+                                clientes,
+                                usuarios,
+                                proyectos,
+                                mensajes,
+                                data,
+                                sessions,
+                                maquinas,
+                                herramientas,
+                                consumibles,
+                                proveedores,
+                            })
+                        }, 250)
+
+                    } else {
+                        setTimeout(() => {
+                            return res.render('index', {
+                                usuario,
+                                username,
+                                userInfo,
+                                expires,
+                                clientes,
+                                usuarios,
+                                proyectos,
+                                mensajes,
+                                data,
+                                sessions,
+                                maquinas,
+                                herramientas,
+                                consumibles,
+                                proveedores,
+                            })
+                        }, 250)
+                    }
 
                 } else {
                     setTimeout(() => {

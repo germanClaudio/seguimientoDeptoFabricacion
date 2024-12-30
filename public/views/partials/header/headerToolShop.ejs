@@ -1,0 +1,96 @@
+<header>
+    <nav class="navbar fixed-top navbar-dark bg-dark text-white m-b-80">
+        <div class="container-fluid px-2 my-1">
+            <a class="navbar-brand mx-2" role="button" href="#offcanvasExample" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasWithBothOptions"
+                aria-controls="offcanvasWithBothOptions">
+                <img src='/src/images/logo01-bco.png' title="Logo Prodismo" width="165px" height="30px"
+                    class="d-none d-xl-inline-block align-text-top">
+                <img src='/src/images/soloLogo01-bco.png' title="Logo Prodismo" width="40px" height="30px"
+                    class="d-xl-none d-inline-block align-text-top">
+            </a>
+            <div class="me-auto d-block" id="navbarTogglerDemo02">
+                <ul class="navbar-nav my-auto list-group list-group-horizontal">
+                    <li class="nav-item mx-4 active d-none d-lg-inline">
+                        <a class="nav-link" aria-current="page" title="Home" href="/api/auth/index">
+                            <i class="fa-solid fa-home" aria-hidden="true"></i>
+                            <span class="d-none d-xxl-inline">Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mx-4 d-none d-lg-inline">
+                        <a class="nav-link" title="Solicitar Consumibles" href="/api/consumibles/solicitar">
+                            <i class="fa-solid fa-cart-plus" aria-hidden="true"></i>
+                            <span class="d-none d-xxl-inline">Consumibles</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mx-4 d-none d-lg-inline">
+                        <a class="nav-link" title="Configurar Herramienta" href="/api/herramientas/solicitar">
+                            <i class="fa-solid fa-wrench" aria-hidden="true"></i>
+                            <span class="d-none d-xxl-inline">Herramientas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mx-4 d-none d-lg-inline">
+                        <a class="nav-link" title="Máquinas" href="/api/maquinas">
+                            <i class="icon-bulb" aria-hidden="true"></i>
+                            <span class="d-none d-xxl-inline">Maquinas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mx-4 d-none d-lg-inline">
+                        <a class="nav-link" title="Mensajes" href="/api/webchat/">
+                            <i class="fa-solid fa-comments" aria-hidden="true"></i>
+                            <span class="d-none d-xxl-inline">Mensajes</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="d-flex text-center">
+                <div id="expires" style="display: none;"><%= expires %></div>
+
+                <div class="vr mx-1 d-none d-xl-inline" style="color: white;"></div>
+
+                <div class="container text-center m-auto d-none d-xl-inline" style="width: auto;">
+                    <div class="mx-auto small" id="countdown"></div>
+                    <div class="mx-auto small" id="clock"></div>
+                </div>
+
+                <div class="vr mx-1 d-none d-xl-inline" style="color: white;"></div>
+
+                <div class="container text-center m-auto" style="width: auto;">
+                    <%- include('../../partials/userBanner/userBanner'); %>
+                </div>
+
+                <div class="vr mx-1 d-none d-xl-inline" style="color: white;"></div>
+
+                <a class="position-relative me-3" title="Carrito usuario <%= userInfo.username %>" href="/api/carrito/<%= userInfo._id %>" name="btnCart" id="btnCart_<%= userInfo._id %>">
+                    <img id="avatarCart" class="img rounded-circle mx-auto d-none d-lg-inline shadow cartEmpty ms-2 mt-2" alt="Cart <%= userInfo.name %> <%= userInfo.lastName %>"
+                        src="/src/images/upload/ConsumiblesImages/ShopingCartClic.jpg" width="50px" height="50px">
+                    <span title="Ítems carrito <%= userInfo.visits %>" class="badge rounded-pill bg-success text-light position-absolute top-0 start-100 translate-middle">
+                        0
+                    </span>
+                </a>
+                
+                <a class="position-relative me-3" title="Settings <%= userInfo.name %> <%= userInfo.lastName %>" href="/api/usuarios/getUserSettings/<%= userInfo._id %>" name="btnSetting" id="btnSetting">
+                    <img id="avatarUser" class="img rounded-circle mx-auto d-none d-lg-inline shadow" alt="Avatar <%= userInfo.name %> <%= userInfo.lastName %>"
+                        src="<%= userInfo.avatar %>" width="60px" height="60px">
+                        <span title="Visitas <%= userInfo.visits %>" class="badge rounded-pill bg-succes position-absolute top-0 start-100 translate-middle">
+                            <%= userInfo.visits %>
+                        </span>
+                </a>
+
+                <div class="vr mx-2 d-none d-xl-inline" style="color: white;"></div>
+
+                <button id="logoutBanner" class="btn btn-light me-2 my-auto shadow" title="LogOut" style="width: auto;" type="button">
+                    <i class="fa-solid fa-sign-out"></i>
+                    <span class="d-none d-xxl-inline">LogOut</span>
+                </button>
+
+            </div>
+        </div>
+    </nav>
+    <% if (userInfo.admin && userInfo.area === 'fabricacion') { %>
+        <%- include('../../partials/sidebar/sidebarToolShopAdmin'); %>
+
+    <% } else { %>
+        <%- include('../../partials/sidebar/sidebarToolShopUser'); %>
+    <% } %>
+</header>
