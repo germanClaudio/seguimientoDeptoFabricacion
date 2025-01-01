@@ -1,0 +1,106 @@
+<% const green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', yellow = 'warning', black = 'dark', white = 'light', info = 'info',
+	epp = 'EPP', insertos = 'Insertos', consumibleAjuste = 'Consumible Ajuste', consumibleMeca = 'Consumible Mecanizado', otros = 'Otros'
+	const typeConfigurations = {
+	epp: { optionType: yellow, showType: epp, textColor: black },
+	insertos: { optionType: grey, showType: insertos, textColor: white },
+	consumiblesAjuste: { optionType: blue, showType: consumibleAjuste, textColor: white },
+	consumiblesMeca: { optionType: black, showType: consumibleMeca, textColor: white },
+	otros: { optionType: green, showType: otros, textColor: white }
+	};
+	const defaultConfig = { optionType: info, showType: 'Otro', textColor: black };
+
+	if (!userCart._id || userCart.items.length === 0) { %>
+        <div class="card mx-auto shadow p-3 mb-4 bg-body rounded w-75 text-center">
+            Tu carrito está vacío, puedes solicitar mas items haciendo clic en el botón de abajo!
+        </div>
+        <div class="card mx-auto shadow p-3 mb-4 bg-body rounded w-75 align-items-center my-3" id="emptyCart">
+            <a class="btn btn-primary my-2 w-25" href="/api/auth/indexToolShop"><i class="fa-solid fa-cart-plus"></i> Pedir mas... </a>
+        </div>
+
+<% } else { %>
+    <div class="card mx-auto shadow p-3 mb-4 bg-body rounded w-75" id="mostrarItemsCarts">
+        <!-- Encabezado del carrito -->
+        <div class="alert alert-primary text-center mx-5 mb-2" role="alert">
+			<% let idChain = userCart.userId.toString().substring(19) %>
+			<h5 class="text-center mb-1">
+				<strong>Carrito Id# ...<%= idChain %> de <%= userCart.creator[0].name %> <%= userCart.creator[0].lastName %> - Lista de Items a Solicitar</strong>
+			</h5>
+        </div>
+
+        <!-- Listado de productos -->
+		
+		<div class="alert alert-secondary ps-5 mx-5" role="alert">
+			<ol class="list-group numbered-list">
+				<% for (let i = 0; i < userCart.items.length; i++) { 
+					const { optionType, showType, textColor } = typeConfigurations[userCart.items[i].type] || defaultConfig; %>
+					<li class="list-group-item position-relative">
+						<div class="row">
+							<!-- Información del producto -->
+							<div class="col-md-8">
+								<p><strong>Código:</strong> <%= userCart.items[i].code %></p>
+								<p><strong>Detalle:</strong> <%= userCart.items[i].designation %></p>
+								<p><strong>Tipo:</strong> <span class="badge bg-<%= optionType %> text-<%= textColor %>"><%= showType %></span></p>
+								<p><strong>Características:</strong> <%= userCart.items[i].characteristics %></p>
+							</div>
+							<!-- Imagen del producto -->
+							<div class="col-md-4 d-flex align-items-center justify-content-center">
+								<img src="<%= userCart.items[i].imageConsumible %>" class="img-fluid rounded-4" alt="Producto" style="max-width: 150px;">
+							</div>
+						</div>
+				
+						<!-- Control de cantidad y acciones -->
+						<div class="row mt-2">
+							<div class="col-6 d-flex align-items-center">
+							<form action="/api/carts/remove/<%= userCart.items[i].productId %>" method="post" class="d-inline">
+								<button 
+								type="submit" 
+								class="btn btn-secondary btn-sm" 
+								<%= userCart.items[i].quantity === 1 ? "disabled" : "" %>>
+								<i class="fa-solid fa-minus"></i>
+								</button>
+								<input 
+								type="hidden" 
+								name="quantity" 
+								value="<%= userCart.items[i].quantity %>" 
+								id="number_<%= userCart.items[i].productId %>">
+							</form>
+							<span class="mx-2"><%= userCart.items[i].quantity %></span>
+							<form action="/api/carts/addQty/<%= userCart.items[i].productId %>" method="post" class="d-inline">
+								<button type="submit" class="btn btn-success btn-sm">
+								<i class="fa-solid fa-plus"></i>
+								</button>
+							</form>
+							</div>
+							<div class="col-6 text-end">
+							<form action="/api/carts/deleteItem/<%= userCart.items[i].productId %>" method="post">
+								<button type="submit" class="btn btn-danger btn-sm">
+								<i class="fa-solid fa-trash"></i> Eliminar
+								</button>
+							</form>
+							</div>
+						</div>
+					</li>
+				<% } %>
+			</ol>
+		</div>
+
+        <!-- Resumen de total y fecha -->
+        <div class="d-flex justify-content-between align-items-center mx-auto shadow w-75 p-3 mb-2 bg-body rounded" id="total">
+			<div class="alert alert-danger w-50 mb-1 text-center me-2" role="alert">
+				<strong><%= userCart.items.length %> Producto/s</strong><br>
+				<% let totalQty = 0; for (let i = 0; i < userCart.items.length; i++) { totalQty += userCart.items[i].quantity; } %>
+				Cantidad Total de Ítems: <span class="badge badge-pill bg-success"> <%= totalQty %> </span>
+			</div>
+			<div class="alert alert-secondary w-50 mb-1 text-center ms-2" role="alert">
+				<strong>Fecha y hora:</strong><br><%= userCart.modifiedOn %>
+			</div>
+        </div>
+
+        <!-- Botones finales -->
+        <div class="d-flex justify-content-around align-items-center mx-auto shadow p-3 mb-5 bg-body rounded w-75" id="emptyCart">
+			<a class="btn btn-primary my-2 w-25" href="/api/auth/indexToolShop">Seguir Seleccionando <i class="fa-solid fa-cart-plus"></i></a>
+			<a class="btn btn-success my-2 w-25" href="/api/carts/genOrder/<%= userCart._id %>">Generar Pedido <i class="fa-solid fa-check-circle"></i></a>
+			<a class="btn btn-danger my-2 w-25" href="/api/carts/empty-cart/<%= userCart._id %>">Vaciar Carrito <i class="fa-solid fa-times"></i></a>
+        </div>
+    </div>
+<% } %>

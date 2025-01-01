@@ -1,6 +1,6 @@
-const ContainerMongoDB = require('../../contenedores/containerMongoDB.js')
-const mongoose = require('mongoose')
-const Consumibles = require('../../models/consumibles.models.js')
+const ContainerMongoDB = require('../../contenedores/containerMongoDB.js'),
+    mongoose = require('mongoose'),
+    Consumibles = require('../../models/consumibles.models.js')
 
 const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000 }
 

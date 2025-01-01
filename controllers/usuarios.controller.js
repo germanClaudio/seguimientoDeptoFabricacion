@@ -1,29 +1,29 @@
-const UserService = require("../services/users.service.js")
-const ProyectosService = require("../services/projects.service.js")
-const ClientesService = require("../services/clients.service.js")
-const MessagesService = require("../services/messages.service.js")
-const ToolsService = require("../services/tools.service.js")
-const CuttingToolsService = require("../services/cuttingTools.service.js")
-const ConsumiblesService = require("../services/consumibles.service.js")
-const SuppliersService = require("../services/suppliers.service.js")
+const UserService = require("../services/users.service.js"),
+    ProyectosService = require("../services/projects.service.js"),
+    ClientesService = require("../services/clients.service.js"),
+    MessagesService = require("../services/messages.service.js"),
+    ToolsService = require("../services/tools.service.js"),
+    CuttingToolsService = require("../services/cuttingTools.service.js"),
+    ConsumiblesService = require("../services/consumibles.service.js"),
+    SuppliersService = require("../services/suppliers.service.js"),
+    CartsService = require("../services/carts.service.js"),
 
-const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
-const { uploadMulterSingleAvatarUser } = require("../utils/uploadMulter.js")
-const { generateToken } = require('../utils/generateToken')
+    { uploadToGCS } = require("../utils/uploadFilesToGSC.js"),
+    { uploadMulterSingleAvatarUser } = require("../utils/uploadMulter.js"),
+    { generateToken } = require('../utils/generateToken'),
+    
+    csrf = require('csrf'),
+    csrfTokens = csrf(),
+    bCrypt = require('bcrypt'),
+    cookie = require('../utils/cookie.js'),
+    
+    data = require('../utils/variablesInicializator.js'),
+    { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js'),
+    sessionTime = parseInt(process.env.SESSION_TIME) // 12 HORAS
 
-let formatDate = require('../utils/formatDate.js')
-const bCrypt = require('bcrypt')
+let formatDate = require('../utils/formatDate.js'),
+    userPictureNotFound = "../../../src/images/upload/AvatarUsersImages/incognito.jpg"
 
-const csrf = require('csrf'),
-    csrfTokens = csrf();
-
-let userPictureNotFound = "../../../src/images/upload/AvatarUsersImages/incognito.jpg"
-const cookie = require('../utils/cookie.js')
-
-const data = require('../utils/variablesInicializator.js'),
-    { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
-
-const sessionTime = parseInt(process.env.SESSION_TIME) // 12 HORAS
 
 function validateSelectField(value) {
     const validOptions = [
@@ -34,21 +34,9 @@ function validateSelectField(value) {
     return validOptions.includes(value);
 }
 
-const {catchError400,
-    catchError400_1,
-    catchError400_2,
-    catchError400_3,
-    catchError400_4,
-    catchError400_5,
-    catchError400_6,
-    catchError403,
-    catchError401,
-    catchError401_1,
-    catchError401_2,
-    catchError401_3,
-    catchError401_4,
-    catchError500
-} = require('../utils/catchErrors.js')
+const { catchError400, catchError400_1, catchError400_2, catchError400_3, catchError400_4, catchError400_5, catchError400_6,
+        catchError401, catchError401_1, catchError401_2, catchError401_3, catchError401_4,
+        catchError403, catchError500 } = require('../utils/catchErrors.js')
 
 class UsersController {  
     constructor(){
@@ -60,11 +48,12 @@ class UsersController {
         this.cuttingTools = new CuttingToolsService()
         this.consumibles = new ConsumiblesService()
         this.suppliers = new SuppliersService()
+        this.carts = new CartsService()
     }
 
     getAllUsers = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         const expires = cookie(req)
         
         try {
@@ -87,10 +76,10 @@ class UsersController {
     }
 
     getUserById = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const { id } = req.params,
+            expires = cookie(req)
         
         try {
             const usuario = await this.users.getUserById(id)
@@ -112,9 +101,9 @@ class UsersController {
     }
 
     getUserByUsername = async (req, res, next) => {
-        const { username } = req.params
+        const { username } = req.params,
+            expires = cookie(req)
         let userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
             const usuario = await this.users.getUserByUsername(username)
@@ -136,8 +125,8 @@ class UsersController {
     }
 
     getUserByUsernameAndPassword = async (req, res, next) => {
-        const { username } = req.params
-        const { password } = req.body
+        const { username } = req.params,
+            { password } = req.body
 
         try {
             const usuario = await this.users.getUserByUsernameAndPassword(username, password)
@@ -149,8 +138,8 @@ class UsersController {
     }
 
     createNewUser = async (req, res, next) => {
-        let username = res.locals.username;
-        let userInfo = res.locals.userInfo;
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo;
         const expires = cookie(req)
 
         //------ Storage New User Image in Google Store --------        
@@ -159,13 +148,13 @@ class UsersController {
                 req.file ? await uploadToGCS(req, res, next) : null
 
                 let userManager = await this.users.getUserByUsername(username);
-                const userId = userManager._id;
-                const userCreator = await this.users.getUserById(userId);
+                const userId = userManager._id,
+                    userCreator = await this.users.getUserById(userId);
                 !userCreator ? catchError401_3(req, res, next) : null
 
-                const usernameInput = req.body.username.replace(/[!@#$%^&*]/g, "");
-                const emailInput = req.body.email;
-                const legajoIdInput = req.body.userLegajoId;
+                const usernameInput = req.body.username.replace(/[!@#$%^&*]/g, ""),
+                    emailInput = req.body.email,
+                    legajoIdInput = req.body.userLegajoId;
 
                 const newUserValid = {
                     username: usernameInput,
@@ -178,8 +167,8 @@ class UsersController {
 
                 req.body.password !== req.body.confirmPassword ? catchError400_3(req, res, next) : null
 
-                const selectFieldPermiso = req.body.permiso;
-                const selectFieldArea = req.body.area;
+                const selectFieldPermiso = req.body.permiso,
+                    selectFieldArea = req.body.area;
 
                 if (validateSelectField(selectFieldPermiso) && validateSelectField(selectFieldArea)) {
                     if (userInfo.admin && !userInfo.superAdmin) {
@@ -236,23 +225,23 @@ class UsersController {
     }
     
     updateUser = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const { id } = req.params,
+            expires = cookie(req)
 
         uploadMulterSingleAvatarUser(req, res, async (err) => {
             try {
                 req.file ? await uploadToGCS(req, res, next) : null
                 
-                const userId = userInfo.id
-                const userToModify = await this.users.getUserById(id)
-                const userLogged = await this.users.getUserById(userId)
+                const userId = userInfo.id,
+                    userToModify = await this.users.getUserById(id),
+                    userLogged = await this.users.getUserById(userId)
                 !userLogged || !userToModify ? catchError401_3(req, res, next) : null
 
-                const usernameInput = req.body.username.replace(/[!@#$%^&* ]/g, "")
-                const usernameValid = await this.users.getUserByUsername(usernameInput)
-                const otherUsers = await this.users.getAllUsers()
+                const usernameInput = req.body.username.replace(/[!@#$%^&* ]/g, ""),
+                    usernameValid = await this.users.getUserByUsername(usernameInput),
+                    otherUsers = await this.users.getAllUsers()
 
                 // Función para eliminar un usuario de la lista si coincide con el usuario a comparar
                 function eliminarUsuario(lista, usuario) {
@@ -272,8 +261,8 @@ class UsersController {
                     return next(err);
                 }
 
-                const emailInput = req.body.email
-                const emails = usuariosRestantes.map(usuario => usuario.email)
+                const emailInput = req.body.email,
+                    emails = usuariosRestantes.map(usuario => usuario.email)
 
                 if (emails.includes(userToModify.email)) {
                     const err = new Error (`Ya existe un Usuario con este Em@il ${emailInput} o Em@il inválido!!`)
@@ -281,8 +270,8 @@ class UsersController {
                     return next(err);
                 }
 
-                const legajoIdInput = req.body.legajoIdDisable
-                const legajosId = usuariosRestantes.map(usuario => usuario.legajoId);
+                const legajoIdInput = req.body.legajoIdDisable,
+                    legajosId = usuariosRestantes.map(usuario => usuario.legajoId);
 
                 if (legajosId.includes(userToModify.legajoId)) {
                     const err = new Error (`Ya existe un Usuario con este Legajo #${legajoIdInput} o # Legajo inválido!!`)
@@ -290,8 +279,8 @@ class UsersController {
                     return next(err);
                 }
 
-                const selectFieldPermiso = req.body.permisoHidden
-                const selectFieldArea = req.body.areaHidden
+                const selectFieldPermiso = req.body.permisoHidden,
+                    selectFieldArea = req.body.areaHidden
 
                 // Validar y sanitizar los datos recibidos
                 if (validateSelectField(selectFieldPermiso) && validateSelectField(selectFieldArea)) {
@@ -301,8 +290,9 @@ class UsersController {
                         req.body.admin = 'off'
                     }
 
+                    let updatedUser = {}
                     if(userLogged.superAdmin) {
-                        var updatedUser = {
+                        updatedUser = {
                             name: req.body.name,
                             lastName: req.body.lastName,
                             email: emailInput,
@@ -320,7 +310,7 @@ class UsersController {
                         }
 
                     } else {
-                        var updatedUser = {
+                        updatedUser = {
                             name: req.body.name,
                             lastName: req.body.lastName,
                             email: emailInput,
@@ -359,30 +349,31 @@ class UsersController {
     }
 
     updateUserPreferences = async (req, res, next) => {
-        const id = req.params.id
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const id = req.params.id,
+            expires = cookie(req)
             //------ Storage User Image in Google Store --------
             uploadMulterSingleAvatarUser(req, res, async (err) => {
                 try {
                     req.file ? await uploadToGCS(req, res, next) : null
 
-                    const userId = userInfo.id
-                    const userToModify = await this.users.getUserById(id)
-                    const userLogged = await this.users.getUserById(userId)
+                    const userId = userInfo.id,
+                        userToModify = await this.users.getUserById(id),
+                        userLogged = await this.users.getUserById(userId)
                     !userLogged || !userToModify ? catchError401_3(req, res, next) : null
 
-                    const emailInput = req.body.email
-                    const emailValid = await this.users.getUserByEmail(emailInput)
+                    const emailInput = req.body.email,
+                        emailValid = await this.users.getUserByEmail(emailInput)
                     if (emailValid) {
                         const err = new Error (`Ya existe un Usuario con este Em@il ${emailInput} o Em@il inválido!!`)
                         err.statusCode = 400
                         return next(err);
                     }
 
+                    let updatedUser = {}
                     if(userToModify && userLogged) {
-                        var updatedUser = {
+                        updatedUser = {
                             name: req.body.name,
                             lastName: req.body.lastName,
                             email: emailInput,
@@ -415,10 +406,10 @@ class UsersController {
     }
 
     getUserSettings = async (req, res, next) => {
-        const id = req.params.id
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const id = req.params.id,
+            expires = cookie(req)
 
         try {
             const userId = userInfo.id
@@ -457,17 +448,17 @@ class UsersController {
     }
 
     deleteUserById = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const { id } = req.params,
+            expires = cookie(req)
 
         try {
             const userToDelete = await this.users.getUserById(id)
             !userToDelete ? catchError401_3(req, res, next) : null
 
-            const userId = userInfo.id
-            const userLogged = await this.users.getUserById(userId)
+            const userId = userInfo.id,
+                userLogged = await this.users.getUserById(userId)
             !userLogged ? catchError401_3(req, res, next) : null
 
             const usuario = await this.users.deleteUserById(id, dataUserModificatorNotEmpty(userLogged))
@@ -510,6 +501,7 @@ class UsersController {
                 if(user) {
                 const bCrypto = bCrypt.compareSync(password, user.password)
                     return bCrypto
+
                 } else {
                     return false
                 }
@@ -528,9 +520,10 @@ class UsersController {
                     maquinas = await this.tools.getAllTools(),
                     herramientas = await this.cuttingTools.getAllCuttingTools(),
                     consumibles = await this.consumibles.getAllConsumibles(),
-                    proveedores = await this.suppliers.getAllSuppliers()
+                    proveedores = await this.suppliers.getAllSuppliers(),
+                    carts = await this.carts.getAllCarts(),
                 
-                const sessions = parseInt(sessionLogin.length+1)
+                    sessions = parseInt(sessionLogin.length+1)
 
                 if (!usuarioUandP) {
                     const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -547,9 +540,8 @@ class UsersController {
                     req.session.username = userInfo.username
 
                     await this.users.updateUserVisits(userInfo._id, usuarioUandP)
-                    const usuario = await this.users.getUserById(userInfo._id)
-                    console.log('usuario: ', usuario)
-
+                    const usuario = await this.users.getUserById(userInfo._id),
+                        userCart = await this.carts.getCartByUserId(userInfo._id)
                     if (usuario.area === 'fabricacion') {
                         setTimeout(() => {
                             return res.render('indexToolShop', {
@@ -567,6 +559,8 @@ class UsersController {
                                 herramientas,
                                 consumibles,
                                 proveedores,
+                                userCart,
+                                carts
                             })
                         }, 250)
 
@@ -602,8 +596,7 @@ class UsersController {
                 }
             
             } else {
-                const flag = true,
-                    fail = true,
+                const flag = true, fail = true,
                     csrfToken = csrfTokens.create(req.csrfSecret);
                 setTimeout(() => {
                     return res.render('login', {
@@ -754,8 +747,8 @@ class UsersController {
     }
 
     authNoBloq = async (req, res, next) => {
-        let username = req.query.username || ""
-        const password = req.query.password || ""
+        let username = req.query.username || "",
+            password = req.query.password || ""
         username = username.replace(/[!@#$%^&*]/g, "")
     
         try {
@@ -771,12 +764,11 @@ class UsersController {
         } catch (err) {
             catchError500(err, req, res, next)
         }
-
     }
 
     index = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         const expires = cookie(req)
         
         try {
@@ -788,10 +780,11 @@ class UsersController {
                 proveedores = await this.suppliers.getAllSuppliers(),
                 proyectos = await this.projects.getAllProjects(),
                 mensajes = await this.messages.getAllMessages(),
+                carts = await this.carts.getCart(),
                 sessionsIndex = await this.users.getAllSessions(),
                 sessions = sessionsIndex.length
 
-            const { flag, fail } = true
+            const { flag, fail } = Boolean(true)
 
             const user = await this.users.getUserByUsername(username)
             if (!user) {
@@ -805,33 +798,58 @@ class UsersController {
                 }, 500)
 
             } else if ( user.status ) {
-                const access_token = generateToken(user)
-                const fail = false
+                const access_token = generateToken(user),
+                    fail = Boolean(false)
                 
                 req.session.admin = user.admin //req.session.admin = true
                 req.session.username = userInfo.username
                 
-                setTimeout(() => {
-                    const csrfToken = csrfTokens.create(req.csrfSecret); 
-                    return res.render('index', {
-                        userInfo,
-                        username,
-                        flag,
-                        fail,
-                        expires,
-                        clientes,
-                        usuarios,
-                        proyectos,
-                        mensajes,
-                        data,
-                        sessions,
-                        maquinas,
-                        herramientas,
-                        consumibles,
-                        proveedores,
-                        csrfToken
-                    })
-                }, 150)
+                if (user.area === 'fabricacion') {
+                    setTimeout(() => {
+                        const csrfToken = csrfTokens.create(req.csrfSecret); 
+                        return res.render('indexToolShop', {
+                            user,
+                            username,
+                            userInfo,
+                            expires,
+                            clientes,
+                            usuarios,
+                            proyectos,
+                            mensajes,
+                            data,
+                            sessions,
+                            maquinas,
+                            herramientas,
+                            consumibles,
+                            proveedores,
+                            carts,
+                            csrfToken
+                        })
+                    }, 250)
+
+                } else {
+                    setTimeout(() => {
+                        const csrfToken = csrfTokens.create(req.csrfSecret); 
+                        return res.render('index', {
+                            userInfo,
+                            username,
+                            flag,
+                            fail,
+                            expires,
+                            clientes,
+                            usuarios,
+                            proyectos,
+                            mensajes,
+                            data,
+                            sessions,
+                            maquinas,
+                            herramientas,
+                            consumibles,
+                            proveedores,
+                            csrfToken
+                        })
+                    }, 150)
+                }
                 
             } else {
                 setTimeout(() => {

@@ -1,18 +1,18 @@
-const ContenedorMongoDB = require("../../contenedores/carritos/containerMongoDB.js");
+const ContainerMongoDB = require('../../contenedores/containerMongoDB.js'),
+    mongoose = require('mongoose'),
+    Consumibles = require('../../models/consumibles.models.js'),
+    Carritos = require("../../models/carritos.models.js"),
+    Ordenes = require("../../models/ordenes.models.js"),
+    advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000 },
+    formatDate = require('../../utils/formatDate.js')
 
-const Carritos = require("../../models/carritos.models.js");
-const Productos = require("../../models/productos.models.js");
-const Ordenes = require("../../models/ordenes.models.js");
-const logger = require("../../utils/winston.js");
-const now = require("../../utils/formatDate.js");
-
-class OrdenesDaoMongoDB extends ContenedorMongoDB {
+class OrdenesDaoMongoDB extends ContainerMongoDB {
   constructor(cnxStr) {
     super(cnxStr);
   }
 
   async init() {
-    await this.connection;
+    mongoose.connect(this.cnxStr, advancedOptions)
   }
 
   async getArrProducts(data) {

@@ -1,12 +1,12 @@
-const { Router } = require('express')
-const routerConsumibles = Router()
+const { Router } = require('express'),
+    routerConsumibles = Router(),
 
-const { checkAuthentication } = require('../middlewares/chekAuthentication.js')
-// const { authUserMiddleware } = require('../middlewares/authUser.middleware.js')
+    { checkAuthentication } = require('../middlewares/chekAuthentication.js'),
+//  { authUserMiddleware } = require('../middlewares/authUser.middleware.js'),
 
-const GetConsumibles = require('../controllers/consumibles.controller.js')
-const getConsumibles = GetConsumibles.ConsumiblesController
-const consumibles = new getConsumibles()
+    GetConsumibles = require('../controllers/consumibles.controller.js'),
+    getConsumibles = GetConsumibles.ConsumiblesController,
+    consumibles = new getConsumibles()
 
 //---------------- Get All Consumibles in DB ------------------
 routerConsumibles.get('/', checkAuthentication, consumibles.getAllConsumibles)

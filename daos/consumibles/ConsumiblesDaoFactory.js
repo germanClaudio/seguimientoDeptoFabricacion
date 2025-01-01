@@ -1,8 +1,6 @@
-const ConsumiblesDaoMongoDB = require('./ConsumiblesDaoMongoDB.js')
-
-const cnxStr = process.env.MONGO_URL_CONNECT_PROD
-
-const option = process.env.PERSISTENCIA || 'Mongo'
+const ConsumiblesDaoMongoDB = require('./ConsumiblesDaoMongoDB.js'),
+    cnxStr = process.env.MONGO_URL_CONNECT_PROD,
+    option = process.env.PERSISTENCIA || 'Mongo'
 
 let daoConsumibles
 switch (option) {

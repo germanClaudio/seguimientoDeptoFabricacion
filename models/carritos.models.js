@@ -2,42 +2,57 @@ const { Schema, model, mongoose } = require('mongoose')
 const now = require('../utils/formatDate.js')
 
 let ItemSchema = new Schema({
-    productId: {
+    consumibleId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Products",
+        ref: "Consumibles",
     },
-    name: {
+    designation: {
+        type: String,
+        maxlength: 50,
+        trim: true,
+    },
+    code: {
         type: String,
         maxlength: 100
+    },
+    type: {
+        type: String,
+        maxlength: 50
+    },
+    imageConsumible: { 
+        type: String,
+        maxlength: 1000
+    },
+    qrCode: { 
+        type: String,
+        maxlength: 50000
+    },
+    characteristics: { 
+        type: String,
+        maxlength: 350,
+        default: '',
+        trim: true,
     },
     quantity: {
         type: Number,
         required: true,
         min: [0, 'Quantity can not be less than 0.']
     },
-    price: {
-        type: Number,
-        required: true
+    creator: {
+        type: Array,
+        default: []
     },
-    total: {
-        type: Number,
-        required: true,
-    }
-}, {
     timestamp: {
         type: String,
         default: now,
     }
 })
+
 const cartSchema = new Schema({
     items: [ItemSchema],
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Usuarios"
-    },
-    subTotal: {
-        default: 0,
-        type: Number
     },
     active: {
         type: Boolean,
@@ -47,12 +62,10 @@ const cartSchema = new Schema({
         type: String,
         default: now,
     },
-    username: {
-        type: String,
-    }
-}, {
-    timestamp: true
-    }  
-)
+    creator: {
+        type: Array,
+        default: []
+    },
+})
 
 module.exports = model('Carts', cartSchema)

@@ -8,23 +8,23 @@ fetch('/api/config')
     .catch(error => console.error('Error fetching config:', error));
 
 function formatDate(date) {
-    const DD = String(date.getDate()).padStart(2, '0');
-    const MM = String(date.getMonth() + 1).padStart(2, '0');
-    const YY = date.getFullYear();
-    const hh = String(date.getHours()).padStart(2, '0');
-    const mm = String(date.getMinutes()).padStart(2, '0');
-    const ss = String(date.getSeconds()).padStart(2, '0');
+    const DD = String(date.getDate()).padStart(2, '0'),
+        MM = String(date.getMonth() + 1).padStart(2, '0'),
+        YY = date.getFullYear(),
+        hh = String(date.getHours()).padStart(2, '0'),
+        mm = String(date.getMinutes()).padStart(2, '0'),
+        ss = String(date.getSeconds()).padStart(2, '0');
     return DD + MM + YY + "_" + hh + mm + ss
 }
 
 // --------------- Update Client ------------------------
 // ----------- Logo Client Image behavior ---------------
-const dropAreaLogoUpdate = document.getElementById('drop-areaLogoUpdate')
-const fileInputLogoUpdate = document.getElementById('fileInputLogoUpdate')
-const fileImputTextLogoUpdate = document.getElementById('fileInputTextLogoUpdate')
-const removeImageButtonLogoUpdate = document.getElementById('removeImageLogoUpdate')
-const alertLogoUpdate = document.getElementById('alertLogoUpdate')
-const alertLogoClientSize = document.getElementById('alertLogoClientSize')
+const dropAreaLogoUpdate = document.getElementById('drop-areaLogoUpdate'),
+    fileInputLogoUpdate = document.getElementById('fileInputLogoUpdate'),
+    fileImputTextLogoUpdate = document.getElementById('fileInputTextLogoUpdate'),
+    removeImageButtonLogoUpdate = document.getElementById('removeImageLogoUpdate'),
+    alertLogoUpdate = document.getElementById('alertLogoUpdate'),
+    alertLogoClientSize = document.getElementById('alertLogoClientSize')
 
 dropAreaLogoUpdate.style.width = "70%"
 dropAreaLogoUpdate.style.height = "200px"
@@ -55,6 +55,7 @@ function alertRefresh() {
     dropAreaLogoUpdate.style.textAlign = "center"
     dropAreaLogoUpdate.style.backgroundColor = '#666666'
     dropAreaLogoUpdate.style.display = 'block'
+
     dropAreaLogoUpdate.innerHTML = 'Haz click o arrastra y suelta una imagen aquí'
 }
 
@@ -105,15 +106,15 @@ fileInputLogoUpdate.addEventListener('change', (e) => {
 })
 
 function handleFileUploadLogoUpdate(file) {
-    const fileSize = file.size
-    const fileSizeInMb = fileSize / (1024 * 1024)
+    const fileSize = file.size,
+        fileSizeInMb = fileSize / (1024 * 1024)
 
     if (fileSizeInMb < 3) {
         let pathToImage = URL_GOOGLE_STORE_LOGOCLIENTS
         // Separar el nombre del archivo y la extensión
-        const dotIndex = file.name.lastIndexOf('.');
-        const name = file.name.substring(0, dotIndex);
-        const extension = file.name.substring(dotIndex);
+        const dotIndex = file.name.lastIndexOf('.'),
+            name = file.name.substring(0, dotIndex),
+            extension = file.name.substring(dotIndex);
         fileImputTextLogoUpdate.value = pathToImage + name.replace(/[^a-zA-Z0-9./_ ]/g, '-') + "-" + formatDate(new Date()) + extension
         removeImageButtonLogoUpdate.style.display = 'flex'
         

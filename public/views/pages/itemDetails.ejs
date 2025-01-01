@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head/head'); %>
+</head>
+
+<body>
+    <header>
+        <%- include('../partials/header/header'); %>
+    </header>
+    <div class="container" style="padding-top: 70px;"></div>
+    <br>    
+    <h3 class="d-block mx-auto my-2 text-center">Detalles Consumible <%= consumibles.designation %></h3>
+    <br>
+        <%- include('../partials/data/dataConsumiblesListAsk'); %>
+    <br>
+    <footer>
+        <%- include('../partials/footer/footer'); %>
+    </footer>
+
+    <!--    scripts     -->
+    <script type="text/javascript" src="/js/itemDetails.js"></script>
+
+</body>
+
+</html>

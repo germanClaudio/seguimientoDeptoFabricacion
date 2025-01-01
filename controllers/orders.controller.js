@@ -1,15 +1,18 @@
-const CartsService = require("../services/carts.service.js")
-const OrdersService = require("../services/orders.service.js")
-const ProductsService = require("../services/products.service.js")
-const UserService = require("../services/users.service.js")
-const logger = require('../utils/winston.js')
-const now = require('../utils/formatDate.js')
+const CartsService = require("../services/carts.service.js"),
+    OrdersService = require("../services/orders.service.js"),
+    UserService = require("../services/users.service.js"),
+    ConsumiblesService = require("../services/consumibles.service.js"),
+    cookie = require('../utils/cookie.js'),
+    data = require('../utils/variablesInicializator.js'),
+    csrf = require('csrf'),
+    csrfTokens = csrf(),
+    formatDate = require('../utils/formatDate.js')
 
 class OrdersController {  
     constructor(){
         this.orders = new OrdersService()
         this.carts = new CartsService()
-        this.products = new ProductsService()
+        this.consumibles = new ConsumiblesService()
         this.users = new UserService()
     }
 

@@ -32,7 +32,7 @@ class OrdersService {
     }
     
     // remove one product from cart
-     async removeItemFromCart(payload) {
+    async removeItemFromCart(payload) {
         return this.ordenes.removeItemFromCart(payload)
     }
 

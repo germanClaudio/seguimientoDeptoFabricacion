@@ -35,7 +35,7 @@ const renderConsumible = (arrConsumible) => {
     const html = arrConsumible.map((element) => {
         let disabled = '', styleBckgrd = "background-color: #00000060; opacity: 0.5", classBckgrd = 'footer_disabled'
             footerTextDisabled = '<span class="badge bg-danger text-light mt-3 p-2 mx-auto"><strong>Sin Stock</strong> <i class="fa-regular fa-face-sad-tear fa-xl"></i></span>',
-            footerText = `<a class="btn mx-auto text-light mt-3 small ${disabled}" type="submit" href="/api/consumibles/add/${element._id}" style="background-color: #1d1d1d;">
+            footerText = `<a class="btn mx-auto text-light mt-3 small ${disabled}" type="submit" href="/api/carts/add/${element._id}" style="background-color: #1d1d1d;">
                                 Añadir al Carrito <i class="icon-basket"></i>
                         </a>`
         let optionStatus, optionStock = ''

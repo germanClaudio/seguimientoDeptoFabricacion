@@ -1,30 +1,21 @@
-const CarritosDaoMongoDB = require('./CarritosDaoMongoDB.js')
-//const ProductosDaoArchivo = require('./ProductosDaoArchivo.js')
-//const ProductosDaoMemoria = require('./ProductosDaoMemoria.js')
-const { options }= require('../../options/config.js')
+const CarritosDaoMongoDB = require('./CarritosDaoMongoDB.js'),
+    cnxStr = process.env.MONGO_URL_CONNECT_PROD,
+    option = process.env.PERSISTENCIA || 'Mongo'
 
-//const filePath = options.filePath.path
-const cnxStr = process.env.MONGO_URL_CONNECT_ECOM
-
-const option = process.env.PERSISTENCIA || 'Memoria'
-
-let dao
+let daoCarrito
 switch (option) {
     case 'Mongo':
-        dao = new CarritosDaoMongoDB(cnxStr)
-        dao.init()
-        break;
-    // case 'File':
-    //     dao = new ProductosDaoArchivo(filePath)
-    //     dao.init()
-    //     break;    
-    // default:
-    //     dao = new ProductosDaoMemoria()
-    //     break;
+        daoCarrito = new CarritosDaoMongoDB(cnxStr)
+        daoCarrito.init()
+    break;
+    default:
+        daoCarrito = new CarritosDaoMongoDB(cnxStr)
+        daoCarrito.init()
+    break;
 }
 
 module.exports = class CarritosDaoFactory {
     static getDaoCart() {
-        return dao
+        return daoCarrito
     }
 }

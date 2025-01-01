@@ -1,5 +1,5 @@
-const { Schema, model } = require('mongoose')
-const now = require('../utils/formatDate.js')
+const { Schema, model } = require('mongoose'),
+    now = require('../utils/formatDate.js')
 
 const consumiblesSchema = new Schema({
     designation: {

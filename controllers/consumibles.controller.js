@@ -1,28 +1,16 @@
-const UserService = require("../services/users.service.js")
-const ConsumibleService = require("../services/consumibles.service.js")
+const UserService = require("../services/users.service.js"),
+    ConsumibleService = require("../services/consumibles.service.js"),
+    { uploadToGCS } = require("../utils/uploadFilesToGSC.js"),
+    { uploadMulterSingleImageConsumibles } = require("../utils/uploadMulter.js"),
+    csrf = require('csrf'),
+    csrfTokens = csrf(),
+    cookie = require('../utils/cookie.js'),
+    data = require('../utils/variablesInicializator.js'),
+    { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js'),
+    {catchError400_3, catchError400_5, catchError400_6, catchError400_1, catchError401_3, catchError500 } = require('../utils/catchErrors.js')
 
-const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
-const { uploadMulterSingleImageConsumibles } = require("../utils/uploadMulter.js")
-
-let formatDate = require('../utils/formatDate.js')
-
-const csrf = require('csrf');
-const csrfTokens = csrf();
-
-let consumiblePictureNotFound = "../../../src/images/upload/ConsumiblesImages/noImageFound.png"
-const cookie = require('../utils/cookie.js')
-
-const data = require('../utils/variablesInicializator.js')
-
-const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
-
-const {catchError400_3,
-        catchError400_5,
-        catchError400_6,
-        catchError400_1,
-        catchError401_3,
-        catchError500
-} = require('../utils/catchErrors.js')
+let formatDate = require('../utils/formatDate.js'),
+    consumiblePictureNotFound = "../../../src/images/upload/ConsumiblesImages/noImageFound.png"
 
 class ConsumiblesController {  
     constructor(){
@@ -80,9 +68,9 @@ class ConsumiblesController {
     }
 
     getConsumibleByDesignation = async (req, res, next) => {
-        const { designation } = req.params
+        const { designation } = req.params,
+            expires = cookie(req)
         let userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
             const consumible = await this.consumibles.getConsumibleByConsumiblename(designation)
@@ -111,11 +99,7 @@ class ConsumiblesController {
         //------ Storage New Consumible Image in Google Store --------        
         uploadMulterSingleImageConsumibles(req, res, async (err) => {
             try {
-                // console.log('req.body: ', req.body)
-                // console.log('req.file: ', req.file)
-                if (req.file) {
-                    await uploadToGCS(req, res, next)
-                }
+                req.file ? await uploadToGCS(req, res, next) : null
 
                 let userManager = await this.users.getUserByUsername(username);
                 const userId = userManager._id,
@@ -133,6 +117,7 @@ class ConsumiblesController {
                 const consumibleExist = await this.consumibles.getExistingConsumible(newConsumibleValid);
                 if (consumibleExist) {
                     catchError400_6(req, res, next)
+                    
                 } else {
                     const newConsumible = {
                         designation: designationInput,
@@ -152,7 +137,6 @@ class ConsumiblesController {
                     
                     const consumible = await this.consumibles.addNewConsumible(newConsumible);
                     !consumible ? catchError400_6(req, res, next) : null
-                    // console.log('Consumible: ', consumible)
                     
                     const usuarioLog = await this.users.getUserByUsername(username);
                     !usuarioLog.visible ? catchError401_3(req, res, next) : null
@@ -353,7 +337,6 @@ class ConsumiblesController {
         } catch (err) {
             catchError500(err, req, res, next)
         }
-        
     }
 
 }

@@ -1705,3 +1705,64 @@ height: 4px;
   box-shadow: -5px 0 10px #fff;
   scale: 1.05
 }
+
+/* Ajuste general del contenedor */
+#mostrarItemsCarts {
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Estilo para los list items */
+.list-group-item {
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Imagen del producto */
+.img-fluid {
+  max-height: 120px;
+  object-fit: cover;
+}
+
+/* Botones personalizados */
+.btn {
+  font-size: 0.9rem;
+}
+
+/* Resumen de cantidad y fecha */
+#total {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+}
+
+/* Botones finales */
+#emptyCart .btn {
+  font-size: 1rem;
+  padding: 10px 15px;
+  border-radius: 0.5rem;
+}
+
+/* Restablece la numeración de las listas ordenadas */
+.numbered-list {
+  counter-reset: list-counter; /* Inicializa el contador */
+  padding-left: 0;
+}
+
+.numbered-list > li {
+  list-style: none; /* Quita el estilo de lista predeterminado */
+  position: relative;
+  padding-left: 2em; /* Espacio para el número */
+}
+
+.numbered-list > li::before {
+  content: counter(list-counter) "."; /* Agrega el número con formato */
+  counter-increment: list-counter; /* Incrementa el contador */
+  position: absolute;
+  left: 0; /* Alinea el número a la izquierda */
+  font-weight: bold;
+  color: #1d1d1d; /* Cambia el color si es necesario */
+}

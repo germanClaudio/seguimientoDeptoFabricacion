@@ -1,9 +1,14 @@
-const CarritosDaoFactory = require('../daos/carritos/CarritosDaoFactory.js')
-const carritosDao = CarritosDaoFactory.getDaoCart()
+const CarritosDaoFactory = require('../daos/carritos/CarritosDaoFactory.js'),
+    carritosDao = CarritosDaoFactory.getDaoCart()
 
 class CartService {
     constructor() {
         this.carritos = carritosDao
+    }
+
+    // return all carts from DB
+    async getAllCarts() {
+        return await this.carritos.getAllCarts()
     }
 
     // returns all products from one Cart
@@ -32,7 +37,7 @@ class CartService {
     }
     
     // remove one product from cart
-     async removeItemFromCart(payload) {
+    async removeItemFromCart(payload) {
         return this.carritos.removeItemFromCart(payload)
     }
 

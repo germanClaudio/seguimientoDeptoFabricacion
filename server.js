@@ -1,9 +1,9 @@
-const express = require('express')
-const logger = require('morgan')
-const session = require('express-session')
-const cookieParser = require('cookie-parser');
-const csrf = require('csrf');
-const path = require('path');
+const express = require('express'),
+    logger = require('morgan'),
+    session = require('express-session'),
+    cookieParser = require('cookie-parser'),
+    csrf = require('csrf'),
+    path = require('path');
 
 require('dotenv').config({
     path: process.env.MODO === 'dev'
@@ -11,42 +11,44 @@ require('dotenv').config({
         : path.resolve(__dirname, '.env')
 })
 
-const cors = require('cors')
-const { Server: HttpServer } = require('http')
-const { Server: IOServer } = require('socket.io')
+const cors = require('cors'),
+    { Server: HttpServer } = require('http'),
+    { Server: IOServer } = require('socket.io')
 
-const routerUsers = require('./Routes/usuarios.route.js')
-const routerClientes = require('./Routes/clientes.route.js')
-const routerProyectos = require('./Routes/proyectos.route.js')
-const routerProgramas = require('./Routes/programas.route.js')
-const routerAjustes = require('./Routes/ajustes.route.js')
-const routerMensajes = require('./Routes/mensajes.route.js')
-const routerTools = require('./Routes/maquinas.route.js')
-const routerCuttingTools = require('./Routes/herramientas.route.js')
-const routerConsumibles = require('./Routes/consumibles.route.js')
-const routerSuppliers = require('./Routes/proveedores.route.js')
+const routerUsers = require('./Routes/usuarios.route.js'),
+    routerClientes = require('./Routes/clientes.route.js'),
+    routerProyectos = require('./Routes/proyectos.route.js'),
+    routerProgramas = require('./Routes/programas.route.js'),
+    routerAjustes = require('./Routes/ajustes.route.js'),
+    routerMensajes = require('./Routes/mensajes.route.js'),
+    routerTools = require('./Routes/maquinas.route.js'),
+    routerCuttingTools = require('./Routes/herramientas.route.js'),
+    routerConsumibles = require('./Routes/consumibles.route.js'),
+    routerSuppliers = require('./Routes/proveedores.route.js'),
+    routerCarts = require('./Routes/carts.route.js'),
+    routerOrders = require('./Routes/orders.route.js')
 
 
-const { infoRouter } = require('./Routes/info.routes.js')
-const { authRouter } = require('./Routes/auth.routes.js')
+const { infoRouter } = require('./Routes/info.routes.js'),
+    { authRouter } = require('./Routes/auth.routes.js')
 
 const initSocket = require('./utils/initSocket.js')
 
 //______________________________ mongo para session ______________________________ //
-const MongoStore = require('connect-mongo')
-const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000}
+const MongoStore = require('connect-mongo'),
+    advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000}
 
 //________________________________________________________________________________ //
 const passport = require('passport')
 //________________________________________________________________________________ //
 
-const options = require('./options/config.js');
-const catchErrors = require('./middlewares/errors.middleware.js');
+const options = require('./options/config.js'),
+    catchErrors = require('./middlewares/errors.middleware.js');
 
 const initServer = () => {
 
-    const app = express()
-    const httpServer = new HttpServer(app)
+    const app = express(),
+        httpServer = new HttpServer(app)
     // const io = new IOServer(httpServer)
     const io = new IOServer(httpServer, {
         cors: {
@@ -127,6 +129,8 @@ const initServer = () => {
     app.use('/api/herramientas', routerCuttingTools)
     app.use('/api/consumibles', routerConsumibles)
     app.use('/api/proveedores', routerSuppliers)
+    app.use('/api/carts', routerCarts)
+    app.use('/api/orders', routerOrders)
     ///////////////////////////////////////////////////
 
 
