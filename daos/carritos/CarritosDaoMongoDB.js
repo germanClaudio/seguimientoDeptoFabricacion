@@ -44,7 +44,7 @@ class CarritosDaoMongoDB extends ContainerMongoDB {
 				}
 				let carts = await Carritos.find()
 
-				return arrProducts, carts
+				return { arrProducts, carts }
 
 			} catch (error) {
 				console.error("Error MongoDB getConsumibles: ", error)
@@ -66,12 +66,11 @@ class CarritosDaoMongoDB extends ContainerMongoDB {
 					const newValues = {
 					name: productos.name,
 					description: productos.description,
-					price: productos.price,
+					type: productos.type,
 					code: productos.code,
 					picture: productos.picture,
 					stock: updatedStock,
-					timestamp: now,
-					category: productos.category,
+					timestamp: formatDate(),
 					};
 
 					const productUpdated = await Consumibles.findOneAndUpdate(
@@ -122,8 +121,8 @@ class CarritosDaoMongoDB extends ContainerMongoDB {
 	async addItemToCart(payload) {
 		const infoId = payload.items[0],
 		productId = infoId.consumibleId;
-		console.log('infoId: ', infoId)
-		console.log('productId: ', productId)
+		// console.log('infoId: ', infoId)
+		// console.log('productId: ', productId)
 		try {
 		// -------------- Product validation ----------------
 		const itemMongoDB = await Consumibles.findOne({ _id: `${productId}` })
@@ -168,13 +167,69 @@ class CarritosDaoMongoDB extends ContainerMongoDB {
 
 	async emptyCart(id) {
 		try {
-		const productDeleted = await Carritos.findByIdAndUpdate(id);
-		return productDeleted;
+			const itemMongoDB = await Carritos.findById({_id: `${id}`})
+			if (itemMongoDB) {
+				await Carritos.updateOne(
+					{ _id: itemMongoDB._id },
+					{
+						items: [],
+						modifiedOn: formatDate()
+					},
+					{ new: true }
+				)
+				let cartToBeEmptied = await Carritos.findById({_id: id})
+				return cartToBeEmptied;
+
+			} else {
+				return new Error(`No se encontró el Carrito id# ${id}`)
+			}
 
 		} catch (error) {
-		return new Error("Error MongoDB deleteProduct: ", error);
+			return new Error("Error MongoDB Vaciando el Carrito: ", error);
 		}
 	}
+
+	async updateCart(id, consumiblesId, itemsQty) {
+		try {
+			const cart = await Carritos.findById({ _id: id });
+			if (!cart) {
+				throw new Error(`No se encontró el Carrito con id#:${id}`);
+			}
+	
+			const currentItems = cart.items;
+			// Caso 1: Si la cantidad de ítems en la BBDD es igual al largo del array "consumiblesId"
+			if (currentItems.length === consumiblesId.length) {
+				for (let i = 0; i < consumiblesId.length; i++) {
+					const itemIndex = currentItems.findIndex(
+						item => item.consumibleId.toString() === consumiblesId[i]
+					);
+					itemIndex !== -1 ? currentItems[itemIndex].quantity = itemsQty[i] : null
+				}
+			
+			// Caso 2: Si hay más ítems en la BBDD que en "consumiblesId"
+			} else if (currentItems.length > consumiblesId.length) {
+				// Filtra los ítems que no están en "consumiblesId"
+				const itemsToKeep = currentItems.filter(item =>
+					consumiblesId.includes(item.consumibleId.toString())
+				);
+	
+				// Actualiza las cantidades de los ítems que se mantienen
+				for (let i = 0; i < itemsToKeep.length; i++) {
+					const itemIndex = consumiblesId.indexOf(itemsToKeep[i].consumibleId.toString());
+					itemIndex !== -1 ? itemsToKeep[i].quantity = itemsQty[itemIndex] : null
+				}
+				cart.items = itemsToKeep; // Asigna los ítems filtrados al carrito
+			}
+			cart.modifiedOn = formatDate();
+			await cart.save();
+			return await Carritos.findById({ _id: id });
+
+		} catch (error) {
+			throw new Error(`Error MongoDB Actualizando el Carrito: ${error.message}`);
+		}
+	}
+	
+
 
 	async genOrderCart(cart, invoice) {
 		const cartId = cart._id.valueOf();

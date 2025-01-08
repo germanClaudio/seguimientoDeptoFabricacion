@@ -25,6 +25,9 @@ routerCarts.post('/addQty/:id', checkAuthentication, carts.addQtyToCart)
 // -------------------  Removes quantity of a Product of the Cart ------------------ 
 routerCarts.post('/remove/:id', checkAuthentication, carts.removeItemFromCart)
 
+// -------------------  Removes quantity of a Product of the Cart ------------------ 
+routerCarts.post('/updateCart/:id', checkAuthentication, carts.updateCart)
+
 // -------------------  Removes all items from one Product of the Cart ------------------ 
 routerCarts.post('/deleteItem/:id', checkAuthentication, carts.deleteItemFromCart)
 

@@ -1,20 +1,16 @@
 const maxStock = parseInt(document.getElementById('stock').value)
-//-------------------------- Add quatity --------------------------------------------
+let value = parseInt(document.getElementById('number').value)
+
+//----------------- Add quatity --------------------------
 function incrementValue() {
-    let value = parseInt(document.getElementById('number').value)
     value = isNaN(value) ? 0 : value
-    if(value < maxStock){
-        value++
-            document.getElementById('number').value = value
-    }
+    value < maxStock ? value++ : null
+    document.getElementById('number').value = value
 }
 
-//-------------------------- Remove quatity --------------------------------------------
+//----------------- Remove quatity -----------------------
 function decrementValue() {
-    let value = parseInt(document.getElementById('number').value)
     value = isNaN(value) ? 0 : value
-    if(value > 1){
-        value--
-            document.getElementById('number').value = value
-    }
+    value > 1 ? value-- : null
+    document.getElementById('number').value = value
 }

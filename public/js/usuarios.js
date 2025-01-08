@@ -31,30 +31,17 @@ socket.on('usersAll', (arrUsers) => {
 })
 
 const renderUser = (arrUsers) => {
-    const arrayUser = arrUsers
-    const green = 'success'
-    const blue = 'primary'
-    const red = 'danger'
-    const dark = 'dark'
-    const white = 'light'
-    const grey = 'secondary'
-    const yellow = 'warning'
-    const cian = 'info'
-    const active = 'Activo'
-    const inactive = 'Inactivo'
-    const admin = 'Admin'
-    const user = 'User'
+    const arrayUser = arrUsers,
+        green = 'success', blue = 'primary', red = 'danger', dark = 'dark', white = 'light', grey = 'secondary', yellow = 'warning', cian = 'info',
+        active = 'Activo', inactive = 'Inactivo', admin = 'Admin', user = 'User'
         
     const html = arrUsers.map((element) => {
-        let optionStatus = element.status ? green : red
-        let optionAdmin = element.admin ? dark : grey
-        let optionVisits = element.visits == 0 ? red : green
-        //var optionPermiso = element.permiso ? grey : red
-        //let optionArea = element.area ? cian : green
-        let showStatus = element.status ? active : inactive
-        let showAdmin = element.admin ? admin : user
-        let idChain = element._id.substring(19)
-        //let showArea = "Ingeniería"
+        let optionStatus = element.status ? green : red,
+            optionAdmin = element.admin ? dark : grey,
+            optionVisits = element.visits == 0 ? red : green,
+            showStatus = element.status ? active : inactive,
+            showAdmin = element.admin ? admin : user,
+            idChain = element._id.substring(19)
 
         const areaMapping = {
             'ingenieria': { showArea: 'Ingeniería', optionArea: cian, optionTextArea: dark },
@@ -221,12 +208,11 @@ const renderUser = (arrUsers) => {
             btn.addEventListener("click", (event) => {
                 event.preventDefault()
                 // console.log(btn.id)
-                const idUser = btn.id//event.target.id
-                const name = document.getElementById(`name_${idUser}`).innerText
-                const lastName = document.getElementById(`lastName_${idUser}`).innerText
-                const username = document.getElementById(`username_${idUser}`).innerText
-    
-                const userInfoId = document.getElementById(`userBanner_${idUser}`)
+                const idUser = btn.id,
+                    name = document.getElementById(`name_${idUser}`).innerText,
+                    lastName = document.getElementById(`lastName_${idUser}`).innerText,
+                    username = document.getElementById(`username_${idUser}`).innerText,
+                    userInfoId = document.getElementById(`userBanner_${idUser}`)
                 
                 if (userInfoId) {
                     Swal.fire({
@@ -326,10 +312,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function resultadoNameLast() {
-        let nameValue = inputName.value
-        let lastNameValue = inputLastName.value
-
-        let username = document.getElementById('username')
+        let nameValue = inputName.value,
+            lastNameValue = inputLastName.value,
+            username = document.getElementById('username')
 
         if (nameValue && lastNameValue) {
             username.value = nameValue.charAt(0).toLowerCase()+lastNameValue.toLowerCase()

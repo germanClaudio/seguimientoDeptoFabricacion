@@ -799,8 +799,10 @@ class UsersController {
 
             } else if ( user.status ) {
                 const access_token = generateToken(user),
-                    fail = Boolean(false)
-                
+                    fail = Boolean(false),
+                    userId = user._id,
+                    userCart = await this.carts.getCartByUserId(userId) || null
+
                 req.session.admin = user.admin //req.session.admin = true
                 req.session.username = userInfo.username
                 
@@ -823,6 +825,7 @@ class UsersController {
                             consumibles,
                             proveedores,
                             carts,
+                            userCart,
                             csrfToken
                         })
                     }, 250)

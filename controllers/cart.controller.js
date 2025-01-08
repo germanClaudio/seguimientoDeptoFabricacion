@@ -1,31 +1,34 @@
-const CartsService = require("../services/carts.service.js"),
-    ConsumibleService = require("../services/consumibles.service.js"),
-    UserService = require("../services/users.service.js")
+const UserService = require("../services/users.service.js"),
+    ProyectosService = require("../services/projects.service.js"),
+    ClientesService = require("../services/clients.service.js"),
+    MessagesService = require("../services/messages.service.js"),
+    ToolsService = require("../services/tools.service.js"),
+    CuttingToolsService = require("../services/cuttingTools.service.js"),
+    ConsumiblesService = require("../services/consumibles.service.js"),
+    SuppliersService = require("../services/suppliers.service.js"),
+    CartsService = require("../services/carts.service.js"),
 
-let formatDate = require('../utils/formatDate.js')
-
-const csrf = require('csrf'),
-    csrfTokens = csrf();
-
-let consumiblePictureNotFound = "../../../src/images/upload/ConsumiblesImages/noImageFound.png"
-const cookie = require('../utils/cookie.js')
-
-const data = require('../utils/variablesInicializator.js')
-
-const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
-
-const {catchError400_3,
-        catchError400_5,
-        catchError400_6,
-        catchError400_1,
-        catchError401_3,
-        catchError500
-} = require('../utils/catchErrors.js')
+    csrf = require('csrf'),
+    csrfTokens = csrf(),
+    cookie = require('../utils/cookie.js'),
+    data = require('../utils/variablesInicializator.js'),
+    { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js'),
+    { catchError400_3, catchError400_5, catchError400_6, catchError400_1,
+        catchError401_3, catchError500 } = require('../utils/catchErrors.js')
+    
+let consumiblePictureNotFound = "../../../src/images/upload/ConsumiblesImages/noImageFound.png",
+    formatDate = require('../utils/formatDate.js')
 
 class CartsController {  
     constructor(){
+        this.projects = new ProyectosService()
+        this.clients = new ClientesService()
+        this.messages = new MessagesService()
+        this.tools = new ToolsService()
+        this.cuttingTools = new CuttingToolsService()
+        this.consumibles = new ConsumiblesService()
         this.carts = new CartsService()
-        this.consumibles = new ConsumibleService()
+        this.suppliers = new SuppliersService()
         this.users = new UserService()
     }
 
@@ -42,23 +45,9 @@ class CartsController {
 
     // ---------------- Get All consumibles from one Cart ---------------
     getArrProducts = async (req, res, next) => {
-        // let username = res.locals.username,
-        //     userInfo = res.locals.userInfo
-        // const expires = cookie(req)
-        
         try {
             const consumibles = await this.consumibles.getAllConsumibles()
             !consumibles ? catchError400_5(req, res, next) : null
-
-            // const csrfToken = csrfTokens.create(req.csrfSecret);
-            // res.render('addNewConsumible', {
-            //     username,
-            //     userInfo,
-            //     expires,
-            //     consumibles,
-            //     data,
-            //     csrfToken
-            // })
             return consumibles
 
         } catch (err) {
@@ -66,12 +55,11 @@ class CartsController {
         }
     }
 
-    // ------- reduce stock consumibles when PO is generated ---------------
+    //FIXME:  ------- reduce stock consumibles when PO is generated ---------------
     reduceStockProduct = async (req, res, next) => {
         try {
             const userLogged = await this.users.getUserByUsername(username);
             !userLogged.visible ? catchError401_3(req, res, next) : null
-
             return arrStockProduct
         }
         catch (error) {
@@ -146,7 +134,7 @@ class CartsController {
         }
     }
     
-// -------------------  Add Product to Cart ---------------
+    // -------------------  Add Product to Cart ---------------
     addItemToCart = async (req, res, next) => {
         let username = res.locals.username,
             userInfo = res.locals.userInfo;
@@ -196,7 +184,7 @@ class CartsController {
                     arrProducts = await this.carts.getArrProducts(userCart),
                     csrfToken = csrfTokens.create(req.csrfSecret);
 
-                console.log('Cart exist-> userCart: ', userCart, ' arrProducts: ', arrProducts)
+                //console.log('Cart exist-> userCart: ', userCart, ' arrProducts: ', arrProducts)
                 res.render('cartDetails', {
                     userCart,
                     usuarios,
@@ -233,7 +221,7 @@ class CartsController {
                     arrProducts = await this.carts.getArrProducts(userCart),
                     csrfToken = csrfTokens.create(req.csrfSecret);
                 
-                console.log('Cart does not exist-> userCart: ', userCart, ' arrProducts: ', arrProducts)
+                //console.log('Cart does not exist-> userCart: ', userCart, ' arrProducts: ', arrProducts)
                 res.render('cartDetails', {
                     userCart,
                     usuarios,
@@ -253,15 +241,11 @@ class CartsController {
         }
     }
 
-//FIXME: 
-    // -------  Add quantity of a Product to the Cart -----------
+    //FIXME: -------  Add quantity of a Product to the Cart -----------
     addQtyToCart = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo;
+        const expires = cookie(req)
         
         try {
             const { productId } = req.body // Product Id
@@ -301,6 +285,7 @@ class CartsController {
                 const arrProducts = await this.carts.getArrProducts(data)
                 res.render('cartDetails', { data, usuarios, username, userInfo, productDetails, cart, arrProducts, expires })
             }
+            
         } catch (err) {
             console.log(err)
             res.status(400).json({
@@ -311,8 +296,7 @@ class CartsController {
         }
     }
 
-//FIXME: 
-// ------------  Removes quantity of a Product of the Cart --------
+    //FIXME: -----------  Removes quantity of a Product of the Cart --------
     removeItemFromCart = async (req, res, next) => {
         let username = res.locals.username
         let userInfo = res.locals.userInfo
@@ -379,15 +363,11 @@ class CartsController {
         }
     }
 
-//FIXME: 
-// -------  Removes all items from one Product of the Cart -------
+    //FIXME: -------  Removes all items from one Product of the Cart -------
     deleteItemFromCart = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo;
+        const expires = cookie(req)
         
         try {
             const usuarios = await this.users.getUserByUsername(username)
@@ -438,172 +418,236 @@ class CartsController {
         }
     }
 
-//FIXME: 
     // -----------  Empty the Cart ------------------
     emptyCart = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo;
+        const expires = cookie(req),
+            { id } = req.params
 
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
-        
-        try {
-            const { id } = req.params
-            const usuarios = await this.users.getUserById(id)
-           
-            let cart = await this.carts.emptyCart(id)
-            cart.items = [];
-            cart.subTotal = 0
-            let data = await cart.save()
-           
-            res.render('cartDetails', { data, usuarios, username, userInfo, cart, expires })
-                    
-        } catch (error) {
-            res.status(400).json({
-                type: "Invalid",
-                msg: "Upss, Something Went Wrong",
-                error: error
-            })
-        }
-    }
-
-//FIXME: 
-    // --- Generate P.O. in pdf format, empty the Cart and send an text msg & email to Admin ------
-    genOrderCart = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
-        
-        try {
-            const { id } = req.params
-            const usuarios = await this.users.getUserByUsername(username)
-            let cart = await this.carts.getCart(id)
-
-            if ( cart.items.length > 0 ) {
-                const dateInvoice = formatDate()
-                const invoiceNumber = (cart._id.toString()).concat('_',dateInvoice)
+        if (id) {
+            try {
+                const usuario = await this.users.getUserById(userInfo.id)
+                !usuario ? catchError401_3(req, res, next) : null
                 
-                const invoice = {
-                    shipping: {
-                        name: usuarios.name,
-                        lastName: usuarios.lastName,
-                        username: usuarios.username,
-                        email: usuarios.email,
-                    },
-                    items: cart.items,
-                    subTotal: cart.subTotal,
-                    quantity: cart.items.length,
-                    modifiedOn: dateInvoice,
-                    invoice_nr: invoiceNumber,
-                }
+                let userCart = await this.carts.emptyCart(id)
+                !userCart ? catchError401_3(req, res, next) : null
                 
-                const pathPdfFile = `./src/output/Invoice_${invoiceNumber}.pdf`
-                const pathPdfOrderFile =  `./public/src/images/output/Invoice_${invoiceNumber}.pdf`
-                const { createInvoice } = require('../utils/createInvoice.js')
-                createInvoice(invoice, pathPdfFile)
-                createInvoice(invoice, pathPdfOrderFile)
+                const arrProducts = [],
+                    csrfToken = csrfTokens.create(req.csrfSecret);
                 
-                ////////////// phone text message to Administrator //////////////////////
-                // const accountSid = process.env.TWILIO_ACCOUNTSID;
-                // const authToken = process.env.TWILIO_AUTH_TOKEN;
-                // const client = require("twilio")(accountSid, authToken)
-
-                // ;(async () => {
-                //     try {
-                //         const message = await client.messages.create({
-                //             body: `El usuario ${usuarios.name}, ${usuarios.lastName}, realizó la compra exitosamente!`,
-                //             from: process.env.PHONE_SENDER, // '+14094496870',
-                //             to: process.env.PHONE_RECEIVER
-                //         })
-
-                //     } catch (error) {
-                //         logger.error(error)
-                //     }
-                // })()
-                
-                //////////////////// gmail to Administrator //////////////////////
-                const { createTransport } = require('nodemailer')
-                const TEST_EMAIL = process.env.TEST_EMAIL
-                const PASS_EMAIL = process.env.PASS_EMAIL
-    
-                const transporter = createTransport({
-                    service: 'gmail',
-                    port: 587,
-                    auth: {
-                        user: TEST_EMAIL,
-                        pass: PASS_EMAIL
-                    },
-                    tls: {
-                        rejectUnauthorized: false
-                    }
-                })
-    
-                const mailOptions = {
-                    from: 'Servidor NodeJS - Gmail - ACME Inc. Ecommerce',
-                    to: TEST_EMAIL,
-                    subject: `Generación O/C# ${invoice.invoice_nr} desde Node JS - Gmail - ACME Inc. Ecommerce`,
-                    html: `<h3 style="color: green;">El usuario ${usuarios.name} ${usuarios.lastName}, realizó la compra exitosamente!</h3>`,
-                    attachments: [
-                        {
-                            path: `./src/output/Invoice_${invoice.invoice_nr}.pdf`
-                        }
-                    ]
-                }
-    
-                ;(async () => {
-                    try {
-                        const info = await transporter.sendMail(mailOptions)
-                        logger.info(info)
-                    } catch (err) {
-                        logger.error(err)
-                    }
-                })()
-
-                // ------------ Save order in DataBase ---------------
-                const pathOrder = `src/output/Invoice_${invoice.invoice_nr}.pdf`
-                const order = await this.carts.genOrderCart(cart, invoice)
-                let orderGenerated = await order.save()
-                
-                // ------------ Reduce stock quantity -------------------
-               await this.carts.reduceStockProduct(cart)
-
-                // ------------ Empty the cart -------------------
-                cart = await this.carts.emptyCart(id)
-                    cart.items = [];
-                    cart.subTotal = 0
-                    let data = await cart.save()
-
-                    res.render('orderGenerated', { data, usuarios, username, userInfo, cart, orderGenerated, pathOrder, expires })
+                setTimeout(()=>{
+                    res.render('cartDetails', {
+                        usuario,
+                        username,
+                        userInfo,
+                        arrProducts,
+                        expires,
+                        data,
+                        csrfToken,
+                        userCart
+                    })
+                },2000)
+                        
+            } catch (err) {
+                catchError500(err, req, res, next)
             }
-            else {
-                return res.status(400).json({
-                    type: "Invalid",
-                    msg: "Invalid request generating Order"
-                })
-            }     
-        }
-        catch (error) {
-            res.status(400).json({
-                type: "Invalid_Operation",
-                msg: "Upss, Something Went Wrong generating the PO, please try again",
-                error: error
-            })
+
+        } else {
+            console.log('Error! No existe Id:', id)
         }
     }
 
-//FIXME: 
-     // ---------------- Gat All Orders ---------------
-    getAllOrders = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
+    // -----------  Update the Cart ------------------
+    updateCart = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo,
+            arrayItemsQty = [],
+            arrayConsumiblesId = [];
 
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
+        const expires = cookie(req),
+            { id } = req.params;
+
+        arrayItemsQty = req.body.quantities.split(',')
+        arrayConsumiblesId = req.body.consumiblesId.split(',')
+        
+        if (id) {
+            try {
+                const usuario = await this.users.getUserById(userInfo.id)
+                !usuario ? catchError401_3(req, res, next) : null
+
+                let updatedCart = await this.carts.updateCart(id, arrayConsumiblesId, arrayItemsQty)
+                !updatedCart ? catchError401_3(req, res, next) : null
+
+                const clientes = await this.clients.getAllClients(),
+                    proyectos = await this.projects.getAllProjects(), 
+                    maquinas = await this.tools.getAllTools(),
+                    herramientas = await this.cuttingTools.getAllCuttingTools(),
+                    consumibles = await this.consumibles.getAllConsumibles(),
+                    mensajes = await this.messages.getAllMessages(),
+                    userCart = await this.carts.getCart(id),
+                    carts = await this.carts.getCart(),
+                    usuarios = await this.users.getAllUsers(),
+                    sessionsIndex = await this.users.getAllSessions(),
+                    sessions = sessionsIndex.length,
+                    csrfToken = csrfTokens.create(req.csrfSecret);
+                
+                if (usuario.area === 'fabricacion') {
+                    return res.render('indexToolShop', {
+                        usuario,
+                        username,
+                        userInfo,
+                        expires,
+                        usuarios,
+                        mensajes,
+                        data,
+                        sessions,
+                        maquinas,
+                        herramientas,
+                        consumibles,
+                        carts,
+                        userCart,
+                        csrfToken
+                    })
+
+                } else {
+                    return res.render('index', {
+                        userInfo,
+                        username,
+                        flag,
+                        fail,
+                        expires,
+                        clientes,
+                        usuarios,
+                        proyectos,
+                        mensajes,
+                        data,
+                        sessions,
+                        maquinas,
+                        herramientas,
+                        consumibles,
+                        proveedores,
+                        csrfToken
+                    })
+                }
+                        
+            } catch (err) {
+                catchError500(err, req, res, next)
+            }
+
+        } else {
+            console.log('Error! No existe Id:', id)
+        }
+    }
+
+    //FIXME: --- Generate P.O. in pdf format, empty the Cart and send an email to Admin ------
+    genOrderCart = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo;
+        const expires = cookie(req),
+            { id } = req.params
+        
+        if (id) {
+            try {
+                const usuarios = await this.users.getUserByUsername(username)
+                !usuarios ? catchError401_3(req, res, next) : null
+
+                let cart = await this.carts.getCart(id)
+                if ( cart.items.length > 0 ) {
+                    const dateInvoice = formatDate(),
+                        invoiceNumber = (cart._id.toString()).concat('_',dateInvoice),
+                    
+                        invoice = {
+                            shipping: {
+                                name: usuarios.name,
+                                lastName: usuarios.lastName,
+                                username: usuarios.username,
+                                legajoId: usuarios.legajoId,
+                                email: usuarios.email,
+                                area: usuarios.area
+                            },
+                            items: cart.items,
+                            quantity: cart.items.length,
+                            modifiedOn: dateInvoice,
+                            invoice_nr: invoiceNumber,
+                        }
+                    
+                    const pathPdfFile = `./src/output/Invoice_${invoiceNumber}.pdf`
+                    const pathPdfOrderFile =  `./public/src/images/output/Invoice_${invoiceNumber}.pdf`
+                    const { createInvoice } = require('../utils/createInvoice.js')
+                    createInvoice(invoice, pathPdfFile)
+                    createInvoice(invoice, pathPdfOrderFile)
+                    
+                    //////////////////// gmail to Administrator //////////////////////
+                    const { createTransport } = require('nodemailer')
+                    const TEST_EMAIL = process.env.TEST_EMAIL
+                    const PASS_EMAIL = process.env.PASS_EMAIL
+        
+                    const transporter = createTransport({
+                        service: 'gmail',
+                        port: 587,
+                        auth: {
+                            user: TEST_EMAIL,
+                            pass: PASS_EMAIL
+                        },
+                        tls: {
+                            rejectUnauthorized: false
+                        }
+                    })
+        
+                    const mailOptions = {
+                        from: 'Servidor NodeJS - Gmail - Prodismo',
+                        to: TEST_EMAIL,
+                        subject: `Generación PO# ${invoice.invoice_nr} desde Node JS - Gmail - ACME Inc. Ecommerce`,
+                        html: `<h3 style="color: green;">El usuario ${usuarios.name} ${usuarios.lastName}, realizó la compra exitosamente!</h3>`,
+                        attachments: [
+                            {
+                                path: `./src/output/Invoice_${invoice.invoice_nr}.pdf`
+                            }
+                        ]
+                    }
+        
+                    ;(async () => {
+                        try {
+                            const info = await transporter.sendMail(mailOptions)
+                            logger.info(info)
+                        } catch (err) {
+                            logger.error(err)
+                        }
+                    })()
+    
+                    // ------------ Save order in DataBase ---------------
+                    const pathOrder = `src/output/Invoice_${invoice.invoice_nr}.pdf`
+                    const order = await this.carts.genOrderCart(cart, invoice)
+                    let orderGenerated = await order.save()
+                    
+                    // ------------ Reduce stock quantity -------------------
+                    await this.carts.reduceStockProduct(cart)
+    
+                    // ------------ Empty the cart -------------------
+                    cart = await this.carts.emptyCart(id)
+                        
+                        res.render('orderGenerated', { data, usuarios, username, userInfo, cart, orderGenerated, pathOrder, expires })
+                
+                } else {
+                    console.log('Error! El Carrito está vacío')
+                }     
+            }
+
+            catch (error) {
+                catchError500(err, req, res, next)
+            }
+
+        } else {
+            console.log('Error! No existe Id:', i)
+        }
+    }
+
+    //FIXME: ---------------- Gat All Orders ---------------
+    getAllOrders = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo;
+        const expires = cookie(req)
 
         try {
             const usuarios = await this.users.getUserByUsername(username)

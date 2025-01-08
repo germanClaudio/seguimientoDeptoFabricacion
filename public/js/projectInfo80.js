@@ -446,7 +446,7 @@ spanResInfo80Ldm.forEach(function(spanElement) {
         }
 
         // Eliminar el texto inicial de la cadena
-        var idFinalInputs = idSpotSelected.replace(regex, '');
+        let idFinalInputs = idSpotSelected.replace(regex, '');
         
         let inputSpotIndex = document.getElementById(`resIndexHidden${idFinalInputs}`).value
         let inputSpotRevision = document.getElementById(`resRevisionHidden${idFinalInputs}`).value

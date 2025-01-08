@@ -41,6 +41,11 @@ class CartService {
         return this.carritos.removeItemFromCart(payload)
     }
 
+    // update items/products from cart
+    async updateCart(id, consumiblesId, items) {
+        return this.carritos.updateCart(id, consumiblesId, items)
+    }
+
     // remove one item from cart
     async deleteItemFromCart(id) {
         return this.carritos.deleteItemFromCart()

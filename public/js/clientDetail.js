@@ -172,7 +172,6 @@ function message(clientName) {
 }
 
 const btnUpdateClient = document.getElementById('btnUpdateClient')
-
 btnUpdateClient ? 
     btnUpdateClient.addEventListener('click', (event)=>{
     event.preventDefault()
