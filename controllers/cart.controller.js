@@ -241,183 +241,6 @@ class CartsController {
         }
     }
 
-    //FIXME: -------  Add quantity of a Product to the Cart -----------
-    addQtyToCart = async (req, res, next) => {
-        let username = res.locals.username,
-            userInfo = res.locals.userInfo;
-        const expires = cookie(req)
-        
-        try {
-            const { productId } = req.body // Product Id
-            const quantity = Number.parseInt(req.body.quantity)
-            const usuarios = await this.users.getUserByUsername(username)
-            const userId = usuarios._id // User Id
-            let cart = await this.carts.getCartByUserId(userId)
-            let productDetails = await this.consumibles.getProductById(productId)
-            
-                if (!productDetails) {
-                return res.status(500).json({
-                    type: "Not Found",
-                    msg: "Invalid request"
-                })
-            }
-            //--If Cart Exists ----
-            if (cart) {
-                //---- check if index product exists ----
-                const indexFound = cart.items.findIndex(item => item.productId == productId)
-                
-                //----check if product exist, just add the previous quantity with the new quantity and update the total price---
-                if (indexFound !== -1 && quantity > 0) {
-                    cart.items[indexFound].quantity = cart.items[indexFound].quantity + 1
-                    cart.items[indexFound].total = cart.items[indexFound].quantity * productDetails.price
-                    cart.items[indexFound].price = productDetails.price
-                    cart.subTotal = cart.items.map(item => item.total).reduce((acc, next) => acc + next)
-                    cart.modifiedOn = formatDate()
-                }
-                //----if quantity of price is 0 throw the error -------
-                else {
-                    return res.status(400).json({
-                        type: "Invalid",
-                        msg: "Invalid request"
-                    })
-                }
-                const data = await cart.save()
-                const arrProducts = await this.carts.getArrProducts(data)
-                res.render('cartDetails', { data, usuarios, username, userInfo, productDetails, cart, arrProducts, expires })
-            }
-            
-        } catch (err) {
-            console.log(err)
-            res.status(400).json({
-                type: "Invalid",
-                msg: "Something Went Wrong",
-                err: err
-            })
-        }
-    }
-
-    //FIXME: -----------  Removes quantity of a Product of the Cart --------
-    removeItemFromCart = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
-        
-        try {
-            const { productId } = req.body
-            const quantity = Number.parseInt(req.body.quantity)
-
-            const usuarios = await this.users.getUserByUsername(username)
-            const userId = usuarios._id // User Id
-
-            let cart = await this.carts.getCartByUserId(userId)
-            let productDetails = await this.consumibles.getProductById(productId)
-            
-                if (!productDetails) {
-                return res.status(500).json({
-                    type: "Product Not Found",
-                    msg: "Invalid Product request"
-                })
-            }
-            //--If Cart Exists ----
-            if (cart) {
-                //---- check if index exists ----
-                const indexFound = cart.items.findIndex(item => item.productId == productId)
-                //------this removes an item from the the cart if the quantity is set to zero.
-                if (indexFound !== -1 && quantity === 1) {
-                    cart.items.splice(indexFound, 1)
-                    if (cart.items.length == 0) {
-                        cart.subTotal = 0
-                    } else {
-                        cart.subTotal = cart.items.map(item => item.total).reduce((acc, next) => acc + next)
-                    }
-                }
-                //----------check if product exist, just add the previous quantity with the new quantity and update the total price-------
-                else if (indexFound !== -1 && quantity > 1) {
-                    cart.items[indexFound].quantity = cart.items[indexFound].quantity - 1
-                    cart.items[indexFound].total = cart.items[indexFound].quantity * productDetails.price
-                    cart.items[indexFound].price = productDetails.price
-                    cart.subTotal = cart.items.map(item => item.total).reduce((acc, next) => acc + next)
-                    cart.modifiedOn = formatDate()
-                }
-                //----if quantity of price is 0 throw the error -------
-                else {
-                    return res.status(400).json({
-                        type: "Invalid",
-                        msg: "Invalid request"
-                    })
-                }
-                const data = await cart.save()
-                const arrProducts = await this.carts.getArrProducts(data)
-                res.render('cartDetails', { data, usuarios, username, userInfo, productDetails, cart, arrProducts, expires })
-            }
-        } catch (err) {
-            console.log(err)
-            res.status(400).json({
-                type: "Invalid",
-                msg: "Something Went Wrong",
-                err: err
-            })
-        }
-    }
-
-    //FIXME: -------  Removes all items from one Product of the Cart -------
-    deleteItemFromCart = async (req, res, next) => {
-        let username = res.locals.username,
-            userInfo = res.locals.userInfo;
-        const expires = cookie(req)
-        
-        try {
-            const usuarios = await this.users.getUserByUsername(username)
-            const userId = usuarios._id // User Id
-            const { productId } = req.body // Product Id
-            const quantity = 0
-            let cart = await this.carts.getCartByUserId(userId)
-            let productDetails = await this.consumibles.getProductById(productId)
-                
-            if (!productDetails) {
-                return res.status(500).json({
-                    type: "Product Not Found",
-                    msg: "Invalid request"
-                })
-            }
-            //--If Cart Exists ----
-            if (cart) {
-                //---- check if index exists ----
-                const indexFound = cart.items.findIndex(item => item.productId == productId)
-                //------this removes an item from the the cart because the quantity is set to zero.
-                if (indexFound !== -1 && quantity <= 0) {
-                    cart.items.splice(indexFound, 1)
-                    if (cart.items.length == 0) {
-                        cart.subTotal = 0
-                    } else {
-                        cart.subTotal = cart.items.map(item => item.total).reduce((acc, next) => acc + next)
-                    }
-                }
-                //----if quantity of price is 0 throw the error -------
-                else {
-                    return res.status(400).json({
-                        type: "Invalid",
-                        msg: "Invalid request"
-                    })
-                }
-                const data = await cart.save()
-                const arrProducts = await this.carts.getArrProducts(data)
-                res.render('cartDetails', { data, usuarios, username, userInfo, productDetails, cart, arrProducts, expires })
-            }
-            
-        } catch (err) {
-            console.log(err)
-            res.status(400).json({
-                type: "Invalid",
-                msg: "Something Went Wrong",
-                err: err
-            })
-        }
-    }
-
     // -----------  Empty the Cart ------------------
     emptyCart = async (req, res, next) => {
         let username = res.locals.username,
@@ -668,6 +491,183 @@ class CartsController {
             })
         }
     }
+
+    // -------  Add quantity of a Product to the Cart -----------
+    // addQtyToCart = async (req, res, next) => {
+    //     let username = res.locals.username,
+    //         userInfo = res.locals.userInfo;
+    //     const expires = cookie(req)
+    
+    //     try {
+    //         const { productId } = req.body // Product Id
+    //         const quantity = Number.parseInt(req.body.quantity)
+    //         const usuarios = await this.users.getUserByUsername(username)
+    //         const userId = usuarios._id // User Id
+    //         let cart = await this.carts.getCartByUserId(userId)
+    //         let productDetails = await this.consumibles.getProductById(productId)
+    
+    //             if (!productDetails) {
+    //             return res.status(500).json({
+    //                 type: "Not Found",
+    //                 msg: "Invalid request"
+    //             })
+    //         }
+    //         //--If Cart Exists ----
+    //         if (cart) {
+    //             //---- check if index product exists ----
+    //             const indexFound = cart.items.findIndex(item => item.productId == productId)
+    
+    //             //----check if product exist, just add the previous quantity with the new quantity and update the total price---
+    //             if (indexFound !== -1 && quantity > 0) {
+    //                 cart.items[indexFound].quantity = cart.items[indexFound].quantity + 1
+    //                 cart.items[indexFound].total = cart.items[indexFound].quantity * productDetails.price
+    //                 cart.items[indexFound].price = productDetails.price
+    //                 cart.subTotal = cart.items.map(item => item.total).reduce((acc, next) => acc + next)
+    //                 cart.modifiedOn = formatDate()
+    //             }
+    //             //----if quantity of price is 0 throw the error -------
+    //             else {
+    //                 return res.status(400).json({
+    //                     type: "Invalid",
+    //                     msg: "Invalid request"
+    //                 })
+    //             }
+    //             const data = await cart.save()
+    //             const arrProducts = await this.carts.getArrProducts(data)
+    //             res.render('cartDetails', { data, usuarios, username, userInfo, productDetails, cart, arrProducts, expires })
+    //         }
+    
+    //     } catch (err) {
+    //         console.log(err)
+    //         res.status(400).json({
+    //             type: "Invalid",
+    //             msg: "Something Went Wrong",
+    //             err: err
+    //         })
+    //     }
+    // }
+
+    // -----------  Removes quantity of a Product of the Cart --------
+    // removeItemFromCart = async (req, res, next) => {
+    //     let username = res.locals.username
+    //     let userInfo = res.locals.userInfo
+
+    //     const cookie = req.session.cookie
+    //     const time = cookie.expires
+    //     const expires = new Date(time)
+    
+    //     try {
+    //         const { productId } = req.body
+    //         const quantity = Number.parseInt(req.body.quantity)
+
+    //         const usuarios = await this.users.getUserByUsername(username)
+    //         const userId = usuarios._id // User Id
+
+    //         let cart = await this.carts.getCartByUserId(userId)
+    //         let productDetails = await this.consumibles.getProductById(productId)
+    
+    //             if (!productDetails) {
+    //             return res.status(500).json({
+    //                 type: "Product Not Found",
+    //                 msg: "Invalid Product request"
+    //             })
+    //         }
+    //         //--If Cart Exists ----
+    //         if (cart) {
+    //             //---- check if index exists ----
+    //             const indexFound = cart.items.findIndex(item => item.productId == productId)
+    //             //------this removes an item from the the cart if the quantity is set to zero.
+    //             if (indexFound !== -1 && quantity === 1) {
+    //                 cart.items.splice(indexFound, 1)
+    //                 if (cart.items.length == 0) {
+    //                     cart.subTotal = 0
+    //                 } else {
+    //                     cart.subTotal = cart.items.map(item => item.total).reduce((acc, next) => acc + next)
+    //                 }
+    //             }
+    //             //----------check if product exist, just add the previous quantity with the new quantity and update the total price-------
+    //             else if (indexFound !== -1 && quantity > 1) {
+    //                 cart.items[indexFound].quantity = cart.items[indexFound].quantity - 1
+    //                 cart.items[indexFound].total = cart.items[indexFound].quantity * productDetails.price
+    //                 cart.items[indexFound].price = productDetails.price
+    //                 cart.subTotal = cart.items.map(item => item.total).reduce((acc, next) => acc + next)
+    //                 cart.modifiedOn = formatDate()
+    //             }
+    //             //----if quantity of price is 0 throw the error -------
+    //             else {
+    //                 return res.status(400).json({
+    //                     type: "Invalid",
+    //                     msg: "Invalid request"
+    //                 })
+    //             }
+    //             const data = await cart.save()
+    //             const arrProducts = await this.carts.getArrProducts(data)
+    //             res.render('cartDetails', { data, usuarios, username, userInfo, productDetails, cart, arrProducts, expires })
+    //         }
+    //     } catch (err) {
+    //         console.log(err)
+    //         res.status(400).json({
+    //             type: "Invalid",
+    //             msg: "Something Went Wrong",
+    //             err: err
+    //         })
+    //     }
+    // }
+
+    // -------  Removes all items from one Product of the Cart -------
+    // deleteItemFromCart = async (req, res, next) => {
+    //     let username = res.locals.username,
+    //         userInfo = res.locals.userInfo;
+    //     const expires = cookie(req)
+    
+    //     try {
+    //         const usuarios = await this.users.getUserByUsername(username)
+    //         const userId = usuarios._id // User Id
+    //         const { productId } = req.body // Product Id
+    //         const quantity = 0
+    //         let cart = await this.carts.getCartByUserId(userId)
+    //         let productDetails = await this.consumibles.getProductById(productId)
+    
+    //         if (!productDetails) {
+    //             return res.status(500).json({
+    //                 type: "Product Not Found",
+    //                 msg: "Invalid request"
+    //             })
+    //         }
+    //         //--If Cart Exists ----
+    //         if (cart) {
+    //             //---- check if index exists ----
+    //             const indexFound = cart.items.findIndex(item => item.productId == productId)
+    //             //------this removes an item from the the cart because the quantity is set to zero.
+    //             if (indexFound !== -1 && quantity <= 0) {
+    //                 cart.items.splice(indexFound, 1)
+    //                 if (cart.items.length == 0) {
+    //                     cart.subTotal = 0
+    //                 } else {
+    //                     cart.subTotal = cart.items.map(item => item.total).reduce((acc, next) => acc + next)
+    //                 }
+    //             }
+    //             //----if quantity of price is 0 throw the error -------
+    //             else {
+    //                 return res.status(400).json({
+    //                     type: "Invalid",
+    //                     msg: "Invalid request"
+    //                 })
+    //             }
+    //             const data = await cart.save()
+    //             const arrProducts = await this.carts.getArrProducts(data)
+    //             res.render('cartDetails', { data, usuarios, username, userInfo, productDetails, cart, arrProducts, expires })
+    //         }
+    
+    //     } catch (err) {
+    //         console.log(err)
+    //         res.status(400).json({
+    //             type: "Invalid",
+    //             msg: "Something Went Wrong",
+    //             err: err
+    //         })
+    //     }
+    // }
 
 }
 

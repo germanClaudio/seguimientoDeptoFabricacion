@@ -1,6 +1,6 @@
-const fs = require('fs')
-const PDFDocument = require('pdfkit')
-const now = require('./formatDate.js')
+const fs = require('fs'),
+	PDFDocument = require('pdfkit'),
+	now = require('./formatDate.js')
 
 function createInvoice(invoice, path) {
 	let doc = new PDFDocument({ size: "A4", margin: 50 })

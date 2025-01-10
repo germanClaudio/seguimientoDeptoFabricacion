@@ -1,10 +1,10 @@
 function getErrorLineNumber(error) {
     
     if (error.route) {
-        const functionName = error.route.stack[2].name
-        const filePath = error.originalUrl
-        const errorMsg = error.message
-        const usuario = error.res.locals.username
+        const functionName = error.route.stack[2].name,
+            filePath = error.originalUrl,
+            errorMsg = error.message,
+            usuario = error.res.locals.username
         
         return {
             functionName,

@@ -1,0 +1,26 @@
+<div class="dashboard-main-wrapper p-0">
+    <div class="bg-light text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 mx-auto">
+                    <div class="error-section">
+                        <img src="/src/images/error-500-internal-server.png" alt="Server Error 500" class="img-fluid">
+                        <div class="error-section-content">
+                            <h1 class="display-3">Internal Server Error 500</h1>
+                            <h5>Lo siento, hubo un error interno en el servidor.</h5>
+                            <h6>Comunique este error al administrador:</h6>
+                            <div class="text-start">
+                                <pre style="height: 53vh">
+                                    <code><%= errorInfo.msgErr %></code>
+                                </pre>
+                            </div>
+                            <hr>
+                            <button class="btn btn-primary mt-3 me-2" onclick="goBack()">Volver <i class="icon-arrow-left"></i></button>
+                            <a href="/api/auth/indexToolShop" class="btn btn-danger mt-3 ms-2">Volver al Home <i class="icon-home"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

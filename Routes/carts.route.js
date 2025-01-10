@@ -19,17 +19,8 @@ routerCarts.get('/:id', checkAuthentication, carts.getCart)
 // -------------------  Add Product to Cart ------------------ 
 routerCarts.get('/add/:id', checkAuthentication, carts.addItemToCart)
 
-// -------------------  Add quantity of a Product to the Cart --------------- 
-routerCarts.post('/addQty/:id', checkAuthentication, carts.addQtyToCart)
-
-// -------------------  Removes quantity of a Product of the Cart ------------------ 
-routerCarts.post('/remove/:id', checkAuthentication, carts.removeItemFromCart)
-
 // -------------------  Removes quantity of a Product of the Cart ------------------ 
 routerCarts.post('/updateCart/:id', checkAuthentication, carts.updateCart)
-
-// -------------------  Removes all items from one Product of the Cart ------------------ 
-routerCarts.post('/deleteItem/:id', checkAuthentication, carts.deleteItemFromCart)
 
 // -------------------  Empty the Cart ------------------ 
 routerCarts.get('/empty-cart/:id', checkAuthentication, carts.emptyCart)
@@ -39,5 +30,15 @@ routerCarts.get('/genOrder/:id', checkAuthentication, carts.genOrderCart)
 
 // -------------------  Get All Orders List ------------------ 
 routerCarts.get('/ordersAll', checkAuthentication, carts.getAllOrders)
+
+// -------------------  Add quantity of a Product to the Cart --------------- 
+// routerCarts.post('/addQty/:id', checkAuthentication, carts.addQtyToCart)
+
+// -------------------  Removes quantity of a Product of the Cart ------------------ 
+// routerCarts.post('/remove/:id', checkAuthentication, carts.removeItemFromCart)
+
+// -------------------  Removes all items from one Product of the Cart ------------------ 
+// routerCarts.post('/deleteItem/:id', checkAuthentication, carts.deleteItemFromCart)
+
 
 module.exports = routerCarts

@@ -1,7 +1,7 @@
 function cookieExpireTime(req) {
-    const cookie = req.session.cookie
-    const time = cookie.expires
-    const expires = new Date(time)
+    const cookie = req.session.cookie,
+        time = cookie.expires,
+        expires = new Date(time)
     return expires
 }
 
