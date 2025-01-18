@@ -16,8 +16,11 @@ routerCarts.get('/user/:id', checkAuthentication, carts.getCartByUserId)
 // -------------------  Select a Cart By Cart Id ------------------ 
 routerCarts.get('/:id', checkAuthentication, carts.getCart)
 
-// -------------------  Add Product to Cart ------------------ 
+// -------------------  Add One Product to Cart ------------------ 
 routerCarts.get('/add/:id', checkAuthentication, carts.addItemToCart)
+
+// -------------------  Add Multi Products to Cart ------------------ 
+// routerCarts.post('/addMulti', checkAuthentication, carts.addMultiItemsToCart)
 
 // -------------------  Removes quantity of a Product of the Cart ------------------ 
 routerCarts.post('/updateCart/:id', checkAuthentication, carts.updateCart)

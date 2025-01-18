@@ -1961,7 +1961,7 @@ arrayBtnAddDetallesOt.forEach(function(elemento) {
             const ociNumber = parseInt(document.getElementById(`ociNumber${ociKNumber}`).textContent)
             const otKNumber = parseInt(arrayOciOtSelected[1])
 
-            console.log(idProjectSelected, ociKNumber, ociNumber, otNumber, otKNumber, opNumber, statusOt, otDescription)
+            //console.log(idProjectSelected, ociKNumber, ociNumber, otNumber, otKNumber, opNumber, statusOt, otDescription)
 
             messageAddDetalleOt(
                 idProjectSelected,

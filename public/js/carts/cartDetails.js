@@ -52,69 +52,89 @@ document.addEventListener("DOMContentLoaded", () => {
     btnSeguirSeleccionando = document.getElementById("seguirSeleccionando")
     if (btnSeguirSeleccionando) {
         btnSeguirSeleccionando.addEventListener("click", (event) => {
-            let arrayConsumiblesId = [], arrayQuantities = []
-            
-            const consumiblesId = document.getElementsByName('consumibleId'),
-                quantities = document.getElementsByName('quantity'),
-                cartId = document.getElementById('cartId').value
-            
-            consumiblesId.forEach(id =>{
-                arrayConsumiblesId.push(id.value)
-            })
-    
-            quantities.forEach(id =>{
-                arrayQuantities.push(id.value)
-            })
-                
-            let html = `El carrito fue actualizado y sus cambios no se han guardado aún...<br>
-                    Está seguro que desea continuar?
-                    <form id="formSaveCart" action="/api/carts/updateCart/${cartId}" method="post">
-                        <input type="hidden" name="consumiblesId" value="${arrayConsumiblesId}">
-                        <input type="hidden" name="quantities" value="${arrayQuantities}">
-                    </form>`
-    
-            if (flag) {
-                Swal.fire({
-                    title: `Seguir seleccionando sin guardar?`,
-                    position: 'center',
-                    html: html,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    showCloseButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Actualizar Carrito! <i class="fa-solid fa-save"></i>',
-                    cancelButtonText: 'No guardar cambios <i class="fa-solid fa-cart-shopping fa-rotate-by" style="--fa-rotate-angle: 45deg;"></i>'
-        
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const submitAction = document.getElementById("formSaveCart")
-                        submitAction.submit()
-                        Swal.fire(
-                            'Actualizado!',
-                            `El carrito, se actualizó exitosamente.`,
-                            'success'
-                        )
-        
-                    } else if (result.isDenied) {
-                        Swal.close()
-    
-                    } else {
-                        Swal.fire(
-                            'No guardado!',
-                            `El carrito no se ha actualizado`,
-                            'info'
-                            )
-                        window.location.href = '/api/auth/indexToolShop';
-                    }
-                })
-    
-            } else {
-                window.location.href = '/api/auth/indexToolShop';
-            }
-        });
+            const link = '/api/auth/indexToolShop'
+            saveChangesMessage(flag, link, event)
+        })
     }
+
+    // Función para manejar clics en el <nav>
+    document.querySelector('nav').addEventListener('click', (event) => {
+        const link = event.target.closest('a');
+        saveChangesMessage(flag, link, event)
+    });
 });
+
+function saveChangesMessage(flag, link, event) {
+    const isLogoutButton = event.target.closest('#logoutBanner'); // Verifica si el clic ocurrió dentro del botón de logout
+    if (isLogoutButton) {
+        return; // No hacer nada y permitir el comportamiento predeterminado
+    }
+
+    let arrayConsumiblesId = [], arrayQuantities = [], destination = ''
+            
+    const consumiblesId = document.getElementsByName('consumibleId'),
+        quantities = document.getElementsByName('quantity'),
+        cartId = document.getElementById('cartId').value
+
+    consumiblesId.forEach(id =>{
+        arrayConsumiblesId.push(id.value)
+    })
+
+    quantities.forEach(id =>{
+        arrayQuantities.push(id.value)
+    })
+        
+    let html = `El carrito fue actualizado y sus cambios no se han guardado aún...<br>
+            Está seguro que desea continuar?
+            <form id="formSaveCart" action="/api/carts/updateCart/${cartId}" method="post">
+                <input type="hidden" name="consumiblesId" value="${arrayConsumiblesId}">
+                <input type="hidden" name="quantities" value="${arrayQuantities}">
+            </form>`
+
+    link && link.href ? destination = link.href : destination = link
+    
+    if (flag) {
+        event.preventDefault();
+        Swal.fire({
+            title: `Hay cambios sin guardar`,
+            position: 'center',
+            html: html,
+            icon: 'warning',
+            showCancelButton: true,
+            showCloseButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Actualizar Carrito! <i class="fa-solid fa-save"></i>',
+            cancelButtonText: 'No guardar cambios <i class="fa-solid fa-cart-shopping fa-rotate-by" style="--fa-rotate-angle: 45deg;"></i>'
+
+        }).then((result) => {
+            console.log('result: ', result)
+            if (result.isConfirmed) {
+                const submitAction = document.getElementById("formSaveCart")
+                submitAction.submit()
+                Swal.fire(
+                    'Actualizado!',
+                    `El carrito, se actualizó exitosamente.`,
+                    'success'
+                )
+
+            } else if (result.isDismissed && result.dismiss === "close") {
+                Swal.close()
+
+            } else {
+                Swal.fire(
+                    'No guardado!',
+                    `El carrito no se ha actualizado`,
+                    'info'
+                )
+                window.location.href = destination;
+            }
+        })
+
+    } else {
+        window.location.href = destination;
+    }
+}
 
 // Función para incrementar cantidad
 function incrementValue(consumibleId) {

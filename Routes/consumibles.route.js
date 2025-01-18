@@ -11,6 +11,9 @@ const { Router } = require('express'),
 //---------------- Get All Consumibles in DB ------------------
 routerConsumibles.get('/', checkAuthentication, consumibles.getAllConsumibles)
 
+//---------------- Get All Consumibles in DB ------------------
+routerConsumibles.get('/solicitud', checkAuthentication, consumibles.getConsumiblesForUsers)
+
 //---------------- Get Consumible by Id  ----------------------
 routerConsumibles.get('/:id', checkAuthentication, consumibles.getConsumibleById)
 

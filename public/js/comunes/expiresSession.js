@@ -26,26 +26,24 @@ setInterval(updateCountdown, 1000)
 
 // logout message function ------------
 function confirmLogout({userName, rolUser, avatarUser}) {
-    const nameUser = userName[0]
-    const rol = rolUser
+    const nameUser = userName[0],
+        rol = rolUser
     let spanToShow = ''
 // console.log('nameUser: ', nameUser, 'rol: ', rol)
     rol === "Admin"
     ? spanToShow = `<span class="badge rounded-pill bg-primary">${rol}</span>`
     : spanToShow = `<span class="badge rounded-pill bg-info text-dark">${rol}</span>`
 
-    const htmlForm = `<div>${nameUser} - ${spanToShow}?</div>
-                        <img class="img-fluid rounded-circle float-center my-3"
-                            alt="Avatar" src="${avatarUser}" width="50px" height="50px"><br>
+    const htmlForm = `<div>${nameUser} - ${spanToShow}?</div><br>
                         Está seguro que desea continuar?<br>
                         <form id="formLogout" action="/api/auth/logout" method="post">
                         </form>`
-    
+
         Swal.fire({
             title: `Cerrar sesión de `,
             position: 'center',
             html: htmlForm,
-            icon: 'warning',
+            imageUrl: `${avatarUser}`,
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
@@ -59,6 +57,12 @@ function confirmLogout({userName, rolUser, avatarUser}) {
                 return false
             }
         })
+
+        const imageSwal = document.getElementsByClassName('swal2-image')
+        if(imageSwal) {
+            imageSwal[0].setAttribute('style', 'width: 100px; height: 100px; object-fit: cover;')
+            imageSwal[0].classList.add('rounded-circle', 'mb-0')
+        }
 }
 
 const logoutSidebar = document.getElementById('logoutSidebar'),

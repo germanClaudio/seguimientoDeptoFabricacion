@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head/head'); %>
+</head>
+
+<body>
+    <%- include('../partials/header/header'); %>
+
+    <div class="container" style="padding-top: 70px;"></div>
+    <br>
+
+    <%- include('../partials/btnHeaderTop/btnHeaderTop-selectConsumible'); %>
+
+    <div class="d-block mx-auto mt-4 text-center bg-primary-light">    
+        <%- include('../partials/forms/formularioBuscarConsumible'); %>
+        <%- include('../partials/data/dataConsumiblesSearch'); %>
+    </div>
+
+    <%- include('../partials/sections/sectionSelectMultiConsumibles'); %>
+
+    <%- include('../partials/sections/sectionConsumiblesList'); %>
+    
+    <div class="d-block mx-auto px-5 mb-5 text-center w-100">
+        <%- include('../partials/data/dataConsumiblesTableUser'); %>
+    </div>
+    <br>
+    <%- include('../partials/btnFooterBottom/btnFooterBottom-goUp'); %>
+    <br>
+    <footer>
+        <%- include('../partials/footer/footer'); %>
+    </footer>
+
+    <!--    scripts     -->
+    <script type="text/javascript" src="/js/carts/cartConsumibles.js"></script>
+    <script type="text/javascript" src="/js/comunes/search.js"></script>
+                
+</body>
+
+</html>

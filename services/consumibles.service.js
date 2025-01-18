@@ -10,6 +10,11 @@ class ConsumibleService {
     async getAllConsumibles() {
         return await this.consumible.getAllConsumibles()
     }
+
+    // return all consumible from DB for users
+    async getConsumiblesForUsers() {
+        return await this.consumible.getConsumiblesForUsers()
+    }
     
     // return one consumible by designation
     async getConsumibleByDesignation(designation) {

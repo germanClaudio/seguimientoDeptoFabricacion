@@ -1,13 +1,14 @@
 function catchErrors(err, req, res, next) {
-
+    let errorInfo = {}
     if(err.data) {
-        var errorInfo = {
+        errorInfo = {
             msgErr: err,
             errorData: err.data,
             flag: err.dirNumber,
         }
+
     } else {
-        var errorInfo = {
+        errorInfo = {
             msgErr: err,
             flag: err.dirNumber,
         }

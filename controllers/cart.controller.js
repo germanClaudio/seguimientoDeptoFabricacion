@@ -134,8 +134,115 @@ class CartsController {
         }
     }
     
-    // -------------------  Add Product to Cart ---------------
+    // -------------------  Add One Product to Cart ---------------
     addItemToCart = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo;
+        const expires = cookie(req)
+
+        try {
+            const productId = req.params.id,
+                quantity = Number.parseInt(1),
+                usuarios = await this.users.getUserByUsername(username),
+                userId = usuarios._id
+                !usuarios ? catchError401_3(req, res, next) : null
+
+            const userCreator = await this.users.getUserById(userId)
+            !userCreator ? catchError401_3(req, res, next) : null
+            
+            let productDetails = await this.consumibles.getConsumibleById(productId)
+            !productDetails ? catchError401_3(req, res, next) : null
+            
+            let cart = await this.carts.getCartByUserId(userId)
+            if (cart) { //--If Cart Exists ----
+                //---- check if index product exists ----
+                const indexFound = cart.items.findIndex(item => item.consumibleId == productId)
+                
+                //----check if product exist, just add the previous quantity with the new quantity and update the total price---
+                if (indexFound !== -1) {
+                    cart.items[indexFound].quantity = cart.items[indexFound].quantity + quantity
+                    cart.modifiedOn = formatDate()
+                
+                } else if (quantity > 0) { //----Check if Quantity is Greater than 0 then add item to items Array ----
+                    cart.items.push({
+                        consumibleId: productDetails.id,
+                        designation: productDetails.designation,
+                        code: productDetails.code,
+                        type: productDetails.type,
+                        imageConsumible: productDetails.imageConsumible || consumiblePictureNotFound,
+                        qrCode: productDetails.qrCode,
+                        characteristics: productDetails.characteristics,
+                        timestamp: formatDate(),
+                        quantity: quantity
+                    })
+                
+                } else { //----if quantity of price is 0 throw the error -------
+                    catchError500(err, req, res, next)
+                }
+
+                const userCart = await cart.save(),
+                    arrProducts = await this.carts.getArrProducts(userCart),
+                    csrfToken = csrfTokens.create(req.csrfSecret);
+
+                //console.log('Cart exist-> userCart: ', userCart, ' arrProducts: ', arrProducts)
+                res.render('cartDetails', {
+                    userCart,
+                    usuarios,
+                    username,
+                    userInfo,
+                    productDetails,
+                    data,
+                    cart,
+                    arrProducts,
+                    expires,
+                    csrfToken
+                })
+            
+            } else { //- if there is no user with a cart...it creates a new cart and then adds the item to the cart that has been created-----
+                const cartData = {
+                    items: [{
+                        consumibleId: productDetails.id,
+                        designation: productDetails.designation,
+                        code: productDetails.code,
+                        type: productDetails.type,
+                        imageConsumible: productDetails.imageConsumible || consumiblePictureNotFound,
+                        qrCode: productDetails.qrCode,
+                        characteristics: productDetails.characteristics,
+                        quantity: quantity,
+                        timestamp: formatDate(),
+                    }],
+                    userId: usuarios._id,
+                    creator: dataUserCreator(userCreator),
+                    active: true,
+                    modifiedOn: formatDate(),
+                }
+                
+                const userCart = await this.carts.addItemToCart(cartData),
+                    arrProducts = await this.carts.getArrProducts(userCart),
+                    csrfToken = csrfTokens.create(req.csrfSecret);
+                
+                //console.log('Cart does not exist-> userCart: ', userCart, ' arrProducts: ', arrProducts)
+                res.render('cartDetails', {
+                    userCart,
+                    usuarios,
+                    username,
+                    userInfo,
+                    productDetails,
+                    data,
+                    cart,
+                    arrProducts,
+                    expires,
+                    csrfToken
+                })
+            }
+            
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    // -------------------  Add Multi Products to Cart ---------------
+    addMultiItemsToCart = async (req, res, next) => {
         let username = res.locals.username,
             userInfo = res.locals.userInfo;
         const expires = cookie(req)

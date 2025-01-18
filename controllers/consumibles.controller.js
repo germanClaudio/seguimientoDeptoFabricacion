@@ -1,5 +1,6 @@
 const UserService = require("../services/users.service.js"),
     ConsumibleService = require("../services/consumibles.service.js"),
+    CartsService = require("../services/carts.service.js"),
     { uploadToGCS } = require("../utils/uploadFilesToGSC.js"),
     { uploadMulterSingleImageConsumibles } = require("../utils/uploadMulter.js"),
     csrf = require('csrf'),
@@ -16,6 +17,7 @@ class ConsumiblesController {
     constructor(){
         this.users = new UserService()
         this.consumibles = new ConsumibleService()
+        this.carts = new CartsService()
     }
 
     getAllConsumibles = async (req, res, next) => {
@@ -35,6 +37,37 @@ class ConsumiblesController {
                 consumibles,
                 data,
                 csrfToken
+            })
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    getConsumiblesForUsers = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+        
+        try {
+            const consumibles = await this.consumibles.getAllConsumibles()
+            !consumibles ? catchError400_5(req, res, next) : null
+
+            const usuario = await this.users.getUserByUsername(username)
+                !usuario ? catchError401_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
+
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            res.render('selectConsumible', {
+                usuario,
+                username,
+                userInfo,
+                expires,
+                consumibles,
+                data,
+                csrfToken,
+                userCart
             })
 
         } catch (err) {
