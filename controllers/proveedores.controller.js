@@ -1,27 +1,26 @@
-const UserService = require("../services/users.service.js")
-const SupplierService = require("../services/suppliers.service.js")
+const UserService = require("../services/users.service.js"),
+    SupplierService = require("../services/suppliers.service.js"),
 
-const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
-const { uploadMulterSingleImageSupplier } = require("../utils/uploadMulter.js")
-
-let formatDate = require('../utils/formatDate.js')
-
-const csrf = require('csrf');
-const csrfTokens = csrf();
-
-let supplierPictureNotFound = "../../../src/images/upload/SuppliersImages/noImageFound.png"
-const cookie = require('../utils/cookie.js')
-
-const data = require('../utils/variablesInicializator.js')
-
-const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
+    csrf = require('csrf'),
+    csrfTokens = csrf(),
+    
+    supplierPictureNotFound = "https://storage.googleapis.com/imagenesproyectosingenieria/upload/SuppliersImages/noImageFound.png",
+    cookie = require('../utils/cookie.js'),
+    
+    data = require('../utils/variablesInicializator.js'),
+    
+    { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js'),
+    { uploadToGCS } = require("../utils/uploadFilesToGSC.js"),
+    { uploadMulterSingleImageSupplier } = require("../utils/uploadMulter.js");
 
 const {catchError400_3,
-        catchError400_5,
-        catchError400_6,
-        catchError401_3,
-        catchError500
+    catchError400_5,
+    catchError400_6,
+    catchError401_3,
+    catchError500
 } = require('../utils/catchErrors.js')
+
+let formatDate = require('../utils/formatDate.js')
 
 class SuppliersController {  
     constructor(){

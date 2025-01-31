@@ -11,7 +11,7 @@ const UserService = require("../services/users.service.js"),
     {catchError400_3, catchError400_5, catchError400_6, catchError400_1, catchError401_3, catchError500 } = require('../utils/catchErrors.js')
 
 let formatDate = require('../utils/formatDate.js'),
-    consumiblePictureNotFound = "../../../src/images/upload/ConsumiblesImages/noImageFound.png"
+    consumiblePictureNotFound = "https://storage.googleapis.com/imagenesproyectosingenieria/upload/ConsumiblesImages/noImageFound.png"
 
 class ConsumiblesController {  
     constructor(){

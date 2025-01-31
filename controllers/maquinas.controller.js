@@ -1,27 +1,26 @@
-const UserService = require("../services/users.service.js")
-const ToolService = require("../services/tools.service.js")
+const UserService = require("../services/users.service.js"),
+    ToolService = require("../services/tools.service.js"),
 
-const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
-const { uploadMulterSingleImageTool } = require("../utils/uploadMulter.js")
+    csrf = require('csrf'),
+    csrfTokens = csrf(),
 
-let formatDate = require('../utils/formatDate.js')
+    toolPictureNotFound = "https://storage.googleapis.com/imagenesproyectosingenieria/upload/ToolsImages/noImageFound.png"
+    cookie = require('../utils/cookie.js'),
 
-const csrf = require('csrf');
-const csrfTokens = csrf();
+    data = require('../utils/variablesInicializator.js'),
 
-let toolPictureNotFound = "../../../src/images/upload/ToolsImages/noImageFound.png"
-const cookie = require('../utils/cookie.js')
-
-const data = require('../utils/variablesInicializator.js')
-
-const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
+    { uploadToGCS } = require("../utils/uploadFilesToGSC.js"),
+    { uploadMulterSingleImageTool } = require("../utils/uploadMulter.js"),
+    { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
 
 const {catchError400_3,
-        catchError400_5,
-        catchError400_6,
-        catchError401_3,
-        catchError500
+    catchError400_5,
+    catchError400_6,
+    catchError401_3,
+    catchError500
 } = require('../utils/catchErrors.js')
+
+let formatDate = require('../utils/formatDate.js')
 
 class ToolsController {  
     constructor(){

@@ -4,9 +4,9 @@
         <tr>
             <th colspan="4" class="text-center">MECANIZADO (1° Parte)
                 <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
-                    <button id="posBtnAddDataOtMecanizadoPrimera<%=k%>" type="button" name="btnOtMecanizadoPrimera" class="btn btn-small btn-success shadow m-1 me-5 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                    <button id="posBtnAddDataOtMecanizadoPrimera<%=k%>" type="button" name="btnOtMecanizadoPrimera" class="btn btn-small btn-success shadow mt-1 mx-1 me-5 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
                         <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
-                        <span id="spanCheckSelecMasiveMecaPrima<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                        <span id="spanCheckSelecMasiveMecaPrima<%=k%>" class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
                             0
                             <span class="visually-hidden">Elementos seleccionados</span>
                         </span>
@@ -24,9 +24,9 @@
             </th>
         </tr>
         <tr>
-            <th id="colData0" style="width:33vw" scope="col-1" class="text-center pb-1">F0 | Estado | Rev</th>
-            <th id="colData1" style="width:33vw" scope="col-1" class="text-center pb-1">F1 | Estado | Rev</th>
-            <th id="colData2" style="width:33vw" scope="col-1" class="text-center pb-1">F2 | Estado | Rev</th>
+            <th id="colData0" style="width:33vw" scope="col-1" class="text-center">F0 | Estado | Rev</th>
+            <th id="colData1" style="width:33vw" scope="col-1" class="text-center">F1 | Estado | Rev</th>
+            <th id="colData2" style="width:33vw" scope="col-1" class="text-center">F2 | Estado | Rev</th>
             
         </tr>
     </thead>

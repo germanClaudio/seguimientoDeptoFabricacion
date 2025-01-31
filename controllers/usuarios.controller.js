@@ -22,7 +22,7 @@ const UserService = require("../services/users.service.js"),
     sessionTime = parseInt(process.env.SESSION_TIME) // 12 HORAS
 
 let formatDate = require('../utils/formatDate.js'),
-    userPictureNotFound = "../../../src/images/upload/AvatarUsersImages/incognito.jpg"
+    userPictureNotFound = "https://storage.googleapis.com/imagenesproyectosingenieria/upload/AvatarUsersImages/incognito.jpg"
 
 
 function validateSelectField(value) {

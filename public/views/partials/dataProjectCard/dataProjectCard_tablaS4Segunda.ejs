@@ -9,7 +9,7 @@
                     <button id="posBtnAddDataS4Segunda<%=k%>" type="button" name="btn4SegundaSim" class="btn btn-small btn-success shadow m-1 position-relative"
                         style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
                         <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
-                        <span id="spanCheckSelecMasiveSim4Seg<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                        <span id="spanCheckSelecMasiveSim4Seg<%=k%>" class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
                             0
                             <span class="visually-hidden">Elementos seleccionados</span>
                         </span>
@@ -23,9 +23,9 @@
             </th>
         </tr>
         <tr>
-            <th style="width:23vw" scope="col-1" class="text-center pb-2">Informe | Rev</th>
-            <th style="width:23vw" scope="col-1" class="text-center pb-2">Geo Cop#1 | Rev</th>
-            <th style="width:23vw" scope="col-1" class="text-center pb-2">Geo Cop#2 | Rev</th>
+            <th style="width:23vw" scope="col-1" class="text-center">Informe | Rev</th>
+            <th style="width:23vw" scope="col-1" class="text-center">Geo Cop#1 | Rev</th>
+            <th style="width:23vw" scope="col-1" class="text-center">Geo Cop#2 | Rev</th>
 
             <% let arrayHsSim4Segunda = [], sumaHsSim4SegundaTotal = 0,
                 pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
@@ -42,7 +42,7 @@
                         return acumulador + valorActual;
                     }, 0);
                 } %>
-            <th style="width:31vw" scope="col-1" class="text-center pb-1">Hs Sim | Rev | Total Hs
+            <th style="width:31vw" scope="col-1" class="text-center">Hs Sim | Rev | Total Hs
                 <span id="resHsTotalSim4Segunda<%=k%>" class="badge rounded-pill bg-dark text-white"><%= sumaHsSim4SegundaTotal %></span>
             </th>
         </tr>

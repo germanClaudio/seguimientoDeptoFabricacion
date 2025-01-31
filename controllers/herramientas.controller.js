@@ -1,20 +1,19 @@
-const UserService = require("../services/users.service.js")
-const CuttingToolService = require("../services/cuttingTools.service.js")
+const UserService = require("../services/users.service.js"),
+    CuttingToolService = require("../services/cuttingTools.service.js"),
 
-const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
-const { uploadMulterSingleImageCuttingTool } = require("../utils/uploadMulter.js")
+    { uploadToGCS } = require("../utils/uploadFilesToGSC.js"),
+    { uploadMulterSingleImageCuttingTool } = require("../utils/uploadMulter.js"),
+
+    csrf = require('csrf'),
+    csrfTokens = csrf(),
+
+    cuttingToolPictureNotFound = "https://storage.googleapis.com/imagenesproyectosingenieria/upload/CuttingToolsImages/noImageFound.png",
+    cookie = require('../utils/cookie.js'),
+
+    data = require('../utils/variablesInicializator.js'),
+    { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty, dataToolEmpty } = require('../utils/generateUsers.js')
 
 let formatDate = require('../utils/formatDate.js')
-
-const csrf = require('csrf');
-const csrfTokens = csrf();
-
-let cuttingToolPictureNotFound = "../../../src/images/upload/CuttingToolsImages/noImageFound.png"
-const cookie = require('../utils/cookie.js')
-
-const data = require('../utils/variablesInicializator.js')
-
-const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty, dataToolEmpty } = require('../utils/generateUsers.js')
 
 function validateSelectField(value) {
     const validOptions = ['TOR', 'PLA', 'ESF', 

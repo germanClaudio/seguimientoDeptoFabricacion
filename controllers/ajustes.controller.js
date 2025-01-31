@@ -1,20 +1,19 @@
-const ProyectosService = require("../services/projects.service.js")
-const ClientesService = require("../services/clients.service.js")
-const UserService = require("../services/users.service.js")
-const ProgramasService = require("../services/programms.service.js")
-const AjustesService = require("../services/ajustes.service.js")
-const ToolService = require("../services/tools.service.js")
+const ProyectosService = require("../services/projects.service.js"),
+    ClientesService = require("../services/clients.service.js"),
+    UserService = require("../services/users.service.js"),
+    ProgramasService = require("../services/programms.service.js"),
+    AjustesService = require("../services/ajustes.service.js"),
+    ToolService = require("../services/tools.service.js"),
 
-let formatDate = require('../utils/formatDate.js')
+    csrf = require('csrf'),
+    csrfTokens = csrf(),
 
-const csrf = require('csrf');
-const csrfTokens = csrf();
+    cookie = require('../utils/cookie.js'),
 
-const cookie = require('../utils/cookie.js')
+    { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty, dataUserAuthorizator } = require('../utils/generateUsers.js')
 
-let data = require('../utils/variablesInicializator.js')
-
-const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty, dataUserAuthorizator } = require('../utils/generateUsers.js')
+let data = require('../utils/variablesInicializator.js'),
+    formatDate = require('../utils/formatDate.js')
 
 const {catchError400,
     catchError400_1,

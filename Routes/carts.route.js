@@ -20,7 +20,7 @@ routerCarts.get('/:id', checkAuthentication, carts.getCart)
 routerCarts.get('/add/:id', checkAuthentication, carts.addItemToCart)
 
 // -------------------  Add Multi Products to Cart ------------------ 
-// routerCarts.post('/addMulti', checkAuthentication, carts.addMultiItemsToCart)
+routerCarts.post('/addMulti', checkAuthentication, carts.addMultiItemsToCart)
 
 // -------------------  Removes quantity of a Product of the Cart ------------------ 
 routerCarts.post('/updateCart/:id', checkAuthentication, carts.updateCart)
@@ -29,7 +29,7 @@ routerCarts.post('/updateCart/:id', checkAuthentication, carts.updateCart)
 routerCarts.get('/empty-cart/:id', checkAuthentication, carts.emptyCart)
 
 // -------------------  Generate Purcharse Order of the Cart ------------------ 
-routerCarts.get('/genOrder/:id', checkAuthentication, carts.genOrderCart)
+routerCarts.post('/generateOrder', checkAuthentication, carts.genOrderCart)
 
 // -------------------  Get All Orders List ------------------ 
 routerCarts.get('/ordersAll', checkAuthentication, carts.getAllOrders)

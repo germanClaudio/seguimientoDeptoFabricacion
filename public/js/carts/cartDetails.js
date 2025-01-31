@@ -296,9 +296,62 @@ if(btnEmptyCart) {
 }
 
 // Generar PO de carrito
-const btnGenerateOrder = document.getElementById('generateOrder')
-if (btnGenerateOrder) {
-    btnGenerateOrder.addEventListener('clic', (event) => {
-    
-    });
+function message(cartId) {
+    let arrayConsumiblesId = [], arrayQuantities = []            
+    const consumiblesId = document.getElementsByName('consumibleId'),
+        quantities = document.getElementsByName('quantity')
+
+    consumiblesId.forEach(id =>{
+        arrayConsumiblesId.push(id.value)
+    })
+
+    quantities.forEach(id =>{
+        arrayQuantities.push(id.value)
+    })
+
+    let html = `Está seguro que desea continuar?
+            <form id="formGenerateOrder" action="/api/carts/generateOrder" method="post">
+                <input type="hidden" name="cartId" value="${cartId}">
+                <input type="hidden" name="consumiblesId" value="${arrayConsumiblesId}">
+                <input type="hidden" name="quantities" value="${arrayQuantities}">
+            </form>`
+
+    Swal.fire({
+    title: 'Se enviará la solicitud a Pañol...',
+    html: html,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Si, envíala! <i class="fa-regular fa-hand-point-up"></i>',
+    cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById("formGenerateOrder").submit()
+            setTimeout(() => {
+                Swal.fire(
+                    'Solicitud envida!',
+                    `La solicitud, ha sido enviada exitosamente.`,
+                    'success'
+                )
+            }, 800)
+            
+        } else {
+            Swal.fire(
+                'No enviada!',
+                `La solicitud, no ha sido enviada.`,
+                'info'
+            )
+            return false
+        }
+    })
 }
+
+const btnGenerateOrder = document.getElementById('btnGenerateOrder')
+    if (btnGenerateOrder) {
+        btnGenerateOrder.addEventListener('click', (event) => {
+            event.preventDefault()
+            const cartId = document.getElementById('cartId').value
+            message(cartId)
+        })
+    }

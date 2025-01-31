@@ -4,10 +4,10 @@
         <tr>
             <th colspan="4" class="text-center">DISTRIBUCIÓN
                 <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
-                    <button id="posBtnAddDataOtDistribucion<%=k%>" type="button" name="btnOtDistribucion" class="btn btn-small btn-success shadow m-1 position-relative"
+                    <button id="posBtnAddDataOtDistribucion<%=k%>" type="button" name="btnOtDistribucion" class="btn btn-small btn-success shadow mt-1 mx-1 position-relative"
                         style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
                         <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
-                        <span id="spanCheckSelecMasiveDistribution<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                        <span id="spanCheckSelecMasiveDistribution<%=k%>" class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
                             0
                             <span class="visually-hidden">Elementos seleccionados</span>
                         </span>
@@ -21,10 +21,10 @@
             </th>
         </tr>
         <tr>
-            <th id="colData0" style="width:25vw" scope="col-1" class="text-center pb-1">Mec. 2d Completo | Rev.</th>
-            <th id="colData1" style="width:25vw" scope="col-1" class="text-center pb-1">Mec. 3d Prefinal | Rev.</th>
-            <th id="colData3" style="width:25vw" scope="col-1" class="text-center pb-1">Mec. 3d Final | Rev.</th>
-            <th id="colData4" style="width:25vw" scope="col-1" class="text-center pb-1">Banco-Armado | Rev.</th>
+            <th id="colData0" style="width:25vw" scope="col-1" class="text-center">Mec. 2d Completo | Rev.</th>
+            <th id="colData1" style="width:25vw" scope="col-1" class="text-center">Mec. 3d Prefinal | Rev.</th>
+            <th id="colData3" style="width:25vw" scope="col-1" class="text-center">Mec. 3d Final | Rev.</th>
+            <th id="colData4" style="width:25vw" scope="col-1" class="text-center">Banco-Armado | Rev.</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">

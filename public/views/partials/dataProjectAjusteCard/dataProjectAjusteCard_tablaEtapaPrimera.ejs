@@ -4,9 +4,9 @@
         <tr>
             <th colspan="4" class="text-center">ETAPA 1
                 <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
-                    <button id="posBtnAddDataOtEtapaPrimera<%=k%>" type="button" name="btnOtEtapaPrimera" class="btn btn-small btn-success shadow m-1 me-5 mb-2 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                    <button id="posBtnAddDataOtEtapaPrimera<%=k%>" type="button" name="btnOtEtapaPrimera" class="btn btn-small btn-success shadow m-1 me-5 mb-1 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
                         <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
-                        <span id="spanCheckSelecMasiveEtapaPrima<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                        <span id="spanCheckSelecMasiveEtapaPrima<%=k%>" class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
                             0
                             <span class="visually-hidden">Elementos seleccionados</span>
                         </span>
@@ -24,10 +24,10 @@
             </th>
         </tr>
         <tr>
-            <th id="colData0" style="width:25vw" scope="col-1" class="text-center pb-1">Guiados | Rev.</th>
-            <th id="colData1" style="width:25vw" scope="col-1" class="text-center pb-1">Centr / L. Corte / Chapa | Rev.</th>
-            <th id="colData2" style="width:25vw" scope="col-1" class="text-center pb-1">Centr Levas | Rev.</th>
-            <th id="colData3" style="width:25vw" scope="col-1" class="text-center pb-1">LTH | Rev.</th>
+            <th id="colData0" style="width:25vw" scope="col-1" class="text-center">Guiados | Rev.</th>
+            <th id="colData1" style="width:25vw" scope="col-1" class="text-center">Centr / L. Corte / Chapa | Rev.</th>
+            <th id="colData2" style="width:25vw" scope="col-1" class="text-center">Centr Levas | Rev.</th>
+            <th id="colData3" style="width:25vw" scope="col-1" class="text-center">LTH | Rev.</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">

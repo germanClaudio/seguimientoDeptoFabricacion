@@ -9,7 +9,7 @@
                         style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
                         title="Agregar/Modificar Datos" value="<%=k%>">
                         <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
-                        <span id="spanCheckSelecMasiveProc3d<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                        <span id="spanCheckSelecMasiveProc3d<%=k%>" class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
                             0
                             <span class="visually-hidden">Elementos seleccionados</span>
                         </span>
@@ -23,7 +23,7 @@
             </th>
         </tr>
         <tr>
-            <th id="colData3" style="width:50vw" scope="col-1" class="text-center pb-2"> Proceso 3D | Rev.</th>
+            <th id="colData3" style="width:50vw" scope="col-1" class="text-center"> Proceso 3D | Rev.</th>
 
             <% let arrayHsProceso3d = [], sumaHsProceso3dTotal = 0
                 for ( let n=0; proyecto[m].project[j].oci[k].otProject.length > n; n++) {
@@ -39,7 +39,7 @@
                     }, 0);
                 } %>
 
-                <th id="colData4" style="width:50vw" scope="col-1" class="text-center pb-2"> Hs Proceso 3D | Rev. | Total Hs:
+                <th id="colData4" style="width:50vw" scope="col-1" class="text-center"> Hs Proceso 3D | Rev. | Total Hs:
                     <span id="resHsTotalProceso3d<%=k%>" class="badge rounded-pill bg-dark text-white">
                         <%= sumaHsProceso3dTotal %>
                     </span>

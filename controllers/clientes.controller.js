@@ -1,21 +1,18 @@
-const ClientsService = require("../services/clients.service.js")
-const UserService = require("../services/users.service.js")
-const ProjectsService = require("../services/projects.service.js")
+const ClientsService = require("../services/clients.service.js"),
+    UserService = require("../services/users.service.js"),
+    ProjectsService = require("../services/projects.service.js"),
 
-const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
-const { uploadMulterSingleLogoClient, uploadMulterSingleLogoUpdate } = require("../utils/uploadMulter.js")
+    csrf = require('csrf'),
+    csrfTokens = csrf(),
+
+    imageNotFound = 'https://storage.googleapis.com/imagenesproyectosingenieria/upload/LogoClientImages/noImageFound.png',  //"../../../src/images/upload/LogoClientImages/noImageFound.png"
+    cookie = require('../utils/cookie.js'),
+    data = require('../utils/variablesInicializator.js'),
+    { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js'),
+    { uploadToGCS } = require("../utils/uploadFilesToGSC.js"),
+    { uploadMulterSingleLogoClient, uploadMulterSingleLogoUpdate } = require("../utils/uploadMulter.js");
 
 let formatDate = require('../utils/formatDate.js')
-
-const csrf = require('csrf');
-const csrfTokens = csrf();
-
-let imageNotFound = "../../../src/images/upload/LogoClientImages/noImageFound.png"
-const cookie = require('../utils/cookie.js')
-
-const data = require('../utils/variablesInicializator.js')
-
-const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
 
 const {catchError400,
     catchError400_1,

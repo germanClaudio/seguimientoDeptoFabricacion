@@ -17,7 +17,8 @@ const UserService = require("../services/users.service.js"),
         catchError401_3, catchError500 } = require('../utils/catchErrors.js')
     
 let consumiblePictureNotFound = "../../../src/images/upload/ConsumiblesImages/noImageFound.png",
-    formatDate = require('../utils/formatDate.js')
+    formatDate = require('../utils/formatDate.js'),
+    formatDateInvoice = require('../utils/formatDateInvoice.js')
 
 class CartsController {  
     constructor(){
@@ -62,8 +63,8 @@ class CartsController {
             !userLogged.visible ? catchError401_3(req, res, next) : null
             return arrStockProduct
         }
-        catch (error) {
-            catchError400_1(req, res, next)
+        catch (err) {
+            catchError400_1(err, req, res, next)
         }    
     }
 
@@ -93,7 +94,7 @@ class CartsController {
                 cart,
             })
 
-        } catch (error) {
+        } catch (err) {
             catchError500(err, req, res, next)
         }
     }
@@ -248,76 +249,107 @@ class CartsController {
         const expires = cookie(req)
 
         try {
-            const productId = req.params.id,
-                quantity = Number.parseInt(1),
-                usuarios = await this.users.getUserByUsername(username),
+            let arrayInputQuantityNumber=[], idItemHidden=[]
+
+            const prefixes = [
+                { prefix: 'inputQuantityNumber_', array: arrayInputQuantityNumber },
+                { prefix: 'idItemHidden_', array: idItemHidden }
+            ];
+        
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                if (match) {
+                    match.array.push(req.body[key]);
+                }
+            }
+
+            let arrayItemAddedToCart = []
+            for (let i=0; i<parseInt(idItemHidden.length); i++) {
+                let productDetails = await this.consumibles.getConsumibleById(idItemHidden[i])
+                if (!productDetails) {
+                    catchError401_3(req, res, next)
+
+                } else {
+                    let itemAddedToCart = {
+                        itemIdNumber: idItemHidden[i],
+                        itemQuantity: Number.parseInt(arrayInputQuantityNumber[i]),
+                        itemDetails: productDetails
+                    }
+                    arrayItemAddedToCart.push(itemAddedToCart)
+                }
+            }
+
+            const usuarios = await this.users.getUserByUsername(username),
                 userId = usuarios._id
                 !usuarios ? catchError401_3(req, res, next) : null
 
             const userCreator = await this.users.getUserById(userId)
             !userCreator ? catchError401_3(req, res, next) : null
             
-            let productDetails = await this.consumibles.getConsumibleById(productId)
-            !productDetails ? catchError401_3(req, res, next) : null
-            
             let cart = await this.carts.getCartByUserId(userId)
             if (cart) { //--If Cart Exists ----
-                //---- check if index product exists ----
-                const indexFound = cart.items.findIndex(item => item.consumibleId == productId)
-                
-                //----check if product exist, just add the previous quantity with the new quantity and update the total price---
-                if (indexFound !== -1) {
-                    cart.items[indexFound].quantity = cart.items[indexFound].quantity + quantity
-                    cart.modifiedOn = formatDate()
-                
-                } else if (quantity > 0) { //----Check if Quantity is Greater than 0 then add item to items Array ----
-                    cart.items.push({
-                        consumibleId: productDetails.id,
-                        designation: productDetails.designation,
-                        code: productDetails.code,
-                        type: productDetails.type,
-                        imageConsumible: productDetails.imageConsumible || consumiblePictureNotFound,
-                        qrCode: productDetails.qrCode,
-                        characteristics: productDetails.characteristics,
-                        timestamp: formatDate(),
-                        quantity: quantity
-                    })
-                
-                } else { //----if quantity of price is 0 throw the error -------
-                    catchError500(err, req, res, next)
+                for (let i=0; i<parseInt(arrayItemAddedToCart.length); i++) {
+                    //---- check if index product exists ----
+                    const indexFound = cart.items.findIndex(item => item.consumibleId == arrayItemAddedToCart[i].itemIdNumber)
+                    
+                    //----check if product exist, just add the previous quantity with the new quantity and update the total price---
+                    if (indexFound !== -1) {
+                        cart.items[indexFound].quantity = cart.items[indexFound].quantity + arrayItemAddedToCart[i].itemQuantity
+                        cart.modifiedOn = formatDate()
+                    
+                    } else { //if (arrayItemAddedToCart[i].itemQuantity > 0)  ----Check if Quantity is Greater than 0 then add item to items Array ----
+                        cart.items.push({
+                            consumibleId: arrayItemAddedToCart[i].itemIdNumber,
+                            designation: arrayItemAddedToCart[i].itemDetails.designation,
+                            code: arrayItemAddedToCart[i].itemDetails.code,
+                            type: arrayItemAddedToCart[i].itemDetails.type,
+                            imageConsumible: arrayItemAddedToCart[i].itemDetails.imageConsumible || consumiblePictureNotFound,
+                            qrCode: arrayItemAddedToCart[i].itemDetails.qrCode,
+                            characteristics: arrayItemAddedToCart[i].itemDetails.characteristics,
+                            quantity: arrayItemAddedToCart[i].itemQuantity,
+                            timestamp: formatDate()
+                        })
+                        cart.modifiedOn = formatDate()
+                    }
                 }
+                    const userCart = await cart.save(),
+                        arrProducts = await this.carts.getArrProducts(userCart),
+                        csrfToken = csrfTokens.create(req.csrfSecret);
 
-                const userCart = await cart.save(),
-                    arrProducts = await this.carts.getArrProducts(userCart),
-                    csrfToken = csrfTokens.create(req.csrfSecret);
-
-                //console.log('Cart exist-> userCart: ', userCart, ' arrProducts: ', arrProducts)
-                res.render('cartDetails', {
-                    userCart,
-                    usuarios,
-                    username,
-                    userInfo,
-                    productDetails,
-                    data,
-                    cart,
-                    arrProducts,
-                    expires,
-                    csrfToken
-                })
+                    //console.log('Cart exist-> userCart: ', userCart, ' arrProducts: ', arrProducts)
+                    res.render('cartDetails', {
+                        userCart,
+                        usuarios,
+                        username,
+                        userInfo,
+                        data,
+                        cart,
+                        arrProducts,
+                        expires,
+                        csrfToken
+                    })
             
             } else { //- if there is no user with a cart...it creates a new cart and then adds the item to the cart that has been created-----
+                let cartItems = []
+                for (let i=0; i<parseInt(arrayItemAddedToCart.length); i++) {
+                    cartItems.push(
+                        {
+                            consumibleId: arrayItemAddedToCart[i].itemIdNumber,
+                            designation: arrayItemAddedToCart[i].itemDetails.designation,
+                            code: arrayItemAddedToCart[i].itemDetails.code,
+                            type: arrayItemAddedToCart[i].itemDetails.type,
+                            imageConsumible: arrayItemAddedToCart[i].itemDetails.imageConsumible || consumiblePictureNotFound,
+                            qrCode: arrayItemAddedToCart[i].itemDetails.qrCode,
+                            characteristics: arrayItemAddedToCart[i].itemDetails.characteristics,
+                            quantity: arrayItemAddedToCart[i].itemQuantity,
+                            timestamp: formatDate()
+                        }
+                    )
+                }
+
+                // console.log('Cart does not exist-> CartItems ', cartItems)
                 const cartData = {
-                    items: [{
-                        consumibleId: productDetails.id,
-                        designation: productDetails.designation,
-                        code: productDetails.code,
-                        type: productDetails.type,
-                        imageConsumible: productDetails.imageConsumible || consumiblePictureNotFound,
-                        qrCode: productDetails.qrCode,
-                        characteristics: productDetails.characteristics,
-                        quantity: quantity,
-                        timestamp: formatDate(),
-                    }],
+                    items: cartItems,
                     userId: usuarios._id,
                     creator: dataUserCreator(userCreator),
                     active: true,
@@ -328,13 +360,12 @@ class CartsController {
                     arrProducts = await this.carts.getArrProducts(userCart),
                     csrfToken = csrfTokens.create(req.csrfSecret);
                 
-                //console.log('Cart does not exist-> userCart: ', userCart, ' arrProducts: ', arrProducts)
+                // console.log('Cart does not exist-> userCart: ', userCart, ' arrProducts: ', arrProducts)
                 res.render('cartDetails', {
                     userCart,
                     usuarios,
                     username,
                     userInfo,
-                    productDetails,
                     data,
                     cart,
                     arrProducts,
@@ -473,18 +504,27 @@ class CartsController {
     //FIXME: --- Generate P.O. in pdf format, empty the Cart and send an email to Admin ------
     genOrderCart = async (req, res, next) => {
         let username = res.locals.username,
-            userInfo = res.locals.userInfo;
+            userInfo = res.locals.userInfo,
+            arrayItemsQty = [],
+            arrayConsumiblesId = [];
+
         const expires = cookie(req),
-            { id } = req.params
+            id = req.body.cartId
+
+        arrayItemsQty = req.body.quantities.split(',')
+        arrayConsumiblesId = req.body.consumiblesId.split(',')
         
         if (id) {
             try {
                 const usuarios = await this.users.getUserByUsername(username)
                 !usuarios ? catchError401_3(req, res, next) : null
 
+                let updatedCart = await this.carts.updateCart(id, arrayConsumiblesId, arrayItemsQty)
+                !updatedCart ? catchError401_3(req, res, next) : null
+
                 let cart = await this.carts.getCart(id)
                 if ( cart.items.length > 0 ) {
-                    const dateInvoice = formatDate(),
+                    const dateInvoice = formatDateInvoice(),
                         invoiceNumber = (cart._id.toString()).concat('_',dateInvoice),
                     
                         invoice = {
@@ -502,69 +542,77 @@ class CartsController {
                             invoice_nr: invoiceNumber,
                         }
                     
-                    const pathPdfFile = `./src/output/Invoice_${invoiceNumber}.pdf`
-                    const pathPdfOrderFile =  `./public/src/images/output/Invoice_${invoiceNumber}.pdf`
-                    const { createInvoice } = require('../utils/createInvoice.js')
+                    const pathPdfFile = `./src/output/Invoice_${invoiceNumber}.pdf`,
+                        pathPdfOrderFile =  `./public/src/images/output/Invoice_${invoiceNumber}.pdf`,
+                        { createInvoice } = require('../utils/createInvoice.js')
                     createInvoice(invoice, pathPdfFile)
                     createInvoice(invoice, pathPdfOrderFile)
+                        
+                    // ------------ Save order in DataBase ---------------
+                    let pathOrder = `src/images/output/Invoice_${invoice.invoice_nr}.pdf`,
+                        order = await this.carts.genOrderCart(cart, invoice),
+                        orderGenerated = order// await order.save()
                     
+                    // ------------ Reduce stock quantity -------------------
+                    //await this.carts.reduceStockProduct(cart)
+    
+                    // ------------ Empty the cart -------------------
+                    cart = await this.carts.emptyCart(id)
+
                     //////////////////// gmail to Administrator //////////////////////
-                    const { createTransport } = require('nodemailer')
-                    const TEST_EMAIL = process.env.TEST_EMAIL
-                    const PASS_EMAIL = process.env.PASS_EMAIL
-        
-                    const transporter = createTransport({
-                        service: 'gmail',
-                        port: 587,
-                        auth: {
-                            user: TEST_EMAIL,
-                            pass: PASS_EMAIL
-                        },
-                        tls: {
-                            rejectUnauthorized: false
-                        }
-                    })
-        
+                    const { createTransport } = require('nodemailer'),
+                        TEST_EMAIL = process.env.TEST_EMAIL,
+                        PASS_EMAIL = process.env.PASS_EMAIL,
+
+                        transporter = createTransport({
+                            service: 'gmail',
+                            port: 587,
+                            auth: {
+                                user: TEST_EMAIL,
+                                pass: PASS_EMAIL
+                            },
+                            tls: {
+                                rejectUnauthorized: false
+                            }
+                        })
+
                     const mailOptions = {
                         from: 'Servidor NodeJS - Gmail - Prodismo',
                         to: TEST_EMAIL,
-                        subject: `Generación PO# ${invoice.invoice_nr} desde Node JS - Gmail - ACME Inc. Ecommerce`,
-                        html: `<h3 style="color: green;">El usuario ${usuarios.name} ${usuarios.lastName}, realizó la compra exitosamente!</h3>`,
+                        subject: `Generación pedido# ${invoice.invoice_nr} desde Node JS - Gmail - Prodismo SRL`,
+                        html: `<h3 style="color: green;">El usuario ${usuarios.name} ${usuarios.lastName}, realizó el pedido exitosamente!</h3>`,
                         attachments: [
                             {
                                 path: `./src/output/Invoice_${invoice.invoice_nr}.pdf`
                             }
                         ]
                     }
-        
                     ;(async () => {
                         try {
                             const info = await transporter.sendMail(mailOptions)
-                            logger.info(info)
+                            // console.log(info)
                         } catch (err) {
-                            logger.error(err)
+                            console.log(err)
                         }
                     })()
-    
-                    // ------------ Save order in DataBase ---------------
-                    const pathOrder = `src/output/Invoice_${invoice.invoice_nr}.pdf`
-                    const order = await this.carts.genOrderCart(cart, invoice)
-                    let orderGenerated = await order.save()
-                    
-                    // ------------ Reduce stock quantity -------------------
-                    await this.carts.reduceStockProduct(cart)
-    
-                    // ------------ Empty the cart -------------------
-                    cart = await this.carts.emptyCart(id)
                         
-                        res.render('orderGenerated', { data, usuarios, username, userInfo, cart, orderGenerated, pathOrder, expires })
+                    return res.render('orderGenerated', {
+                        data,
+                        usuarios,
+                        username,
+                        userInfo,
+                        cart,
+                        orderGenerated,
+                        pathOrder,
+                        expires
+                    })
                 
                 } else {
                     console.log('Error! El Carrito está vacío')
                 }     
             }
 
-            catch (error) {
+            catch (err) {
                 catchError500(err, req, res, next)
             }
 
@@ -591,191 +639,13 @@ class CartsController {
             
             res.render('orders', { cart, usuarios, username, userInfo, data, orders, arrProducts, expires })
             
-        } catch (error) {
+        } catch (err) {
             res.status(500).json({
                 status: false,
                 error: error
             })
         }
     }
-
-    // -------  Add quantity of a Product to the Cart -----------
-    // addQtyToCart = async (req, res, next) => {
-    //     let username = res.locals.username,
-    //         userInfo = res.locals.userInfo;
-    //     const expires = cookie(req)
-    
-    //     try {
-    //         const { productId } = req.body // Product Id
-    //         const quantity = Number.parseInt(req.body.quantity)
-    //         const usuarios = await this.users.getUserByUsername(username)
-    //         const userId = usuarios._id // User Id
-    //         let cart = await this.carts.getCartByUserId(userId)
-    //         let productDetails = await this.consumibles.getProductById(productId)
-    
-    //             if (!productDetails) {
-    //             return res.status(500).json({
-    //                 type: "Not Found",
-    //                 msg: "Invalid request"
-    //             })
-    //         }
-    //         //--If Cart Exists ----
-    //         if (cart) {
-    //             //---- check if index product exists ----
-    //             const indexFound = cart.items.findIndex(item => item.productId == productId)
-    
-    //             //----check if product exist, just add the previous quantity with the new quantity and update the total price---
-    //             if (indexFound !== -1 && quantity > 0) {
-    //                 cart.items[indexFound].quantity = cart.items[indexFound].quantity + 1
-    //                 cart.items[indexFound].total = cart.items[indexFound].quantity * productDetails.price
-    //                 cart.items[indexFound].price = productDetails.price
-    //                 cart.subTotal = cart.items.map(item => item.total).reduce((acc, next) => acc + next)
-    //                 cart.modifiedOn = formatDate()
-    //             }
-    //             //----if quantity of price is 0 throw the error -------
-    //             else {
-    //                 return res.status(400).json({
-    //                     type: "Invalid",
-    //                     msg: "Invalid request"
-    //                 })
-    //             }
-    //             const data = await cart.save()
-    //             const arrProducts = await this.carts.getArrProducts(data)
-    //             res.render('cartDetails', { data, usuarios, username, userInfo, productDetails, cart, arrProducts, expires })
-    //         }
-    
-    //     } catch (err) {
-    //         console.log(err)
-    //         res.status(400).json({
-    //             type: "Invalid",
-    //             msg: "Something Went Wrong",
-    //             err: err
-    //         })
-    //     }
-    // }
-
-    // -----------  Removes quantity of a Product of the Cart --------
-    // removeItemFromCart = async (req, res, next) => {
-    //     let username = res.locals.username
-    //     let userInfo = res.locals.userInfo
-
-    //     const cookie = req.session.cookie
-    //     const time = cookie.expires
-    //     const expires = new Date(time)
-    
-    //     try {
-    //         const { productId } = req.body
-    //         const quantity = Number.parseInt(req.body.quantity)
-
-    //         const usuarios = await this.users.getUserByUsername(username)
-    //         const userId = usuarios._id // User Id
-
-    //         let cart = await this.carts.getCartByUserId(userId)
-    //         let productDetails = await this.consumibles.getProductById(productId)
-    
-    //             if (!productDetails) {
-    //             return res.status(500).json({
-    //                 type: "Product Not Found",
-    //                 msg: "Invalid Product request"
-    //             })
-    //         }
-    //         //--If Cart Exists ----
-    //         if (cart) {
-    //             //---- check if index exists ----
-    //             const indexFound = cart.items.findIndex(item => item.productId == productId)
-    //             //------this removes an item from the the cart if the quantity is set to zero.
-    //             if (indexFound !== -1 && quantity === 1) {
-    //                 cart.items.splice(indexFound, 1)
-    //                 if (cart.items.length == 0) {
-    //                     cart.subTotal = 0
-    //                 } else {
-    //                     cart.subTotal = cart.items.map(item => item.total).reduce((acc, next) => acc + next)
-    //                 }
-    //             }
-    //             //----------check if product exist, just add the previous quantity with the new quantity and update the total price-------
-    //             else if (indexFound !== -1 && quantity > 1) {
-    //                 cart.items[indexFound].quantity = cart.items[indexFound].quantity - 1
-    //                 cart.items[indexFound].total = cart.items[indexFound].quantity * productDetails.price
-    //                 cart.items[indexFound].price = productDetails.price
-    //                 cart.subTotal = cart.items.map(item => item.total).reduce((acc, next) => acc + next)
-    //                 cart.modifiedOn = formatDate()
-    //             }
-    //             //----if quantity of price is 0 throw the error -------
-    //             else {
-    //                 return res.status(400).json({
-    //                     type: "Invalid",
-    //                     msg: "Invalid request"
-    //                 })
-    //             }
-    //             const data = await cart.save()
-    //             const arrProducts = await this.carts.getArrProducts(data)
-    //             res.render('cartDetails', { data, usuarios, username, userInfo, productDetails, cart, arrProducts, expires })
-    //         }
-    //     } catch (err) {
-    //         console.log(err)
-    //         res.status(400).json({
-    //             type: "Invalid",
-    //             msg: "Something Went Wrong",
-    //             err: err
-    //         })
-    //     }
-    // }
-
-    // -------  Removes all items from one Product of the Cart -------
-    // deleteItemFromCart = async (req, res, next) => {
-    //     let username = res.locals.username,
-    //         userInfo = res.locals.userInfo;
-    //     const expires = cookie(req)
-    
-    //     try {
-    //         const usuarios = await this.users.getUserByUsername(username)
-    //         const userId = usuarios._id // User Id
-    //         const { productId } = req.body // Product Id
-    //         const quantity = 0
-    //         let cart = await this.carts.getCartByUserId(userId)
-    //         let productDetails = await this.consumibles.getProductById(productId)
-    
-    //         if (!productDetails) {
-    //             return res.status(500).json({
-    //                 type: "Product Not Found",
-    //                 msg: "Invalid request"
-    //             })
-    //         }
-    //         //--If Cart Exists ----
-    //         if (cart) {
-    //             //---- check if index exists ----
-    //             const indexFound = cart.items.findIndex(item => item.productId == productId)
-    //             //------this removes an item from the the cart because the quantity is set to zero.
-    //             if (indexFound !== -1 && quantity <= 0) {
-    //                 cart.items.splice(indexFound, 1)
-    //                 if (cart.items.length == 0) {
-    //                     cart.subTotal = 0
-    //                 } else {
-    //                     cart.subTotal = cart.items.map(item => item.total).reduce((acc, next) => acc + next)
-    //                 }
-    //             }
-    //             //----if quantity of price is 0 throw the error -------
-    //             else {
-    //                 return res.status(400).json({
-    //                     type: "Invalid",
-    //                     msg: "Invalid request"
-    //                 })
-    //             }
-    //             const data = await cart.save()
-    //             const arrProducts = await this.carts.getArrProducts(data)
-    //             res.render('cartDetails', { data, usuarios, username, userInfo, productDetails, cart, arrProducts, expires })
-    //         }
-    
-    //     } catch (err) {
-    //         console.log(err)
-    //         res.status(400).json({
-    //             type: "Invalid",
-    //             msg: "Something Went Wrong",
-    //             err: err
-    //         })
-    //     }
-    // }
-
 }
 
 module.exports = { CartsController }

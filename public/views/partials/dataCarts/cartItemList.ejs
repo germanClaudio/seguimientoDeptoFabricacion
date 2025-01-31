@@ -21,7 +21,7 @@
         <div class="alert alert-primary text-center mx-5 mb-2" role="alert">
 			<% let idChain = userCart.userId.toString().substring(19) %>
 			<h5 class="text-center mb-1">
-				<strong>Carrito Id# ...<%= idChain %> de <%= userCart.creator[0].name %> <%= userCart.creator[0].lastName %> - Lista de Items a Solicitar</strong>
+				<strong>Carrito Id# ...<%= idChain %> de <%= userCart.creator[0].name %> <%= userCart.creator[0].lastName %> - Lista de Productos a Solicitar</strong>
 				<input type="hidden" id="cartId" value="<%= userCart._id %>">
 			</h5>
         </div>
@@ -99,7 +99,7 @@
 		<!-- Botones finales -->
 		<div class="d-flex justify-content-around align-items-center mx-auto shadow p-3 mb-5 bg-body rounded w-75" id="cartActions">
 			<button class="btn btn-primary my-2 me-2 w-25" title="Seguir seleccionado ítems" id="seguirSeleccionando">Seguir Seleccionando <i class="fa-solid fa-cart-plus"></i></button>
-			<button class="btn btn-success my-2 mx-2 w-25" title="Generar pedido" id="generateOrder">Generar Pedido <i class="fa-solid fa-check-circle"></i></button>
+			<button class="btn btn-success my-2 mx-2 w-25" title="Generar pedido" id="btnGenerateOrder">Generar Pedido <i class="fa-solid fa-check-circle"></i></button>
 			<a class="btn btn-danger my-2 ms-2 w-25" title="Vaciar Carrito" href="/api/carts/empty-cart/<%= userCart._id %>" id="emptyCart">Vaciar Carrito <i class="fa-solid fa-cart-shopping fa-rotate-by" style="--fa-rotate-angle: 45deg;"></i></a>
 		</div>
     </div>

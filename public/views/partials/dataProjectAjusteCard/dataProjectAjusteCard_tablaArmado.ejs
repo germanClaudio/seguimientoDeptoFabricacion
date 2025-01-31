@@ -4,16 +4,16 @@
         <tr>
             <th colspan="4" class="text-center">ARMADO
                 <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
-                    <button id="posBtnAddDataOtArmado<%=k%>" type="button" name="btnOtArmado" class="btn btn-small btn-success shadow m-1 me-5 mb-2 position-relative"
+                    <button id="posBtnAddDataOtArmado<%=k%>" type="button" name="btnOtArmado" class="btn btn-small btn-success shadow m-1 me-5 mb-1 position-relative"
                         style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
                         <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
-                        <span id="spanCheckSelecMasiveArmado<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                        <span id="spanCheckSelecMasiveArmado<%=k%>" class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
                             0
                             <span class="visually-hidden">Elementos seleccionados</span>
                         </span>
                     </button>
                 <% } else { %>
-                    <button type="button" class="btn btn-small btn-danger shadow m-1 me-5 mb-2 disabled" style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 me-5 mb-1 disabled" style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
                         <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>                                                    
                     </button>
                 <% } %>
@@ -25,10 +25,10 @@
             </th>
         </tr>
         <tr>
-            <th id="colData0" style="width:25vw" scope="col-1" class="text-center pb-2">Armado p/máquina | Rev.</th>
-            <th id="colData1" style="width:25vw" scope="col-1" class="text-center pb-2">Patronizado | Rev.</th>
-            <th id="colData3" style="width:25vw" scope="col-1" class="text-center pb-2">LTH | Rev.</th>
-            <th id="colData4" style="width:25vw" scope="col-1" class="text-center pb-2">Armado p/prensa | Rev.</th>
+            <th id="colData0" style="width:25vw" scope="col-1" class="text-center">Armado p/máquina | Rev.</th>
+            <th id="colData1" style="width:25vw" scope="col-1" class="text-center">Patronizado | Rev.</th>
+            <th id="colData3" style="width:25vw" scope="col-1" class="text-center">LTH | Rev.</th>
+            <th id="colData4" style="width:25vw" scope="col-1" class="text-center">Armado p/prensa | Rev.</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">

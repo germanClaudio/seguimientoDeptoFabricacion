@@ -2,37 +2,34 @@
 <html lang="en">
 
 <head>
-    <%- include('../partials/head'); %>
+    <%- include('../partials/head/head'); %>
 </head>
 
 <body>
     <header>
-        <%- include('../partials/header'); %>
+        <%- include('../partials/header/header'); %>
     </header>
-        <%- include('../partials/userBanner'); %>
+    <div class="container" style="padding-top: 70px;"></div>
     <br>
-    <div class="d-block mx-auto my-4 text-center">
-        <h3 class="d-block mx-auto my-2 text-center">Your P.O. # <%= orderGenerated.invoice_nr %> <br> was succesfully generated!!</h3>
-        <input type="hidden" id="orderNumber" value="<%= orderGenerated.invoice_nr%>">
+    <div class="container-fluid">
+        <%- include('../partials/sections/sectionOrderDetails'); %>
     </div>
-    <br>
-    <div class="d-block mx-auto my-2 text-center">
-        <h3 class="d-block mx-auto my-3 text-center">Thanks for your Shopping!! <i class="fa fa-gift fa-1x" aria-hidden="true"></i></h3>
-        <button class="btn btn-success mx-auto my-3" id="download-btn">Download PDF <i class="fa fa-download"></i></button>
-
-    </div>
-        <div class="d-block mx-auto my-2 text-center">
-        <a class="btn btn-primary mx-auto my-3" href="/api/auth/index"> Back to Main <i class="fa fa-home"></i></a>
+    <div class="card shadow-lg rounded-3 mx-auto my-4" style="max-width: 500px;">
+        <%= console.log('orderGenerated: ', orderGenerated) %>
+        <div class="card-body text-center">
+            <h3 class="card-title mb-3">Su orden de solicitud # <%= orderGenerated.invoice_nr %><br>fue generada exitosamente!</h3>
+            <input type="hidden" id="orderNumber" value="<%= orderGenerated.invoice_nr %>">
+            <h3 class="card-text mt-3">Gracias por su pedido!! <i class="fa fa-gift fa-1x" aria-hidden="true"></i></h3>
+            <button class="btn btn-success mx-auto my-3" id="download-btn">Descargar PDF <i class="fa fa-download"></i></button>
+        </div>
     </div>
     <br>
     <footer>
-        <%- include('../partials/footer'); %>
+        <%- include('../partials/footer/footer'); %>
     </footer>
 
-        <!--    scripts     -->
-        <script type="text/javascript" src="../../../clock.js"></script>
-        <script type="text/javascript" src="../../../expiresSession.js"></script>
-        <script type="text/javascript" src="../../../downloadFile.js"></script>
+    <!--    scripts     -->
+    <script type="text/javascript" src="/js/comunes/downloadFile.js"></script>
 </body>
 
 </html>

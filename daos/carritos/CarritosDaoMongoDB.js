@@ -234,21 +234,21 @@ class CarritosDaoMongoDB extends ContainerMongoDB {
 	async genOrderCart(cart, invoice) {
 		const cartId = cart._id.valueOf();
 		if (cart) {
-		try {
-			// -------------- Cart validation ----------------
-			const cartMongoDB = await Carritos.findOne({ _id: `${cartId}` });
+			try {
+				// -------------- Cart validation ----------------
+				const cartMongoDB = await Carritos.findOne({ _id: `${cartId}` });
 
-			if (cartMongoDB) {
-			const newOrder = await Ordenes.create(invoice);
-			return newOrder;
+				if (cartMongoDB) {
+					const newOrder = await Ordenes.create(invoice);
+					return newOrder;
 
-			} else {
-			return new Error("No se puede crear la OC o el Carrito no existe!");
+				} else {
+				return new Error("No se puede crear la OC o el Carrito no existe!");
+				}
+
+			} catch (error) {
+				return new Error("Error MongoDB generating OC of cart: ", error);
 			}
-
-		} catch (error) {
-			return new Error("Error MongoDB generating OC of cart: ", error);
-		}
 
 		} else {
 		return new Error(`No se pudo crear la Orden de Compra!`);

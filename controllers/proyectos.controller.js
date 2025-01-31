@@ -1,22 +1,22 @@
-const ProyectosService = require("../services/projects.service.js")
-const ClientesService = require("../services/clients.service.js")
-const UserService = require("../services/users.service.js")
+const ProyectosService = require("../services/projects.service.js"),
+    ClientesService = require("../services/clients.service.js"),
+    UserService = require("../services/users.service.js"),
+    
+    csrf = require('csrf'),
+    csrfTokens = csrf(),
 
-const { uploadToGCS, uploadToGCSingleFile } = require("../utils/uploadFilesToGSC.js")
-const { uploadMulterMultiImages, uploadMulterSingleImageProject, uploadMulterSingleImageOci } = require("../utils/uploadMulter.js")
+    imageNotFound = "https://storage.googleapis.com/imagenesproyectosingenieria/upload/LogoClientImages/noImageFound.png",
+    cookie = require('../utils/cookie.js'),
 
-let formatDate = require('../utils/formatDate.js')
-let tieneNumeros = require('../utils/gotNumbers.js')
-let esStringUObjeto = require('../utils/isNumberOrObject.js')
-const csrf = require('csrf');
-const csrfTokens = csrf();
+    { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty, dataUserOciOwnerEmpty } = require('../utils/generateUsers.js'),
+    { uploadToGCS, uploadToGCSingleFile } = require("../utils/uploadFilesToGSC.js"),
+    { uploadMulterMultiImages, uploadMulterSingleImageProject, uploadMulterSingleImageOci } = require("../utils/uploadMulter.js");
 
-let imageNotFound = "../../../src/images/upload/LogoClientImages/noImageFound.png"
-const cookie = require('../utils/cookie.js')
+let data = require('../utils/variablesInicializator.js'),
+    formatDate = require('../utils/formatDate.js'),
+    tieneNumeros = require('../utils/gotNumbers.js'),
+    esStringUObjeto = require('../utils/isNumberOrObject.js')
 
-let data = require('../utils/variablesInicializator.js')
-
-const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty, dataUserOciOwnerEmpty } = require('../utils/generateUsers.js')
 
 const {catchError400,
     catchError400_1,

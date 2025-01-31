@@ -2,28 +2,26 @@
 <html lang="en">
 
 <head>
-    <%- include('../partials/head'); %>
+    <%- include('../partials/head/head'); %>
 </head>
 
 <body>
-    <%- include('../partials/header'); %>
-
-    <%- include('../partials/userBanner'); %>
+    <header>
+        <%- include('../partials/header/header'); %>
+    </header>
+    <div class="container" style="padding-top: 70px;"></div>
     <br>
-        <h2 class="d-block mx-auto my-3 text-center">Orders Generated List</h2>
-        <div class="d-block mx-auto mb-3 text-center w-100 px-5">
+    <div class="container-fluid">
+        <%- include('../partials/sections/sectionOrdersGenerated'); %>
+    </div>
+    <div class="d-block mx-auto mb-3 text-center w-100 px-5">
         <%- include('../partials/dataOrdersTable'); %>
-        </div>
-            <div class="d-block mx-auto my-4 pb-5 text-center">
-                <a class="btn btn-primary my-2" href="/api/auth/index"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i> Back to Home </a>
-            </div>
-            <footer>
-                <%- include('../partials/footer'); %>
-            </footer>
+    </div>
+    <footer>
+        <%- include('../partials/footer/footer'); %>
+    </footer>
 <!--    scripts     -->
-<script type="text/javascript" src="../../../orders.js"></script>
-<script type="text/javascript" src="../../../clock.js"></script>
-<script type="text/javascript" src="../../../expiresSession.js"></script>
+<script type="text/javascript" src="/js/ordenes/orders.js"></script>
 
 </body>
 

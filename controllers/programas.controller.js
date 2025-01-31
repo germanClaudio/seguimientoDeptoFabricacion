@@ -1,40 +1,28 @@
-const ProyectosService = require("../services/projects.service.js")
-const ClientesService = require("../services/clients.service.js")
-const UserService = require("../services/users.service.js")
-const ProgramasService = require("../services/programms.service.js")
-const ToolService = require("../services/tools.service.js")
+const ProyectosService = require("../services/projects.service.js"),
+    ClientesService = require("../services/clients.service.js"),
+    UserService = require("../services/users.service.js"),
+    ProgramasService = require("../services/programms.service.js"),
+    ToolService = require("../services/tools.service.js"),
+    
+    { uploadToGCS, uploadToGCSingleFile } = require("../utils/uploadFilesToGSC.js"),
+    { uploadMulterMultiImages, uploadMulterSingleImageProject, uploadMulterSingleImageOci } = require("../utils/uploadMulter.js"),
 
-const { uploadToGCS, uploadToGCSingleFile } = require("../utils/uploadFilesToGSC.js")
-const { uploadMulterMultiImages, uploadMulterSingleImageProject, uploadMulterSingleImageOci } = require("../utils/uploadMulter.js")
+    multer = require('multer'),
+    csrf = require('csrf'),
+    csrfTokens = csrf(),
+    cookie = require('../utils/cookie.js'),
+    { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
 
-const multer = require('multer')
+let formatDate = require('../utils/formatDate.js'),
+    tieneNumeros = require('../utils/gotNumbers.js'),
+    esStringUObjeto = require('../utils/isNumberOrObject.js'),
+    imageNotFound = "https://storage.googleapis.com/imagenesproyectosingenieria/upload/LogoClientImages/noImageFound.png",
+    data = require('../utils/variablesInicializator.js')
 
-let formatDate = require('../utils/formatDate.js')
-let tieneNumeros = require('../utils/gotNumbers.js')
-let esStringUObjeto = require('../utils/isNumberOrObject.js')
-const csrf = require('csrf');
-const csrfTokens = csrf();
 
-let imageNotFound = "../../../src/images/upload/LogoClientImages/noImageFound.png"
-const cookie = require('../utils/cookie.js')
-
-let data = require('../utils/variablesInicializator.js')
-
-const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
-
-const {catchError400,
-    catchError400_1,
-    catchError400_2,
-    catchError400_3,
-    catchError400_4,
-    catchError403,
-    catchError401,
-    catchError401_1,
-    catchError401_2,
-    catchError401_3,
-    catchError401_4,
-    catchError500
-} = require('../utils/catchErrors.js')
+const { catchError400, catchError400_1, catchError400_2, catchError400_3, catchError400_4,
+    catchError401, catchError401_1, catchError401_2, catchError401_3, catchError401_4,
+    catchError403, catchError500 } = require('../utils/catchErrors.js')
 
 class ProgramationController {
     constructor() {
@@ -298,9 +286,9 @@ class ProgramationController {
                 otMecanizadoSegunda: []
             }]
 
-            var arrayOtAddedToOci = []
+            let arrayOtAddedToOci = []
             for(let i=0; i<otQuantity; i++) {
-                var otAddedToOci = {
+                let otAddedToOci = {
                     otNumber: arrayOtNumber[i],
                     opNumber: arrayOpNumber[i],
                     opDescription: arrayOpDescription[i],

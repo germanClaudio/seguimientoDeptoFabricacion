@@ -35,6 +35,11 @@ class CartService {
     async addItemToCart(payload) {
         return this.carritos.addItemToCart(payload)
     }
+
+    // add new products to a cart
+    async addMultiItemsToCart(payload) {
+        return this.carritos.addMultiItemsToCart(payload)
+    }
     
     // remove one product from cart
     async removeItemFromCart(payload) {

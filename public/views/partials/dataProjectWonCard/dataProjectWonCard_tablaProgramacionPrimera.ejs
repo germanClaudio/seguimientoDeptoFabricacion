@@ -4,9 +4,9 @@
         <tr>
             <th colspan="3" class="text-center">PROGRAMACIÓN (1° Parte)
                 <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
-                    <button id="posBtnAddDataOtProgramacionPrimera<%=k%>" type="button" name="btnOtProgramacionPrimera" class="btn btn-small btn-success shadow m-1 me-5 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                    <button id="posBtnAddDataOtProgramacionPrimera<%=k%>" type="button" name="btnOtProgramacionPrimera" class="btn btn-small btn-success shadow mt-1 mx-1 me-5 position-relative" style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
                         <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
-                        <span id="spanCheckSelecMasiveProgPrima<%=k%>" class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                        <span id="spanCheckSelecMasiveProgPrima<%=k%>" class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
                             0
                             <span class="visually-hidden">Elementos seleccionados</span>
                         </span>
@@ -24,9 +24,9 @@
             </th>
         </tr>
         <tr>
-            <th id="colData0" style="width:33vw" scope="col-1" class="text-center pb-1">RT | Estado | Rev.</th>
-            <th id="colData1" style="width:33vw" scope="col-1" class="text-center pb-1">Preparación GEO | Estado | Rev.</th>
-            <th id="colData2" style="width:33vw" scope="col-1" class="text-center pb-1">Programas 2d | Estado | Rev.</th>
+            <th id="colData0" style="width:33vw" scope="col-1" class="text-center">RT | Estado | Rev.</th>
+            <th id="colData1" style="width:33vw" scope="col-1" class="text-center">Preparación GEO | Estado | Rev.</th>
+            <th id="colData2" style="width:33vw" scope="col-1" class="text-center">Programas 2d | Estado | Rev.</th>
         </tr>
     </thead>
     <tbody class="table-group-divider">

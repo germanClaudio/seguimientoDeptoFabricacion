@@ -84,9 +84,6 @@ let ShippingSchema = new Schema({
 const orderSchema = new Schema({
     shipping: [ShippingSchema],
     items: [ItemSchema],
-    subTotal: {
-        type: Number
-    },
     active: {
         type: Boolean,
         default: true
