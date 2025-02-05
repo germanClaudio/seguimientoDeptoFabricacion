@@ -55,21 +55,11 @@ let ShippingSchema = new Schema({
     email: {
         type: String,
     },
-    legajoId: {
+    legajoIdUser: {
         type: Number,
         required: true,
         default: 0,
-        maxlength: 4,
-        unique: true
-    },
-    avatar: { 
-        type: String,
-        maxlength: 1000
-    },
-    status: {
-        type: Boolean,
-        required: true,
-        default: true
+        maxlength: 4
     },
     area: { 
         type: String,
@@ -93,6 +83,9 @@ const orderSchema = new Schema({
         default: now,
     },
     invoice_nr: {
+        type: String,
+    },
+    invoiceStorageUrl: {
         type: String,
     }
 }, {

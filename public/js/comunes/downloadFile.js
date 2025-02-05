@@ -4,12 +4,11 @@ const orderNumberElement = document.getElementById('orderNumber').value,
 	downloadBtn = document.getElementById('download-btn')
 
 function downloadPdf() {
-  // Replace "pdf-file-name.pdf" with the name of your PDF file
-	const pdfUrl = `/../../src/images/output/Invoice_${orderNumber}.pdf`
+	const pdfUrl = `https://storage.googleapis.com/imagenesproyectosingenieria/upload/PdfOrders/Invoice_${orderNumber}.pdf`
 	
 	// Create a new anchor element
 	const link = document.createElement("a");
-	//link.href = pdfUrl;
+	
 	link.setAttribute('href', pdfUrl);
 	
 	// Set the download attribute to force download

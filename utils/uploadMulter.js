@@ -15,6 +15,8 @@ const fileFilter = (req, file, cb) => {
     file.mimetype.startsWith('image/') ? cb(null, true) : cb(new Error('Solo se permiten imágenes'))
 };
 
+const uploadMulterSinglePdfOrders = multer({ storage: multer.memoryStorage() }).single('pdfFile');
+
 // Creación de los métodos de carga específicos
 const uploadMulterMultiImages = createMulterUpload(null, true),
     uploadMulterSingleImageProject = createMulterUpload('imageProject'),
@@ -38,5 +40,6 @@ module.exports = {
     uploadMulterSingleImageTool,
     uploadMulterSingleImageSupplier,
     uploadMulterSingleImageCuttingTool,
-    uploadMulterSingleImageConsumibles
+    uploadMulterSingleImageConsumibles,
+    uploadMulterSinglePdfOrders
 };

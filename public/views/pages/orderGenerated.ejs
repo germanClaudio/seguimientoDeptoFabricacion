@@ -14,13 +14,18 @@
     <div class="container-fluid">
         <%- include('../partials/sections/sectionOrderDetails'); %>
     </div>
-    <div class="card shadow-lg rounded-3 mx-auto my-4" style="max-width: 500px;">
-        <%= console.log('orderGenerated: ', orderGenerated) %>
+    <div class="card shadow-lg rounded-3 mx-auto my-4" style="max-width: 900px;">
         <div class="card-body text-center">
-            <h3 class="card-title mb-3">Su orden de solicitud # <%= orderGenerated.invoice_nr %><br>fue generada exitosamente!</h3>
+            <h3 class="card-title my-3">Su orden de solicitud # <strong><%= orderGenerated.invoice_nr %></strong><br>fue generada exitosamente!</h3>
             <input type="hidden" id="orderNumber" value="<%= orderGenerated.invoice_nr %>">
-            <h3 class="card-text mt-3">Gracias por su pedido!! <i class="fa fa-gift fa-1x" aria-hidden="true"></i></h3>
-            <button class="btn btn-success mx-auto my-3" id="download-btn">Descargar PDF <i class="fa fa-download"></i></button>
+            <h5 class="card-text mt-3">Gracias por su pedido. <i class="fa-solid fa-gift" aria-hidden="true"></i></h5>
+            <h5 class="card-text mt-3">Estamos preparando todo para usted!!</h5>
+            <button class="btn btn-success me-3 my-3" id="download-btn">Descargar PDF <i class="fa-solid fa-download"></i></button>
+            <% if (userInfo.area === 'fabricacion') { %>
+                <a href="/api/auth/indexToolShop" class="btn btn-primary ms-3 my-3">Volver al Home <i class="fa-solid fa-home" aria-hidden="true"></i></a>
+            <% } else { %>
+                <a href="/api/auth/index" class="btn btn-primary ms-3 my-3">Volver al Home <i class="fa-solid fa-home" aria-hidden="true"></i></a>
+            <% } %>
         </div>
     </div>
     <br>

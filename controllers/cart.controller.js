@@ -7,14 +7,17 @@ const UserService = require("../services/users.service.js"),
     ConsumiblesService = require("../services/consumibles.service.js"),
     SuppliersService = require("../services/suppliers.service.js"),
     CartsService = require("../services/carts.service.js"),
+    OrdersService = require("../services/orders.service.js");
 
-    csrf = require('csrf'),
+const csrf = require('csrf'),
     csrfTokens = csrf(),
     cookie = require('../utils/cookie.js'),
     data = require('../utils/variablesInicializator.js'),
     { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js'),
-    { catchError400_3, catchError400_5, catchError400_6, catchError400_1,
-        catchError401_3, catchError500 } = require('../utils/catchErrors.js')
+    { catchError400_3, catchError400_5, catchError400_6, catchError400_1, catchError401_3, catchError500 } = require('../utils/catchErrors.js'),
+    { uploadPdfToGCS } = require("../utils/uploadFilesToGSC.js"),
+    { uploadMulterSinglePdfOrders } = require("../utils/uploadMulter.js"),
+    { createInvoice } = require('../utils/createInvoice.js');
     
 let consumiblePictureNotFound = "../../../src/images/upload/ConsumiblesImages/noImageFound.png",
     formatDate = require('../utils/formatDate.js'),
@@ -29,6 +32,7 @@ class CartsController {
         this.cuttingTools = new CuttingToolsService()
         this.consumibles = new ConsumiblesService()
         this.carts = new CartsService()
+        this.orders = new OrdersService()
         this.suppliers = new SuppliersService()
         this.users = new UserService()
     }
@@ -56,7 +60,7 @@ class CartsController {
         }
     }
 
-    //FIXME:  ------- reduce stock consumibles when PO is generated ---------------
+    // ------- reduce stock consumibles when PO is generated ---------------
     reduceStockProduct = async (req, res, next) => {
         try {
             const userLogged = await this.users.getUserByUsername(username);
@@ -501,7 +505,7 @@ class CartsController {
         }
     }
 
-    //FIXME: --- Generate P.O. in pdf format, empty the Cart and send an email to Admin ------
+    // --- Generate P.O. in pdf format, empty the Cart and send an email to Admin ------
     genOrderCart = async (req, res, next) => {
         let username = res.locals.username,
             userInfo = res.locals.userInfo,
@@ -510,111 +514,124 @@ class CartsController {
 
         const expires = cookie(req),
             id = req.body.cartId
-
         arrayItemsQty = req.body.quantities.split(',')
         arrayConsumiblesId = req.body.consumiblesId.split(',')
         
         if (id) {
-            try {
-                const usuarios = await this.users.getUserByUsername(username)
-                !usuarios ? catchError401_3(req, res, next) : null
+            //------ Storage New Order pdf in Google Store --------        
+            uploadMulterSinglePdfOrders(req, res, async (err) => {
+                try {
+                    const usuario = await this.users.getUserByUsername(username)
+                    !usuario ? catchError401_3(req, res, next) : null
 
-                let updatedCart = await this.carts.updateCart(id, arrayConsumiblesId, arrayItemsQty)
-                !updatedCart ? catchError401_3(req, res, next) : null
+                    let updatedCart = await this.carts.updateCart(id, arrayConsumiblesId, arrayItemsQty)
+                    !updatedCart ? catchError401_3(req, res, next) : null
 
-                let cart = await this.carts.getCart(id)
-                if ( cart.items.length > 0 ) {
-                    const dateInvoice = formatDateInvoice(),
-                        invoiceNumber = (cart._id.toString()).concat('_',dateInvoice),
-                    
-                        invoice = {
-                            shipping: {
-                                name: usuarios.name,
-                                lastName: usuarios.lastName,
-                                username: usuarios.username,
-                                legajoId: usuarios.legajoId,
-                                email: usuarios.email,
-                                area: usuarios.area
-                            },
-                            items: cart.items,
-                            quantity: cart.items.length,
-                            modifiedOn: dateInvoice,
-                            invoice_nr: invoiceNumber,
-                        }
-                    
-                    const pathPdfFile = `./src/output/Invoice_${invoiceNumber}.pdf`,
-                        pathPdfOrderFile =  `./public/src/images/output/Invoice_${invoiceNumber}.pdf`,
-                        { createInvoice } = require('../utils/createInvoice.js')
-                    createInvoice(invoice, pathPdfFile)
-                    createInvoice(invoice, pathPdfOrderFile)
+                    let cart = await this.carts.getCart(id)
+                    if ( cart.items.length > 0 ) {
+                        const dateInvoice = formatDateInvoice(),
+                            invoiceNumber = (cart._id.toString()).concat('_',dateInvoice),
+                            pathPdfFile = `https://storage.googleapis.com/imagenesproyectosingenieria/upload/PdfOrders/Invoice_${invoiceNumber}.pdf`,
                         
-                    // ------------ Save order in DataBase ---------------
-                    let pathOrder = `src/images/output/Invoice_${invoice.invoice_nr}.pdf`,
-                        order = await this.carts.genOrderCart(cart, invoice),
-                        orderGenerated = order// await order.save()
-                    
-                    // ------------ Reduce stock quantity -------------------
-                    //await this.carts.reduceStockProduct(cart)
-    
-                    // ------------ Empty the cart -------------------
-                    cart = await this.carts.emptyCart(id)
-
-                    //////////////////// gmail to Administrator //////////////////////
-                    const { createTransport } = require('nodemailer'),
-                        TEST_EMAIL = process.env.TEST_EMAIL,
-                        PASS_EMAIL = process.env.PASS_EMAIL,
-
-                        transporter = createTransport({
-                            service: 'gmail',
-                            port: 587,
-                            auth: {
-                                user: TEST_EMAIL,
-                                pass: PASS_EMAIL
-                            },
-                            tls: {
-                                rejectUnauthorized: false
+                            invoice = {
+                                shipping: {
+                                    name: usuario.name,
+                                    lastName: usuario.lastName,
+                                    username: usuario.username,
+                                    legajoIdUser: usuario.legajoId,
+                                    email: usuario.email,
+                                    area: usuario.area
+                                },
+                                items: cart.items,
+                                quantity: cart.items.length,
+                                modifiedOn: dateInvoice,
+                                invoice_nr: invoiceNumber,
+                                invoiceStorageUrl: pathPdfFile,
                             }
+                        
+                        const invoiceName = `Invoice_${invoiceNumber}.pdf`,
+                            pdfFileOrderBuffer = createInvoice(invoice)
+
+                            if (err) {
+                                return next(err);
+                            }
+                            
+                            // Subir el PDF a Google Cloud Storage
+                            uploadPdfToGCS(req, res, next, invoiceName, pdfFileOrderBuffer)
+                                .then(() => {
+                                    //console.log('PDF uploaded successfully');
+                                })
+                                .catch((error) => {
+                                    console.error('Error uploading PDF:', error);
+                                });
+                        
+                        // ------------ Save order in DataBase ---------------
+                        let pathOrder = pathPdfFile, //`src/images/output/Invoice_${invoice.invoice_nr}.pdf`,
+                            orderGenerated = await this.orders.genOrderCart(cart, invoice)
+                        
+                        // ------------ Reduce stock quantity -------------------
+                        let stockReduced = await this.carts.reduceStockProduct(cart)
+                        !stockReduced ? catchError401_3(req, res, next) : null
+                        // ------------ Empty the cart -------------------
+                        cart = await this.carts.emptyCart(id)
+
+                        //////////////////// gmail to Administrator //////////////////////
+                        const { createTransport } = require('nodemailer'),
+                            TEST_EMAIL = process.env.TEST_EMAIL,
+                            PASS_EMAIL = process.env.PASS_EMAIL,
+
+                            transporter = createTransport({
+                                service: 'gmail',
+                                port: 587,
+                                auth: {
+                                    user: TEST_EMAIL,
+                                    pass: PASS_EMAIL
+                                },
+                                tls: {
+                                    rejectUnauthorized: false
+                                }
+                            })
+
+                        const mailOptions = {
+                            from: 'Servidor NodeJS - Gmail - Prodismo',
+                            to: TEST_EMAIL, //usuario.email,
+                            subject: `Generación pedido# ${invoice.invoice_nr} desde App Seguimiento Ingeniería-Fabricación - Prodismo SRL`,
+                            html: `<h5 style="color: green;">El usuario ${usuario.name} ${usuario.lastName}, realizó el pedido exitosamente!</h5>`,
+                            attachments: [
+                                {
+                                    path: `${pathPdfFile}`
+                                }
+                            ]
+                        }
+                        ;(async () => {
+                            try {
+                                const info = await transporter.sendMail(mailOptions)
+                                // console.log(info)
+                            } catch (err) {
+                                console.log('Error enviando mail: ', err)
+                            }
+                        })()
+                            
+                        return res.render('orderGenerated', {
+                            data,
+                            usuario,
+                            username,
+                            userInfo,
+                            cart,
+                            orderGenerated,
+                            pathOrder,
+                            expires
                         })
+                    
+                    } else {
+                        console.log('Error! El Carrito está vacío')
+                    }     
+                }
 
-                    const mailOptions = {
-                        from: 'Servidor NodeJS - Gmail - Prodismo',
-                        to: TEST_EMAIL,
-                        subject: `Generación pedido# ${invoice.invoice_nr} desde Node JS - Gmail - Prodismo SRL`,
-                        html: `<h3 style="color: green;">El usuario ${usuarios.name} ${usuarios.lastName}, realizó el pedido exitosamente!</h3>`,
-                        attachments: [
-                            {
-                                path: `./src/output/Invoice_${invoice.invoice_nr}.pdf`
-                            }
-                        ]
-                    }
-                    ;(async () => {
-                        try {
-                            const info = await transporter.sendMail(mailOptions)
-                            // console.log(info)
-                        } catch (err) {
-                            console.log(err)
-                        }
-                    })()
-                        
-                    return res.render('orderGenerated', {
-                        data,
-                        usuarios,
-                        username,
-                        userInfo,
-                        cart,
-                        orderGenerated,
-                        pathOrder,
-                        expires
-                    })
-                
-                } else {
-                    console.log('Error! El Carrito está vacío')
-                }     
-            }
-
-            catch (err) {
-                catchError500(err, req, res, next)
-            }
+                catch (err) {
+                    catchError500(err, req, res, next)
+                }
+            })
 
         } else {
             console.log('Error! No existe Id:', i)

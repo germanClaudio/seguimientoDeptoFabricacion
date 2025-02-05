@@ -234,7 +234,70 @@ Promise.all(uploadToGCSingleFile)
 //   next(err);
 });
 
+
+//------Almacenar un solo pdf en GSC ---------
+async function uploadPdfToGCS(req, res, next, invoiceName, pdfFileOrder) {
+    try {
+        if (!pdfFileOrder) {
+            throw new Error('No file uploaded');
+        }
+
+        // Ensure pdfFileOrder is resolved if it's a Promise
+        const pdfBuffer = await Promise.resolve(pdfFileOrder);
+
+        if (!Buffer.isBuffer(pdfBuffer)) {
+            throw new TypeError('pdfFileOrder must be a Buffer or a Promise that resolves to a Buffer');
+        }
+        
+        const credentials = await readEncodedFile(),
+            storageToGCS = new Storage({
+            projectId: process.env.PROJECT_ID_GCS,
+            credentials: credentials,
+        });
+
+        let bucket = storageToGCS.bucket(process.env.STORE_BUCKET_GCS), // Nombre bucket en Google Cloud Storage
+            folderName = 'upload', subFolderName = 'PdfOrders', newItemOrUpdate = `${invoiceName}`
+
+        let cleanOriginalName = newItemOrUpdate
+        const blob = bucket.file(`${folderName}/${subFolderName}/${cleanOriginalName}`);
+        // console.log('blob: ', blob)
+
+        const blobStream = blob.createWriteStream({
+            resumable: false,
+        });
+
+        blobStream.on('error', (err) => {
+            console.error('Error uploading to Google Cloud:', err);
+            err.statusCode = 500
+            return next(err)
+        });
+
+        blobStream.on('finish', () => {
+            pdfFileOrder.cloudStorageObject = `${cleanOriginalName}`; //
+            // console.log('cleanOriginalName: ', cleanOriginalName);
+            // console.log('blob.name: ', blob.name); 
+            pdfFileOrder.cloudStoragePublicUrl = `https://storage.googleapis.com/${bucket.name}/${folderName}/${subFolderName}/${blob.name}`;
+            
+        });
+        // Write the resolved Buffer to the stream
+        blobStream.end(pdfBuffer);
+
+    } catch (err) {
+        console.error('Error in uploadPdfToGCS:', err);
+        next(err);
+    }
+}
+
+Promise.all(uploadPdfToGCS)
+.then(() => {
+//   next();
+})
+.catch((err) => {
+//   next(err);
+});
+
 module.exports = {
     uploadToGCS,
-    uploadToGCSingleFile
+    uploadToGCSingleFile,
+    uploadPdfToGCS
 }

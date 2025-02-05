@@ -311,9 +311,9 @@ function message(cartId) {
 
     let html = `Está seguro que desea continuar?
             <form id="formGenerateOrder" action="/api/carts/generateOrder" method="post">
-                <input type="hidden" name="cartId" value="${cartId}">
-                <input type="hidden" name="consumiblesId" value="${arrayConsumiblesId}">
-                <input type="hidden" name="quantities" value="${arrayQuantities}">
+                <input type="hidden" id="cartIdHidden" name="cartId" value="${cartId}">
+                <input type="hidden" id="consumiblesIdHidden" name="consumiblesId" value="${arrayConsumiblesId}">
+                <input type="hidden" id="quantitiesHidden" name="quantities" value="${arrayQuantities}">
             </form>`
 
     Swal.fire({
