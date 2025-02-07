@@ -25,7 +25,11 @@ const ContainerMessages = require("../daos/mensajes/MensajesDaoFactory.js"),
     ContainerSuppliers = require("../daos/proveedores/ProveedoresDaoFactory.js"),
     containerSupplier = ContainerSuppliers.getDaoSuppliers(),
 
+    ContainerOrders = require("../daos/ordenes/OrdenesDaoFactory.js"),
+    containerOrders = ContainerOrders.getDaoOrders(),
+
     { schema } = require("normalizr"),
+
     initSocket = (io) => {
         io.on("connection", async (socket) => {
             console.log("Nuevo usuario conectado!")
@@ -225,6 +229,11 @@ const ContainerMessages = require("../daos/mensajes/MensajesDaoFactory.js"),
             socket.on('searchSupplierNew', async (query) => {
                 io.sockets.emit('searchSuppliersNew', await containerSupplier.getSuppliersBySearching(query))
             })
+
+            //-------------------- ordenes ----------------------
+            socket.emit('ordersAll', await containerOrders.getActiveOrders(),
+                await containerUser.getAllUsers()
+            )
 
         });
 

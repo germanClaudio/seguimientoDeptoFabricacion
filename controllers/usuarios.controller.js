@@ -7,6 +7,7 @@ const UserService = require("../services/users.service.js"),
     ConsumiblesService = require("../services/consumibles.service.js"),
     SuppliersService = require("../services/suppliers.service.js"),
     CartsService = require("../services/carts.service.js"),
+    OrdersService = require("../services/orders.service.js"),
 
     { uploadToGCS } = require("../utils/uploadFilesToGSC.js"),
     { uploadMulterSingleAvatarUser } = require("../utils/uploadMulter.js"),
@@ -49,6 +50,7 @@ class UsersController {
         this.consumibles = new ConsumiblesService()
         this.suppliers = new SuppliersService()
         this.carts = new CartsService()
+        this.orders = new OrdersService()
     }
 
     getAllUsers = async (req, res, next) => {
@@ -522,6 +524,7 @@ class UsersController {
                     consumibles = await this.consumibles.getAllConsumibles(),
                     proveedores = await this.suppliers.getAllSuppliers(),
                     carts = await this.carts.getAllCarts(),
+                    ordenes = await this.orders.getAllOrders(),
                 
                     sessions = parseInt(sessionLogin.length+1)
 
@@ -560,6 +563,7 @@ class UsersController {
                                 consumibles,
                                 proveedores,
                                 userCart,
+                                ordenes,
                                 carts
                             })
                         }, 250)
@@ -581,6 +585,7 @@ class UsersController {
                                 herramientas,
                                 consumibles,
                                 proveedores,
+                                ordenes
                             })
                         }, 250)
                     }
@@ -781,6 +786,7 @@ class UsersController {
                 proyectos = await this.projects.getAllProjects(),
                 mensajes = await this.messages.getAllMessages(),
                 carts = await this.carts.getCart(),
+                ordenes = await this.orders.getAllOrders(),
                 sessionsIndex = await this.users.getAllSessions(),
                 sessions = sessionsIndex.length
 
@@ -825,6 +831,7 @@ class UsersController {
                             consumibles,
                             proveedores,
                             carts,
+                            ordenes,
                             userCart,
                             csrfToken
                         })
@@ -849,6 +856,7 @@ class UsersController {
                             herramientas,
                             consumibles,
                             proveedores,
+                            ordenes,
                             csrfToken
                         })
                     }, 150)

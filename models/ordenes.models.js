@@ -72,25 +72,37 @@ let ShippingSchema = new Schema({
 })
 
 const orderSchema = new Schema({
-    shipping: [ShippingSchema],
-    items: [ItemSchema],
-    active: {
-        type: Boolean,
-        default: true
+        shipping: [ShippingSchema],
+        items: [ItemSchema],
+        active: {
+            type: Boolean,
+            default: true
+        },
+        modificator: {
+            type: Array,
+            default: []
+        },
+        modifiedOn: {
+            type: String,
+        },
+        invoice_nr: {
+            type: String,
+        },
+        invoiceStorageUrl: {
+            type: String,
+        },
+        visible : {
+            type: Boolean,
+            default: true
+        },
+        prepared: {
+            type: Boolean,
+            default: false
+        }
     },
-    modifiedOn: {
-        type: String,
-        default: now,
-    },
-    invoice_nr: {
-        type: String,
-    },
-    invoiceStorageUrl: {
-        type: String,
+    {
+        timestamp: true
     }
-}, {
-    timestamp: true
-}  
 )
 
 module.exports = model('Orders', orderSchema)

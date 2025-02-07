@@ -244,7 +244,7 @@ const renderConsumiblesUser = (arrConsumibles) => {
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
                             <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
                             <td class="text-center" id="characteristics_${element._id}">${element.characteristics}</td>
-                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageConsumible}' width="140px" height="140px"></td>
+                            <td class="text-center"><img class="img-fluid rounded-3 py-2 img_consumibles" alt="Imagen" src='${element.imageConsumible}' width="140px" height="140px"></td>
                             <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="QR" src='${element.qrCode}' width="125px" height="125px"></td>
                             <td class="text-center" id="stock_${element._id}"><span class="badge bg-${optionStock} text-light">${element.stock}</span></td>
                             <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
@@ -674,7 +674,6 @@ const versionQR = 10; //1-10-20-40 Establece la versión máxima
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("newConsumiblesForm"),
         qrContainer = document.getElementById("qrConsumible"),
-        downloadButton = document.getElementById('downloadQR'),
         loader = document.getElementById("loader"), // Asegúrate de tener un elemento con ID 'loader'
         qrLabel = document.getElementById("qrLabel"),
         qrConsumibleInput = document.getElementById("qrConsumibleInput");
@@ -719,6 +718,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (qrImage) {
                 qrImage.id = "qrImage";
                 qrConsumibleInput.value = qrImage.src
+                downloadButton = document.getElementById('downloadQR')
                 downloadButton.style.display = 'block';
                 downloadButton.addEventListener("click", () => downloadQRCode(qrImage.src));
             }
@@ -761,22 +761,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Función para descargar el QR como imagen
-    downloadButton.addEventListener('click', () => {
-        const qrCanvas = qrContainer.querySelector('canvas');
-        if (qrCanvas) {
-            const link = document.createElement('a');
-            link.href = qrCanvas.toDataURL(); // Convierte el canvas a un formato de imagen
-            link.download = `codigo-qr${type.value}.png`;
-            link.click(); // Dispara el evento de descarga
-        } else {
-            Swal.fire(
-                'Error!',
-                `Primero debe generar el código QR para descargar.`,
-                'info'
-            )
-            return false
-        }
-    });
+    downloadButton = document.getElementById('downloadQR')
+    if(downloadButton) {
+        downloadButton.addEventListener('click', () => {
+            const qrCanvas = qrContainer.querySelector('canvas');
+            if (qrCanvas) {
+                const link = document.createElement('a');
+                link.href = qrCanvas.toDataURL(); // Convierte el canvas a un formato de imagen
+                link.download = `codigo-qr${type.value}.png`;
+                link.click(); // Dispara el evento de descarga
+            } else {
+                Swal.fire(
+                    'Error!',
+                    `Primero debe generar el código QR para descargar.`,
+                    'info'
+                )
+                return false
+            }
+        });
+    }
 
 });
 

@@ -1,7 +1,5 @@
 const ContainerMongoDB = require('../../contenedores/containerMongoDB.js'),
     mongoose = require('mongoose'),
-    Consumibles = require('../../models/consumibles.models.js'),
-    Carritos = require("../../models/carritos.models.js"),
     Ordenes = require("../../models/ordenes.models.js"),
     advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000 },
     formatDate = require('../../utils/formatDate.js')
@@ -15,170 +13,76 @@ class OrdenesDaoMongoDB extends ContainerMongoDB {
 		mongoose.connect(this.cnxStr, advancedOptions)
 	}
 
-	async getArrProducts(data) {
-		try {
-		let arrProducts = [];
-		if (data) {
-			for (let i = 0; i < data.items.length; i++) {
-			let products = await Productos.findById(data.items[i].productId)
-			arrProducts.push(products)
-			}
-		}
-		return arrProducts
-		} catch (error) {
-		logger.error("Error MongoDB getArrProducts: ", error)
-		}
-	}
-
-	async reduceStockProduct(data) {
-		try {
-		let arrStockProduct = []
-		if (data) {
-			for (let i = 0; i < data.items.length; i++) {
-			let productos = await Productos.findById(data.items[i].productId)
-			let quantity = data.items[i].quantity;
-			let updatedStock = productos.stock - quantity;
-
-			if (productos) {
-				const newValues = {
-				name: productos.name,
-				description: productos.description,
-				price: productos.price,
-				code: productos.code,
-				picture: productos.picture,
-				stock: updatedStock,
-				timestamp: now,
-				category: productos.category,
-				};
-
-				const productUpdated = await Productos.findOneAndUpdate(
-				{ _id: data.items[i].productId },
-				newValues,
-				{ new: true }
-				);
-				
-				arrStockProduct.push(productUpdated)
-			}
-			}
-		}
-		return arrStockProduct;
-		} catch (error) {
-		logger.error("Error MongoDB reduceStockProduct: ", error)
-		}
-	}
-
-	async getCart(id) {
-		try {
-		const carts = await Carritos.findById(`${id}`).populate("_id")
-		return carts
-		} catch (error) {
-		logger.error("Error MongoDB getCart: ", error)
-		}
-	}
-
-	async getCartByUserId(id) {
-		try {
-		const cart = await Carritos.findOne({ userId: `${id}` })
-		if (cart) {
-			return cart
-		} else {
-			return null
-		}
-
-		} catch (error) {
-		logger.error("Error MongoDB getCartByUserId: ", error)
-		}
-	}
-
-	async addItemToCart(payload) {
-		const infoId = payload.items[0]
-		const productId = infoId.productId
-
-		try {
-		// -------------- Product validation ----------------
-		const itemMongoDB = await Productos.findOne({ _id: `${productId}` })
-
-		if (itemMongoDB) {
-			const newItem = await Carritos.create(payload)
-			return newItem
-		} else {
-			logger.info(
-			"No se puede agregar Producto a Cart o el Producto no existe!"
-			);
-		}
-		} catch (error) {
-		logger.error("Error MongoDB adding Product to cart: ", error)
-		}
-	}
-
-	async removeItemFromCart(payload) {
-		const infoId = payload.items[0]
-		const productId = infoId.productId
-
-		try {
-		// -------------- Product validation ----------------
-		const itemMongoDB = await Productos.findOne({ _id: `${productId}` })
-
-		if (itemMongoDB) {
-			const itemToRemove = await Carritos.findByIdAndDelete({
-			_id: `${productId}`,
-			});
-			return itemToRemove;
-		} else {
-			logger.info(
-			"No se puede eliminar el Producto del Cart o el Producto no existe!"
-			);
-		}
-		} catch (error) {
-		logger.error("Error MongoDB adding Product to cart: ", error)
-		}
-	}
-
-	async emptyCart(id) {
-		try {
-		const productDeleted = await Carritos.findByIdAndUpdate(id);
-		return productDeleted;
-		} catch (error) {
-		logger.error("Error MongoDB deleteProduct: ", error);
-		}
-	}
-
-	async genOrderCart(cart, invoice) {
-		const cartId = cart._id.toString()
-		
-		if (cart) {
-			try {
-				// -------------- Cart validation ----------------
-				const cartMongoDB = await Carritos.findOne({ _id: `${cartId}` });
-
-				if (cartMongoDB) {
-					const newOrder = new Ordenes(invoice);
-					//const newOrder = await Ordenes.create(invoice)
-					await newOrder.save()
-					return newOrder;
-
-				} else {
-					console.log("No se puede crear la OC o el Carrito no existe!");
-				}
-
-			} catch (error) {
-				console.log("Error MongoDB generating OC of cart: ", error);
-			}
-
-		} else {
-			return new Error(`No se pudo crear la Orden de Compra!`);
-		}
-	}
-
 	async getAllOrders() {
 		try {
-		const orders = await Ordenes.find();
-		return orders;
+			const orders = await Ordenes.find({ visible: true });
+			//console.log('orders Dao: ', orders)
+			return orders;
+
 		} catch (error) {
-		logger.error("Error MongoDB getAllOrdes: ", error);
-		return new Error("No hay ordenes en la DB!");
+			console.log("Error MongoDB getAllOrders: ", error);
+			return new Error("No hay ordenes en la DB!");
 		}
 	}
+
+	async getActiveOrders() {
+		try {
+			const activeOrders = await Ordenes.find({ visible: true, active: true });
+			return activeOrders;
+
+		} catch (error) {
+			console.log("Error MongoDB getActiveOrders: ", error);
+			return new Error("No hay ordenes en la DB!");
+		}
+	}
+
+	async getNonActiveOrders() {
+		try {
+			const nonActiveOrders = await Ordenes.find({ visible: true, active: false });
+			return nonActiveOrders;
+
+		} catch (error) {
+			console.log("Error MongoDB getNonActiveOrders: ", error);
+			return new Error("No hay ordenes en la DB!");
+		}
+	}
+
+	async deleteOrdenById(id, userModificator) {
+        if(id){
+            try {
+                const orderMongoDB = await Ordenes.findById({_id: id })
+            
+                if(orderMongoDB) {
+                    let inactive = Boolean(false),
+                        orderDeleted = await Ordenes.updateOne(
+                        { _id: id }, 
+                        {
+                            $set: {
+                                visible: inactive,
+                                status: inactive,
+                                modificator: userModificator,
+                                modifiedOn: formatDate()
+                            }
+                        },
+                        { new: true }
+                    )
+
+                    return orderDeleted.acknowledged 
+                    ? await Ordenes.findById({ _id: id }) 
+                    : new Error(`No se eliminó el item: ${orderMongoDB._id}`);
+
+                } else {
+                    return new Error (`La solicitud no existe con ese Id: ${id}!`)
+                }
+
+            } catch (error) {
+                console.error("Error MongoDB deleteConsumible: ",error)
+            }
+
+        } else {
+            return new Error (`El Consumible no existe con ese ID${id}!`)
+        }    
+    }
 
 	async disconnet() {
 		await this.disconnection;

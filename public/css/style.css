@@ -1683,6 +1683,10 @@ height: 4px;
   color: #ffffff;
 }
 
+.img_consumibles {
+  object-fit: scale-down !important;
+}
+
 
 .imgLazyLoad {
   width: 40%;
@@ -1724,7 +1728,7 @@ height: 4px;
 /* Imagen del producto */
 .img-fluid {
   max-height: 120px;
-  object-fit: cover;
+  object-fit: scale-down;
 }
 
 /* Botones personalizados */

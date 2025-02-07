@@ -219,29 +219,29 @@ const Carritos = require("../../models/carritos.models.js"),
 		}
 	}
 	
-	// async genOrderCart(cart, invoice) {
-	// 	const cartId = cart._id.valueOf();
-	// 	if (cart) {
-	// 		try {
-	// 			// -------------- Cart validation ----------------
-	// 			const cartMongoDB = await Carritos.findById({ _id: cartId });
+	async genOrderCart(cart, invoice) {
+		const cartId = cart._id.valueOf();
+		if (cart) {
+			try {
+				// -------------- Cart validation ----------------
+				const cartMongoDB = await Carritos.findById({ _id: cartId });
 
-	// 			if (cartMongoDB) {
-	// 				const newOrder = await Ordenes.create(invoice);
-	// 				return newOrder;
+				if (cartMongoDB) {
+					const newOrder = await Ordenes.create(invoice);
+					return newOrder;
 
-	// 			} else {
-	// 			return new Error("No se puede crear la OC o el Carrito no existe!");
-	// 			}
+				} else {
+				return new Error("No se puede crear la OC o el Carrito no existe!");
+				}
 
-	// 		} catch (error) {
-	// 			return new Error("Error MongoDB generating OC of cart: ", error);
-	// 		}
+			} catch (error) {
+				return new Error("Error MongoDB generating OC of cart: ", error);
+			}
 
-	// 	} else {
-	// 	return new Error(`No se pudo crear la Orden de Compra!`);
-	// 	}
-	// }
+		} else {
+		return new Error(`No se pudo crear la Orden de Compra!`);
+		}
+	}
 
 
 	// async getAllOrders() {

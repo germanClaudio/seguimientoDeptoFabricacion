@@ -7,11 +7,11 @@ switch (option) {
     case 'Mongo':
         daoOrdenes = new OrdenesDaoMongoDB(cnxStr)
         daoOrdenes.init()
-    break;
+        break;
     default:
         daoOrdenes = new OrdenesDaoMongoDB(cnxStr)
         daoOrdenes.init()
-    break;
+        break;
 }
 
 module.exports = class OrdenesDaoFactory {

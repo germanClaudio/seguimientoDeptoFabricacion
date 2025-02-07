@@ -1,17 +1,24 @@
 <div class="row row-cols-1 row-cols-md-3 g-4">
-    <div class="card mx-auto shadow p-3 mb-4 bg-body rounded w-auto table-responsive">
-        <table class="table-responsive table-bordered border-primary align-middle" style="font-size: 10pt">
+
+    <div class="card mx-auto shadow p-1 mt-4 mb-4 bg-body rounded w-auto table-responsive">
+        <div id="loading-spinner" class="mt-2" style="display: none;">
+            <%- include('../../partials/spinners/spinner_1'); %>
+            <p>Cargando...</p>
+        </div>
+
+        <table id="ordenesTable" class="table-responsive table-hover align-middle" style="font-size: 10pt; display: none;">
             <caption id="capOrdersList"></caption>
-            <thead>
+            <thead class="border-bottom my-3">
                 <tr>
-                    <th style="width:15vw" scope="col-2" class="text-center my-3 py-3"> Order Id# </th>
-                    <th style="width:15vw" scope="col-4" class="text-center my-3"> Items (Id#) </th>
-                    <th style="width:5vw" scope="col-2" class="text-center my-3"> Items Qty. </th>
-                    <th style="width:8vw" scope="col-1" class="text-center my-3"> Total Invoice ($) </th>
-                    <th style="width:25vw" scope="col-2" class="text-center my-3"> Invoice # </th>
-                    <th style="width:13vw" scope="col-2" class="text-center my-3"> Dates </th>
-                    <th style="width:7vw" scope="col-2" class="text-center my-3"> Status </th>
-                    <th style="width:12vw" scope="col-1" class="text-center my-3"> Action </th>
+                    <th style="width:5vw" scope="col-1" class="text-center"> Seleccionar </th>
+                    <th style="width:7vw" scope="col-1" class="text-center"> Orden Id# </th>
+                    <th style="width:10vw" scope="col-1" class="text-center"> Cantidad Productos </th>
+                    <th style="width:10vw" scope="col-1" class="text-center"> Cantidad Items </th>
+                    <th style="width:21vw" scope="col-1" class="text-center"> Solicitud # </th>
+                    <th style="width:14vw" scope="col-1" class="text-center"> Solicitado por / Legajo #</th>
+                    <th style="width:14vw" scope="col-1" class="text-center"> Fecha solicitud </th>
+                    <th style="width:7vw" scope="col-1" class="text-center"> Status </th>
+                    <th style="width:12vw" scope="col-1" class="text-center"> Acciones </th>
                 </tr>
             </thead>
                     <tbody class="table-group-divider" id="mostrarOrdenes">

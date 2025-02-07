@@ -31,17 +31,4 @@ routerCarts.get('/empty-cart/:id', checkAuthentication, carts.emptyCart)
 // -------------------  Generate Purcharse Order of the Cart ------------------ 
 routerCarts.post('/generateOrder', checkAuthentication, carts.genOrderCart)
 
-// -------------------  Get All Orders List ------------------ 
-routerCarts.get('/ordersAll', checkAuthentication, carts.getAllOrders)
-
-// -------------------  Add quantity of a Product to the Cart --------------- 
-// routerCarts.post('/addQty/:id', checkAuthentication, carts.addQtyToCart)
-
-// -------------------  Removes quantity of a Product of the Cart ------------------ 
-// routerCarts.post('/remove/:id', checkAuthentication, carts.removeItemFromCart)
-
-// -------------------  Removes all items from one Product of the Cart ------------------ 
-// routerCarts.post('/deleteItem/:id', checkAuthentication, carts.deleteItemFromCart)
-
-
 module.exports = routerCarts

@@ -11,11 +11,20 @@
     </header>
     <div class="container" style="padding-top: 70px;"></div>
     <br>
-    <div class="container-fluid">
-        <%- include('../partials/sections/sectionOrdersGenerated'); %>
+
+    <%- include('../partials/btnHeaderTop/btnHeaderTop-GoToConsumible'); %>
+
+    <div class="d-block mx-auto mt-4 text-center bg-primary-light">    
+        <%- include('../partials/forms/formularioBuscarOrdenes'); %>
+        <%- include('../partials/data/dataOrdenesSearch'); %>
     </div>
+
+    <%- include('../partials/sections/sectionOrdersGenerated'); %>
+    
+    <br>
+    <!-- ------------ Lista de Ordenes ------------ -->
     <div class="d-block mx-auto mb-3 text-center w-100 px-5">
-        <%- include('../partials/dataOrdersTable'); %>
+        <%- include('../partials/dataOrders/dataOrdersTable'); %>
     </div>
     <footer>
         <%- include('../partials/footer/footer'); %>

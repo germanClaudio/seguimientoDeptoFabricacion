@@ -130,7 +130,7 @@ const initServer = () => {
     app.use('/api/consumibles', routerConsumibles)
     app.use('/api/proveedores', routerSuppliers)
     app.use('/api/carts', routerCarts)
-    app.use('/api/orders', routerOrders)
+    app.use('/api/ordenes', routerOrders)
     ///////////////////////////////////////////////////
 
 

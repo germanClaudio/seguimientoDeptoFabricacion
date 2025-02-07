@@ -544,9 +544,13 @@ class CartsController {
                                 },
                                 items: cart.items,
                                 quantity: cart.items.length,
+                                modificator: dataUserModificatorEmpty(),
                                 modifiedOn: dateInvoice,
                                 invoice_nr: invoiceNumber,
                                 invoiceStorageUrl: pathPdfFile,
+                                visible: Boolean(true),
+                                active: Boolean(true),
+                                prepared: Boolean(false),
                             }
                         
                         const invoiceName = `Invoice_${invoiceNumber}.pdf`,
@@ -567,7 +571,7 @@ class CartsController {
                         
                         // ------------ Save order in DataBase ---------------
                         let pathOrder = pathPdfFile, //`src/images/output/Invoice_${invoice.invoice_nr}.pdf`,
-                            orderGenerated = await this.orders.genOrderCart(cart, invoice)
+                            orderGenerated = await this.carts.genOrderCart(cart, invoice)
                         
                         // ------------ Reduce stock quantity -------------------
                         let stockReduced = await this.carts.reduceStockProduct(cart)
@@ -638,31 +642,6 @@ class CartsController {
         }
     }
 
-    //FIXME: ---------------- Gat All Orders ---------------
-    getAllOrders = async (req, res, next) => {
-        let username = res.locals.username,
-            userInfo = res.locals.userInfo;
-        const expires = cookie(req)
-
-        try {
-            const usuarios = await this.users.getUserByUsername(username)
-            const userId = usuarios._id // User Id
-            
-            let cart = await this.carts.getCartByUserId(userId)
-            
-            const data = await this.carts.getCart(cart._id)
-            const arrProducts = await this.carts.getArrProducts(data)
-            const orders = await this.carts.getAllOrders()
-            
-            res.render('orders', { cart, usuarios, username, userInfo, data, orders, arrProducts, expires })
-            
-        } catch (err) {
-            res.status(500).json({
-                status: false,
-                error: error
-            })
-        }
-    }
 }
 
 module.exports = { CartsController }

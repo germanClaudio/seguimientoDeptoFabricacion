@@ -31,7 +31,7 @@ class CartService {
         return this.carritos.getCartByUserId(id)
     }
     
-    // add new product to a cart
+    // add new product to a cart (It doesn't use Dao Layer)
     async addItemToCart(payload) {
         return this.carritos.addItemToCart(payload)
     }
@@ -50,11 +50,6 @@ class CartService {
     async updateCart(id, consumiblesId, items) {
         return this.carritos.updateCart(id, consumiblesId, items)
     }
-
-    // remove one item from cart
-    async deleteItemFromCart(id) {
-        return this.carritos.deleteItemFromCart()
-    }
     
     // Empty cart by Id
     async emptyCart(id) {
@@ -64,11 +59,6 @@ class CartService {
     // Generate Order Cart
     async genOrderCart(id, invoice) {
         return this.carritos.genOrderCart(id, invoice)
-    }
-
-    // returns all Orders
-    async getAllOrders() {
-        return this.carritos.getAllOrders()
     }
 
 }

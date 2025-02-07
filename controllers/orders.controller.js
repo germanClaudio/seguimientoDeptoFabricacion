@@ -6,7 +6,10 @@ const CartsService = require("../services/carts.service.js"),
     data = require('../utils/variablesInicializator.js'),
     csrf = require('csrf'),
     csrfTokens = csrf(),
-    formatDate = require('../utils/formatDate.js')
+    { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js'),
+    { catchError400_3, catchError400_5, catchError400_6, catchError400_1, catchError401_3, catchError500 } = require('../utils/catchErrors.js');
+    
+let formatDate = require('../utils/formatDate.js')
 
 class OrdersController {  
     constructor(){
@@ -18,33 +21,119 @@ class OrdersController {
 
     // ---------------- Gat All Orders ---------------
     getAllOrders = async (req, res) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-
-        const cookie = req.session.cookie
-        const time = cookie.expires
-        const expires = new Date(time)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
 
         try {
-            const usuarios = await this.users.getUserByUsername(username)
-            const userId = usuarios._id // User Id
+            const usuario = await this.users.getUserByUsername(username)
+                !usuario ? catchError401_3(req, res, next) : null
+
+            const orders = await this.orders.getAllOrders()
+            !orders ? catchError400_5(req, res, next) : null
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+
+            res.render('orders', {
+                username,
+                userInfo,
+                data,
+                orders,
+                csrfToken,
+                expires })
             
-            let cart = await this.carts.getCartByUserId(userId)
-            
-            const data = await this.carts.getCart(cart._id)
-            const arrProducts = await this.carts.getArrProducts(data)
-            const orders = await this.carts.getAllOrders()
-            
-            res.render('orders', { cart, usuarios, username, userInfo, data, orders, arrProducts, expires })
-            
-        } catch (error) {
-            res.status(500).json({
-                status: false,
-                error: error
-            })
+        } catch (err) {
+            catchError500(err, req, res, next)
         }
     }
 
+    // ---------------- Get Active Orders ---------------
+    getActiveOrders = async (req, res) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+
+        try {
+            const usuario = await this.users.getUserByUsername(username)
+                !usuario ? catchError401_3(req, res, next) : null
+
+            const orders = await this.orders.getActiveOrders()
+            !orders ? catchError400_5(req, res, next) : null
+            
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+
+            res.render('orders', {
+                cart,
+                username,
+                userInfo,
+                orders,
+                data,
+                csrfToken,
+                expires })
+            
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    // ---------------- Gat Non Active Orders ---------------
+    getNonActiveOrders = async (req, res) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+
+        try {
+            const usuario = await this.users.getUserByUsername(username)
+                !usuario ? catchError401_3(req, res, next) : null
+
+            const orders = await this.orders.getNonActiveOrders()
+            !orders ? catchError400_5(req, res, next) : null
+            
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+
+            res.render('orders', {
+                cart,
+                username,
+                userInfo,
+                orders,
+                data,
+                csrfToken,
+                expires })
+            
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    deleteOrderById = async (req, res, next) => {
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+
+        try {
+            const userId = userInfo.id,
+                userLogged = await this.users.getUserById(userId)
+            !userLogged ? catchError401_3(req, res, next) : null
+
+            const order = await this.orders.deleteConsumibleById(id, dataUserModificatorNotEmpty(userLogged))
+            !order ? catchError401_3(req, res, next) : null
+            
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            res.render('orders', {
+                username,
+                userInfo,
+                expires,
+                orders,
+                data,
+                csrfToken
+            })
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    
 }
 
 module.exports = { OrdersController }
