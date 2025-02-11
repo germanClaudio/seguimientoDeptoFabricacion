@@ -857,7 +857,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Actualizar estilo de las filas al cambiar el estado del checkbox
     function updateRowStyle(rowCheckbox) {
         const row = rowCheckbox.closest("tr");
-        console.log('row: ', row)
+        //console.log('row: ', row)
         if (rowCheckbox.checked) {
             row.classList.add("row-highlight");
             row.classList.remove("row-highlight-stockCero");

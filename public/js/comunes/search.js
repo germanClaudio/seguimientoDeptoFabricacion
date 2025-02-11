@@ -1246,3 +1246,222 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
         document.getElementById('showCountConsumiblesSearch').innerHTML = htmlResultados
     }
 }
+
+
+//*******************************************************/
+// -------------- Show Searched Ordenes ----------------
+socket.on('searchOrdenesAll', async (arrOrdenesSearch) => {
+    renderSearchedOrdenes (await arrOrdenesSearch)
+})
+
+const searchOrdenes = () => {
+    let queryOrdenes = document.getElementById('queryOrdenes').value,
+        statusOrdenes = document.getElementById('statusOrden').value,
+        solicitadasOrdenes = document.getElementById('solicitadaOrden').value,
+        fechaInicioOrdenes = document.getElementById('fechaInicioOrden').value,
+        fechaFinOrdenes = document.getElementById('fechaFinOrden').value
+        
+    statusOrdenes != 'todas' ? statusOrdenes != 'activas' ? statusOrdenes != 'preparadas' ? statusOrdenes = true : statusOrdenes = false : null : null
+        
+    socket.emit('searchOrdenAll', {
+        queryOrdenes,
+        statusOrdenes,
+        solicitadasOrdenes,
+        fechaInicioOrdenes,
+        fechaFinOrdenes
+    })
+    return false
+}
+
+const renderSearchedOrdenes = (arrOrdenesSearch) => {
+    document.getElementById('showCountOrdenesSearch').innerHTML = ''
+
+    if(!arrOrdenesSearch) {
+        const htmlSearchOrdenesNull = (
+            `<div class="col mx-auto">
+                <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4 my-auto px-1">
+                            <img src="${clientNotFound}" style="max-width=170vw; object-fit: contain;"
+                                class="img-fluid rounded p-1" alt="Orden no encontrada">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Orden no encontrada</h5>
+                                <p class="card-text">Lo siento, no pudimos encontrar la orden</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Pruebe nuevamente con una descripción, tipo o código diferente.
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`)
+        
+        const showOrdenes = document.getElementById('showOrdenesSearch')
+        showOrdenes ? showOrdenes.innerHTML = htmlSearchOrdenesNull : null
+
+    } else if (arrOrdenesSearch.length === 1 && arrOrdenesSearch[0] === 'vacio') {     
+        const htmlSearchOrdenesNull = (
+            `<div class="col mx-auto">
+                <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4 my-auto px-1">
+                            <img src="${allClientsFound}" style="max-width=170vw; object-fit: contain;"
+                                class="img-fluid rounded p-1" alt="Todas las Ordenes">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Todas las Ordenes</h5>
+                                <p class="card-text">Todas las Ordenes están listadas en la tabla de abajo</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Pruebe nuevamente con un nombre, status o fechas diferentes o haga scroll hacia abajo
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+        )
+        document.getElementById('showOrdenesSearch').innerHTML = htmlSearchOrdenesNull
+
+    } else {
+        const htmlSearchOrdenes = arrOrdenesSearch.map((element) => {
+            const statusClasses = { true: 'danger', false: 'success' },
+                typeMapping = {
+                activas: { label: 'No Entregado', class: 'danger', text: 'light' },
+                inactivas: { label: 'Entregado', class: 'success', text: 'light' },
+                preparadas: { label: 'Preparado', class: 'warning', text: 'dark' },
+                default: { label: 'Eliminado', class: 'primary', text: 'dark' }
+            };
+            let color = '';
+        
+            // Determinar valores dinámicos
+            const optionStatus = statusClasses[element.status] || 'success',
+                { label: showType, class: optionType, text: optionText } = typeMapping[element.type] || typeMapping.default,
+                showStatus = element.status ? 'No Entregado' : 'Entregado',
+                disabled = element.visible ? '' : 'disabled';
+        
+                !element.status ? color = 'background-color:rgba(39, 181, 0, 0.19)' : color
+
+            let btnPreprared = Boolean(false),
+                btnDelivered = Boolean(false),
+                btnConfiguration = ''
+
+            element.active ?
+                element.prepared ? btnPreprared = Boolean(true) : null
+            :
+                btnPreprared = Boolean(true)
+
+            if (!element.active) {
+                btnConfiguration = `<button type="button" class="btn btn-secondary btn-sm disabled"><i class="fa-solid fa-truck-fast"></i></button>
+                                    <button type="button" class="btn btn-secondary btn-sm disabled"><i class="fa-solid fa-car"></i></button>
+                                    <button type="button" class="btn btn-secondary btn-sm disabled"><i class="fa-regular fa-trash-can"></i></button>`
+            } else if (btnPreprared && !btnDelivered) {
+                btnConfiguration = `<button type="button" class="btn btn-secondary btn-sm disabled"><i class="fa-solid fa-truck-fast"></i></button>
+                                    <button id="btnCardDeliverOrder_${element._id}" name="btnDeliverOrder" type="button" class="btn btn-success btn-sm" title="Entregar Orden ...${idChain}"><i class="fa-solid fa-car"></i></button>
+                                    <button id="${element._id}" name="btnCardDeleteOrder" type="button" class="btn btn-danger btn-sm" title="Eliminar Orden ...${idChain}"><i class="fa-regular fa-trash-can"></i></button>`
+            } else {
+                btnConfiguration = `<button id="btnCardPrepareOrder_${element._id}" name="btnPrepareOrder" type="button" class="btn btn-warning btn-sm" title="Preparar Orden ...${idChain}"><i class="fa-solid fa-truck-fast"></i></button>
+                                    <button id="btnCardDeliverOrder_${element._id}" name="btnDeliverOrder" type="button" class="btn btn-success btn-sm" title="Entregar Orden ...${idChain}"><i class="fa-solid fa-car"></i></button>
+                                    <button id="${element._id}" name="btnCardDeleteOrder" type="button" class="btn btn-danger btn-sm" title="Eliminar Orden ...${idChain}"><i class="fa-regular fa-trash-can"></i></button>`
+            }
+            // Retornar el HTML generado
+            return (`
+                <div class="col mx-auto">
+                    <div class="card mx-auto rounded-2 shadow-lg" id="cardSelected_${element._id}" style="max-width: 540px; ${color}">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 text-center">
+                                <button id="cardDownloadOrder_${element._id}" name="cardDownloadOrder" type="button"
+                                    class="btn btn-primary btn-sm p-2 mx-auto ms-2" title="Descargar pdf Orden"><i class="fa-solid fa-download"></i>
+                                </button>
+                                <input class="form-check-input border border-2 border-primary shadow-lg rounded mt-auto" type="checkbox" value=""
+                                    id="inputCheckOrdenCard_${element._id}" name="inputCheckOrdenCard">
+                            </div>
+                            <div class="col-md-8 border-start">
+                                <div class="card-body">
+                                    <h6 id="cardDesignation_${element._id}" class="card-title"><strong>${element.invoice_nr}</strong></h6>
+                                    Código: <span id="cardCodigo_${element._id}" class="my-1"><strong>${element.code}</strong></span><br>
+                                    Status: <span class="badge rounded-pill bg-${optionStatus} my-1">${showStatus}</span><br>
+                                    Solicitado por: <span id="cardSolicitado_${element._id}" class="badge rounded-pill bg-${optionType} text-${optionText} my-1">${showType}</span><br>
+                                    Stock: <span id="cardStock_${element._id}" class="badge bg-${optionStock} text-light">${element.stock}</span><br>
+                                </div>
+                                <div class="card-footer px-2">
+                                    <div class="row">
+                                        <div class="col m-auto align-items-center text-center">
+                                            ${btnConfiguration}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+            );
+        }).join(" ");
+
+        let mensaje = ''
+        arrOrdenesSearch.length ===1
+        ? mensaje = `Se encontró <strong>${arrOrdenesSearch.length}</strong> resultado.`
+        : mensaje = `Se encontraron <strong>${arrOrdenesSearch.length}</strong> resultados.`
+        
+        const htmlResultados = `<div class="row align-items-center">
+                                    <div class="col mx-auto">
+                                        <span class="my-1">${mensaje}</span>
+                                    </div>
+                                </div>`
+
+        document.getElementById('showOrdenesSearch').innerHTML = htmlSearchOrdenes
+        document.getElementById('showCountOrdenesSearch').innerHTML = htmlResultados
+    }
+
+    // function downloadPdf(orderNumber) {
+    //     const pdfUrl = `https://storage.googleapis.com/imagenesproyectosingenieria/upload/PdfOrders/Invoice_${orderNumber}.pdf`;
+    
+    //     // Open the PDF in a new tab
+    //     const newWindow = window.open(pdfUrl, '_blank');
+    
+    //     // Optional: Focus the new window (if supported by the browser)
+    //     if (newWindow) {
+    //         newWindow.focus();
+    //     } else {
+    //         // Fallback for browsers that block pop-ups
+    //         alert('Por favor, autorice los pop-ups en este sitio para visualizar el PDF.');
+    //     }
+    // }
+    
+    const nodeCardDownloadList = document.querySelectorAll('button[name="cardDownloadOrder"]')
+    nodeCardDownloadList.forEach(function(card){
+            if (card.id) {
+                card.addEventListener("click", (event) => {
+                    event.preventDefault()
+                    const tdNodeList = document.querySelectorAll('td[name="invoiceNumber"]')
+                    tdNodeList.forEach(function(td){
+                        const invoiceId = document.getElementById(`invoice_${card.id.substring(17)}`)
+                        if (td.innerHTML === invoiceId.innerText) {
+                            const idInvoice = td.innerHTML.toString()
+                            td.innerHTML ? downloadPdf(idInvoice) : null
+                        }
+                    })
+                })
+            }
+        })
+
+    const nodeList = document.querySelectorAll('button[name="btnCardDeleteOrder"]')
+    nodeList.forEach(function(btn){
+        if (btn.id) {
+            btn.addEventListener("click", (event) => {
+                event.preventDefault()
+                const idOrden = btn.id,
+                    userInformation = document.getElementById(`userInformation_${idOrden}`).innerText,
+                    date = document.getElementById(`date_${idOrden}`).innerText
+
+                idOrden && userInformation && date ? messageDeleteOrder(idOrden, userInformation, date) : null
+            })
+        }
+    })
+}

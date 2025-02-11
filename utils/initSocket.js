@@ -231,7 +231,15 @@ const ContainerMessages = require("../daos/mensajes/MensajesDaoFactory.js"),
             })
 
             //-------------------- ordenes ----------------------
-            socket.emit('ordersAll', await containerOrders.getActiveOrders(),
+            socket.emit('ordersActive', await containerOrders.getActiveOrders(),
+                await containerUser.getAllUsers()
+            )
+
+            socket.emit('ordersAll', await containerOrders.getAllOrders(),
+                await containerUser.getAllUsers()
+            )
+
+            socket.emit('ordersNonActive', await containerOrders.getNonActiveOrders(),
                 await containerUser.getAllUsers()
             )
 

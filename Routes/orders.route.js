@@ -14,10 +14,10 @@ const GetCarts = require('../controllers/cart.controller'),
 routerOrders.get('/all', checkAuthentication, orders.getAllOrders)
 
 // -------------------  Get Active Orders List ------------------ 
-routerOrders.get('/Active', checkAuthentication, orders.getActiveOrders)
+routerOrders.get('/active', checkAuthentication, orders.getActiveOrders)
 
 // -------------------  Get Non Active Orders List ------------------ 
-routerOrders.get('/NonActive', checkAuthentication, orders.getNonActiveOrders)
+routerOrders.get('/nonActive', checkAuthentication, orders.getNonActiveOrders)
 
 // -------------------  Delete Order ------------------ 
 routerOrders.get('/delete/:id', checkAuthentication, orders.deleteOrderById)

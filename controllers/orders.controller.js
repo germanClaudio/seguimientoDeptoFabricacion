@@ -33,7 +33,7 @@ class OrdersController {
             !orders ? catchError400_5(req, res, next) : null
             const csrfToken = csrfTokens.create(req.csrfSecret);
 
-            res.render('orders', {
+            res.render('ordersAll', {
                 username,
                 userInfo,
                 data,
@@ -61,10 +61,10 @@ class OrdersController {
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
 
-            res.render('orders', {
-                cart,
+            res.render('ordersActive', {
                 username,
                 userInfo,
+                // cart,
                 orders,
                 data,
                 csrfToken,
@@ -90,10 +90,10 @@ class OrdersController {
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
 
-            res.render('orders', {
-                cart,
+            res.render('ordersNonActive', {
                 username,
                 userInfo,
+                // cart,
                 orders,
                 data,
                 csrfToken,

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ---------- Orders historial ----------------
-socket.on('ordersAll', (arrOrders, arrUsers) => {
+socket.on('ordersActive', (arrOrders, arrUsers) => {
     let cadena = document.getElementById('mostrarUserName').innerText,
         indice = cadena.indexOf(","),
         name = cadena.substring(0,indice),
@@ -30,6 +30,7 @@ socket.on('ordersAll', (arrOrders, arrUsers) => {
         user ? renderOrdenesAdmin(arrOrders, userId) : renderOrdenesUser(arrOrders)
     }
 })
+
 
 const renderOrdenesAdmin = (arrOrders) => {
     const arrayOrders = arrOrders

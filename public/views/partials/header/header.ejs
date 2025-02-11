@@ -61,7 +61,7 @@
             <div class="vr mx-1 d-none d-xl-inline" style="color: white;"></div>
 
             <div class="container text-center m-auto" style="width: auto;">
-                <%- include('../../partials/userBanner/userBanner'); %>
+                <%- include('../../partials/userBanner/userBanner', { userInfo: userInfo }); %>
             </div>
             <button type="button" title="Preferencias Usuario" class="btn btn-link rounded-circle my-auto mx-2 shadow" name="btnPreferences" id="btnPreferences">
                 <i class="fa-regular fa-star"></i>

@@ -1,0 +1,35 @@
+<!-- cabecera botonera principal de Tabla ordenes -->
+<hr class="mt-3">
+<section class="mx-auto align-items-center my-1" style="width: 80%;">
+    <div class="container w-25 text-center">
+        <div class="row">
+            
+            <div id="posCheckSelectionAll" class="col">
+                <button id="btnCheckSelectionAll" name="btnCheckSelectionAll" 
+                    type="button" class="btn btn-primary shadow position-relative me-2"
+                    title="Modificar Status Ordenes" style="--bs-btn-padding-y: .5rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; border: none" value="0" disabled>
+                    <i class="fa-solid fa-pen"></i> Status <i class="fa-solid fa-check-double"></i>
+                    <span id="spanCheckSelecMasive" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        0
+                        <span class="visually-hidden">Elementos seleccionados</span>
+                    </span>
+                </button>
+            </div>
+
+            <div id="posCheckSelectionDownload" class="col">
+                <button id="btnCheckSelectionDownload" name="btnCheckSelectionDownload" 
+                    type="button" class="btn btn-success shadow position-relative ms-2"
+                    title="Descargar Resumen Ordenes" style="--bs-btn-padding-y: .5rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; border: none" value="0" disabled>
+                    <i class="fa-solid fa-cloud-arrow-down"></i> Resumen <i class="fa-solid fa-list-check"></i>
+                    <span id="spanCheckSelecMasiveDownload" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        0
+                        <span class="visually-hidden">Elementos seleccionados</span>
+                    </span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</section>
+<hr class="my-2">
+    

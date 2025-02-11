@@ -17,7 +17,7 @@
                     </a>
                 </li>
                 <li class="nav-item mx-4 d-none d-lg-inline">
-                    <a class="nav-link" title="Solicitar Consumibles" href="/api/consumibles/solicitar">
+                    <a class="nav-link" title="Solicitar Consumibles" href="/api/consumibles">
                         <i class="fa-solid fa-cart-plus" aria-hidden="true"></i>
                         <span class="d-none d-xxl-inline">Consumibles</span>
                     </a>
@@ -56,7 +56,7 @@
             <div class="vr mx-1 d-none d-xl-inline" style="color: white;"></div>
 
             <div class="container text-center m-auto" style="width: auto;">
-                <%- include('../../partials/userBanner/userBanner'); %>
+                <%- include('../../partials/userBanner/userBanner', { userInfo: userInfo }); %>
             </div>
 
             <div class="vr mx-1 d-none d-xl-inline" style="color: white;"></div>

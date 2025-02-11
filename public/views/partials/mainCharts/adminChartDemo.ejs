@@ -271,29 +271,21 @@
                 </div>
             </a>
         </div>
-        <!-- oci's -->
+        <!-- Ordenes Activas -->
         <div class="col-xl-3 col-sm-6 col-12">
-            <a href="/api/ordenes/all" style="text-decoration: none;">
+            <a href="/api/ordenes/active" style="text-decoration: none;">
                 <div class="card rounded-3 card_dashboard">
                     <div class="card-content">
                         <div class="card-body">
                             <div class="media d-flex mx-2">
                                 <div class="media-body text-left">
-                                    <% let arrayOrdenes = [], arrayVisibleOrdenes = []
+                                    <% let arrayVisibleOrdenes = [], arrayActiveOrdenes = [], arrayNonActiveOrdenes = []
                                     for (let i=0; ordenes.length>i; i++ ) {
-                                        ordenes[i].visible ? arrayOrdenes.push(ordenes[i]) : null
-                                    }
-
-                                    for (let j=0; arrayOrdenes.length>j; j++ ) {
-                                        arrayOrdenes[j].visible ? arrayVisibleOrdenes.push(arrayOrdenes[j].active) : null
-                                    }
-
-                                    let arrayActiveOrden = [].concat(...arrayVisibleOrdenes)
-                                    let resultArrayOrden = []
-                                    for (let k=0; arrayActiveOrden.length>k; k++ ) {
-                                        arrayActiveOrden[k].visible ? resultArrayOrden.push(arrayActiveOrden[k].active) : null
+                                        ordenes[i].visible ? arrayVisibleOrdenes.push(ordenes[i]) : null
+                                        ordenes[i].visible && ordenes[i].active ? arrayActiveOrdenes.push(ordenes[i]) : null
+                                        ordenes[i].visible && !ordenes[i].active ? arrayNonActiveOrdenes.push(ordenes[i]) : null
                                     } %>
-                                    <h3 class="font-medium"><%= resultArrayOrden.length %>/<span style="font-size: 0.95rem;" ><%= arrayActiveOrden.length %></span></h3>
+                                    <h3 class="font-medium"><%= parseInt(arrayActiveOrdenes.length) %> / <%= parseInt(arrayNonActiveOrdenes.length) %> / <span style="font-size: 0.95rem;" ><%= parseInt(arrayVisibleOrdenes.length) %></span></h3>
                                     <span>Solicitudes EPP's</span>
                                 </div>
                                 <div class="align-self-center ms-auto">

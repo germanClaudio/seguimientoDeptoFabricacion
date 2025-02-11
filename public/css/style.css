@@ -1687,6 +1687,21 @@ height: 4px;
   object-fit: scale-down !important;
 }
 
+.entregado {
+  background-color: #067b00;
+  color: #ffffff;
+}
+
+.noentregado {
+  background-color: #b80000;
+  color: #ffffff;
+}
+
+.preparado {
+  background-color: #fcdc3c;
+  color: #000;
+}
+
 
 .imgLazyLoad {
   width: 40%;
