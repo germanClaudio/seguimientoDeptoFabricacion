@@ -20,7 +20,7 @@ class OrdersController {
     }
 
     // ---------------- Gat All Orders ---------------
-    getAllOrders = async (req, res) => {
+    getAllOrders = async (req, res, next) => {
         let username = res.locals.username,
             userInfo = res.locals.userInfo
         const expires = cookie(req)
@@ -29,15 +29,15 @@ class OrdersController {
             const usuario = await this.users.getUserByUsername(username)
                 !usuario ? catchError401_3(req, res, next) : null
 
-            const orders = await this.orders.getAllOrders()
-            !orders ? catchError400_5(req, res, next) : null
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
             const csrfToken = csrfTokens.create(req.csrfSecret);
 
             res.render('ordersAll', {
                 username,
                 userInfo,
                 data,
-                orders,
+                ordenes,
                 csrfToken,
                 expires })
             
@@ -47,7 +47,7 @@ class OrdersController {
     }
 
     // ---------------- Get Active Orders ---------------
-    getActiveOrders = async (req, res) => {
+    getActiveOrders = async (req, res, next) => {
         let username = res.locals.username,
             userInfo = res.locals.userInfo
         const expires = cookie(req)
@@ -56,16 +56,15 @@ class OrdersController {
             const usuario = await this.users.getUserByUsername(username)
                 !usuario ? catchError401_3(req, res, next) : null
 
-            const orders = await this.orders.getActiveOrders()
-            !orders ? catchError400_5(req, res, next) : null
+            const ordenes = await this.orders.getActiveOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
 
             res.render('ordersActive', {
                 username,
                 userInfo,
-                // cart,
-                orders,
+                ordenes,
                 data,
                 csrfToken,
                 expires })
@@ -75,8 +74,8 @@ class OrdersController {
         }
     }
 
-    // ---------------- Gat Non Active Orders ---------------
-    getNonActiveOrders = async (req, res) => {
+    // ---------------- Get Non Active Orders ---------------
+    getNonActiveOrders = async (req, res, next) => {
         let username = res.locals.username,
             userInfo = res.locals.userInfo
         const expires = cookie(req)
@@ -85,16 +84,45 @@ class OrdersController {
             const usuario = await this.users.getUserByUsername(username)
                 !usuario ? catchError401_3(req, res, next) : null
 
-            const orders = await this.orders.getNonActiveOrders()
-            !orders ? catchError400_5(req, res, next) : null
+            const ordenes = await this.orders.getNonActiveOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
 
             res.render('ordersNonActive', {
                 username,
                 userInfo,
-                // cart,
-                orders,
+                ordenes,
+                data,
+                csrfToken,
+                expires })
+            
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    // ---------------- Get All Orders by User Id ---------------
+    getAllOrdersByUserId = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+
+        try {
+            const usuario = await this.users.getUserByUsername(username)
+                !usuario ? catchError401_3(req, res, next) : null
+
+            const ordenes = await this.orders.getAllOrdersByUserId(usuario)
+            !ordenes ? catchError400_5(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
+            
+            const csrfToken = csrfTokens.create(req.csrfSecret)
+            res.render('ordersAllByUserId', {
+                username,
+                userInfo,
+                ordenes,
+                userCart,
                 data,
                 csrfToken,
                 expires })
@@ -108,22 +136,42 @@ class OrdersController {
         const { id } = req.params,
             expires = cookie(req)
         let username = res.locals.username,
-            userInfo = res.locals.userInfo
-
+            userInfo = res.locals.userInfo;
+            
         try {
             const userId = userInfo.id,
                 userLogged = await this.users.getUserById(userId)
             !userLogged ? catchError401_3(req, res, next) : null
 
-            const order = await this.orders.deleteConsumibleById(id, dataUserModificatorNotEmpty(userLogged))
+            const order = await this.orders.deleteOrderById(id, dataUserModificatorNotEmpty(userLogged))
             !order ? catchError401_3(req, res, next) : null
-            
+
+            const numberScreen = parseInt(req.params.screen) || 0;
+            const screenHandlers = {
+                1: {
+                    screen: 'ordersActive',
+                    getOrders: async () => await this.orders.getActiveOrders()
+                },
+                2: {
+                    screen: 'ordersNonActive',
+                    getOrders: async () => await this.orders.getNonActiveOrders()
+                },
+                default: {
+                    screen: 'ordersAll',
+                    getOrders: async () => await this.orders.getAllOrders()
+                }
+            };
+            const handler = screenHandlers[numberScreen] || screenHandlers.default;
+            const screen = handler.screen;
+            const ordenes = await handler.getOrders();
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const csrfToken = csrfTokens.create(req.csrfSecret);
-            res.render('orders', {
+            res.render(`${screen}`, {
                 username,
                 userInfo,
                 expires,
-                orders,
+                ordenes,
                 data,
                 csrfToken
             })
@@ -133,6 +181,103 @@ class OrdersController {
         }
     }
 
+    prepareOrderById = async (req, res, next) => {
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo;
+            
+        try {
+            const userId = userInfo.id,
+                userLogged = await this.users.getUserById(userId)
+            !userLogged ? catchError401_3(req, res, next) : null
+
+            const order = await this.orders.prepareOrderById(id, dataUserModificatorNotEmpty(userLogged))
+            !order ? catchError401_3(req, res, next) : null
+
+            const numberScreen = parseInt(req.params.screen) || 0;
+            const screenHandlers = {
+                1: {
+                    screen: 'ordersActive',
+                    getOrders: async () => await this.orders.getActiveOrders()
+                },
+                2: {
+                    screen: 'ordersNonActive',
+                    getOrders: async () => await this.orders.getNonActiveOrders()
+                },
+                default: {
+                    screen: 'ordersAll',
+                    getOrders: async () => await this.orders.getAllOrders()
+                }
+            };
+            const handler = screenHandlers[numberScreen] || screenHandlers.default;
+            const screen = handler.screen;
+            const ordenes = await handler.getOrders();
+            !ordenes ? catchError400_5(req, res, next) : null
+            
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            res.render(`${screen}`, {
+                username,
+                userInfo,
+                expires,
+                ordenes,
+                data,
+                csrfToken
+            })
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
+
+    deliverOrderById = async (req, res, next) => {
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+
+        try {
+            const userId = userInfo.id,
+                userLogged = await this.users.getUserById(userId)
+            !userLogged ? catchError401_3(req, res, next) : null
+
+            const order = await this.orders.deliverOrderById(id, dataUserModificatorNotEmpty(userLogged))
+            !order ? catchError401_3(req, res, next) : null
+
+            const numberScreen = parseInt(req.body.screen) || 0;
+            const screenHandlers = {
+                1: {
+                    screen: 'ordersActive',
+                    getOrders: async () => await this.orders.getActiveOrders()
+                },
+                2: {
+                    screen: 'ordersNonActive',
+                    getOrders: async () => await this.orders.getNonActiveOrders()
+                },
+                default: {
+                    screen: 'ordersAll',
+                    getOrders: async () => await this.orders.getAllOrders()
+                }
+            };
+            const handler = screenHandlers[numberScreen] || screenHandlers.default;
+            const screen = handler.screen;
+            const ordenes = await handler.getOrders();
+            !ordenes ? catchError400_5(req, res, next) : null
+            
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            res.render(`${screen}`, {
+                username,
+                userInfo,
+                expires,
+                ordenes,
+                data,
+                csrfToken
+            })
+
+        } catch (err) {
+            catchError500(err, req, res, next)
+        }
+    }
     
 }
 

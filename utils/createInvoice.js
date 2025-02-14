@@ -4,8 +4,8 @@ const fs = require('fs'),
 	axios = require('axios'),
     { Buffer } = require('buffer'); // Import Buffer from the 'buffer' module
 
-function formatDateInvoice() {
-    const dayNow = new Date(),
+function formatDateInvoice(fecha) {
+    const dayNow = new Date(fecha),
         rightNow = date.format(dayNow, 'DD-MM-YYYY HH:mm:ss');
     return rightNow.toString();
 }
@@ -26,7 +26,7 @@ async function createInvoice(invoice, path) {
     generateHeader(doc);
     generateHr(doc, 138);
     generateCustomerInformation(doc, invoice);
-    await generateInvoiceTable(doc, invoice); // await Ahora es una función asíncrona
+    await generateInvoiceTable(doc, invoice);
     generateHr(doc, 740);
     generateFooter(doc);
 
@@ -76,16 +76,18 @@ function generateCustomerInformation(doc, invoice) {
         .text("Solicitud de ítems o EPP a Pañol", 50, 148)
         .fontSize(11)
         .text(`Pedido #: ${invoice.invoice_nr}`, 70, 170)
-        .text(`Fecha y hora de pedido: ${formatDateInvoice()}`, 70, 190)
+        .text(`Fecha y hora de pedido: ${formatDateInvoice(invoice.timestamp)}`, 70, 190)
         .font("Helvetica-Bold")
         .text(`Información del solicitante:`, 50, 210)
         .font("Helvetica")
         .text(`Nombre: ${shipping.name}`, 70, 230)
-        .text(`Apellido: ${shipping.lastName}`, 300, 230)
+        .text(`Apellido: ${shipping.lastName}`, 270, 230)
         .text(`em@il: ${shipping.email}`, 70, 250)
-        .text(`username: ${shipping.username}`, 300, 250)
+        .text(`username: ${shipping.username}`, 270, 250)
         .text(`Legajo #: ${shipping.legajoIdUser}`, 70, 270)
-		.text(`Area: ${areaCapitalized}`, 300, 270)
+		.text(`Area: ${areaCapitalized}`, 270, 270)
+        .text(`____________________`, 400, 255)
+        .text(`Firma Solicitante`, 425, 270)
         .moveDown();
 }
 

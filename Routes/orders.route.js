@@ -19,8 +19,17 @@ routerOrders.get('/active', checkAuthentication, orders.getActiveOrders)
 // -------------------  Get Non Active Orders List ------------------ 
 routerOrders.get('/nonActive', checkAuthentication, orders.getNonActiveOrders)
 
+// -------------------  Get All Orders By UserId List ------------------ 
+routerOrders.get('/allOrdersByUserId', checkAuthentication, orders.getAllOrdersByUserId)
+
 // -------------------  Delete Order ------------------ 
-routerOrders.get('/delete/:id', checkAuthentication, orders.deleteOrderById)
+routerOrders.post('/delete/:id', checkAuthentication, orders.deleteOrderById)
+
+// -------------------  Prepare Order ------------------ 
+routerOrders.post('/prepare/:id', checkAuthentication, orders.prepareOrderById)
+
+// -------------------  Prepare Order ------------------ 
+routerOrders.post('/deliver/:id', checkAuthentication, orders.deliverOrderById)
 
 
 module.exports = routerOrders

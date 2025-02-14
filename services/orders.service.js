@@ -21,9 +21,24 @@ class OrdersService {
         return this.ordenes.getNonActiveOrders()
     }
 
-    // Detele Order
+    // returns All Orders by User Id
+    async getAllOrdersByUserId(user) {
+        return this.ordenes.getAllOrdersByUserId(user)
+    }
+
+    // Detele Order by Id
     async deleteOrderById(id, userModificator) {
         return this.ordenes.deleteOrderById(id, userModificator)
+    }
+
+    // Prepare Order by Id
+    async prepareOrderById(id, userModificator) {
+        return this.ordenes.prepareOrderById(id, userModificator)
+    }
+
+    // Deliver Order by Id
+    async deliverOrderById(id, userModificator) {
+        return this.ordenes.deliverOrderById(id, userModificator)
     }
     
 }

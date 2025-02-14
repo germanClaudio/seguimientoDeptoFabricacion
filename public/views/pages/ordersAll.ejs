@@ -19,7 +19,9 @@
         <%- include('../partials/data/dataOrdenesSearch'); %>
     </div>
 
-    <%- include('../partials/sections/sectionSelectMultiOrdenes'); %>
+    <% if (userInfo.admin) { %>
+        <%- include('../partials/sections/sectionSelectMultiOrdenesAll'); %>
+    <% } %>
 
     <%- include('../partials/sections/sectionOrdersGenerated'); %>
     

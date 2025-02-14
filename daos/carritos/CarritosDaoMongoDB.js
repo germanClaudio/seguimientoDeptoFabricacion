@@ -243,17 +243,6 @@ const Carritos = require("../../models/carritos.models.js"),
 		}
 	}
 
-
-	// async getAllOrders() {
-	// 	try {
-	// 	const orders = await Ordenes.find();
-	// 	return orders;
-
-	// 	} catch (error) {
-	// 	return new Error("No hay ordenes en la DB!", error);
-	// 	}
-	// }
-
 	async disconnet() {
 		await this.disconnection;
 	}

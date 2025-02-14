@@ -65,30 +65,31 @@
             <a href="/api/ordenes/active" style="text-decoration: none;">
                 <div class="card rounded-3 card_dashboard">
                     <div class="card-content">
-                        <div class="card-body">
+                        <div class="card-body position-relative">
                             <div class="media d-flex mx-2">
                                 <div class="media-body text-left">
-                                    <% let arrayOrdenes = [], arrayVisibleOrdenes = []
-                                    for (let i=0; ordenes.length>i; i++ ) {
-                                        ordenes[i].visible ? arrayOrdenes.push(ordenes[i]) : null
-                                    }
-
-                                    for (let j=0; arrayOrdenes.length>j; j++ ) {
-                                        arrayOrdenes[j].visible ? arrayVisibleOrdenes.push(arrayOrdenes[j].active) : null
-                                    }
-
-                                    let arrayActiveOrden = [].concat(...arrayVisibleOrdenes)
-                                    let resultArrayOrden = []
-                                    for (let k=0; arrayActiveOrden.length>k; k++ ) {
-                                        arrayActiveOrden[k].visible ? resultArrayOrden.push(arrayActiveOrden[k].active) : null
+                                    <% let cantOrdenes=0, cantOrdenesPreparadas=0, cantOrdenesEntregadas=0
+                                    for (let i=0; ordenes.length>i; i++) {
+                                        ordenes[i].visible ? cantOrdenes++ : null
+                                        ordenes[i].visible && ordenes[i].prepared ? cantOrdenesPreparadas++ : null
+                                        ordenes[i].visible && ordenes[i].active ? cantOrdenesEntregadas++ : null
                                     } %>
-                                    <h3 class="font-medium"><%= resultArrayOrden.length %>/<span style="font-size: 0.95rem;" ><%= arrayActiveOrden.length %></span></h3>
+                                    <h3 class="font-medium"><%= parseInt(cantOrdenesPreparadas) %>/
+                                        <span style="font-size: 1rem; color: darkgreen;">Entregados <%= parseInt(cantOrdenesEntregadas) %> </span> /
+                                        <span style="font-size: 1rem; color: rgb(255, 0, 0);">Total <%= parseInt(cantOrdenes) %></span>
+                                    </h3>
                                     <span>Solicitudes EPP's</span>
                                 </div>
                                 <div class="align-self-center ms-auto">
                                     <i class="icon-bell success font-large-2 float-right"></i>
                                 </div>
                             </div>
+                            <% if(parseInt(cantOrdenesPreparadas)>0) { %>
+                                <span title="Pedidos Preparados"
+                                    class="badge rounded-pill bg-danger text-light position-absolute top-0 start-100 translate-middle">
+                                    <%= parseInt(cantOrdenesPreparadas) %>
+                                </span>
+                            <% } %>
                         </div>
                     </div>
                 </div>

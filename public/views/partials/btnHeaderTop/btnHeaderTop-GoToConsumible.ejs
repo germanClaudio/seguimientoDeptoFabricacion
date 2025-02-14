@@ -11,15 +11,15 @@
                                 <!-- .figure-img -->
                                 <div class="figure-img text-center mx-auto">
                                     <img class="img-fluid" src="/src/images/home.png" alt="Volver al Home" style="max-width: 3rem; max-height: 3rem;">
-                                    <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
+                                    <% if (userInfo.admin) { %>
                                         <a href="/api/auth/index" class="img-link">
                                     <% } else { %>
                                         <a href="/api/auth/indexToolShop" class="img-link">
                                     <% } %>
-                                        <div class="tile tile-circle ">
-                                            <span><i class="fas fa-circle text-primary fa-2x"></i></span>
-                                        </div>
-                                    </a>
+                                            <div class="tile tile-circle ">
+                                                <span><i class="fas fa-circle text-primary fa-2x"></i></span>
+                                            </div>
+                                        </a>
                                 </div>
                                 <!-- /.figure-img -->
                                 <!-- .figure-caption -->
@@ -44,10 +44,13 @@
                                 <!-- .card-figure -->
                                 <figure class="figure">
                                     <!-- .figure-img -->
-                                    <div class="figure-img text-center mx-auto" data-bs-toggle="collapse" data-bs-target="#collapseExample"
-                                    aria-expanded="false" aria-controls="collapseExample">
+                                    <div class="figure-img text-center mx-auto">
                                         <img class="img-fluid" src="/src/images/ShopingCartClic.png" style="max-width: 3rem; max-height: 3rem;">
-                                        <a href="/api/consumibles" class="img-link">
+                                        <% if (userInfo.admin) { %>
+                                            <a href="/api/consumibles" class="img-link">
+                                        <% } else { %>
+                                            <a href="/api/consumibles/solicitud" class="img-link">
+                                        <% } %>
                                             <div class="tile tile-circle ">
                                                 <span><i class="fas fa-circle text-primary fa-2x"></i></span>
                                             </div>
@@ -56,7 +59,7 @@
                                     <!-- /.figure-img -->
                                     <!-- .figure-caption -->
                                     <figcaption class="figure-caption" data-bs-toggle="collapse" data-bs-target="#collapseExample"
-                                    aria-expanded="false" aria-controls="collapseExample">
+                                        aria-expanded="false" aria-controls="collapseExample">
                                         <h6 class="figure-title"><a href="#" style="text-decoration: none;">Consumibles - EPP</a></h6>
                                         <p class="text-muted mb-0">Ir a Consumibles</p>
                                     </figcaption>
@@ -69,16 +72,12 @@
 
                     <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 col-12 mx-auto">
                         <!-- .card -->
-                        <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
-                            <div class="card rounded-3 card-figure mb-1">
-                        <% } else { %>
-                            <div class="card rounded-3 card-figure mb-1 disabled-card">
-                        <% } %>
+                        <div class="card rounded-3 card-figure mb-1">
+                            
                                 <!-- .card-figure -->
                                 <figure class="figure">
                                     <!-- .figure-img -->
-                                    <div class="figure-img text-center mx-auto" data-bs-toggle="collapse" data-bs-target="#collapseExample"
-                                    aria-expanded="false" aria-controls="collapseExample">
+                                    <div class="figure-img text-center mx-auto">
                                         <img class="img-fluid" src="/src/images/ShopingCartOrdersDelivered.png" style="max-width: 3rem; max-height: 3rem;">
                                         <a href="/api/ordenes/nonActive" class="img-link">
                                             <div class="tile tile-circle ">
@@ -89,84 +88,75 @@
                                     <!-- /.figure-img -->
                                     <!-- .figure-caption -->
                                     <figcaption class="figure-caption" data-bs-toggle="collapse" data-bs-target="#collapseExample"
-                                    aria-expanded="false" aria-controls="collapseExample">
+                                        aria-expanded="false" aria-controls="collapseExample">
                                         <h6 class="figure-title"><a href="#" style="text-decoration: none;">Ordenes Entregadas</a></h6>
                                         <p class="text-muted mb-0">Ver Ordenes Entregadas</p>
                                     </figcaption>
                                     <!-- /.figure-caption -->
                                 </figure>
                                 <!-- /.card-figure -->
-                            </div>
+                            <!-- /.card -->
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 col-12 mx-auto">
+                        <!-- .card -->
+                        <div class="card rounded-3 card-figure mb-1">
+                            <!-- .card-figure -->
+                            <figure class="figure">
+                                <!-- .figure-img -->
+                                <div class="figure-img text-center mx-auto">
+                                    <img class="img-fluid" src="/src/images/ShopingCartOrdersPending.png" style="max-width: 3rem; max-height: 3rem;">
+                                    <a href="/api/ordenes/active" class="img-link">
+                                        <div class="tile tile-circle ">
+                                            <span><i class="fas fa-circle text-primary fa-2x"></i></span>
+                                        </div>
+                                    </a>
+                                </div>
+                                <!-- /.figure-img -->
+                                <!-- .figure-caption -->
+                                <figcaption class="figure-caption" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+                                    aria-expanded="false" aria-controls="collapseExample">
+                                    <h6 class="figure-title"><a href="#" style="text-decoration: none;">Ordenes Pendientes</a></h6>
+                                    <p class="text-muted mb-0">Ver Ordenes Pendientes</p>
+                                </figcaption>
+                                <!-- /.figure-caption -->
+                            </figure>
+                            <!-- /.card-figure -->
+                        </div>
                         <!-- /.card -->
                     </div>
 
                     <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 col-12 mx-auto">
                         <!-- .card -->
-                        <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
-                            <div class="card rounded-3 card-figure mb-1">
-                        <% } else { %>
-                            <div class="card rounded-3 card-figure mb-1 disabled-card">
-                        <% } %>
-                                <!-- .card-figure -->
-                                <figure class="figure">
-                                    <!-- .figure-img -->
-                                    <div class="figure-img text-center mx-auto" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+                        <div class="card rounded-3 card-figure mb-1">
+                            <!-- .card-figure -->
+                            <figure class="figure">
+                                <!-- .figure-img -->
+                                <div class="figure-img text-center mx-auto">
+                                    <img class="img-fluid" src="/src/images/ShopingCartOrders.png" style="max-width: 3rem; max-height: 3rem;">
+                                    <a href="/api/ordenes/all" class="img-link">
+                                        <div class="tile tile-circle ">
+                                            <span><i class="fas fa-circle text-primary fa-2x"></i></span>
+                                        </div>
+                                    </a>
+                                </div>
+                                <!-- /.figure-img -->
+                                <!-- .figure-caption -->
+                                <figcaption class="figure-caption" data-bs-toggle="collapse" data-bs-target="#collapseExample"
                                     aria-expanded="false" aria-controls="collapseExample">
-                                        <img class="img-fluid" src="/src/images/ShopingCartOrdersPending.png" style="max-width: 3rem; max-height: 3rem;">
-                                        <a href="/api/ordenes/active" class="img-link">
-                                            <div class="tile tile-circle ">
-                                                <span><i class="fas fa-circle text-primary fa-2x"></i></span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <!-- /.figure-img -->
-                                    <!-- .figure-caption -->
-                                    <figcaption class="figure-caption" data-bs-toggle="collapse" data-bs-target="#collapseExample"
-                                    aria-expanded="false" aria-controls="collapseExample">
-                                        <h6 class="figure-title"><a href="#" style="text-decoration: none;">Ordenes Pendientes</a></h6>
-                                        <p class="text-muted mb-0">Ver Ordenes Pendientes</p>
-                                    </figcaption>
-                                    <!-- /.figure-caption -->
-                                </figure>
-                                <!-- /.card-figure -->
-                            </div>
+                                    <h6 class="figure-title"><a href="#" style="text-decoration: none;">Todas las Ordenes</a></h6>
+                                    <p class="text-muted mb-0">Ver todas las Ordenes</p>
+                                </figcaption>
+                                <!-- /.figure-caption -->
+                            </figure>
+                            <!-- /.card-figure -->
+                        </div>
                         <!-- /.card -->
                     </div>
-
-                    <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 col-12 mx-auto">
-                        <!-- .card -->
-                        <% if (userInfo.admin || userInfo.area === 'fabricacion') { %>
-                            <div class="card rounded-3 card-figure mb-1">
-                        <% } else { %>
-                            <div class="card rounded-3 card-figure mb-1 disabled-card">
-                        <% } %>
-                                <!-- .card-figure -->
-                                <figure class="figure">
-                                    <!-- .figure-img -->
-                                    <div class="figure-img text-center mx-auto" data-bs-toggle="collapse" data-bs-target="#collapseExample"
-                                    aria-expanded="false" aria-controls="collapseExample">
-                                        <img class="img-fluid" src="/src/images/ShopingCartOrders.png" style="max-width: 3rem; max-height: 3rem;">
-                                        <a href="/api/ordenes/all" class="img-link">
-                                            <div class="tile tile-circle ">
-                                                <span><i class="fas fa-circle text-primary fa-2x"></i></span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <!-- /.figure-img -->
-                                    <!-- .figure-caption -->
-                                    <figcaption class="figure-caption" data-bs-toggle="collapse" data-bs-target="#collapseExample"
-                                    aria-expanded="false" aria-controls="collapseExample">
-                                        <h6 class="figure-title"><a href="#" style="text-decoration: none;">Todas las Ordenes</a></h6>
-                                        <p class="text-muted mb-0">Ver todas las Ordenes</p>
-                                    </figcaption>
-                                    <!-- /.figure-caption -->
-                                </figure>
-                                <!-- /.card-figure -->
-                            </div>
-                        <!-- /.card -->
-                    </div>
+                
                 </div>
             </div>
         </div>
-</section>
+    </section>
 </div>

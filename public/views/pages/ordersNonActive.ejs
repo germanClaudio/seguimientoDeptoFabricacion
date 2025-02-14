@@ -19,9 +19,11 @@
         <%- include('../partials/data/dataOrdenesSearch'); %>
     </div>
 
-    <%- include('../partials/sections/sectionSelectMultiOrdenes'); %>
+    <% if (userInfo.admin) { %>
+        <%- include('../partials/sections/sectionSelectMultiOrdenesNonActive'); %>
+    <% } %>
 
-    <%- include('../partials/sections/sectionOrdersGenerated'); %>
+    <%- include('../partials/sections/sectionOrdersDelivered'); %>
     
     <br>
     <!-- ------------ Lista de Ordenes ------------ -->

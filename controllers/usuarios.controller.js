@@ -523,9 +523,7 @@ class UsersController {
                     herramientas = await this.cuttingTools.getAllCuttingTools(),
                     consumibles = await this.consumibles.getAllConsumibles(),
                     proveedores = await this.suppliers.getAllSuppliers(),
-                    carts = await this.carts.getAllCarts(),
-                    ordenes = await this.orders.getAllOrders(),
-                
+                    carts = await this.carts.getAllCarts(),                
                     sessions = parseInt(sessionLogin.length+1)
 
                 if (!usuarioUandP) {
@@ -545,7 +543,10 @@ class UsersController {
                     await this.users.updateUserVisits(userInfo._id, usuarioUandP)
                     const usuario = await this.users.getUserById(userInfo._id),
                         userCart = await this.carts.getCartByUserId(userInfo._id)
+
                     if (usuario.area === 'fabricacion') {
+                        const ordenes = await this.orders.getAllOrdersByUserId(user)
+
                         setTimeout(() => {
                             return res.render('indexToolShop', {
                                 usuario,
@@ -569,6 +570,7 @@ class UsersController {
                         }, 250)
 
                     } else {
+                        const ordenes = await this.orders.getAllOrders()
                         setTimeout(() => {
                             return res.render('index', {
                                 usuario,
@@ -786,12 +788,12 @@ class UsersController {
                 proyectos = await this.projects.getAllProjects(),
                 mensajes = await this.messages.getAllMessages(),
                 carts = await this.carts.getCart(),
-                ordenes = await this.orders.getAllOrders(),
+                
                 sessionsIndex = await this.users.getAllSessions(),
                 sessions = sessionsIndex.length
 
             const { flag, fail } = Boolean(true)
-
+            
             const user = await this.users.getUserByUsername(username)
             if (!user) {
                 const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -807,14 +809,16 @@ class UsersController {
                 const access_token = generateToken(user),
                     fail = Boolean(false),
                     userId = user._id,
-                    userCart = await this.carts.getCartByUserId(userId) || null
+                    userCart = await this.carts.getCartByUserId(userId) || null                    
 
                 req.session.admin = user.admin //req.session.admin = true
                 req.session.username = userInfo.username
                 
+                const csrfToken = csrfTokens.create(req.csrfSecret); 
                 if (user.area === 'fabricacion') {
+                    const ordenes = await this.orders.getAllOrdersByUserId(user)
+                    
                     setTimeout(() => {
-                        const csrfToken = csrfTokens.create(req.csrfSecret); 
                         return res.render('indexToolShop', {
                             user,
                             username,
@@ -838,8 +842,8 @@ class UsersController {
                     }, 250)
 
                 } else {
+                    const ordenes = await this.orders.getAllOrders()
                     setTimeout(() => {
-                        const csrfToken = csrfTokens.create(req.csrfSecret); 
                         return res.render('index', {
                             userInfo,
                             username,

@@ -1,13 +1,10 @@
-const ContainerMongoDB = require('../../contenedores/containerMongoDB.js')
-const mongoose = require('mongoose')
-const Maquinas = require('../../models/maquinas.models.js')
-
-const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000 }
-
-const formatDate = require('../../utils/formatDate.js')
-// const util = require('util')
-const { switchFilterTools } = require('../../utils/switchFilterTools.js')
-
+const ContainerMongoDB = require('../../contenedores/containerMongoDB.js'),
+    mongoose = require('mongoose'),
+    Maquinas = require('../../models/maquinas.models.js'),
+    advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000 },
+    formatDate = require('../../utils/formatDate.js'),
+    { switchFilterTools } = require('../../utils/switchFilterTools.js');
+    //util = require('util')
 
 class MaquinasDaoMongoDB extends ContainerMongoDB {
     constructor(cnxStr) {

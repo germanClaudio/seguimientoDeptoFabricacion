@@ -1,6 +1,7 @@
 const UserService = require("../services/users.service.js"),
     ConsumibleService = require("../services/consumibles.service.js"),
     CartsService = require("../services/carts.service.js"),
+    OrdersService = require("../services/orders.service.js"),
     { uploadToGCS } = require("../utils/uploadFilesToGSC.js"),
     { uploadMulterSingleImageConsumibles } = require("../utils/uploadMulter.js"),
     csrf = require('csrf'),
@@ -18,6 +19,7 @@ class ConsumiblesController {
         this.users = new UserService()
         this.consumibles = new ConsumibleService()
         this.carts = new CartsService()
+        this.orders = new OrdersService()
     }
 
     getAllConsumibles = async (req, res, next) => {
@@ -50,13 +52,14 @@ class ConsumiblesController {
         const expires = cookie(req)
         
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+            
             const consumibles = await this.consumibles.getAllConsumibles()
             !consumibles ? catchError400_5(req, res, next) : null
 
-            const usuario = await this.users.getUserByUsername(username)
-                !usuario ? catchError401_3(req, res, next) : null
-
-            const userCart = await this.carts.getCartByUserId(usuario._id)
+            const ordenes = await this.orders.getAllOrdersByUserId(usuario),
+                userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('selectConsumible', {
@@ -65,6 +68,7 @@ class ConsumiblesController {
                 userInfo,
                 expires,
                 consumibles,
+                ordenes,
                 data,
                 csrfToken,
                 userCart

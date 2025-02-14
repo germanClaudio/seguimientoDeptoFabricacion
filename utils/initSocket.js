@@ -33,7 +33,7 @@ const ContainerMessages = require("../daos/mensajes/MensajesDaoFactory.js"),
     initSocket = (io) => {
         io.on("connection", async (socket) => {
             console.log("Nuevo usuario conectado!")
-            
+
             // --------------------------  Clientes --------------------------------
             socket.emit('clientsAll',
                 await containerClient.getAllClients(),
@@ -128,7 +128,7 @@ const ContainerMessages = require("../daos/mensajes/MensajesDaoFactory.js"),
             async function listarMensajesNormalizados() {
                 const mensajes = await containerMsg.getAllMessages()
                 return mensajes//normalizados;
-                }
+            }
 
             // NORMALIZACIÓN DE MENSAJES
             // Definimos un esquema de autor
@@ -231,17 +231,85 @@ const ContainerMessages = require("../daos/mensajes/MensajesDaoFactory.js"),
             })
 
             //-------------------- ordenes ----------------------
-            socket.emit('ordersActive', await containerOrders.getActiveOrders(),
+            // socket.emit('ordersActive', 
+            //     await containerOrders.getActiveOrders(),
+            //     await containerUser.getAllUsers()
+            // )
+
+            // socket.emit('ordersNonActive', 
+            //     await containerOrders.getNonActiveOrders(),
+            //     await containerUser.getAllUsers()
+            // )
+
+            socket.emit('ordersUsers',
                 await containerUser.getAllUsers()
             )
 
-            socket.emit('ordersAll', await containerOrders.getAllOrders(),
-                await containerUser.getAllUsers()
-            )
+            // Escuchar el evento 'sendUser' desde el cliente
+            socket.on('sendUser', async (user, userAdmin) => {
+                try {
+                    // Obtener los datos usando el user
+                    const allOrders = await containerOrders.getAllOrders(),
+                        ordersByUser = await containerOrders.getAllOrdersByUserId(user),
+                        allUsers = await containerUser.getAllUsers();
 
-            socket.emit('ordersNonActive', await containerOrders.getNonActiveOrders(),
-                await containerUser.getAllUsers()
-            )
+                    // Emitir los datos de vuelta al cliente
+                    socket.emit('ordersAllByUserId', {
+                        allOrders,
+                        ordersByUser,
+                        allUsers,
+                        userAdmin
+                    });
+
+                } catch (error) {
+                    console.error("Error al obtener los datos:", error);
+                    socket.emit('error', { message: "Error al obtener los datos" });
+                }
+            });
+
+            // Escuchar el evento 'sendUser' desde el cliente
+            socket.on('sendUserActive', async (user, userAdmin) => {
+                try {
+                    // Obtener los datos usando el user
+                    const allOrders = await containerOrders.getActiveOrders(),
+                        ordersByUser = await containerOrders.getActiveOrdersByUserId(user),
+                        allUsers = await containerUser.getAllUsers();
+
+                    // Emitir los datos de vuelta al cliente
+                    socket.emit('ordersActive', {
+                        allOrders,
+                        ordersByUser,
+                        allUsers,
+                        userAdmin
+                    });
+
+                } catch (error) {
+                    console.error("Error al obtener los datos:", error);
+                    socket.emit('error', { message: "Error al obtener los datos" });
+                }
+            });
+
+            // Escuchar el evento 'sendUser' desde el cliente
+            socket.on('sendUserNonActive', async (user, userAdmin) => {
+                try {
+                    // Obtener los datos usando el user
+                    const allOrders = await containerOrders.getNonActiveOrders(),
+                        ordersByUser = await containerOrders.getNonActiveOrdersByUserId(user),
+                        allUsers = await containerUser.getAllUsers();
+
+                    // Emitir los datos de vuelta al cliente
+                    socket.emit('ordersNonActive', {
+                        allOrders,
+                        ordersByUser,
+                        allUsers,
+                        userAdmin
+                    });
+
+                } catch (error) {
+                    console.error("Error al obtener los datos:", error);
+                    socket.emit('error', { message: "Error al obtener los datos" });
+                }
+            });
 
         });
 

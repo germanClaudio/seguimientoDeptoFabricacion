@@ -103,7 +103,7 @@ class CartsController {
         }
     }
 
-    // ---------------- Get Cart by Id ---------------
+    // ---------------- Get Cart by UserId ---------------
     getCartByUserId = async (req, res, next) => {
         const { id } = req.params,
             expires = cookie(req)
@@ -543,9 +543,10 @@ class CartsController {
                                     area: usuario.area
                                 },
                                 items: cart.items,
-                                quantity: cart.items.length,
+                                quantity: parseInt(cart.items.length),
+                                timestamp: new Date(),
                                 modificator: dataUserModificatorEmpty(),
-                                modifiedOn: dateInvoice,
+                                modifiedOn: new Date(), //dateInvoice,
                                 invoice_nr: invoiceNumber,
                                 invoiceStorageUrl: pathPdfFile,
                                 visible: Boolean(true),

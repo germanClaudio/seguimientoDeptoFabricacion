@@ -476,7 +476,7 @@ function messageNewTool(designation, code, type) {
             cancelButtonColor: '#d33',
             focusConfirm: true,
             confirmButtonText: 'Registrarla! <i class="fa-solid fa-user-gear"></i>',
-            cancelButtonText: 'Cancelar <i class="fa-solid fa-user-xmark"></i>'
+            cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>'
     
         }).then((result) => {
             if (result.isConfirmed) {

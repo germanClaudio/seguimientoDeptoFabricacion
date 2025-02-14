@@ -1,5 +1,5 @@
 const { Schema, model, mongoose } = require('mongoose')
-const now = require('../utils/formatDate.js')
+// const now = require('../utils/formatDate.js')
 
 let ItemSchema = new Schema({
     consumibleId: {
@@ -78,12 +78,18 @@ const orderSchema = new Schema({
             type: Boolean,
             default: true
         },
+        quantity: {
+            type: Number,
+        },
+        timestamp: {
+            type: Date,
+        },
         modificator: {
             type: Array,
             default: []
         },
         modifiedOn: {
-            type: String,
+            type: Date, //String,
         },
         invoice_nr: {
             type: String,

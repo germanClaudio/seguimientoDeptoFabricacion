@@ -82,27 +82,35 @@
         </div>
         <!-- pedidos - mensajes -->
         <div class="col-xl-3 col-sm-6 col-12">
-            <a href="/api/webchat/solicitud" style="text-decoration: none;">
+            <a href="/api/ordenes/allOrdersByUserId" style="text-decoration: none;">
                 <div class="card rounded-3 card_dashboard">
                     <div class="card-content">
-                        <div class="card-body">
+                        <div class="card-body position-relative">
                             <div class="media d-flex mx-2">
                                 <div class="media-body text-start">
-                                    <% let cantMensajes=0
-                                    for (let i=0; mensajes.length>i; i++) {
-                                        if (mensajes[i].status) {
-                                            cantMensajes++
-                                        }
+                                    <% let cantOrdenes=0, cantOrdenesPreparadas=0, cantOrdenesEntregadas=0
+                                    for (let i=0; ordenes.length>i; i++) {
+                                        ordenes[i].visible ? cantOrdenes++ : null
+                                        ordenes[i].visible && ordenes[i].prepared ? cantOrdenesPreparadas++ : null
+                                        ordenes[i].visible && ordenes[i].active ? cantOrdenesEntregadas++ : null
                                     } %>
-                                    <h3 class="font-medium">
-                                        <%= parseInt(cantMensajes) %>
+                                    <h3 class="font-medium"><%= parseInt(cantOrdenesPreparadas) %>/
+                                        <span style="font-size: 1rem; color: darkgreen;">Entregados <%= parseInt(cantOrdenesEntregadas) %> </span> /
+                                        <span style="font-size: 1rem; color: rgb(255, 0, 0);">Total <%= parseInt(cantOrdenes) %></span>
                                     </h3>
                                     <span>Mis Pedidos</span>
                                 </div>
+
                                 <div class="align-self-center ms-auto">
                                     <i class="icon-bubbles warning font-large-2 float-right"></i>
                                 </div>
                             </div>
+                            <% if(parseInt(cantOrdenesPreparadas)>0) { %>
+                                <span title="Pedidos Preparados"
+                                    class="badge rounded-pill bg-danger text-light position-absolute top-0 start-100 translate-middle">
+                                    <%= parseInt(cantOrdenesPreparadas) %>
+                                </span>
+                            <% } %>
                         </div>
                     </div>
                 </div>
