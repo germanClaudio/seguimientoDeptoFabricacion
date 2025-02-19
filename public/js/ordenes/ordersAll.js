@@ -81,10 +81,10 @@ const renderOrdenesAdmin = (arrOrders) => {
                 btnConfiguration = '',
                 idChain = element._id.substring(19)
             
-            element.active ?
-                element.prepared ? (optionStatus = yellow, showStatus = 'Preparado', btnPrepared = Boolean(true), textStatus = black) : null
-            :
-                (optionStatus = green, showStatus = 'Entregado', btnPrepared = Boolean(true), btnDeleted = Boolean(false))
+            element.active
+            ? element.prepared
+                ? (optionStatus = yellow, showStatus = 'Preparado', btnPrepared = Boolean(true), textStatus = black) : null
+            : (optionStatus = green, showStatus = 'Entregado', btnPrepared = Boolean(true), btnDeleted = Boolean(false))
             
 
             if (element.visible) {
@@ -113,8 +113,8 @@ const renderOrdenesAdmin = (arrOrders) => {
                     formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
                     formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
 
-                    element.timestamp === element.modifiedOn ? formattedDateModified = '-' : null
-
+                    formattedDate === formattedDateModified ? formattedDateModified = '-' : null
+                    
                 return (`<tr>
                             <td class="text-center" id="checkSelect_${element._id}" name="checkSelect"><input class="form-check-input border border-2 border-primary shadow-lg rounded" type="checkbox" value="" id="inputCheckOrder_${element._id}" name="inputCheckOrder" ${checkDisabled}></td>
                             <th scope="row" class="text-center py-3"><strong>...${idChain}</strong></th>
@@ -150,7 +150,7 @@ const renderOrdenesAdmin = (arrOrders) => {
     } else {
         const html = (`<tr>
                             <td colspan="10">
-                                <img class="img-fluid rounded-5 my-2 shadow-lg" alt="No hay items cargados para mostrar"
+                                <img class="img-fluid rounded-3 my-2 shadow-lg" alt="No hay items cargados para mostrar"
                                     src='../../src/images/clean_table_graphic.png' width="auto" height="auto">
                             </td>
                         </tr>`)
@@ -439,7 +439,7 @@ const renderOrdenesUser = (arrOrders) => {
                     formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
                     formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
 
-                    element.timestamp === element.modifiedOn ? formattedDateModified = '-' : null
+                    formattedDate === formattedDateModified ? formattedDateModified = '-' : null
 
                 return (`<tr>
                             <td class="text-center" id="checkSelect_${element._id}" name="checkSelect"><input class="form-check-input border border-2 border-primary shadow-lg rounded" type="checkbox" value="" id="inputCheckOrder_${element._id}" name="inputCheckOrder" ${checkDisabled}></td>
@@ -464,8 +464,8 @@ const renderOrdenesUser = (arrOrders) => {
 
     } else {
         const html = (`<tr>
-                        <td colspan="9">
-                            <img class="img-fluid rounded-5 my-2 shadow-lg" alt="No hay items cargados para mostrar"
+                        <td colspan="10">
+                            <img class="img-fluid rounded-3 my-2 shadow-lg" alt="No hay items cargados para mostrar"
                                 src='../../src/images/clean_table_graphic.png' width="auto" height="auto">
                         </td>
                     </tr>`)

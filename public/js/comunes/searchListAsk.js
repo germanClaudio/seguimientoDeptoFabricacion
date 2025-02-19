@@ -472,7 +472,7 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
                                     <div class="card-footer px-2">
                                         <div class="row">
                                             <div class="col m-auto">
-                                                <a class="btn text-light small" ${disabled} type="submit" href="/api/consumibles/solicitar/${element._id}"
+                                                <a class="btn text-light small" ${disabled} type="submit" href="/api/carts/add/${element._id}"
                                                     style="background-color: #272787; font-size: .85rem; width: auto;">
                                                     Añadir al <i class="fa-solid fa-cart-plus fa-xl"></i>
                                                 </a>

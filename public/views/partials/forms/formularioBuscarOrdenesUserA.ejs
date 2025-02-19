@@ -1,5 +1,5 @@
-<div class="shadow-lg col-md-5 mx-auto my-2 w-75 border rounded p-3 text-white bg-opacity-50" style="background-color: #272787;">
-    <form class="row align-items-center" id="searchFormOrden" onsubmit="return searchOrdenes(this)">
+<div class="shadow-lg col-md-5 mx-auto my-2 w-50 border rounded p-3 text-white bg-opacity-50" style="background-color: #272787;">
+    <form class="row align-items-center" id="searchFormOrden" onsubmit="return searchOrdenesUser(this)">
         <div class="col-md-3">
             <label class="form-check-label ms-2 text-white" for="queryOrdenes">Buscar</label>
             <input class="form-control" type="text" id="queryOrdenes" name="queryOrdenes" placeholder="Buscar Ordenes">
@@ -8,16 +8,9 @@
         <div class="col-md-auto ms-2">
             <label class="form-check-label ms-2 text-white" for="status">Status</label>
             <select class="form-select small" aria-label=".form-select" name="statusOrdenes" id="statusOrdenes" style="font-size: 13px;">
-                <option selected value="todas">Todas</option>
-                <option value="activas">No Entregadas</option>
-                <option value="inactivas">Entregadas</option>
+                <option selected value="activas">No Entregadas</option>
                 <option value="preparadas">Preparadas</option>
             </select>
-        </div>
-
-        <div class="col-md-2 ms-2">
-            <label class="form-check-label ms-2 text-white" for="queryUsuarios">Solicitadas por</label>
-            <input class="form-control" type="text" id="queryUsuarios" name="queryUsuarios" placeholder="Buscar Usuarios">
         </div>
 
         <div class="col-md-auto ms-2">
@@ -37,7 +30,7 @@
             <button class="btn rounded-circle bg-white me-2 text-dark" title="Buscar" type="submit">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
-            <button class="btn rounded-circle bg-white ms-2 text-dark" title="Eliminar filtros" type="reset">
+            <button class="btn rounded-circle bg-white ms-2 text-dark" id="deleteFilters" title="Eliminar filtros" type="reset">
                 <i class="fa-solid fa-filter-circle-xmark"></i>
             </button>
         </div>

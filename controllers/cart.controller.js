@@ -83,8 +83,13 @@ class CartsController {
             const usuario = await this.users.getUserByUsername(username)
             !usuario ? catchError401_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrdersByUserId(usuario)
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const cart = await this.carts.getCart(id),
                 arrProducts = await this.carts.getArrProducts(cart)
+            // console.log('arrProducts: ', arrProducts)
+            const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('cartDetails', {
@@ -92,10 +97,12 @@ class CartsController {
                 username,
                 userInfo,
                 arrProducts,
+                userCart,
+                ordenes,
+                cart,
                 expires,
                 data,
                 csrfToken,
-                cart,
             })
 
         } catch (err) {
@@ -118,16 +125,20 @@ class CartsController {
                 const userCart = await this.carts.getCartByUserId(id),
                     arrProducts = await this.carts.getArrProducts(userCart)
 
+                const ordenes = await this.orders.getAllOrdersByUserId(usuario)
+                !ordenes ? catchError400_5(req, res, next) : null
+
                 const csrfToken = csrfTokens.create(req.csrfSecret);
                 res.render('cartDetails', {
                     usuario,
                     username,
                     userInfo,
                     arrProducts,
-                    expires,
+                    userCart,
+                    ordenes,
                     data,
+                    expires,
                     csrfToken,
-                    userCart
                 })
 
             } catch (err) {
@@ -157,6 +168,9 @@ class CartsController {
             
             let productDetails = await this.consumibles.getConsumibleById(productId)
             !productDetails ? catchError401_3(req, res, next) : null
+
+            const ordenes = await this.orders.getAllOrdersByUserId(userId)
+            !ordenes ? catchError400_5(req, res, next) : null
             
             let cart = await this.carts.getCartByUserId(userId)
             if (cart) { //--If Cart Exists ----
@@ -185,7 +199,8 @@ class CartsController {
                     catchError500(err, req, res, next)
                 }
 
-                const userCart = await cart.save(),
+                await cart.save()
+                const userCart = cart,
                     arrProducts = await this.carts.getArrProducts(userCart),
                     csrfToken = csrfTokens.create(req.csrfSecret);
 
@@ -196,9 +211,10 @@ class CartsController {
                     username,
                     userInfo,
                     productDetails,
-                    data,
                     cart,
                     arrProducts,
+                    ordenes,
+                    data,
                     expires,
                     csrfToken
                 })
@@ -233,9 +249,10 @@ class CartsController {
                     username,
                     userInfo,
                     productDetails,
-                    data,
                     cart,
                     arrProducts,
+                    ordenes,
+                    data,
                     expires,
                     csrfToken
                 })
@@ -285,10 +302,13 @@ class CartsController {
 
             const usuarios = await this.users.getUserByUsername(username),
                 userId = usuarios._id
-                !usuarios ? catchError401_3(req, res, next) : null
+            !usuarios ? catchError401_3(req, res, next) : null
 
             const userCreator = await this.users.getUserById(userId)
             !userCreator ? catchError401_3(req, res, next) : null
+
+            const ordenes = await this.orders.getAllOrdersByUserId(userId)
+            !ordenes ? catchError400_5(req, res, next) : null
             
             let cart = await this.carts.getCartByUserId(userId)
             if (cart) { //--If Cart Exists ----
@@ -326,9 +346,10 @@ class CartsController {
                         usuarios,
                         username,
                         userInfo,
-                        data,
                         cart,
                         arrProducts,
+                        ordenes,
+                        data,
                         expires,
                         csrfToken
                     })
@@ -370,9 +391,10 @@ class CartsController {
                     usuarios,
                     username,
                     userInfo,
-                    data,
                     cart,
                     arrProducts,
+                    ordenes,
+                    data,
                     expires,
                     csrfToken
                 })
@@ -397,6 +419,9 @@ class CartsController {
                 
                 let userCart = await this.carts.emptyCart(id)
                 !userCart ? catchError401_3(req, res, next) : null
+
+                const ordenes = await this.orders.getAllOrdersByUserId(usuario._id)
+                !ordenes ? catchError400_5(req, res, next) : null
                 
                 const arrProducts = [],
                     csrfToken = csrfTokens.create(req.csrfSecret);
@@ -407,8 +432,9 @@ class CartsController {
                         username,
                         userInfo,
                         arrProducts,
-                        expires,
+                        ordenes,
                         data,
+                        expires,
                         csrfToken,
                         userCart
                     })
@@ -452,6 +478,7 @@ class CartsController {
                     mensajes = await this.messages.getAllMessages(),
                     userCart = await this.carts.getCart(id),
                     carts = await this.carts.getCart(),
+                    ordenes = await this.orders.getAllOrdersByUserId(usuario._id),
                     usuarios = await this.users.getAllUsers(),
                     sessionsIndex = await this.users.getAllSessions(),
                     sessions = sessionsIndex.length,
@@ -472,6 +499,7 @@ class CartsController {
                         consumibles,
                         carts,
                         userCart,
+                        ordenes,
                         csrfToken
                     })
 
@@ -492,6 +520,7 @@ class CartsController {
                         herramientas,
                         consumibles,
                         proveedores,
+                        ordenes,
                         csrfToken
                     })
                 }
@@ -579,7 +608,7 @@ class CartsController {
                         !stockReduced ? catchError401_3(req, res, next) : null
                         // ------------ Empty the cart -------------------
                         cart = await this.carts.emptyCart(id)
-
+                        
                         //////////////////// gmail to Administrator //////////////////////
                         const { createTransport } = require('nodemailer'),
                             TEST_EMAIL = process.env.TEST_EMAIL,
@@ -616,14 +645,20 @@ class CartsController {
                                 console.log('Error enviando mail: ', err)
                             }
                         })()
-                            
+
+                        const ordenes = await this.orders.getAllOrdersByUserId(usuario)
+                        !ordenes ? catchError400_5(req, res, next) : null
+                        
+                        const userCart = cart
                         return res.render('orderGenerated', {
                             data,
                             usuario,
                             username,
                             userInfo,
                             cart,
+                            userCart,
                             orderGenerated,
+                            ordenes,
                             pathOrder,
                             expires
                         })
@@ -639,7 +674,7 @@ class CartsController {
             })
 
         } else {
-            console.log('Error! No existe Id:', i)
+            console.log('Error! No existe Id:', id)
         }
     }
 

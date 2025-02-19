@@ -1216,10 +1216,16 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
                                 </div>
                                 <div class="card-footer px-2">
                                     <div class="row">
-                                        <div class="col m-auto">
+                                        <div class="col m-auto me-1">
+                                            <a class="btn text-light small" ${disabled} type="submit" href="/api/carts/add/${element._id}"
+                                                style="background-color:rgb(17, 115, 0); font-size: .85rem; width: auto;">
+                                                Añadir al <i class="fa-solid fa-cart-plus"></i>
+                                            </a>
+                                        </div>
+                                        <div class="col m-auto ms-1">
                                             <a class="btn text-light small" ${disabled} type="submit" href="/api/consumibles/${element._id}"
                                                 style="background-color: #272787; font-size: .85rem; width: auto;">
-                                                <i class="fa-solid fa-info-circle"></i> Info Consumible
+                                                <i class="fa-solid fa-circle-info"></i> Ver Info
                                             </a>
                                         </div>
                                     </div>
@@ -1256,12 +1262,18 @@ socket.on('searchOrdenesAll', async (arrOrdenesSearch) => {
 
 const searchOrdenes = () => {
     let queryOrdenes = document.getElementById('queryOrdenes').value,
-        statusOrdenes = document.getElementById('statusOrden').value,
-        solicitadasOrdenes = document.getElementById('solicitadaOrden').value,
-        fechaInicioOrdenes = document.getElementById('fechaInicioOrden').value,
-        fechaFinOrdenes = document.getElementById('fechaFinOrden').value
+        statusOrdenes = document.getElementById('statusOrdenes').value,
+        solicitadasOrdenes = document.getElementById('queryUsuarios').value,
+        fechaInicioOrdenes = document.getElementById('queryFechaDesde').value,
+        fechaFinOrdenes = document.getElementById('queryFechaHasta').value
         
-    statusOrdenes != 'todas' ? statusOrdenes != 'activas' ? statusOrdenes != 'preparadas' ? statusOrdenes = true : statusOrdenes = false : null : null
+    statusOrdenes != 'todas'
+        ? statusOrdenes != 'activas'
+            ? statusOrdenes != 'preparadas'
+                ? statusOrdenes = true
+                : statusOrdenes = false
+            : null
+        : null
         
     socket.emit('searchOrdenAll', {
         queryOrdenes,
@@ -1419,20 +1431,20 @@ const renderSearchedOrdenes = (arrOrdenesSearch) => {
         document.getElementById('showCountOrdenesSearch').innerHTML = htmlResultados
     }
 
-    // function downloadPdf(orderNumber) {
-    //     const pdfUrl = `https://storage.googleapis.com/imagenesproyectosingenieria/upload/PdfOrders/Invoice_${orderNumber}.pdf`;
+    function downloadPdf(orderNumber) {
+        const pdfUrl = `https://storage.googleapis.com/imagenesproyectosingenieria/upload/PdfOrders/Invoice_${orderNumber}.pdf`;
     
-    //     // Open the PDF in a new tab
-    //     const newWindow = window.open(pdfUrl, '_blank');
+        // Open the PDF in a new tab
+        const newWindow = window.open(pdfUrl, '_blank');
     
-    //     // Optional: Focus the new window (if supported by the browser)
-    //     if (newWindow) {
-    //         newWindow.focus();
-    //     } else {
-    //         // Fallback for browsers that block pop-ups
-    //         alert('Por favor, autorice los pop-ups en este sitio para visualizar el PDF.');
-    //     }
-    // }
+        // Optional: Focus the new window (if supported by the browser)
+        if (newWindow) {
+            newWindow.focus();
+        } else {
+            // Fallback for browsers that block pop-ups
+            alert('Por favor, autorice los pop-ups en este sitio para visualizar el PDF.');
+        }
+    }
     
     const nodeCardDownloadList = document.querySelectorAll('button[name="cardDownloadOrder"]')
     nodeCardDownloadList.forEach(function(card){
@@ -1465,3 +1477,342 @@ const renderSearchedOrdenes = (arrOrdenesSearch) => {
         }
     })
 }
+
+
+// -------------- Show Searched Ordenes by User ----------------
+socket.on('searchOrdenesAllUser', async (arrOrdenesSearch) => {
+    renderSearchedOrdenesUser (await arrOrdenesSearch)
+})
+
+const searchOrdenesUser = () => {
+    let queryOrdenes = document.getElementById('queryOrdenes').value,
+        statusOrdenes = document.getElementById('statusOrdenes').value,
+        solicitadasOrdenes = document.getElementById('userNameBanner').innerText,
+        fechaInicioOrdenes = document.getElementById('queryFechaDesde').value,
+        fechaFinOrdenes = document.getElementById('queryFechaHasta').value
+
+        
+    socket.emit('searchOrdenAllUser', {
+        queryOrdenes,
+        statusOrdenes,
+        solicitadasOrdenes,
+        fechaInicioOrdenes,
+        fechaFinOrdenes
+    })
+    return false
+}
+
+const renderSearchedOrdenesUser = (arrOrdenesSearch) => {
+    document.getElementById('showCountOrdenesSearch').innerHTML = ''
+
+    if(!arrOrdenesSearch) {
+        const htmlSearchOrdenesNull = (
+            `<div class="col mx-auto">
+                <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4 my-auto px-1">
+                            <img src="${clientNotFound}" style="max-width=170vw; object-fit: contain;"
+                                class="img-fluid rounded p-1" alt="Orden no encontrada">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Orden no encontrada</h5>
+                                <p class="card-text">Lo siento, no pudimos encontrar la orden</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Pruebe nuevamente con fechas, tipo o código diferente.
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`)
+        
+        const showOrdenes = document.getElementById('showOrdenesSearch')
+        showOrdenes ? showOrdenes.innerHTML = htmlSearchOrdenesNull : null
+
+    } else if (arrOrdenesSearch.length === 1 && arrOrdenesSearch[0] === 'vacio') {     
+        const htmlSearchOrdenesNull = (
+            `<div class="col mx-auto">
+                <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 640px;">
+                    <div class="row g-0">
+                        <div class="col-md-4 my-auto px-1">
+                            <img src="${allClientsFound}" style="max-width=170vw; object-fit: contain;"
+                                class="img-fluid rounded p-1" alt="Todas las Ordenes">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Todas las Ordenes</h5>
+                                <p class="card-text">Todas las Ordenes están listadas en la tabla de abajo</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Pruebe nuevamente con un nombre, status o fechas diferentes o haga scroll hacia abajo.
+                                        La diferencia entre fechas no debe exeder los 30 días.
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+        )
+        document.getElementById('showOrdenesSearch').innerHTML = htmlSearchOrdenesNull
+
+    } else {
+        const htmlSearchOrdenes = arrOrdenesSearch.map((element) => {
+            const typeMapping = {
+                prepared: { label: 'Preparado', class: 'warning', text: 'dark' },
+                delivered: { label: 'Entregado', class: 'success', text: 'light' },
+                notDelivered: { label: 'No Entregado', class: 'danger', text: 'light' },
+                default: { label: 'Eliminado', class: 'primary', text: 'dark' }
+            };
+            
+            // Determinar valores dinámicos
+            let showType, optionType, optionText, color = '';
+        
+            if (element.prepared) {
+                showType = typeMapping.prepared.label;
+                optionType = typeMapping.prepared.class;
+                optionText = typeMapping.prepared.text;
+            } else if (!element.active) {
+                showType = typeMapping.delivered.label;
+                optionType = typeMapping.delivered.class;
+                optionText = typeMapping.delivered.text;
+            } else if (element.active && !element.prepared) {
+                showType = typeMapping.notDelivered.label;
+                optionType = typeMapping.notDelivered.class;
+                optionText = typeMapping.notDelivered.text;
+            } else {
+                showType = typeMapping.default.label;
+                optionType = typeMapping.default.class;
+                optionText = typeMapping.default.text;
+            }
+        
+            !element.active ? color = 'background-color:rgba(39, 181, 0, 0.19)' : color = 'background-color:rgba(181, 0, 0, 0.19)';
+            element.prepared ? color = 'background-color:rgba(181, 172, 0, 0.19)' : null
+
+            let btnConfiguration = '',
+                idChain = element._id.substring(19);
+        
+            element.active
+            ? element.prepared
+                ? btnPreprared = Boolean(true) : null
+            : btnPreprared = Boolean(true);
+        
+            !element.active
+            ? btnConfiguration = `<button type="button" class="btn btn-secondary btn-sm disabled"><i class="fa-regular fa-trash-can"></i></button>`
+            : btnConfiguration = `<button id="${element._id}" name="btnCardDeleteOrder" type="button" class="btn btn-danger btn-sm" title="Eliminar Orden ...${idChain}"><i class="fa-regular fa-trash-can"></i></button>`;
+        
+            let utcDate = new Date(element.timestamp),
+                localDate = new Date(utcDate.getTime() + offset),
+                formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0];
+        
+            // Retornar el HTML generado
+            return (`
+                <div class="col mx-auto">
+                    <div class="card mx-auto rounded-2 shadow-lg" id="cardSelected_${element._id}" style="max-width: 540px; ${color}">
+                        <div class="row align-items-center">
+                            <div class="col-md-auto mx-auto">
+                                <div class="card-body">
+                                    <h6 id="cardDesignation_${element._id}" class="card-title"><strong>...${idChain}</strong></h6>
+                                    # Solicitud: <span id="cardCodigo_${element._id}" class="my-1"><strong>${element.invoice_nr}</strong></span><br>
+                                    Status: <span class="badge rounded-pill bg-${optionType} my-1">${showType}</span><br>
+                                    Fecha solicitud: ${formattedDate}<br>
+                                    Solicitado por: <strong>${element.shipping[0].name} ${element.shipping[0].lastName} - ${element.shipping[0].legajoIdUser}</strong><br>
+                                </div>
+                                <div class="card-footer px-2">
+                                    <div class="row">
+                                        <div class="col m-auto align-items-center text-center">
+                                            <button id="cardDownloadOrder_${element._id}" name="cardDownloadOrder" type="button" class="btn btn-primary btn-sm" title="Descargar pdf Orden ...${idChain}"><i class="fa-solid fa-download"></i></button>
+                                            ${btnConfiguration}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+            );
+        }).join(" ");
+
+        let mensaje = ''
+        arrOrdenesSearch.length ===1
+        ? mensaje = `Se encontró <strong>${arrOrdenesSearch.length}</strong> resultado.`
+        : mensaje = `Se encontraron <strong>${arrOrdenesSearch.length}</strong> resultados.`
+        
+        const htmlResultados = `<div class="row align-items-center">
+                                    <div class="col mx-auto">
+                                        <span class="my-1">${mensaje}</span>
+                                    </div>
+                                </div>`
+
+        document.getElementById('showOrdenesSearch').innerHTML = htmlSearchOrdenes
+        document.getElementById('showCountOrdenesSearch').innerHTML = htmlResultados
+    }
+
+    function downloadPdf(orderNumber) {
+        const pdfUrl = `https://storage.googleapis.com/imagenesproyectosingenieria/upload/PdfOrders/Invoice_${orderNumber}.pdf`;
+    
+        // Open the PDF in a new tab
+        const newWindow = window.open(pdfUrl, '_blank');
+    
+        // Optional: Focus the new window (if supported by the browser)
+        if (newWindow) {
+            newWindow.focus();
+        } else {
+            // Fallback for browsers that block pop-ups
+            //TODO: Swal
+            alert('Por favor, autorice los pop-ups en este sitio para visualizar el PDF.');
+        }
+    }
+    
+    const nodeCardDownloadList = document.querySelectorAll('button[name="cardDownloadOrder"]')
+    nodeCardDownloadList.forEach(function(btn){
+            if (btn.id) {
+                btn.addEventListener("click", (event) => {
+                    event.preventDefault()
+                    const tdNodeList = document.querySelectorAll('td[name="invoiceNumber"]')
+                    tdNodeList.forEach(function(td){
+                        const invoiceId = document.getElementById(`invoice_${btn.id.substring(18)}`)
+                        if (td.innerHTML === invoiceId.innerText) {
+                            const idInvoice = td.innerHTML.toString()
+                            td.innerHTML ? downloadPdf(idInvoice) : null
+                        }
+                    })
+                })
+            }
+        })
+
+    // ---- mensaje confirmacion eliminar Order -----------
+    function messageDeleteOrder(idOrden, userInformation, date) {
+        const idChain = idOrden.substring(19)
+        const htmlForm =
+            `La solicitud con fecha <b>${date}</b>, se eliminará completamente<br>
+                para el <strong>Administrador de pañol</strong> y usted.<br>
+                <strong>Esta acción no se puede deshacer!<strong><br>
+                Está seguro que desea continuar?<br>
+                <form id="formDeleteOrder" action="/api/ordenes/delete/${idOrden}" method="post">
+                    <fieldset>
+                        <input type="hidden" id="screen" name="screen" value="0">
+                    </fieldset>
+                </form>`
+    
+        Swal.fire({
+            title: `Eliminar Orden Id#...${idChain}?`,
+            position: 'center',
+            width: 700,
+            html: htmlForm,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            focusConfirm: false,
+            confirmButtonText: 'Eliminarlo! <i class="fa-regular fa-trash-can"></i>',
+            cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>'
+    
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById("formDeleteOrder").submit()
+                setTimeout(() => {
+                    Swal.fire(
+                        'Eliminado!',
+                        `La Orden Id#<b>...${idChain}</b>, ha sido eliminada exitosamente.`,
+                        'success'
+                    )
+                }, 600)
+            } else {
+                Swal.fire(
+                    'No eliminada!',
+                    `La Orden Id#<b>...${idChain}</b>, no ha sido eliminada.`,
+                    'info'
+                    )
+                return false
+            }
+        })
+    }
+
+    const nodeList = document.querySelectorAll('button[name="btnCardDeleteOrder"]')
+    nodeList.forEach(function(btn){
+        if (btn.id) {
+            btn.addEventListener("click", (event) => {
+                event.preventDefault()
+                const idOrden = btn.id,
+                    userInformation = document.getElementById(`userInformation_${idOrden}`).innerText,
+                    date = document.getElementById(`date_${idOrden}`).innerText
+
+                idOrden && userInformation && date ? messageDeleteOrder(idOrden, userInformation, date) : null
+            })
+        }
+    })
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const fechaInicioInput = document.getElementById('queryFechaDesde');
+    const fechaFinInput = document.getElementById('queryFechaHasta');
+
+    // Fecha mínima permitida: 1/1/2025
+    const fechaMinimaPermitida = new Date('2025-01-01');
+
+    // Deshabilitar fechas anteriores al 1/1/2025 en ambos campos
+    fechaInicioInput ? fechaInicioInput.min = fechaMinimaPermitida.toISOString().split('T')[0] : null;
+    fechaFinInput ? fechaFinInput.min = fechaMinimaPermitida.toISOString().split('T')[0] : null;
+
+    if (fechaInicioInput && fechaFinInput) {
+        // Punto #1: Si se selecciona una fecha inicial, deshabilitar fechas anteriores en el campo de fecha final
+        fechaInicioInput.addEventListener('change', () => {
+            if (fechaInicioInput.value) {
+                fechaFinInput.min = fechaInicioInput.value; // Fecha final no puede ser anterior a la fecha inicial
+            } else {
+                fechaFinInput.min = fechaMinimaPermitida.toISOString().split('T')[0]; // Restablecer al mínimo permitido
+            }
+        });
+
+        // Punto #2: Si se selecciona una fecha final, deshabilitar fechas posteriores en el campo de fecha inicial
+        fechaFinInput.addEventListener('change', () => {
+            if (fechaFinInput.value) {
+                fechaInicioInput.max = fechaFinInput.value; // Fecha inicial no puede ser posterior a la fecha final
+            } else {
+                fechaInicioInput.removeAttribute('max'); // Restablecer sin límite máximo
+            }
+        });
+
+        // Punto #3: Validar que la fecha final no sea anterior a la fecha inicial
+        const validarFechas = () => {
+            if (fechaInicioInput.value && fechaFinInput.value) {
+                const fechaInicio = new Date(fechaInicioInput.value);
+                const fechaFin = new Date(fechaFinInput.value);
+
+                if (fechaFin < fechaInicio) {
+                    alert('La fecha final no puede ser anterior a la fecha inicial.');
+                    fechaFinInput.value = ''; // Limpiar el campo de fecha final
+                }
+            }
+        };
+
+        fechaInicioInput.addEventListener('change', validarFechas);
+        fechaFinInput.addEventListener('change', validarFechas);
+
+        // - Si se borra la fecha inicial, restablecer el mínimo de la fecha final al 1/1/2025
+        fechaInicioInput.addEventListener('input', () => {
+            if (!fechaInicioInput.value) {
+                fechaFinInput.min = fechaMinimaPermitida.toISOString().split('T')[0];
+            }
+        });
+
+        // - Si se borra la fecha final, restablecer el máximo de la fecha inicial
+        fechaFinInput.addEventListener('input', () => {
+            if (!fechaFinInput.value) {
+                fechaInicioInput.removeAttribute('max');
+            }
+        });
+    }
+});
+//TODO:
+// const deleteFilters = document.getElementById('deleteFilters')
+//     console.log('deleteFilters: ', deleteFilters)
+//     deleteFilters.addEventListener('clic', () => {
+//         document.getElementById('showCountOrdenesSearch').innerHTML = ''
+//         document.getElementById('showOrdenesSearch').innerHTML = ''
+//         console.log('document.getElementById', document.getElementById('showCountOrdenesSearch'))
+//     })

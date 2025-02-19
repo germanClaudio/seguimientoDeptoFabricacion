@@ -7,7 +7,11 @@
 
 <body>
     <header>
-        <%- include('../partials/header/header'); %>
+        <% if (userInfo.admin) { %>
+            <%- include('../partials/header/header'); %>
+        <% } else { %>
+            <%- include('../partials/header/headerToolShop'); %>
+        <% } %>
     </header>
     <div class="container" style="padding-top: 70px;"></div>
     <br>
@@ -15,7 +19,11 @@
     <%- include('../partials/btnHeaderTop/btnHeaderTop-GoToConsumible'); %>
 
     <div class="d-block mx-auto mt-4 text-center bg-primary-light">    
-        <%- include('../partials/forms/formularioBuscarOrdenes'); %>
+        <% if (userInfo.admin) { %>
+            <%- include('../partials/forms/formularioBuscarOrdenes'); %>
+        <% } else { %>
+            <%- include('../partials/forms/formularioBuscarOrdenesUserAll'); %>
+        <% } %>  
         <%- include('../partials/data/dataOrdenesSearch'); %>
     </div>
 

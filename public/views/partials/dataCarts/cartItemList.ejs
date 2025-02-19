@@ -57,7 +57,7 @@
 								
 								<span class="mx-3" id="itemQuantity_<%= userCart.items[i].consumibleId %>"><%= userCart.items[i].quantity %></span>
 								
-								<input type="hidden" name="stock" id="stock_<%= userCart.items[i].consumibleId %>" value="<%= arrProducts.arrProducts[i].stock %>"/>
+								<input type="hidden" name="stock" id="stock_<%= userCart.items[i].consumibleId %>" value="<%= arrProducts[i].stock %>"/>
 								<input type="hidden" name="consumibleId" id="consumibleId_<%= userCart.items[i].consumibleId %>" value="<%= userCart.items[i].consumibleId %>"/>
 								
 								<button id="btnIncrement_<%= userCart.items[i].consumibleId %>" title="Incrementar cantidad" class="btn btn-success btn-sm" onclick="incrementValue()">
@@ -66,7 +66,7 @@
 							</div>
 							
 							<div class="col-5 d-flex align-items-center justify-content-center mb-2">
-								<strong>Stock diponible:</strong> <span class="badge badge-pill bg-success mx-1" id="stockDisponibleNumber_<%= userCart.items[i].consumibleId %>"><%= arrProducts.arrProducts[i].stock %></span>
+								<strong>Stock disponible:</strong> <span class="badge badge-pill bg-success mx-1" id="stockDisponibleNumber_<%= userCart.items[i].consumibleId %>"><%= arrProducts[i].stock %></span>
 								<span class="badge badge-pill bg-danger ms-1" id="stockDisponibleWarning_<%= userCart.items[i].consumibleId %>" style="display: none;">Últimos ítems disponibles!</span>
 							</div>
 

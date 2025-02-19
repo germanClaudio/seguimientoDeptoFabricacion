@@ -244,7 +244,7 @@ const renderConsumiblesUser = (arrConsumibles) => {
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
                             <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
                             <td class="text-center" id="characteristics_${element._id}">${element.characteristics}</td>
-                            <td class="text-center"><img class="img-fluid rounded-3 py-2 img_consumibles" alt="Imagen" src='${element.imageConsumible}' width="140px" height="140px"></td>
+                            <td class="text-center"><img class="img-fluid rounded-3 py-2 img_consumibles" alt="Imagen" src='${element.imageConsumible}' width="120px" height="120px"></td>
                             <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="QR" src='${element.qrCode}' width="125px" height="125px"></td>
                             <td class="text-center" id="stock_${element._id}"><span class="badge bg-${optionStock} text-light">${element.stock}</span></td>
                             <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>

@@ -70,9 +70,9 @@
                                 <div class="media-body text-left">
                                     <% let cantOrdenes=0, cantOrdenesPreparadas=0, cantOrdenesEntregadas=0
                                     for (let i=0; ordenes.length>i; i++) {
-                                        ordenes[i].visible ? cantOrdenes++ : null
                                         ordenes[i].visible && ordenes[i].prepared ? cantOrdenesPreparadas++ : null
-                                        ordenes[i].visible && ordenes[i].active ? cantOrdenesEntregadas++ : null
+                                        ordenes[i].visible && !ordenes[i].active ? cantOrdenesEntregadas++ : null
+                                        ordenes[i].visible ? cantOrdenes++ : null
                                     } %>
                                     <h3 class="font-medium"><%= parseInt(cantOrdenesPreparadas) %>/
                                         <span style="font-size: 1rem; color: darkgreen;">Entregados <%= parseInt(cantOrdenesEntregadas) %> </span> /

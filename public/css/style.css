@@ -1705,15 +1705,17 @@ height: 4px;
 
 .imgLazyLoad {
   width: 40%;
-  height: auto;
+  height: 40%; /*auto*/
   transition: opacity 0.4s ease-in-out; /* Suaviza la aparición */
   opacity: 1;
+  object-fit: contain;
 }
 
 .imgLazyLoad.loaded {
   width: 50%;
-  height: auto;
+  height: 40%; /*auto*/
   opacity: 1;
+  object-fit: contain;
 }
 
 .cartEmpty {

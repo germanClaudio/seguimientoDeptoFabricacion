@@ -31,13 +31,16 @@ class OrdersController {
 
             const ordenes = await this.orders.getAllOrders()
             !ordenes ? catchError400_5(req, res, next) : null
-            const csrfToken = csrfTokens.create(req.csrfSecret);
 
+            const userCart = await this.carts.getCartByUserId(usuario._id)
+
+            const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('ordersAll', {
                 username,
                 userInfo,
-                data,
                 ordenes,
+                userCart,
+                data,
                 csrfToken,
                 expires })
             
@@ -58,13 +61,15 @@ class OrdersController {
 
             const ordenes = await this.orders.getActiveOrders()
             !ordenes ? catchError400_5(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
-
             res.render('ordersActive', {
                 username,
                 userInfo,
                 ordenes,
+                userCart,
                 data,
                 csrfToken,
                 expires })
@@ -86,13 +91,15 @@ class OrdersController {
 
             const ordenes = await this.orders.getNonActiveOrders()
             !ordenes ? catchError400_5(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
-
             res.render('ordersNonActive', {
                 username,
                 userInfo,
                 ordenes,
+                userCart,
                 data,
                 csrfToken,
                 expires })
@@ -165,6 +172,7 @@ class OrdersController {
             const screen = handler.screen;
             const ordenes = await handler.getOrders();
             !ordenes ? catchError400_5(req, res, next) : null
+            const userCart = await this.carts.getCartByUserId(userId)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render(`${screen}`, {
@@ -172,6 +180,7 @@ class OrdersController {
                 userInfo,
                 expires,
                 ordenes,
+                userCart,
                 data,
                 csrfToken
             })
@@ -214,6 +223,7 @@ class OrdersController {
             const screen = handler.screen;
             const ordenes = await handler.getOrders();
             !ordenes ? catchError400_5(req, res, next) : null
+            const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render(`${screen}`, {
@@ -221,6 +231,7 @@ class OrdersController {
                 userInfo,
                 expires,
                 ordenes,
+                userCart,
                 data,
                 csrfToken
             })
@@ -263,6 +274,7 @@ class OrdersController {
             const screen = handler.screen;
             const ordenes = await handler.getOrders();
             !ordenes ? catchError400_5(req, res, next) : null
+            const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render(`${screen}`, {
@@ -270,6 +282,7 @@ class OrdersController {
                 userInfo,
                 expires,
                 ordenes,
+                userCart,
                 data,
                 csrfToken
             })

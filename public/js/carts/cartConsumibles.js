@@ -75,7 +75,7 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
                             <td class="text-center" id="codigo_${element._id}"><strong>${element.code}</strong></td>
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}">${showType}</span></td>
                             <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
-                            <td class="text-center" id="imagenConsumible_${element._id}"><img id="imagen_${element._id}" class="imgLazyLoad py-2" alt="Imagen" data-src="${element.imageConsumible}" src='${imagenLazy}' width="125px" height="125px" loading="lazy"></td>
+                            <td class="text-center" id="imagenConsumible_${element._id}"><img id="imagen_${element._id}" class="imgLazyLoad py-2" alt="Imagen" data-src="${element.imageConsumible}" src='${imagenLazy}' width="100px" height="100px" loading="lazy"></td>
                             <td class="text-center" id="stock_${element._id}"><span id="spanStock_${element._id} name="stock" class="badge bg-${optionStock} text-light">${element.stock}</span></td>
                             <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
                                 <div class="d-block align-items-center text-center">
@@ -179,7 +179,7 @@ const renderConsumiblesUser = (arrConsumibles) => {
                             <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
                             <td class="text-center">
                                 <div class="d-block align-items-center text-center mx-1">
-                                    <a href="/api/carts/${element._id}" class="btn btn-primary btn-sm me-1" title="Añadir ${element.designation} al carrito"><i class="fa-solid fa-cart-plus"></i></a>
+                                    <a href="/api/carts/add/${element._id}" class="btn btn-primary btn-sm me-1" title="Añadir ${element.designation} al carrito"><i class="fa-solid fa-cart-plus"></i></a>
                                     <button type="button" class="btn btn-danger btn-sm ms-1 disabled" title="Solo Admin puede modificar esto"><i class="fa-solid fa-info-circle"></i></button>
                                 </div>
                             </td>
@@ -218,7 +218,7 @@ const renderConsumiblesUser = (arrConsumibles) => {
         
     } else {
         html = (`<tr>
-                    <td colspan="13">
+                    <td colspan="8">
                         <img class="img-fluid rounded-5 my-2 shadow-lg" alt="No hay items cargados para mostrar"
                             src='../src/images/clean_table_graphic.png' width="auto" height="auto">
                     </td>

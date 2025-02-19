@@ -20,9 +20,13 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
 
     async getAllConsumibles() {
         try {
-            const consumibles = await Consumibles.find()
+            const consumibles = await Consumibles.find({ 
+                visible: true
+            }).sort({ timestamp: -1 });
+
             if(!consumibles) {
                 return new Error ('No hay consumibles en la DB!')
+
             } else {
                 return consumibles
             }

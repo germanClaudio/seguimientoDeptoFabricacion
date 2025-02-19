@@ -41,9 +41,9 @@ const Carritos = require("../../models/carritos.models.js"),
 					let products = await Consumibles.findById(data.items[i].consumibleId)
 					arrProducts.push(products)
 				}
-				let carts = await Carritos.find()
-
-				return { arrProducts, carts }
+				// let carts = await Carritos.find()
+				// console.log('arrProduct-DaoCarts: ', arrProducts)
+				return arrProducts //, carts
 
 			} catch (error) {
 				console.error("Error MongoDB getConsumibles: ", error)
