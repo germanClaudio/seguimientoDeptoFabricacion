@@ -194,12 +194,12 @@ removeImageButtonConsumibleUpdate.addEventListener('click', (e)=> {
 })
 //----------------------------------------------------------------
 
-let inputsDeTexto = document.querySelectorAll('input[type="text"], textarea, input[type="number"], input[type="file"], input[type="hidden"]')
+let inputsDeTexto = document.querySelectorAll('input[type="text"], textarea, input[type="number"], input[type="hidden"]') //input[type="file"]
 .forEach(function(input) {
     if (input) {
         input.addEventListener('keydown', function(event) {
             let key = event.key, // Obtener el código de la tecla presionada
-                forbiddenChars = /["$%?¡¿^=!'~`´ñÑáéíóúØ\\*{}\[\]<>@]/; // Lista de caracteres especiales prohibidos
+                forbiddenChars = /["$?¡¿^=!'~`´ñÑáéíóú\\*{}\[\]<>]/; // Lista de caracteres especiales prohibidos
 
             if (forbiddenChars.test(key)) {  // Verificar si la tecla presionada es un carácter especial
                 // Cancelar el evento para evitar que se ingrese el carácter
@@ -212,7 +212,7 @@ let inputsDeTexto = document.querySelectorAll('input[type="text"], textarea, inp
 
         // Reemplazar caracteres prohibidos al pegar o modificar el contenido
         input.addEventListener('input', function(event) {
-            let forbiddenChars = /["$%?¡¿^=!'~`´Ø\\*{}\[\]<>@]/g; // Caracteres prohibidos
+            let forbiddenChars = /["$?¡¿^=!'~`´\\*{}\[\]]/g; // Caracteres prohibidos
             let accentedChars = { á: 'a', é: 'e', í: 'i', ó: 'o', ú: 'u', Á: 'A', É: 'E', Í: 'I', Ó: 'O', Ú: 'U', ñ: 'n', Ñ: 'N' }; // Vocales con acentos
 
             // Reemplazar caracteres prohibidos
@@ -222,7 +222,7 @@ let inputsDeTexto = document.querySelectorAll('input[type="text"], textarea, inp
             newValue = newValue.replace(/[áéíóúÁÉÍÓÚñÑ]/g, function(match) {
                 return accentedChars[match];
             });
-
+            console.log('input: ', input)
             // Actualizar el valor del input
             input.value = newValue;
         });
@@ -363,13 +363,14 @@ document.addEventListener("DOMContentLoaded", () => {
         // Mapeo de tipos a sus correspondientes descripciones
         const typeMapping = {
             epp: 'EPP',
-            insertos: 'Insertos',
+            ropa: 'Ropa',
             consumiblesAjuste: 'Consumibles Ajuste',
             consumiblesMeca: 'Consumibles Mecanizado',
+            consumiblesLineas: 'Consumibles Lineas',
         };
 
         // Obtener el valor correspondiente o asignar un valor predeterminado
-        const qrType = typeMapping[type] || "Otros Consumibles";
+        const qrType = typeMapping[type] || "Otros";
 
         // Datos a incluir en el QR
         const qrData = JSON.stringify({
@@ -406,4 +407,240 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+});
+
+// Función para manejar el cambio en los radio buttons
+function handleTipoTalleChange(tipo) {
+    const stockInput = document.getElementById("stock");
+    const talles = ['a','b','c','d','e','f','g','h','i','j'];
+    const numeros = Array.from({ length: 31 }, (_, i) => `num${i + 35}`);
+
+    // Resetear y deshabilitar todos los inputs de stock
+    resetAndDisableInputs([...talles, ...numeros]);
+
+    if (tipo === "unico") {
+        // Habilitar el campo de stock total
+        stockInput.disabled = false;
+        stockInput.value = 1;
+
+    } else if (tipo === "talle") {
+        // Habilitar los checkboxes de talles
+        talles.forEach((talle) => {
+            document.getElementById(talle).disabled = false;
+        });
+        stockInput.disabled = true;
+        stockInput.value = calcularSumaStocks(talles);
+
+    } else if (tipo === "numero") {
+        // Habilitar los checkboxes de números
+        numeros.forEach((numero) => {
+            document.getElementById(numero).disabled = false;
+        });
+        stockInput.disabled = true;
+        stockInput.value = calcularSumaStocks(numeros);
+    }
+}
+
+// Función para resetear y deshabilitar inputs
+function resetAndDisableInputs(ids) {
+    ids.forEach((id) => {
+        const checkbox = document.getElementById(id);
+        const stockInput = document.getElementById(`stock${id.charAt(0).toUpperCase() + id.slice(1)}`);
+        checkbox.checked = false;
+        checkbox.disabled = true;
+        stockInput.value = 0;
+        stockInput.disabled = true;
+    });
+}
+
+// Función para habilitar/deshabilitar inputs de stock y actualizar el stock total
+function toggleStockInput(id) {
+    const checkbox = document.getElementById(id);
+    const stockInput = document.getElementById(`stock${id.charAt(0).toUpperCase() + id.slice(1)}`);
+    stockInput.disabled = !checkbox.checked;
+    if (!checkbox.checked) {
+        stockInput.value = 0;
+    }
+    // Agregar event listener para actualizar el stock total cuando cambie el valor del input
+    stockInput.addEventListener("input", actualizarStockTotal);
+    // Actualizar el stock total inmediatamente
+    actualizarStockTotal();
+}
+
+// Función para actualizar el stock total
+function actualizarStockTotal() {
+    const tipoSeleccionado = document.querySelector('input[name="tipoTalle"]:checked').value;
+    const stockTotal = document.getElementById("stock");
+
+    if (tipoSeleccionado === "talle") {
+        // Sumar los stocks de talles
+        const talles = ['a','b','c','d','e','f','g','h','i','j'];
+        stockTotal.value = calcularSumaStocks(talles);
+    } else if (tipoSeleccionado === "numero") {
+        // Sumar los stocks de números
+        const numeros = Array.from({ length: 31 }, (_, i) => `num${i + 35}`);
+        stockTotal.value = calcularSumaStocks(numeros);
+    }
+}
+
+// Función para calcular la suma de los stocks
+function calcularSumaStocks(ids) {
+    return ids.reduce((sum, id) => {
+        const stockInput = document.getElementById(`stock${id.charAt(0).toUpperCase() + id.slice(1)}`);
+        return sum + (stockInput.disabled ? 0 : Number(stockInput.value));
+    }, 0);
+}
+
+// Agregar event listeners a los inputs de stock al cargar la página
+document.addEventListener("DOMContentLoaded", () => {
+    const talles = ['a','b','c','d','e','f','g','h','i','j'];
+    const numeros = Array.from({ length: 31 }, (_, i) => `num${i + 35}`);
+
+    // Agregar event listeners a los inputs de talles
+    talles.forEach((talle) => {
+        const stockInput = document.getElementById(`stock${talle.charAt(0).toUpperCase() + talle.slice(1)}`);
+        if (stockInput) {
+            stockInput.addEventListener("input", actualizarStockTotal);
+        }
+    });
+
+    // Agregar event listeners a los inputs de números
+    numeros.forEach((numero) => {
+        const stockInput = document.getElementById(`stock${numero.charAt(0).toUpperCase() + numero.slice(1)}`);
+        if (stockInput) {
+            stockInput.addEventListener("input", actualizarStockTotal);
+        }
+    });
+});
+
+
+// Función para manejar el cambio en la selección de tipo de talle
+function handleTipoTalleChangeVisible(selectedValue) {
+    const vrBlack = document.getElementById('vrBlack'),
+        vrRed = document.getElementById('vrRed'),
+        vrBlue = document.getElementById('vrBlue'),
+        colsTalle = document.getElementById('colsTalle'),
+        colsNumeros = document.getElementById('colsNumeros');
+
+    // Resetear opacidades
+    vrBlack.style.opacity = '0.4'; // Opacidad por defecto
+    vrRed.style.opacity = '0.4';
+    vrBlue.style.opacity = '0.4';
+
+    // Ocultar todas las secciones primero
+    colsTalle.classList.contains('d-block') ? hideSection(colsTalle) : null;
+    colsNumeros.classList.contains('d-block') ? hideSection(colsNumeros) : null;
+
+    // Mostrar la sección correspondiente y ajustar opacidades
+    switch (selectedValue) {
+        case 'unico':
+            vrBlack.style.opacity = '0.75'; // Resaltar vrBlack
+            break;
+        case 'talle':
+            vrRed.style.opacity = '0.75'; // Resaltar vrRed
+            showSection(colsTalle); // Mostrar sección Talle
+            break;
+        case 'numero':
+            vrBlue.style.opacity = '0.75'; // Resaltar vrBlue
+            showSection(colsNumeros); // Mostrar sección Número
+            break;
+        default:
+            console.warn('Valor no reconocido:', selectedValue); // Manejar valores inesperados
+            break;
+    }
+}
+
+// Función para mostrar una sección con transición
+function showSection(element) {
+    element.classList.remove('d-none'); // Mostrar el elemento
+    element.classList.add('d-block');   // Asegurar que esté en bloque
+    element.style.opacity = '0';        // Iniciar con opacidad 0
+    element.style.transform = 'translateX(-100%)'; // Iniciar fuera de la pantalla
+    element.style.transition = 'opacity 1s, transform 1s'; // Transición suave
+
+    // Forzar un reflow para que la transición se aplique correctamente
+    void element.offsetHeight;
+
+    // Aplicar la transición
+    element.style.opacity = '1';
+    element.style.transform = 'translateX(0)';
+}
+
+// Función para ocultar una sección con transición
+function hideSection(element) {
+    element.style.opacity = '0'; // Reducir opacidad a 0
+    element.style.transform = 'translateX(-100%)'; // Mover fuera de la pantalla
+    element.style.transition = 'opacity 1s, transform 1s'; // Transición suave
+
+    // Esperar a que termine la transición antes de ocultar completamente
+    setTimeout(() => {
+        element.classList.remove('d-block'); // Quitar la clase de bloque
+        element.classList.add('d-none');    // Ocultar el elemento
+    }, 1000); // 1000ms = 1s (duración de la transición)
+}
+
+// Inicializar el formulario con la sección 'unico' visible
+document.addEventListener('DOMContentLoaded', function () {
+    const vrBlack = document.getElementById('vrBlack'),
+        vrRed = document.getElementById('vrRed'),
+        vrBlue = document.getElementById('vrBlue'),
+        colsTalle = document.getElementById('colsTalle'),
+        colsNumeros = document.getElementById('colsNumeros'),
+        idUnico = document.getElementById('unico'),
+        idTalle = document.getElementById('talle'),
+        idNumero = document.getElementById('numero');
+
+        let selectedValue = ''
+        if (idUnico.checked) {
+            selectedValue = 'unico'
+        } else if (idTalle.checked) {
+            selectedValue = 'talle'
+        } else if (idNumero.checked) {
+            selectedValue = 'numero'
+        }
+    
+    // Configurar estado inicial
+    switch (selectedValue) {
+        case 'unico':
+            vrBlack.style.opacity = '0.75'; // Resaltar vrBlack
+            colsTalle.classList.add('d-none'); // Ocultar sección Talle
+            colsNumeros.classList.add('d-none'); // Ocultar sección Número
+            break;
+        case 'talle':
+            vrRed.style.opacity = '0.75'; // Resaltar vrRed
+            colsNumeros.classList.add('d-none'); // Ocultar sección Número
+            showSection(colsTalle); // Mostrar sección Talle
+            break;
+        case 'numero':
+            vrBlue.style.opacity = '0.75'; // Resaltar vrBlue
+            colsTalle.classList.add('d-none'); // Ocultar sección Talle
+            showSection(colsNumeros); // Mostrar sección Número
+            break;
+        default:
+            console.warn('Valor no reconocido:', selectedValue); // Manejar valores inesperados
+            break;
+    }
+
+    // Asignar eventos a los radio buttons
+    document.querySelectorAll('input[name="tipoTalle"]').forEach((radio) => {
+        radio.addEventListener('change', (event) => {
+            handleTipoTalleChangeVisible(event.target.value);
+        });
+    });
+
+    // Obtener el input range
+    const rangeInput = document.getElementById('favorite');
+
+    // Función para actualizar el relleno del track
+    const updateTrackFill = () => {
+        const value = (rangeInput.value - rangeInput.min) / (rangeInput.max - rangeInput.min) * 100;
+        rangeInput.style.setProperty('--value', `${value}%`);
+    };
+
+    // Establecer el valor inicial y actualizar el relleno
+    rangeInput.value = 1; // Valor por defecto
+    updateTrackFill(); // Actualizar el relleno inicial
+
+    // Escuchar cambios en el input range
+    rangeInput.addEventListener('input', updateTrackFill);
 });

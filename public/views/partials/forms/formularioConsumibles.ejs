@@ -2,38 +2,142 @@
     <h3 id="titleNewConsumibles" class="mx-auto my-2 text-center">Agregar Nuevo Consumible o EPP</h3>
     <form action="/api/consumibles/newConsumibles" enctype="multipart/form-data" method="post" id="newConsumiblesForm">
         <fieldset>
+            <!-- Sección de Designación, Código, Tipo y Stock Total -->
             <div class="row my-2 mx-auto">
                 <div class="col">
                     <label for="designation">Designación</label>
                     <input type="text" name="designation" id="designation" class="form-control" placeholder="Designación consumible" required>
                 </div>
-
                 <div class="col-2">
                     <label for="code">Código</label>
                     <input type="text" name="code" id="code" class="form-control" placeholder="Código" required>
                 </div>
-
                 <div class="col-2">
                     <label class="form-check-label" for="type">Tipo</label>
                     <select class="form-select form-select" aria-label=".form-select" name="type" id="type">
                         <option selected value="epp">EPP</option>
-                        <option value="insertos">Insertos</option>
+                        <option value="ropa">Ropa</option>
                         <option value="consumiblesAjuste">Consum. Ajuste</option>
                         <option value="consumiblesMeca">Consum. Mecanizado</option>
+                        <option value="consumiblesLineas">Consum. Líneas</option>
                         <option value="otros">Otros</option>
                     </select>
                 </div>
-
                 <div class="col-2">
-                    <label for="stock">Stock</label>
-                    <input type="number" name="stock" id="stock" min="0" max="10000" class="form-control" placeholder="Stock" value="1" required>
+                    <label for="stock">Stock Total</label>
+                    <input type="number" name="stock" id="stock" min="0" max="10000" class="form-control" placeholder="Stock" value="0" required>
                 </div>
             </div>
+    
+            <!-- Sección de Talle, Número o Único (Radio Buttons) -->
+            <div class="accordion my-4 mx-2" id="accordionTalle">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Tipo de Stock (Único / Talle / Número)
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionTalle" style="background-color: #b6b6b6;">
+                        <div class="accordion-body">
+                        
+                            <div class="row my-1 mx-auto">
 
+                                <div class="vr mx-1 d-none d-xl-inline" id="vrBlack" style="color: rgba(0, 0, 0, 0.75);"></div>
+
+                                <!-- Talle, Número o Único -->
+                                <div id="colsUnico" class="col-1 me-2 my-auto">
+                                    <div class="form-check my-3">
+                                        <input class="form-check-input" type="radio" name="tipoTalle" id="unico" value="unico" checked onchange="handleTipoTalleChange('unico')">
+                                        <label class="form-check-label" for="unico">Único</label>
+                                    </div>
+                                    <div class="form-check my-3">
+                                        <input class="form-check-input" type="radio" name="tipoTalle" id="talle" value="talle" onchange="handleTipoTalleChange('talle')">
+                                        <label class="form-check-label" for="talle">Talle</label>
+                                    </div>
+                                    <div class="form-check my-3">
+                                        <input class="form-check-input" type="radio" name="tipoTalle" id="numero" value="numero" onchange="handleTipoTalleChange('numero')">
+                                        <label class="form-check-label" for="numero">Número</label>
+                                    </div>
+                                </div>
+
+                                <div class="vr mx-1 d-none d-xl-inline" id="vrRed" style="color: rgba(195, 0, 0, 0.4);"></div>
+
+                            <!-- Sección de Talles (Checkboxes) -->
+                                <div id="colsTalle" class="col-4 text-center my-auto">
+                                    <div class="d-flex flex-wrap justify-content-around align-items-center my-2 gap-3">
+                                        <!-- Talles S a 6XL -->
+                                        <% let arrayLetras = ['a','b','c','d','e','f','g','h','i','j']                                                
+                                            const letterMapping = {
+                                                'a': 'XS',
+                                                'b': 'S',
+                                                'c': 'M',
+                                                'd': 'L',
+                                                'e': 'XL',
+                                                'f': '2XL',
+                                                'g': '3XL',
+                                                'h': '4XL',
+                                                'i': '5XL',
+                                                'j': '6XL'
+                                            };
+                                            
+                                            for (let i = 0; arrayLetras.length > i; i++) {
+                                                let letter = arrayLetras[i],
+                                                    letterCapital = arrayLetras[i].toUpperCase(), 
+                                                    letterCapitalTitle = letterMapping[letter]; %>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="<%= letter %>" onchange="toggleStockInput('<%= letter %>')" disabled>
+                                                    <label class="form-check-label" for="<%= letter %>"><%= letterCapitalTitle %></label>
+                                                    <input type="number" name="stock<%= letterCapital %>" id="stock<%= letterCapital %>" min="0" max="1000" class="form-control stock-input"
+                                                        value="0" disabled style="width: 75px;">
+                                                </div>
+                                            <% } %>
+                                    </div>
+                                </div>
+
+                                <div class="vr mx-1 d-none d-xl-inline" id="vrBlue" style="color: rgba(0, 13, 195, 0.4);"></div>
+
+                                <!-- Sección de Números (Checkboxes) -->
+                                <div id="colsNumeros" class="col text-center my-auto">
+                                    <div class="d-flex flex-wrap justify-content-around align-items-center my-2 gap-3">
+                                        <!-- Números del 35 al 65 -->
+                                        <% for (let i = 35; i <= 65; i++) { %> 
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="num<%=i%>" onchange="toggleStockInput('num<%=i%>')" disabled>
+                                                <label class="form-check-label" for="num<%=i%>"><%=i%></label>
+                                                <input type="number" name="stockNum<%=i%>" id="stockNum<%=i%>" min="0" max="1000" class="form-control stock-input"
+                                                    value="0" disabled style="width: 75px;">
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                                <!-- <div class="vr"></div> -->
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sección Caracateristicas -->
             <div class="row my-2 mx-auto">    
-                <div class="col">
+                <div class="col-8">
                     <label for="characteristics">Características</label>
                     <textarea type="text" name="characteristics" id="characteristics" placeholder="Características del consumible" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="col">
+                    <div class="range-container-favorite">
+                        <label class="label-left" for="favorite">Menos Solicitado</label>
+                        <label class="label-right" for="favorite">Más Solicitado</label>
+                        <input type="range" class="form-range-favorite custom-range-favorite" min="0" max="5" step="1" value="1" id="favorite">
+                        <div class="scale">
+                            <span>0</span>
+                            <span>1</span>
+                            <span>2</span>
+                            <span>3</span>
+                            <span>4</span>
+                            <span>5</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 

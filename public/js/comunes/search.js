@@ -1106,14 +1106,16 @@ const searchConsumibles = () => {
     let queryConsumibles = document.getElementById('queryConsumibles').value,
         statusConsumibles = document.getElementById('statusConsumible').value,
         typeConsumibles = document.getElementById('typeConsumible').value,
-        stockConsumibles = document.getElementById('stockConsumible').value
+        talleConsumibles = document.getElementById('talleConsumible').value,
+        stockConsumibles = document.getElementById('stockConsumible').value;
         
-    statusConsumibles != 'todas' ? statusConsumibles === 'activos' ? statusConsumibles = true : statusConsumibles = false : null
+    statusConsumibles != 'todos' ? statusConsumibles === 'activos' ? statusConsumibles = true : statusConsumibles = false : null
         
     socket.emit('searchConsumibleAll', {
         queryConsumibles,
         statusConsumibles,
         typeConsumibles,
+        talleConsumibles,
         stockConsumibles
     })
     return false
@@ -1133,7 +1135,7 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
-                                <h5 class="card-title">Consumible no encontrado</h5>
+                                <h6 class="card-title-noEllipsis">Consumible no encontrado</h6>
                                 <p class="card-text">Lo siento, no pudimos encontrar el consumible</p>
                                 <p class="card-text">
                                     <small class="text-muted">
@@ -1160,7 +1162,7 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
-                                <h5 class="card-title">Todos los Consumibles</h5>
+                                <h5 class="card-title-noEllipsis">Todos los Consumibles</h5>
                                 <p class="card-text">Todos los Consumibles o EPP están listados en la tabla de abajo</p>
                                 <p class="card-text">
                                     <small class="text-muted">
@@ -1180,9 +1182,10 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
             const statusClasses = { true: 'success', false: 'danger' },
                 typeMapping = {
                 epp: { label: 'EPP', class: 'warning', text: 'dark' },
-                insertos: { label: 'Insertos', class: 'secondary', text: 'light' },
+                ropa: { label: 'Ropa', class: 'success', text: 'light' },
+                consumiblesLineas: { label: 'Consumibles Líneas', class: 'secondary', text: 'light' },
                 consumiblesAjuste: { label: 'Consumibles Ajuste', class: 'primary', text: 'light' },
-                consumiblesMeca: { label: 'Consumibles Mecanizado', class: 'success', text: 'light' },
+                consumiblesMeca: { label: 'Consumibles Mecanizado', class: 'dark', text: 'light' },
                 otros: { label: 'Otros', class: 'info', text: 'dark' }
             };
             let color = '';
@@ -1193,8 +1196,44 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
                 showStatus = element.status ? 'Activo' : 'Inactivo',
                 optionStock = element.stock > 0 ? 'dark' : 'danger',
                 disabled = element.visible ? '' : 'disabled';
+                
         
-                element.stock === 0 ? color = 'background-color: #ca000030' : color
+            let tipoTalle = 'U',
+                background = 'dark',
+                disabledStockNull = '';
+            
+            if (element.tipoTalle === 'talle') {
+                tipoTalle = 'T'
+                background = 'danger'
+
+            } else if (element.tipoTalle === 'numero') {
+                tipoTalle = 'N'
+                background = 'primary'
+            }
+
+                // Función para extraer y mostrar los datos del campo stock
+            let size, total, totalStock = 0
+            function processStock(element) {
+                if (Object.keys(element.stock).length > 1) { // Si hay múltiples talles
+                    Object.entries(element.stock).forEach(([size, stock]) => {
+                        return size, stock
+                    });
+                    totalStock = Object.values(element.stock).reduce((total, stock) => total + stock, 0);
+                    return totalStock
+
+                } else { // Si no hay talles (solo un valor)
+                    size = Object.keys(element.stock)[0];
+                    stock = parseInt(element.stock[size]);
+                    totalStock = stock
+                    return size, stock, totalStock
+                }
+            }
+
+            // Procesar cada elemento
+            processStock(element)
+
+            totalStock === 0 ? (color = 'background-color:rgba(215, 0, 0, 0.36)', disabledStockNull = 'disabled') : color
+            
             // Retornar el HTML generado
             return (`
                 <div class="col mx-auto">
@@ -1202,7 +1241,7 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
                         <div class="row align-items-center">
                             <div class="col-md-4 text-center">
                                 <img src="${element.imageConsumible}" style="max-width=170px; object-fit: contain;"
-                                    class="img-fluid rounded p-2 mx-auto ms-2" alt="Consumibles">
+                                    class="img-fluid rounded p-1 mx-2" alt="Consumibles"><br>
                                 <input class="form-check-input border border-2 border-primary shadow-lg rounded mt-auto" type="checkbox" value=""
                                     id="inputCheckConsumibleCard_${element._id}" name="inputCheckConsumibleCard">
                             </div>
@@ -1210,22 +1249,23 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
                                 <div class="card-body">
                                     <h6 id="cardDesignation_${element._id}" class="card-title"><strong>${element.designation}</strong></h6>
                                     Código: <span id="cardCodigo_${element._id}" class="my-1"><strong>${element.code}</strong></span><br>
-                                    Tipo: <span id="cardTipo_${element._id}" class="badge rounded-pill bg-${optionType} text-${optionText} my-1">${showType}</span><br>
-                                    Status: <span class="badge rounded-pill bg-${optionStatus} my-1">${showStatus}</span><br>
-                                    Stock: <span id="cardStock_${element._id}" class="badge bg-${optionStock} text-light">${element.stock}</span><br>
+                                    <span id="cardTipo_${element._id}" class="badge rounded-pill bg-${optionType} text-${optionText} my-1 me-2">${showType}</span> - 
+                                    <span class="badge rounded-pill bg-${optionStatus} my-1 ms-2">${showStatus}</span><br>
+                                    Tipo Stock: <span class="badge bg-${background} text-light">${tipoTalle}</span> / 
+                                    Stock: <span id="cardStock_${element._id}" class="badge bg-${optionStock} text-light">${totalStock}</span><br>
                                 </div>
                                 <div class="card-footer px-2">
                                     <div class="row">
                                         <div class="col m-auto me-1">
-                                            <a class="btn text-light small" ${disabled} type="submit" href="/api/carts/add/${element._id}"
+                                            <a class="btn text-light small ${disabledStockNull}" ${disabled} title="Añadir al carrito" type="submit" href="/api/carts/add/${element._id}"
                                                 style="background-color:rgb(17, 115, 0); font-size: .85rem; width: auto;">
                                                 Añadir al <i class="fa-solid fa-cart-plus"></i>
                                             </a>
                                         </div>
                                         <div class="col m-auto ms-1">
-                                            <a class="btn text-light small" ${disabled} type="submit" href="/api/consumibles/${element._id}"
+                                            <a class="btn text-light small" ${disabled} title="Actualizar Info" type="submit" href="/api/consumibles/${element._id}"
                                                 style="background-color: #272787; font-size: .85rem; width: auto;">
-                                                <i class="fa-solid fa-circle-info"></i> Ver Info
+                                                Ver Info <i class="fa-solid fa-circle-info"></i>
                                             </a>
                                         </div>
                                     </div>

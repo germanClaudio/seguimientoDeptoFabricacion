@@ -14,6 +14,15 @@ const UserService = require("../services/users.service.js"),
 let formatDate = require('../utils/formatDate.js'),
     consumiblePictureNotFound = "https://storage.googleapis.com/imagenesproyectosingenieria/upload/ConsumiblesImages/noImageFound.png"
 
+function validateSelectField(value) {
+    const validOptions = [
+        'epp', 'ropa', 'consumiblesAjuste', 'consumiblesMeca', 'consumiblesLineas', 'otros',
+        'projectManager', 'cadCam', 'mecanizado', 'ajuste', 'metrologia', 'lineas', 'todos',
+        'ingenieria', 'fabricacion', 'proyectos', 'administracion', 'todas'
+    ]
+    return validOptions.includes(value);
+}
+
 class ConsumiblesController {  
     constructor(){
         this.users = new UserService()
@@ -143,6 +152,34 @@ class ConsumiblesController {
                     userCreator = await this.users.getUserById(userId)
                 !userCreator ? catchError401_3(req, res, next) : null
 
+                console.log('req.body: ', req.body)
+
+                function parseStockValue(value) {
+                    return parseInt(value) || 0;
+                }
+                
+                function createStockTotal(tipoTalle, body) {
+                    if (tipoTalle === 'unico') {
+                        return { 0: parseStockValue(body.stock) };
+                    }
+                
+                    const stockTotal = {};
+                    if (tipoTalle === 'talle') {
+                        const talles = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+                        talles.forEach(talle => {
+                            stockTotal[talle] = parseStockValue(body[`stock${talle.toUpperCase()}`]);
+                        });
+
+                    } else if (tipoTalle === 'numero') {
+                        for (let i = 35; i <= 65; i++) {
+                            stockTotal[i] = parseStockValue(body[`stockNum${i}`]);
+                        }
+                    }
+                    return stockTotal;
+                }
+                
+                let stockTotal = createStockTotal(req.body.tipoTalle, req.body);
+
                 const designationInput = req.body.designation.replace(/[!@#$%^&*]/g, ""),
                     codeInput = req.body.code                    
 
@@ -150,6 +187,9 @@ class ConsumiblesController {
                     designation: designationInput,
                     code: codeInput
                 };
+
+                let typeConsumible = 'otro'
+                validateSelectField(req.body.type) ? typeConsumible = req.body.type : catchError400_6(req, res, next)
 
                 const consumibleExist = await this.consumibles.getExistingConsumible(newConsumibleValid);
                 if (consumibleExist) {
@@ -159,22 +199,27 @@ class ConsumiblesController {
                     const newConsumible = {
                         designation: designationInput,
                         code: codeInput,
-                        type: req.body.type,
+                        type: typeConsumible,
                         characteristics: req.body.characteristics,
                         qrCode: req.body.qrConsumibleInput || '',
-                        stock: req.body.stock || 1,
+                        tipoTalle: req.body.tipoTalle || 'unico',
+                        stock: stockTotal,
                         imageConsumible: req.body.imageTextImageConsumibles || consumiblePictureNotFound,
                         status: req.body.status === 'on' ? Boolean(true) : Boolean(false) || Boolean(true),
                         creator: dataUserCreator(userCreator),
-                        timestamp: formatDate(),
+                        timestamp: new Date(),
                         modificator: dataUserModificatorEmpty(),
-                        modifiedOn: '',
-                        visible: true
+                        modifiedOn: new Date(),
+                        visible: true,
+                        favorito: parseInt(req.body.favorite) || 1
                     };
+                    console.log('newConsumible: ', newConsumible)
                     
                     const consumible = await this.consumibles.addNewConsumible(newConsumible);
                     !consumible ? catchError400_6(req, res, next) : null
                     
+                    console.log('consumible: ', consumible)
+
                     const usuarioLog = await this.users.getUserByUsername(username);
                     !usuarioLog.visible ? catchError401_3(req, res, next) : null
 
@@ -219,6 +264,35 @@ class ConsumiblesController {
                         return h._id.toString() !== consumible._id.toString()
                     })
                 }
+
+                function parseStockValue(value) {
+                    return parseInt(value) || 0;
+                }
+                
+                function createStockTotal(tipoTalle, body) {
+                    if (tipoTalle === 'unico') {
+                        return { 0: parseStockValue(body.stock) };
+                    }
+                
+                    const stockTotal = {};
+                    if (tipoTalle === 'talle') {
+                        const talles = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+                        talles.forEach(talle => {
+                            stockTotal[talle] = parseStockValue(body[`stock${talle.toUpperCase()}`]);
+                        });
+
+                    } else if (tipoTalle === 'numero') {
+                        for (let i = 35; i <= 65; i++) {
+                            stockTotal[i] = parseStockValue(body[`stockNum${i}`]);
+                        }
+                    }
+                    return stockTotal;
+                }
+                
+                let stockTotal = createStockTotal(req.body.tipoTalle, req.body);
+
+                let typeConsumible = 'otro'
+                validateSelectField(req.body.type) ? typeConsumible = req.body.type : catchError400_6(req, res, next)
                 
                 // Eliminar el consumible de la lista
                 if (designationValid) {
@@ -247,14 +321,16 @@ class ConsumiblesController {
                 let updatedConsumible = {
                     designation: req.body.designation,
                     code: req.body.code,
-                    type: req.body.type,
+                    type: typeConsumible,
                     qrCode: req.body.qrConsumibleInput,
-                    stock: req.body.stock,
+                    tipoTalle: req.body.tipoTalle || 'unico',
+                    stock: stockTotal,
                     characteristics: req.body.characteristics,
                     imageConsumible: req.body.imageTextImageConsumibles,
                     status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
                     modificator: dataUserModificatorNotEmpty(userLogged),
-                    modifiedOn: formatDate()
+                    modifiedOn: new Date(),
+                    favorito: parseInt(req.body.favorite) || 1
                 }
 
                 const consumible = await this.consumibles.updateConsumible(consumibleId, updatedConsumible, dataUserModificatorNotEmpty(userLogged))
@@ -278,7 +354,7 @@ class ConsumiblesController {
 
     searchConsumibles = async (req, res, next) => {
         try {
-            const consumibles = await this.consumibles.getAllConsumibles()
+            const consumibles = await this.consumibles.getConsumiblesBySearching() // searchConsumibles()
             !consumibles ? catchError400_5(req, res, next) : null
             res.send(consumibles)
 

@@ -10,19 +10,31 @@
                         <div class="card-body">
                             <div class="media d-flex mx-2">
                                 <div class="media-body text-left">
-                                    <% let countClient=0
-                                    for (let i=0; clientes.length>i; i++ ) {
-                                        if (clientes[i].visible) {
-                                            countClient++
+                                    <% let arrayVisibleConsumibles = [], arrayActiveConsumibles = [] , arrayConsumiblesWStock = []
+
+                                    for (let i=0; consumibles.length>i; i++ ) {
+                                        consumibles[i].visible ? arrayVisibleConsumibles.push(consumibles[i]) : null
+                                    }
+
+                                    function calculateStockTotal(stockMap) {
+                                        let total = 0;
+                                        for (const value of stockMap.values()) {
+                                            total += value;
                                         }
-                                    } %>
-                                    <h3 class="font-medium">
-                                        <%= parseInt(countClient) %>
-                                    </h3>
-                                    <span>Consumibles - ERP</span>
+                                        return total;
+                                    }
+
+                                    const elements = arrayVisibleConsumibles
+                                    elements.forEach((element, index) => {
+                                        const stockTotal = calculateStockTotal(element.stock);
+                                        stockTotal > 0 ? arrayConsumiblesWStock.push(1) : null
+                                    }); %>
+
+                                    <h3 class="font-medium"><%= arrayConsumiblesWStock.length %>/<span style="font-size: 0.95rem;" ><%=arrayVisibleConsumibles.length%></span></h3>
+                                    <span>Consumibles - EPP</span>
                                 </div>
                                 <div class="align-self-center ms-auto">
-                                    <i class="fa-regular fa-handshake fa-3x primary float-right"></i>
+                                    <i class="icon-basket font-large-2 float-right"></i>
                                 </div>
                             </div>
                         </div>

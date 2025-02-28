@@ -165,6 +165,46 @@
                 </div>
             </a>
         </div>
+        <!-- consumibles ERP -->
+        <div class="col-xl-3 col-sm-6 col-12">
+            <a href="/api/consumibles/solicitud" style="text-decoration: none;">
+                <div class="card rounded-3 card_dashboard">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="media d-flex mx-2">
+                                <div class="media-body text-left">
+                                    <% let arrayVisibleConsumibles = [], arrayActiveConsumibles = [] , arrayConsumiblesWStock = []
+
+                                    for (let i=0; consumibles.length>i; i++ ) {
+                                        consumibles[i].visible ? arrayVisibleConsumibles.push(consumibles[i]) : null
+                                    }
+
+                                    function calculateStockTotal(stockMap) {
+                                        let total = 0;
+                                        for (const value of stockMap.values()) {
+                                            total += value;
+                                        }
+                                        return total;
+                                    }
+
+                                    const elements = arrayVisibleConsumibles
+                                    elements.forEach((element, index) => {
+                                        const stockTotal = calculateStockTotal(element.stock);
+                                        stockTotal > 0 ? arrayConsumiblesWStock.push(1) : null
+                                    }); %>
+
+                                    <h3 class="font-medium"><%= arrayConsumiblesWStock.length %>/<span style="font-size: 0.95rem;" ><%=arrayVisibleConsumibles.length%></span></h3>
+                                    <span>Consumibles - EPP</span>
+                                </div>
+                                <div class="align-self-center ms-auto">
+                                    <i class="icon-basket font-large-2 float-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
         <!-- Maquinas -->
         <div class="col-xl-3 col-sm-6 col-12">
             <a href="/api/maquinas" style="text-decoration: none;">

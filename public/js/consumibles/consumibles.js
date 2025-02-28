@@ -1,6 +1,8 @@
-const socket = io.connect()
+const socket = io.connect(),
+    offset = -3 * 60 * 60 * 1000;
+
 let URL_GOOGLE_STORE_IMAGESCONSUMIBLES,
-    imagenLazy = '../src/images/upload/ConsumiblesImages/loader.gif';
+    imagenLazy = '../../src/images/upload/ConsumiblesImages/loader.gif';
 
 fetch('/api/config')
     .then(response => response.json())
@@ -21,14 +23,15 @@ function formatDate(date) {
 
 const green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', yellow = 'warning', black = 'dark', white = 'light',
         active = 'Activo', inactive = 'Inactivo', info = 'info',
-        epp = 'EPP', insertos = 'Insertos', consumibleAjuste = 'Consumible Ajuste', consumibleMeca = 'Consumible Mecanizado', otros = 'Otros'
-let html, stock
+        epp = 'EPP', consumibleAjuste = 'Consumible Ajuste', consumibleMeca = 'Consumible Mecanizado', consumibleLineas = 'Consumible Líneas', ropa = "Ropa", otros = 'Otros'
+let html, stockTr
 
 const typeConfigurations = {
     epp: { optionType: yellow, showType: epp, textColor: black },
-    insertos: { optionType: grey, showType: insertos, textColor: white },
+    consumiblesLineas: { optionType: grey, showType: consumibleLineas, textColor: white },
     consumiblesAjuste: { optionType: blue, showType: consumibleAjuste, textColor: white },
     consumiblesMeca: { optionType: black, showType: consumibleMeca, textColor: white },
+    ropa: { optionType: green, showType: ropa, textColor: white },
     otros: { optionType: green, showType: otros, textColor: white }
 };
 
@@ -72,36 +75,90 @@ socket.on('consumiblesAll', (arrConsumibles, arrUsers) => {
     }   
 })
 
+    // Función para extraer y mostrar los datos del campo stock
+    let size, stock = 0, totalStock = 0 
+    function processStock(element) {
+        if (Object.keys(element.stock).length > 1) { // Si hay múltiples talles
+            Object.entries(element.stock).forEach(([size, stock]) => {
+                return size, stock
+            });
+            totalStock = Object.values(element.stock).reduce((total, stock) => total + stock, 0);
+            return totalStock
+
+        } else { // Si no hay talles (solo un valor)
+            size = Object.keys(element.stock)[0];
+            stock = parseInt(element.stock[size]);
+            totalStock = stock
+            return size, stock, totalStock
+        }
+    }
+
+    function cortarTexto(texto) {
+        if (texto.length > 30) {
+            return texto.slice(0, 27) + "...";
+        }
+        return texto;
+    }
+
 // --------------- Render Admin ----------------------------
 const renderConsumiblesAdmin = (arrConsumibles) => {
     const arrayConsumible = arrConsumibles
+
     if (arrConsumibles.length > 0) {
         html = arrConsumibles.map((element) => {
+
+            // Procesar cada elemento
+            processStock(element)
+
             let optionStatus = element.status ? green : red,
-                optionStock = element.stock>0 ? black : red
+                optionStock = totalStock > 0 ? black : red
             
             // Obtener configuración según el tipo o usar la configuración por defecto
             const { optionType, showType, textColor } = typeConfigurations[element.type] || defaultConfig;
 
             let showStatus = element.status ? active : inactive,
-                idChain = element._id.substring(19)
+                idChain = element._id.substring(19),
+                tipoTalle = 'U',
+                background = 'dark'
+            
+            if (element.tipoTalle === 'talle') {
+                tipoTalle = 'T'
+                background = 'danger'
+
+            } else if (element.tipoTalle === 'numero') {
+                tipoTalle = 'N'
+                background = 'primary'
+            }
+
+            let characteristicsTrim = cortarTexto(element.characteristics),
+                designationTrim = cortarTexto(element.designation);
+
+            let utcDate = new Date(element.timestamp),
+                utcDateModified = new Date(element.modifiedOn),
+                localDate = new Date(utcDate.getTime() + offset),
+                localDateModified = new Date(utcDateModified.getTime() + offset),
+                formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
+                formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
+
+                formattedDate === formattedDateModified ? formattedDateModified = '-' : null
 
             if (element.visible) {
-                element.stock > 0 ? stock = `<tr id="consumibleRow_${element._id}">` : stock =`<tr id="consumibleRow_${element._id}" class="row-highlight-stockCero">`
-                return (`${stock}
+                totalStock > 0 ? stockTr = `<tr id="consumibleRow_${element._id}">` : stockTr =`<tr id="consumibleRow_${element._id}" class="row-highlight-stockCero">`
+                return (`${stockTr}
                             <td class="text-center" id="checkSelect_${element._id}" name="checkSelect"><input class="form-check-input border border-2 border-primary shadow-lg rounded" type="checkbox" value="" id="inputCheckConsumible_${element._id}" name="inputCheckConsumible"></td>
                             <td class="text-center" id="codigo_${element._id}"><strong>${element.code}</strong></td>
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}">${showType}</span></td>
-                            <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
-                            <td class="text-center" id="characteristics_${element._id}">${element.characteristics}</td>
+                            <td class="text-center" id="designation_${element._id}"><strong>${designationTrim}</strong></td>
+                            <td class="text-center" id="characteristics_${element._id}">${characteristicsTrim}</td>
                             <td class="text-center" id="imagenConsumible_${element._id}"><img id="imagen_${element._id}" class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageConsumible}' width="125px" height="125px"></td>
                             <td class="text-center"><img class="imgLazyLoad py-2" alt="QRCode" data-src="${element.qrCode}" src='${imagenLazy}' width="100px" height="100px" loading="lazy"></td>
-                            <td class="text-center" id="stock_${element._id}"><span id="spanStock_${element._id} name="stock" class="badge bg-${optionStock} text-light">${element.stock}</span></td>
+                            <td class="text-center" id="tipoTalle_${element._id}"><span class="badge bg-${background} text-light">${tipoTalle}</span></td>
+                            <td class="text-center" id="stock_${element._id}"><span id="spanStock_${element._id} name="stock" class="badge bg-${optionStock} text-light">${totalStock}</span></td>
                             <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
                             <td class="text-center">${element.creator[0].name} ${element.creator[0].lastName}</td>
-                            <td class="text-center">${element.timestamp}</td>
+                            <td class="text-center">${formattedDate}</td>
                             <td class="text-center">${element.modificator[0].name} ${element.modificator[0].lastName}</td>
-                            <td class="text-center">${element.modifiedOn}</td>
+                            <td class="text-center">${formattedDateModified}</td>
                             <td class="text-center">
                                 <div class="d-block align-items-center text-center">
                                     <a href="/api/consumibles/${element._id}" class="btn btn-primary btn-sm me-1" title="Editar Consumible ${element.designation}"><i class="fa-solid fa-cart-shopping"></i></a>
@@ -126,7 +183,7 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
         
     } else {
         html = (`<tr>
-                    <td colspan="13">
+                    <td colspan="14">
                         <img class="img-fluid rounded-5 my-2 shadow-lg" alt="No hay items cargados para mostrar"
                             src='../src/images/clean_table_graphic.png' width="auto" height="auto">
                     </td>
@@ -227,26 +284,44 @@ const renderConsumiblesUser = (arrConsumibles) => {
     const arrayConsumible = arrConsumibles
     if (arrConsumibles.length>0) {
         html = arrConsumibles.map((element) => {
+            // Procesar cada elemento
+            processStock(element)
+
             let optionStatus = element.status ? green : red,
-            optionStock = element.stock>0 ? black : red
+            optionStock = totalStock>0 ? black : red
             
             // Obtener configuración según el tipo o usar la configuración por defecto
             const { optionType, showType, textColor } = typeConfigurations[element.type] || defaultConfig;
 
             let showStatus = element.status ? active : inactive,
-                idChain = element._id.substring(19)
+                idChain = element._id.substring(19),
+                tipoTalle = 'U',
+                background = 'dark'
+            
+            if (element.tipoTalle === 'talle') {
+                tipoTalle = 'T'
+                background = 'danger'
+                
+            } else if (element.tipoTalle === 'numero') {
+                tipoTalle = 'N'
+                background = 'primary'
+            }
+
+            let characteristicsTrim = cortarTexto(element.characteristics),
+                designationTrim = cortarTexto(element.designation);
 
             if (element.visible) {
-                element.stock > 0 ? stock = `<tr id="consumibleRow_${element._id}" name="checkSelect">` : stock =`<tr id="consumibleRow_${element._id}" style="background-color:rgba(32, 32, 32, 0.25);">`
-                return (`${stock}
+                totalStock > 0 ? stockTr = `<tr id="consumibleRow_${element._id}" name="checkSelect">` : stockTr =`<tr id="consumibleRow_${element._id}" style="background-color:rgba(32, 32, 32, 0.25);">`
+                return (`${stockTr}
                             <td class="text-center" id="checkSelect_${element._id}"><input type="check" id="inputCheckConsumible_${element._id}" name="inputCheckConsumible_${element._id}" class="input-check" ></td>
                             <td class="text-center" id="codigo_${element._id}"><strong>${element.code}</strong></td>
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
-                            <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
-                            <td class="text-center" id="characteristics_${element._id}">${element.characteristics}</td>
+                            <td class="text-center" id="designation_${element._id}"><strong>${designationTrim}</strong></td>
+                            <td class="text-center" id="characteristics_${element._id}">${characteristicsTrim}</td>
                             <td class="text-center"><img class="img-fluid rounded-3 py-2 img_consumibles" alt="Imagen" src='${element.imageConsumible}' width="120px" height="120px"></td>
                             <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="QR" src='${element.qrCode}' width="125px" height="125px"></td>
-                            <td class="text-center" id="stock_${element._id}"><span class="badge bg-${optionStock} text-light">${element.stock}</span></td>
+                            <td class="text-center" id="tipoTalle_${element._id}"><span class="badge bg-${background} text-light">${tipoTalle}</span></td>
+                            <td class="text-center" id="stock_${element._id}"><span class="badge bg-${optionStock} text-light">${totalStock}</span></td>
                             <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
                             <td class="text-center">${element.creator[0].name} ${element.creator[0].lastName}</td>
                             <td class="text-center">${element.timestamp}</td>
@@ -276,7 +351,7 @@ const renderConsumiblesUser = (arrConsumibles) => {
         
     } else {
         html = (`<tr>
-                    <td colspan="13">
+                    <td colspan="14">
                         <img class="img-fluid rounded-5 my-2 shadow-lg" alt="No hay items cargados para mostrar"
                             src='../src/images/clean_table_graphic.png' width="auto" height="auto">
                     </td>
@@ -500,7 +575,7 @@ function messageNewConsumible(designation, code, type, stock) {
                 )
                 setTimeout(() => {
                     document.getElementById("newConsumiblesForm").submit()
-                }, 600)
+                }, 500)
                 
             } else {
                 Swal.fire(
@@ -555,15 +630,30 @@ function messageWarningEmptyFields(designation, code, type, stock) {
         })
 }
 
+function messageWarningStockCero() {
+        Swal.fire({
+            title: `Campo Stock Vacío`,
+            text: `El campo Stock no puede ser 0!`,
+            icon: 'warning',
+            showCancelButton: true,
+            showConfirmButton: false,
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Volver al Formulario <i class="fa-solid fa-cart-shopping"></i>'
+        })
+        return false
+}
+
 const btnAddNewConsumible = document.getElementById('btnAddNewConsumibles')
 btnAddNewConsumible.addEventListener('click', (event) => {
     event.preventDefault()
     const designation = document.getElementById('designation').value,
         code = document.getElementById('code').value,
         type = document.getElementById('type').value,
-        stock = document.getElementById('stock').value
+        stock = parseInt(document.getElementById('stock').value)
 
-    designation && code && type && stock? 
+    stock === 0 ? messageWarningStockCero() : null
+
+    designation && code && type && stock ? 
         messageNewConsumible(designation, code, type, stock) :
         messageWarningEmptyFields(designation, code, type, stock)
 })
@@ -680,6 +770,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let isGeneratingQR = false;
 
+    // ---- Descargar QR Code -----------
+    function downloadQRCode(qrImage) {
+        // Open the QR Image in a new tab
+        const newWindow = window.open(qrImage, '_blank');
+    
+        // Optional: Focus the new window (if supported by the browser)
+        if (newWindow) {
+            newWindow.focus();
+        } else {
+            // Fallback for browsers that block pop-ups
+            alert('Por favor, autorice los pop-ups en este sitio para visualizar el QR Code.');
+        }
+        return false
+    }
+
     // Mostrar loader mientras se genera el QR
     function generateQRCodeWithLoader(data) {
         qrLabel.innerText = `QR (autogenerado) ${data.length}/${MAX_QR_LENGTH} caracteres`
@@ -720,7 +825,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 qrConsumibleInput.value = qrImage.src
                 downloadButton = document.getElementById('downloadQR')
                 downloadButton.style.display = 'block';
-                downloadButton.addEventListener("click", () => downloadQRCode(qrImage.src));
+                downloadButton.addEventListener("click", () => { downloadQRCode(qrImage.src) })
             }
         }, 800); // Cambia el tiempo según el procesamiento real
     }
@@ -735,13 +840,15 @@ document.addEventListener("DOMContentLoaded", () => {
         // Mapeo de tipos a sus correspondientes descripciones
         const typeMapping = {
             epp: 'EPP',
-            insertos: 'Insertos',
+            ropa: 'Ropa',
+            consumiblesLineas: 'Consumibles Líneas',
             consumiblesAjuste: 'Consumibles Ajuste',
             consumiblesMeca: 'Consumibles Mecanizado',
+            otros: 'Otros',
         };
 
         // Obtener el valor correspondiente o asignar un valor predeterminado
-        const qrType = typeMapping[type] || "Otros Consumibles";
+        const qrType = typeMapping[type] || "Otros";
 
         // Datos a incluir en el QR
         const qrData = JSON.stringify({
@@ -761,25 +868,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Función para descargar el QR como imagen
-    downloadButton = document.getElementById('downloadQR')
-    if(downloadButton) {
-        downloadButton.addEventListener('click', () => {
-            const qrCanvas = qrContainer.querySelector('canvas');
-            if (qrCanvas) {
-                const link = document.createElement('a');
-                link.href = qrCanvas.toDataURL(); // Convierte el canvas a un formato de imagen
-                link.download = `codigo-qr${type.value}.png`;
-                link.click(); // Dispara el evento de descarga
-            } else {
-                Swal.fire(
-                    'Error!',
-                    `Primero debe generar el código QR para descargar.`,
-                    'info'
-                )
-                return false
-            }
-        });
-    }
+    // downloadButton = document.getElementById('downloadQR')
+    // if(downloadButton) {
+    //     downloadButton.addEventListener('click', () => {
+    //         const qrCanvas = qrContainer.querySelector('canvas');
+    //         if (qrCanvas) {
+    //             const link = document.createElement('a');
+    //             link.href = qrCanvas.toDataURL(); // Convierte el canvas a un formato de imagen
+    //             link.download = `codigo-qr${type.value}.png`;
+    //             link.click(); // Dispara el evento de descarga
+    //         } else {
+    //             Swal.fire(
+    //                 'Error!',
+    //                 `Primero debe generar el código QR para descargar.`,
+    //                 'info'
+    //             )
+    //             return false
+    //         }
+    //     });
+    // }
 
 });
 
@@ -959,7 +1066,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <th style="width:25vw" class="text-center">Tipo</th>
                                 <th style="width:25vw" class="text-center">Designación</th>
                                 <th style="width:15vw" class="text-center">Imagen</th>
-                                <th style="width:15vw" class="text-center">Stock</th>
+                                <th style="width:15vw" class="text-center">Stock Total</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -969,7 +1076,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <td><span class="common-style ${data.tipo.replace(/\s+/g, "").toLowerCase()}">${data.tipo}</span></td>
                                     <td>${data.descripcion}</td>
                                     <td><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${data.imageConsumible}' width="60px" height="60px"></td>
-                                    <td><input type="number" name="inputStockNumber_${extractIdNumber(data.id)}" class="form-control" value="${data.stock}" data-id="${data.id}" min="0" max="5000">
+                                    <td><input type="number" name="inputStockNumber_${extractIdNumber(data.id)}" class="form-control" value="${data.totalStock}" data-id="${data.id}" min="0" max="5000">
                                         <input type="hidden" name="idItemHidden_${extractIdNumber(data.id)}" value="${extractIdNumber(data.id)}" style="display: none;"></td>
                                 </tr>`).join("")}
                         </tbody>
@@ -1023,3 +1130,210 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 300)
     });
 });
+
+
+// Función para manejar el cambio en los radio buttons
+function handleTipoTalleChange(tipo) {
+    const stockInput = document.getElementById("stock");
+    const talles = ['a','b','c','d','e','f','g','h','i','j'];
+    const numeros = Array.from({ length: 31 }, (_, i) => `num${i + 35}`);
+
+    // Resetear y deshabilitar todos los inputs de stock
+    resetAndDisableInputs([...talles, ...numeros]);
+
+    if (tipo === "unico") {
+        // Habilitar el campo de stock total
+        stockInput.disabled = false;
+        stockInput.value = 1;
+
+    } else if (tipo === "talle") {
+        // Habilitar los checkboxes de talles
+        talles.forEach((talle) => {
+            document.getElementById(talle).disabled = false;
+        });
+        stockInput.disabled = true;
+        stockInput.value = calcularSumaStocks(talles);
+
+    } else if (tipo === "numero") {
+        // Habilitar los checkboxes de números
+        numeros.forEach((numero) => {
+            document.getElementById(numero).disabled = false;
+        });
+        stockInput.disabled = true;
+        stockInput.value = calcularSumaStocks(numeros);
+    }
+}
+
+// Función para resetear y deshabilitar inputs
+function resetAndDisableInputs(ids) {
+    ids.forEach((id) => {
+        const checkbox = document.getElementById(id);
+        const stockInput = document.getElementById(`stock${id.charAt(0).toUpperCase() + id.slice(1)}`);
+        checkbox.checked = false;
+        checkbox.disabled = true;
+        stockInput.value = 0;
+        stockInput.disabled = true;
+    });
+}
+
+// Función para habilitar/deshabilitar inputs de stock y actualizar el stock total
+function toggleStockInput(id) {
+    const checkbox = document.getElementById(id);
+    const stockInput = document.getElementById(`stock${id.charAt(0).toUpperCase() + id.slice(1)}`);
+    stockInput.disabled = !checkbox.checked;
+    if (!checkbox.checked) {
+        stockInput.value = 0;
+    }
+    // Agregar event listener para actualizar el stock total cuando cambie el valor del input
+    stockInput.addEventListener("input", actualizarStockTotal);
+    // Actualizar el stock total inmediatamente
+    actualizarStockTotal();
+}
+
+// Función para actualizar el stock total
+function actualizarStockTotal() {
+    const tipoSeleccionado = document.querySelector('input[name="tipoTalle"]:checked').value;
+    const stockTotal = document.getElementById("stock");
+
+    if (tipoSeleccionado === "talle") {
+        // Sumar los stocks de talles
+        const talles = ['a','b','c','d','e','f','g','h','i','j'];
+        stockTotal.value = calcularSumaStocks(talles);
+    } else if (tipoSeleccionado === "numero") {
+        // Sumar los stocks de números
+        const numeros = Array.from({ length: 31 }, (_, i) => `num${i + 35}`);
+        stockTotal.value = calcularSumaStocks(numeros);
+    }
+}
+
+// Función para calcular la suma de los stocks
+function calcularSumaStocks(ids) {
+    return ids.reduce((sum, id) => {
+        const stockInput = document.getElementById(`stock${id.charAt(0).toUpperCase() + id.slice(1)}`);
+        return sum + (stockInput.disabled ? 0 : Number(stockInput.value));
+    }, 0);
+}
+
+// Agregar event listeners a los inputs de stock al cargar la página
+document.addEventListener("DOMContentLoaded", () => {
+    const talles = ['a','b','c','d','e','f','g','h','i','j'];
+    const numeros = Array.from({ length: 15 }, (_, i) => `num${i + 35}`);
+
+    // Agregar event listeners a los inputs de talles
+    talles.forEach((talle) => {
+        const stockInput = document.getElementById(`stock${talle.charAt(0).toUpperCase() + talle.slice(1)}`);
+        if (stockInput) {
+            stockInput.addEventListener("input", actualizarStockTotal);
+        }
+    });
+
+    // Agregar event listeners a los inputs de números
+    numeros.forEach((numero) => {
+        const stockInput = document.getElementById(`stock${numero.charAt(0).toUpperCase() + numero.slice(1)}`);
+        if (stockInput) {
+            stockInput.addEventListener("input", actualizarStockTotal);
+        }
+    });
+});
+
+
+// Función para manejar el cambio en la selección de tipo de talle
+function handleTipoTalleChangeVisible(selectedValue) {
+    const vrBlack = document.getElementById('vrBlack'),
+        vrRed = document.getElementById('vrRed'),
+        vrBlue = document.getElementById('vrBlue'),
+        colsTalle = document.getElementById('colsTalle'),
+        colsNumeros = document.getElementById('colsNumeros');
+
+    // Resetear opacidades
+    vrBlack.style.opacity = '0.4'; // Opacidad por defecto
+    vrRed.style.opacity = '0.4';
+    vrBlue.style.opacity = '0.4';
+
+    // Ocultar todas las secciones primero
+    colsTalle.classList.contains('d-block') ? hideSection(colsTalle) : null;
+    colsNumeros.classList.contains('d-block') ? hideSection(colsNumeros) : null;
+
+    // Mostrar la sección correspondiente y ajustar opacidades
+    switch (selectedValue) {
+        case 'unico':
+            vrBlack.style.opacity = '0.75'; // Resaltar vrBlack
+            break;
+        case 'talle':
+            vrRed.style.opacity = '0.75'; // Resaltar vrRed
+            showSection(colsTalle); // Mostrar sección Talle
+            break;
+        case 'numero':
+            vrBlue.style.opacity = '0.75'; // Resaltar vrBlue
+            showSection(colsNumeros); // Mostrar sección Número
+            break;
+        default:
+            console.warn('Valor no reconocido:', selectedValue); // Manejar valores inesperados
+            break;
+    }
+}
+
+// Función para mostrar una sección con transición
+function showSection(element) {
+    element.classList.remove('d-none'); // Mostrar el elemento
+    element.classList.add('d-block');   // Asegurar que esté en bloque
+    element.style.opacity = '0';        // Iniciar con opacidad 0
+    element.style.transform = 'translateX(-100%)'; // Iniciar fuera de la pantalla
+    element.style.transition = 'opacity 1s, transform 1s'; // Transición suave
+
+    // Forzar un reflow para que la transición se aplique correctamente
+    void element.offsetHeight;
+
+    // Aplicar la transición
+    element.style.opacity = '1';
+    element.style.transform = 'translateX(0)';
+}
+
+// Función para ocultar una sección con transición
+function hideSection(element) {
+    element.style.opacity = '0'; // Reducir opacidad a 0
+    element.style.transform = 'translateX(-100%)'; // Mover fuera de la pantalla
+    element.style.transition = 'opacity 1s, transform 1s'; // Transición suave
+
+    // Esperar a que termine la transición antes de ocultar completamente
+    setTimeout(() => {
+        element.classList.remove('d-block'); // Quitar la clase de bloque
+        element.classList.add('d-none');    // Ocultar el elemento
+    }, 1000); // 1000ms = 1s (duración de la transición)
+}
+
+// Inicializar el formulario con la sección 'unico' visible
+document.addEventListener('DOMContentLoaded', function () {
+    const vrBlack = document.getElementById('vrBlack'),
+        colsTalle = document.getElementById('colsTalle'),
+        colsNumeros = document.getElementById('colsNumeros');
+
+    // Configurar estado inicial
+    vrBlack.style.opacity = '0.75'; // Resaltar vrBlack
+    colsTalle.classList.add('d-none'); // Ocultar sección Talle
+    colsNumeros.classList.add('d-none'); // Ocultar sección Número
+
+    // Asignar eventos a los radio buttons
+    document.querySelectorAll('input[name="tipoTalle"]').forEach((radio) => {
+        radio.addEventListener('change', (event) => {
+            handleTipoTalleChangeVisible(event.target.value);
+        });
+    });
+});
+
+
+// Obtener el input range
+const rangeInput = document.getElementById('favorite');
+
+// Función para actualizar el relleno del track
+const updateTrackFill = () => {
+    const value = (rangeInput.value - rangeInput.min) / (rangeInput.max - rangeInput.min) * 100;
+    rangeInput.style.setProperty('--value', `${value}%`);
+};
+
+// Establecer el valor inicial y actualizar el relleno
+rangeInput.value = 1; // Valor por defecto
+updateTrackFill(); // Actualizar el relleno inicial
+
+// Escuchar cambios en el input range
+rangeInput.addEventListener('input', updateTrackFill);

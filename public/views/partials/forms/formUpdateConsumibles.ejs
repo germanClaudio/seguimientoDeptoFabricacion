@@ -15,8 +15,18 @@
                 
                 <div class="col mx-auto my-1">
                     <label for="timestampDisable">Fecha creación</label>
+                    <% const offset = -3 * 60 * 60 * 1000;
+                        let utcDate = new Date(consumible.timestamp),
+                        utcDateModified = new Date(consumible.modifiedOn),
+                        localDate = new Date(utcDate.getTime() + offset),
+                        localDateModified = new Date(utcDateModified.getTime() + offset),
+                        formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
+                        formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
+        
+                        formattedDate === formattedDateModified ? formattedDateModified = '' : null
+                    %>
                     <input type="text" name="timestampDisable" id="timestampDisable" class="form-control-plaintext text-white small"
-                        value="<%=consumible.timestamp%>" disabled>
+                        value="<%=formattedDate%>" disabled>
                 </div>
                 
                 <div class="col mx-auto my-1">
@@ -33,7 +43,7 @@
                 <div class="col-auto mx-auto my-1">
                     <label for="modifiedOnDisable">Fecha modificación</label>
                     <input type="text" name="modifiedOnDisable" id="modifiedOnDisable" class="form-control-plaintext text-white small"
-                        value="<%=consumible.modifiedOn%>" disabled>
+                        value="<%=formattedDateModified%>" disabled>
                 </div>
             </div>
             <hr class="border my-1">
@@ -51,9 +61,10 @@
                         <%
                         const opcionesUpdate = [
                             { value: "epp", text: "EPP" },
-                            { value: "insertos", text: "Insertos" },
+                            { value: "ropa", text: "Ropa" },
                             { value: "consumiblesAjuste", text: "Consum. Ajuste" },
                             { value: "consumiblesMeca", text: "Consum. Mecanizado" },
+                            { value: "consumiblesLineas", text: "Consum. Líneas" },
                             { value: "otros", text: "Otros" }
                         ];
                         opcionesUpdate.forEach(opcion => { %>
@@ -62,52 +73,210 @@
                     </select>
                 </div>
 
-                <% if (consumible.status) { %>
-                    <div class="col-3 mx-auto" style="background-color: #55dd5560;">
-                        <label for="status">Status Consumible</label>
-                        <div class="">
-                            <label class="form-check-label" for="status">Inactivo</label>
-                            <div class="form-check form-switch d-inline-block mt-2">
-                                <input id="status" class="form-check-input" type="checkbox" role="switch"
-                                    name="status" style="cursor: pointer;" checked>
-                                <label class="form-check-label" for="status">Activo</label>
-                            </div>    
+                <% let checkOn = ''
+                    if (consumible.status) {
+                        checkOn = 'checked' %>
+                        <div class="col-3 mx-auto" style="background-color: #55dd5560;">
+                    <% } else { %>
+                        <div class="col-3 mx-auto" style="background-color: #ff00006f;">
+                    <% } %>
+                            <label for="status">Status Consumible</label>
+                            <div class="">
+                                <label class="form-check-label" for="status">Inactivo</label>
+                                <div class="form-check form-switch d-inline-block mt-2">
+                                    <input id="status" class="form-check-input" type="checkbox" role="switch"
+                                        name="status" style="cursor: pointer;" <%= checkOn %> >
+                                    <label class="form-check-label" for="status">Activo</label>
+                                </div>    
+                            </div>
                         </div>
-                    </div>
-                <% } else { %>
-                    <div class="col-3 mx-auto" style="background-color: #ff00006f;">
-                        <label for="status">Status Consumible</label>
-                        <div class="">
-                            <label class="form-check-label" for="status">Inactivo</label>
-                            <div class="form-check form-switch d-inline-block mt-2">
-                                <input id="status" class="form-check-input" type="checkbox" role="switch"
-                                    name="status" style="cursor: pointer;">
-                                <label class="form-check-label" for="status">Activo</label>
-                            </div>    
-                        </div>
-                    </div>
-                <% } %>
             </div>
             
             <!-- codigo tipo -->
             <div class="row justify-content-between align-items-start my-3">
-                <div class="col-3 mx-auto">
+                <div class="col-2 mx-auto">
                     <label class="form-label" for="code">Código</label>
                     <input type="text" name="code" id="code" class="form-control" value="<%=consumible.code%>" placeholder="Código" required>
                 </div>
 
-                <div class="col mx-auto">
+                <div class="col-6 mx-auto">
                     <label for="characteristics">Características</label>
                     <textarea type="text" name="characteristics" id="characteristics" class="form-control" rows="3"><%=consumible.characteristics%></textarea>
                 </div>
+
+                <div class="col mx-auto">
+                    <div class="range-container-favorite">
+                        <label class="label-left" for="favorite">Menos Solicitado</label>
+                        <label class="label-right" for="favorite">Más Solicitado</label>
+                        <input type="range" class="form-range-favorite custom-range-favorite" min="0" max="5" step="1" value="<%= consumible.favorito %>" id="favorite">
+                        <div class="scale">
+                            <span>0</span>
+                            <span>1</span>
+                            <span>2</span>
+                            <span>3</span>
+                            <span>4</span>
+                            <span>5</span>
+                        </div>
+                    </div>
+                </div>
                 
-                <% if (consumible.stock === 0) { %>
+                <% function calculateStockTotal(stockMap) {
+                    let total = 0, llaves = stockMap.size, keysSonNumeros = true, keysSonLetras = true, valores = [];
+                    for (const value of stockMap.values()) {
+                        total += value;
+                        valores.push(value)
+                    }
+                    for (const key of stockMap.keys()) {
+                        if (isNaN(Number(key))) {
+                            keysSonNumeros = false;
+                        }
+                        if (!/^[a-zA-Z]$/.test(key)) {
+                            keysSonLetras = false;
+                        }
+                    }
+                
+                    return {
+                        total,
+                        llaves,
+                        valores,
+                        keysSonNumeros,
+                        keysSonLetras
+                    };
+                }
+                let stockTotal = calculateStockTotal(consumible.stock);
+
+                if (stockTotal.total === 0) { %>
                     <div class="col-2 mx-auto"  style="background-color: #ff00006f;">
                 <% } else { %>
                     <div class="col-2 mx-auto"  style="background-color: #55dd5560;">
                 <% } %>
-                    <label class="form-label" for="stock">Stock</label>
-                    <input type="number" name="stock" id="stock" min="0" max="500" class="form-control mb-3 me-2" value="<%=consumible.stock%>" required>
+                    <label class="form-label" for="stock">Stock Total</label>
+                    <% if (stockTotal.llaves === 1) { %>
+                        <input type="number" name="stock" id="stock" min="0" max="10000" class="form-control mb-3 me-2" value="<%=stockTotal.total%>">
+                    <% } else { %>
+                        <input type="number" name="stock" id="stock" min="0" max="10000" class="form-control mb-3 me-2" value="<%=stockTotal.total%>" disabled>
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="row justify-content-between align-items-start my-2">
+                <!-- Sección de Talle, Número o Único (Radio Buttons) -->
+                <div class="accordion my-4 mx-2" id="accordionTalle">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <% let buttonCollapsed = '', expanded = false, show = '';
+                            stockTotal.llaves != 1 ? ( buttonCollapsed = 'collapsed', expanded = true, show = 'show' ) : null %>
+                            <button class="accordion-button bg-light <%= buttonCollapsed %>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="<%= expanded %>" aria-controls="collapseOne">
+                                Tipo de Stock (Único / Talle / Número)
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse <%= show %>" aria-labelledby="headingOne" data-bs-parent="#accordionTalle" style="background-color: #b6b6b6;">
+                            <div class="accordion-body">
+                            
+                                <div class="row my-1 mx-auto">
+                                    <div class="vr mx-1 d-none d-xl-inline" id="vrBlack" style="color: rgba(0, 0, 0, 0.4);"></div>
+                    
+                                    <div id="colsUnico" class="col-1 me-2 my-auto">
+                                        <% let unicoCheck = '', talleCheck = '', numeroCheck = ''  
+                                        stockTotal.keysSonLetras
+                                        ? talleCheck = 'checked'
+                                        : stockTotal.llaves === 1 ? unicoCheck = 'checked' : numeroCheck = 'checked'
+                                        %>
+                                        <div class="form-check my-3">
+                                            <input class="form-check-input" type="radio" name="tipoTalle" id="unico" value="unico" <%= unicoCheck %> onchange="handleTipoTalleChange('unico')">
+                                            <label class="form-check-label" for="unico">Único</label>
+                                        </div>
+                                        <div class="form-check my-3">
+                                            <input class="form-check-input" type="radio" name="tipoTalle" id="talle" value="talle" <%= talleCheck %> onchange="handleTipoTalleChange('talle')">
+                                            <label class="form-check-label" for="talle">Talle</label>
+                                        </div>
+                                        <div class="form-check my-3">
+                                            <input class="form-check-input" type="radio" name="tipoTalle" id="numero" value="numero" <%= numeroCheck %> onchange="handleTipoTalleChange('numero')">
+                                            <label class="form-check-label" for="numero">Número</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="vr mx-1 d-none d-xl-inline" id="vrRed" style="color: rgba(195, 0, 0, 0.4);"></div>
+
+                                <!-- Sección de Talles (Checkboxes) -->
+                                    <div id="colsTalle" class="col-4 text-center my-auto">
+                                        <div class="d-flex flex-wrap justify-content-around gap-3">
+                                            <!-- Talles S a XXL -->
+                                            <% let arrayLetras = ['a','b','c','d','e','f','g','h','i','j'], 
+                                                talleDisabled = talleCheck !== 'checked' ? 'disabled' : '';
+
+                                                const letterMapping = {
+                                                    'a': 'XS',
+                                                    'b': 'S',
+                                                    'c': 'M',
+                                                    'd': 'L',
+                                                    'e': 'XL',
+                                                    'f': '2XL',
+                                                    'g': '3XL',
+                                                    'h': '4XL',
+                                                    'i': '5XL',
+                                                    'j': '6XL'
+                                                };
+                                            
+                                            function individualsStock(valorIndividual) {
+                                                let letraCheck = valorIndividual !== 0 ? 'checked' : '',
+                                                    letraIndividualDisabled = valorIndividual !== 0 ? '' : 'disabled',
+                                                    valor = talleDisabled !== 'disabled' ? valorIndividual : 0;
+                                                return { valor, letraCheck, letraIndividualDisabled };
+                                            }
+                                            
+                                            for (let i = 0; arrayLetras.length > i; i++) {
+                                                let stockLetraInfo = individualsStock(stockTotal.valores.length === 10 ? stockTotal.valores[i] : 0 ),
+                                                    letter = arrayLetras[i],
+                                                    letterCapital = arrayLetras[i].toUpperCase(), 
+                                                    letterCapitalTitle = letterMapping[letter]; %> 
+
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="<%= letter %>" onchange="toggleStockInput('<%= letter %>')"
+                                                        <%= talleDisabled %> <%= stockLetraInfo.letraCheck %> >
+                                                    <label class="form-check-label" for="<%= letter %>"><%= letterCapitalTitle %></label>
+                                                    <input type="number" name="stock<%= letterCapital %>" id="stock<%= letterCapital %>" min="0" max="1000" class="form-control stock-input"
+                                                        value="<%= stockLetraInfo.valor %>"
+                                                        <%= stockLetraInfo.letraIndividualDisabled %> style="width: 75px;">
+                                                </div>
+                                            <% } %>
+
+                                        </div>
+                                    </div>
+                                
+                                    <div class="vr mx-1 d-none d-xl-inline" id="vrBlue" style="color: rgba(0, 13, 195, 0.4);"></div>
+                        
+                                    <!-- Sección de Números (Checkboxes) -->
+                                    <div id="colsNumeros" class="col text-center my-auto">
+                                        <div class="d-flex flex-wrap justify-content-around gap-3">
+                                            <!-- Números del 35 al 49 -->
+                                            <% let numeroDisabled = numeroCheck !== 'checked' ? 'disabled' : '';
+
+                                            function individualsStockNumber(valorIndividual) {
+                                                let numeroCheck = valorIndividual !== 0 ? 'checked' : '',
+                                                    numeroIndividualDisabled = valorIndividual !== 0 ? '' : 'disabled',
+                                                    valor = numeroDisabled !== 'disabled' ? valorIndividual : 0;
+                                                return { valor, numeroCheck, numeroIndividualDisabled };
+                                            }
+
+                                            for (let i = 35; i <= 65; i++) {
+                                                let stockInfo = individualsStockNumber(stockTotal.valores.length != 10 ? stockTotal.valores[i - 35] : 0); %> 
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="num<%=i%>" onchange="toggleStockInput('num<%=i%>')"
+                                                        <%= numeroDisabled %> <%= stockInfo.numeroCheck %>>
+                                                    <label class="form-check-label" for="num<%=i%>"><%=i%></label>
+                                                    <input type="number" name="stockNum<%=i%>" id="stockNum<%=i%>" min="0" max="100" class="form-control stock-input"
+                                                        value="<%= stockInfo.valor %>"
+                                                        <%= stockInfo.numeroCheck %> <%= stockInfo.numeroIndividualDisabled %> style="width: 75px;">
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+    
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -161,13 +330,13 @@
                 <div class="col">
                     <% if( userInfo.admin || userInfo.area === "fabricación" ) { %>        
                         <div class="d-flex justify-content-center m-2">
-                            <button id="btnUpdateConsumibles" class="btn btn-success mx-auto my-2 shadow" disabled>Actualizar <i class="fa-solid fa-save"></i></button>
                             <a class="btn btn-primary mx-auto my-2 shadow" href="/api/consumibles">Volver <i class="fa-solid fa-arrow-left"></i></a>
+                            <button id="btnUpdateConsumibles" class="btn btn-success mx-auto my-2 shadow" disabled>Actualizar <i class="fa-solid fa-save"></i></button>
                         </div>
                     <% } else { %>
                         <div class="d-flex justify-content-center m-2">
-                            <button id="btnUpdateConsumibles" class="btn btn-success mx-auto my-2 shadow disabled" disabled>Actualizar <i class="fa-solid fa-ban"></i></button>
                             <a class="btn btn-primary mx-auto my-2 shadow" href="/api/consumibles">Volver <i class="fa-solid fa-arrow-left"></i></a>
+                            <button id="btnUpdateConsumibles" class="btn btn-success mx-auto my-2 shadow disabled" disabled>Actualizar <i class="fa-solid fa-ban"></i></button>
                         </div>
                     <% } %>
                 </div>

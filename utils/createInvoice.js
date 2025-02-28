@@ -189,6 +189,7 @@ function generateTableRow(
     // Mapeo de tipos
     const tipos = {
         epp: 'EPP',
+        ropa: 'Ropa',
         consumiblesAjuste: 'Cons. Ajuste',
         consumiblesMecanizado: 'Cons. Mecanizado',
         insertos: 'Insertos',

@@ -101,6 +101,7 @@ async function uploadToGCS(req, res, next) {
         req.file.cloudStoragePublicUrl = `https://storage.googleapis.com/${bucket.name}/${folderName}/${subFolderName}/${blob.name}`;
     });
     blobStream.end(data)
+    console.log('Llego acá!!')
 }
 
 Promise.all(uploadToGCS)
@@ -185,8 +186,6 @@ async function uploadToGCSingleFile(req, res, next) {
             console.log('originalname: ', originalname)
             console.log('blob.name: ', blob.name)
             req.files.cloudStoragePublicUrl = `https://storage.googleapis.com/${bucket.name}/${folderName}/${subFolderName}/${blob.name}`;
-        
-        
         });
         blobStream.end(data);
     }

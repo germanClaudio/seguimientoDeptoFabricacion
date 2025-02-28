@@ -10,20 +10,27 @@ async function switchFilterConsumibles(Consumibles, designationAndCodeQuery) {
     }
 
     // Definir valores válidos para type
-    const types = ['epp', 'insertos', 'consumiblesAjuste', 'consumiblesMeca', 'otros']
+    const types = ['epp', 'ropa', 'consumiblesLineas', 'consumiblesAjuste', 'consumiblesMeca', 'otros']
+    const typesStock = ['unico', 'talle', 'numero']
 
     // Procesar campo status
-    if (designationAndCodeQuery.status !== 'todas' && typeof designationAndCodeQuery.status === 'boolean') {
+    if (designationAndCodeQuery.status !== 'todos' && typeof designationAndCodeQuery.status === 'boolean') {
         query.status = designationAndCodeQuery.status;
     }
 
     // Procesar campo type
-    if (designationAndCodeQuery.type && types.includes(designationAndCodeQuery.type)) {
+    if (designationAndCodeQuery.type !== 'todos' && types.includes(designationAndCodeQuery.type)) {
         query.type = designationAndCodeQuery.type;
     }
 
+    // Procesar campo type Stock
+    if (designationAndCodeQuery.typeStock !== 'todos' && typesStock.includes(designationAndCodeQuery.typeStock)) {
+        query.typeStock = designationAndCodeQuery.typeStock;
+    }
+    console.log('query: ', query)
+    console.log('designationAndCodeQuery: ', designationAndCodeQuery)
     // Procesar campo stock
-    if (designationAndCodeQuery.stock !== 'todas' && typeof designationAndCodeQuery.stock === 'boolean') {
+    if (designationAndCodeQuery.stock !== 'todos' && typeof designationAndCodeQuery.stock === 'boolean') {
         if (designationAndCodeQuery.stock === true) {
             query.stock = { $gt : 0 }
         } else if(designationAndCodeQuery.stock === false) {

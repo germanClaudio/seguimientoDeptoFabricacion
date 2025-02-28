@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-const now = require('../utils/formatDate.js');
+// const now = require('../utils/formatDate.js');
 
 const consumiblesSchema = new Schema({
     designation: {
@@ -47,6 +47,10 @@ const consumiblesSchema = new Schema({
         type: Boolean,
         default: true
     },
+    tipoTalle: {
+        type: String,
+        default: 'unico'
+    },
     stock: {
         type: Map,
         of: {
@@ -63,11 +67,18 @@ const consumiblesSchema = new Schema({
     status: {
         type: Boolean,
         default: true
+    },
+    favorito: {
+        type: Number,
+        default: 1,
+        min: 0,
+        max: 5
     }
 });
 
 // Campo virtual para calcular el stock total
 consumiblesSchema.virtual('totalStock').get(function() {
+    console.log( 'model-consu: ', Array.from(this.stock.values()).reduce((total, stock) => total + stock, 0) )
     return Array.from(this.stock.values()).reduce((total, stock) => total + stock, 0);
 });
 

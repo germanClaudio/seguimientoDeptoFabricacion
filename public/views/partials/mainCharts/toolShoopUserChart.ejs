@@ -10,12 +10,28 @@
                         <div class="card-body">
                             <div class="media d-flex mx-2">
                                 <div class="media-body text-left">
-                                    <% let countConsumibles=0
+                                    <% let arrayVisibleConsumibles = [], arrayActiveConsumibles = [] , arrayConsumiblesWStock = []
+
                                     for (let i=0; consumibles.length>i; i++ ) {
-                                        consumibles[i].visible ? countConsumibles++ : null
-                                    } %>
-                                    <h3 class="font-medium"><%= parseInt(countConsumibles) %></h3>
-                                    <span>Solicitar Consumible o EPP</span>
+                                        consumibles[i].visible ? arrayVisibleConsumibles.push(consumibles[i]) : null
+                                    }
+
+                                    function calculateStockTotal(stockMap) {
+                                        let total = 0;
+                                        for (const value of stockMap.values()) {
+                                            total += value;
+                                        }
+                                        return total;
+                                    }
+
+                                    const elements = arrayVisibleConsumibles
+                                    elements.forEach((element, index) => {
+                                        const stockTotal = calculateStockTotal(element.stock);
+                                        stockTotal > 0 ? arrayConsumiblesWStock.push(1) : null
+                                    }); %>
+
+                                    <h3 class="font-medium"><%= arrayConsumiblesWStock.length %>/<span style="font-size: 0.95rem;" ><%=arrayVisibleConsumibles.length%></span></h3>
+                                    <span>Consumibles - EPP</span>
                                 </div>
                                 <div class="align-self-center ms-auto">
                                     <i class="icon-basket font-large-2 float-right"></i>

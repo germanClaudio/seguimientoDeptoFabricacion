@@ -47,9 +47,9 @@ class ConsumibleService {
     }
 
     // search All consumible
-    async searchConsumibles() {
-        return await this.consumible.searchConsumibles()
-    }
+    // async searchConsumibles() {
+    //     return await this.consumible.searchConsumibles()
+    // }
 
     // returns all Consumibles from serching
     async getConsumiblesBySearching(query) {

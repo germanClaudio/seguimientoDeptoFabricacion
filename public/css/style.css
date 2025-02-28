@@ -373,6 +373,11 @@ html body .display-7 {
 -------------------------*/
 
 .card {
+  min-width: 200px; /* Ancho mínimo para mantener legibilidad */
+  max-height: max-content;
+  max-width: 350px;
+  transition: transform 0.3s ease;
+
   margin-bottom: 5px;
   margin-top: 12px;
   /* width: 20vw; */
@@ -381,6 +386,17 @@ html body .display-7 {
   -webkit-box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
   -moz-box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
   box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.card-img-top {
+  max-height: 150px;
+  object-position: center;
+  object-fit: contain;
 }
 
 .card_dashboard{
@@ -427,6 +443,13 @@ html body .display-7 {
   white-space: nowrap; /* Evita que el texto se divida en varias líneas */
   overflow: hidden;
   text-overflow: ellipsis; /* Muestra puntos suspensivos si el texto es demasiado largo */
+}
+
+card-title-noEllipsis {
+  font-size: clamp(0.8rem, 2vw, 1rem); /* Ajusta el tamaño entre 0.8rem y 1rem basado en el ancho del viewport */
+  white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+  overflow: hidden;
+  /* Muestra puntos suspensivos si el texto es demasiado largo */
 }
 
 .figure-img {
@@ -1489,6 +1512,133 @@ height: 4px;
   transform: translateY(12.5%);
 }
 
+
+/* ---------- Range Favorite --------------- */
+/* Contenedor principal */
+.range-container-favorite {
+  position: relative;
+  width: 100%;
+  max-width: 400px; /* Ajusta según sea necesario */
+  margin: 20px 0;
+}
+
+/* Estilos para los labels */
+.label-left {
+  position: absolute;
+  left: 0;
+  top: -20px; /* Ajusta la posición vertical */
+  font-size: 14px;
+  color: #666;
+}
+
+.label-right {
+  position: absolute;
+  right: 0;
+  top: -20px; /* Ajusta la posición vertical */
+  font-size: 14px;
+  color: #666;
+}
+
+/* Escala numérica debajo del input */
+.scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #666;
+}
+
+.form-range-favorite::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #000000;
+  /* clip-path: polygon(50% 0%, 0% 100%, 100% 100%); */
+  border: none;
+  cursor: pointer;
+}
+
+/* Estilos personalizados para el input range */
+.custom-range-favorite {
+  -webkit-appearance: none; /* Elimina el estilo por defecto */
+  appearance: none;
+  width: 100%;
+  height: 5px; /* Altura del track */
+  margin-top: 20px;
+  background: linear-gradient(to right, #FFD700 0%, #FFD700 var(--value, 20%), #ddd var(--value, 20%), #ddd 100%);
+  outline: none;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+/* Thumb: Círculo negro con estrella dorada en el centro */
+.custom-range-favorite::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  background: black; /* Círculo negro */
+  border-radius: 50%; /* Forma circular */
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.custom-range-favorite::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  background: black; /* Círculo negro */
+  border-radius: 50%; /* Forma circular */
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+/* Estrella dorada dentro del thumb */
+.custom-range-favorite::-webkit-slider-thumb::before {
+  content: "★";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  color: #FFD700; /* Color dorado */
+}
+
+.custom-range-favorite::-moz-range-thumb::before {
+  content: "★";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  color: #FFD700; /* Color dorado */
+}
+
+/* Efecto hover en el thumb */
+.custom-range-favorite::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.custom-range-favorite::-moz-range-thumb:hover {
+  transform: scale(1.1);
+}
+
+/* Estilo del track */
+.custom-range-favorite::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 5px; /* Altura del track */
+  background: linear-gradient(to right, #FFD700 0%, #FFD700 var(--value, 20%), #ddd var(--value, 20%), #ddd 100%);
+  border-radius: 5px;
+}
+
+.custom-range-favorite::-moz-range-track {
+  width: 100%;
+  height: 5px; /* Altura del track */
+  background: linear-gradient(to right, #FFD700 0%, #FFD700 var(--value, 20%), #ddd var(--value, 20%), #ddd 100%);
+  border-radius: 5px;
+}
+/* ---------- End Range Favorite --------------- */
+
 /* -- imagen codigo QR --*/
 #qrConsumible {
   position: relative;
@@ -1576,9 +1726,9 @@ height: 4px;
 /* Loader Spinner */
 .loader {
   position: absolute;
-  top: 54.7%;
-  left: 73%;
-  transform: translate(-54.7%, -73%);
+  top: 92.5%;
+  left: 72.5%;
+  transform: translate(-92.5%, -72.5%);
   z-index: 10; /* Asegúrate de que esté encima del QR */
   display: none; /* Se muestra solo cuando tiene la clase 'active' */
   width: 50px; /* Ajusta el tamaño según lo necesario */
@@ -1787,3 +1937,110 @@ height: 4px;
   font-weight: bold;
   color: #1d1d1d; /* Cambia el color si es necesario */
 }
+
+/* Paginacion */
+/* Animaciones */
+.transition-out {
+  animation: fadeOutSlide 0.5s forwards;
+}
+
+.transition-out.left {
+  animation-name: fadeOutSlideLeft;
+}
+
+.transition-out.right {
+  animation-name: fadeOutSlideRight;
+}
+
+.transition-in {
+  animation: fadeInSlide 0.5s forwards;
+}
+
+@keyframes fadeOutSlide {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(-50px); }
+}
+
+@keyframes fadeOutSlideLeft {
+  to { opacity: 0; transform: translateX(-50px); }
+}
+
+@keyframes fadeOutSlideRight {
+  to { opacity: 0; transform: translateX(50px); }
+}
+
+@keyframes fadeInSlide {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Diseño de paginación */
+.main-container-client, .main-container-consumibles {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(80vh - 150px); /* Ajusta según tu header/footer */
+}
+
+.cards-wrapper-client, .cards-wrapper-consumibles{
+  flex: 1;
+  position: relative;
+  min-height: 490px; /* Altura mínima para contener 8 cards + paginación 800px */
+}
+
+.pagination-anchor {
+  position: sticky;
+  bottom: 10px;
+  /* margin-top: auto; */
+  margin: 0.2rem auto;
+  padding: 5px 0;
+  z-index: 50;
+}
+
+.fixed-card {
+  height: 400px; /* Altura uniforme */
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  /* margin-top: 2rem; */
+  margin: 0.5rem auto;
+  padding: 0.5rem;
+}
+
+.pagination-btn {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination-btn:hover:not(.disabled) {
+  background: #1d1d1d;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.pagination-btn.active {
+  background: #1d1d1d;
+  color: white;
+  border-color: #1d1d1d;
+}
+
+.pagination-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-ellipsis {
+  padding: 8px 12px;
+  user-select: none;
+}
+/* End paginacion */

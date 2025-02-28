@@ -22,8 +22,11 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
         try {
             const consumibles = await Consumibles.find({ 
                 visible: true
-            }).sort({ timestamp: -1 });
-
+            }).sort({ 
+                favorito: -1,  // Ordena por "favorito" de mayor a menor
+                timestamp: -1 // Luego ordena por "timestamp" de más reciente a más antiguo
+            });
+            
             if(!consumibles) {
                 return new Error ('No hay consumibles en la DB!')
 
@@ -76,9 +79,17 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
     async getConsumibleByType(type) {
         if(type){
             try {
-                const consumible = await Consumibles.findOne( {type: `${type}`} )
+                const consumible = await Consumibles.findOne(
+                    {type: `${type}`}
+                    .sort({ 
+                        favorito: -1,  // Ordena por "favorito" de mayor a menor
+                        timestamp: -1 // Luego ordena por "timestamp" de más reciente a más antiguo
+                    })
+                )
+                
                 if (consumible) {
                     return null
+                
                 } else {
                     return consumible
                 }
@@ -128,7 +139,7 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
             }
 
             // Manejar campo statusConsumible
-            if (query.statusConsumibles !== 'todas') {
+            if (query.statusConsumibles !== 'todos') {
                 if (query.statusConsumibles === true) {
                     searchQuery.status = true;
                 } else if (query.statusConsumibles === false) {
@@ -139,10 +150,15 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
             }
 
             // Manejar otros campos
-            if (query.typeConsumibles !== 'todas') {
+            if (query.typeConsumibles !== 'todos') {
                 searchQuery.type = query.typeConsumibles;
             }
-            if (query.stockConsumibles !== 'todas') {
+
+            if (query.talleConsumibles !== 'todos') {
+                searchQuery.typeStock = query.talleConsumibles;
+            }
+
+            if (query.stockConsumibles !== 'todos') {
                 if (query.stockConsumibles == 'conStock') {
                     searchQuery.stock = true;
                 } else if(query.stockConsumibles == 'sinStock') {
@@ -183,9 +199,9 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
         if (newConsumible) {
             let designation = newConsumible.designation || "",
                 code = newConsumible.code || "",
-                stockNumber = parseInt(newConsumible.stock) || 1;
+                stockNumber = newConsumible.stock;
             
-            if (!designation || !code || stockNumber === 0 ) {
+            if (!designation || !code || stockNumber == {} ) {
                 process.exit(1)
 
             } else {
@@ -194,7 +210,8 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
                         designation: newConsumible.designation,
                         code: newConsumible.code,
                         type: newConsumible.type,
-                        stock: stockNumber || 1,
+                        tipoTalle: newConsumible.tipoTalle,
+                        stock: stockNumber || { 0: 1 } ,
                         qrCode: newConsumible.qrCode || '',
                         characteristics: newConsumible.characteristics,
                         imageConsumible: newConsumible.imageConsumible,
@@ -202,7 +219,7 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
                         creator: newConsumible.creator,
                         timestamp: newConsumible.timestamp,
                         modificator: newConsumible.modificator,
-                        modifiedOn: '',
+                        modifiedOn: newConsumible.modifiedOn,
                         visible: true
                     }             
 
@@ -251,7 +268,7 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
                                 imageConsumible: imageUrl,
                                 status: status,
                                 modificator: userModificator,
-                                modifiedOn: formatDate()
+                                modifiedOn: new Date()
                             }
                         },
                         { new: true }
@@ -291,7 +308,7 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
                                 visible: inactive,
                                 status: inactive,
                                 modificator: userModificator,
-                                modifiedOn: formatDate()
+                                modifiedOn: new Date()
                             }
                         },
                         { new: true }
@@ -334,7 +351,7 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
                                 {
                                     stock: parseInt(arrayItemsToModify[i].stock),
                                     modificator: arrayItemsToModify[i].modificator,
-                                    modifiedOn: formatDate()
+                                    modifiedOn: new Date()
                                 },
                                 { new: true }
                             )
