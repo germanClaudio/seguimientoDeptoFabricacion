@@ -211,7 +211,8 @@ class ConsumiblesController {
                         modificator: dataUserModificatorEmpty(),
                         modifiedOn: new Date(),
                         visible: true,
-                        favorito: parseInt(req.body.favorite) || 1
+                        favorito: parseInt(req.body.favorite) || 1,
+                        limMaxUser: parseInt(req.body.limMaxUser) || 1
                     };
                     console.log('newConsumible: ', newConsumible)
                     
@@ -313,7 +314,7 @@ class ConsumiblesController {
                         err.statusCode = 400
                         return next(err);
                     }
-                }    
+                }
 
                 const userLogged = await this.users.getUserByUsername(username);
                 !userLogged.visible ? catchError401_3(req, res, next) : null
@@ -330,7 +331,8 @@ class ConsumiblesController {
                     status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
                     modificator: dataUserModificatorNotEmpty(userLogged),
                     modifiedOn: new Date(),
-                    favorito: parseInt(req.body.favorite) || 1
+                    favorito: parseInt(req.body.favorite) || 1,
+                    limMaxUser: parseInt(req.body.limMaxUser) || 1
                 }
 
                 const consumible = await this.consumibles.updateConsumible(consumibleId, updatedConsumible, dataUserModificatorNotEmpty(userLogged))
@@ -422,8 +424,7 @@ class ConsumiblesController {
                     updatedConsumible = {
                         id: idConsumibles[i],
                         stock: stocksConsumibles[i],
-                        modificator: dataUserModificatorNotEmpty(userLogged),
-                        modifiedOn: formatDate()                            
+                        modificator: dataUserModificatorNotEmpty(userLogged)
                     }
                     arrayItemsToModify.push(updatedConsumible)
                 }

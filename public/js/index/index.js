@@ -247,8 +247,8 @@ function processStock(element) {
 }
 
 function cortarTexto(texto) {
-    if (texto.length > 20) {
-        return texto.slice(0, 15) + "...";
+    if (texto.length > 35) {
+        return texto.slice(0, 28) + "...";
     }
     return texto;
 }
@@ -302,6 +302,7 @@ const generarControlesPaginacion = () => {
     return paginationHTML;
 };
 
+// ------------------------------ ADMIN'S ---------------------------------
 const renderConsumiblesAdmin = async (arrConsumibles, page = 1, direction = 'none') => {
         consumiblesGlobales = arrConsumibles;
         currentPage = page;
@@ -317,7 +318,7 @@ const renderConsumiblesAdmin = async (arrConsumibles, page = 1, direction = 'non
         const endIndex = startIndex + itemsPerPage;
         const paginatedItems = arrConsumibles.slice(startIndex, endIndex);
     
-        let html = '', htmlPagination = '';
+        let html = '', htmlPagination = '', redHeart = '';
         
         if (paginatedItems.length > 0) {
             html = paginatedItems.map((element) => {
@@ -327,7 +328,7 @@ const renderConsumiblesAdmin = async (arrConsumibles, page = 1, direction = 'non
 
             let optionStatus = element.status ? green : red,
                 optionStock = totalStock > 0 ? black : red
-                disabled = totalStock > 0 ? 'disabled' : ''
+                disabled = totalStock > 0 ? '' : 'disabled'
             // Obtener configuración según el tipo o usar la configuración por defecto
             const { optionType, showType, textColor } = typeConfigurations[element.type] || defaultConfig;
 
@@ -347,13 +348,19 @@ const renderConsumiblesAdmin = async (arrConsumibles, page = 1, direction = 'non
 
             let designationTrim = cortarTexto(element.designation);
 
+            if (element.favorito === 5) {
+                redHeart = `<i class="fa-solid fa-heart position-absolute top-0 start-100 text-primary" 
+                                style="font-size: 1.8em; z-index: 100 ;transform: translate(-150%, 50%) !important;">
+                            </i>`
+            }
+
             if (element.visible) {
                 return (
-                    `<div class="col">
-                        <div class="card shadow-lg rounded-3 my-2 mx-4 fixed-card">
+                    `<div class="col mb-4">
+                        <div class="card shadow-lg rounded-3 my-2 mx-4 fixed-card h-100 position-relative">
                             <img src="${element.imageConsumible}" class="card-img-top mx-auto px-2 pt-2" alt="Imagen Consumible" style="min-height: 10rem; object-fit: contain;">
                             <div class="card-body d-flex flex-column">
-                                <h7 class="card-title"><strong>${designationTrim}</strong></h7>
+                                <p class="card-title"><strong>${designationTrim}</strong></p>
                                 <p class="card-text flex-grow-1">
                                     Código: ${element.code}<br>
                                     <span class="badge bg-${optionType} text-${textColor}"> ${showType}</span><br>
@@ -367,6 +374,7 @@ const renderConsumiblesAdmin = async (arrConsumibles, page = 1, direction = 'non
                                     </a>
                                 </div>
                             </div>
+                            ${redHeart}
                         </div>
                     </div>`)
             }
@@ -385,72 +393,163 @@ const renderConsumiblesAdmin = async (arrConsumibles, page = 1, direction = 'non
     }, 500);
 }
 
-const renderConsumiblesUser = (arrConsumibles) => {
+//-------------- USUARIOS ------------------
+const renderConsumiblesUser = async (arrConsumibles, page = 1, direction = 'none') => {
+    consumiblesGlobales = arrConsumibles;
+    currentPage = page;
+    
+    const container = document.getElementById('mostrarConsumibles');
+    const pagination = document.getElementById('paginationConsumibles');
+    container.classList.add('transition-out', direction);
+    
+    // Esperar a que termine la animación de salida
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedItems = arrConsumibles.slice(startIndex, endIndex);
 
-    if (arrConsumibles.length > 0) {
-        html = arrConsumibles.map((element) => {
+    let html = '', htmlPagination = '', redHeart = '';
+    
+    if (paginatedItems.length > 0) {
+        html = paginatedItems.map((element) => {
 
-            // Procesar cada elemento
-            processStock(element)
+        // Procesar cada elemento
+        processStock(element)
 
-            let optionStatus = element.status ? green : red,
-                optionStock = totalStock > 0 ? black : red
-            
-            // Obtener configuración según el tipo o usar la configuración por defecto
-            const { optionType, showType, textColor } = typeConfigurations[element.type] || defaultConfig;
+        let optionStatus = element.status ? green : red,
+            optionStock = totalStock > 0 ? black : red
+            disabled = totalStock > 0 ? '' : 'disabled'
+        // Obtener configuración según el tipo o usar la configuración por defecto
+        const { optionType, showType, textColor } = typeConfigurations[element.type] || defaultConfig;
 
-            let showStatus = element.status ? active : inactive,
-                idChain = element._id.substring(19),
-                tipoTalle = 'U',
-                background = 'dark'
-            
-            if (element.tipoTalle === 'talle') {
-                tipoTalle = 'T'
-                background = 'danger'
+        let showStatus = element.status ? active : inactive,
+            // idChain = element._id.substring(19),
+            tipoTalle = 'U',
+            background = 'dark'
+        
+        if (element.tipoTalle === 'talle') {
+            tipoTalle = 'T'
+            background = 'danger'
 
-            } else if (element.tipoTalle === 'numero') {
-                tipoTalle = 'N'
-                background = 'primary'
-            }
+        } else if (element.tipoTalle === 'numero') {
+            tipoTalle = 'N'
+            background = 'primary'
+        }
 
-            let designationTrim = cortarTexto(element.designation);
+        let designationTrim = cortarTexto(element.designation);
 
-            let utcDate = new Date(element.timestamp),
-                utcDateModified = new Date(element.modifiedOn),
-                localDate = new Date(utcDate.getTime() + offset),
-                localDateModified = new Date(utcDateModified.getTime() + offset),
-                formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
-                formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
+        if (element.favorito === 5) {
+            redHeart = `<i class="fa-solid fa-heart position-absolute top-0 start-100 text-primary" 
+                            style="font-size: 1.8em; z-index: 100 ;transform: translate(-150%, 50%) !important;">
+                        </i>`
+        }
 
-                formattedDate === formattedDateModified ? formattedDateModified = '-' : null
-
-            if (element.visible) {
-                return (
-                    `<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
-                        <div class="card shadow-lg rounded-3 m-4" style="width: 15rem; height: 25rem;">
-                            <img src="${element.imageConsumible}" class="card-img-top mx-auto px-2 pt-2" alt="Imagen Consumible" style="min-height: 10rem; object-fit: contain;">
-                            <div class="card-body">
-                                <h6 class="card-title"><strong>${designationTrim}</strong></h6>
-                                <p class="card-text">
-                                    Código: ${element.code}<br>
-                                    Tipo: <span class="badge bg-${optionType} text-${textColor}"> ${showType}</span><br>
-                                    Status: <span class="badge rounded-pill bg-${optionStatus}">${showStatus}</span><br>
-                                    Tipo Stock: <span class="badge bg-${background} text-light">${tipoTalle}</span>
-                                    Stock: <span class="badge rounded-pill bg-${optionStock} text-light">${totalStock}</span>
-                                </p>
-                                <div class="card-footer card-footer-client">
-                                    <a class="btn mx-auto text-light my-1 small ${disabled}" type="submit" href="/api/consumibles/update/${element._id}" style="background-color: #1d1d1d;">
-                                        <i class="icon-basket"></i> Info Consumible
-                                    </a>
-                                </div>
+        if (element.visible) {
+            return (
+                `<div class="col mb-4">
+                    <div class="card shadow-lg rounded-3 my-2 mx-4 fixed-card h-100 position-relative">
+                        <img src="${element.imageConsumible}" class="card-img-top mx-auto px-2 pt-2" alt="Imagen Consumible" style="min-height: 10rem; object-fit: contain;">
+                        <div class="card-body d-flex flex-column">
+                            <p class="card-title"><strong>${designationTrim}</strong></p>
+                            <p class="card-text flex-grow-1">
+                                Código: ${element.code}<br>
+                                <span class="badge bg-${optionType} text-${textColor}"> ${showType}</span><br>
+                                <span class="badge rounded-pill bg-${optionStatus}">${showStatus}</span><br>
+                                Tipo Stock: <span class="badge bg-${background} text-light">${tipoTalle}</span> / 
+                                Stock: <span class="badge rounded-pill bg-${optionStock} text-light">${totalStock}</span>
+                            </p>
+                            <div class="card-footer card-footer-client">
+                                <a class="btn mx-auto text-light my-1 small ${disabled}" type="submit" href="/api/carts/add/${element._id}" style="background-color: #1d1d1d;">
+                                    <i class="icon-basket"></i> Info Consumible
+                                </a>
                             </div>
                         </div>
-                    </div>`)
-            }
-        }).join(" ");
+                        ${redHeart}
+                    </div>
+                </div>`)
+        }
+    }).join(" ");
 
-    document.getElementById('mostrarConsumibles').innerHTML = html
-
-    }
+    htmlPagination = generarControlesPaginacion();
 }
+container.innerHTML = html;
+pagination.innerHTML = htmlPagination;
+container.classList.remove('transition-out', 'left', 'right');
+container.classList.add('transition-in', direction);
+
+// Remover clases de animación después de completar
+setTimeout(() => {
+    container.classList.remove('transition-in', direction);
+}, 500);
+}
+
+
+// const renderConsumiblesUser = (arrConsumibles) => {
+//     if (arrConsumibles.length > 0) {
+//         html = arrConsumibles.map((element) => {
+
+//             // Procesar cada elemento
+//             processStock(element)
+
+//             let optionStatus = element.status ? green : red,
+//                 optionStock = totalStock > 0 ? black : red
+            
+//             // Obtener configuración según el tipo o usar la configuración por defecto
+//             const { optionType, showType, textColor } = typeConfigurations[element.type] || defaultConfig;
+
+//             let showStatus = element.status ? active : inactive,
+//                 idChain = element._id.substring(19),
+//                 tipoTalle = 'U',
+//                 background = 'dark'
+            
+//             if (element.tipoTalle === 'talle') {
+//                 tipoTalle = 'T'
+//                 background = 'danger'
+
+//             } else if (element.tipoTalle === 'numero') {
+//                 tipoTalle = 'N'
+//                 background = 'primary'
+//             }
+
+//             let designationTrim = cortarTexto(element.designation);
+
+//             let utcDate = new Date(element.timestamp),
+//                 utcDateModified = new Date(element.modifiedOn),
+//                 localDate = new Date(utcDate.getTime() + offset),
+//                 localDateModified = new Date(utcDateModified.getTime() + offset),
+//                 formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
+//                 formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
+
+//                 formattedDate === formattedDateModified ? formattedDateModified = '-' : null
+
+//             if (element.visible) {
+//                 return (
+//                     `<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
+//                         <div class="card shadow-lg rounded-3 m-4" style="width: 15rem; height: 25rem;">
+//                             <img src="${element.imageConsumible}" class="card-img-top mx-auto px-2 pt-2" alt="Imagen Consumible" style="min-height: 10rem; object-fit: contain;">
+//                             <div class="card-body">
+//                                 <h6 class="card-title"><strong>${designationTrim}</strong></h6>
+//                                 <p class="card-text">
+//                                     Código: ${element.code}<br>
+//                                     Tipo: <span class="badge bg-${optionType} text-${textColor}"> ${showType}</span><br>
+//                                     Status: <span class="badge rounded-pill bg-${optionStatus}">${showStatus}</span><br>
+//                                     Tipo Stock: <span class="badge bg-${background} text-light">${tipoTalle}</span>
+//                                     Stock: <span class="badge rounded-pill bg-${optionStock} text-light">${totalStock}</span>
+//                                 </p>
+//                                 <div class="card-footer card-footer-client">
+//                                     <a class="btn mx-auto text-light my-1 small ${disabled}" type="submit" href="/api/consumibles/update/${element._id}" style="background-color: #1d1d1d;">
+//                                         <i class="icon-basket"></i> Info Consumible
+//                                     </a>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                     </div>`)
+//             }
+//         }).join(" ");
+
+//     document.getElementById('mostrarConsumibles').innerHTML = html
+
+//     }
+// }
 

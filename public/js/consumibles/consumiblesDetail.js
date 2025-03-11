@@ -144,7 +144,7 @@ dropAreaConsumibleUpdate.addEventListener('click', () => {
 fileInputConsumibleUpdate.addEventListener('change', (e) => {
     e.preventDefault()
     const file = fileInputConsumibleUpdate.files[0]
-    console.log('file: ', file)
+    // console.log('file: ', file)
     if (file && file.type.startsWith('image/')) {
         Object.assign(dropAreaConsumibleUpdate.style, {
             border: "3px dashed #2d2",
@@ -222,7 +222,7 @@ let inputsDeTexto = document.querySelectorAll('input[type="text"], textarea, inp
             newValue = newValue.replace(/[áéíóúÁÉÍÓÚñÑ]/g, function(match) {
                 return accentedChars[match];
             });
-            console.log('input: ', input)
+            // console.log('input: ', input)
             // Actualizar el valor del input
             input.value = newValue;
         });
@@ -262,10 +262,10 @@ let inputsSelect = document.querySelectorAll('select')
 
 let type = document.getElementById('type'),
     codeInput = document.getElementById('code'),
-    stockInput = document.getElementById('stock')
-
+    stockInput = document.getElementById('stock'),
     typeHidden = document.getElementById('typeHidden'),
-    codeHidden = document.getElementById("codeHidden");
+    codeHidden = document.getElementById("codeHidden"),
+    favorite = document.getElementById("favorite");
 
     // Crear una nueva instancia de MutationObserver y pasar una función de callback
 const observer = new MutationObserver(function(mutationsList, observer) {
@@ -414,6 +414,7 @@ function handleTipoTalleChange(tipo) {
     const stockInput = document.getElementById("stock");
     const talles = ['a','b','c','d','e','f','g','h','i','j'];
     const numeros = Array.from({ length: 31 }, (_, i) => `num${i + 35}`);
+    const btnHeadTipoStock = document.getElementById('btnHeadTipoStock')
 
     // Resetear y deshabilitar todos los inputs de stock
     resetAndDisableInputs([...talles, ...numeros]);
@@ -422,6 +423,7 @@ function handleTipoTalleChange(tipo) {
         // Habilitar el campo de stock total
         stockInput.disabled = false;
         stockInput.value = 1;
+        btnHeadTipoStock.innerText = 'Tipo de Stock (Unico)'
 
     } else if (tipo === "talle") {
         // Habilitar los checkboxes de talles
@@ -430,6 +432,7 @@ function handleTipoTalleChange(tipo) {
         });
         stockInput.disabled = true;
         stockInput.value = calcularSumaStocks(talles);
+        btnHeadTipoStock.innerText = 'Tipo de Stock (Talle)'
 
     } else if (tipo === "numero") {
         // Habilitar los checkboxes de números
@@ -438,6 +441,7 @@ function handleTipoTalleChange(tipo) {
         });
         stockInput.disabled = true;
         stockInput.value = calcularSumaStocks(numeros);
+        btnHeadTipoStock.innerText = 'Tipo de Stock (Números)'
     }
 }
 
@@ -635,10 +639,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const updateTrackFill = () => {
         const value = (rangeInput.value - rangeInput.min) / (rangeInput.max - rangeInput.min) * 100;
         rangeInput.style.setProperty('--value', `${value}%`);
+        rangeInput.value = (value / 100)*5
     };
 
     // Establecer el valor inicial y actualizar el relleno
-    rangeInput.value = 1; // Valor por defecto
+    // rangeInput.value = 1; // Valor por defecto
     updateTrackFill(); // Actualizar el relleno inicial
 
     // Escuchar cambios en el input range

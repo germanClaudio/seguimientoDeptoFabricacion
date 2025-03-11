@@ -33,6 +33,10 @@ let ItemSchema = new Schema({
         default: '',
         trim: true,
     },
+    tipoTalle: {
+        type: String,
+        default: 'unico'
+    },
     quantity: {
         type: Number,
         required: true,
@@ -45,6 +49,12 @@ let ItemSchema = new Schema({
     timestamp: {
         type: String,
         default: now,
+    },
+    favorito: {
+        type: Number,
+        default: 1,
+        min: 0,
+        max: 5
     }
 })
 

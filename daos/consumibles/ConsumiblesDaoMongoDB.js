@@ -220,7 +220,9 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
                         timestamp: newConsumible.timestamp,
                         modificator: newConsumible.modificator,
                         modifiedOn: newConsumible.modifiedOn,
-                        visible: true
+                        visible: true,
+                        favorito: parseInt(newConsumible.favorite) || 1,
+                        limMaxUser: parseInt(newConsumible.limMaxUser) || 1
                     }             
 
                     const newConsumibleCreated = new Consumibles(nuevoConsumible)
@@ -238,59 +240,74 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
         }
     }
 
-    async updateConsumible(id, updatedConsumible, userModificator) {    
-        if (id && updatedConsumible && userModificator) {
-            try {
-                const consumibleMongoDB = await Consumibles.findById( { _id: id } )
-                let imageUrl = '', designation = '', characteristics = '', code = '', type = '', qrCode = '', status = '', stock = ''
-                
-                updatedConsumible.imageConsumible !== '' ? imageUrl = updatedConsumible.imageConsumible : imageUrl = consumibleMongoDB.imageConsumible
-                updatedConsumible.designation !== '' ? designation = updatedConsumible.designation : designation = consumibleMongoDB.designation
-                updatedConsumible.characteristics !== '' ? characteristics = updatedConsumible.characteristics : characteristics = consumibleMongoDB.characteristics
-                updatedConsumible.code !== '' ? code = updatedConsumible.code : code = consumibleMongoDB.code
-                updatedConsumible.type !== '' ? type = updatedConsumible.type : type = consumibleMongoDB.type
-                updatedConsumible.qrCode !== '' ? qrCode = updatedConsumible.qrCode : qrCode = consumibleMongoDB.qrCode
-                updatedConsumible.stock !== '' ? stock = updatedConsumible.stock : stock = consumibleMongoDB.stock
-                updatedConsumible.status !== '' ? status = updatedConsumible.status : status = consumibleMongoDB.status
-
-                
-                if(consumibleMongoDB) {
-                    var updatedFinalConsumible = await Consumibles.updateOne(
-                        { _id: consumibleMongoDB._id  },
-                        {
-                            $set: {
-                                designation: designation,
-                                code: code,
-                                type: type,
-                                qrCode: qrCode,
-                                stock: parseInt(stock),
-                                characteristics: characteristics,
-                                imageConsumible: imageUrl,
-                                status: status,
-                                modificator: userModificator,
-                                modifiedOn: new Date()
-                            }
-                        },
-                        { new: true }
-                    )
-
-                    return updatedFinalConsumible.acknowledged ?
-                        await Consumibles.findById({ _id: id }) 
-                        :
-                        new Error(`No se actualizó el item: ${itemUpdated._id}`);
-
-                } else {
-                    return new Error(`No existe el item Consumible con este id: ${itemUpdated._id} `)
-                }
-
-            } catch (error) {
-                console.error("Error MongoDB updateConsumible: ", error)
-                return new Error (`No se pudo actualizar el consumible!`)
+    async updateConsumible(id, updatedConsumible, userModificator) {
+        if (!id || !updatedConsumible || !userModificator) {
+            throw new Error('Faltan parámetros requeridos: id, datos actualizados o usuario modificador');
+        }
+    
+        try {
+            const consumibleMongoDB = await Consumibles.findById(id);
+            if (!consumibleMongoDB) {
+                throw new Error(`No existe el consumible con id: ${id}`);
             }
 
-        } else {
-            console.info('El Consumible, los datos o el modificador no existen! ', updatedConsumible)
-            return new Error (`No se pudo actualizar el Consumible!`)
+            // Determinar campos actualizados
+            const getField = (field) => updatedConsumible.hasOwnProperty(field) && updatedConsumible[field] !== '' ? updatedConsumible[field] : consumibleMongoDB[field];
+    
+            const designation = getField('designation'),
+                code = getField('code'),
+                type = getField('type'),
+                qrCode = getField('qrCode'),
+                characteristics = getField('characteristics'),
+                imageConsumible = getField('imageConsumible'),
+                status = getField('status'),
+                tipoTalle = getField('tipoTalle'),
+                favorito = parseInt(getField('favorito')) || consumibleMongoDB.favorito,
+                limMaxUser = parseInt(getField('limMaxUser')) || 1
+            
+                // Manejo del stock
+            let stock = consumibleMongoDB.stock;
+            if (updatedConsumible.hasOwnProperty('stock')) {
+                if (tipoTalle === 'unico') {
+                    const stockValue = parseInt(updatedConsumible.stock['0'], 10);
+                    stock = !isNaN(stockValue) ? { '0': stockValue } : stock;
+                } else {
+                    stock = typeof updatedConsumible.stock === 'object' ? updatedConsumible.stock : stock;
+                }
+            }
+    
+            // Actualizar documento
+            const updateResult = await Consumibles.updateOne(
+                { _id: id },
+                {
+                    $set: {
+                        designation,
+                        code,
+                        type,
+                        qrCode,
+                        stock,
+                        characteristics,
+                        imageConsumible,
+                        status: Boolean(status),
+                        tipoTalle,
+                        modificator: userModificator,
+                        modifiedOn: new Date(),
+                        favorito,
+                        limMaxUser
+                    }
+                },
+                { new: true }
+            );
+    
+            if (!updateResult.acknowledged) {
+                throw new Error('Error al actualizar el consumible');
+            }
+    
+            return await Consumibles.findById(id);
+    
+        } catch (error) {
+            console.error('Error en updateConsumible:', error);
+            throw error;
         }
     }
 
@@ -341,15 +358,25 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
                     const itemMongoDB = await Consumibles.findById({ _id: arrayItemsToModify[i].id })
                     
                     // Si encontro el proyecto en la BBDD ----- 
-                    if (itemMongoDB) {
-                        // Recupero los datos originales y comparo,
-                        let stockInitial = itemMongoDB.stock 
+                    if (itemMongoDB && itemMongoDB.tipoTalle === 'unico') {
                         
-                        if (stockInitial !== parseInt(arrayItemsToModify[i].stock)) {
+                        function calculateStockInitial(stockMap) {
+                            let total = 0
+                            for (const value of stockMap.values()) {
+                                total += value;
+                            }
+                            return total
+                        }
+                        let stockInitial = calculateStockInitial(itemMongoDB.stock)
+
+                        const stockValue = parseInt(arrayItemsToModify[i].stock);
+                        let stock = !isNaN(stockValue) ? { '0': stockValue } : { '0': stockInitial };
+
+                        if (stockInitial !== stockValue) {
                             await Consumibles.updateOne(
                                 { _id: itemMongoDB._id },
                                 {
-                                    stock: parseInt(arrayItemsToModify[i].stock),
+                                    stock: stock,
                                     modificator: arrayItemsToModify[i].modificator,
                                     modifiedOn: new Date()
                                 },

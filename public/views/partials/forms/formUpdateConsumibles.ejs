@@ -99,16 +99,23 @@
                     <input type="text" name="code" id="code" class="form-control" value="<%=consumible.code%>" placeholder="Código" required>
                 </div>
 
-                <div class="col-6 mx-auto">
+                <div class="col-4 mx-auto">
                     <label for="characteristics">Características</label>
                     <textarea type="text" name="characteristics" id="characteristics" class="form-control" rows="3"><%=consumible.characteristics%></textarea>
                 </div>
 
+                <div class="col-2">
+                    <label for="limMaxUser">Límite Max. por Usuario</label>
+                    <input type="number" name="limMaxUser" id="limMaxUser" class="form-control px-3" min="1" max="10" value="<%= consumible.limMaxUser || 1 %>" required>
+                </div>
+
                 <div class="col mx-auto">
                     <div class="range-container-favorite">
-                        <label class="label-left" for="favorite">Menos Solicitado</label>
-                        <label class="label-right" for="favorite">Más Solicitado</label>
-                        <input type="range" class="form-range-favorite custom-range-favorite" min="0" max="5" step="1" value="<%= consumible.favorito %>" id="favorite">
+                        <label class="label-left" for="favorite">- Solicitado</label>
+                        <label class="label-right" for="favorite">+ Solicitado</label>
+                        <input id="favorite" name="favorite" type="range" class="form-range-favorite custom-range-favorite"
+                                min="0" max="5" step="1" value="<%= consumible.favorito %>"
+                                style="--value: <%= (consumible.favorito / 5) * 100 %>%;">
                         <div class="scale">
                             <span>0</span>
                             <span>1</span>
@@ -164,10 +171,17 @@
                 <div class="accordion my-4 mx-2" id="accordionTalle">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
-                            <% let buttonCollapsed = '', expanded = false, show = '';
-                            stockTotal.llaves != 1 ? ( buttonCollapsed = 'collapsed', expanded = true, show = 'show' ) : null %>
-                            <button class="accordion-button bg-light <%= buttonCollapsed %>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="<%= expanded %>" aria-controls="collapseOne">
-                                Tipo de Stock (Único / Talle / Número)
+                            <% let buttonCollapsed = '', expanded = false, show = '', labelBtn = '';
+                            stockTotal.llaves != 1 ? ( buttonCollapsed = 'collapsed', expanded = true, show = 'show' ) : null
+                            
+                            stockTotal.keysSonLetras
+                            ? labelBtn = 'Tipo de Stock (Talle)'
+                            : stockTotal.keysSonNumeros && consumible.stock.size === 1
+                                ? labelBtn = 'Tipo de Stock (Unico)'
+                                : labelBtn = 'Tipo de Stock (Números)' 
+                            %>
+                            <button id="btnHeadTipoStock" class="accordion-button bg-light <%= buttonCollapsed %>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="<%= expanded %>" aria-controls="collapseOne">
+                                <%= labelBtn %>
                             </button>
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse <%= show %>" aria-labelledby="headingOne" data-bs-parent="#accordionTalle" style="background-color: #b6b6b6;">
@@ -206,16 +220,9 @@
                                                 talleDisabled = talleCheck !== 'checked' ? 'disabled' : '';
 
                                                 const letterMapping = {
-                                                    'a': 'XS',
-                                                    'b': 'S',
-                                                    'c': 'M',
-                                                    'd': 'L',
-                                                    'e': 'XL',
-                                                    'f': '2XL',
-                                                    'g': '3XL',
-                                                    'h': '4XL',
-                                                    'i': '5XL',
-                                                    'j': '6XL'
+                                                    'a': 'XS', 'b': 'S', 'c': 'M',
+                                                    'd': 'L', 'e': 'XL', 'f': '2XL',
+                                                    'g': '3XL', 'h': '4XL', 'i': '5XL', 'j': '6XL'
                                                 };
                                             
                                             function individualsStock(valorIndividual) {
@@ -335,8 +342,8 @@
                         </div>
                     <% } else { %>
                         <div class="d-flex justify-content-center m-2">
-                            <a class="btn btn-primary mx-auto my-2 shadow" href="/api/consumibles">Volver <i class="fa-solid fa-arrow-left"></i></a>
-                            <button id="btnUpdateConsumibles" class="btn btn-success mx-auto my-2 shadow disabled" disabled>Actualizar <i class="fa-solid fa-ban"></i></button>
+                            <a class="btn btn-primary mx-auto my-2 shadow" href="/api/consumibles/solicitud">Volver <i class="fa-solid fa-arrow-left"></i></a>
+                            <button class="btn btn-success mx-auto my-2 shadow disabled" disabled>Actualizar <i class="fa-solid fa-ban"></i></button>
                         </div>
                     <% } %>
                 </div>

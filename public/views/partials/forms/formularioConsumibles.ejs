@@ -120,10 +120,16 @@
             
             <!-- Sección Caracateristicas -->
             <div class="row my-2 mx-auto">    
-                <div class="col-8">
+                <div class="col-6">
                     <label for="characteristics">Características</label>
                     <textarea type="text" name="characteristics" id="characteristics" placeholder="Características del consumible" class="form-control" rows="3"></textarea>
                 </div>
+
+                <div class="col-2">
+                    <label for="limMaxUser">Límite Max. por Usuario</label>
+                    <input type="number" name="limMaxUser" id="limMaxUser" class="form-control px-3" min="1" max="10" value="1" required>
+                </div>
+
                 <div class="col">
                     <div class="range-container-favorite">
                         <label class="label-left" for="favorite">Menos Solicitado</label>

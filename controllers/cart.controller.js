@@ -188,14 +188,16 @@ class CartsController {
                         designation: productDetails.designation,
                         code: productDetails.code,
                         type: productDetails.type,
+                        tipoTalle: productDetails.tipoTalle,
                         imageConsumible: productDetails.imageConsumible || consumiblePictureNotFound,
                         qrCode: productDetails.qrCode,
                         characteristics: productDetails.characteristics,
                         timestamp: formatDate(),
-                        quantity: quantity
+                        quantity: quantity,
+                        favorito: productDetails.favorito
                     })
                 
-                } else { //----if quantity of price is 0 throw the error -------
+                } else { //----if quantity is 0 throw the error -------
                     catchError500(err, req, res, next)
                 }
 
@@ -226,11 +228,13 @@ class CartsController {
                         designation: productDetails.designation,
                         code: productDetails.code,
                         type: productDetails.type,
+                        tipoTalle: productDetails.tipoTalle,
                         imageConsumible: productDetails.imageConsumible || consumiblePictureNotFound,
                         qrCode: productDetails.qrCode,
                         characteristics: productDetails.characteristics,
                         quantity: quantity,
                         timestamp: formatDate(),
+                        favorito: productDetails.favorito
                     }],
                     userId: usuarios._id,
                     creator: dataUserCreator(userCreator),
@@ -327,11 +331,13 @@ class CartsController {
                             designation: arrayItemAddedToCart[i].itemDetails.designation,
                             code: arrayItemAddedToCart[i].itemDetails.code,
                             type: arrayItemAddedToCart[i].itemDetails.type,
+                            tipoTalle: arrayItemAddedToCart[i].itemDetails.tipoTalle,
                             imageConsumible: arrayItemAddedToCart[i].itemDetails.imageConsumible || consumiblePictureNotFound,
                             qrCode: arrayItemAddedToCart[i].itemDetails.qrCode,
                             characteristics: arrayItemAddedToCart[i].itemDetails.characteristics,
                             quantity: arrayItemAddedToCart[i].itemQuantity,
-                            timestamp: formatDate()
+                            timestamp: formatDate(),
+                            favorito: arrayItemAddedToCart[i].favorito
                         })
                         cart.modifiedOn = formatDate()
                     }
@@ -363,11 +369,13 @@ class CartsController {
                             designation: arrayItemAddedToCart[i].itemDetails.designation,
                             code: arrayItemAddedToCart[i].itemDetails.code,
                             type: arrayItemAddedToCart[i].itemDetails.type,
+                            tipoTalle: arrayItemAddedToCart[i].itemDetails.tipoTalle,
                             imageConsumible: arrayItemAddedToCart[i].itemDetails.imageConsumible || consumiblePictureNotFound,
                             qrCode: arrayItemAddedToCart[i].itemDetails.qrCode,
                             characteristics: arrayItemAddedToCart[i].itemDetails.characteristics,
                             quantity: arrayItemAddedToCart[i].itemQuantity,
-                            timestamp: formatDate()
+                            timestamp: formatDate(),
+                            favorito: arrayItemAddedToCart[i].favorito
                         }
                     )
                 }

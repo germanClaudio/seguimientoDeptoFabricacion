@@ -108,7 +108,7 @@ function saveChangesMessage(flag, link, event) {
             cancelButtonText: 'No guardar cambios <i class="fa-solid fa-cart-shopping fa-rotate-by" style="--fa-rotate-angle: 45deg;"></i>'
 
         }).then((result) => {
-            console.log('result: ', result)
+            // console.log('result: ', result)
             if (result.isConfirmed) {
                 const submitAction = document.getElementById("formSaveCart")
                 submitAction.submit()
@@ -143,10 +143,45 @@ function incrementValue(consumibleId) {
             quantitySpan = document.getElementById(`itemQuantity_${consumibleId}`),
             btnDecrement = document.getElementById(`btnDecrement_${consumibleId}`),
             btnIncrement = document.getElementById(`btnIncrement_${consumibleId}`),
-            stockDisponibleItem = parseInt(document.getElementById(`stock_${consumibleId}`).value)
+            stockDisponibleItem = parseInt(document.getElementById(`stock_${consumibleId}`).value),
+            typeConsumible = document.getElementById(`tipoConsumible_${consumibleId}`).innerText,
+            limMaxUser = document.getElementById(`limMaxUser_${consumibleId}`).value
+
         
         let stockDiponible10 = Math.floor(stockDisponibleItem / 10),
             currentQuantity = parseInt(quantityInput.value, 10);
+
+        if (typeConsumible.toLocaleLowerCase() === 'ropa') {
+            btnIncrement.setAttribute('disabled', true)
+            currentQuantity
+            Swal.fire({
+                title: 'Advertencia',
+                position: 'center',
+                timer: 3000,
+                timerProgressBar: true,
+                text: `Lo sentimos, NO puede solicitar mas de 1 prenda por vez!`,
+                icon: 'warning',
+                showCancelButton: false,
+                showConfirmButton: true,
+            })
+            return false
+        }
+
+        if (parseInt(currentQuantity) === parseInt(limMaxUser)) {
+            btnIncrement.setAttribute('disabled', true)
+            currentQuantity
+            Swal.fire({
+                title: 'Advertencia',
+                position: 'center',
+                timer: 3000,
+                timerProgressBar: true,
+                text: `Lo sentimos, alcanzó el límite máximo por usuario!`,
+                icon: 'warning',
+                showCancelButton: false,
+                showConfirmButton: true,
+            })
+            return false
+        }
 
         if (stockDisponibleItem >= 10) {
             if (parseInt(currentQuantity) === parseInt(stockDiponible10)) {
@@ -155,7 +190,7 @@ function incrementValue(consumibleId) {
                 Swal.fire({
                     title: 'Advertencia',
                     position: 'center',
-                    timer: 4000,
+                    timer: 3000,
                     timerProgressBar: true,
                     text: `Lo sentimos, NO puede solicitar mas del 10% del stock disponible!`,
                     icon: 'warning',
@@ -175,7 +210,7 @@ function incrementValue(consumibleId) {
                 Swal.fire({
                     title: 'Advertencia',
                     position: 'center',
-                    timer: 4000,
+                    timer: 3000,
                     timerProgressBar: true,
                     text: `Lo sentimos, stock disponible del ítem insuficiente!`,
                     icon: 'warning',

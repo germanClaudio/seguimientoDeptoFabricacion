@@ -96,12 +96,12 @@ async function uploadToGCS(req, res, next) {
 
     blobStream.on('finish', () => {
         req.file.cloudStorageObject = `${cleanOriginalName}`;
-        console.log('cleanOriginalName: ', cleanOriginalName)
-        console.log('blob.name: ', blob.name)
+        // console.log('cleanOriginalName: ', cleanOriginalName)
+        // console.log('blob.name: ', blob.name)
         req.file.cloudStoragePublicUrl = `https://storage.googleapis.com/${bucket.name}/${folderName}/${subFolderName}/${blob.name}`;
     });
     blobStream.end(data)
-    console.log('Llego acá!!')
+    //console.log('Llego acá!!')
 }
 
 Promise.all(uploadToGCS)

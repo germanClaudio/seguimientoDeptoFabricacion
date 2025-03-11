@@ -333,7 +333,7 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
                                             <div class="col m-auto">
                                                 <a class="btn text-light small" type="submit" href="/api/clientes/select/${element._id}"
                                                     style="background-color: #6c757d; font-size: .85rem; width: 4em;" title="Editar cliente ${element.name}">
-                                                        <i class="fa-regular fa-pen-to-square"></i>
+                                                        <i class="fa-solid fa-pen-to-square"></i>
                                                 </a>
                                             </div>
                                             <div class="col m-auto">
@@ -381,7 +381,7 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
                                             <div class="col m-auto">
                                                 <a class="btn text-light small ${disabled}" type="submit" href="/api/clientes/select/${element._id}"
                                                     style="background-color: #6c757d; font-size: .85rem; width: 4em;" title="Editar cliente ${element.name}">
-                                                        <i class="fa-regular fa-pen-to-square"></i>
+                                                        <i class="fa-solid fa-pen-to-square"></i>
                                                 </a>
                                             </div>
                                             <div class="col m-auto">
@@ -1110,7 +1110,7 @@ const searchConsumibles = () => {
         stockConsumibles = document.getElementById('stockConsumible').value;
         
     statusConsumibles != 'todos' ? statusConsumibles === 'activos' ? statusConsumibles = true : statusConsumibles = false : null
-        
+    
     socket.emit('searchConsumibleAll', {
         queryConsumibles,
         statusConsumibles,
@@ -1123,6 +1123,8 @@ const searchConsumibles = () => {
 
 const renderSearchedConsumibles = (arrConsumiblesSearch) => {
     document.getElementById('showCountConsumiblesSearch').innerHTML = ''
+
+    let userRol = (document.getElementById('mostrarRolUser').innerText).trim().toLowerCase();
 
     if(!arrConsumiblesSearch) {
         const htmlSearchConsumiblesNull = (
@@ -1188,30 +1190,9 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
                 consumiblesMeca: { label: 'Consumibles Mecanizado', class: 'dark', text: 'light' },
                 otros: { label: 'Otros', class: 'info', text: 'dark' }
             };
-            let color = '';
-        
-            // Determinar valores dinámicos
-            const optionStatus = statusClasses[element.status] || 'danger',
-                { label: showType, class: optionType, text: optionText } = typeMapping[element.type] || typeMapping.default,
-                showStatus = element.status ? 'Activo' : 'Inactivo',
-                optionStock = element.stock > 0 ? 'dark' : 'danger',
-                disabled = element.visible ? '' : 'disabled';
-                
-        
-            let tipoTalle = 'U',
-                background = 'dark',
-                disabledStockNull = '';
-            
-            if (element.tipoTalle === 'talle') {
-                tipoTalle = 'T'
-                background = 'danger'
+            let color = '', redHeart = '';
 
-            } else if (element.tipoTalle === 'numero') {
-                tipoTalle = 'N'
-                background = 'primary'
-            }
-
-                // Función para extraer y mostrar los datos del campo stock
+            // Función para extraer y mostrar los datos del campo stock
             let size, total, totalStock = 0
             function processStock(element) {
                 if (Object.keys(element.stock).length > 1) { // Si hay múltiples talles
@@ -1232,49 +1213,97 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
             // Procesar cada elemento
             processStock(element)
 
-            totalStock === 0 ? (color = 'background-color:rgba(215, 0, 0, 0.36)', disabledStockNull = 'disabled') : color
             
+            // Determinar valores dinámicos
+            const optionStatus = statusClasses[element.status] || 'danger',
+                { label: showType, class: optionType, text: optionText } = typeMapping[element.type] || typeMapping.default,
+                showStatus = element.status ? 'Activo' : 'Inactivo',
+                optionStock = totalStock > 0 ? 'dark' : 'danger',
+                disabled = element.visible ? '' : 'disabled';
+        
+            let tipoTalle = 'U',
+                background = 'dark',
+                disabledStockNull = '',
+                disabledInputCardCheck = '';
+            
+            if (element.tipoTalle === 'talle') {
+                tipoTalle = 'T'
+                background = 'danger'
+                userRol !== 'user' ? disabledInputCardCheck = 'disabled' : null 
+
+            } else if (element.tipoTalle === 'numero') {
+                tipoTalle = 'N'
+                background = 'primary'
+                userRol !== 'user' ? disabledInputCardCheck = 'disabled' : null
+            }
+
+            totalStock === 0 ? (color = 'background-color:rgba(215, 0, 0, 0.36)', disabledStockNull = 'disabled') : color
+            totalStock === 0 && userRol === 'user' ? disabledInputCardCheck = 'disabled' : null
+
+            if (element.favorito === 5) {
+                redHeart = `<i class="fa-solid fa-heart position-absolute top-0 start-0 text-primary" 
+                                style="font-size: 1.7em; z-index: 100 ;transform: translate(150%, 50%) !important;">
+                            </i>`
+            }
+
             // Retornar el HTML generado
             return (`
-                <div class="col mx-auto">
-                    <div class="card mx-auto rounded-2 shadow-lg" id="cardSelected_${element._id}" style="max-width: 540px; ${color}">
-                        <div class="row align-items-center">
-                            <div class="col-md-4 text-center">
-                                <img src="${element.imageConsumible}" style="max-width=170px; object-fit: contain;"
-                                    class="img-fluid rounded p-1 mx-2" alt="Consumibles"><br>
-                                <input class="form-check-input border border-2 border-primary shadow-lg rounded mt-auto" type="checkbox" value=""
-                                    id="inputCheckConsumibleCard_${element._id}" name="inputCheckConsumibleCard">
-                            </div>
-                            <div class="col-md-8 border-start">
+                <div class="col mx-auto h-100 position-relative">
+                    <div class="card mx-auto rounded-2 shadow-lg h-100 d-flex flex-column" id="cardSelected_${element._id}" style="${color}">
+                        <div class="row g-0 flex-grow-1">
+                            
+                            <div class="col-md-4 text-center d-flex align-items-center">
                                 <div class="card-body">
-                                    <h6 id="cardDesignation_${element._id}" class="card-title"><strong>${element.designation}</strong></h6>
-                                    Código: <span id="cardCodigo_${element._id}" class="my-1"><strong>${element.code}</strong></span><br>
-                                    <span id="cardTipo_${element._id}" class="badge rounded-pill bg-${optionType} text-${optionText} my-1 me-2">${showType}</span> - 
-                                    <span class="badge rounded-pill bg-${optionStatus} my-1 ms-2">${showStatus}</span><br>
-                                    Tipo Stock: <span class="badge bg-${background} text-light">${tipoTalle}</span> / 
-                                    Stock: <span id="cardStock_${element._id}" class="badge bg-${optionStock} text-light">${totalStock}</span><br>
+                                    <img id="imageConsumible_${element._id}" src="${element.imageConsumible}" 
+                                        style="max-width:170px; object-fit: contain;"
+                                        class="img-fluid rounded p-3" alt="Consumibles">
+                                    <br>
+                                    <input class="form-check-input border border-2 border-primary shadow-lg rounded mt-2" 
+                                        type="checkbox" id="inputCheckConsumibleCard_${element._id}" ${disabledInputCardCheck}>
                                 </div>
-                                <div class="card-footer px-2">
-                                    <div class="row">
-                                        <div class="col m-auto me-1">
-                                            <a class="btn text-light small ${disabledStockNull}" ${disabled} title="Añadir al carrito" type="submit" href="/api/carts/add/${element._id}"
-                                                style="background-color:rgb(17, 115, 0); font-size: .85rem; width: auto;">
-                                                Añadir al <i class="fa-solid fa-cart-plus"></i>
-                                            </a>
-                                        </div>
-                                        <div class="col m-auto ms-1">
-                                            <a class="btn text-light small" ${disabled} title="Actualizar Info" type="submit" href="/api/consumibles/${element._id}"
-                                                style="background-color: #272787; font-size: .85rem; width: auto;">
-                                                Ver Info <i class="fa-solid fa-circle-info"></i>
-                                            </a>
-                                        </div>
-                                    </div>
+                            </div>
+
+                            <div class="col-md-8">
+                                <div class="card-body h-100 d-block flex-column">
+                                    <p id="cardDesignation_${element._id}" class="card-title"><strong>${element.designation}</strong></p>
+                                    Código: <span id="cardCodigo_${element._id}" class="my-1"><strong>${element.code}</strong></span><br>
+                                    <span id="cardTipo_${element._id}" class="badge rounded-pill bg-${optionType} text-${optionText} my-1">
+                                        ${showType}
+                                    </span>
+                                    <br>
+                                    <span class="badge rounded-pill bg-${optionStatus} my-1">
+                                        ${showStatus}
+                                    </span>
+                                    <br>
+                                    Tipo Stock: <span class="badge bg-${background} text-light">${tipoTalle}</span> /
+                                    Stock: <span id="cardStock_${element._id}" class="badge bg-${optionStock} text-light">${totalStock}</span>
+                                    <div class="mt-auto"></div>
+                                    <input id="limMaxUser_${element._id}" class="d-none" type="hidden" value="${element.limMaxUser}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer px-2 mt-auto">
+                            <div class="row">
+                                <div class="col m-auto me-1">
+                                    <a class="btn text-light small ${disabledStockNull}" ${disabled}
+                                        style="background-color:rgb(17, 115, 0); font-size: .85rem;"
+                                        href="/api/carts/add/${element._id}">
+                                        Añadir al <i class="fa-solid fa-cart-plus"></i>
+                                    </a>
+                                </div>
+                                <div class="col m-auto ms-1">
+                                    <a class="btn text-light small" ${disabled}
+                                        style="background-color: #272787; font-size: .85rem;"
+                                        href="/api/consumibles/${element._id}">
+                                        Ver Info <i class="fa-solid fa-circle-info"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>`
-            );
+                    ${redHeart}
+                </div>`);
         }).join(" ");
 
         let mensaje = ''
@@ -1412,15 +1441,15 @@ const renderSearchedOrdenes = (arrOrdenesSearch) => {
             if (!element.active) {
                 btnConfiguration = `<button type="button" class="btn btn-secondary btn-sm disabled"><i class="fa-solid fa-truck-fast"></i></button>
                                     <button type="button" class="btn btn-secondary btn-sm disabled"><i class="fa-solid fa-car"></i></button>
-                                    <button type="button" class="btn btn-secondary btn-sm disabled"><i class="fa-regular fa-trash-can"></i></button>`
+                                    <button type="button" class="btn btn-secondary btn-sm disabled"><i class="fa-solid fa-trash-can"></i></button>`
             } else if (btnPreprared && !btnDelivered) {
                 btnConfiguration = `<button type="button" class="btn btn-secondary btn-sm disabled"><i class="fa-solid fa-truck-fast"></i></button>
                                     <button id="btnCardDeliverOrder_${element._id}" name="btnDeliverOrder" type="button" class="btn btn-success btn-sm" title="Entregar Orden ...${idChain}"><i class="fa-solid fa-car"></i></button>
-                                    <button id="${element._id}" name="btnCardDeleteOrder" type="button" class="btn btn-danger btn-sm" title="Eliminar Orden ...${idChain}"><i class="fa-regular fa-trash-can"></i></button>`
+                                    <button id="${element._id}" name="btnCardDeleteOrder" type="button" class="btn btn-danger btn-sm" title="Eliminar Orden ...${idChain}"><i class="fa-solid fa-trash-can"></i></button>`
             } else {
                 btnConfiguration = `<button id="btnCardPrepareOrder_${element._id}" name="btnPrepareOrder" type="button" class="btn btn-warning btn-sm" title="Preparar Orden ...${idChain}"><i class="fa-solid fa-truck-fast"></i></button>
                                     <button id="btnCardDeliverOrder_${element._id}" name="btnDeliverOrder" type="button" class="btn btn-success btn-sm" title="Entregar Orden ...${idChain}"><i class="fa-solid fa-car"></i></button>
-                                    <button id="${element._id}" name="btnCardDeleteOrder" type="button" class="btn btn-danger btn-sm" title="Eliminar Orden ...${idChain}"><i class="fa-regular fa-trash-can"></i></button>`
+                                    <button id="${element._id}" name="btnCardDeleteOrder" type="button" class="btn btn-danger btn-sm" title="Eliminar Orden ...${idChain}"><i class="fa-solid fa-trash-can"></i></button>`
             }
             // Retornar el HTML generado
             return (`
@@ -1641,8 +1670,8 @@ const renderSearchedOrdenesUser = (arrOrdenesSearch) => {
             : btnPreprared = Boolean(true);
         
             !element.active
-            ? btnConfiguration = `<button type="button" class="btn btn-secondary btn-sm disabled"><i class="fa-regular fa-trash-can"></i></button>`
-            : btnConfiguration = `<button id="${element._id}" name="btnCardDeleteOrder" type="button" class="btn btn-danger btn-sm" title="Eliminar Orden ...${idChain}"><i class="fa-regular fa-trash-can"></i></button>`;
+            ? btnConfiguration = `<button type="button" class="btn btn-secondary btn-sm disabled"><i class="fa-solid fa-trash-can"></i></button>`
+            : btnConfiguration = `<button id="${element._id}" name="btnCardDeleteOrder" type="button" class="btn btn-danger btn-sm" title="Eliminar Orden ...${idChain}"><i class="fa-solid fa-trash-can"></i></button>`;
         
             let utcDate = new Date(element.timestamp),
                 localDate = new Date(utcDate.getTime() + offset),
@@ -1748,7 +1777,7 @@ const renderSearchedOrdenesUser = (arrOrdenesSearch) => {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             focusConfirm: false,
-            confirmButtonText: 'Eliminarlo! <i class="fa-regular fa-trash-can"></i>',
+            confirmButtonText: 'Eliminarlo! <i class="fa-solid fa-trash-can"></i>',
             cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>'
     
         }).then((result) => {
