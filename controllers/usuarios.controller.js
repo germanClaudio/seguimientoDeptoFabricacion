@@ -587,6 +587,7 @@ class UsersController {
                                 herramientas,
                                 consumibles,
                                 proveedores,
+                                userCart,
                                 ordenes
                             })
                         }, 250)
@@ -861,6 +862,7 @@ class UsersController {
                             consumibles,
                             proveedores,
                             ordenes,
+                            userCart,
                             csrfToken
                         })
                     }, 150)

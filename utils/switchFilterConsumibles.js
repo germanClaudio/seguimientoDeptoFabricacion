@@ -27,8 +27,7 @@ async function switchFilterConsumibles(Consumibles, designationAndCodeQuery) {
     if (designationAndCodeQuery.typeStock !== 'todos' && typesStock.includes(designationAndCodeQuery.typeStock)) {
         query.typeStock = designationAndCodeQuery.typeStock;
     }
-    console.log('query: ', query)
-    console.log('designationAndCodeQuery: ', designationAndCodeQuery)
+    
     // Procesar campo stock
     if (designationAndCodeQuery.stock !== 'todos' && typeof designationAndCodeQuery.stock === 'boolean') {
         if (designationAndCodeQuery.stock === true) {
@@ -39,7 +38,7 @@ async function switchFilterConsumibles(Consumibles, designationAndCodeQuery) {
             console.error("Valor inválido para stock:", designationAndCodeQuery.stock);
         }
     }
-    
+    console.log('A-query switch: ', query)
     // Ejecutar consulta
     const resultados = Object.keys(query).length > 0
         ? await Consumibles.find(query)

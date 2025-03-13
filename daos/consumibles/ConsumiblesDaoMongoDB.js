@@ -168,8 +168,11 @@ class ConsumiblesDaoMongoDB extends ContainerMongoDB {
                 }
             }
 
+            console.log('1-searchQuery Dao: ', searchQuery)
+
             // Ejecutar consulta
             const resultados = await switchFilterConsumibles(Consumibles, searchQuery);
+            console.log('2-resultados Dao: ', resultados)
             return resultados.length ? resultados : false;
     
         } catch (error) {

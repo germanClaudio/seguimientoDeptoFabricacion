@@ -55,6 +55,12 @@ let ItemSchema = new Schema({
         default: 1,
         min: 0,
         max: 5
+    },
+    limMaxUser: {
+        type: Number,
+        default: 1,
+        min: 0,
+        max: 30
     }
 })
 

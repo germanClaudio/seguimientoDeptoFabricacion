@@ -145,15 +145,15 @@ function incrementValue(consumibleId) {
             btnIncrement = document.getElementById(`btnIncrement_${consumibleId}`),
             stockDisponibleItem = parseInt(document.getElementById(`stock_${consumibleId}`).value),
             typeConsumible = document.getElementById(`tipoConsumible_${consumibleId}`).innerText,
-            limMaxUser = document.getElementById(`limMaxUser_${consumibleId}`).value
+            limMaxUser = document.getElementById(`limMaxUser_${consumibleId}`);
 
-        
         let stockDiponible10 = Math.floor(stockDisponibleItem / 10),
             currentQuantity = parseInt(quantityInput.value, 10);
 
         if (typeConsumible.toLocaleLowerCase() === 'ropa') {
-            btnIncrement.setAttribute('disabled', true)
-            currentQuantity
+            btnIncrement.setAttribute('disabled', true);
+            quantitySpan.classList.remove('bg-secondary', 'text-light');
+            quantitySpan.classList.add('bg-warning', 'text-dark');
             Swal.fire({
                 title: 'Advertencia',
                 position: 'center',
@@ -163,13 +163,14 @@ function incrementValue(consumibleId) {
                 icon: 'warning',
                 showCancelButton: false,
                 showConfirmButton: true,
-            })
-            return false
+            });
+            return false;
         }
 
-        if (parseInt(currentQuantity) === parseInt(limMaxUser)) {
-            btnIncrement.setAttribute('disabled', true)
-            currentQuantity
+        if (parseInt(currentQuantity) === parseInt(limMaxUser.value)) {
+            btnIncrement.setAttribute('disabled', true);
+            quantitySpan.classList.remove('bg-secondary', 'text-light');
+            quantitySpan.classList.add('bg-warning', 'text-dark');
             Swal.fire({
                 title: 'Advertencia',
                 position: 'center',
@@ -179,14 +180,15 @@ function incrementValue(consumibleId) {
                 icon: 'warning',
                 showCancelButton: false,
                 showConfirmButton: true,
-            })
-            return false
+            });
+            return false;
         }
 
         if (stockDisponibleItem >= 10) {
             if (parseInt(currentQuantity) === parseInt(stockDiponible10)) {
-                btnIncrement.setAttribute('disabled', true)
-                currentQuantity
+                btnIncrement.setAttribute('disabled', true);
+                quantitySpan.classList.remove('bg-secondary', 'text-light');
+                quantitySpan.classList.add('bg-warning', 'text-dark');
                 Swal.fire({
                     title: 'Advertencia',
                     position: 'center',
@@ -196,17 +198,18 @@ function incrementValue(consumibleId) {
                     icon: 'warning',
                     showCancelButton: false,
                     showConfirmButton: true,
-                })
-    
+                });
             } else {
-                btnIncrement.removeAttribute('disabled')
+                btnIncrement.removeAttribute('disabled');
                 currentQuantity++;
+                quantitySpan.classList.remove('bg-warning', 'text-dark');
+                quantitySpan.classList.add('bg-secondary', 'text-light');
             }
-
         } else {
             if (parseInt(currentQuantity) === stockDisponibleItem) {
-                btnIncrement.setAttribute('disabled', true)
-                currentQuantity
+                btnIncrement.setAttribute('disabled', true);
+                quantitySpan.classList.remove('bg-secondary', 'text-light');
+                quantitySpan.classList.add('bg-warning', 'text-dark');
                 Swal.fire({
                     title: 'Advertencia',
                     position: 'center',
@@ -216,18 +219,19 @@ function incrementValue(consumibleId) {
                     icon: 'warning',
                     showCancelButton: false,
                     showConfirmButton: true,
-                })
-    
+                });
             } else {
-                btnIncrement.removeAttribute('disabled')
+                btnIncrement.removeAttribute('disabled');
                 currentQuantity++;
+                quantitySpan.classList.remove('bg-warning', 'text-dark');
+                quantitySpan.classList.add('bg-secondary', 'text-light');
             }
         }
         quantityInput.value = currentQuantity;
         quantitySpan.textContent = currentQuantity;
 
-        currentQuantity>1 ? btnDecrement.removeAttribute('disabled') : btnDecrement.setAttribute('disabled', true)
-        
+        currentQuantity > 1 ? btnDecrement.removeAttribute('disabled') : btnDecrement.setAttribute('disabled', true);
+
         updateSummary(consumibleId);
     }
 }
@@ -239,7 +243,8 @@ function decrementValue(consumibleId) {
             quantitySpan = document.getElementById(`itemQuantity_${consumibleId}`),
             btnDecrement = document.getElementById(`btnDecrement_${consumibleId}`),
             btnIncrement = document.getElementById(`btnIncrement_${consumibleId}`),
-            stockDisponibleItem = parseInt(document.getElementById(`stock_${consumibleId}`).value)
+            stockDisponibleItem = parseInt(document.getElementById(`stock_${consumibleId}`).value),
+            limMaxUser = document.getElementById(`limMaxUser_${consumibleId}`);
 
         let stockDiponible10 = Math.floor(stockDisponibleItem / 10),
             currentQuantity = parseInt(quantityInput.value, 10);
@@ -250,19 +255,24 @@ function decrementValue(consumibleId) {
             quantityInput.value = currentQuantity;
             quantitySpan.textContent = currentQuantity;
 
-            currentQuantity>1
-            ? btnDecrement.removeAttribute('disabled')
-            : btnDecrement.setAttribute('disabled', true)
-            
+            currentQuantity > 1
+                ? btnDecrement.removeAttribute('disabled')
+                : btnDecrement.setAttribute('disabled', true);
+
             if (stockDisponibleItem >= 10) {
-                currentQuantity<stockDiponible10
-                ? btnIncrement.removeAttribute('disabled')
-                : btnIncrement.setAttribute('disabled', true)
-            
+                currentQuantity < stockDiponible10
+                    ? btnIncrement.removeAttribute('disabled')
+                    : btnIncrement.setAttribute('disabled', true);
             } else {
-                currentQuantity<stockDisponibleItem
-                ? btnIncrement.removeAttribute('disabled')
-                : btnIncrement.setAttribute('disabled', true)
+                currentQuantity < stockDisponibleItem
+                    ? btnIncrement.removeAttribute('disabled')
+                    : btnIncrement.setAttribute('disabled', true);
+            }
+
+            // Cambiar las clases del quantitySpan cuando se decrementa
+            if (currentQuantity < parseInt(limMaxUser.value) && currentQuantity < stockDiponible10 && currentQuantity < stockDisponibleItem) {
+                quantitySpan.classList.remove('bg-warning', 'text-dark');
+                quantitySpan.classList.add('bg-secondary', 'text-light');
             }
 
             updateSummary(consumibleId);
@@ -332,9 +342,11 @@ if(btnEmptyCart) {
 
 // Generar PO de carrito
 function message(cartId) {
-    let arrayConsumiblesId = [], arrayQuantities = []            
+    let arrayConsumiblesId = [], arrayQuantities = [], arrayTipoTalle = [], arrayTipoStock = [], arrayTipoStockDefinied = []
     const consumiblesId = document.getElementsByName('consumibleId'),
-        quantities = document.getElementsByName('quantity')
+        quantities = document.getElementsByName('quantity'),
+        tipoTalle = document.getElementsByName('tipoTalle'),
+        tipoStock = document.getElementsByName('tipoStockDefined')
 
     consumiblesId.forEach(id =>{
         arrayConsumiblesId.push(id.value)
@@ -344,11 +356,38 @@ function message(cartId) {
         arrayQuantities.push(id.value)
     })
 
+    tipoTalle.forEach(id =>{
+        arrayTipoTalle.push(id.innerText)
+    })
+
+    tipoStock.forEach(id =>{
+        arrayTipoStock.push(id.value)
+    })
+
+    // Recorremos el array arrayTipoTalle
+    let tipoStockIndex = 0; // Índice para recorrer arrayTipoStock
+    for (let i = 0; i < arrayTipoTalle.length; i++) {
+        if (arrayTipoTalle[i] === "U") {
+            arrayTipoStockDefinied.push(0); // Si es "U", agregamos 0
+        } else if (arrayTipoTalle[i] === "N" || arrayTipoTalle[i] === "T") {
+            // Si es "N" o "T", agregamos el valor correspondiente de arrayTipoStock
+            if (tipoStockIndex < arrayTipoStock.length) {
+                arrayTipoStockDefinied.push(arrayTipoStock[tipoStockIndex]);
+                tipoStockIndex++; // Avanzamos al siguiente elemento de arrayTipoStock
+            } else {
+                // Si no hay más elementos en arrayTipoStock, agregamos un valor por defecto (por ejemplo, null)
+                arrayTipoStockDefinied.push(null);
+            }
+        }
+    }
+
     let html = `Está seguro que desea continuar?
             <form id="formGenerateOrder" action="/api/carts/generateOrder" method="post">
                 <input type="hidden" id="cartIdHidden" name="cartId" value="${cartId}">
                 <input type="hidden" id="consumiblesIdHidden" name="consumiblesId" value="${arrayConsumiblesId}">
                 <input type="hidden" id="quantitiesHidden" name="quantities" value="${arrayQuantities}">
+                <input type="hidden" id="tipoTalleHidden" name="tipoTalle" value="${arrayTipoTalle}">
+                <input type="hidden" id="tipoStockHidden" name="tipoStock" value="${arrayTipoStockDefinied}">
             </form>`
 
     Swal.fire({
@@ -383,10 +422,10 @@ function message(cartId) {
 }
 
 const btnGenerateOrder = document.getElementById('btnGenerateOrder')
-    if (btnGenerateOrder) {
-        btnGenerateOrder.addEventListener('click', (event) => {
-            event.preventDefault()
-            const cartId = document.getElementById('cartId').value
-            message(cartId)
-        })
-    }
+if (btnGenerateOrder) {
+    btnGenerateOrder.addEventListener('click', (event) => {
+        event.preventDefault()
+        const cartId = document.getElementById('cartId').value
+        message(cartId)
+    })
+}

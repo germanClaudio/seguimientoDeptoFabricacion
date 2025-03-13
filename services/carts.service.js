@@ -17,8 +17,8 @@ class CartService {
     }
 
     // reduce quantity of all products from one Cart when shopping is done
-    async reduceStockProduct(data) {
-        return this.carritos.reduceStockProduct(data)
+    async reduceStockProduct(data, array) {
+        return this.carritos.reduceStockProduct(data, array)
     }
 
     // returns a cart by Id

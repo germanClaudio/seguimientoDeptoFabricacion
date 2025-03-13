@@ -60,18 +60,6 @@ class CartsController {
         }
     }
 
-    // ------- reduce stock consumibles when PO is generated ---------------
-    reduceStockProduct = async (req, res, next) => {
-        try {
-            const userLogged = await this.users.getUserByUsername(username);
-            !userLogged.visible ? catchError401_3(req, res, next) : null
-            return arrStockProduct
-        }
-        catch (err) {
-            catchError400_1(err, req, res, next)
-        }    
-    }
-
     // ---------------- Get Cart by Id ---------------
     getCart = async (req, res, next) => {
         const { id } = req.params,
@@ -163,6 +151,8 @@ class CartsController {
                 userId = usuarios._id
                 !usuarios ? catchError401_3(req, res, next) : null
 
+            let maxQuantityRequested = Number.parseInt(1);
+
             const userCreator = await this.users.getUserById(userId)
             !userCreator ? catchError401_3(req, res, next) : null
             
@@ -179,23 +169,46 @@ class CartsController {
                 
                 //----check if product exist, just add the previous quantity with the new quantity and update the total price---
                 if (indexFound !== -1) {
-                    cart.items[indexFound].quantity = cart.items[indexFound].quantity + quantity
+                    maxQuantityRequested = parseInt(cart.items[indexFound].quantity + quantity)
+                    cart.items[indexFound].quantity <= productDetails.limMaxUser && maxQuantityRequested <= productDetails.limMaxUser
+                    ? cart.items[indexFound].quantity = cart.items[indexFound].quantity + quantity
+                    : cart.items[indexFound].quantity = productDetails.limMaxUser
+                    
                     cart.modifiedOn = formatDate()
                 
                 } else if (quantity > 0) { //----Check if Quantity is Greater than 0 then add item to items Array ----
-                    cart.items.push({
-                        consumibleId: productDetails.id,
-                        designation: productDetails.designation,
-                        code: productDetails.code,
-                        type: productDetails.type,
-                        tipoTalle: productDetails.tipoTalle,
-                        imageConsumible: productDetails.imageConsumible || consumiblePictureNotFound,
-                        qrCode: productDetails.qrCode,
-                        characteristics: productDetails.characteristics,
-                        timestamp: formatDate(),
-                        quantity: quantity,
-                        favorito: productDetails.favorito
-                    })
+                    if (quantity <= productDetails.limMaxUser) {
+                        cart.items.push({
+                            consumibleId: productDetails.id,
+                            designation: productDetails.designation,
+                            code: productDetails.code,
+                            type: productDetails.type,
+                            tipoTalle: productDetails.tipoTalle,
+                            imageConsumible: productDetails.imageConsumible || consumiblePictureNotFound,
+                            qrCode: productDetails.qrCode,
+                            characteristics: productDetails.characteristics,
+                            timestamp: formatDate(),
+                            quantity: quantity,
+                            favorito: productDetails.favorito,
+                            limMaxUser: productDetails.limMaxUser
+                        })
+
+                    } else {
+                        cart.items.push({
+                            consumibleId: productDetails.id,
+                            designation: productDetails.designation,
+                            code: productDetails.code,
+                            type: productDetails.type,
+                            tipoTalle: productDetails.tipoTalle,
+                            imageConsumible: productDetails.imageConsumible || consumiblePictureNotFound,
+                            qrCode: productDetails.qrCode,
+                            characteristics: productDetails.characteristics,
+                            timestamp: formatDate(),
+                            quantity: productDetails.limMaxUser,
+                            favorito: productDetails.favorito,
+                            limMaxUser: productDetails.limMaxUser
+                        })
+                    }
                 
                 } else { //----if quantity is 0 throw the error -------
                     catchError500(err, req, res, next)
@@ -234,7 +247,8 @@ class CartsController {
                         characteristics: productDetails.characteristics,
                         quantity: quantity,
                         timestamp: formatDate(),
-                        favorito: productDetails.favorito
+                        favorito: productDetails.favorito,
+                        limMaxUser: productDetails.limMaxUser
                     }],
                     userId: usuarios._id,
                     creator: dataUserCreator(userCreator),
@@ -274,11 +288,13 @@ class CartsController {
         const expires = cookie(req)
 
         try {
-            let arrayInputQuantityNumber=[], idItemHidden=[]
+            let arrayInputQuantityNumber=[], idItemHidden=[], arrayLimMaxUser=[],
+                maxQuantityRequested = Number.parseInt(1)
 
             const prefixes = [
                 { prefix: 'inputQuantityNumber_', array: arrayInputQuantityNumber },
-                { prefix: 'idItemHidden_', array: idItemHidden }
+                { prefix: 'idItemHidden_', array: idItemHidden },
+                { prefix: 'limMaxUser_', array: arrayLimMaxUser }
             ];
         
             for (const key in req.body) {
@@ -298,12 +314,13 @@ class CartsController {
                     let itemAddedToCart = {
                         itemIdNumber: idItemHidden[i],
                         itemQuantity: Number.parseInt(arrayInputQuantityNumber[i]),
-                        itemDetails: productDetails
+                        itemDetails: productDetails,
+                        itemLimMaxUser: Number.parseInt(arrayLimMaxUser[i])
                     }
                     arrayItemAddedToCart.push(itemAddedToCart)
                 }
             }
-
+            
             const usuarios = await this.users.getUserByUsername(username),
                 userId = usuarios._id
             !usuarios ? catchError401_3(req, res, next) : null
@@ -322,24 +339,50 @@ class CartsController {
                     
                     //----check if product exist, just add the previous quantity with the new quantity and update the total price---
                     if (indexFound !== -1) {
-                        cart.items[indexFound].quantity = cart.items[indexFound].quantity + arrayItemAddedToCart[i].itemQuantity
+                        maxQuantityRequested = parseInt(cart.items[indexFound].quantity + arrayItemAddedToCart[i].itemQuantity)
+
+                        cart.items[indexFound].quantity <= arrayItemAddedToCart[i].itemLimMaxUser && maxQuantityRequested <= arrayItemAddedToCart[i].itemLimMaxUser
+                        ? cart.items[indexFound].quantity = cart.items[indexFound].quantity + arrayItemAddedToCart[i].itemQuantity
+                        : cart.items[indexFound].quantity = arrayItemAddedToCart[i].itemLimMaxUser
+                        
                         cart.modifiedOn = formatDate()
                     
                     } else { //if (arrayItemAddedToCart[i].itemQuantity > 0)  ----Check if Quantity is Greater than 0 then add item to items Array ----
-                        cart.items.push({
-                            consumibleId: arrayItemAddedToCart[i].itemIdNumber,
-                            designation: arrayItemAddedToCart[i].itemDetails.designation,
-                            code: arrayItemAddedToCart[i].itemDetails.code,
-                            type: arrayItemAddedToCart[i].itemDetails.type,
-                            tipoTalle: arrayItemAddedToCart[i].itemDetails.tipoTalle,
-                            imageConsumible: arrayItemAddedToCart[i].itemDetails.imageConsumible || consumiblePictureNotFound,
-                            qrCode: arrayItemAddedToCart[i].itemDetails.qrCode,
-                            characteristics: arrayItemAddedToCart[i].itemDetails.characteristics,
-                            quantity: arrayItemAddedToCart[i].itemQuantity,
-                            timestamp: formatDate(),
-                            favorito: arrayItemAddedToCart[i].favorito
-                        })
-                        cart.modifiedOn = formatDate()
+                    
+                        if (arrayItemAddedToCart[i].itemQuantity <= arrayItemAddedToCart[i].itemLimMaxUser) {
+                            cart.items.push({
+                                consumibleId: arrayItemAddedToCart[i].itemIdNumber,
+                                designation: arrayItemAddedToCart[i].itemDetails.designation,
+                                code: arrayItemAddedToCart[i].itemDetails.code,
+                                type: arrayItemAddedToCart[i].itemDetails.type,
+                                tipoTalle: arrayItemAddedToCart[i].itemDetails.tipoTalle,
+                                imageConsumible: arrayItemAddedToCart[i].itemDetails.imageConsumible || consumiblePictureNotFound,
+                                qrCode: arrayItemAddedToCart[i].itemDetails.qrCode,
+                                characteristics: arrayItemAddedToCart[i].itemDetails.characteristics,
+                                quantity: arrayItemAddedToCart[i].itemQuantity,
+                                timestamp: formatDate(),
+                                favorito: arrayItemAddedToCart[i].itemDetails.favorito,
+                                limMaxUser: arrayItemAddedToCart[i].itemLimMaxUser
+                            })
+                            cart.modifiedOn = formatDate()
+
+                        } else {
+                            cart.items.push({
+                                consumibleId: arrayItemAddedToCart[i].itemIdNumber,
+                                designation: arrayItemAddedToCart[i].itemDetails.designation,
+                                code: arrayItemAddedToCart[i].itemDetails.code,
+                                type: arrayItemAddedToCart[i].itemDetails.type,
+                                tipoTalle: arrayItemAddedToCart[i].itemDetails.tipoTalle,
+                                imageConsumible: arrayItemAddedToCart[i].itemDetails.imageConsumible || consumiblePictureNotFound,
+                                qrCode: arrayItemAddedToCart[i].itemDetails.qrCode,
+                                characteristics: arrayItemAddedToCart[i].itemDetails.characteristics,
+                                quantity: arrayItemAddedToCart[i].itemLimMaxUser,
+                                timestamp: formatDate(),
+                                favorito: arrayItemAddedToCart[i].favorito,
+                                limMaxUser: arrayItemAddedToCart[i].itemLimMaxUser
+                            })
+                            cart.modifiedOn = formatDate()
+                        }
                     }
                 }
                     const userCart = await cart.save(),
@@ -375,7 +418,8 @@ class CartsController {
                             characteristics: arrayItemAddedToCart[i].itemDetails.characteristics,
                             quantity: arrayItemAddedToCart[i].itemQuantity,
                             timestamp: formatDate(),
-                            favorito: arrayItemAddedToCart[i].favorito
+                            favorito: arrayItemAddedToCart[i].favorito,
+                            limMaxUser: arrayItemAddedToCart[i].limMaxUser
                         }
                     )
                 }
@@ -542,17 +586,22 @@ class CartsController {
         }
     }
 
-    // --- Generate P.O. in pdf format, empty the Cart and send an email to Admin ------
+    // --- Generate P.O. in pdf format, empty the Cart, reduce stock and send an email to Admin ------
     genOrderCart = async (req, res, next) => {
         let username = res.locals.username,
             userInfo = res.locals.userInfo,
             arrayItemsQty = [],
-            arrayConsumiblesId = [];
+            arrayConsumiblesId = [],
+            arrayTipoTalle = [],
+            arrayTipoStock = [];            
 
         const expires = cookie(req),
-            id = req.body.cartId
+            id = req.body.cartId;
+
         arrayItemsQty = req.body.quantities.split(',')
         arrayConsumiblesId = req.body.consumiblesId.split(',')
+        arrayTipoTalle = req.body.tipoTalle.split(',')
+        arrayTipoStock = req.body.tipoStock.split(',')
         
         if (id) {
             //------ Storage New Order pdf in Google Store --------        
@@ -569,7 +618,7 @@ class CartsController {
                         const dateInvoice = formatDateInvoice(),
                             invoiceNumber = (cart._id.toString()).concat('_',dateInvoice),
                             pathPdfFile = `https://storage.googleapis.com/imagenesproyectosingenieria/upload/PdfOrders/Invoice_${invoiceNumber}.pdf`,
-                        
+                
                             invoice = {
                                 shipping: {
                                     name: usuario.name,
@@ -590,14 +639,14 @@ class CartsController {
                                 active: Boolean(true),
                                 prepared: Boolean(false),
                             }
-                        
+                
                         const invoiceName = `Invoice_${invoiceNumber}.pdf`,
-                            pdfFileOrderBuffer = createInvoice(invoice)
+                            pdfFileOrderBuffer = createInvoice(invoice, arrayTipoStock)
 
                             if (err) {
                                 return next(err);
                             }
-                            
+                
                             // Subir el PDF a Google Cloud Storage
                             uploadPdfToGCS(req, res, next, invoiceName, pdfFileOrderBuffer)
                                 .then(() => {
@@ -606,17 +655,17 @@ class CartsController {
                                 .catch((error) => {
                                     console.error('Error uploading PDF:', error);
                                 });
-                        
+                
                         // ------------ Save order in DataBase ---------------
                         let pathOrder = pathPdfFile, //`src/images/output/Invoice_${invoice.invoice_nr}.pdf`,
                             orderGenerated = await this.carts.genOrderCart(cart, invoice)
-                        
+                
                         // ------------ Reduce stock quantity -------------------
-                        let stockReduced = await this.carts.reduceStockProduct(cart)
+                        let stockReduced = await this.carts.reduceStockProduct(cart, arrayTipoStock)
                         !stockReduced ? catchError401_3(req, res, next) : null
                         // ------------ Empty the cart -------------------
                         cart = await this.carts.emptyCart(id)
-                        
+                
                         //////////////////// gmail to Administrator //////////////////////
                         const { createTransport } = require('nodemailer'),
                             TEST_EMAIL = process.env.TEST_EMAIL,
@@ -649,6 +698,7 @@ class CartsController {
                             try {
                                 const info = await transporter.sendMail(mailOptions)
                                 // console.log(info)
+
                             } catch (err) {
                                 console.log('Error enviando mail: ', err)
                             }
@@ -656,7 +706,7 @@ class CartsController {
 
                         const ordenes = await this.orders.getAllOrdersByUserId(usuario)
                         !ordenes ? catchError400_5(req, res, next) : null
-                        
+                
                         const userCart = cart
                         return res.render('orderGenerated', {
                             data,
@@ -670,9 +720,10 @@ class CartsController {
                             pathOrder,
                             expires
                         })
-                    
+                
                     } else {
                         console.log('Error! El Carrito está vacío')
+                        catchError500(err, req, res, next)
                     }     
                 }
 

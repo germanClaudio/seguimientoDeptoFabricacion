@@ -13,8 +13,12 @@
 	if (!userCart._id || userCart.items.length === 0) { %>
 		<div class="shadow bg-body rounded w-75 text-center align-items-center my-4 mx-auto p-3" id="emptiedCart">
             <h5>Tu carrito está vacío, puedes seleccionar ítems haciendo clic en el botón de abajo!</h5>
-            <a class="btn btn-primary mt-3 mb-2 w-25" href="/api/auth/indexToolShop"><i class="fa-solid fa-cart-plus"></i> Seleccionar ítems... </a>
-        </div>
+			<% if (userInfo.admin) { %>
+            	<a class="btn btn-primary mt-3 mb-2 w-25" href="/api/auth/index"><i class="fa-solid fa-cart-plus"></i> Seleccionar ítems... </a>
+			<% } else { %>
+				<a class="btn btn-primary mt-3 mb-2 w-25" href="/api/auth/indexToolShop"><i class="fa-solid fa-cart-plus"></i> Seleccionar ítems... </a>
+			<% } %>
+		</div>
 
 	<% } else { %>
 		<div class="mx-auto shadow p-3 mb-4 bg-body rounded w-75" id="mostrarItemsCarts">
@@ -102,7 +106,7 @@
 									let arrayFromResult = Array.from(result.stock) %>
 
 									<strong>Tipo de Stock:</strong> 
-										<span class="badge badge-pill bg-<%= background %> ms-3" id="itemTipoTalle_<%= userCart.items[i].consumibleId %>">
+										<span class="badge badge-pill bg-<%= background %> ms-3" name="tipoTalle" id="itemTipoTalle_<%= userCart.items[i].consumibleId %>">
 											<%= tipoTalle %>
 										</span>
 								</div>
@@ -116,8 +120,8 @@
 										};
 
 									if (arrProducts[i].tipoTalle === 'talle') { %>
-										<label class="form-select-label me-2 my-auto" for="talleDefined"><strong>Talle: </strong></label>
-										<select class="form-select w-25 me-3" aria-label=".form-select" name="talleDefined" id="talleDefined">
+										<label class="form-select-label me-2 my-auto" for="tipoStockDefined_<%=i%>"><strong>Talle: </strong></label>
+										<select class="form-select w-25 me-3" aria-label=".form-select" name="tipoStockDefined" id="tipoStockDefined_<%=i%>">
 											<% for (let t = 0; arrayLetras.length > t; t++) {
 												let letter = arrayLetras[t],
 													letterCapital = arrayLetras[t].toUpperCase(), 
@@ -130,8 +134,8 @@
 										</select>
 						
 									<% } else if (arrProducts[i].tipoTalle === 'numero') { %>
-										<label class="form-select-label me-2 my-auto" for="numeroDefined"><strong>Número: </strong></label>
-										<select class="form-select w-25 me-3" aria-label=".form-select" name="numeroDefined" id="numeroDefined">
+										<label class="form-select-label me-2 my-auto" for="tipoStockDefined_<%=i%>"><strong>Número: </strong></label>
+										<select class="form-select w-25 me-3" aria-label=".form-select" name="tipoStockDefined" id="tipoStockDefined_<%=i%>">
 											<% for (let n = 35; n <= 65; n++) {
 												if (arrayFromResult.length > 0 && arrayFromResult[n-35] > 0) {	%>
 													<option value="<%= n %>"><%= n %></option>
@@ -149,7 +153,11 @@
 									<input type="hidden" name="limMaxUser" value="<%= userCart.items[i].limMaxUser %>" 
 										id="limMaxUser_<%= userCart.items[i].consumibleId %>">
 									
-									<span class="mx-3" id="itemQuantity_<%= userCart.items[i].consumibleId %>"><%= userCart.items[i].quantity %></span>
+									<% if ( userCart.items[i].quantity === userCart.items[i].limMaxUser) { %>
+										<span class="mx-3 fw-bold bg-warning text-dark px-2 rounded" id="itemQuantity_<%= userCart.items[i].consumibleId %>"><%= userCart.items[i].quantity %></span>
+									<% } else { %>
+										<span class="mx-3 fw-bold bg-secondary text-light px-2 rounded" id="itemQuantity_<%= userCart.items[i].consumibleId %>"><%= userCart.items[i].quantity %></span>
+									<% } %>
 									
 									<input type="hidden" name="stock" id="stock_<%= userCart.items[i].consumibleId %>" value="<%= result.totalStock %>"/>
 									<input type="hidden" name="consumibleId" id="consumibleId_<%= userCart.items[i].consumibleId %>" value="<%= userCart.items[i].consumibleId %>"/>

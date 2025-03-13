@@ -594,10 +594,19 @@ document.addEventListener("DOMContentLoaded", () => {
                                             </i>`
                                             : '' }
                                     </td>
-                                    <td><input type="number" name="inputQuantityNumber_${extractIdNumber(data.id)}" class="form-control" value="1" data-id="${data.id}" min="1" max="${data.limMaxUser}">
-                                        <input type="hidden" name="idItemHidden_${extractIdNumber(data.id)}" value="${extractIdNumber(data.id)}" style="display: none;"></td>
+                                    <td>${data.limMaxUser > 1 ? 
+                                        `<input type="number" name="inputQuantityNumber_${extractIdNumber(data.id)}"
+                                            class="form-control border-2 border-success shadow-lg" value="1" data-id="${data.id}" min="1" max="${data.limMaxUser}">`
+                                        :
+                                        `<input type="number" name="inputQuantityNumber_${extractIdNumber(data.id)}"
+                                            class="form-control shadow-lg" value="1" data-id="${data.id}" min="1" max="${data.limMaxUser}">`}
+                                        
+                                        <input type="hidden" name="idItemHidden_${extractIdNumber(data.id)}" value="${extractIdNumber(data.id)}" style="display: none;">
+                                        <input type="hidden" name="limMaxUser_${extractIdNumber(data.id)}" value="${data.limMaxUser}" style="display: none;">
+                                    </td>
                                     <td><button name="btnRemoveRow" type="button" id="btnRemoveRow_${extractIdNumber(data.id)}" class="btn btn-danger rounded-circle m-2 border border-2 shadow">
-                                        <i class="fa-solid fa-trash"></i></button></td>
+                                        <i class="fa-solid fa-trash"></i></button>
+                                    </td>
                                 </tr>`).join("")}
                         </tbody>
                     </table>

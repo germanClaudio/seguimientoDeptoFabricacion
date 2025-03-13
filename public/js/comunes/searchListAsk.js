@@ -334,6 +334,7 @@ const searchConsumibles = () => {
     let queryConsumibles = document.getElementById('queryConsumibles').value,
         statusConsumibles = document.getElementById('statusConsumible').value,
         typeConsumibles = document.getElementById('typeConsumible').value,
+        talleConsumibles = document.getElementById('talleConsumible').value,
         stockConsumibles = document.getElementById('stockConsumible').value
         
     statusConsumibles != 'todas' ? statusConsumibles === 'activos' ? statusConsumibles = true : statusConsumibles = false : null
@@ -342,6 +343,7 @@ const searchConsumibles = () => {
         queryConsumibles,
         statusConsumibles,
         typeConsumibles,
+        talleConsumibles,
         stockConsumibles
     })
     return false
@@ -350,6 +352,9 @@ const searchConsumibles = () => {
 const renderSearchedConsumibles = (arrConsumiblesSearch) => {
     document.getElementById('showCountConsumiblesSearch').innerHTML = ''
 
+    let userRol = (document.getElementById('mostrarRolUser').innerText).trim().toLowerCase();
+    
+console.log('arrConsumiblesSearch: ', arrConsumiblesSearch)
     if(!arrConsumiblesSearch) {
         const htmlSearchConsumiblesNull = (
             `<div class="col mx-auto">
@@ -408,11 +413,34 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
             const statusClasses = { true: 'success', false: 'danger' },
                 typeMapping = {
                 epp: { label: 'EPP', class: 'warning', text: 'dark' },
-                insertos: { label: 'Insertos', class: 'secondary', text: 'light' },
+                ropa: { label: 'Ropa', class: 'success', text: 'light' },
+                consumiblesLineas: { label: 'Consumibles Líneas', class: 'secondary', text: 'light' },
                 consumiblesAjuste: { label: 'Consumibles Ajuste', class: 'primary', text: 'light' },
                 consumiblesMeca: { label: 'Consumibles Mecanizado', class: 'success', text: 'light' },
                 otros: { label: 'Otros', class: 'info', text: 'dark' }
             };
+            let color = '', redHeart = '';
+
+            // Función para extraer y mostrar los datos del campo stock
+            let size, total, totalStock = 0
+            function processStock(element) {
+                if (Object.keys(element.stock).length > 1) { // Si hay múltiples talles
+                    Object.entries(element.stock).forEach(([size, stock]) => {
+                        return size, stock
+                    });
+                    totalStock = Object.values(element.stock).reduce((total, stock) => total + stock, 0);
+                    return totalStock
+
+                } else { // Si no hay talles (solo un valor)
+                    size = Object.keys(element.stock)[0];
+                    stock = parseInt(element.stock[size]);
+                    totalStock = stock
+                    return size, stock, totalStock
+                }
+            }
+
+            // Procesar cada elemento
+            processStock(element)
             
             // Determinar valores dinámicos
             const optionStatus = statusClasses[element.status] || 'danger',
@@ -421,68 +449,126 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
                 optionStock = element.stock > 0 ? 'dark' : 'danger',
                 disabled = element.visible ? '' : 'disabled';
         
-            // Retornar el HTML generado
+                let tipoTalle = 'U',
+                background = 'dark',
+                disabledStockNull = '',
+                disabledInputCardCheck = '';
+            
+            if (element.tipoTalle === 'talle') {
+                tipoTalle = 'T'
+                background = 'danger'
+                userRol !== 'user' ? disabledInputCardCheck = 'disabled' : null 
 
-            if (element.stock === 0) {
+            } else if (element.tipoTalle === 'numero') {
+                tipoTalle = 'N'
+                background = 'primary'
+                userRol !== 'user' ? disabledInputCardCheck = 'disabled' : null
+            }
+
+            totalStock === 0 ? (color = 'background-color:rgba(215, 0, 0, 0.36)', disabledStockNull = 'disabled') : color
+            totalStock === 0 && userRol === 'user' ? disabledInputCardCheck = 'disabled' : null
+
+            if (element.favorito === 5) {
+                redHeart = `<i class="fa-solid fa-heart position-absolute top-0 start-0 text-primary" 
+                                style="font-size: 1.7em; z-index: 100 ;transform: translate(150%, 50%) !important;">
+                            </i>`
+            }
+
+            //<div class="col mx-auto h-100 position-relative">
+            // Retornar el HTML generado
+            if (totalStock === 0) {
                 return (`
-                    <div class="col mx-auto">
-                        <div class="card mx-auto rounded-2 shadow-lg" id="cardSelected_${element._id}" style="max-width: 540px; background-color: #ca000030">
-                            <div class="row align-items-center">
-                                <div class="col-md-4 text-center">
-                                    <img src="${element.imageConsumible}" style="max-width=170px; object-fit: contain;"
-                                        class="img-fluid rounded p-2 mx-auto ms-2" alt="Consumibles">
-                                </div>
-                                <div class="col-md-8 border-start">
+
+                        <div class="card mx-auto rounded-2 shadow-lg h-100 d-flex flex-column position-relative" id="cardSelected_${element._id}" style="${color}">
+                            <div class="row g-0 flex-grow-1">
+                                
+                                <div class="col-md-4 text-center d-flex align-items-center">
                                     <div class="card-body">
-                                        <h6 id="cardDesignation_${element._id}" class="card-title"><strong>${element.designation}</strong></h6>
-                                        Código: <span id="cardCodigo_${element._id}" class="my-1"><strong>${element.code}</strong></span><br>
-                                        Tipo: <span id="cardTipo_${element._id}" class="badge rounded-pill bg-${optionType} text-${optionText} my-1">${showType}</span><br>
-                                        Status: <span class="badge rounded-pill bg-${optionStatus} my-1">${showStatus}</span><br>
-                                        Stock: <span id="cardStock_${element._id}" class="badge bg-${optionStock} text-light">${element.stock}</span><br>
+                                        <img id="imageConsumible_${element._id}" src="${element.imageConsumible}" 
+                                            style="max-width:170px; object-fit: contain;"
+                                            class="img-fluid rounded p-3" alt="Consumibles">
                                     </div>
-                                    <div class="card-footer px-2">
-                                        <div class="row">
-                                            <div class="col m-auto">
-                                                <span class="badge rounded-pill bg-danger m-1">Sin stock disponible! <i class="fa-regular fa-face-sad-tear"></i></span>
-                                            </div>
-                                        </div>
+                                </div>
+    
+                                <div class="col-md-8">
+                                    <div class="card-body h-100 d-block flex-column">
+                                        <p id="cardDesignation_${element._id}" class="card-title"><strong>${element.designation}</strong></p>
+                                        Código: <span id="cardCodigo_${element._id}" class="my-1"><strong>${element.code}</strong></span><br>
+                                        <span id="cardTipo_${element._id}" class="badge rounded-pill bg-${optionType} text-${optionText} my-1">
+                                            ${showType}
+                                        </span>
+                                        <br>
+                                        <span class="badge rounded-pill bg-${optionStatus} my-1">
+                                            ${showStatus}
+                                        </span>
+                                        <br>
+                                        Tipo Stock: <span class="badge bg-${background} text-light">${tipoTalle}</span> /
+                                        Stock: <span id="cardStock_${element._id}" class="badge bg-${optionStock} text-light">${totalStock}</span>
+                                        <div class="mt-auto"></div>
+                                        <input id="limMaxUser_${element._id}" class="d-none" type="hidden" value="${element.limMaxUser}">
                                     </div>
                                 </div>
                             </div>
+    
+                            <div class="card-footer px-2 mt-auto">
+                                <div class="row">
+                                    <div class="col m-auto me-1">
+                                        <span class="badge rounded-pill bg-danger m-1">Sin stock disponible! <i class="fa-regular fa-face-sad-tear"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            ${redHeart}
                         </div>
-                    </div>`);
+                    `);
 
             } else {
                 return (`
-                    <div class="col mx-auto">
-                        <div class="card mx-auto rounded-2 shadow-lg" id="cardSelected_${element._id}" style="max-width: 540px;">
-                            <div class="row align-items-center">
-                                <div class="col-md-4 text-center">
-                                    <img src="${element.imageConsumible}" style="max-width=170px; object-fit: contain;"
-                                        class="img-fluid rounded p-2 mx-auto ms-2" alt="Consumibles">
-                                </div>
-                                <div class="col-md-8 border-start">
+                    
+                        <div class="card mx-auto rounded-2 shadow-lg h-100 d-flex flex-column position-relative" id="cardSelected_${element._id}" style="${color}">
+                            <div class="row g-0 flex-grow-1">
+                                
+                                <div class="col-md-4 text-center d-flex align-items-center">
                                     <div class="card-body">
-                                        <h6 id="cardDesignation_${element._id}" class="card-title"><strong>${element.designation}</strong></h6>
-                                        Código: <span id="cardCodigo_${element._id}" class="my-1"><strong>${element.code}</strong></span><br>
-                                        Tipo: <span id="cardTipo_${element._id}" class="badge rounded-pill bg-${optionType} text-${optionText} my-1">${showType}</span><br>
-                                        Status: <span class="badge rounded-pill bg-${optionStatus} my-1">${showStatus}</span><br>
-                                        Stock: <span id="cardStock_${element._id}" class="badge bg-${optionStock} text-light">${element.stock}</span><br>
+                                        <img id="imageConsumible_${element._id}" src="${element.imageConsumible}" 
+                                            style="max-width:170px; object-fit: contain;"
+                                            class="img-fluid rounded p-3" alt="Consumibles">
                                     </div>
-                                    <div class="card-footer px-2">
-                                        <div class="row">
-                                            <div class="col m-auto">
-                                                <a class="btn text-light small" ${disabled} type="submit" href="/api/carts/add/${element._id}"
-                                                    style="background-color: #272787; font-size: .85rem; width: auto;">
-                                                    Añadir al <i class="fa-solid fa-cart-plus fa-xl"></i>
-                                                </a>
-                                            </div>
-                                        </div>
+                                </div>
+    
+                                <div class="col-md-8">
+                                    <div class="card-body h-100 d-block flex-column">
+                                        <p id="cardDesignation_${element._id}" class="card-title"><strong>${element.designation}</strong></p>
+                                        Código: <span id="cardCodigo_${element._id}" class="my-1"><strong>${element.code}</strong></span><br>
+                                        <span id="cardTipo_${element._id}" class="badge rounded-pill bg-${optionType} text-${optionText} my-1">
+                                            ${showType}
+                                        </span>
+                                        <br>
+                                        <span class="badge rounded-pill bg-${optionStatus} my-1">
+                                            ${showStatus}
+                                        </span>
+                                        <br>
+                                        Tipo Stock: <span class="badge bg-${background} text-light">${tipoTalle}</span> /
+                                        Stock: <span id="cardStock_${element._id}" class="badge bg-${optionStock} text-light">${totalStock}</span>
+                                        <div class="mt-auto"></div>
+                                        <input id="limMaxUser_${element._id}" class="d-none" type="hidden" value="${element.limMaxUser}">
                                     </div>
                                 </div>
                             </div>
+    
+                            <div class="card-footer px-2 mt-auto">
+                                <div class="row">
+                                    <div class="col m-auto me-1">
+                                        <a class="btn text-light small ${disabledStockNull}" ${disabled}
+                                            style="background-color:rgb(17, 115, 0); font-size: .85rem;"
+                                            href="/api/carts/add/${element._id}">
+                                            Añadir al <i class="fa-solid fa-cart-plus"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            ${redHeart}
                         </div>
-                    </div>`);
+                    `);
             }
         }).join(" ");
 

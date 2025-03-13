@@ -52,32 +52,82 @@ const Carritos = require("../../models/carritos.models.js"),
 		}
 	}
 
-	async reduceStockProduct(data) {
-		let arrStockProduct = []
+	async reduceStockProduct(data, arrayTipoStock) {
+		let arrStockProduct = [];
+		//console.log('1- array: ', arrayTipoStock);
+
 		try {
 			if (data) {
-				for (let i = 0; i < parseInt(data.items.length); i++) {
-					const consumibleMongoDB = await Consumibles.findById( { _id: data.items[i].consumibleId } )
+				for (let i = 0; i < data.items.length; i++) {
+					const consumibleMongoDB = await Consumibles.findById({ _id: data.items[i].consumibleId });
+
 					if (consumibleMongoDB) {
 						let quantity = parseInt(data.items[i].quantity),
-						updatedStock = parseInt(consumibleMongoDB.stock - quantity);
-						//console.log('quantity--: ', quantity, 'stock: ', updatedStock)
+							tipoTalle = consumibleMongoDB.tipoTalle,
+							stockMap = consumibleMongoDB.stock; // Este es un Map de Mongoose
 
+						// console.log('Datos del producto:', {
+						// 	tipoTalle: tipoTalle,
+						// 	stock: stockMap,
+						// 	quantity: quantity,
+						// 	selectedOption: arrayTipoStock[i]
+						// });
+
+						// Función para reducir el stock según el tipoTalle
+						function reduceParticularStock(tipoTalle, stockMap, quantity, selectedOption) {
+							let updatedStockMap = new Map(stockMap); // Crear una copia del Map original
+
+							if (tipoTalle === 'unico') {
+								// Si el tipo es 'unico', restamos la cantidad del stock general
+								if (updatedStockMap.has('0')) {
+									updatedStockMap.set('0', updatedStockMap.get('0') - quantity);
+								} else {
+									console.error(`Stock no definido para tipoTalle "unico".`);
+								}
+							} else if (tipoTalle === 'talle') {
+								// Si el tipo es 'talle', restamos la cantidad del talle seleccionado
+								if (updatedStockMap.has(selectedOption)) {
+									updatedStockMap.set(selectedOption, updatedStockMap.get(selectedOption) - quantity);
+								} else {
+									console.error(`Talle "${selectedOption}" no encontrado en el stock.`);
+								}
+							} else if (tipoTalle === 'numero') {
+								// Si el tipo es 'numero', restamos la cantidad del número seleccionado
+								if (updatedStockMap.has(selectedOption.toString())) { // Asegurarse de que la clave sea un string
+									updatedStockMap.set(selectedOption.toString(), updatedStockMap.get(selectedOption.toString()) - quantity);
+								} else {
+									console.error(`Número "${selectedOption}" no encontrado en el stock.`);
+								}
+							}
+							return updatedStockMap;
+						}
+
+						// Reducir el stock según el tipoTalle
+						const updatedStockMap = reduceParticularStock(
+							tipoTalle,
+							stockMap,
+							quantity,
+							arrayTipoStock[i]
+						);
+						//console.log('2- updatedStockMap: ', updatedStockMap);
+
+						// Actualizar el stock en la base de datos
 						const productUpdated = await Consumibles.findOneAndUpdate(
 							{ _id: data.items[i].consumibleId },
-							{ stock: parseInt(updatedStock),
-								timestamp: formatDate()},
+							{ stock: updatedStockMap, timestamp: new Date() },
 							{ new: true }
 						);
-						arrStockProduct.push(productUpdated)
+						arrStockProduct.push(productUpdated);
 					}
-				}					
+				}
 			}
+
+			// console.log('3- arrStockProduct: ', arrStockProduct);
 			return arrStockProduct;
 
 		} catch (error) {
-			console.error("Error MongoDB getConsumibles: ", error)
-			return new Error("Error MongoDB reduceStockProduct: ", error)
+			console.error("Error MongoDB reduceStockProduct: ", error);
+			return new Error("Error MongoDB reduceStockProduct: ", error);
 		}
 	}
 

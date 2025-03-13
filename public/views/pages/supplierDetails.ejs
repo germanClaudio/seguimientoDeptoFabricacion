@@ -7,8 +7,13 @@
 
 <body>
     <header>
-        <%- include('../partials/header/header'); %>
+        <% if (userInfo.admin) { %>
+            <%- include('../partials/header/header'); %>
+        <% } else { %>
+            <%- include('../partials/header/headerToolShop'); %>
+        <% } %>
     </header>
+    
     <div class="container" style="padding-top: 70px;"></div>
     <br>
     <div class="container-fluid">

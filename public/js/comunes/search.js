@@ -1212,7 +1212,6 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
 
             // Procesar cada elemento
             processStock(element)
-
             
             // Determinar valores dinámicos
             const optionStatus = statusClasses[element.status] || 'danger',
@@ -1248,8 +1247,8 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
 
             // Retornar el HTML generado
             return (`
-                <div class="col mx-auto h-100 position-relative">
-                    <div class="card mx-auto rounded-2 shadow-lg h-100 d-flex flex-column" id="cardSelected_${element._id}" style="${color}">
+                <div class="col mx-auto">
+                    <div class="card mx-auto rounded-2 shadow-lg h-100 d-flex flex-column position-relative" id="cardSelected_${element._id}" style="${color}">
                         <div class="row g-0 flex-grow-1">
                             
                             <div class="col-md-4 text-center d-flex align-items-center">
@@ -1301,8 +1300,8 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
                                 </div>
                             </div>
                         </div>
+                        ${redHeart}
                     </div>
-                    ${redHeart}
                 </div>`);
         }).join(" ");
 

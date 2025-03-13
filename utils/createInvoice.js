@@ -10,7 +10,7 @@ function formatDateInvoice(fecha) {
     return rightNow.toString();
 }
 
-async function createInvoice(invoice, path) {
+async function createInvoice(invoice, arrayTipoStock) {
     let doc = new PDFDocument({ size: "A4", margin: 50 });
 
     // Create a buffer to store the PDF
@@ -26,7 +26,7 @@ async function createInvoice(invoice, path) {
     generateHeader(doc);
     generateHr(doc, 138);
     generateCustomerInformation(doc, invoice);
-    await generateInvoiceTable(doc, invoice);
+    await generateInvoiceTable(doc, invoice, arrayTipoStock);
     generateHr(doc, 740);
     generateFooter(doc);
 
@@ -76,7 +76,9 @@ function generateCustomerInformation(doc, invoice) {
         .text("Solicitud de ítems o EPP a Pañol", 50, 148)
         .fontSize(11)
         .text(`Pedido #: ${invoice.invoice_nr}`, 70, 170)
-        .text(`Fecha y hora de pedido: ${formatDateInvoice(invoice.timestamp)}`, 70, 190)
+        .text(`Fecha y hora de pedido:`, 70, 190)
+        .font("Helvetica-Bold")
+        .text(`${formatDateInvoice(invoice.timestamp)}`, 200, 190)
         .font("Helvetica-Bold")
         .text(`Información del solicitante:`, 50, 210)
         .font("Helvetica")
@@ -86,12 +88,12 @@ function generateCustomerInformation(doc, invoice) {
         .text(`username: ${shipping.username}`, 270, 250)
         .text(`Legajo #: ${shipping.legajoIdUser}`, 70, 270)
 		.text(`Area: ${areaCapitalized}`, 270, 270)
-        .text(`____________________`, 400, 255)
+        .text(`____________________`, 405, 255)
         .text(`Firma Solicitante`, 425, 270)
         .moveDown();
 }
 
-async function generateInvoiceTable(doc, invoice) {
+async function generateInvoiceTable(doc, invoice, arrayTipoStock) {
     let i;
     const invoiceTableTop = 300;
 
@@ -113,7 +115,8 @@ async function generateInvoiceTable(doc, invoice) {
     for (i = 0; i < invoice.items.length; i++) {
         const item = invoice.items[i],
             position = invoiceTableTop + (i + 1) * 35,
-            itemIdChain = item.consumibleId.toString().substring(19);
+            itemIdChain = item.consumibleId.toString().substring(19),
+            tipoStockUnit = arrayTipoStock[i]
 
         try {
             // Intentar descargar la imagen del consumible desde la URL
@@ -121,7 +124,7 @@ async function generateInvoiceTable(doc, invoice) {
             const imageBase64 = Buffer.from(imageBuffer.data, 'binary').toString('base64');
 
             // Insertar la imagen del consumible en el PDF
-            doc.image(Buffer.from(imageBase64, 'base64'), 425, position - 13, { width: 30, height: 30 });
+            doc.image(Buffer.from(imageBase64, 'base64'), 435, position - 13, { width: 30, height: 30 });
         
         } catch (error) {
             // Si falla, usar la imagen por defecto
@@ -129,7 +132,7 @@ async function generateInvoiceTable(doc, invoice) {
             try {
                 const defaultImageBuffer = await axios.get(defaultImageUrl, { responseType: 'arraybuffer' });
                 const defaultImageBase64 = Buffer.from(defaultImageBuffer.data, 'binary').toString('base64');
-                doc.image(Buffer.from(defaultImageBase64, 'base64'), 425, position - 13, { width: 30, height: 30 });
+                doc.image(Buffer.from(defaultImageBase64, 'base64'), 435, position - 13, { width: 30, height: 30 });
             
             } catch (defaultError) {
                 // console.error('Error al cargar la imagen por defecto:', defaultError);
@@ -147,7 +150,9 @@ async function generateInvoiceTable(doc, invoice) {
             item.type,
             '', // No necesitamos texto aquí, ya que vamos a insertar la imagen
             '', // No necesitamos texto aquí, ya que vamos a insertar el código QR
-            item.quantity
+            item.quantity,
+            item.tipoTalle,
+            tipoStockUnit
         );
 
         generateHr(doc, position + 20);
@@ -171,20 +176,33 @@ function generateTableRow(
     type,
     imageConsumible,
     qrCode,
-    quantity
+    quantity,
+    tipoTalle,
+    tipoStock
 ) {
+
+    function cortarTextoCodigo(code) {
+        // Verificamos si la longitud del code es mayor a 30 caracteres
+        if (code.length > 12) {
+            // Cortamos el code hasta el carácter 27 y agregamos "..."
+            return code.slice(0, 10) + "...";
+        }
+        // Si no es mayor a 12, devolvemos el code original
+        return code;
+    }
+    let codeTrim = cortarTextoCodigo(code);
 
     function cortarTexto(texto) {
         // Verificamos si la longitud del texto es mayor a 30 caracteres
-        if (texto.length > 30) {
+        if (texto.length > 50) {
             // Cortamos el texto hasta el carácter 27 y agregamos "..."
-            return texto.slice(0, 27) + "...";
+            return texto.slice(0, 47) + "...";
         }
-        // Si no es mayor a 30, devolvemos el texto original
+        // Si no es mayor a 50, devolvemos el texto original
         return texto;
     }
-
     let designationTrim = cortarTexto(designation);
+
 
     // Mapeo de tipos
     const tipos = {
@@ -192,7 +210,7 @@ function generateTableRow(
         ropa: 'Ropa',
         consumiblesAjuste: 'Cons. Ajuste',
         consumiblesMecanizado: 'Cons. Mecanizado',
-        insertos: 'Insertos',
+        consumiblesLineas: 'Cons. Líneas',
         herramientas: 'Herramientas',
     };
 
@@ -201,16 +219,77 @@ function generateTableRow(
         // Si el tipo existe en el objeto, lo devuelve; de lo contrario, devuelve 'Otros'
         return tipos[type] || 'Otros';
     }
-
     let tipo = obtenerTipo(type);
 
-    doc
-        .fontSize(9)
-        .text('...'+item, 50, y)
-        .text(code, 100, y)
-        .text(designationTrim, 210, y)
-        .text(tipo, 350, y)
-        .text(quantity, 500, y, { width: 50, align: "center" });
+
+    // Mapeo de tipos de stock
+    const talle = {
+        // unico: 'U',
+        talle: 'T',
+        numero: 'N'
+    }
+
+    // Mapeo de tipos de stock
+    const letterMapping = {
+        'a': 'XS', 'b': 'S', 'c': 'M',
+        'd': 'L', 'e': 'XL', 'f': '2XL',
+        'g': '3XL', 'h': '4XL', 'i': '5XL',	'j': '6XL'
+    };
+
+    // Mapeo de tipos de stock
+    const numberMapping = {
+        35: 35, 36: 36, 37: 37, 38: 38, 39: 39, 
+        40: 40, 41: 41, 42: 42, 43: 43, 44: 44, 45: 45, 46: 46, 47: 47, 48: 48, 49: 49,
+        50: 50, 51: 51, 52: 52, 53: 53, 54: 54, 55: 55, 56: 56, 57: 57, 58: 58, 59: 59,
+        60: 60, 61: 61, 62: 62, 63: 63, 64: 64, 65: 65
+    };
+
+
+    // Función para obtener el tipo
+    function obtenerTipoTalleYStock(tipoTalle, tipoStock) {
+        // Si el tipo existe en el objeto, lo devuelve; de lo contrario, devuelve ''
+        if (talle[tipoTalle] === 'T') {
+            return [ talle[tipoTalle], letterMapping[tipoStock] ];
+
+        } else if (talle[tipoTalle] === 'N') {
+            return [ talle[tipoTalle], numberMapping[tipoStock] ];
+
+        } else {
+            return null
+        }
+
+    }
+    let tipoTalleToShow = obtenerTipoTalleYStock(tipoTalle, tipoStock)
+
+    if (tipoTalleToShow) {
+        doc
+            .fontSize(8)
+            .text('...'+item, 50, y)
+            .fontSize(9)
+            .text(codeTrim, 100, y)
+            .fontSize(8)
+            .text(designationTrim, 155, y)
+            .text(tipo, 360, y, { width: 50, align: "center" })
+            .font("Helvetica-Bold")
+            .text(quantity, 495, y, { width: 40, align: "center" })
+            .text(tipoTalleToShow[0]+': ', 523, y, { width: 10, align: "center" })
+            .text(tipoTalleToShow[1], 531, y, { width: 15, align: "center" })
+            .font("Helvetica");
+
+    } else {
+        doc
+            .fontSize(8)
+            .text('...'+item, 50, y)
+            .fontSize(9)
+            .text(codeTrim, 100, y)
+            .fontSize(8)
+            .text(designationTrim, 155, y)
+            .text(tipo, 360, y, { width: 50, align: "center" })
+            .font("Helvetica-Bold")
+            .text(quantity, 510, y, { width: 40, align: "center" })
+            .font("Helvetica");
+    }
+
 }
 
 function generateTableRowTitle(
@@ -228,9 +307,9 @@ function generateTableRowTitle(
         .fontSize(9)
         .text(item, 50, y)
         .text(code, 100, y)
-        .text(designation, 210, y)
-        .text(type, 350, y)
-        .text(imageConsumible, 425, y)
+        .text(designation, 160, y, { width: 190, align: "center" })
+        .text(type, 375, y)
+        .text(imageConsumible, 435, y)
         .text(quantity, 500, y, { width: 50, align: "center" });
 }
 

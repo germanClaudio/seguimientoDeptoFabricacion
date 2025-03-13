@@ -63,9 +63,30 @@
             <div class="container text-center m-auto" style="width: auto;">
                 <%- include('../../partials/userBanner/userBanner', { userInfo: userInfo }); %>
             </div>
+
+            <div class="vr mx-1 d-none d-xl-inline" style="color: white;"></div>
+
+            <a class="position-relative me-3" title="Carrito usuario <%= userInfo.username %>" href="/api/carts/user/<%= userInfo._id %>" name="btnCart" id="btnCart_<%= userInfo._id %>">
+                <% if (userCart && userCart.active === true && userCart.items.length>0) { %>
+                    <img id="avatarCart" class="img rounded-circle mx-auto d-none d-lg-inline shadow cartEmpty ms-2 mt-2" alt="Cart <%= userInfo.name %> <%= userInfo.lastName %>"
+                        src="/src/images/upload/ConsumiblesImages/shopping-cart_admin.png" width="50px" height="50px">
+                    <span title="Ítems carrito" class="badge rounded-pill bg-success text-light position-absolute top-0 start-100 translate-middle">
+                        <%= userCart.items.length %>
+                    </span>
+                        
+                <% } else { %>
+                    <img id="avatarCart" class="img rounded-circle mx-auto d-none d-lg-inline shadow cartEmpty ms-2 mt-2" alt="Cart <%= userInfo.name %> <%= userInfo.lastName %>"
+                        src="/src/images/upload/ConsumiblesImages/shopping-cart_admin-empty.png" width="50px" height="50px">
+                    <span title="Ítems carrito" class="badge rounded-pill bg-warning text-dark position-absolute top-0 start-100 translate-middle">
+                        0
+                    </span>
+                <% } %>
+            </a>
+
             <button type="button" title="Preferencias Usuario" class="btn btn-link rounded-circle my-auto mx-2 shadow" name="btnPreferences" id="btnPreferences">
                 <i class="fa-regular fa-star"></i>
             </button>
+
             <a class="position-relative me-3" title="Settings <%= userInfo.name %> <%= userInfo.lastName %>" href="/api/usuarios/getUserSettings/<%= userInfo._id %>" name="btnSetting" id="btnSetting">
                 <img id="avatarUser" class="img rounded-circle mx-auto d-none d-lg-inline shadow" alt="Avatar <%= userInfo.name %> <%= userInfo.lastName %>"
                     src="<%= userInfo.avatar %>" width="60px" height="60px">
