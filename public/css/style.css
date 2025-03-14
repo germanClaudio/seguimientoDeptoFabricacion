@@ -26,6 +26,7 @@ body {
   font-size: .875rem;
   color: #71748d;
   background-color: #F5F7FA; /* #efeff6;*/
+  overflow-x: hidden;
   /* -webkit-font-smoothing: antialiased; style="background-color: #F5F7FA;"*/
 }
 
@@ -399,14 +400,55 @@ html body .display-7 {
   object-fit: contain;
 }
 
-.card_dashboard{
+/* .card_dashboard{
   width: 20vw;
+  cursor: grab;
+} */
+
+/* .card_dashboard:active {
+  cursor: grabbing;
+} */
+
+.card_dashboard-link {
+  cursor: pointer;
+  width: 100%; /* Ancho completo del contenedor */
+  margin: 12px 0; /* Espaciado vertical */
+  border: 1px solid #ddd; /* Borde para mejor visibilidad */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.card_dashboard {
+  cursor: grab;
+  width: 100%; /* Ancho completo del contenedor */
+  margin: 12px 0; /* Espaciado vertical */
+  border: 1px solid #ddd; /* Borde para mejor visibilidad */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.card_dashboard:active {
+  cursor: grabbing;
+}
+
+/* Espaciado entre tarjetas */
+.card-container {
+  padding: 11px; /* Espaciado interno */
+}
+
+/* Estilos para pantallas pequeñas */
+@media (max-width: 768px) {
+  .card-container {
+      padding: 0; /* Sin espaciado en pantallas pequeñas */
+  }
+  .card_dashboard {
+      margin: 10px 0; /* Reducir espaciado vertical */
+  }
 }
 
 .card_dashboard:hover{
   transform: scale(1.03);
   box-shadow: 10px 10px 15px rgba(0, 7, 71, 0.402);
 }
+
 
 .card-footer-client {
   border-top: 1px solid #e6e6f2;

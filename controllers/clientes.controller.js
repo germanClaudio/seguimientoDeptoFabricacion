@@ -1,6 +1,7 @@
 const ClientsService = require("../services/clients.service.js"),
     UserService = require("../services/users.service.js"),
     ProjectsService = require("../services/projects.service.js"),
+    CartsService = require("../services/carts.service.js"),
 
     csrf = require('csrf'),
     csrfTokens = csrf(),
@@ -33,21 +34,28 @@ class ClientsController {
         this.clients = new ClientsService()
         this.users = new UserService()
         this.projects = new ProjectsService()
+        this.carts = new CartsService()
     }
 
     getAllClients = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)         
+        const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const clientes = await this.clients.getAllClients()
             !clientes ? catchError401(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('addNewClients', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 clientes,
                 data,
@@ -60,22 +68,28 @@ class ClientsController {
     }
 
     getClientProjectsById = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const cliente = await this.clients.getClientById(id)
             !cliente ? catchError401(req, res, next) : null
 
             const proyectos = await this.projects.getProjectsByClientId(id)
             !proyectos ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('clientProjectsDetails', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 proyectos,
                 cliente,
@@ -89,23 +103,29 @@ class ClientsController {
     }
 
     getClientById = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const cliente = await this.clients.getClientById(id)
             !cliente ? catchError401(req, res, next) : null
             
             const proyectos = await this.projects.getProjectsByClientId(id)
             !proyectos ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('clientProjectsDetails', {
                 cliente,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 proyectos,
                 data,
@@ -118,23 +138,29 @@ class ClientsController {
     }
 
     selectClientById = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const cliente = await this.clients.getClientById(id)
             !cliente ? catchError401(req, res, next) : null
 
             const proyectos = await this.projects.getProjectsByClientId(id)
             !proyectos ? catchError401_1(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('clientDetails', {
                 cliente,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 proyectos,
                 data,
@@ -147,11 +173,11 @@ class ClientsController {
     }
 
     createNewClient = async (req, res, next) => {
-                
+        
         uploadMulterSingleLogoClient(req, res, async (err) => {
-            let username = res.locals.username
-            let userInfo = res.locals.userInfo
             const expires = cookie(req)
+            let username = res.locals.username,
+                userInfo = res.locals.userInfo
             
             try {
                 const userId = userInfo.id
@@ -161,9 +187,7 @@ class ClientsController {
                 const clientNameInput = req.body.name.replace(/[!@#$%^*]/g, "");
                 const codeInput = req.body.code
 
-                if(req.file) {
-                    await uploadToGCS(req, res, next)
-                }
+                req.file ? await uploadToGCS(req, res, next) : null
 
                 const newClientValid = {
                     name: clientNameInput,
@@ -179,17 +203,18 @@ class ClientsController {
                 }
 
                 const clientExist = await this.clients.getExistingClient(newClientValid);
-                if (clientExist) {
-                    catchError400_4(req, res, next)
-                }
+                clientExist ? catchError400_4(req, res, next) : null
 
                 const cliente = await this.clients.addClient(newClientValid)
                 !cliente ? catchError401(req, res, next) : null
+
+                const userCart = await this.carts.getCartByUserId(userId)
 
                 const csrfToken = csrfTokens.create(req.csrfSecret);
                 return res.render('addNewClients', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     data,
@@ -203,10 +228,10 @@ class ClientsController {
     }
 
     updateClient = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         uploadMulterSingleLogoUpdate(req, res, async (err) => {
             try {
@@ -217,13 +242,11 @@ class ClientsController {
                 const userCreator = await this.users.getUserById(userId)
                 !userCreator ? catchError401_3(req, res, next) : null
 
-                if (req.file) {
-                    await uploadToGCS(req, res, next)
-                }
+                req.file ? await uploadToGCS(req, res, next) : null
 
-                const nameInput = req.body.name.replace(/[!@#$%^&*]/g, "")             
-                const nameValid = await this.clients.getClientByName(nameInput)
-                const otherClients = await this.clients.getAllClients()
+                const nameInput = req.body.name.replace(/[!@#$%^&*]/g, ""),
+                    nameValid = await this.clients.getClientByName(nameInput),
+                    otherClients = await this.clients.getAllClients()
 
                 // Función para eliminar un cliente de la lista si coincide con el cliente a comparar
                 function eliminarCliente(lista, cliente) {
@@ -260,16 +283,19 @@ class ClientsController {
                     )
                     !clientUpdated ? catchError401(req, res, next) : null
 
+                    const userCart = await this.carts.getCartByUserId(userId)
+
                     const csrfToken = csrfTokens.create(req.csrfSecret);
                     return res.render('addNewClients', {
                         username,
                         userInfo,
+                        userCart,
                         expires,
                         clientUpdated,
                         data,
                         csrfToken
                     })
-                                    
+                
                 } else {
                     catchError401(req, res, next)
                 }  
@@ -281,10 +307,10 @@ class ClientsController {
     }
 
     updateClientProjectsQty = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         const userId = userInfo.id
         const userCreator = await this.users.getUserById(userId)
@@ -300,12 +326,15 @@ class ClientsController {
                 clientToUpdateProjectQty, 
                 dataUserModificatorNotEmpty(userCreator))
             !cliente ? catchError401(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
         
             const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('clientProjectsDetails', {
                 cliente,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 proyectos,
                 data,
@@ -318,36 +347,33 @@ class ClientsController {
     }
 
     reduceClientProjectQty = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
             const userId = userInfo.id
             const userCreator = await this.users.getUserById(userId)
-            if (!userCreator) {
-                catchError401_3(req, res, next)
-            }
+            !userCreator ? catchError401_3(req, res, next) : null
 
             const proyectos = await this.projects.getProjectsByClientId(id)
             const clientToUpdateProjectQty = await this.clients.getClientById(id)
-            if (!proyectos || !clientToUpdateProjectQty) {
-                catchError401_1(req, res, next)
-            }
+            !proyectos || !clientToUpdateProjectQty ? catchError401_1(req, res, next) : null
 
             const cliente = await this.clients.reduceClientProjectQty(
                 id, 
                 clientToUpdateProjectQty, 
                 dataUserModificatorNotEmpty(userCreator))
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('clientProjectsDetails', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 cliente,
                 proyectos,
@@ -361,27 +387,26 @@ class ClientsController {
     }
 
     deleteClientById = async (req, res, next) => {
-        const clientId = req.params.id
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const clientId = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
             const userId = userInfo.id
             const userCreator = await this.users.getUserById(userId)
-            if (!userCreator) {
-                catchError401_3(req, res, next)
-            }
+            !userCreator ? catchError401_3(req, res, next) : null
 
             const cliente = await this.clients.deleteClientById(clientId, dataUserModificatorNotEmpty(userCreator))
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('addNewClients', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 cliente,
                 data,
@@ -394,20 +419,21 @@ class ClientsController {
     }
 
     deleteAllClients = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
         const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
             const clientsDeleted = await this.clients.deleteAllClients()
-            if (!clientsDeleted) {
-                catchError401(req, res, next)
-            }
+            !clientsDeleted ? catchError401(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userInfo._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             return res.render('addNewClients', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 clientsDeleted,
                 data,

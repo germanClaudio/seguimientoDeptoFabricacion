@@ -32,18 +32,24 @@ class ConsumiblesController {
     }
 
     getAllConsumibles = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const consumibles = await this.consumibles.getAllConsumibles()
             !consumibles ? catchError400_5(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewConsumible', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 consumibles,
                 data,
@@ -56,9 +62,9 @@ class ConsumiblesController {
     }
 
     getConsumiblesForUsers = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
             const usuario = await this.users.getUserByUsername(username)
@@ -89,19 +95,25 @@ class ConsumiblesController {
     }
 
     getConsumibleById = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const consumible = await this.consumibles.getConsumibleById(id)           
             !consumible ? catchError401_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('consumibleDetails', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 consumible,
                 data,
@@ -116,17 +128,24 @@ class ConsumiblesController {
     getConsumibleByDesignation = async (req, res, next) => {
         const { designation } = req.params,
             expires = cookie(req)
-        let userInfo = res.locals.userInfo
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+            
             const consumible = await this.consumibles.getConsumibleByConsumiblename(designation)
             !consumible ? catchError401_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('consumibleDetails', {
                 consumible,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 data,
                 csrfToken
@@ -138,9 +157,9 @@ class ConsumiblesController {
     }
 
     createNewConsumible = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo;
-        const expires = cookie(req)
 
         //------ Storage New Consumible Image in Google Store --------        
         uploadMulterSingleImageConsumibles(req, res, async (err) => {
@@ -152,7 +171,7 @@ class ConsumiblesController {
                     userCreator = await this.users.getUserById(userId)
                 !userCreator ? catchError401_3(req, res, next) : null
 
-                console.log('req.body: ', req.body)
+                //console.log('req.body: ', req.body)
 
                 function parseStockValue(value) {
                     return parseInt(value) || 0;
@@ -214,20 +233,23 @@ class ConsumiblesController {
                         favorito: parseInt(req.body.favorite) || 1,
                         limMaxUser: parseInt(req.body.limMaxUser) || 1
                     };
-                    console.log('newConsumible: ', newConsumible)
+                    //console.log('newConsumible: ', newConsumible)
                     
                     const consumible = await this.consumibles.addNewConsumible(newConsumible);
                     !consumible ? catchError400_6(req, res, next) : null
                     
-                    console.log('consumible: ', consumible)
+                    //console.log('consumible: ', consumible)
 
                     const usuarioLog = await this.users.getUserByUsername(username);
                     !usuarioLog.visible ? catchError401_3(req, res, next) : null
+
+                    const userCart = await this.carts.getCartByUserId(usuarioLog._id)
 
                     const csrfToken = csrfTokens.create(req.csrfSecret);
                     return res.render('addNewConsumible', {
                         username,
                         userInfo,
+                        userCart,
                         expires,
                         data,
                         csrfToken,
@@ -337,11 +359,14 @@ class ConsumiblesController {
 
                 const consumible = await this.consumibles.updateConsumible(consumibleId, updatedConsumible, dataUserModificatorNotEmpty(userLogged))
                 !consumible ? catchError400_3(req, res, next) : null
+
+                const userCart = await this.carts.getCartByUserId(userLogged._id)
                         
                 const csrfToken = csrfTokens.create(req.csrfSecret);
                 return res.render('addNewConsumible', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     consumible,
                     data,
@@ -381,11 +406,14 @@ class ConsumiblesController {
 
             const consumible = await this.consumibles.deleteConsumibleById(id, dataUserModificatorNotEmpty(userLogged))
             !consumible ? catchError401_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userLogged._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewConsumible', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 consumible,
                 data,
@@ -435,12 +463,15 @@ class ConsumiblesController {
 
             const consumible = await this.consumibles.modificarStockConsumibles(arrayItemsToModify)
             !consumible ? catchError400_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userLogged._id)
                     
             const csrfToken = csrfTokens.create(req.csrfSecret);
             setTimeout(() => {
                 return res.render('addNewConsumible', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     consumible,
                     data,

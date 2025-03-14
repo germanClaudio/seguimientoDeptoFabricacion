@@ -1,10 +1,10 @@
 const socket = io.connect()
-let URL_GOOGLE_STORE_IMAGESSUPPLIERS
+let URL_GOOGLE_STORE_SUPPLIERIMAGE
 
 fetch('/api/config')
     .then(response => response.json())
     .then(config => {
-        URL_GOOGLE_STORE_IMAGESSUPPLIERS = config.URL_GOOGLE_STORE_IMAGESSUPPLIERS
+        URL_GOOGLE_STORE_SUPPLIERIMAGE = config.URL_GOOGLE_STORE_SUPPLIERIMAGE
     })
     .catch(error => console.error('Error fetching config:', error));
 
@@ -336,42 +336,50 @@ const renderSuppliersUser = (arrSuppliers) => {
 }
 
 // ----------- Image Supplier Image behavior ---------------
-const dropAreaImageSupplier = document.getElementById('drop-areaImageSupplier')
-const fileInputImageSupplier = document.getElementById('fileInputImageSupplier')
-const fileImputTextImageSupplier = document.getElementById('fileInputTextImageSupplier')
-const removeImageButtonImageSupplier = document.getElementById('removeImageSupplier')
-const alertImageSupplier = document.getElementById('alertImageSupplier')
-const alertSizeImageSupplier = document.getElementById('alertSizeImageSupplier')
+const dropAreaImageSupplier = document.getElementById('drop-areaImageSupplier'),
+    fileInputImageSupplier = document.getElementById('fileInputImageSupplier'),
+    fileInputTextImageSupplier = document.getElementById('fileInputTextImageSupplier'),
+    removeImageButtonImageSupplier = document.getElementById('removeImageSupplier'),
+    alertImageSupplier = document.getElementById('alertImageSupplier'),
+    alertSizeImageSupplier = document.getElementById('alertSizeImageSupplier')
 
-dropAreaImageSupplier.style.width = "300px"
-dropAreaImageSupplier.style.height = "200px"
-dropAreaImageSupplier.style.border = "2px dashed #ccc"
-dropAreaImageSupplier.style.margin = "0 auto 0 50px"
-dropAreaImageSupplier.style.borderRadius = "5px"
-dropAreaImageSupplier.style.textAlign = "center"
-dropAreaImageSupplier.style.lineHeight = "200px"
-dropAreaImageSupplier.style.cursor = "pointer"
+Object.assign(dropAreaImageSupplier.style, {
+    width: "300px",
+    height: "200px",
+    border: "2px dashed #ccc",
+    margin: "0 auto 0 50px",
+    borderRadius: "5px",
+    textAlign: "center",
+    lineHeight: "200px",
+    cursor: "pointer"
+})
 
 dropAreaImageSupplier.addEventListener('dragover', (e) => {
     e.preventDefault()
-    dropAreaImageSupplier.style.border = '2px dashed #77d'
-    dropAreaImageSupplier.style.backgroundColor = '#7777dd10'
+    Object.assign(dropAreaImageSupplier.style, {
+        border: '2px dashed #77d',
+        backgroundColor: '#7777dd10'
+    })
 })
 
 dropAreaImageSupplier.addEventListener('dragleave', (e) => {
     e.preventDefault()
-    dropAreaImageSupplier.style.border = '2px dashed #ccc'
-    dropAreaImageSupplier.style.backgroundColor = '#B6B6B6'
+    Object.assign(dropAreaImageSupplier.style, {
+        border: '2px dashed #ccc',
+        backgroundColor: '#B6B6B6'
+    })
 })
 
 function alertRefresh() {
     removeImageButtonImageSupplier.style.display = 'none'
     fileInputImageSupplier.value = ''
-    fileImputTextImageSupplier.value = ''
-    dropAreaImageSupplier.style.border = "2px dashed #ccc"
-    dropAreaImageSupplier.style.textAlign = "center"
-    dropAreaImageSupplier.style.backgroundColor = '#B6B6B6'
-    dropAreaImageSupplier.style.display = 'block'
+    fileInputTextImageSupplier.value = ''
+    Object.assign(dropAreaImageSupplier.style, {
+        border: "2px dashed #ccc",
+        textAlign: "center",
+        backgroundColor: '#B6B6B6',
+        display: 'block'
+    })
     dropAreaImageSupplier.innerHTML = 'Haz click o arrastra y suelta una imagen aquí'
 }
 
@@ -392,8 +400,10 @@ dropAreaImageSupplier.addEventListener('drop', (e) => {
     const file = e.dataTransfer.files[0]
     
     if (file && file.type.startsWith('image/')) {
-        dropAreaImageSupplier.style.border = '3px dashed #2d2'
-        dropAreaImageSupplier.style.backgroundColor = '#22dd2210'        
+        Object.assign(dropAreaImageSupplier.style, {
+            border: '3px dashed #2d2',
+            backgroundColor: '#22dd2210'
+        })
         handleFileUploadImageSupplier(file)
 
     } else {
@@ -409,9 +419,11 @@ fileInputImageSupplier.addEventListener('change', (e) => {
     e.preventDefault()
     const file = fileInputImageSupplier.files[0]
     
-    if (file && file.type.startsWith('image/')) { 
-        dropAreaImageSupplier.style.border = '3px dashed #2d2'
-        dropAreaImageSupplier.style.backgroundColor = '#22dd2210'
+    if (file && file.type.startsWith('image/')) {
+        Object.assign(dropAreaImageSupplier.style, {
+            border: '3px dashed #2d2',
+            backgroundColor: '#22dd2210'
+        })
         handleFileUploadImageSupplier(file)
 
     } else {
@@ -420,18 +432,19 @@ fileInputImageSupplier.addEventListener('change', (e) => {
 })
 
 function handleFileUploadImageSupplier(file) {
-    const fileSize = file.size
-    const fileSizeInMb = fileSize / (1024 * 1024)
+    const fileSize = file.size,
+        fileSizeInMb = fileSize / (1024 * 1024)
 
     if (fileSizeInMb < 3) {
-        let pathToImage = URL_GOOGLE_STORE_IMAGESSUPPLIERS
+        let pathToImage = URL_GOOGLE_STORE_SUPPLIERIMAGE
+        console.log('pathToImage: ', pathToImage)
         // Separar el nombre del archivo y la extensión
-        const dotIndex = file.name.lastIndexOf('.');
-        const name = file.name.substring(0, dotIndex);
-        const extension = file.name.substring(dotIndex);
-        fileImputTextImageSupplier.value = pathToImage + name + "-" + formatDate(new Date()) + extension
+        const dotIndex = file.name.lastIndexOf('.'),
+            name = file.name.substring(0, dotIndex),
+            extension = file.name.substring(dotIndex);
+        fileInputTextImageSupplier.value = pathToImage + name + "-" + formatDate(new Date()) + extension
         removeImageButtonImageSupplier.style.display = 'flex'
-
+console.log('fileInputTextImageSupplier.value: ', fileInputTextImageSupplier.value)
         const reader = new FileReader()
         reader.readAsDataURL(file)
         reader.onload = () => {

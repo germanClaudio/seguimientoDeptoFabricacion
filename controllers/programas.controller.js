@@ -3,6 +3,7 @@ const ProyectosService = require("../services/projects.service.js"),
     UserService = require("../services/users.service.js"),
     ProgramasService = require("../services/programms.service.js"),
     ToolService = require("../services/tools.service.js"),
+    CartsService = require("../services/carts.service.js"),
     
     { uploadToGCS, uploadToGCSingleFile } = require("../utils/uploadFilesToGSC.js"),
     { uploadMulterMultiImages, uploadMulterSingleImageProject, uploadMulterSingleImageOci } = require("../utils/uploadMulter.js"),
@@ -31,23 +32,25 @@ class ProgramationController {
         this.users = new UserService()
         this.programms = new ProgramasService()
         this.tools = new ToolService()
+        this.carts = new CartsService()
     }
 
     getAllProjectsWon = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
         const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             let cliente = await this.clients.getClientById()
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
 
             const proyectos = await this.programms.getAllProjectsWon()
-            if (!proyectos) {
-                catchError400(req, res, next)
-            } 
+            !proyectos ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('projectsWonList', {
@@ -55,6 +58,7 @@ class ProgramationController {
                 cliente,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 data,
                 csrfToken
@@ -66,27 +70,29 @@ class ProgramationController {
     }
 
     getProjectsByClientId = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
                 
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const cliente = await this.clients.getClientById(id)
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
 
             const proyectos = await this.projects.getProjectsByClientId(id)
-            if (!proyectos) {
-                catchError400(req, res, next)
-            }
+            !proyectos ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('clientProjectsDetails', {
                 proyectos,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 cliente,
                 data,
@@ -99,27 +105,26 @@ class ProgramationController {
     }
 
     selectProjectByClientId = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
             const cliente = await this.clients.getClientById(id)
-            if (!cliente) {
-                catchError401(req, res, next)
-            } 
+            !cliente ? catchError401(req, res, next) : null 
 
             const proyectos = await this.projects.getProjectsByClientId(id)
-            if (!proyectos) {
-                catchError400(req, res, next)
-            }
+            !proyectos ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('clientProjectsDetails', {
                 proyectos,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 cliente,
                 csrfToken
@@ -131,22 +136,20 @@ class ProgramationController {
     }
 
     selectProjectById = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
             const proyecto = await this.programms.selectProjectByProjectId(id)
-            if (!proyecto) {
-                catchError400(req, res, next)
-            } 
+            !proyecto ? catchError400(req, res, next) : null 
 
             const idCliente = proyecto[0].client[0]._id
             const cliente = await this.clients.getClientByProjectId(idCliente)
-            if (!cliente ) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             setTimeout(() => {
@@ -154,6 +157,7 @@ class ProgramationController {
                     proyecto,
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     data,
@@ -167,25 +171,27 @@ class ProgramationController {
     }
 
     getAllOciProjects = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
         const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             let clientes = await this.clients.getAllClients()
-            if (!clientes ) {
-                catchError401(req, res, next) 
-            }
+            !clientes ? catchError401(req, res, next) : null
 
             const proyectos = await this.projects.getAllOciProjects()
-            if (!proyectos) {
-                catchError400(req, res, next)
-            } 
+            !proyectos ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('nestableOciList', {
                 username,
                 userInfo,
+                userCart,
                 proyectos,
                 clientes,
                 expires,
@@ -199,17 +205,15 @@ class ProgramationController {
     }
 
     addOtToOciProject = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
             const clientId = req.body.clientIdHidden
             const cliente = await this.clients.selectClientById(clientId)
-            if (!cliente) {
-                catchError401(req, res, next)
-            } 
+            !cliente ? catchError401(req, res, next) : null 
 
             const numberOci = parseInt(req.body.ociNumber)
             const ociNumberK = parseInt(req.body.ociNumberK)
@@ -219,9 +223,7 @@ class ProgramationController {
 
             const userId = userInfo.id
             const userCreator = await this.users.getUserById(userId)
-            if (!userCreator.visible) {
-                catchError401_3(req, res, next)
-            }
+            !userCreator.visible ? catchError401_3(req, res, next) : null
 
             const user = [{
                 name: userCreator.name,
@@ -320,15 +322,16 @@ class ProgramationController {
             )
 
             const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
-            if (proyecto) {
-                catchError400(req, res, next)
-            }
+            proyecto ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('projectWonSelectedDetail', {
                 proyecto,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 cliente,
                 data,
@@ -341,10 +344,10 @@ class ProgramationController {
     }
 
     updateStatusOt = async (req, res, next) => {
-        const id = req.params.id
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const id = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
             const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
@@ -354,9 +357,9 @@ class ProgramationController {
             const cliente = await this.clients.selectClientById(clientId)
             !cliente ? catchError401(req, res, next) : null
             
-            const statusOtHidden = req.body.statusOtHidden
-            const ociKNumberHidden = parseInt(req.body.ociKNumberHidden)
-            const otKNumberHidden = parseInt(req.body.otKNumberHidden)
+            const statusOtHidden = req.body.statusOtHidden,
+                ociKNumberHidden = parseInt(req.body.ociKNumberHidden),
+                otKNumberHidden = parseInt(req.body.otKNumberHidden)
             
             const userId = userInfo.id
             const userCreator = await this.users.getUserById(userId)
@@ -386,12 +389,15 @@ class ProgramationController {
 
             const proyecto = await this.projects.selectProjectsByMainProjectId(id)
             !proyecto ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);    
             res.render('projectWonSelectedDetail', {
                 proyecto,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 cliente,
                 data,
@@ -404,10 +410,10 @@ class ProgramationController {
     }
 
     updateOt = async (req, res, next) => {
-        const id = req.params.id
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const id = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
             const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
@@ -428,15 +434,15 @@ class ProgramationController {
                 email: userCreator.email
             }]
         
-            const ociKNumber = parseInt(req.body.ociKNumberHidden)
-            const otNumber = parseInt(req.body.numberOt)
-            const otKNumber =  parseInt(req.body.otKNumberHidden)
-            const opNumber = parseInt(req.body.numeroOp)
-            const statusOt = req.body.statusOtForm
-            const otDescription = req.body.descriptionOt
-            const otDesign = req.body.designOt
-            const otSimulation = req.body.simulationOt
-            const otSupplier = req.body.supplierOt
+            const ociKNumber = parseInt(req.body.ociKNumberHidden),
+                otNumber = parseInt(req.body.numberOt),
+                otKNumber =  parseInt(req.body.otKNumberHidden),
+                opNumber = parseInt(req.body.numeroOp),
+                statusOt = req.body.statusOtForm,
+                otDescription = req.body.descriptionOt,
+                otDesign = req.body.designOt,
+                otSimulation = req.body.simulationOt,
+                otSupplier = req.body.supplierOt
 
             await this.projects.updateOt(
                 id,
@@ -461,12 +467,15 @@ class ProgramationController {
 
             const proyecto = await this.projects.selectProjectsByMainProjectId(id)
             !proyecto ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('projectWonSelectedDetail', {
                 proyecto,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 cliente,
                 data,
@@ -479,10 +488,10 @@ class ProgramationController {
     }
 
     deleteOt = async (req, res, next) => {
-        const id = req.params.id
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const id = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
             const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
@@ -503,8 +512,8 @@ class ProgramationController {
                 email: userCreator.email
             }]
 
-            const ociKNumber = req.body.ociKNumberHidden
-            const otKNumber = req.body.otKNumberHidden
+            const ociKNumber = req.body.ociKNumberHidden,
+                otKNumber = req.body.otKNumberHidden
         
             await this.projects.deleteOt(
                 id, 
@@ -522,11 +531,14 @@ class ProgramationController {
 
             const proyecto = await this.projects.selectProjectsByMainProjectId(id)
             !proyecto ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);    
             res.render('projectWonSelectedDetail', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 cliente,
                 proyecto,
@@ -541,10 +553,10 @@ class ProgramationController {
 
     //-----------------------------------------------------------
     addDetailToOtProject = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
 // console.log('req.params: ', req.params)        
 // console.log('req.body: ', req.body)
@@ -554,10 +566,10 @@ class ProgramationController {
             const cliente = await this.clients.selectClientById(clientId)
             !cliente ? catchError401(req, res, next) : null
             
-            const ociNumberK = parseInt(req.body.ociKNumberHidden)
-            const numberOci = parseInt(req.body.ociNumberHidden) || parseInt(req.body.ociSelect)
-            const otNumberK = parseInt(req.body.otKNumberHidden)
-            const numberOt = parseInt(req.body.otNumberHidden) || parseInt(req.body.otSelect)
+            const ociNumberK = parseInt(req.body.ociKNumberHidden),
+                numberOci = parseInt(req.body.ociNumberHidden) || parseInt(req.body.ociSelect),
+                otNumberK = parseInt(req.body.otKNumberHidden),
+                numberOt = parseInt(req.body.otNumberHidden) || parseInt(req.body.otSelect)
 
 // console.log('ociNumberK-numberOci-otNumberK-numberOt', ociNumberK, numberOci, otNumberK, numberOt)        
             
@@ -639,12 +651,15 @@ class ProgramationController {
 
             const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('projectWonSelectedDetail', {
                 proyecto,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 cliente,
                 data,
@@ -658,10 +673,10 @@ class ProgramationController {
 
     //-----------------------------------------------------------
     addDetailsToOtProjectFromFile = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const expires = cookie(req),
+            { id } = req.params
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
 // console.log('req.body: ', req.body)
 
@@ -670,15 +685,15 @@ class ProgramationController {
             const cliente = await this.clients.selectClientById(clientId)
             !cliente ? catchError401(req, res, next) : null
             
-            const ociNumberK = parseInt(req.body.ociKNumberHidden)
-            const numberOci = parseInt(req.body.ociNumberHiddenFile)
-            const otNumberK = parseInt(req.body.otKNumberHidden)
-            const numberOt = parseInt(req.body.otNumberHidden) || parseInt(req.body.otSelect)
+            const ociNumberK = parseInt(req.body.ociKNumberHidden),
+                numberOci = parseInt(req.body.ociNumberHiddenFile),
+                otNumberK = parseInt(req.body.otKNumberHidden),
+                numberOt = parseInt(req.body.otNumberHidden) || parseInt(req.body.otSelect)
 
 // console.log('ociNumberK-numberOci-otNumberK-numberOt', ociNumberK, numberOci, otNumberK, numberOt)        
             
-            const projectId = id || req.body.projectIdHidden
-            const detailQuantity = parseInt(req.body.rowCountDetailsQty) || 1
+            const projectId = id || req.body.projectIdHidden,
+                detailQuantity = parseInt(req.body.rowCountDetailsQty) || 1
 
             const userId = userInfo.id
             const userCreator = await this.users.getUserById(userId)
@@ -749,12 +764,15 @@ class ProgramationController {
 
             const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('projectWonSelectedDetail', {
                 proyecto,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 cliente,
                 data,
@@ -768,10 +786,10 @@ class ProgramationController {
 
     //-----------------------------------------------------------
     updateOtDetail = async (req, res, next) => {
-        const id = req.params.id
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const id = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
             const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
@@ -792,13 +810,13 @@ class ProgramationController {
                 email: userCreator.email
             }]
             // console.log('req.body: ', req.body)
-            const ociKNumber = parseInt(req.body.ociKNumberHidden)
-            const otKNumber =  parseInt(req.body.otKNumberHidden)
-            const detalleKNumber = parseInt(req.body.detalleKNumberHidden)
-            const statusDetalle = req.body.statusOtDetalleForm
-            const detalleOt = req.body.detalleOt
-            const descripcionDetalle = req.body.otDescripcionDetalle
-            const idDetalle = req.body.detalleIdHidden
+            const ociKNumber = parseInt(req.body.ociKNumberHidden),
+                otKNumber =  parseInt(req.body.otKNumberHidden),
+                detalleKNumber = parseInt(req.body.detalleKNumberHidden),
+                statusDetalle = req.body.statusOtDetalleForm,
+                detalleOt = req.body.detalleOt,
+                descripcionDetalle = req.body.otDescripcionDetalle,
+                idDetalle = req.body.detalleIdHidden
 
             await this.programms.updateOtDetail(
                 id,
@@ -820,12 +838,15 @@ class ProgramationController {
 
             const proyecto = await this.projects.selectProjectsByMainProjectId(id)
             !proyecto ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('projectWonSelectedDetail', {
                 proyecto,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 cliente,
                 data,
@@ -839,10 +860,10 @@ class ProgramationController {
 
     //-----------------------------------------------------------
     updateStatusOtDetail = async (req, res, next) => {
-        const id = req.params.id
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const id = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
             const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
@@ -863,11 +884,11 @@ class ProgramationController {
                 email: userCreator.email
             }]
             // console.log('req.body: ', req.body)
-            const ociKNumber = parseInt(req.body.ociKNumberHidden)
-            const otKNumber =  parseInt(req.body.otKNumberHidden)
-            const detalleKNumber = parseInt(req.body.detalleKNumberHidden)
-            const statusDetalle = req.body.statusOtDetalleForm
-            const idDetalle = req.body.detalleIdHidden
+            const ociKNumber = parseInt(req.body.ociKNumberHidden),
+                otKNumber =  parseInt(req.body.otKNumberHidden),
+                detalleKNumber = parseInt(req.body.detalleKNumberHidden),
+                statusDetalle = req.body.statusOtDetalleForm,
+                idDetalle = req.body.detalleIdHidden
 
             await this.programms.updateStatusOtDetail(
                 id,
@@ -887,12 +908,15 @@ class ProgramationController {
 
             const proyecto = await this.projects.selectProjectsByMainProjectId(id)
             !proyecto ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('projectWonSelectedDetail', {
                 proyecto,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 cliente,
                 data,
@@ -906,10 +930,10 @@ class ProgramationController {
 
     //-----------------------------------------------------------
     deleteOtDetail = async (req, res, next) => {
-        const id = req.params.id
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const id = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
             const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
@@ -930,10 +954,10 @@ class ProgramationController {
                 email: userCreator.email
             }]
     // console.log('req.body: ', req.body)
-            const ociKNumber = parseInt(req.body.ociKNumberHidden)
-            const otKNumber =  parseInt(req.body.otKNumberHidden)
-            const detalleKNumber = parseInt(req.body.detalleKNumberHidden)
-            const idDetalle = req.body.detalleIdHidden
+            const ociKNumber = parseInt(req.body.ociKNumberHidden),
+                otKNumber =  parseInt(req.body.otKNumberHidden),
+                detalleKNumber = parseInt(req.body.detalleKNumberHidden),
+                idDetalle = req.body.detalleIdHidden
 
             await this.programms.deleteOtDetail(
                 id,
@@ -952,12 +976,15 @@ class ProgramationController {
 
             const proyecto = await this.projects.selectProjectsByMainProjectId(id)
             !proyecto ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('projectWonSelectedDetail', {
                 proyecto,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 cliente,
                 data,
@@ -971,10 +998,10 @@ class ProgramationController {
 
     // -----------------------------------------------------------
     addInfoOtDistribucion = async (req, res, next) => {
-        const id = req.params.id
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const id = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
             const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
@@ -982,24 +1009,18 @@ class ProgramationController {
 
             const clientId = req.body.clientIdHidden
             const cliente = await this.clients.selectClientById(clientId)     
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
             
             const projectId = req.body.projectIdHidden
             let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
-            if (!proyecto) {
-                catchError401_1(req, res, next)
-            }
+            !proyecto ? catchError401_1(req, res, next) : null
 
             const userId = userInfo.id
             const userCreator = await this.users.getUserById(userId)
-            if (!userCreator) {
-                catchError401_3(req, res, next)
-            }
+            !userCreator ? catchError401_3(req, res, next) : null
             
-            const ociNumberK = parseInt(req.body.ociNumberK)
-            const resultado = req.body.detalleNumberK.split(",")
+            const ociNumberK = parseInt(req.body.ociNumberK),
+                resultado = req.body.detalleNumberK.split(",")
 
             const arrayDetalleKNumber = resultado.map(item => {
                 const partes = item.split('_'); // Dividir la cadena por "_"
@@ -1007,11 +1028,11 @@ class ProgramationController {
             });
             const arrayDetalleNumberK = arrayDetalleKNumber //.map(Number)
 
-            const arrayOtKNumber = req.body.otNumberK.split(",")
-            const arrayOtNumberK = arrayOtKNumber.map(Number) 
-            const otQuantity = parseInt(req.body.otQuantity)
-            const detallesQuantity = parseInt(req.body.detallesQuantity)
-            const totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
+            const arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number),
+                otQuantity = parseInt(req.body.otQuantity),
+                detallesQuantity = parseInt(req.body.detallesQuantity),
+                totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
 
             let arrayIdDetalle=[], arrayOtNumber=[], arrayOtStatus=[], arrayDetalleNumber=[],
                 arrayMecanizado2dCompleto=[], arrayRevisionMecanizado2dCompleto=[],
@@ -1073,15 +1094,12 @@ class ProgramationController {
                 totalDetallesQuantity,
                 arrayInfoAddedToDetail
             )
-    
-            if (!itemUpdated) {
-                catchError400_3(req, res, next)
-            }
+            !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
-            if (!proyecto) {
-                catchError401_1(req, res, next)
-            }
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 0
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -1090,6 +1108,7 @@ class ProgramationController {
                     proyecto,
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     data,
@@ -1104,10 +1123,10 @@ class ProgramationController {
 
     // -----------------------------------------------------------
     addInfoProgramacionPrimera = async (req, res, next) => {
-        const id = req.params.id
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const id = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
             const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
@@ -1115,21 +1134,15 @@ class ProgramationController {
 
             const clientId = req.body.clientIdHidden
             const cliente = await this.clients.selectClientById(clientId)     
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
             
             const projectId = req.body.projectIdHidden
             let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
-            if (!proyecto) {
-                catchError401_1(req, res, next)
-            }
+            !proyecto ? catchError401_1(req, res, next) : null
 
             const userId = userInfo.id
             const userCreator = await this.users.getUserById(userId)
-            if (!userCreator) {
-                catchError401_3(req, res, next)
-            }
+            !userCreator ? catchError401_3(req, res, next) : null
             
             const ociNumberK = parseInt(req.body.ociNumberK)
             const resultado = req.body.detalleNumberK.split(",")
@@ -1140,11 +1153,11 @@ class ProgramationController {
             });
             const arrayDetalleNumberK = arrayDetalleKNumber //.map(Number)
 
-            const arrayOtKNumber = req.body.otNumberK.split(",")
-            const arrayOtNumberK = arrayOtKNumber.map(Number) 
-            const otQuantity = parseInt(req.body.otQuantity)
-            const detallesQuantity = parseInt(req.body.detallesQuantity)
-            const totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
+            const arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number),
+                otQuantity = parseInt(req.body.otQuantity),
+                detallesQuantity = parseInt(req.body.detallesQuantity),
+                totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
 
             let arrayIdDetalle=[], arrayOtNumber=[], arrayOtStatus=[], arrayDetalleNumber=[],
                 arrayRt=[], arrayEstadoRt=[], arrayRevisionRt=[],
@@ -1229,15 +1242,12 @@ class ProgramationController {
                 totalDetallesQuantity,
                 arrayInfoAddedToDetail
             )
-    
-            if (!itemUpdated) {
-                catchError400_3(req, res, next)
-            }
+            !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
-            if (!proyecto) {
-                catchError401_1(req, res, next)
-            }
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
 
             data.slide = 1
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -1246,6 +1256,7 @@ class ProgramationController {
                     proyecto,
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     data,
@@ -1261,10 +1272,10 @@ class ProgramationController {
 
     // -----------------------------------------------------------
     addInfoProgramacionSegunda = async (req, res, next) => {
-        const id = req.params.id
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const id = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
             const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
@@ -1272,24 +1283,18 @@ class ProgramationController {
 
             const clientId = req.body.clientIdHidden
             const cliente = await this.clients.selectClientById(clientId)     
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
             
             const projectId = req.body.projectIdHidden
             let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
-            if (!proyecto) {
-                catchError401_1(req, res, next)
-            }
+            !proyecto ? catchError401_1(req, res, next) : null
 
             const userId = userInfo.id
             const userCreator = await this.users.getUserById(userId)
-            if (!userCreator) {
-                catchError401_3(req, res, next)
-            }
+            !userCreator ? catchError401_3(req, res, next) : null
             
-            const ociNumberK = parseInt(req.body.ociNumberK)
-            const resultado = req.body.detalleNumberK.split(",")
+            const ociNumberK = parseInt(req.body.ociNumberK),
+                resultado = req.body.detalleNumberK.split(",")
 
             const arrayDetalleKNumber = resultado.map(item => {
                 const partes = item.split('_'); // Dividir la cadena por "_"
@@ -1297,11 +1302,11 @@ class ProgramationController {
             });
             const arrayDetalleNumberK = arrayDetalleKNumber //.map(Number)
 
-            const arrayOtKNumber = req.body.otNumberK.split(",")
-            const arrayOtNumberK = arrayOtKNumber.map(Number) 
-            const otQuantity = parseInt(req.body.otQuantity)
-            const detallesQuantity = parseInt(req.body.detallesQuantity)
-            const totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
+            const arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number),
+                otQuantity = parseInt(req.body.otQuantity),
+                detallesQuantity = parseInt(req.body.detallesQuantity),
+                totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
 
             let arrayIdDetalle=[], arrayOtNumber=[], arrayOtStatus=[], arrayDetalleNumber=[],
                 arrayPrograma3d2F=[], arrayEstadoPrograma3d2F=[], arrayRevisionPrograma3d2F=[],
@@ -1378,15 +1383,12 @@ class ProgramationController {
                 totalDetallesQuantity,
                 arrayInfoAddedToDetail
             )
-    
-            if (!itemUpdated) {
-                catchError400_3(req, res, next)
-            }
+            !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
-            if (!proyecto) {
-                catchError401_1(req, res, next)
-            }
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
 
             data.slide = 2
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -1395,6 +1397,7 @@ class ProgramationController {
                     proyecto,
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     data,
@@ -1409,10 +1412,10 @@ class ProgramationController {
 
     // -----------------------------------------------------------
     addInfoMecanizadoPrimera = async (req, res, next) => {
-        const id = req.params.id
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const id = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
             const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
@@ -1420,24 +1423,18 @@ class ProgramationController {
 
             const clientId = req.body.clientIdHidden
             const cliente = await this.clients.selectClientById(clientId)     
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente? catchError401(req, res, next) : null
             
             const projectId = req.body.projectIdHidden
             let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
-            if (!proyecto) {
-                catchError401_1(req, res, next)
-            }
+            !proyecto? catchError401_1(req, res, next) : null
 
             const userId = userInfo.id
             const userCreator = await this.users.getUserById(userId)
-            if (!userCreator) {
-                catchError401_3(req, res, next)
-            }
+            !userCreator? catchError401_3(req, res, next) : null
             
-            const ociNumberK = parseInt(req.body.ociNumberK)
-            const resultado = req.body.detalleNumberK.split(",")
+            const ociNumberK = parseInt(req.body.ociNumberK),
+                resultado = req.body.detalleNumberK.split(",")
 
             const arrayDetalleKNumber = resultado.map(item => {
                 const partes = item.split('_'); // Dividir la cadena por "_"
@@ -1445,11 +1442,11 @@ class ProgramationController {
             });
             const arrayDetalleNumberK = arrayDetalleKNumber //.map(Number)
 
-            const arrayOtKNumber = req.body.otNumberK.split(",")
-            const arrayOtNumberK = arrayOtKNumber.map(Number) 
-            const otQuantity = parseInt(req.body.otQuantity)
-            const detallesQuantity = parseInt(req.body.detallesQuantity)
-            const totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
+            const arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number),
+                otQuantity = parseInt(req.body.otQuantity),
+                detallesQuantity = parseInt(req.body.detallesQuantity),
+                totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
 
             let arrayIdDetalle=[], arrayOtNumber=[], arrayOtStatus=[], arrayDetalleNumber=[],
                 arrayFCero=[], arrayEstadoFCero=[], arrayRevisionFCero=[],
@@ -1534,15 +1531,12 @@ class ProgramationController {
                 totalDetallesQuantity,
                 arrayInfoAddedToDetail
             )
-    
-            if (!itemUpdated) {
-                catchError400_3(req, res, next)
-            }
+            !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
-            if (!proyecto) {
-                catchError401_1(req, res, next)
-            }
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
 
             data.slide = 3
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -1551,6 +1545,7 @@ class ProgramationController {
                     proyecto,
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     data,
@@ -1565,10 +1560,10 @@ class ProgramationController {
 
     // -----------------------------------------------------------
     addInfoMecanizadoSegunda = async (req, res, next) => {
-        const id = req.params.id
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const id = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
             const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
@@ -1576,21 +1571,15 @@ class ProgramationController {
 
             const clientId = req.body.clientIdHidden
             const cliente = await this.clients.selectClientById(clientId)     
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
             
             const projectId = req.body.projectIdHidden
             let proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
-            if (!proyecto) {
-                catchError401_1(req, res, next)
-            }
+            !proyecto ? catchError401_1(req, res, next) : null
 
             const userId = userInfo.id
             const userCreator = await this.users.getUserById(userId)
-            if (!userCreator) {
-                catchError401_3(req, res, next)
-            }
+            !userCreator ? catchError401_3(req, res, next) : null
             
             const ociNumberK = parseInt(req.body.ociNumberK)
             const resultado = req.body.detalleNumberK.split(",")
@@ -1601,11 +1590,11 @@ class ProgramationController {
             });
             const arrayDetalleNumberK = arrayDetalleKNumber //.map(Number)
 
-            const arrayOtKNumber = req.body.otNumberK.split(",")
-            const arrayOtNumberK = arrayOtKNumber.map(Number) 
-            const otQuantity = parseInt(req.body.otQuantity)
-            const detallesQuantity = parseInt(req.body.detallesQuantity)
-            const totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
+            const arrayOtKNumber = req.body.otNumberK.split(","),
+                arrayOtNumberK = arrayOtKNumber.map(Number),
+                otQuantity = parseInt(req.body.otQuantity),
+                detallesQuantity = parseInt(req.body.detallesQuantity),
+                totalDetallesQuantity = parseInt(req.body.totalDetallesQuantity)
 
             let arrayIdDetalle=[], arrayOtNumber=[], arrayOtStatus=[], arrayDetalleNumber=[],
                 arrayFTres=[], arrayEstadoFTres=[], arrayRevisionFTres=[],
@@ -1682,15 +1671,12 @@ class ProgramationController {
                 totalDetallesQuantity,
                 arrayInfoAddedToDetail
             )
-    
-            if (!itemUpdated) {
-                catchError400_3(req, res, next)
-            }
+            !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
-            if (!proyecto) {
-                catchError401_1(req, res, next)
-            }
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
 
             data.slide = 4
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -1699,6 +1685,7 @@ class ProgramationController {
                     proyecto,
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     data,

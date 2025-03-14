@@ -41,18 +41,24 @@ class CuttingToolsController {
     }
 
     getAllCuttingTools = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const herramientas = await this.herramientas.getAllCuttingTools()
             !herramientas ? catchError400_5(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewCuttingTool', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 herramientas,
                 data,
@@ -71,13 +77,19 @@ class CuttingToolsController {
             userInfo = res.locals.userInfo
         
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const herramienta = await this.herramientas.getCuttingToolById(id)           
             !herramienta ? catchError401_3(req, res, next) : null
-
+            
+            const userCart = await this.carts.getCartByUserId(usuario._id)
+            
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('cuttingToolDetails', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 herramienta,
                 data,
@@ -95,14 +107,20 @@ class CuttingToolsController {
         let userInfo = res.locals.userInfo
         
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const herramienta = await this.herramientas.getCuttingToolByToolname(designation)
             !herramienta ? catchError401_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('cuttingToolDetails', {
                 herramienta,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 data,
                 csrfToken
@@ -114,10 +132,10 @@ class CuttingToolsController {
     }
 
     createNewCuttingTool = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
-        console.log('req.body', req.body)
+        // console.log('req.body', req.body)
         //------ Storage New CuttingTool Image in Google Store --------        
         uploadMulterSingleImageCuttingTool(req, res, async (err) => {
             try {
@@ -185,10 +203,13 @@ class CuttingToolsController {
                         const usuarioLog = await this.users.getUserByUsername(username);
                         !usuarioLog.visible ? catchError401_3(req, res, next) : null
 
+                        const userCart = await this.carts.getCartByUserId(userId)
+
                         const csrfToken = csrfTokens.create(req.csrfSecret);
                         return res.render('addNewCuttingTool', {
                             username,
                             userInfo,
+                            userCart,
                             expires,
                             data,
                             csrfToken,
@@ -296,11 +317,14 @@ class CuttingToolsController {
 
                         const herramienta = await this.herramientas.updateCuttingTool(cuttingToolId, updatedCuttingTool, dataUserModificatorNotEmpty(userLogged))
                         !herramienta ? catchError400_3(req, res, next) : null
+
+                        const userCart = await this.carts.getCartByUserId(userLogged._id)
                             
                         const csrfToken = csrfTokens.create(req.csrfSecret);
                         return res.render('addNewCuttingTool', {
                             username,
                             userInfo,
+                            userCart,
                             expires,
                             herramienta,
                             data,
@@ -344,11 +368,14 @@ class CuttingToolsController {
 
             const herramienta = await this.herramientas.deleteCuttingToolById(id, dataUserModificatorNotEmpty(userLogged))
             !herramienta ? catchError401_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewCuttingTool', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 herramienta,
                 data,

@@ -54,19 +54,25 @@ class UsersController {
     }
 
     getAllUsers = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
             const usuarios = await this.users.getAllUsers()
             !usuarios ? catchError400_5(req, res, next) : null
+
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewUser', {
                 usuarios,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 data,
                 csrfToken
@@ -86,12 +92,15 @@ class UsersController {
         try {
             const usuario = await this.users.getUserById(id)
             !usuario ? catchError401_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('userDetails', {
                 usuario,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 data,
                 csrfToken
@@ -110,12 +119,15 @@ class UsersController {
         try {
             const usuario = await this.users.getUserByUsername(username)
             !usuario ? catchError401_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('userDetails', {
                 usuario,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 data,
                 csrfToken
@@ -205,11 +217,14 @@ class UsersController {
                     const usuarioLog = await this.users.getUserByUsername(username);
                     !usuarioLog ? catchError401_3(req, res, next) : null
 
+                    const userCart = await this.carts.getCartByUserId(usuario._id)
+
                     const csrfToken = csrfTokens.create(req.csrfSecret);
                     return res.render('addNewUser', {
                         usuario,
                         username,
                         userInfo,
+                        userCart,
                         expires,
                         data,
                         csrfToken
@@ -328,12 +343,15 @@ class UsersController {
 
                         const usuario = await this.users.updateUser(id, updatedUser, dataUserModificatorNotEmpty(userLogged))
                         !usuario ? catchError400_3(req, res, next) : null
+
+                        const userCart = await this.carts.getCartByUserId(usuario._id)
                                 
                         const csrfToken = csrfTokens.create(req.csrfSecret);
                         return res.render('addNewUser', {
                             usuario,
                             username,
                             userInfo,
+                            userCart,
                             expires,
                             data,
                             csrfToken
@@ -351,10 +369,10 @@ class UsersController {
     }
 
     updateUserPreferences = async (req, res, next) => {
-        let username = res.locals.username,
-            userInfo = res.locals.userInfo
         const id = req.params.id,
             expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
             //------ Storage User Image in Google Store --------
             uploadMulterSingleAvatarUser(req, res, async (err) => {
                 try {
@@ -386,12 +404,15 @@ class UsersController {
                     
                         const usuario = await this.users.updateUserPreferences(id, updatedUser, dataUserModificatorNotEmpty(userLogged))
                         !usuario ? catchError401_3(req, res, next) : null
+
+                        const userCart = await this.carts.getCartByUserId(usuario._id)
                         
                         const csrfToken = csrfTokens.create(req.csrfSecret);
                         res.render('userSettings', {
                             usuario,
                             username,
                             userInfo,
+                            userCart,
                             expires,
                             data,
                             csrfToken
@@ -416,18 +437,16 @@ class UsersController {
         try {
             const userId = userInfo.id
             let usuario = await this.users.getUserById(userId)
-            
-            if (!usuario) {
-                const err = new Error(`No fue posible encontrar el Usuario con el id#: ${id}!`)
-                err.statusCode = 404
-                next(err);
-            }
+            !usuario ? catchError401_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('userSettings', {
                 usuario,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 data,
                 csrfToken
@@ -465,12 +484,15 @@ class UsersController {
 
             const usuario = await this.users.deleteUserById(id, dataUserModificatorNotEmpty(userLogged))
             !usuario ? catchError401_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewUser', {
                 usuario,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 data,
                 csrfToken
@@ -696,7 +718,7 @@ class UsersController {
                 }
     
             } else {
-                catchError401_3(req, res, next)
+                catchError500(err, req, res, next)
             }
 
         } else {
@@ -904,10 +926,13 @@ class UsersController {
                 req.session.admin = true
                 req.session.username = userInfo.username
 
+                const userCart = await this.carts.getCartByUserId(user._id)
+
                 const csrfToken = csrfTokens.create(req.csrfSecret);
                 return res.render('clientes', {
-                    userInfo,
                     username,
+                    userInfo,
+                    userCart,
                     expires,
                     data,
                     csrfToken

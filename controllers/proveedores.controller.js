@@ -1,5 +1,6 @@
 const UserService = require("../services/users.service.js"),
     SupplierService = require("../services/suppliers.service.js"),
+    CartsService = require("../services/carts.service.js"),
 
     csrf = require('csrf'),
     csrfTokens = csrf(),
@@ -26,21 +27,28 @@ class SuppliersController {
     constructor(){
         this.users = new UserService()
         this.suppliers = new SupplierService()
+        this.carts = new CartsService()
     }
 
     getAllSuppliers = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
         const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+            
             const proveedores = await this.suppliers.getAllSuppliers()
             !proveedores ? catchError400_5(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewSupplier', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 proveedores,
                 data,
@@ -53,19 +61,25 @@ class SuppliersController {
     }
 
     getSupplierById = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const proveedor = await this.suppliers.getSupplierById(id)           
             !proveedor ? catchError401_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('supplierDetails', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 proveedor,
                 data,
@@ -79,18 +93,25 @@ class SuppliersController {
 
     getSupplierByDesignation = async (req, res, next) => {
         const { designation } = req.params
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const proveedor = await this.suppliers.getSupplierBySuppliername(designation)
             !proveedor ? catchError401_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('supplierDetails', {
                 proveedor,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 data,
                 csrfToken
@@ -102,25 +123,23 @@ class SuppliersController {
     }
 
     createNewSupplier = async (req, res, next) => {
-        let username = res.locals.username;
-        let userInfo = res.locals.userInfo;
         const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo;
 
         //------ Storage New Supplier Image in Google Store --------        
         uploadMulterSingleImageSupplier(req, res, async (err) => {
             try {
-                console.log('req.file: ', req.file)
-                if (req.file) {
-                    await uploadToGCS(req, res, next)
-                }
+                //console.log('req.file: ', req.file)
+                req.file ? await uploadToGCS(req, res, next) : null
 
                 let userManager = await this.users.getUserByUsername(username);
                 const userId = userManager._id;
                 const userCreator = await this.users.getUserById(userId);
                 !userCreator ? catchError401_3(req, res, next) : null
 
-                const designationInput = req.body.designation.replace(/[!@#$%^&*]/g, "");
-                const codeInput = req.body.code;
+                const designationInput = req.body.designation.replace(/[!@#$%^&*]/g, ""),
+                    codeInput = req.body.code;
 
                 const newSupplierValid = {
                     designation: designationInput,
@@ -151,10 +170,13 @@ class SuppliersController {
                     const usuarioLog = await this.users.getUserByUsername(username);
                     !usuarioLog.visible ? catchError401_3(req, res, next) : null
 
+                    const userCart = await this.carts.getCartByUserId(userId)
+
                     const csrfToken = csrfTokens.create(req.csrfSecret);
                     return res.render('addNewSupplier', {
                         username,
                         userInfo,
+                        userCart,
                         expires,
                         data,
                         csrfToken,
@@ -169,21 +191,19 @@ class SuppliersController {
     }
     
     updateSupplier = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         uploadMulterSingleImageSupplier(req, res, async (err) => {
             try {
                 // console.log('req.body: ', req.body)
                 // console.log('req.file: ', req.file)
-                if (req.file) {
-                    await uploadToGCS(req, res, next)
-                }
+                req.file ? await uploadToGCS(req, res, next) : null
 
-                const supplierId = id
-                const supplierToModify = await this.suppliers.getSupplierById(supplierId)
+                const supplierId = id,
+                    supplierToModify = await this.suppliers.getSupplierById(supplierId)
 
                 const supplierInput = req.body.designation.replace(/[!@#$%^&* ]/g, "")
                 let proveedoresRestantes
@@ -208,8 +228,8 @@ class SuppliersController {
                         return next(err);
                     }
 
-                    const codeInput = req.body.code
-                    const codesId = proveedoresRestantes.map(proveedor => proveedor.code);
+                    const codeInput = req.body.code,
+                        codesId = proveedoresRestantes.map(proveedor => proveedor.code);
                     
                     if (codesId.includes(supplierToModify.code)) {
                         const err = new Error (`Ya existe un Proveedor con este Código #${codeInput}!`)
@@ -233,13 +253,15 @@ class SuppliersController {
                 }
 
                 const proveedor = await this.suppliers.updateSupplier(supplierId, updatedSupplier, dataUserModificatorNotEmpty(userLogged))
-                // console.log('proveedor: ', proveedor)
                 !proveedor ? catchError400_3(req, res, next) : null
+
+                const userCart = await this.carts.getCartByUserId(userLogged._id)
                         
                 const csrfToken = csrfTokens.create(req.csrfSecret);
                 return res.render('addNewSupplier', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     proveedor,
                     data,
@@ -264,10 +286,10 @@ class SuppliersController {
     }
 
     deleteSupplierById = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
             const supplierToDelete = await this.suppliers.getSupplierById(id)
@@ -279,11 +301,14 @@ class SuppliersController {
 
             const proveedor = await this.suppliers.deleteSupplierById(id, dataUserModificatorNotEmpty(userLogged))
             !proveedor ? catchError401_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewSupplier', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 proveedor,
                 data,

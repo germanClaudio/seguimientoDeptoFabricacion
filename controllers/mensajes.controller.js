@@ -1,18 +1,18 @@
-const MessagesService = require("../services/messages.service.js")
-const UserService = require("../services/users.service.js")
+const MessagesService = require("../services/messages.service.js"),
+    UserService = require("../services/users.service.js"),
+    CartsService = require("../services/carts.service.js"),
+
+    csrf = require('csrf'),
+    csrfTokens = csrf(),
+
+    cookie = require('../utils/cookie.js')
 
 // const { uploadToGCS } = require("../utils/uploadFilesToGSC.js")
 // const { uploadMulterSingleAvatarUser } = require("../utils/uploadMulter.js")
-
-// let userPictureNotFound = "../../../src/images/upload/AvatarUsersImages/incognito.jpg"
-const cookie = require('../utils/cookie.js')
-let formatDate = require('../utils/formatDate.js')
-
-const csrf = require('csrf');
-const csrfTokens = csrf();
-
-const data = require('../utils/variablesInicializator.js')
 // const { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js')
+
+let data = require('../utils/variablesInicializator.js'),
+    formatDate = require('../utils/formatDate.js')
 
 const {catchError400_3,
         catchError401_3,
@@ -25,29 +25,29 @@ class MessagesController {
     constructor(){
         this.users = new UserService()
         this.messages = new MessagesService()
+        this.carts = new CartsService()
     }
 
     getAllMessages = async (req, res) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
         const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
             const userLogged = await this.users.getUserByUsername(username)
-            if(!userLogged) {
-                catchError401_3(req, res, next)
-            }
+            !userLogged ? catchError401_3(req, res, next) : null
         
             const mensajes = await this.messages.getAllMessages()
-            if(!mensajes) {
-                catchError400_3(req, res, next)
-            } 
+            !mensajes ? catchError400_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userLogged._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewMessage', {
                 mensajes,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 data,
                 csrfToken
@@ -59,26 +59,25 @@ class MessagesController {
     }
 
     getMessageById = async (req, res) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
             const userLogged = await this.users.getUserByUsername(username)
-            if(!userLogged) {
-                catchError401_3(req, res, next)
-            }
+            !userLogged ? catchError401_3(req, res, next) : null
             
             const mensaje = await this.messages.getMessageById(id)
-            if(!mensaje) {
-                catchError400_3(req, res, next)
-            } 
+            !mensaje ? catchError400_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewMessage', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 mensaje,
                 data,
@@ -91,9 +90,9 @@ class MessagesController {
     }
 
     createNewMessage = async (req, res) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
         const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         const messageStructure = {
             author: {
@@ -110,19 +109,18 @@ class MessagesController {
         
         try {
             const userLogged = await this.users.getUserByUsername(username)
-            if(!userLogged) {
-                catchError401_3(req, res, next)
-            }
+            !userLogged ? catchError401_3(req, res, next) : null
         
             const mensaje = await this.messages.createNewMessage(messageStructure)
-            if(!mensaje) {
-                catchError400_3(req, res, next)
-            } 
+            !mensaje ? catchError400_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userLogged._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewMessage', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 mensaje,
                 data,
@@ -135,27 +133,26 @@ class MessagesController {
     }
 
     deleteMessageById = async (req, res) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
             const userLogged = await this.users.getUserByUsername(username)
-            if(!userLogged) {
-                catchError401_3(req, res, next)
-            }
+            !userLogged ? catchError401_3(req, res, next) : null
 
             const messageDeleted = await this.messages.deleteMessageById(id)
-            if(!messageDeleted) {
-                catchError400_3(req, res, next)
-            }
+            !messageDeleted ? catchError400_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userLogged._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewMessage', {
                 messageDeleted,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 data,
                 csrfToken
@@ -167,26 +164,25 @@ class MessagesController {
     }
 
     deleteAllMessages = async (req, res) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
         const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
             const userLogged = await this.users.getUserByUsername(username)
-            if(!userLogged) {
-                catchError401_3(req, res, next)
-            }
+            !userLogged ? catchError401_3(req, res, next) : null
         
             let messagesDeleted = await this.messages.deleteAllMessages()
-            if(!messagesDeleted) {
-                catchError400_3(req, res, next)
-            }
+            !messagesDeleted ? catchError400_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userLogged._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewMessage', {
                 messageDeleted,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 data,
                 csrfToken

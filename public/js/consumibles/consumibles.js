@@ -227,7 +227,7 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
                         observer.unobserve(img); // Deja de observar esta imagen
                     }
                 });
-            }, 2000);
+            }, 1000);
         });
         lazyImages.forEach(img => observer.observe(img));
         
@@ -269,7 +269,7 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
                         `El consumible ${designation}, ha sido eliminado exitosamente.`,
                         'success'
                     )
-                }, 600)
+                }, 500)
             } else {
                 Swal.fire(
                     'No eliminado!',
@@ -416,7 +416,7 @@ const renderConsumiblesUser = (arrConsumibles) => {
                         observer.unobserve(img); // Deja de observar esta imagen
                     }
                 });
-            }, 2000);
+            }, 1000);
         });
         lazyImages.forEach(img => observer.observe(img));
         
@@ -431,7 +431,7 @@ const renderConsumiblesUser = (arrConsumibles) => {
 // ----------- Image Consumible Image behavior ---------------
 const dropAreaImageConsumible = document.getElementById('drop-areaImageConsumibles'),
     fileInputImageConsumible = document.getElementById('fileInputImageConsumibles'),
-    fileImputTextImageConsumible = document.getElementById('fileInputTextImageConsumibles'),
+    fileInputTextImageConsumible = document.getElementById('fileInputTextImageConsumibles'),
     removeImageButtonImageConsumible = document.getElementById('removeImageConsumibles'),
     alertImageConsumible = document.getElementById('alertImageConsumibles'),
     alertSizeImageConsumible = document.getElementById('alertSizeImageConsumibles')
@@ -466,7 +466,7 @@ dropAreaImageConsumible.addEventListener('dragleave', (e) => {
 function alertRefresh() {
     removeImageButtonImageConsumible.style.display = 'none'
     fileInputImageConsumible.value = ''
-    fileImputTextImageConsumible.value = ''
+    fileInputTextImageConsumible.value = ''
     Object.assign(dropAreaImageConsumible.style, {
         border: "2px dashed #ccc",
         textAlign: "center",
@@ -534,7 +534,7 @@ function handleFileUploadImageConsumible(file) {
         const dotIndex = file.name.lastIndexOf('.'),
             name = file.name.substring(0, dotIndex),
             extension = file.name.substring(dotIndex)
-        fileImputTextImageConsumible.value = pathToImage + name + "-" + formatDate(new Date()) + extension
+        fileInputTextImageConsumible.value = pathToImage + name + "-" + formatDate(new Date()) + extension
         removeImageButtonImageConsumible.style.display = 'flex'
 
         const reader = new FileReader()
@@ -597,7 +597,7 @@ function messageNewConsumible(designation, code, type, stock) {
         swal.fire({
             title: 'Error',
             position: 'center',
-            timer: 2500,
+            timer: 2000,
             text: `El Consumible no se creó correctamente!`,
             icon: 'error',
             showCancelButton: true,

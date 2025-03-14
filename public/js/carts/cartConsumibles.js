@@ -197,7 +197,7 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
                         observer.unobserve(img); // Deja de observar esta imagen
                     }
                 });
-            }, 1250);
+            }, 1000);
         });
         lazyImages.forEach(img => observer.observe(img));
         
@@ -326,7 +326,7 @@ const renderConsumiblesUser = (arrConsumibles) => {
                         observer.unobserve(img); // Deja de observar esta imagen
                     }
                 });
-            }, 1500);
+            }, 1000);
         });
         lazyImages.forEach(img => observer.observe(img));
         

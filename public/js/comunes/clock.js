@@ -8,6 +8,9 @@ function updateTime() {
         year = now.getFullYear(),
         time = now.toLocaleTimeString('en-US', { hour12: false }),
         timeString = `${weekday}, ${day}/${month}/${year} - ${time}`
-    document.getElementById("clock").textContent = timeString
+
+    document.getElementById("clock") ? 
+    document.getElementById("clock").textContent = timeString : null
 }
+
 setInterval(updateTime, 1000)

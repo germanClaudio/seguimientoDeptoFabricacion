@@ -1,5 +1,6 @@
 const UserService = require("../services/users.service.js"),
     ToolService = require("../services/tools.service.js"),
+    CartsService = require("../services/carts.service.js"),
 
     csrf = require('csrf'),
     csrfTokens = csrf(),
@@ -26,21 +27,28 @@ class ToolsController {
     constructor(){
         this.users = new UserService()
         this.tools = new ToolService()
+        this.carts = new CartsService()
     }
 
     getAllTools = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
         const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const maquinas = await this.tools.getAllTools()
             !maquinas ? catchError400_5(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewTool', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 maquinas,
                 data,
@@ -53,19 +61,25 @@ class ToolsController {
     }
 
     getToolById = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const maquina = await this.tools.getToolById(id)           
             !maquina ? catchError401_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('toolDetails', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 maquina,
                 data,
@@ -78,19 +92,25 @@ class ToolsController {
     }
 
     getToolByDesignation = async (req, res, next) => {
-        const { designation } = req.params
+        const { designation } = req.params,
+            expires = cookie(req)
         let userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const maquina = await this.tools.getToolByToolname(designation)
             !maquina ? catchError401_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('toolDetails', {
                 maquina,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 data,
                 csrfToken
@@ -151,10 +171,13 @@ class ToolsController {
                     const usuarioLog = await this.users.getUserByUsername(username);
                     !usuarioLog.visible ? catchError401_3(req, res, next) : null
 
+                    const userCart = await this.carts.getCartByUserId(userId)
+
                     const csrfToken = csrfTokens.create(req.csrfSecret);
                     return res.render('addNewTool', {
                         username,
                         userInfo,
+                        userCart,
                         expires,
                         data,
                         csrfToken,
@@ -240,11 +263,14 @@ class ToolsController {
 
                 const maquina = await this.tools.updateTool(toolId, updatedTool, dataUserModificatorNotEmpty(userLogged))
                 !maquina ? catchError400_3(req, res, next) : null
+
+                const userCart = await this.carts.getCartByUserId(userLogged._id)
                         
                 const csrfToken = csrfTokens.create(req.csrfSecret);
                 return res.render('addNewTool', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     maquina,
                     data,
@@ -284,11 +310,14 @@ class ToolsController {
 
             const maquina = await this.tools.deleteToolById(id, dataUserModificatorNotEmpty(userLogged))
             !maquina ? catchError401_3(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('addNewTool', {
                 username,
                 userInfo,
+                userCart,
                 expires,
                 maquina,
                 data,

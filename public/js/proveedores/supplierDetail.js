@@ -61,42 +61,50 @@ btnUpdateSupplier.addEventListener('click', (event)=>{
 
 // --------------- Update Supplier ------------------------
 // ----------- Supplier  Image behavior ---------------
-const dropAreaSupplierUpdate = document.getElementById('drop-areaSupplierUpdate')
-const fileInputSupplierUpdate = document.getElementById('fileInputSupplierUpdate')
-const fileImputTextSupplierUpdate = document.getElementById('fileInputTextImageSupplierUpdate')
-const removeImageButtonSupplierUpdate = document.getElementById('removeImageSupplierUpdate')
-const alertSupplierUpdate = document.getElementById('alertImageSupplierUpdate')
-const alertSupplierSize = document.getElementById('alertSizeImageSupplierUpdate')
+const dropAreaSupplierUpdate = document.getElementById('drop-areaSupplierUpdate'),
+    fileInputSupplierUpdate = document.getElementById('fileInputSupplierUpdate'),
+    fileImputTextSupplierUpdate = document.getElementById('fileInputTextImageSupplierUpdate'),
+    removeImageButtonSupplierUpdate = document.getElementById('removeImageSupplierUpdate'),
+    alertSupplierUpdate = document.getElementById('alertImageSupplierUpdate'),
+    alertSupplierSize = document.getElementById('alertSizeImageSupplierUpdate')
 
-dropAreaSupplierUpdate.style.width = "70%"
-dropAreaSupplierUpdate.style.height = "200px"
-dropAreaSupplierUpdate.style.border = "2px dashed #ccc"
-dropAreaSupplierUpdate.style.textAlign = "center"
-dropAreaSupplierUpdate.style.margin = "0 auto 0 50px"
-dropAreaSupplierUpdate.style.borderRadius = "5px"
-dropAreaSupplierUpdate.style.lineHeight = "200px"
-dropAreaSupplierUpdate.style.cursor = "pointer"
+Object.assign(dropAreaSupplierUpdate.style, {
+    width: "70%",
+    height: "200px",
+    border: "2px dashed #ccc",
+    margin: "0 auto 0 50px",
+    borderRadius: "5px",
+    textAlign: "center",
+    lineHeight: "200px",
+    cursor: "pointer"
+})
 
 dropAreaSupplierUpdate.addEventListener('dragover', (e) => {
     e.preventDefault()
-    dropAreaSupplierUpdate.style.border = '2px dashed #77d'
-    dropAreaSupplierUpdate.style.backgroundColor = '#7777dd10'
+    Object.assign(dropAreaSupplierUpdate.style, {
+        border: '2px dashed #77d',
+        backgroundColor: '#7777dd10'
+    })
 })
 
 dropAreaSupplierUpdate.addEventListener('dragleave', (e) => {
     e.preventDefault()
-    dropAreaSupplierUpdate.style.border = '2px dashed #ccc'
-    dropAreaSupplierUpdate.style.backgroundColor = '#9a9a9a'
+    Object.assign(dropAreaSupplierUpdate.style, {
+        border: '2px dashed #ccc',
+        backgroundColor: '#9a9a9a'
+    })
 })
 
 function alertRefresh() {
     removeImageButtonSupplierUpdate.style.display = 'none'
     fileImputTextSupplierUpdate.value = ''
     fileInputSupplierUpdate.value = ''
-    dropAreaSupplierUpdate.style.border = "2px dashed #ccc"
-    dropAreaSupplierUpdate.style.textAlign = "center"
-    dropAreaSupplierUpdate.style.backgroundColor = '#9a9a9a'
-    dropAreaSupplierUpdate.style.display = 'block'
+    Object.assign(dropAreaSupplierUpdate.style, {
+        border: "2px dashed #ccc",
+        textAlign: "center",
+        backgroundColor: '#9a9a9a',
+        display: 'block'
+    })
     dropAreaSupplierUpdate.innerHTML = 'Haz click o arrastra y suelta una imagen aquí'
 }
 
@@ -117,9 +125,10 @@ dropAreaSupplierUpdate.addEventListener('drop', (e) => {
     const file = e.dataTransfer.files[0]
     
     if (file && file.type.startsWith('image/')) {
-        dropAreaSupplierUpdate.style.border = '3px dashed #2d2'
-        dropAreaSupplierUpdate.style.backgroundColor = '#22dd2210'
-        
+        Object.assign(dropAreaSupplierUpdate.style, {
+            border: '3px dashed #2d2',
+            backgroundColor: '#22dd2210'
+        })
         handleFileUploadSupplierUpdate(file)
 
     } else {
@@ -134,11 +143,12 @@ dropAreaSupplierUpdate.addEventListener('click', () => {
 fileInputSupplierUpdate.addEventListener('change', (e) => {
     e.preventDefault()
     const file = fileInputSupplierUpdate.files[0]
-    console.log('file: ', file)
+    //console.log('file: ', file)
     if (file && file.type.startsWith('image/')) {
-        dropAreaSupplierUpdate.style.border = '3px dashed #2d2'
-        dropAreaSupplierUpdate.style.backgroundColor = '#22dd2210'
-
+        Object.assign(dropAreaSupplierUpdate.style, {
+            border: '3px dashed #2d2',
+            backgroundColor: '#22dd2210'
+        })
         handleFileUploadSupplierUpdate(file)
 
     } else {
@@ -147,8 +157,8 @@ fileInputSupplierUpdate.addEventListener('change', (e) => {
 })
 
 function handleFileUploadSupplierUpdate(file) {
-    const fileSize = file.size
-    const fileSizeInMb = fileSize / (1024 * 1024)
+    const fileSize = file.size,
+        fileSizeInMb = fileSize / (1024 * 1024)
 
     if (fileSizeInMb < 3) {
         let pathToImage = URL_GOOGLE_STORE_SUPPLIERIMAGE

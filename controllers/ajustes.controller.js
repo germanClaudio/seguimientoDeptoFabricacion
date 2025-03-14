@@ -4,6 +4,7 @@ const ProyectosService = require("../services/projects.service.js"),
     ProgramasService = require("../services/programms.service.js"),
     AjustesService = require("../services/ajustes.service.js"),
     ToolService = require("../services/tools.service.js"),
+    CartsService = require("../services/carts.service.js"),
 
     csrf = require('csrf'),
     csrfTokens = csrf(),
@@ -37,23 +38,22 @@ class AjustesController {
         this.programms = new ProgramasService()
         this.ajustes = new AjustesService()
         this.tools = new ToolService()
+        this.carts = new CartsService()
     }
 
     getAllProjectsWon = async (req, res, next) => {
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
         const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         try {
             let cliente = await this.clients.getClientById()
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
 
             const proyectos = await this.ajustes.getAllProjectsWon()
-            if (!proyectos) {
-                catchError400(req, res, next)
-            } 
+            !proyectos ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('projectsWonList', {
@@ -61,6 +61,7 @@ class AjustesController {
                 cliente,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 data,
                 csrfToken
@@ -72,27 +73,29 @@ class AjustesController {
     }
 
     getProjectsByClientId = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
                 
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const cliente = await this.clients.getClientById(id)
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
 
             const proyectos = await this.projects.getProjectsByClientId(id)
-            if (!proyectos) {
-                catchError400(req, res, next)
-            }
+            !proyectos ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('clientProjectsDetails', {
                 proyectos,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 cliente,
                 data,
@@ -105,27 +108,29 @@ class AjustesController {
     }
 
     selectProjectByClientId = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const cliente = await this.clients.getClientById(id)
-            if (!cliente) {
-                catchError401(req, res, next)
-            } 
+            !cliente ? catchError401(req, res, next) : null 
 
             const proyectos = await this.projects.getProjectsByClientId(id)
-            if (!proyectos) {
-                catchError400(req, res, next)
-            }
+            !proyectos ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('clientProjectsDetails', {
                 proyectos,
                 username,
                 userInfo,
+                userCart,
                 expires,
                 cliente,
                 csrfToken
@@ -137,22 +142,23 @@ class AjustesController {
     }
 
     selectProjectById = async (req, res, next) => {
-        const { id } = req.params
-        let username = res.locals.username
-        let userInfo = res.locals.userInfo
-        const expires = cookie(req)
+        const { id } = req.params,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
 
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const proyecto = await this.projects.selectProjectByProjectId(id)
-            if (!proyecto) {
-                catchError400(req, res, next)
-            } 
+            !proyecto ? catchError400(req, res, next) : null
 
             const idCliente = proyecto[0].client[0]._id
             const cliente = await this.clients.getClientByProjectId(idCliente)
-            if (!cliente ) {
-                catchError401(req, res, next)
-            }
+            !cliente  ? catchError401(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             setTimeout(() => {
@@ -160,6 +166,7 @@ class AjustesController {
                     proyecto,
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     data,
@@ -173,25 +180,27 @@ class AjustesController {
     }
 
     getAllOciProjects = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             let clientes = await this.clients.getAllClients()
-            if (!clientes ) {
-                catchError401(req, res, next) 
-            }
+            !clientes ? catchError401(req, res, next)  : null
 
             const proyectos = await this.projects.getAllOciProjects()
-            if (!proyectos) {
-                catchError400(req, res, next)
-            } 
+            !proyectos ? catchError400(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
             res.render('nestableOciList', {
                 username,
                 userInfo,
+                userCart,
                 proyectos,
                 clientes,
                 expires,
@@ -206,32 +215,25 @@ class AjustesController {
 
     addNewDuenoOci = async (req, res, next) => {
         const id = req.body.projectIdHidden
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
 
         let csrfToken = req.csrfSecret;
-        if (csrfTokens.verify(req.csrfSecret, csrfToken)) {
-            catchError403(req, res, next)
-        }
+        csrfTokens.verify(req.csrfSecret, csrfToken) ? catchError403(req, res, next) : null
         
         try {
             const userId = userInfo.id,
                 userCreator = await this.users.getUserById(userId)
-            if (!userCreator) {
-                catchError401_3(req, res, next)
-            }
+            !userCreator ? catchError401_3(req, res, next) : null
 
             let proyecto = await this.projects.selectProjectsByMainProjectId(id)
-            if (!proyecto) {
-                catchError401_4(req, res, next)
-            }
+            !proyecto ? catchError401_4(req, res, next) : null
+            
             const projectId = proyecto[0]._id,
                 clientId = proyecto[0].client[0]._id,
                 cliente = await this.clients.selectClientById(clientId)
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
 
             let arrayOciKNumber=[], arrayOciNumber=[], arrayOciDueno=[]
             
@@ -255,10 +257,7 @@ class AjustesController {
 
             let legajoIdUser = parseInt(arrayOciDueno[0].split(',')[0].trim()),
                 ociOwnerUser = await this.users.getUserByLegajoId(legajoIdUser)
-
-                if (!ociOwnerUser) {
-                    catchError401_3(req, res, next)
-                }
+                !ociOwnerUser ? catchError401_3(req, res, next) : null
 
             let infoOciAddedToProject = [
                 {
@@ -275,15 +274,16 @@ class AjustesController {
             )
             
             proyecto = await this.projects.getProjectsByClientId(clientId)
-            if (!proyecto) {
-                catchError401_1(req, res, next)
-            }
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             setTimeout(() => {
                 return res.render('projectAjusteSelected', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     proyecto,
@@ -304,27 +304,20 @@ class AjustesController {
         let username = res.locals.username,
             userInfo = res.locals.userInfo,
             csrfToken = req.csrfSecret;
-        if (csrfTokens.verify(req.csrfSecret, csrfToken)) {
-            catchError403(req, res, next)
-        }
+        csrfTokens.verify(req.csrfSecret, csrfToken) ? catchError403(req, res, next) : null
         
         try {
             const userId = userInfo.id,
                 userCreator = await this.users.getUserById(userId)
-            if (!userCreator) {
-                catchError401_3(req, res, next)
-            }
+            !userCreator ? catchError401_3(req, res, next) : null
 
             let proyecto = await this.projects.selectProjectsByMainProjectId(id)
-            if (!proyecto) {
-                catchError401_4(req, res, next)
-            }
+            !proyecto ? catchError401_4(req, res, next) : null
+
             const projectId = proyecto[0]._id,
                 clientId = proyecto[0].client[0]._id,
                 cliente = await this.clients.selectClientById(clientId)
-            if (!cliente) {
-                catchError401(req, res, next)
-            }
+            !cliente ? catchError401(req, res, next) : null
 
             let arrayOciKNumber=[], arrayOciNumber=[], arrayOciDueno=[]
             
@@ -348,17 +341,13 @@ class AjustesController {
 
             let legajoIdUser = parseInt(arrayOciDueno[0].split(',')[0].trim()),
                 ociOwnerUser = await this.users.getUserByLegajoId(legajoIdUser)
-            if (!ociOwnerUser) {
-                catchError401_3(req, res, next)
-            }
+            !ociOwnerUser ? catchError401_3(req, res, next) : null
 
-            let infoOciAddedToProject = [
-                {
-                    ociOwner: ociOwnerUser,
-                    modificator: dataUserModificatorNotEmpty(userCreator),
-                    modifiedOn: formatDate(),
-                }
-            ]
+            let infoOciAddedToProject = [{
+                ociOwner: ociOwnerUser,
+                modificator: dataUserModificatorNotEmpty(userCreator),
+                modifiedOn: formatDate(),
+            }]
             
             await this.ajustes.updateDuenoOci(
                 projectId,
@@ -367,15 +356,16 @@ class AjustesController {
             )
             
             proyecto = await this.projects.getProjectsByClientId(clientId)
-            if (!proyecto) {
-                catchError401_1(req, res, next)
-            }
+            !proyecto ? catchError401_1(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
             setTimeout(() => {
                 return res.render('projectAjusteSelected', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     proyecto,
@@ -472,6 +462,8 @@ class AjustesController {
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 0
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -479,6 +471,7 @@ class AjustesController {
                 return res.render('projectAjusteSelected', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     proyecto,
@@ -494,9 +487,9 @@ class AjustesController {
 
     // 1-------------- infoEtapaPrimera ---------------------------
     addInfoEtapaPrimera = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
             const clientId = req.body.clientIdHidden,
@@ -574,6 +567,8 @@ class AjustesController {
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 1
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -581,6 +576,7 @@ class AjustesController {
                 return res.render('projectAjusteSelected', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     proyecto,
@@ -596,9 +592,9 @@ class AjustesController {
 
     // 2-------------- infoEtapaSegundaPrimera ---------------------------
     addInfoEtapaSegundaPrimera = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
             const clientId = req.body.clientIdHidden,
@@ -666,11 +662,12 @@ class AjustesController {
                 arrayOtNumberK,
                 arrayInfoAddedToOt
             )
-    
             !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 2
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -678,6 +675,7 @@ class AjustesController {
                 return res.render('projectAjusteSelected', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     proyecto,
@@ -693,9 +691,9 @@ class AjustesController {
 
     // 3-------------- infoEtapaSegundaSegunda ---------------------------
     addInfoEtapaSegundaSegunda = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
             const clientId = req.body.clientIdHidden,
@@ -758,11 +756,12 @@ class AjustesController {
                 arrayOtNumberK,
                 arrayInfoAddedToOt
             )
-            
             !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 3
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -770,6 +769,7 @@ class AjustesController {
                 return res.render('projectAjusteSelected', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     proyecto,
@@ -785,9 +785,9 @@ class AjustesController {
 
     // 4-------------- infoAnalisisCritico ---------------------------
     addInfoAnalisisCritico = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
             const clientId = req.body.clientIdHidden,
@@ -850,11 +850,12 @@ class AjustesController {
                 arrayOtNumberK,
                 arrayInfoAddedToOt
             )
-            
             !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 4
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -862,6 +863,7 @@ class AjustesController {
                 return res.render('projectAjusteSelected', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     proyecto,
@@ -877,9 +879,9 @@ class AjustesController {
 
     // 5-------------- infoEtapaTerceraPrimera ---------------------------
     addInfoEtapaTerceraPrimera = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
             const clientId = req.body.clientIdHidden,
@@ -947,11 +949,12 @@ class AjustesController {
                 arrayOtNumberK,
                 arrayInfoAddedToOt
             )
-    
             !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 5
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -959,6 +962,7 @@ class AjustesController {
                 return res.render('projectAjusteSelected', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     proyecto,
@@ -974,9 +978,9 @@ class AjustesController {
 
     // 6-------------- infoEtapaTerceraSegunda ---------------------------
     addInfoEtapaTerceraSegunda = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
             const clientId = req.body.clientIdHidden,
@@ -1044,11 +1048,12 @@ class AjustesController {
                 arrayOtNumberK,
                 arrayInfoAddedToOt
             )
-    
             !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 6
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -1056,6 +1061,7 @@ class AjustesController {
                 return res.render('projectAjusteSelected', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     proyecto,
@@ -1071,9 +1077,9 @@ class AjustesController {
 
     // 7-------------- infoCicloCorreccionPrimera ---------------------------
     addInfoCicloCorreccionPrimera = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
             const clientId = req.body.clientIdHidden,
@@ -1141,11 +1147,12 @@ class AjustesController {
                 arrayOtNumberK,
                 arrayInfoAddedToOt
             )
-    
             !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 7
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -1153,6 +1160,7 @@ class AjustesController {
                 return res.render('projectAjusteSelected', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     proyecto,
@@ -1168,9 +1176,9 @@ class AjustesController {
 
     // 8-------------- infoCicloCorreccionSegunda ---------------------------
     addInfoCicloCorreccionSegunda = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
             const clientId = req.body.clientIdHidden,
@@ -1238,11 +1246,12 @@ class AjustesController {
                 arrayOtNumberK,
                 arrayInfoAddedToOt
             )
-    
             !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 8
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -1250,6 +1259,7 @@ class AjustesController {
                 return res.render('projectAjusteSelected', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     proyecto,
@@ -1265,9 +1275,9 @@ class AjustesController {
 
     // 9-------------- infoCicloCorreccionTercera ---------------------------
     addInfoCicloCorreccionTercera = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
             const clientId = req.body.clientIdHidden,
@@ -1335,11 +1345,12 @@ class AjustesController {
                 arrayOtNumberK,
                 arrayInfoAddedToOt
             )
-    
             !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 9
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -1347,6 +1358,7 @@ class AjustesController {
                 return res.render('projectAjusteSelected', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     proyecto,
@@ -1362,9 +1374,9 @@ class AjustesController {
 
     // 10------------- infoLiberacionBuyOffPrimera ---------------------------
     addInfoLiberacionBuyOffPrimera = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
             const clientId = req.body.clientIdHidden,
@@ -1432,11 +1444,12 @@ class AjustesController {
                 arrayOtNumberK,
                 arrayInfoAddedToOt
             )
-    
             !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 10
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -1444,6 +1457,7 @@ class AjustesController {
                 return res.render('projectAjusteSelected', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     proyecto,
@@ -1459,9 +1473,9 @@ class AjustesController {
 
     // 11------------- infoLiberacionBuyOffSegunda ---------------------------
     addInfoLiberacionBuyOffSegunda = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
             const clientId = req.body.clientIdHidden,
@@ -1529,11 +1543,12 @@ class AjustesController {
                 arrayOtNumberK,
                 arrayInfoAddedToOt
             )
-    
             !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 11
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -1541,6 +1556,7 @@ class AjustesController {
                 return res.render('projectAjusteSelected', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     proyecto,
@@ -1556,9 +1572,9 @@ class AjustesController {
 
     // 12------------- info BuyOff ---------------------------
     addInfoBuyOff = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
             const clientId = req.body.clientIdHidden,
@@ -1621,11 +1637,12 @@ class AjustesController {
                 arrayOtNumberK,
                 arrayInfoAddedToOt
             )
-    
             !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 12
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -1633,6 +1650,7 @@ class AjustesController {
                 return res.render('projectAjusteSelected', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     proyecto,
@@ -1648,9 +1666,9 @@ class AjustesController {
 
     // 13------------- infoPendientesFinales ---------------------------
     addInfoPendientesFinales = async (req, res, next) => {
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        const expires = cookie(req)
         
         try {
             const clientId = req.body.clientIdHidden,
@@ -1709,7 +1727,7 @@ class AjustesController {
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
             }
-            console.log(arrayInfoAddedToOt)
+            //console.log(arrayInfoAddedToOt)
 
             const itemUpdated = await this.ajustes.addInfoOtPendientesFinales(
                 projectId,
@@ -1718,11 +1736,12 @@ class AjustesController {
                 arrayOtNumberK,
                 arrayInfoAddedToOt
             )
-    
             !itemUpdated ? catchError400_3(req, res, next) : null
 
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 13
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -1730,6 +1749,7 @@ class AjustesController {
                 return res.render('projectAjusteSelected', {
                     username,
                     userInfo,
+                    userCart,
                     expires,
                     cliente,
                     proyecto,

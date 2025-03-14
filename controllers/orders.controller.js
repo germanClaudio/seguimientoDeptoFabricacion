@@ -172,6 +172,7 @@ class OrdersController {
             const screen = handler.screen;
             const ordenes = await handler.getOrders();
             !ordenes ? catchError400_5(req, res, next) : null
+            
             const userCart = await this.carts.getCartByUserId(userId)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);

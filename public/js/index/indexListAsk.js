@@ -192,3 +192,41 @@ const renderConsumible = async (arrConsumibles, page = 1, direction = 'none') =>
         container.classList.remove('transition-in', direction);
     }, 500);
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('dashboard-container');
+    const container2 = document.getElementById('dashboard-container2');
+    Swapy.createSwapy(container, {
+        animation: 'dynamic'
+    });
+
+    Swapy.createSwapy(container2, {
+        animation: 'dynamic'
+    });
+    
+
+    // Variable para rastrear si se está arrastrando una tarjeta
+    let isDragging = false;
+
+    // Evento cuando comienza el arrastre
+    container.addEventListener('swapy:dragstart', () => {
+        isDragging = true;
+    });
+
+    // Evento cuando termina el arrastre
+    container.addEventListener('swapy:dragend', () => {
+        isDragging = false;
+    });
+
+    // Prevenir el clic en los enlaces si se está arrastrando
+    const cardLinks = document.querySelectorAll('.card-link');
+    cardLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+            if (isDragging) {
+                event.preventDefault(); // Evita que el enlace se active
+            }
+        });
+    });
+});
+
+
