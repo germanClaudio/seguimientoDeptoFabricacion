@@ -14,7 +14,7 @@ class InfoController {
         // this.products = new ProductosService()
         // this.carts = new CartsService()
         this.users = new UserService()
-      }
+    }
         
     getInfoSystem = async (req, res) => {
         const info = this.info

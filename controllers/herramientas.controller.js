@@ -1,5 +1,7 @@
 const UserService = require("../services/users.service.js"),
     CuttingToolService = require("../services/cuttingTools.service.js"),
+    OrdersService = require("../services/orders.service.js"),
+    CartsService = require("../services/carts.service.js"),
 
     { uploadToGCS } = require("../utils/uploadFilesToGSC.js"),
     { uploadMulterSingleImageCuttingTool } = require("../utils/uploadMulter.js"),
@@ -38,6 +40,8 @@ class CuttingToolsController {
     constructor(){
         this.users = new UserService()
         this.herramientas = new CuttingToolService()
+        this.orders = new OrdersService()
+        this.carts = new CartsService()
     }
 
     getAllCuttingTools = async (req, res, next) => {
@@ -52,6 +56,9 @@ class CuttingToolsController {
             const herramientas = await this.herramientas.getAllCuttingTools()
             !herramientas ? catchError400_5(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -59,6 +66,7 @@ class CuttingToolsController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 herramientas,
                 data,
@@ -82,6 +90,9 @@ class CuttingToolsController {
 
             const herramienta = await this.herramientas.getCuttingToolById(id)           
             !herramienta ? catchError401_3(req, res, next) : null
+
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
             
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
@@ -90,6 +101,7 @@ class CuttingToolsController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 herramienta,
                 data,
@@ -113,6 +125,9 @@ class CuttingToolsController {
             const herramienta = await this.herramientas.getCuttingToolByToolname(designation)
             !herramienta ? catchError401_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -121,6 +136,7 @@ class CuttingToolsController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 data,
                 csrfToken
@@ -203,6 +219,9 @@ class CuttingToolsController {
                         const usuarioLog = await this.users.getUserByUsername(username);
                         !usuarioLog.visible ? catchError401_3(req, res, next) : null
 
+                        const ordenes = await this.orders.getAllOrders()
+                        !ordenes ? catchError400_5(req, res, next) : null
+
                         const userCart = await this.carts.getCartByUserId(userId)
 
                         const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -210,6 +229,7 @@ class CuttingToolsController {
                             username,
                             userInfo,
                             userCart,
+                            ordenes,
                             expires,
                             data,
                             csrfToken,
@@ -318,6 +338,9 @@ class CuttingToolsController {
                         const herramienta = await this.herramientas.updateCuttingTool(cuttingToolId, updatedCuttingTool, dataUserModificatorNotEmpty(userLogged))
                         !herramienta ? catchError400_3(req, res, next) : null
 
+                        const ordenes = await this.orders.getAllOrders()
+                        !ordenes ? catchError400_5(req, res, next) : null
+
                         const userCart = await this.carts.getCartByUserId(userLogged._id)
                             
                         const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -325,6 +348,7 @@ class CuttingToolsController {
                             username,
                             userInfo,
                             userCart,
+                            ordenes,
                             expires,
                             herramienta,
                             data,
@@ -369,6 +393,9 @@ class CuttingToolsController {
             const herramienta = await this.herramientas.deleteCuttingToolById(id, dataUserModificatorNotEmpty(userLogged))
             !herramienta ? catchError401_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -376,6 +403,7 @@ class CuttingToolsController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 herramienta,
                 data,

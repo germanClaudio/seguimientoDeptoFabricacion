@@ -321,6 +321,7 @@ const ContainerMessages = require("../daos/mensajes/MensajesDaoFactory.js"),
 
             // Escuchar el evento 'sendUser' desde el cliente
             socket.on('sendUserActive', async (user, userAdmin) => {
+                //console.log('user: ', user, ' userAdmin: ', userAdmin)
                 try {
                     // Obtener los datos usando el user
                     const allOrders = await containerOrders.getActiveOrders(),

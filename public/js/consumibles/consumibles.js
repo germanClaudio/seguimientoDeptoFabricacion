@@ -1,6 +1,11 @@
 const socket = io.connect(),
     offset = -3 * 60 * 60 * 1000;
 
+let currentPage = 1;
+let itemsPerPage = 10; // Valor por defecto
+let consumiblesGlobales = [];
+const maxVisiblePages = 3;
+
 let URL_GOOGLE_STORE_IMAGESCONSUMIBLES,
     imagenLazy = '../../../src/images/upload/ConsumiblesImages/loader.gif';
 
@@ -71,7 +76,7 @@ socket.on('consumiblesAll', (arrConsumibles, arrUsers) => {
     if(index !== -1) {
         let user = arrUsers[index].admin,
             userId = arrUsers[index]._id
-        user ? renderConsumiblesAdmin(arrConsumibles, userId) : renderConsumiblesUser(arrConsumibles)
+        user ? renderConsumiblesAdmin(arrConsumibles) : renderConsumiblesUser(arrConsumibles)
     }   
 })
 
@@ -107,15 +112,124 @@ function cortarTextoLong(texto) {
     return texto;
 }
 
-// --------------- Render Admin ----------------------------
-const renderConsumiblesAdmin = (arrConsumibles) => {
-    const arrayConsumible = arrConsumibles
+// Función para generar los controles de paginación
+const generarControlesPaginacion = () => {
+    const totalPages = Math.ceil(consumiblesGlobales.length / itemsPerPage);
+    let paginationHTML = `<div class="pagination-anchor">
+                            <div class="pagination-container justify-content-center">`;
+    
+    // Botón Anterior
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderConsumiblesAdmin(consumiblesGlobales, ${currentPage - 1}, 'right')">
+            &laquo; Anterior
+        </button>`;
 
-    if (arrConsumibles.length > 0) {
-        html = arrConsumibles.map((element) => {
+    // Primeros números
+    if (currentPage > maxVisiblePages + 1) {
+        paginationHTML += `
+            <button class="pagination-btn" onclick="renderConsumiblesAdmin(consumiblesGlobales, 1)">1</button>
+            <span class="pagination-ellipsis">...</span>`;
+    }
 
+    // Números centrales
+    const start = Math.max(1, currentPage - maxVisiblePages);
+    const end = Math.min(totalPages, currentPage + maxVisiblePages);
+    
+    for (let i = start; i <= end; i++) {
+        paginationHTML += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                onclick="renderConsumiblesAdmin(consumiblesGlobales, ${i})">
+                ${i}
+            </button>`;
+    }
+
+    // Últimos números
+    if (currentPage < totalPages - maxVisiblePages) {
+        paginationHTML += `
+            <span class="pagination-ellipsis">...</span>
+            <button class="pagination-btn" onclick="renderConsumiblesAdmin(consumiblesGlobales, ${totalPages})">${totalPages}</button>`;
+    }
+
+    // Botón Siguiente
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderConsumiblesAdmin(consumiblesGlobales, ${currentPage + 1}, 'left')">
+            Siguiente &raquo;
+        </button>`;
+
+    paginationHTML += '</div>';
+    return paginationHTML;
+};
+
+// Función para cambiar el número de filas por página
+let selectedItemsPerPage = 10; // Valor por defecto
+
+const cambiarItemsPorPagina = (nuevoItemsPerPage) => {
+    selectedItemsPerPage = nuevoItemsPerPage; // Guardar la selección del usuario
+    itemsPerPage = nuevoItemsPerPage;
+    currentPage = 1; // Reiniciar a la primera página
+    renderConsumiblesAdmin(consumiblesGlobales);
+};
+
+const agregarSelectItemsPorPagina = () => {
+    // Crear el HTML del select y la leyenda
+    let selectHTML = `
+        Mostrando 
+        <select class="form-select small w-auto mx-2" id="itemsPerPageSelect" onchange="cambiarItemsPorPagina(parseInt(this.value))">
+            <option value="10" ${selectedItemsPerPage === 10 ? 'selected' : ''}>10</option>
+            <option value="25" ${selectedItemsPerPage === 25 ? 'selected' : ''}>25</option>
+            <option value="50" ${selectedItemsPerPage === 50 ? 'selected' : ''}>50</option>
+            <option value="100" ${selectedItemsPerPage === 100 ? 'selected' : ''}>100</option>
+            <option value="${consumiblesGlobales.length}" ${selectedItemsPerPage === consumiblesGlobales.length ? 'selected' : ''}>Todos</option>
+        </select>
+        consumibles de ${consumiblesGlobales.length}
+    `;
+
+    const paginationContainer = document.getElementById('paginationConsumibles');
+    const existingSelectContainer = document.getElementById('selectContainer');
+
+    // Verificar si el contenedor de paginación existe
+    if (paginationContainer) {
+        // Si ya existe un contenedor para el select, actualizamos su contenido
+        if (existingSelectContainer) {
+            existingSelectContainer.innerHTML = selectHTML;
+        } else {
+            // Si no existe, creamos un nuevo contenedor y lo insertamos
+            const selectContainer = document.createElement('div');
+            selectContainer.id = 'selectContainer';
+            selectContainer.classList.add('row', 'align-items-center', 'justify-content-center')
+            selectContainer.innerHTML = selectHTML;
+            paginationContainer.insertAdjacentHTML('beforebegin', selectContainer.outerHTML);
+        }
+    } else {
+        console.error("El contenedor de paginación no existe en el DOM.");
+    }
+};
+
+// --------------- Render ADMIN ----------------------------
+// Llamar a la función para agregar el select después de renderizar la tabla
+const renderConsumiblesAdmin = async (arrConsumibles, page = 1, direction = 'none') => {
+    consumiblesGlobales = arrConsumibles;
+    currentPage = page;
+    
+    const container = document.getElementById('mostrarConsumibles');
+    const pagination = document.getElementById('paginationConsumibles');
+    container.classList.add('transition-out', direction);
+    
+    // Esperar a que termine la animación de salida
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedItems = arrConsumibles.slice(startIndex, endIndex);
+    
+    let html = '', htmlPagination = '', redHeart = '';
+    
+    if (paginatedItems.length > 0) {
+        html = paginatedItems.map((element) => {
             // Procesar cada elemento
-            processStock(element)
+            processStock(element);
 
             let optionStatus = element.status ? green : red,
                 optionStock = totalStock > 0 ? black : red
@@ -141,8 +255,7 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
             }
 
             let characteristicsTrim = cortarTexto(element.characteristics),
-                designationTrim = cortarTextoLong(element.designation),
-                redHeart = '';
+                designationTrim = cortarTextoLong(element.designation);
 
             let utcDate = new Date(element.timestamp),
                 utcDateModified = new Date(element.modifiedOn),
@@ -186,32 +299,43 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
                         </tr>`)
             }
         }).join(" ");
-        document.getElementById('mostrarConsumibles').innerHTML = html
-
-        const consumiblesActiveQty = []
-        for(let u=0; u<arrayConsumible.length; u++) {
-            arrayConsumible[u].visible ? consumiblesActiveQty.push(u) : null
-        }
-
-        const htmlConsumibleList = 
-            ( `<caption id="capConsumiblesList">Cantidad de Consumibles: ${parseInt(consumiblesActiveQty.length)}</caption><br>
-            <caption id="capDeleteConsumiblesList">Cantidad de Consumibles Eliminados: ${parseInt(arrayConsumible.length - consumiblesActiveQty.length)}</caption>`)
-
-        document.getElementById('capConsumiblesList').innerHTML = htmlConsumibleList
-        
+        htmlPagination = generarControlesPaginacion();
+    
     } else {
         html = (`<tr>
                     <td colspan="15">
-                        <img class="img-fluid rounded-5 my-2 shadow-lg" alt="No hay items cargados para mostrar"
+                        <img class="img-fluid rounded-2 my-2 shadow-lg" alt="No hay items cargados para mostrar"
                             src='../src/images/clean_table_graphic.png' width="auto" height="auto">
                     </td>
                 </tr>`)
 
         document.getElementById('mostrarConsumibles').innerHTML = html    
     }
+
     // Ocultar el spinner y mostrar la tabla
     document.getElementById('loading-spinner').style.display = 'none';
     document.getElementById('consumiblesTable').style.display = 'block';
+    
+    container.innerHTML = html;
+    pagination.innerHTML = htmlPagination;
+    container.classList.remove('transition-out', 'left', 'right');
+    container.classList.add('transition-in', direction);
+
+    const consumiblesActiveQty = []
+        for(let u=0; u<consumiblesGlobales.length; u++) {
+            consumiblesGlobales[u].visible ? consumiblesActiveQty.push(u) : null
+        }
+
+        const htmlConsumibleList = 
+            ( `<caption id="capConsumiblesList">Cantidad de Consumibles: ${parseInt(consumiblesActiveQty.length)}</caption><br>
+            <caption id="capDeleteConsumiblesList">Cantidad de Consumibles Eliminados: ${parseInt(consumiblesGlobales.length - consumiblesActiveQty.length)}</caption>`)
+
+        document.getElementById('capConsumiblesList').innerHTML = htmlConsumibleList
+    
+    // Remover clases de animación después de completar
+    setTimeout(() => {
+        container.classList.remove('transition-in', direction);
+    }, 400);
 
     //------------- LazyLoad Images ------------------
     const lazyImages = document.querySelectorAll("img[data-src]");
@@ -227,7 +351,7 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
                         observer.unobserve(img); // Deja de observar esta imagen
                     }
                 });
-            }, 1000);
+            }, 500);
         });
         lazyImages.forEach(img => observer.observe(img));
         
@@ -295,17 +419,33 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
             })
         }
     })
-}
 
-//----------------------- Render User -------------------------------
-const renderConsumiblesUser = (arrConsumibles) => {
-    const arrayConsumible = arrConsumibles
+    // Llamar a la función para agregar el select después de renderizar la tabla
+    agregarSelectItemsPorPagina();
+};
 
-    if (arrConsumibles.length > 0) {
-        html = arrConsumibles.map((element) => {
-
+// Llamar a la función para agregar el select después de renderizar la tabla
+const renderConsumiblesUser = async (arrConsumibles, page = 1, direction = 'none') => {
+    consumiblesGlobales = arrConsumibles;
+    currentPage = page;
+    
+    const container = document.getElementById('mostrarConsumibles');
+    const pagination = document.getElementById('paginationConsumibles');
+    container.classList.add('transition-out', direction);
+    
+    // Esperar a que termine la animación de salida
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedItems = arrConsumibles.slice(startIndex, endIndex);
+    
+    let html = '', htmlPagination = '', redHeart = '';
+    
+    if (paginatedItems.length > 0) {
+        html = paginatedItems.map((element) => {
             // Procesar cada elemento
-            processStock(element)
+            processStock(element);
 
             let optionStatus = element.status ? green : red,
                 optionStock = totalStock > 0 ? black : red
@@ -331,8 +471,7 @@ const renderConsumiblesUser = (arrConsumibles) => {
             }
 
             let characteristicsTrim = cortarTexto(element.characteristics),
-                designationTrim = cortarTextoLong(element.designation)
-                let redHeart = '';
+                designationTrim = cortarTextoLong(element.designation);
 
             let utcDate = new Date(element.timestamp),
                 utcDateModified = new Date(element.modifiedOn),
@@ -369,38 +508,48 @@ const renderConsumiblesUser = (arrConsumibles) => {
                             <td class="text-center">
                                 <div class="d-block align-items-center text-center">
                                     <a href="/api/carts/add/${element._id}" class="btn btn-success btn-sm me-1" title="Agregar al Carrito"><i class="fa-solid fa-cart-plus"></i></a>
-                                    <button type="button" class="btn btn-danger btn-sm ms-1" title="Solo admin puede modificar esto"><i class="fa-solid fa-trash-can"></i></button>
+                                    <button type="button" class="btn btn-danger btn-sm ms-1" title="Solo Admin puede cambiar esto"><i class="fa-solid fa-trash-can"></i></button>
                                 </div>
                             </td>
                         </tr>`)
             }
         }).join(" ");
-        document.getElementById('mostrarConsumibles').innerHTML = html
-
-        const consumiblesActiveQty = []
-        for(let u=0; u<arrayConsumible.length; u++) {
-            arrayConsumible[u].visible ? consumiblesActiveQty.push(u) : null
-        }
-
-        const htmlConsumibleList = 
-            ( `<caption id="capConsumiblesList">Cantidad de Consumibles: ${parseInt(consumiblesActiveQty.length)}</caption><br>
-            <caption id="capDeleteConsumiblesList">Cantidad de Consumibles Eliminados: ${parseInt(arrayConsumible.length - consumiblesActiveQty.length)}</caption>`)
-
-        document.getElementById('capConsumiblesList').innerHTML = htmlConsumibleList
-        
+        htmlPagination = generarControlesPaginacion();
+    
     } else {
         html = (`<tr>
                     <td colspan="15">
-                        <img class="img-fluid rounded-5 my-2 shadow-lg" alt="No hay items cargados para mostrar"
+                        <img class="img-fluid rounded-2 my-2 shadow-lg" alt="No hay items cargados para mostrar"
                             src='../src/images/clean_table_graphic.png' width="auto" height="auto">
                     </td>
                 </tr>`)
 
         document.getElementById('mostrarConsumibles').innerHTML = html    
     }
+
     // Ocultar el spinner y mostrar la tabla
     document.getElementById('loading-spinner').style.display = 'none';
     document.getElementById('consumiblesTable').style.display = 'block';
+    
+    container.innerHTML = html;
+    pagination.innerHTML = htmlPagination;
+    container.classList.remove('transition-out', 'left', 'right');
+    container.classList.add('transition-in', direction);
+
+    const consumiblesActiveQty = []
+        for(let u=0; u<consumiblesGlobales.length; u++) {
+            consumiblesGlobales[u].visible ? consumiblesActiveQty.push(u) : null
+        }
+
+        const htmlConsumibleList = 
+            ( `<caption id="capConsumiblesList">Cantidad de Consumibles: ${parseInt(consumiblesActiveQty.length)}</caption>`)
+
+        document.getElementById('capConsumiblesList').innerHTML = htmlConsumibleList
+    
+    // Remover clases de animación después de completar
+    setTimeout(() => {
+        container.classList.remove('transition-in', direction);
+    }, 400);
 
     //------------- LazyLoad Images ------------------
     const lazyImages = document.querySelectorAll("img[data-src]");
@@ -416,7 +565,7 @@ const renderConsumiblesUser = (arrConsumibles) => {
                         observer.unobserve(img); // Deja de observar esta imagen
                     }
                 });
-            }, 1000);
+            }, 500);
         });
         lazyImages.forEach(img => observer.observe(img));
         
@@ -426,7 +575,10 @@ const renderConsumiblesUser = (arrConsumibles) => {
             img.src = img.dataset.src;
         });
     }
-}
+
+    // Llamar a la función para agregar el select después de renderizar la tabla
+    agregarSelectItemsPorPagina();
+};
 
 // ----------- Image Consumible Image behavior ---------------
 const dropAreaImageConsumible = document.getElementById('drop-areaImageConsumibles'),
@@ -570,7 +722,7 @@ function messageNewConsumible(designation, code, type, stock) {
             cancelButtonColor: '#d33',
             focusConfirm: true,
             confirmButtonText: 'Registrarlo! <i class="fa-solid fa-cart-shopping"></i>',
-            cancelButtonText: 'Cancelar <i class="fa-solid fa-user-xmark"></i>'
+            cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>'
     
         }).then((result) => {
             if (result.isConfirmed) {

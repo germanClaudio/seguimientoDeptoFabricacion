@@ -35,6 +35,7 @@ async function uploadToGCS(req, res, next) {
 
     const mapping = {
         imageTextAvatarUser: 'AvatarUsersImages',
+        imageTextLogoClient: 'LogoClientImages',
         imageTextLogoUpdate: 'LogoClientImages',
         imageProjectFileName: 'projectImages',
         imageOciFileName: 'projectImages',

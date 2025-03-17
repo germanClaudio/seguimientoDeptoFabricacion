@@ -1,5 +1,11 @@
 const socket = io.connect(),
     offset = -3 * 60 * 60 * 1000;
+
+let currentPage = 1;
+let itemsPerPage = 10; // Valor por defecto
+let consumiblesGlobales = [];
+const maxVisiblePages = 3;
+
 let URL_GOOGLE_STORE_IMAGESCONSUMIBLES,
     imagenLazy = '../../src/images/upload/ConsumiblesImages/loader.gif';
 
@@ -45,7 +51,7 @@ socket.on('consumiblesAll', (arrConsumibles, arrUsers) => {
     if(index !== -1) {
         let user = arrUsers[index].admin,
             userId = arrUsers[index]._id
-        user ? renderConsumiblesAdmin(arrConsumibles, userId) : renderConsumiblesUser(arrConsumibles)
+        user ? renderConsumiblesAdmin(arrConsumibles) : renderConsumiblesUser(arrConsumibles)
     }   
 })
 
@@ -81,27 +87,139 @@ function cortarTextoLong(texto) {
     return texto;
 }
 
-// --------------- Render Admin ----------------------------
-const renderConsumiblesAdmin = (arrConsumibles) => {
-    const arrayConsumible = arrConsumibles
-    if (arrConsumibles.length > 0) {
-        html = arrConsumibles.map((element) => {
+// Función para generar los controles de paginación
+const generarControlesPaginacion = () => {
+    const totalPages = Math.ceil(consumiblesGlobales.length / itemsPerPage);
+    let paginationHTML = `<div class="pagination-anchor">
+                            <div class="pagination-container justify-content-center">`;
+    
+    // Botón Anterior
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderConsumiblesAdmin(consumiblesGlobales, ${currentPage - 1}, 'right')">
+            &laquo; Anterior
+        </button>`;
 
+    // Primeros números
+    if (currentPage > maxVisiblePages + 1) {
+        paginationHTML += `
+            <button class="pagination-btn" onclick="renderConsumiblesAdmin(consumiblesGlobales, 1)">1</button>
+            <span class="pagination-ellipsis">...</span>`;
+    }
+
+    // Números centrales
+    const start = Math.max(1, currentPage - maxVisiblePages);
+    const end = Math.min(totalPages, currentPage + maxVisiblePages);
+    
+    for (let i = start; i <= end; i++) {
+        paginationHTML += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                onclick="renderConsumiblesAdmin(consumiblesGlobales, ${i})">
+                ${i}
+            </button>`;
+    }
+
+    // Últimos números
+    if (currentPage < totalPages - maxVisiblePages) {
+        paginationHTML += `
+            <span class="pagination-ellipsis">...</span>
+            <button class="pagination-btn" onclick="renderConsumiblesAdmin(consumiblesGlobales, ${totalPages})">${totalPages}</button>`;
+    }
+
+    // Botón Siguiente
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderConsumiblesAdmin(consumiblesGlobales, ${currentPage + 1}, 'left')">
+            Siguiente &raquo;
+        </button>`;
+
+    paginationHTML += '</div>';
+    return paginationHTML;
+};
+
+// Función para cambiar el número de filas por página
+let selectedItemsPerPage = 10; // Valor por defecto
+
+const cambiarItemsPorPagina = (nuevoItemsPerPage) => {
+    selectedItemsPerPage = nuevoItemsPerPage; // Guardar la selección del usuario
+    itemsPerPage = nuevoItemsPerPage;
+    currentPage = 1; // Reiniciar a la primera página
+    renderConsumiblesAdmin(consumiblesGlobales);
+};
+
+const agregarSelectItemsPorPagina = () => {
+    // Crear el HTML del select y la leyenda
+    let selectHTML = `
+        Mostrando 
+        <select class="form-select small w-auto mx-2" id="itemsPerPageSelect" onchange="cambiarItemsPorPagina(parseInt(this.value))">
+            <option value="10" ${selectedItemsPerPage === 10 ? 'selected' : ''}>10</option>
+            <option value="25" ${selectedItemsPerPage === 25 ? 'selected' : ''}>25</option>
+            <option value="50" ${selectedItemsPerPage === 50 ? 'selected' : ''}>50</option>
+            <option value="100" ${selectedItemsPerPage === 100 ? 'selected' : ''}>100</option>
+            <option value="${consumiblesGlobales.length}" ${selectedItemsPerPage === consumiblesGlobales.length ? 'selected' : ''}>Todos</option>
+        </select>
+        consumibles de ${consumiblesGlobales.length}
+    `;
+
+    const paginationContainer = document.getElementById('paginationConsumibles');
+    const existingSelectContainer = document.getElementById('selectContainer');
+
+    // Verificar si el contenedor de paginación existe
+    if (paginationContainer) {
+        // Si ya existe un contenedor para el select, actualizamos su contenido
+        if (existingSelectContainer) {
+            existingSelectContainer.innerHTML = selectHTML;
+        } else {
+            // Si no existe, creamos un nuevo contenedor y lo insertamos
+            const selectContainer = document.createElement('div');
+            selectContainer.id = 'selectContainer';
+            selectContainer.classList.add('row', 'align-items-center', 'justify-content-center')
+            selectContainer.innerHTML = selectHTML;
+            paginationContainer.insertAdjacentHTML('beforebegin', selectContainer.outerHTML);
+        }
+    } else {
+        console.error("El contenedor de paginación no existe en el DOM.");
+    }
+};
+
+
+// --------------- Render ADMIN ----------------------------
+// Llamar a la función para agregar el select después de renderizar la tabla
+const renderConsumiblesAdmin = async (arrConsumibles, page = 1, direction = 'none') => {
+    consumiblesGlobales = arrConsumibles;
+    currentPage = page;
+    
+    const container = document.getElementById('mostrarConsumibles');
+    const pagination = document.getElementById('paginationConsumibles');
+    container.classList.add('transition-out', direction);
+    
+    // Esperar a que termine la animación de salida
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedItems = arrConsumibles.slice(startIndex, endIndex);
+    
+    let html = '', htmlPagination = '', redHeart = '';
+    
+    if (paginatedItems.length > 0) {
+        html = paginatedItems.map((element) => {
             // Procesar cada elemento
-            processStock(element)
+            processStock(element);
 
             let optionStatus = element.status ? green : red,
-                optionStock = totalStock > 0 ? black : red,
-                showStatus = element.status ? active : inactive,
+                optionStock = totalStock > 0 ? black : red
+            
+            // Obtener configuración según el tipo o usar la configuración por defecto
+            const { optionType, showType, textColor } = typeConfigurations[element.type] || defaultConfig;
+
+            let showStatus = element.status ? active : inactive,
                 idChain = element._id.substring(19),
                 tipoTalle = 'U',
                 background = 'dark',
                 disabled = '',
                 disabledRow = ''
             
-            // Obtener configuración según el tipo o usar la configuración por defecto
-            const { optionType, showType, textColor } = typeConfigurations[element.type] || defaultConfig;
-
             if (element.tipoTalle === 'talle') {
                 tipoTalle = 'T'
                 background = 'danger'
@@ -114,8 +232,7 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
             }
 
             let characteristicsTrim = cortarTexto(element.characteristics),
-                designationTrim = cortarTextoLong(element.designation),
-                redHeart = '';
+                designationTrim = cortarTextoLong(element.designation);
 
             let utcDate = new Date(element.timestamp),
                 utcDateModified = new Date(element.modifiedOn),
@@ -128,60 +245,72 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
 
             if (element.favorito === 5) {
                 redHeart = `<i class="fa-solid fa-heart position-absolute top-0 start-100 text-primary" 
-                                style="font-size: 1.5em; z-index: 100 ;transform: translate(-200%, 40%) !important;">
+                                style="font-size: 1.5em; z-index: 100 ;transform: translate(-125%, 40%) !important;">
                             </i>`
             }
 
             if (element.visible) {
-                totalStock > 0 ? stockTr = `<tr id="consumibleRow_${element._id}">` : (stockTr =`<tr id="consumibleRow_${element._id}" class="row-highlight-stockCero">`, disabledRow = 'disabled')
+                totalStock > 0 ? stockTr = `<tr id="consumibleRow_${element._id}">` : stockTr =`<tr id="consumibleRow_${element._id}" class="row-highlight-stockCero">`
                 return (`${stockTr}
-                            <td class="text-center" id="checkSelect_${element._id}" name="checkSelect"><input class="form-check-input border border-2 border-primary shadow-lg rounded" type="checkbox" value="" id="inputCheckConsumible_${element._id}" name="inputCheckConsumible" ${disabledRow}></td>
-                            <td class="text-center" id="codigo_${element._id}"><strong>${element.code}</strong></td>
-                            <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}">${showType}</span></td>
-                            <td class="text-center" id="designation_${element._id}"><strong>${designationTrim}</strong></td>
-                            <td class="text-center" id="characteristics_${element._id}">${characteristicsTrim}</td>
-                            <td class="text-center position-relative" id="imagenConsumible_${element._id}">
-                                ${element.imageConsumible ? `<img id="imagen_${element._id}" class="imgLazyLoad img-fluid rounded-3 py-2" alt="Imagen" data-src="${element.imageConsumible}"
-                                                            src='${imagenLazy}' width="125px" height="125px" loading="lazy">` : '<div class="img-placeholder"></div>'}
-                                                            ${redHeart}
-                            </td>
-                            <td class="text-center" id="tipoTalle_${element._id}"><span class="badge bg-${background} text-light">${tipoTalle}</span></td>
-                            <td class="text-center" id="limMaxUser_${element._id}"><span class="badge bg-danger text-light">${element.limMaxUser}</span></td>
-                            <td class="text-center" id="stock_${element._id}"><span id="spanStock_${element._id} name="stock" class="badge bg-${optionStock} text-light">${totalStock}</span></td>
-                            <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
-                                <div class="d-block align-items-center text-center">
-                                    <a href="/api/carts/${element._id}" class="btn btn-primary btn-sm me-1" title="Editar Consumible ${designationTrim}"><i class="fa-solid fa-cart-shopping"></i></a>
-                                    <button id="${element._id}" name="btnDeleteConsumible" type="button" class="btn btn-danger btn-sm ms-1" title="Eliminar Consumible ${designationTrim}"><i class="fa-solid fa-trash-can"></i></button>
-                                </div>
-                            </td>
-                        </tr>`)
-            } 
+                                <td class="text-center" id="checkSelect_${element._id}" name="checkSelect"><input class="form-check-input border border-2 border-primary shadow-lg rounded" type="checkbox" value="" id="inputCheckConsumible_${element._id}" name="inputCheckConsumible" ${disabledRow}></td>
+                                <td class="text-center" id="codigo_${element._id}"><strong>${element.code}</strong></td>
+                                <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}">${showType}</span></td>
+                                <td class="text-center" id="designation_${element._id}"><strong>${designationTrim}</strong></td>
+                                <td class="text-center" id="characteristics_${element._id}">${characteristicsTrim}</td>
+                                <td class="text-center position-relative" id="imagenConsumible_${element._id}">
+                                    ${element.imageConsumible ? `<img id="imagen_${element._id}" class="imgLazyLoad img-fluid rounded-3 py-2" alt="Imagen" data-src="${element.imageConsumible}"
+                                                                src='${imagenLazy}' width="125px" height="125px" loading="lazy">` : '<div class="img-placeholder"></div>'}
+                                                                ${redHeart}
+                                </td>
+                                <td class="text-center" id="tipoTalle_${element._id}"><span class="badge bg-${background} text-light">${tipoTalle}</span></td>
+                                <td class="text-center" id="limMaxUser_${element._id}"><span class="badge bg-danger text-light">${element.limMaxUser}</span></td>
+                                <td class="text-center" id="stock_${element._id}"><span id="spanStock_${element._id} name="stock" class="badge bg-${optionStock} text-light">${totalStock}</span></td>
+                                <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
+                                    <div class="d-block align-items-center text-center">
+                                        <a href="/api/carts/${element._id}" class="btn btn-primary btn-sm me-1" title="Editar Consumible ${designationTrim}"><i class="fa-solid fa-cart-shopping"></i></a>
+                                        <button id="${element._id}" name="btnDeleteConsumible" type="button" class="btn btn-danger btn-sm ms-1" title="Eliminar Consumible ${designationTrim}"><i class="fa-solid fa-trash-can"></i></button>
+                                    </div>
+                                </td>
+                            </tr>`)
+            }
         }).join(" ");
-        document.getElementById('mostrarConsumibles').innerHTML = html
-
-        const consumiblesActiveQty = []
-        for(let u=0; u<arrayConsumible.length; u++) {
-            arrayConsumible[u].visible ? consumiblesActiveQty.push(u) : null
-        }
-
-        const htmlConsumibleList = 
-            ( `<caption id="capConsumiblesList">Cantidad de Consumibles: ${parseInt(consumiblesActiveQty.length)}</caption>`)
-
-        document.getElementById('capConsumiblesList').innerHTML = htmlConsumibleList
-        
+        htmlPagination = generarControlesPaginacion();
+    
     } else {
         html = (`<tr>
-                    <td colspan="10">
-                        <img class="img-fluid rounded-5 my-2 shadow-lg" alt="No hay items cargados para mostrar"
+                    <td colspan="15">
+                        <img class="img-fluid rounded-2 my-2 shadow-lg" alt="No hay items cargados para mostrar"
                             src='../src/images/clean_table_graphic.png' width="auto" height="auto">
                     </td>
                 </tr>`)
 
         document.getElementById('mostrarConsumibles').innerHTML = html    
     }
+
     // Ocultar el spinner y mostrar la tabla
     document.getElementById('loading-spinner').style.display = 'none';
     document.getElementById('consumiblesTable').style.display = 'block';
+    
+    container.innerHTML = html;
+    pagination.innerHTML = htmlPagination;
+    container.classList.remove('transition-out', 'left', 'right');
+    container.classList.add('transition-in', direction);
+
+    const consumiblesActiveQty = []
+        for(let u=0; u<consumiblesGlobales.length; u++) {
+            consumiblesGlobales[u].visible ? consumiblesActiveQty.push(u) : null
+        }
+
+        const htmlConsumibleList = 
+            ( `<caption id="capConsumiblesList">Cantidad de Consumibles: ${parseInt(consumiblesActiveQty.length)}</caption><br>
+            <caption id="capDeleteConsumiblesList">Cantidad de Consumibles Eliminados: ${parseInt(consumiblesGlobales.length - consumiblesActiveQty.length)}</caption>`)
+
+        document.getElementById('capConsumiblesList').innerHTML = htmlConsumibleList
+    
+    // Remover clases de animación después de completar
+    setTimeout(() => {
+        container.classList.remove('transition-in', direction);
+    }, 400);
 
     //------------- LazyLoad Images ------------------
     const lazyImages = document.querySelectorAll("img[data-src]");
@@ -197,7 +326,7 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
                         observer.unobserve(img); // Deja de observar esta imagen
                     }
                 });
-            }, 1000);
+            }, 500);
         });
         lazyImages.forEach(img => observer.observe(img));
         
@@ -207,29 +336,200 @@ const renderConsumiblesAdmin = (arrConsumibles) => {
             img.src = img.dataset.src;
         });
     }
-}
 
-//---------------- Render User -----------------------------
-const renderConsumiblesUser = (arrConsumibles) => {
-    const arrayConsumible = arrConsumibles
-    if (arrConsumibles.length>0) {
-        html = arrConsumibles.map((element) => {
+    // ---- mensaje confirmacion eliminar Consumible -----------
+    function messageDeleteConsumible(id, designation, code) {
+        const htmlForm =
+            `El consumible ${designation} - Código: ${code}, se eliminará completamente.<br>
+                Está seguro que desea continuar?<br>
+                <form id="formDeleteConsumible" action="/api/consumibles/delete/${id}" method="get">
+                    <fieldset>
+                    </fieldset>
+                </form>`
+    
+        Swal.fire({
+            title: `Eliminar Consumible <b>${designation}</b> - ${code}?`,
+            position: 'center',
+            html: htmlForm,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            focusConfirm: false,
+            confirmButtonText: 'Eliminarlo! <i class="fa-solid fa-trash-can"></i>',
+            cancelButtonText: 'Cancelar <i class="fa-solid fa-user-shield"></i>'
+    
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById("formDeleteConsumible").submit()
+                setTimeout(() => {
+                    Swal.fire(
+                        'Eliminado!',
+                        `El consumible ${designation}, ha sido eliminado exitosamente.`,
+                        'success'
+                    )
+                }, 500)
+            } else {
+                Swal.fire(
+                    'No eliminado!',
+                    `El consumible ${designation}, no ha sido eliminado.`,
+                    'info'
+                    )
+                return false
+            }
+        })
+    }
 
+    const nodeList = document.querySelectorAll('button[name="btnDeleteConsumible"]')
+    nodeList.forEach(function(btn){
+        if (btn.id) {
+            btn.addEventListener("click", (event) => {
+                event.preventDefault()
+                const idConsumible = btn.id,
+                    designation = document.getElementById(`designation_${idConsumible}`).innerText,
+                    code = document.getElementById(`codigo_${idConsumible}`).innerText,
+                    type = document.getElementById(`tipo_${idConsumible}`).innerText
+
+                idConsumible && designation && code && type ? messageDeleteConsumible(idConsumible, designation, code) : null
+            })
+        }
+    })
+
+    // Llamar a la función para agregar el select después de renderizar la tabla
+    agregarSelectItemsPorPagina();
+};
+
+
+
+// Función para generar los controles de paginación
+const generarControlesPaginacionUser = () => {
+    const totalPages = Math.ceil(consumiblesGlobales.length / itemsPerPage);
+    let paginationHTML = `<div class="pagination-anchor">
+                            <div class="pagination-container justify-content-center">`;
+    
+    // Botón Anterior
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderConsumiblesUser(consumiblesGlobales, ${currentPage - 1}, 'right')">
+            &laquo; Anterior
+        </button>`;
+
+    // Primeros números
+    if (currentPage > maxVisiblePages + 1) {
+        paginationHTML += `
+            <button class="pagination-btn" onclick="renderConsumiblesUser(consumiblesGlobales, 1)">1</button>
+            <span class="pagination-ellipsis">...</span>`;
+    }
+
+    // Números centrales
+    const start = Math.max(1, currentPage - maxVisiblePages);
+    const end = Math.min(totalPages, currentPage + maxVisiblePages);
+    
+    for (let i = start; i <= end; i++) {
+        paginationHTML += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                onclick="renderConsumiblesUser(consumiblesGlobales, ${i})">
+                ${i}
+            </button>`;
+    }
+
+    // Últimos números
+    if (currentPage < totalPages - maxVisiblePages) {
+        paginationHTML += `
+            <span class="pagination-ellipsis">...</span>
+            <button class="pagination-btn" onclick="renderConsumiblesUser(consumiblesGlobales, ${totalPages})">${totalPages}</button>`;
+    }
+
+    // Botón Siguiente
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderConsumiblesUser(consumiblesGlobales, ${currentPage + 1}, 'left')">
+            Siguiente &raquo;
+        </button>`;
+
+    paginationHTML += '</div>';
+    return paginationHTML;
+};
+
+const cambiarItemsPorPaginaUser = (nuevoItemsPerPage) => {
+    selectedItemsPerPage = nuevoItemsPerPage; // Guardar la selección del usuario
+    itemsPerPage = nuevoItemsPerPage;
+    currentPage = 1; // Reiniciar a la primera página
+    renderConsumiblesUser(consumiblesGlobales);
+};
+
+const agregarSelectItemsPorPaginaUser = () => {
+    // Crear el HTML del select y la leyenda
+    let selectHTML = `
+        Mostrando 
+        <select class="form-select small w-auto mx-2" id="itemsPerPageSelect" onchange="cambiarItemsPorPaginaUser(parseInt(this.value))">
+            <option value="10" ${selectedItemsPerPage === 10 ? 'selected' : ''}>10</option>
+            <option value="25" ${selectedItemsPerPage === 25 ? 'selected' : ''}>25</option>
+            <option value="50" ${selectedItemsPerPage === 50 ? 'selected' : ''}>50</option>
+            <option value="100" ${selectedItemsPerPage === 100 ? 'selected' : ''}>100</option>
+            <option value="${consumiblesGlobales.length}" ${selectedItemsPerPage === consumiblesGlobales.length ? 'selected' : ''}>Todos</option>
+        </select>
+        consumibles de ${consumiblesGlobales.length}
+    `;
+
+    const paginationContainer = document.getElementById('paginationConsumibles');
+    const existingSelectContainer = document.getElementById('selectContainer');
+
+    // Verificar si el contenedor de paginación existe
+    if (paginationContainer) {
+        // Si ya existe un contenedor para el select, actualizamos su contenido
+        if (existingSelectContainer) {
+            existingSelectContainer.innerHTML = selectHTML;
+        } else {
+            // Si no existe, creamos un nuevo contenedor y lo insertamos
+            const selectContainer = document.createElement('div');
+            selectContainer.id = 'selectContainer';
+            selectContainer.classList.add('row', 'align-items-center', 'justify-content-center')
+            selectContainer.innerHTML = selectHTML;
+            paginationContainer.insertAdjacentHTML('beforebegin', selectContainer.outerHTML);
+        }
+    } else {
+        console.error("El contenedor de paginación no existe en el DOM.");
+    }
+};
+
+// ----------------- Render USER -----------------------------
+// Llamar a la función para agregar el select después de renderizar la tabla
+const renderConsumiblesUser = async (arrConsumibles, page = 1, direction = 'none') => {
+    consumiblesGlobales = arrConsumibles;
+    currentPage = page;
+    
+    const container = document.getElementById('mostrarConsumibles');
+    const pagination = document.getElementById('paginationConsumibles');
+    container.classList.add('transition-out', direction);
+    
+    // Esperar a que termine la animación de salida
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedItems = arrConsumibles.slice(startIndex, endIndex);
+    
+    let html = '', htmlPagination = '', redHeart = '';
+    
+    if (paginatedItems.length > 0) {
+        html = paginatedItems.map((element) => {
             // Procesar cada elemento
-            processStock(element)
+            processStock(element);
 
             let optionStatus = element.status ? green : red,
-                optionStock = totalStock > 0 ? black : red,
-                showStatus = element.status ? active : inactive,
+                optionStock = totalStock > 0 ? black : red
+            
+            // Obtener configuración según el tipo o usar la configuración por defecto
+            const { optionType, showType, textColor } = typeConfigurations[element.type] || defaultConfig;
+
+            let showStatus = element.status ? active : inactive,
                 idChain = element._id.substring(19),
                 tipoTalle = 'U',
                 background = 'dark',
                 disabled = '',
                 disabledRow = ''
             
-            // Obtener configuración según el tipo o usar la configuración por defecto
-            const { optionType, showType, textColor } = typeConfigurations[element.type] || defaultConfig;
-
             if (element.tipoTalle === 'talle') {
                 tipoTalle = 'T'
                 background = 'danger'
@@ -242,8 +542,7 @@ const renderConsumiblesUser = (arrConsumibles) => {
             }
 
             let characteristicsTrim = cortarTexto(element.characteristics),
-                designationTrim = cortarTextoLong(element.designation),
-                redHeart = '';
+                designationTrim = cortarTextoLong(element.designation);
 
             let utcDate = new Date(element.timestamp),
                 utcDateModified = new Date(element.modifiedOn),
@@ -255,13 +554,13 @@ const renderConsumiblesUser = (arrConsumibles) => {
                 formattedDate === formattedDateModified ? formattedDateModified = '-' : null
 
             if (element.favorito === 5) {
-                redHeart = `<i id="redHeart_${element._id}" class="fa-solid fa-heart position-absolute top-0 start-100 text-primary" 
-                                style="font-size: 1.5em; z-index: 100 ;transform: translate(-200%, 40%) !important;">
+                redHeart = `<i class="fa-solid fa-heart position-absolute top-0 start-100 text-primary" 
+                                style="font-size: 1.5em; z-index: 100 ;transform: translate(-225%, 40%) !important;">
                             </i>`
             }
-            
+
             if (element.visible) {
-                totalStock > 0 ? stockTr = `<tr id="consumibleRow_${element._id}">` : (stockTr =`<tr id="consumibleRow_${element._id}" class="row-highlight-stockCero">`, disabledRow = 'disabled')
+                totalStock > 0 ? stockTr = `<tr id="consumibleRow_${element._id}">` : stockTr =`<tr id="consumibleRow_${element._id}" class="row-highlight-stockCero">`
                 return (`${stockTr}
                             <td class="text-center" id="checkSelect_${element._id}" name="checkSelect"><input class="form-check-input border border-2 border-primary shadow-lg rounded" type="checkbox" value="" id="inputCheckConsumible_${element._id}" name="inputCheckConsumible" ${disabledRow}></td>
                             <td class="text-center" id="codigo_${element._id}"><strong>${element.code}</strong></td>
@@ -286,31 +585,42 @@ const renderConsumiblesUser = (arrConsumibles) => {
                         </tr>`)
             }
         }).join(" ");
-        document.getElementById('mostrarConsumibles').innerHTML = html
-
-        const consumiblesActiveQty = []
-        for(let u=0; u<arrayConsumible.length; u++) {
-            arrayConsumible[u].visible ? consumiblesActiveQty.push(u) : null
-        }
-
-        const htmlConsumibleList = 
-            ( `<caption id="capConsumiblesList">Cantidad de Consumibles: ${parseInt(consumiblesActiveQty.length)}</caption>`)
-
-        document.getElementById('capConsumiblesList').innerHTML = htmlConsumibleList
-        
+        htmlPagination = generarControlesPaginacionUser();
+    
     } else {
         html = (`<tr>
-                    <td colspan="11">
-                        <img class="img-fluid rounded-5 my-2 shadow-lg" alt="No hay items cargados para mostrar"
+                    <td colspan="15">
+                        <img class="img-fluid rounded-2 my-2 shadow-lg" alt="No hay items cargados para mostrar"
                             src='../src/images/clean_table_graphic.png' width="auto" height="auto">
                     </td>
                 </tr>`)
 
         document.getElementById('mostrarConsumibles').innerHTML = html    
     }
+
     // Ocultar el spinner y mostrar la tabla
     document.getElementById('loading-spinner').style.display = 'none';
     document.getElementById('consumiblesTable').style.display = 'block';
+    
+    container.innerHTML = html;
+    pagination.innerHTML = htmlPagination;
+    container.classList.remove('transition-out', 'left', 'right');
+    container.classList.add('transition-in', direction);
+
+    const consumiblesActiveQty = []
+        for(let u=0; u<consumiblesGlobales.length; u++) {
+            consumiblesGlobales[u].visible ? consumiblesActiveQty.push(u) : null
+        }
+
+        const htmlConsumibleList = 
+            ( `<caption id="capConsumiblesList">Cantidad de Consumibles: ${parseInt(consumiblesActiveQty.length)}</caption>`)
+
+        document.getElementById('capConsumiblesList').innerHTML = htmlConsumibleList
+    
+    // Remover clases de animación después de completar
+    setTimeout(() => {
+        container.classList.remove('transition-in', direction);
+    }, 400);
 
     //------------- LazyLoad Images ------------------
     const lazyImages = document.querySelectorAll("img[data-src]");
@@ -326,7 +636,7 @@ const renderConsumiblesUser = (arrConsumibles) => {
                         observer.unobserve(img); // Deja de observar esta imagen
                     }
                 });
-            }, 1000);
+            }, 500);
         });
         lazyImages.forEach(img => observer.observe(img));
         
@@ -336,7 +646,10 @@ const renderConsumiblesUser = (arrConsumibles) => {
             img.src = img.dataset.src;
         });
     }
-}
+
+    // Llamar a la función para agregar el select después de renderizar la tabla
+    agregarSelectItemsPorPaginaUser();
+};
 
 let inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
     inpuntDeNumeros.forEach(function(input) {

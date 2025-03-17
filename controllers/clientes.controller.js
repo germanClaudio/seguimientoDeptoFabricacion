@@ -2,6 +2,7 @@ const ClientsService = require("../services/clients.service.js"),
     UserService = require("../services/users.service.js"),
     ProjectsService = require("../services/projects.service.js"),
     CartsService = require("../services/carts.service.js"),
+    OrdersService = require("../services/orders.service.js"),
 
     csrf = require('csrf'),
     csrfTokens = csrf(),
@@ -20,6 +21,7 @@ const {catchError400,
     catchError400_2,
     catchError400_3,
     catchError400_4,
+    catchError400_5,
     catchError403,
     catchError401,
     catchError401_1,
@@ -35,6 +37,7 @@ class ClientsController {
         this.users = new UserService()
         this.projects = new ProjectsService()
         this.carts = new CartsService()
+        this.orders = new OrdersService()
     }
 
     getAllClients = async (req, res, next) => {
@@ -49,6 +52,9 @@ class ClientsController {
             const clientes = await this.clients.getAllClients()
             !clientes ? catchError401(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -56,6 +62,7 @@ class ClientsController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 clientes,
                 data,
@@ -83,6 +90,9 @@ class ClientsController {
             const proyectos = await this.projects.getProjectsByClientId(id)
             !proyectos ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -90,6 +100,7 @@ class ClientsController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 proyectos,
                 cliente,
@@ -118,6 +129,9 @@ class ClientsController {
             const proyectos = await this.projects.getProjectsByClientId(id)
             !proyectos ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -126,6 +140,7 @@ class ClientsController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 proyectos,
                 data,
@@ -153,6 +168,9 @@ class ClientsController {
             const proyectos = await this.projects.getProjectsByClientId(id)
             !proyectos ? catchError401_1(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -161,6 +179,7 @@ class ClientsController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 proyectos,
                 data,
@@ -173,11 +192,11 @@ class ClientsController {
     }
 
     createNewClient = async (req, res, next) => {
+        const expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
         
         uploadMulterSingleLogoClient(req, res, async (err) => {
-            const expires = cookie(req)
-            let username = res.locals.username,
-                userInfo = res.locals.userInfo
             
             try {
                 const userId = userInfo.id
@@ -208,6 +227,9 @@ class ClientsController {
                 const cliente = await this.clients.addClient(newClientValid)
                 !cliente ? catchError401(req, res, next) : null
 
+                const ordenes = await this.orders.getAllOrders()
+                !ordenes ? catchError400_5(req, res, next) : null
+
                 const userCart = await this.carts.getCartByUserId(userId)
 
                 const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -215,6 +237,7 @@ class ClientsController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     data,
@@ -283,6 +306,9 @@ class ClientsController {
                     )
                     !clientUpdated ? catchError401(req, res, next) : null
 
+                    const ordenes = await this.orders.getAllOrders()
+                    !ordenes ? catchError400_5(req, res, next) : null
+
                     const userCart = await this.carts.getCartByUserId(userId)
 
                     const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -290,6 +316,7 @@ class ClientsController {
                         username,
                         userInfo,
                         userCart,
+                        ordenes,
                         expires,
                         clientUpdated,
                         data,
@@ -327,6 +354,9 @@ class ClientsController {
                 dataUserModificatorNotEmpty(userCreator))
             !cliente ? catchError401(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
         
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -335,6 +365,7 @@ class ClientsController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 proyectos,
                 data,
@@ -367,6 +398,9 @@ class ClientsController {
                 dataUserModificatorNotEmpty(userCreator))
             !cliente ? catchError401(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -374,6 +408,7 @@ class ClientsController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 cliente,
                 proyectos,
@@ -400,6 +435,9 @@ class ClientsController {
             const cliente = await this.clients.deleteClientById(clientId, dataUserModificatorNotEmpty(userCreator))
             !cliente ? catchError401(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -407,6 +445,7 @@ class ClientsController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 cliente,
                 data,
@@ -427,6 +466,9 @@ class ClientsController {
             const clientsDeleted = await this.clients.deleteAllClients()
             !clientsDeleted ? catchError401(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userInfo._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -434,6 +476,7 @@ class ClientsController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 clientsDeleted,
                 data,

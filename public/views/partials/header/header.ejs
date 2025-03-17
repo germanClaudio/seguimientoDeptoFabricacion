@@ -106,7 +106,7 @@
     </div>
 </nav>
 <% if (userInfo.admin) { %>
-    <%- include('../../partials/sidebar/sidebarAdmin'); %>
+    <%- include('../../partials/sidebar/sidebarAdmin', { ordenes: ordenes }); %>
 <% } else { %>
-    <%- include('../../partials/sidebar/sidebarUser'); %>
+    <%- include('../../partials/sidebar/sidebarUser', { ordenes: ordenes }); %>
 <% } %>

@@ -1,6 +1,11 @@
 const socket = io.connect(),
     offset = -3 * 60 * 60 * 1000
 
+let currentPage = 1;
+let itemsPerPage = 10; // Valor por defecto
+let ordenesGlobales = [];
+const maxVisiblePages = 3;
+
 function formatDate(date) {
     const DD = String(date.getDate()).padStart(2, '0'),
         MM = String(date.getMonth() + 1).padStart(2, '0'),
@@ -50,21 +55,131 @@ socket.on('ordersUsers', ( arrUsers ) => {
 socket.on('ordersActive', (data) => {
     const { allOrders, ordersByUser, allUsers, userAdmin } = data;
 
-    userAdmin ? renderOrdenesAdmin(allOrders, allUsers) : renderOrdenesUser(ordersByUser)
+    userAdmin ? renderOrdenesAdmin(allOrders) : renderOrdenesUser(ordersByUser)
 
 })
 
+// Función para generar los controles de paginación
+const generarControlesPaginacion = () => {
+    const totalPages = Math.ceil(ordenesGlobales.length / itemsPerPage);
+    let paginationHTML = `<div class="pagination-anchor">
+                            <div class="pagination-container justify-content-center">`;
+    
+    // Botón Anterior
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderOrdenesAdmin(ordenesGlobales, ${currentPage - 1}, 'right')">
+            &laquo; Anterior
+        </button>`;
 
-const renderOrdenesAdmin = (arrOrders) => {
-    const arrayOrders = arrOrders
-    if (arrOrders.length > 0) {
-        const html = arrayOrders.map((element) => {
+    // Primeros números
+    if (currentPage > maxVisiblePages + 1) {
+        paginationHTML += `
+            <button class="pagination-btn" onclick="renderOrdenesAdmin(ordenesGlobales, 1)">1</button>
+            <span class="pagination-ellipsis">...</span>`;
+    }
+
+    // Números centrales
+    const start = Math.max(1, currentPage - maxVisiblePages);
+    const end = Math.min(totalPages, currentPage + maxVisiblePages);
+    
+    for (let i = start; i <= end; i++) {
+        paginationHTML += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                onclick="renderOrdenesAdmin(ordenesGlobales, ${i})">
+                ${i}
+            </button>`;
+    }
+
+    // Últimos números
+    if (currentPage < totalPages - maxVisiblePages) {
+        paginationHTML += `
+            <span class="pagination-ellipsis">...</span>
+            <button class="pagination-btn" onclick="renderOrdenesAdmin(ordenesGlobales, ${totalPages})">${totalPages}</button>`;
+    }
+
+    // Botón Siguiente
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderOrdenesAdmin(ordenesGlobales, ${currentPage + 1}, 'left')">
+            Siguiente &raquo;
+        </button>`;
+
+    paginationHTML += '</div>';
+    return paginationHTML;
+};
+
+// Función para cambiar el número de filas por página
+let selectedItemsPerPage = 10; // Valor por defecto
+
+const cambiarItemsPorPagina = (nuevoItemsPerPage) => {
+    selectedItemsPerPage = nuevoItemsPerPage; // Guardar la selección del usuario
+    itemsPerPage = nuevoItemsPerPage;
+    currentPage = 1; // Reiniciar a la primera página
+    renderOrdenesAdmin(ordenesGlobales);
+};
+
+const agregarSelectItemsPorPagina = () => { 
+    // Crear el HTML del select y la leyenda
+    let selectHTML = `
+        Mostrando 
+        <select class="form-select small w-auto mx-2" id="itemsPerPageSelect" onchange="cambiarItemsPorPagina(parseInt(this.value))">
+            <option value="10" ${selectedItemsPerPage === 10 ? 'selected' : ''}>10</option>
+            <option value="25" ${selectedItemsPerPage === 25 ? 'selected' : ''}>25</option>
+            <option value="50" ${selectedItemsPerPage === 50 ? 'selected' : ''}>50</option>
+            <option value="100" ${selectedItemsPerPage === 100 ? 'selected' : ''}>100</option>
+            <option value="${ordenesGlobales.length}" ${selectedItemsPerPage === ordenesGlobales.length ? 'selected' : ''}>Todos</option>
+        </select>
+        ordenes de ${ordenesGlobales.length}
+    `;
+
+    const paginationContainer = document.getElementById('paginationOrdenes');
+    const existingSelectContainer = document.getElementById('selectContainer');
+
+    // Verificar si el contenedor de paginación existe
+    if (paginationContainer) {
+        // Si ya existe un contenedor para el select, actualizamos su contenido
+        if (existingSelectContainer) {
+            existingSelectContainer.innerHTML = selectHTML;
+        } else {
+            // Si no existe, creamos un nuevo contenedor y lo insertamos
+            const selectContainer = document.createElement('div');
+            selectContainer.id = 'selectContainer';
+            selectContainer.classList.add('row', 'align-items-center', 'justify-content-center')
+            selectContainer.innerHTML = selectHTML;
+            paginationContainer.insertAdjacentHTML('beforebegin', selectContainer.outerHTML);
+        }
+    } else {
+        console.error("El contenedor de paginación no existe en el DOM.");
+    }
+};
+
+// ---------------------- Rende Admin ----------------------------
+const renderOrdenesAdmin = async (arrOrders, page = 1, direction = 'none') => {
+    ordenesGlobales = arrOrders;
+    currentPage = page;
+
+    const container = document.getElementById('mostrarOrdenes');
+    const pagination = document.getElementById('paginationOrdenes');
+    container.classList.add('transition-out', direction);
+    
+    // Esperar a que termine la animación de salida
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedItems = ordenesGlobales.slice(startIndex, endIndex);
+    
+    let html = '', htmlPagination = '';
+
+    if (paginatedItems.length > 0) {
+        html = paginatedItems.map((element) => {
             let prodArr = []
             function loopProductId() {
                 for (i=0; i < element.items.length; i++) {
                     prodArr.push(element.items[i].consumibleId)
                 }
-                return prodArr.length//join('\n')
+                return prodArr.length
             }
 
             let qtyArr = [], qtyArrNumber = []
@@ -73,7 +188,7 @@ const renderOrdenesAdmin = (arrOrders) => {
                     qtyArr.push(element.items[i].quantity)
                     qtyArrNumber.push(element.items[i].quantity)
                 }
-                return qtyArr.join(' - ') //('\n')
+                return qtyArr.join(' - ')
             }
 
             for (i=0; i < element.items.length; i++) {
@@ -145,32 +260,43 @@ const renderOrdenesAdmin = (arrOrders) => {
                         </tr>`)
             }
         }).join(" ");
-        document.getElementById('mostrarOrdenes').innerHTML = html
-
-        const ordersActiveQty = []
-        for(let u=0; u<arrayOrders.length; u++) {
-            arrayOrders[u].visible ? ordersActiveQty.push(u) : null
-        }
-
-        const htmlOrderList = 
-            ( `<caption id="capOrderList">Cantidad de Ordenes: ${parseInt(ordersActiveQty.length)}</caption><br>
-            <caption id="capDeleteOrderList">Cantidad de Ordenes Eliminadas: ${parseInt(arrayOrders.length - ordersActiveQty.length)}</caption>`)
-
-        document.getElementById('capOrdersList').innerHTML = htmlOrderList
-
+        htmlPagination = generarControlesPaginacion();
+        
     } else {
-        const html = (`<tr>
-                            <td colspan="10">
-                                <img class="img-fluid rounded-3 my-2 shadow-lg" alt="No hay items cargados para mostrar"
-                                    src='../src/images/clean_table_graphic.png' width="auto" height="auto">
-                            </td>
-                        </tr>`)
+        html = (`<tr>
+                    <td colspan="15">
+                        <img class="img-fluid rounded-2 my-2 shadow-lg" alt="No hay items cargados para mostrar"
+                            src='../src/images/clean_table_graphic.png' width="auto" height="auto">
+                    </td>
+                </tr>`)
 
-        document.getElementById('mostrarOrdenes').innerHTML = html   
+                document.getElementById('mostrarOrdenes').innerHTML = html
     }
+
     // Ocultar el spinner y mostrar la tabla
     document.getElementById('loading-spinner').style.display = 'none';
     document.getElementById('ordenesTable').style.display = 'block';
+
+    container.innerHTML = html;
+    pagination.innerHTML = htmlPagination;
+    container.classList.remove('transition-out', 'left', 'right');
+    container.classList.add('transition-in', direction);
+
+    const ordersActiveQty = []
+    for(let u=0; u<ordenesGlobales.length; u++) {
+        ordenesGlobales[u].visible ? ordersActiveQty.push(u) : null
+    }
+
+    const htmlOrderList = 
+        ( `<caption id="capOrderList">Cantidad de Ordenes: ${parseInt(ordersActiveQty.length)}</caption><br>
+        <caption id="capDeleteOrderList">Cantidad de Ordenes Eliminadas: ${parseInt(ordenesGlobales.length - ordersActiveQty.length)}</caption>`)
+
+    document.getElementById('capOrdersList').innerHTML = htmlOrderList
+
+    // Remover clases de animación después de completar
+    setTimeout(() => {
+        container.classList.remove('transition-in', direction);
+    }, 400);
 
     // ---- mensaje confirmacion Preparar Order -----------
     function messagePrepareOrder(idOrden, userInformation, date) {
@@ -387,18 +513,131 @@ const renderOrdenesAdmin = (arrOrders) => {
                 })
             }
     })
+
+    // Llamar a la función para agregar el select después de renderizar la tabla
+    agregarSelectItemsPorPagina();
 }
 
-const renderOrdenesUser = (arrOrders) => {
-    const arrayOrders = arrOrders
-    if (arrOrders.length > 0) {
-        const html = arrayOrders.map((element) => {
+
+// Función para generar los controles de paginación
+const generarControlesPaginacionUser = () => {
+    const totalPages = Math.ceil(ordenesGlobales.length / itemsPerPage);
+    let paginationHTML = `<div class="pagination-anchor">
+                            <div class="pagination-container justify-content-center">`;
+    
+    // Botón Anterior
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderOrdenesUser(ordenesGlobales, ${currentPage - 1}, 'right')">
+            &laquo; Anterior
+        </button>`;
+
+    // Primeros números
+    if (currentPage > maxVisiblePages + 1) {
+        paginationHTML += `
+            <button class="pagination-btn" onclick="renderOrdenesUser(ordenesGlobales, 1)">1</button>
+            <span class="pagination-ellipsis">...</span>`;
+    }
+
+    // Números centrales
+    const start = Math.max(1, currentPage - maxVisiblePages);
+    const end = Math.min(totalPages, currentPage + maxVisiblePages);
+    
+    for (let i = start; i <= end; i++) {
+        paginationHTML += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                onclick="renderOrdenesUser(ordenesGlobales, ${i})">
+                ${i}
+            </button>`;
+    }
+
+    // Últimos números
+    if (currentPage < totalPages - maxVisiblePages) {
+        paginationHTML += `
+            <span class="pagination-ellipsis">...</span>
+            <button class="pagination-btn" onclick="renderOrdenesUser(ordenesGlobales, ${totalPages})">${totalPages}</button>`;
+    }
+
+    // Botón Siguiente
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderOrdenesUser(ordenesGlobales, ${currentPage + 1}, 'left')">
+            Siguiente &raquo;
+        </button>`;
+
+    paginationHTML += '</div>';
+    return paginationHTML;
+};
+
+
+const cambiarItemsPorPaginaUser = (nuevoItemsPerPage) => {
+    selectedItemsPerPage = nuevoItemsPerPage; // Guardar la selección del usuario
+    itemsPerPage = nuevoItemsPerPage;
+    currentPage = 1; // Reiniciar a la primera página
+    renderOrdenesUser(ordenesGlobales);
+};
+
+const agregarSelectItemsPorPaginaUser = () => {
+    // Crear el HTML del select y la leyenda
+    let selectHTML = `
+        Mostrando 
+        <select class="form-select small w-auto mx-2" id="itemsPerPageSelect" onchange="cambiarItemsPorPaginaUser(parseInt(this.value))">
+            <option value="10" ${selectedItemsPerPage === 10 ? 'selected' : ''}>10</option>
+            <option value="25" ${selectedItemsPerPage === 25 ? 'selected' : ''}>25</option>
+            <option value="50" ${selectedItemsPerPage === 50 ? 'selected' : ''}>50</option>
+            <option value="100" ${selectedItemsPerPage === 100 ? 'selected' : ''}>100</option>
+            <option value="${ordenesGlobales.length}" ${selectedItemsPerPage === ordenesGlobales.length ? 'selected' : ''}>Todos</option>
+        </select>
+        ordenes de ${ordenesGlobales.length}
+    `;
+
+    const paginationContainer = document.getElementById('paginationOrdenes');
+    const existingSelectContainer = document.getElementById('selectContainer');
+
+    // Verificar si el contenedor de paginación existe
+    if (paginationContainer) {
+        // Si ya existe un contenedor para el select, actualizamos su contenido
+        if (existingSelectContainer) {
+            existingSelectContainer.innerHTML = selectHTML;
+        } else {
+            // Si no existe, creamos un nuevo contenedor y lo insertamos
+            const selectContainer = document.createElement('div');
+            selectContainer.id = 'selectContainer';
+            selectContainer.classList.add('row', 'align-items-center', 'justify-content-center')
+            selectContainer.innerHTML = selectHTML;
+            paginationContainer.insertAdjacentHTML('beforebegin', selectContainer.outerHTML);
+        }
+    } else {
+        console.error("El contenedor de paginación no existe en el DOM.");
+    }
+};
+
+// --------------------- Render User --------------------------
+const renderOrdenesUser = async (arrOrders, page = 1, direction = 'none') => {
+    ordenesGlobales = arrOrders;
+    currentPage = page;
+    console.log('ordenesGlobales: ', ordenesGlobales)
+    const container = document.getElementById('mostrarOrdenes');
+    const pagination = document.getElementById('paginationOrdenes');
+    container.classList.add('transition-out', direction);
+    
+    // Esperar a que termine la animación de salida
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedItems = ordenesGlobales.slice(startIndex, endIndex);
+    
+    let html = '', htmlPagination = '';
+
+    if (paginatedItems.length > 0) {
+        html = ordenesGlobales.map((element) => {
             let prodArr = []
             function loopProductId() {
                 for (i=0; i < element.items.length; i++) {
                     prodArr.push(element.items[i].consumibleId)
                 }
-                return prodArr.length  //join('\n')
+                return prodArr.length
             }
 
             let qtyArr = [], qtyArrNumber = []
@@ -407,7 +646,7 @@ const renderOrdenesUser = (arrOrders) => {
                     qtyArr.push(element.items[i].quantity)
                     qtyArrNumber.push(element.items[i].quantity)
                 }
-                return qtyArr.join(' - ')  //('\n')
+                return qtyArr.join(' - ')
             }
 
             for (i=0; i < element.items.length; i++) {
@@ -469,33 +708,40 @@ const renderOrdenesUser = (arrOrders) => {
                         </tr>`)
             }
         }).join(" ");
-        document.getElementById('mostrarOrdenes').innerHTML = html
+        htmlPagination = generarControlesPaginacion();
 
     } else {
-        const html = (`<tr>
-                        <td colspan="10">
-                            <img class="img-fluid rounded-3 my-2 shadow-lg" alt="No hay items cargados para mostrar"
-                                src='../../src/images/clean_table_graphic.png' width="auto" height="auto">
-                        </td>
-                    </tr>`)
+        html = (`<tr>
+                    <td colspan="10">
+                        <img class="img-fluid rounded-3 my-2 shadow-lg" alt="No hay items cargados para mostrar"
+                            src='../../src/images/clean_table_graphic.png' width="auto" height="auto">
+                    </td>
+                </tr>`)
+
         document.getElementById('mostrarOrdenes').innerHTML = html   
     }
 
+    // Ocultar el spinner y mostrar la tabla
+    document.getElementById('loading-spinner').style.display = 'none';
+    document.getElementById('ordenesTable').style.display = 'block';
+    
+    container.innerHTML = html;
+    pagination.innerHTML = htmlPagination;
+    container.classList.remove('transition-out', 'left', 'right');
+    container.classList.add('transition-in', direction);
+
     const ordersPreparedQty = []
-    for(let u=0; u<arrayOrders.length; u++) {
-        arrayOrders[u].visible && arrayOrders[u].prepared ? ordersPreparedQty.push(u) : null
+    for(let u=0; u<ordenesGlobales.length; u++) {
+        ordenesGlobales[u].visible && ordenesGlobales[u].prepared ? ordersPreparedQty.push(u) : null
     }
 
     const htmlOrderList = 
-        ( `<caption id="capOrderList">Cantidad de Ordenes Totales: ${parseInt(arrayOrders.length)}</caption><br>
+        ( `<caption id="capOrderList">Cantidad de Ordenes Totales: ${parseInt(ordenesGlobales.length)}</caption><br>
             <caption id="capPreparedList">Cantidad de Ordenes Preparadas: ${parseInt(ordersPreparedQty.length)}</caption><br>
         `)
 
     document.getElementById('capOrdersList').innerHTML = htmlOrderList
 
-    // Ocultar el spinner y mostrar la tabla
-    document.getElementById('loading-spinner').style.display = 'none';
-    document.getElementById('ordenesTable').style.display = 'block';
 
     // ---- mensaje confirmacion eliminar Order -----------
     function messageDeleteOrder(idOrden, userInformation, date) {
@@ -591,6 +837,9 @@ const renderOrdenesUser = (arrOrders) => {
             })
         }
     })
+
+    // Llamar a la función para agregar el select después de renderizar la tabla
+    agregarSelectItemsPorPagina();
 }
 
 //------------- Rows & Cards selected ------------------

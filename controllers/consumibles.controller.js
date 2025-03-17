@@ -43,6 +43,9 @@ class ConsumiblesController {
             const consumibles = await this.consumibles.getAllConsumibles()
             !consumibles ? catchError400_5(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -50,6 +53,7 @@ class ConsumiblesController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 consumibles,
                 data,
@@ -107,6 +111,9 @@ class ConsumiblesController {
             const consumible = await this.consumibles.getConsumibleById(id)           
             !consumible ? catchError401_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -114,6 +121,7 @@ class ConsumiblesController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 consumible,
                 data,
@@ -138,6 +146,9 @@ class ConsumiblesController {
             const consumible = await this.consumibles.getConsumibleByConsumiblename(designation)
             !consumible ? catchError401_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -146,6 +157,7 @@ class ConsumiblesController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 data,
                 csrfToken
@@ -243,6 +255,9 @@ class ConsumiblesController {
                     const usuarioLog = await this.users.getUserByUsername(username);
                     !usuarioLog.visible ? catchError401_3(req, res, next) : null
 
+                    const ordenes = await this.orders.getAllOrders()
+                    !ordenes ? catchError400_5(req, res, next) : null
+
                     const userCart = await this.carts.getCartByUserId(usuarioLog._id)
 
                     const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -250,6 +265,7 @@ class ConsumiblesController {
                         username,
                         userInfo,
                         userCart,
+                        ordenes,
                         expires,
                         data,
                         csrfToken,
@@ -360,6 +376,9 @@ class ConsumiblesController {
                 const consumible = await this.consumibles.updateConsumible(consumibleId, updatedConsumible, dataUserModificatorNotEmpty(userLogged))
                 !consumible ? catchError400_3(req, res, next) : null
 
+                const ordenes = await this.orders.getAllOrders()
+                !ordenes ? catchError400_5(req, res, next) : null
+
                 const userCart = await this.carts.getCartByUserId(userLogged._id)
                         
                 const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -367,6 +386,7 @@ class ConsumiblesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     consumible,
                     data,
@@ -407,6 +427,9 @@ class ConsumiblesController {
             const consumible = await this.consumibles.deleteConsumibleById(id, dataUserModificatorNotEmpty(userLogged))
             !consumible ? catchError401_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userLogged._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -414,6 +437,7 @@ class ConsumiblesController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 consumible,
                 data,
@@ -464,6 +488,9 @@ class ConsumiblesController {
             const consumible = await this.consumibles.modificarStockConsumibles(arrayItemsToModify)
             !consumible ? catchError400_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userLogged._id)
                     
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -472,6 +499,7 @@ class ConsumiblesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     consumible,
                     data,

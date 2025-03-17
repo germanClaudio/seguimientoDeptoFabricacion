@@ -1,5 +1,12 @@
 const socket = io.connect()
-let URL_GOOGLE_STORE_IMAGESTOOLS
+
+let currentPage = 1;
+let itemsPerPage = 10; // Valor por defecto
+let maquinasGlobales = [];
+const maxVisiblePages = 3;
+
+let URL_GOOGLE_STORE_IMAGESTOOLS,
+    imagenLazy = `https://i.gifer.com/8CLc.gif` || '../../../src/images/upload/ConsumiblesImages/loader.gif';
 
 fetch('/api/config')
     .then(response => response.json())
@@ -25,17 +32,16 @@ function mostrarNombre() {
     titleNewTool.innerText = 'Agregar Nueva Máquina: '+ inputName.value
 }
 
-    if(inputName) {
-        inputName.addEventListener('keyup', () => {
-            mostrarNombre()    
-        })
-        
-        inputName.addEventListener('blur', () => {
-            mostrarNombre()    
-        })
-    }
+if(inputName) {
+    inputName.addEventListener('keyup', () => {
+        mostrarNombre()    
+    })
+    
+    inputName.addEventListener('blur', () => {
+        mostrarNombre()    
+    })
+}
 //-------------------------------------
-
 document.addEventListener('DOMContentLoaded', function() {
     // Mostrar el spinner y ocultar la tabla al cargar la página
     document.getElementById('loading-spinner').style.display = 'block';
@@ -52,21 +58,130 @@ socket.on('toolsAll', (arrTools, arrUsers) => {
     if(index !== -1) {
         let user = arrUsers[index].admin,
             userId = arrUsers[index]._id
-        user ? renderToolsAdmin(arrTools, userId) : renderToolsUser(arrTools)
+        user ? renderToolsAdmin(arrTools) : renderToolsUser(arrTools)
     }   
 })
 
+// Función para generar los controles de paginación
+const generarControlesPaginacion = () => {
+    const totalPages = Math.ceil(maquinasGlobales.length / itemsPerPage);
+    let paginationHTML = `<div class="pagination-anchor">
+                            <div class="pagination-container justify-content-center">`;
+    
+    // Botón Anterior
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderToolsAdmin(maquinasGlobales, ${currentPage - 1}, 'right')">
+            &laquo; Anterior
+        </button>`;
+
+    // Primeros números
+    if (currentPage > maxVisiblePages + 1) {
+        paginationHTML += `
+            <button class="pagination-btn" onclick="renderToolsAdmin(maquinasGlobales, 1)">1</button>
+            <span class="pagination-ellipsis">...</span>`;
+    }
+
+    // Números centrales
+    const start = Math.max(1, currentPage - maxVisiblePages);
+    const end = Math.min(totalPages, currentPage + maxVisiblePages);
+    
+    for (let i = start; i <= end; i++) {
+        paginationHTML += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                onclick="renderToolsAdmin(maquinasGlobales, ${i})">
+                ${i}
+            </button>`;
+    }
+
+    // Últimos números
+    if (currentPage < totalPages - maxVisiblePages) {
+        paginationHTML += `
+            <span class="pagination-ellipsis">...</span>
+            <button class="pagination-btn" onclick="renderToolsAdmin(maquinasGlobales, ${totalPages})">${totalPages}</button>`;
+    }
+
+    // Botón Siguiente
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderToolsAdmin(maquinasGlobales, ${currentPage + 1}, 'left')">
+            Siguiente &raquo;
+        </button>`;
+
+    paginationHTML += '</div>';
+    return paginationHTML;
+};
+
+// Función para cambiar el número de filas por página
+let selectedItemsPerPage = 10; // Valor por defecto
+
+const cambiarItemsPorPagina = (nuevoItemsPerPage) => {
+    selectedItemsPerPage = nuevoItemsPerPage; // Guardar la selección del usuario
+    itemsPerPage = nuevoItemsPerPage;
+    currentPage = 1; // Reiniciar a la primera página
+    renderToolsAdmin(maquinasGlobales);
+};
+
+const agregarSelectItemsPorPagina = () => {
+    // Crear el HTML del select y la leyenda
+    let selectHTML = `
+        Mostrando 
+        <select class="form-select small w-auto mx-2" id="itemsPerPageSelect" onchange="cambiarItemsPorPagina(parseInt(this.value))">
+            <option value="10" ${selectedItemsPerPage === 10 ? 'selected' : ''}>10</option>
+            <option value="25" ${selectedItemsPerPage === 25 ? 'selected' : ''}>25</option>
+            <option value="50" ${selectedItemsPerPage === 50 ? 'selected' : ''}>50</option>
+            <option value="100" ${selectedItemsPerPage === 100 ? 'selected' : ''}>100</option>
+            <option value="${maquinasGlobales.length}" ${selectedItemsPerPage === maquinasGlobales.length ? 'selected' : ''}>Todos</option>
+        </select>
+        máquinas de ${maquinasGlobales.length}
+    `;
+
+    const paginationContainer = document.getElementById('paginationMaquinas');
+    const existingSelectContainer = document.getElementById('selectContainer');
+
+    // Verificar si el contenedor de paginación existe
+    if (paginationContainer) {
+        // Si ya existe un contenedor para el select, actualizamos su contenido
+        if (existingSelectContainer) {
+            existingSelectContainer.innerHTML = selectHTML;
+        } else {
+            // Si no existe, creamos un nuevo contenedor y lo insertamos
+            const selectContainer = document.createElement('div');
+            selectContainer.id = 'selectContainer';
+            selectContainer.classList.add('row', 'align-items-center', 'justify-content-center')
+            selectContainer.innerHTML = selectHTML;
+            paginationContainer.insertAdjacentHTML('beforebegin', selectContainer.outerHTML);
+        }
+    } else {
+        console.error("El contenedor de paginación no existe en el DOM.");
+    }
+};
+
 // --------------- Render Admin ----------------------------
-const renderToolsAdmin = (arrTools) => {
-    const arrayTool = arrTools,
-        green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', black = 'dark', white = 'light',
+const renderToolsAdmin = async (arrTools, page = 1, direction = 'none') => {
+    maquinasGlobales = arrTools;
+    currentPage = page;
+
+    const container = document.getElementById('mostrarMaquinas');
+    const pagination = document.getElementById('paginationMaquinas');
+    container.classList.add('transition-out', direction);
+
+    // Esperar a que termine la animación de salida
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedItems = arrTools.slice(startIndex, endIndex);
+
+    let html = '', htmlPagination = ''
+
+    const green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', black = 'dark', white = 'light',
         active = 'Activa', inactive = 'Mantenimiento', info = 'info',
         cnc = 'CNC', press = 'Prensa'
-    let textColor,
-        html
+    let textColor
     
-    if (arrTools.length>0) {
-        html = arrTools.map((element) => {
+    if (paginatedItems.length > 0) {
+        html = paginatedItems.map((element) => {
             let optionStatus = element.status ? green : red,
                 optionType,
                 showType
@@ -84,7 +199,7 @@ const renderToolsAdmin = (arrTools) => {
                 textColor = white
             }
             let showStatus = element.status ? active : inactive
-            cnc : press
+            // cnc : press
             let idChain = element._id.substring(19)
 
             if (element.visible) {
@@ -94,7 +209,7 @@ const renderToolsAdmin = (arrTools) => {
                             <td class="text-center" id="model_${element._id}">${element.model}</td>
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
                             <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
-                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageTool}' width="150px" height="150px"></td>
+                            <td class="text-center"><img class="imgLazyLoad img-fluid rounded-3 m-2 py-2" id="maquina_${element._id}" alt="Imagen Máquina" data-src="${element.imageTool}" src='${imagenLazy}' src='${element.imageTool}' width="150px" height="150px" loading="lazy"></td>
                             <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
                             <td class="text-center" id="characteristics_${element._id}">${element.characteristics}</td>
                             <td class="text-center">${element.creator[0].name}, ${element.creator[0].lastName}</td>
@@ -108,104 +223,196 @@ const renderToolsAdmin = (arrTools) => {
                                 </div>
                             </td>
                         </tr>`)
-
             }
         }).join(" ");
-        document.getElementById('mostrarMaquinas').innerHTML = html
-
-        const toolsActiveQty = []
-        for(let u=0; u<arrayTool.length; u++) {
-            arrayTool[u].visible ? toolsActiveQty.push(u) : null
-        }
-
-        const htmlToolList = 
-            ( `<caption id="capToolList">Cantidad de Máquinas: ${parseInt(toolsActiveQty.length)}</caption><br>
-            <caption id="capDeleteToolList">Cantidad de Máquinas Eliminadas: ${parseInt(arrayTool.length - toolsActiveQty.length)}</caption>`)
-
-        document.getElementById('capToolList').innerHTML = htmlToolList
-        
+        htmlPagination = generarControlesPaginacion();
+    
     } else {
         html = (`<tr>
-                    <th scope="row" class="text-center"><strong>No hay items cargados para mostrar</strong></th>
+                    <td colspan="13">
+                        <img class="img-fluid rounded-2 my-2 shadow-lg" alt="No hay items cargados para mostrar"
+                            src='../src/images/clean_table_graphic.png' width="auto" height="auto">
+                    </td>
                 </tr>`)
 
-        document.getElementById('mostrarMaquinas').innerHTML = html    
+        document.getElementById('mostrarMaquinas').innerHTML = html
     }
+
     // Ocultar el spinner y mostrar la tabla
     document.getElementById('loading-spinner').style.display = 'none';
     document.getElementById('toolTable').style.display = 'block';
 
-    // ---- mensaje confirmacion eliminar Usuario -----------
-    function messageDeleteTool(id, code, model, designation) {
+    container.innerHTML = html;
+    pagination.innerHTML = htmlPagination;
+    container.classList.remove('transition-out', 'left', 'right');
+    container.classList.add('transition-in', direction);
 
-        const htmlForm = `
-                La maquina ${designation} - Modelo: ${model} Codigo: ${code}, se eliminará completamente.<br>
-                Está seguro que desea continuar?<br>
-                <form id="formDeleteTool" action="/api/maquinas/delete/${id}" method="get">
-                    <fieldset>
-                    </fieldset>
-                </form>
-                        `
-    
-        Swal.fire({
-            title: `Eliminar Máquina <b>${designation}</b>?`,
-            position: 'center',
-            html: htmlForm,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            focusConfirm: false,
-            confirmButtonText: 'Eliminarla! <i class="fa-regular fa-trash-can"></i>',
-            cancelButtonText: 'Cancelar <i class="fa-solid fa-user-shield"></i>'
-    
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById("formDeleteTool").submit()
-                setTimeout(() => {
-                    Swal.fire(
-                        'Eliminada!',
-                        `La maquina ${designation}, ha sido eliminada exitosamente.`,
-                        'success'
-                    )
-                }, 1500)
-            } else {
-                Swal.fire(
-                    'No eliminada!',
-                    `La maquina ${designation}, no ha sido eliminada.`,
-                    'info'
-                    )
-                return false
-            }
-        })
+
+    const toolsActiveQty = []
+    for(let u=0; u<maquinasGlobales.length; u++) {
+        maquinasGlobales[u].visible ? toolsActiveQty.push(u) : null
     }
 
-    const nodeList = document.querySelectorAll('button[name="btnDeleteTool"]')
-    nodeList.forEach(function(btn){
-        if (btn.id) {
-            btn.addEventListener("click", (event) => {
-                event.preventDefault()
-                const idTool = btn.id,
-                    designation = document.getElementById(`designation_${idTool}`).innerText,
-                    code = document.getElementById(`codigo_${idTool}`).innerText,
-                    model = document.getElementById(`modelo_${idTool}`).innerText
+    const htmlToolList = 
+        ( `<caption id="capToolList">Cantidad de Máquinas: ${parseInt(toolsActiveQty.length)}</caption><br>
+        <caption id="capDeleteToolList">Cantidad de Máquinas Eliminadas: ${parseInt(maquinasGlobales.length - toolsActiveQty.length)}</caption>`)
 
-                idTool && designation && code && model ? messageDeleteTool(idTool, code, model, designation) : null
-            })
+    document.getElementById('capToolList').innerHTML = htmlToolList
+
+    // Remover clases de animación después de completar
+    setTimeout(() => {
+        container.classList.remove('transition-in', direction);
+    }, 500);
+
+    //------------- LazyLoad Images ------------------
+    const lazyImages = document.querySelectorAll("img[data-src]");
+    if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries, observer) => {
+            setTimeout(() => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src; // Sustituye data-src por src
+                        img.onload = () => img.classList.add("loaded");
+                        img.removeAttribute("data-src"); // Limpia el atributo
+                        observer.unobserve(img); // Deja de observar esta imagen
+                    }
+                });
+            }, 1000);
+        });
+        lazyImages.forEach(img => observer.observe(img));
+        
+    } else {
+        // Fallback para navegadores sin IntersectionObserver
+        lazyImages.forEach(img => {
+            img.src = img.dataset.src;
+        });
+    }
+
+    // Llamar a la función para agregar el select después de renderizar la tabla
+    agregarSelectItemsPorPagina();
+};
+
+
+// Función para generar los controles de paginación
+const generarControlesPaginacionUser = () => {
+    const totalPages = Math.ceil(maquinasGlobales.length / itemsPerPage);
+    let paginationHTML = `<div class="pagination-anchor">
+                            <div class="pagination-container justify-content-center">`;
+    
+    // Botón Anterior
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderToolsUser(maquinasGlobales, ${currentPage - 1}, 'right')">
+            &laquo; Anterior
+        </button>`;
+
+    // Primeros números
+    if (currentPage > maxVisiblePages + 1) {
+        paginationHTML += `
+            <button class="pagination-btn" onclick="renderToolsUser(maquinasGlobales, 1)">1</button>
+            <span class="pagination-ellipsis">...</span>`;
+    }
+
+    // Números centrales
+    const start = Math.max(1, currentPage - maxVisiblePages);
+    const end = Math.min(totalPages, currentPage + maxVisiblePages);
+    
+    for (let i = start; i <= end; i++) {
+        paginationHTML += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                onclick="renderToolsUser(maquinasGlobales, ${i})">
+                ${i}
+            </button>`;
+    }
+
+    // Últimos números
+    if (currentPage < totalPages - maxVisiblePages) {
+        paginationHTML += `
+            <span class="pagination-ellipsis">...</span>
+            <button class="pagination-btn" onclick="renderToolsUser(maquinasGlobales, ${totalPages})">${totalPages}</button>`;
+    }
+
+    // Botón Siguiente
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderToolsUser(maquinasGlobales, ${currentPage + 1}, 'left')">
+            Siguiente &raquo;
+        </button>`;
+
+    paginationHTML += '</div>';
+    return paginationHTML;
+};
+
+
+const cambiarItemsPorPaginaUser = (nuevoItemsPerPage) => {
+    selectedItemsPerPage = nuevoItemsPerPage; // Guardar la selección del usuario
+    itemsPerPage = nuevoItemsPerPage;
+    currentPage = 1; // Reiniciar a la primera página
+    renderToolsUser(maquinasGlobales);
+};
+
+const agregarSelectItemsPorPaginaUser = () => {
+    // Crear el HTML del select y la leyenda
+    let selectHTML = `
+        Mostrando 
+        <select class="form-select small w-auto mx-2" id="itemsPerPageSelect" onchange="cambiarItemsPorPaginaUser(parseInt(this.value))">
+            <option value="10" ${selectedItemsPerPage === 10 ? 'selected' : ''}>10</option>
+            <option value="25" ${selectedItemsPerPage === 25 ? 'selected' : ''}>25</option>
+            <option value="50" ${selectedItemsPerPage === 50 ? 'selected' : ''}>50</option>
+            <option value="100" ${selectedItemsPerPage === 100 ? 'selected' : ''}>100</option>
+            <option value="${maquinasGlobales.length}" ${selectedItemsPerPage === maquinasGlobales.length ? 'selected' : ''}>Todos</option>
+        </select>
+        máquinas de ${clientesGlobales.length}
+    `;
+
+    const paginationContainer = document.getElementById('paginationMaquinas');
+    const existingSelectContainer = document.getElementById('selectContainer');
+
+    // Verificar si el contenedor de paginación existe
+    if (paginationContainer) {
+        // Si ya existe un contenedor para el select, actualizamos su contenido
+        if (existingSelectContainer) {
+            existingSelectContainer.innerHTML = selectHTML;
+        } else {
+            // Si no existe, creamos un nuevo contenedor y lo insertamos
+            const selectContainer = document.createElement('div');
+            selectContainer.id = 'selectContainer';
+            selectContainer.classList.add('row', 'align-items-center', 'justify-content-center')
+            selectContainer.innerHTML = selectHTML;
+            paginationContainer.insertAdjacentHTML('beforebegin', selectContainer.outerHTML);
         }
-    })
-}
+    } else {
+        console.error("El contenedor de paginación no existe en el DOM.");
+    }
+};
+
 
 //----------------------- Render User -------------------------------
-const renderToolsUser = (arrTools) => {
-    const arrayTool = arrTools,
-        green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', black = 'dark', white = 'light',
-        active = 'Activa', inactive = 'Mantenimiento', info = 'info', cnc = 'CNC', press = 'Prensa'
-    let textColor,
-        html
+const renderToolsUser = async (arrTools, page = 1, direction = 'none') => {
+    maquinasGlobales = arrTools;
+    currentPage = page;
 
-    if (arrTools.length>0) {
-        html = arrTools.map((element) => {
+    const container = document.getElementById('mostrarMaquinas');
+    const pagination = document.getElementById('paginationMaquinas');
+    container.classList.add('transition-out', direction);
+
+    // Esperar a que termine la animación de salida
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedItems = arrTools.slice(startIndex, endIndex);
+
+    let html = '', htmlPagination = ''
+
+    const green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', black = 'dark', white = 'light',
+        active = 'Activa', inactive = 'Mantenimiento', info = 'info',
+        cnc = 'CNC', press = 'Prensa'
+    let textColor
+    
+    if (paginatedItems.length > 0) {
+        html = paginatedItems.map((element) => {
             let optionStatus = element.status ? green : red,
                 optionType,
                 showType
@@ -223,17 +430,17 @@ const renderToolsUser = (arrTools) => {
                 textColor = white
             }
             let showStatus = element.status ? active : inactive
-            cnc : press
+            // cnc : press
             let idChain = element._id.substring(19)
 
             if (element.visible) {
                 return (`<tr>
                             <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
                             <td class="text-center" id="codigo_${element._id}">${element.code}</td>
-                            <td class="text-center" id="modelo_${element._id}">${element.model}</td>
+                            <td class="text-center" id="model_${element._id}">${element.model}</td>
                             <td class="text-center" id="tipo_${element._id}"><span class="badge bg-${optionType} text-${textColor}"> ${showType} </span></td>
                             <td class="text-center" id="designation_${element._id}"><strong>${element.designation}</strong></td>
-                            <td class="text-center"><img class="img-fluid rounded-3 py-2" alt="Imagen" src='${element.imageTool}' width="150px" height="150px"></td>
+                            <td class="text-center"><img class="imgLazyLoad img-fluid rounded-3 m-2 py-2" id="maquina_${element._id}" alt="Imagen Máquina" data-src="${element.imageTool}" src='${imagenLazy}' src='${element.imageTool}' width="150px" height="150px" loading="lazy"></td>
                             <td class="text-center"><span class="badge rounded-pill bg-${optionStatus}"> ${showStatus} </span></td>
                             <td class="text-center" id="characteristics_${element._id}">${element.characteristics}</td>
                             <td class="text-center">${element.creator[0].name}, ${element.creator[0].lastName}</td>
@@ -241,104 +448,89 @@ const renderToolsUser = (arrTools) => {
                             <td class="text-center">${element.modificator[0].name} ${element.modificator[0].lastName}</td>
                             <td class="text-center">${element.modifiedOn}</td>
                             <td class="text-center">
-                                <div class="d-blck align-items-center text-center mx-1">
+                                <div class="d-block align-items-center text-center">
                                     <a href="/api/maquinas/${element._id}" class="btn btn-primary btn-sm me-1" title="Editar Máquina ${element.designation}"><i class="fa-solid fa-gears"></i></a>
-                                    <button type="button" class="btn btn-danger btn-sm ms-1 disabled" title="Solo Admin puede modificar esto"><i class="fa-solid fa-info-circle"></i></button>
+                                    <button type="button" class="btn btn-danger btn-sm ms-1 disabled" title="Solo Admin puede modificar esto"><i class="fa-regular fa-info-circle"></i></button>
                                 </div>
                             </td>
                         </tr>`)
-
             }
         }).join(" ");
-        document.getElementById('mostrarMaquinas').innerHTML = html
-
-        const toolsActiveQty = []
-        for(let u=0; u<arrayTool.length; u++) {
-            arrayTool[u].visible ? toolsActiveQty.push(u) : null
-        }
-
-        const htmlToolList = 
-            ( `<caption id="capToolList">Cantidad de Máquinas: ${parseInt(toolsActiveQty.length)}</caption><br>
-            <caption id="capDeleteToolList">Cantidad de Máquinas Eliminadas: ${parseInt(arrayTool.length - toolsActiveQty.length)}</caption>`)
-
-        document.getElementById('capToolList').innerHTML = htmlToolList
-        
+        htmlPagination = generarControlesPaginacion();
+    
     } else {
         html = (`<tr>
-                    <th scope="row" class="text-center"><strong>No hay items cargados para mostrar</strong></th>
+                    <td colspan="13">
+                        <img class="img-fluid rounded-2 my-2 shadow-lg" alt="No hay items cargados para mostrar"
+                            src='../src/images/clean_table_graphic.png' width="auto" height="auto">
+                    </td>
                 </tr>`)
 
-        document.getElementById('mostrarMaquinas').innerHTML = html    
+        document.getElementById('mostrarMaquinas').innerHTML = html
     }
+
     // Ocultar el spinner y mostrar la tabla
     document.getElementById('loading-spinner').style.display = 'none';
     document.getElementById('toolTable').style.display = 'block';
 
-    // ---- mensaje confirmacion eliminar maquina -----------
-    function messageDeleteTool(id, code, designation) {
+    container.innerHTML = html;
+    pagination.innerHTML = htmlPagination;
+    container.classList.remove('transition-out', 'left', 'right');
+    container.classList.add('transition-in', direction);
 
-        const htmlForm = `La maquina ${designation} - Codigo: ${code}, se eliminará completamente.<br>
-                            Está seguro que desea continuar?<br>
-                            <form id="formDeleteTool" action="/api/maquinas/delete/${id}" method="get">
-                                <fieldset></fieldset>
-                            </form>`
-    
-        Swal.fire({
-            title: `Eliminar Máquina <b>${designation}</b>?`,
-            position: 'center',
-            html: htmlForm,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            focusConfirm: false,
-            confirmButtonText: 'Eliminarla! <i class="fa-regular fa-trash-can"></i>',
-            cancelButtonText: 'Cancelar <i class="fa-solid fa-user-shield"></i>'
-    
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById("formDeleteTool").submit()
-                setTimeout(() => {
-                    Swal.fire(
-                        'Eliminada!',
-                        `La maquina ${designation}, ha sido eliminada exitosamente.`,
-                        'success'
-                    )
-                }, 1500)
 
-            } else {
-                Swal.fire(
-                    'No eliminada!',
-                    `La maquina ${designation}, no ha sido eliminada.`,
-                    'info'
-                    )
-                return false
-            }
-        })
+    const toolsActiveQty = []
+    for(let u=0; u<maquinasGlobales.length; u++) {
+        maquinasGlobales[u].visible ? toolsActiveQty.push(u) : null
     }
 
-    const nodeList = document.querySelectorAll('button[name="btnDeleteTool"]')
-    nodeList.forEach(function(btn){
-        if (btn.id) {
-            btn.addEventListener("click", (event) => {
-                event.preventDefault()
-                const idTool = btn.id
-                const designation = document.getElementById(`designation_${idTool}`).innerText
-                const code = document.getElementById(`codigo_${idTool}`).innerText
+    const htmlToolList = 
+        ( `<caption id="capToolList">Cantidad de Máquinas: ${parseInt(toolsActiveQty.length)}</caption><br>
+        <caption id="capDeleteToolList">Cantidad de Máquinas Eliminadas: ${parseInt(maquinasGlobales.length - toolsActiveQty.length)}</caption>`)
 
-                idTool && designation && code ? messageDeleteTool(idTool, designation, code) : null
-            })
-        }
-    })
-}
+    document.getElementById('capToolList').innerHTML = htmlToolList
+
+    // Remover clases de animación después de completar
+    setTimeout(() => {
+        container.classList.remove('transition-in', direction);
+    }, 500);
+
+    //------------- LazyLoad Images ------------------
+    const lazyImages = document.querySelectorAll("img[data-src]");
+    if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries, observer) => {
+            setTimeout(() => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src; // Sustituye data-src por src
+                        img.onload = () => img.classList.add("loaded");
+                        img.removeAttribute("data-src"); // Limpia el atributo
+                        observer.unobserve(img); // Deja de observar esta imagen
+                    }
+                });
+            }, 1000);
+        });
+        lazyImages.forEach(img => observer.observe(img));
+        
+    } else {
+        // Fallback para navegadores sin IntersectionObserver
+        lazyImages.forEach(img => {
+            img.src = img.dataset.src;
+        });
+    }
+
+    // Llamar a la función para agregar el select después de renderizar la tabla
+    agregarSelectItemsPorPagina();
+};
 
 // ----------- Image Tool Image behavior ---------------
-const dropAreaImageTool = document.getElementById('drop-areaImageTool')
-const fileInputImageTool = document.getElementById('fileInputImageTool')
-const fileImputTextImageTool = document.getElementById('fileInputTextImageTool')
-const removeImageButtonImageTool = document.getElementById('removeImageTool')
-const alertImageTool = document.getElementById('alertImageTool')
-const alertSizeImageTool = document.getElementById('alertSizeImageTool')
+const dropAreaImageTool = document.getElementById('drop-areaImageTool'),
+    fileInputImageTool = document.getElementById('fileInputImageTool'),
+    fileImputTextImageTool = document.getElementById('fileInputTextImageTool'),
+    removeImageButtonImageTool = document.getElementById('removeImageTool'),
+    alertImageTool = document.getElementById('alertImageTool'),
+    alertSizeImageTool = document.getElementById('alertSizeImageTool')
 
 Object.assign(dropAreaImageTool.style, {
     width: "300px",
@@ -464,7 +656,7 @@ removeImageButtonImageTool.addEventListener('click', (e)=> {
     e.stopPropagation()
 })
 
-
+// ----------- Nueva Maquina ---------------------
 function messageNewTool(designation, code, type) {
     if (designation, code, type) {
         Swal.fire({
@@ -563,7 +755,67 @@ if (btnResetFormNewTool) {
     })
 }
 
-var inputsDeTexto = document.querySelectorAll('input[type="text"]')
+// ---- mensaje confirmacion eliminar Maquina -----------
+function messageDeleteTool(id, code, model, designation) {
+
+    const htmlForm = `
+            La maquina ${designation} - Modelo: ${model} Codigo: ${code}, se eliminará completamente.<br>
+            Está seguro que desea continuar?<br>
+            <form id="formDeleteTool" action="/api/maquinas/delete/${id}" method="get">
+                <fieldset>
+                </fieldset>
+            </form>
+                    `
+
+    Swal.fire({
+        title: `Eliminar Máquina <b>${designation}</b>?`,
+        position: 'center',
+        html: htmlForm,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        focusConfirm: false,
+        confirmButtonText: 'Eliminarla! <i class="fa-regular fa-trash-can"></i>',
+        cancelButtonText: 'Cancelar <i class="fa-solid fa-user-shield"></i>'
+
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById("formDeleteTool").submit()
+            setTimeout(() => {
+                Swal.fire(
+                    'Eliminada!',
+                    `La maquina ${designation}, ha sido eliminada exitosamente.`,
+                    'success'
+                )
+            }, 1500)
+        } else {
+            Swal.fire(
+                'No eliminada!',
+                `La maquina ${designation}, no ha sido eliminada.`,
+                'info'
+                )
+            return false
+        }
+    })
+}
+
+const nodeList = document.querySelectorAll('button[name="btnDeleteTool"]')
+nodeList.forEach(function(btn){
+    if (btn.id) {
+        btn.addEventListener("click", (event) => {
+            event.preventDefault()
+            const idTool = btn.id,
+                designation = document.getElementById(`designation_${idTool}`).innerText,
+                code = document.getElementById(`codigo_${idTool}`).innerText,
+                model = document.getElementById(`modelo_${idTool}`).innerText
+
+            idTool && designation && code && model ? messageDeleteTool(idTool, code, model, designation) : null
+        })
+    }
+})
+
+let inputsDeTexto = document.querySelectorAll('input[type="text"]')
     // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
         input.addEventListener('keydown', function(event) {
@@ -594,7 +846,7 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
         });
     })
 
-var inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
+let inpuntDeNumeros = document.querySelectorAll('input[type="number"]')
     inpuntDeNumeros.forEach(function(input) {
         input.addEventListener('input', function(event) {
             // Obtener el valor actual del input

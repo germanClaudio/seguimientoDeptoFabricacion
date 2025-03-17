@@ -54,6 +54,22 @@
                     <span class="d-none d-lg-inline">WebChat</span>
                 </a>
             </li>
+            <li class="nav-item my-1">
+                <a class="nav-link position-relative" title="Pedidos" href="/api/ordenes/allOrdersByUserId">
+                    <i class="icon-bubbles" aria-hidden="true"></i>
+                    <span class="d-none d-lg-inline">Pedidos</span>
+                    <% let cantOrdenesPreparadas=0
+                        for (let i=0; ordenes.length>i; i++) {
+                            ordenes[i].visible && ordenes[i].prepared ? cantOrdenesPreparadas++ : null
+                        }
+                        if(parseInt(cantOrdenesPreparadas)>0) { %>
+                        <span title="Pedidos Preparados"
+                            class="badge rounded-pill bg-danger text-light position-absolute top-0 start-100 translate-start">
+                            <%= parseInt(cantOrdenesPreparadas) %>
+                        </span>
+                    <% } %>
+                </a>
+            </li>
         </ul>
         <hr class="mb-2" style="margin: 0; color: rgb(0, 0, 0);">
         <div class="container text-center align-items-lg-start align-items-sm-center">

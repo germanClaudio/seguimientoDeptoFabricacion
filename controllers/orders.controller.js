@@ -2,10 +2,12 @@ const CartsService = require("../services/carts.service.js"),
     OrdersService = require("../services/orders.service.js"),
     UserService = require("../services/users.service.js"),
     ConsumiblesService = require("../services/consumibles.service.js"),
+
     cookie = require('../utils/cookie.js'),
     data = require('../utils/variablesInicializator.js'),
     csrf = require('csrf'),
     csrfTokens = csrf(),
+
     { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty } = require('../utils/generateUsers.js'),
     { catchError400_3, catchError400_5, catchError400_6, catchError400_1, catchError401_3, catchError500 } = require('../utils/catchErrors.js');
     
@@ -224,6 +226,7 @@ class OrdersController {
             const screen = handler.screen;
             const ordenes = await handler.getOrders();
             !ordenes ? catchError400_5(req, res, next) : null
+            
             const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);

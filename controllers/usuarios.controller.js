@@ -65,6 +65,9 @@ class UsersController {
             const usuario = await this.users.getUserByUsername(username)
             !usuario ? catchError401_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -73,6 +76,7 @@ class UsersController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 data,
                 csrfToken
@@ -93,6 +97,9 @@ class UsersController {
             const usuario = await this.users.getUserById(id)
             !usuario ? catchError401_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -101,6 +108,7 @@ class UsersController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 data,
                 csrfToken
@@ -120,6 +128,9 @@ class UsersController {
             const usuario = await this.users.getUserByUsername(username)
             !usuario ? catchError401_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -128,6 +139,7 @@ class UsersController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 data,
                 csrfToken
@@ -217,6 +229,9 @@ class UsersController {
                     const usuarioLog = await this.users.getUserByUsername(username);
                     !usuarioLog ? catchError401_3(req, res, next) : null
 
+                    const ordenes = await this.orders.getAllOrders()
+                    !ordenes ? catchError400_5(req, res, next) : null
+
                     const userCart = await this.carts.getCartByUserId(usuario._id)
 
                     const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -225,6 +240,7 @@ class UsersController {
                         username,
                         userInfo,
                         userCart,
+                        ordenes,
                         expires,
                         data,
                         csrfToken
@@ -344,6 +360,9 @@ class UsersController {
                         const usuario = await this.users.updateUser(id, updatedUser, dataUserModificatorNotEmpty(userLogged))
                         !usuario ? catchError400_3(req, res, next) : null
 
+                        const ordenes = await this.orders.getAllOrders()
+                        !ordenes ? catchError400_5(req, res, next) : null
+
                         const userCart = await this.carts.getCartByUserId(usuario._id)
                                 
                         const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -352,6 +371,7 @@ class UsersController {
                             username,
                             userInfo,
                             userCart,
+                            ordenes,
                             expires,
                             data,
                             csrfToken
@@ -405,6 +425,9 @@ class UsersController {
                         const usuario = await this.users.updateUserPreferences(id, updatedUser, dataUserModificatorNotEmpty(userLogged))
                         !usuario ? catchError401_3(req, res, next) : null
 
+                        const ordenes = await this.orders.getAllOrders()
+                        !ordenes ? catchError400_5(req, res, next) : null
+
                         const userCart = await this.carts.getCartByUserId(usuario._id)
                         
                         const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -413,6 +436,7 @@ class UsersController {
                             username,
                             userInfo,
                             userCart,
+                            ordenes,
                             expires,
                             data,
                             csrfToken
@@ -439,6 +463,9 @@ class UsersController {
             let usuario = await this.users.getUserById(userId)
             !usuario ? catchError401_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -447,6 +474,7 @@ class UsersController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 data,
                 csrfToken
@@ -485,6 +513,9 @@ class UsersController {
             const usuario = await this.users.deleteUserById(id, dataUserModificatorNotEmpty(userLogged))
             !usuario ? catchError401_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -493,6 +524,7 @@ class UsersController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 data,
                 csrfToken
@@ -926,6 +958,9 @@ class UsersController {
                 req.session.admin = true
                 req.session.username = userInfo.username
 
+                const ordenes = await this.orders.getAllOrders()
+                !ordenes ? catchError400_5(req, res, next) : null
+
                 const userCart = await this.carts.getCartByUserId(user._id)
 
                 const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -933,6 +968,7 @@ class UsersController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     data,
                     csrfToken

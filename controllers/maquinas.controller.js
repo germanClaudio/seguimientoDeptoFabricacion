@@ -1,6 +1,7 @@
 const UserService = require("../services/users.service.js"),
     ToolService = require("../services/tools.service.js"),
     CartsService = require("../services/carts.service.js"),
+    OrdersService = require("../services/orders.service.js"),
 
     csrf = require('csrf'),
     csrfTokens = csrf(),
@@ -28,6 +29,7 @@ class ToolsController {
         this.users = new UserService()
         this.tools = new ToolService()
         this.carts = new CartsService()
+        this.orders = new OrdersService()
     }
 
     getAllTools = async (req, res, next) => {
@@ -42,6 +44,9 @@ class ToolsController {
             const maquinas = await this.tools.getAllTools()
             !maquinas ? catchError400_5(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+                        !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -49,6 +54,7 @@ class ToolsController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 maquinas,
                 data,
@@ -73,6 +79,9 @@ class ToolsController {
             const maquina = await this.tools.getToolById(id)           
             !maquina ? catchError401_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -80,6 +89,7 @@ class ToolsController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 maquina,
                 data,
@@ -103,6 +113,9 @@ class ToolsController {
             const maquina = await this.tools.getToolByToolname(designation)
             !maquina ? catchError401_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -111,6 +124,7 @@ class ToolsController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 data,
                 csrfToken
@@ -171,6 +185,9 @@ class ToolsController {
                     const usuarioLog = await this.users.getUserByUsername(username);
                     !usuarioLog.visible ? catchError401_3(req, res, next) : null
 
+                    const ordenes = await this.orders.getAllOrders()
+                    !ordenes ? catchError400_5(req, res, next) : null
+
                     const userCart = await this.carts.getCartByUserId(userId)
 
                     const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -178,6 +195,7 @@ class ToolsController {
                         username,
                         userInfo,
                         userCart,
+                        ordenes,
                         expires,
                         data,
                         csrfToken,
@@ -264,6 +282,9 @@ class ToolsController {
                 const maquina = await this.tools.updateTool(toolId, updatedTool, dataUserModificatorNotEmpty(userLogged))
                 !maquina ? catchError400_3(req, res, next) : null
 
+                const ordenes = await this.orders.getAllOrders()
+                !ordenes ? catchError400_5(req, res, next) : null
+
                 const userCart = await this.carts.getCartByUserId(userLogged._id)
                         
                 const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -271,6 +292,7 @@ class ToolsController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     maquina,
                     data,
@@ -311,6 +333,9 @@ class ToolsController {
             const maquina = await this.tools.deleteToolById(id, dataUserModificatorNotEmpty(userLogged))
             !maquina ? catchError401_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -318,6 +343,7 @@ class ToolsController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 maquina,
                 data,

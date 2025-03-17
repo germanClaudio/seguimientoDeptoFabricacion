@@ -1,6 +1,7 @@
 const MessagesService = require("../services/messages.service.js"),
     UserService = require("../services/users.service.js"),
     CartsService = require("../services/carts.service.js"),
+    OrdersService = require("../services/orders.service.js"),
 
     csrf = require('csrf'),
     csrfTokens = csrf(),
@@ -15,6 +16,7 @@ let data = require('../utils/variablesInicializator.js'),
     formatDate = require('../utils/formatDate.js')
 
 const {catchError400_3,
+        catchError400_5,
         catchError401_3,
         catchError403,
         catchError500
@@ -26,6 +28,7 @@ class MessagesController {
         this.users = new UserService()
         this.messages = new MessagesService()
         this.carts = new CartsService()
+        this.orders = new OrdersService()
     }
 
     getAllMessages = async (req, res) => {
@@ -40,6 +43,9 @@ class MessagesController {
             const mensajes = await this.messages.getAllMessages()
             !mensajes ? catchError400_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userLogged._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -48,6 +54,7 @@ class MessagesController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 data,
                 csrfToken
@@ -71,6 +78,9 @@ class MessagesController {
             const mensaje = await this.messages.getMessageById(id)
             !mensaje ? catchError400_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -78,6 +88,7 @@ class MessagesController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 mensaje,
                 data,
@@ -114,6 +125,9 @@ class MessagesController {
             const mensaje = await this.messages.createNewMessage(messageStructure)
             !mensaje ? catchError400_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userLogged._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -121,6 +135,7 @@ class MessagesController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 mensaje,
                 data,
@@ -145,6 +160,9 @@ class MessagesController {
             const messageDeleted = await this.messages.deleteMessageById(id)
             !messageDeleted ? catchError400_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userLogged._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -153,6 +171,7 @@ class MessagesController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 data,
                 csrfToken
@@ -175,6 +194,9 @@ class MessagesController {
             let messagesDeleted = await this.messages.deleteAllMessages()
             !messagesDeleted ? catchError400_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userLogged._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -183,6 +205,7 @@ class MessagesController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 data,
                 csrfToken

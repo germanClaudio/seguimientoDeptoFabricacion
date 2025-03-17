@@ -97,8 +97,8 @@
     </div>
 </nav>
 <% if (userInfo.admin && userInfo.area === 'fabricacion') { %>
-    <%- include('../../partials/sidebar/sidebarToolShopAdmin'); %>
+    <%- include('../../partials/sidebar/sidebarToolShopAdmin', { ordenes: ordenes }); %>
 
 <% } else { %>
-    <%- include('../../partials/sidebar/sidebarToolShopUser'); %>
+    <%- include('../../partials/sidebar/sidebarToolShopUser', { ordenes: ordenes }); %>
 <% } %>

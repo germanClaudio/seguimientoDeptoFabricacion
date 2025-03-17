@@ -4,6 +4,7 @@ const ProyectosService = require("../services/projects.service.js"),
     ProgramasService = require("../services/programms.service.js"),
     ToolService = require("../services/tools.service.js"),
     CartsService = require("../services/carts.service.js"),
+    OrdersService = require("../services/orders.service.js"),
     
     { uploadToGCS, uploadToGCSingleFile } = require("../utils/uploadFilesToGSC.js"),
     { uploadMulterMultiImages, uploadMulterSingleImageProject, uploadMulterSingleImageOci } = require("../utils/uploadMulter.js"),
@@ -21,7 +22,7 @@ let formatDate = require('../utils/formatDate.js'),
     data = require('../utils/variablesInicializator.js')
 
 
-const { catchError400, catchError400_1, catchError400_2, catchError400_3, catchError400_4,
+const { catchError400, catchError400_1, catchError400_2, catchError400_3, catchError400_4, catchError400_5,
     catchError401, catchError401_1, catchError401_2, catchError401_3, catchError401_4,
     catchError403, catchError500 } = require('../utils/catchErrors.js')
 
@@ -33,6 +34,7 @@ class ProgramationController {
         this.programms = new ProgramasService()
         this.tools = new ToolService()
         this.carts = new CartsService()
+        this.orders = new OrdersService()
     }
 
     getAllProjectsWon = async (req, res, next) => {
@@ -50,6 +52,9 @@ class ProgramationController {
             const proyectos = await this.programms.getAllProjectsWon()
             !proyectos ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -59,6 +64,7 @@ class ProgramationController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 data,
                 csrfToken
@@ -85,6 +91,9 @@ class ProgramationController {
             const proyectos = await this.projects.getProjectsByClientId(id)
             !proyectos ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -93,6 +102,7 @@ class ProgramationController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 cliente,
                 data,
@@ -117,6 +127,9 @@ class ProgramationController {
             const proyectos = await this.projects.getProjectsByClientId(id)
             !proyectos ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -125,6 +138,7 @@ class ProgramationController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 cliente,
                 csrfToken
@@ -149,6 +163,9 @@ class ProgramationController {
             const cliente = await this.clients.getClientByProjectId(idCliente)
             !cliente ? catchError401(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -158,6 +175,7 @@ class ProgramationController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     data,
@@ -185,6 +203,9 @@ class ProgramationController {
             const proyectos = await this.projects.getAllOciProjects()
             !proyectos ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -192,6 +213,7 @@ class ProgramationController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 proyectos,
                 clientes,
                 expires,
@@ -324,6 +346,9 @@ class ProgramationController {
             const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             proyecto ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -332,6 +357,7 @@ class ProgramationController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 cliente,
                 data,
@@ -390,6 +416,9 @@ class ProgramationController {
             const proyecto = await this.projects.selectProjectsByMainProjectId(id)
             !proyecto ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);    
@@ -398,6 +427,7 @@ class ProgramationController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 cliente,
                 data,
@@ -468,6 +498,9 @@ class ProgramationController {
             const proyecto = await this.projects.selectProjectsByMainProjectId(id)
             !proyecto ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -476,6 +509,7 @@ class ProgramationController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 cliente,
                 data,
@@ -532,6 +566,9 @@ class ProgramationController {
             const proyecto = await this.projects.selectProjectsByMainProjectId(id)
             !proyecto ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);    
@@ -539,6 +576,7 @@ class ProgramationController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 cliente,
                 proyecto,
@@ -652,6 +690,9 @@ class ProgramationController {
             const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -660,6 +701,7 @@ class ProgramationController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 cliente,
                 data,
@@ -765,6 +807,9 @@ class ProgramationController {
             const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -773,6 +818,7 @@ class ProgramationController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 cliente,
                 data,
@@ -839,6 +885,9 @@ class ProgramationController {
             const proyecto = await this.projects.selectProjectsByMainProjectId(id)
             !proyecto ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -847,6 +896,7 @@ class ProgramationController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 cliente,
                 data,
@@ -909,6 +959,9 @@ class ProgramationController {
             const proyecto = await this.projects.selectProjectsByMainProjectId(id)
             !proyecto ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -917,6 +970,7 @@ class ProgramationController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 cliente,
                 data,
@@ -977,6 +1031,9 @@ class ProgramationController {
             const proyecto = await this.projects.selectProjectsByMainProjectId(id)
             !proyecto ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -985,6 +1042,7 @@ class ProgramationController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 cliente,
                 data,
@@ -1099,6 +1157,9 @@ class ProgramationController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_1(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 0
@@ -1109,6 +1170,7 @@ class ProgramationController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     data,
@@ -1247,6 +1309,9 @@ class ProgramationController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_1(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
 
             data.slide = 1
@@ -1257,6 +1322,7 @@ class ProgramationController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     data,
@@ -1388,6 +1454,9 @@ class ProgramationController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_1(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
 
             data.slide = 2
@@ -1398,6 +1467,7 @@ class ProgramationController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     data,
@@ -1536,6 +1606,9 @@ class ProgramationController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_1(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
 
             data.slide = 3
@@ -1546,6 +1619,7 @@ class ProgramationController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     data,
@@ -1659,7 +1733,7 @@ class ProgramationController {
                 }
                 arrayInfoAddedToDetail.push(infoAddedToOt)
             }
-            console.log('arrayInfoAddedToDetail-controller', arrayInfoAddedToDetail)
+            //console.log('arrayInfoAddedToDetail-controller', arrayInfoAddedToDetail)
 
             const itemUpdated = await this.programms.addInfoMecanizadoSegunda(
                 projectId,
@@ -1676,6 +1750,9 @@ class ProgramationController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_1(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
 
             data.slide = 4
@@ -1686,6 +1763,7 @@ class ProgramationController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     data,

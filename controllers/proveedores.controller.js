@@ -1,6 +1,7 @@
 const UserService = require("../services/users.service.js"),
     SupplierService = require("../services/suppliers.service.js"),
     CartsService = require("../services/carts.service.js"),
+    OrdersService = require("../services/orders.service.js"),
 
     csrf = require('csrf'),
     csrfTokens = csrf(),
@@ -28,6 +29,7 @@ class SuppliersController {
         this.users = new UserService()
         this.suppliers = new SupplierService()
         this.carts = new CartsService()
+        this.orders = new OrdersService()
     }
 
     getAllSuppliers = async (req, res, next) => {
@@ -42,6 +44,9 @@ class SuppliersController {
             const proveedores = await this.suppliers.getAllSuppliers()
             !proveedores ? catchError400_5(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -49,6 +54,7 @@ class SuppliersController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 proveedores,
                 data,
@@ -73,6 +79,9 @@ class SuppliersController {
             const proveedor = await this.suppliers.getSupplierById(id)           
             !proveedor ? catchError401_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -80,6 +89,7 @@ class SuppliersController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 proveedor,
                 data,
@@ -104,6 +114,9 @@ class SuppliersController {
             const proveedor = await this.suppliers.getSupplierBySuppliername(designation)
             !proveedor ? catchError401_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -112,6 +125,7 @@ class SuppliersController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 data,
                 csrfToken
@@ -170,6 +184,9 @@ class SuppliersController {
                     const usuarioLog = await this.users.getUserByUsername(username);
                     !usuarioLog.visible ? catchError401_3(req, res, next) : null
 
+                    const ordenes = await this.orders.getAllOrders()
+                    !ordenes ? catchError400_5(req, res, next) : null
+
                     const userCart = await this.carts.getCartByUserId(userId)
 
                     const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -177,6 +194,7 @@ class SuppliersController {
                         username,
                         userInfo,
                         userCart,
+                        ordenes,
                         expires,
                         data,
                         csrfToken,
@@ -255,6 +273,9 @@ class SuppliersController {
                 const proveedor = await this.suppliers.updateSupplier(supplierId, updatedSupplier, dataUserModificatorNotEmpty(userLogged))
                 !proveedor ? catchError400_3(req, res, next) : null
 
+                const ordenes = await this.orders.getAllOrders()
+                !ordenes ? catchError400_5(req, res, next) : null
+
                 const userCart = await this.carts.getCartByUserId(userLogged._id)
                         
                 const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -262,6 +283,7 @@ class SuppliersController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     proveedor,
                     data,
@@ -302,6 +324,9 @@ class SuppliersController {
             const proveedor = await this.suppliers.deleteSupplierById(id, dataUserModificatorNotEmpty(userLogged))
             !proveedor ? catchError401_3(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -309,6 +334,7 @@ class SuppliersController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 proveedor,
                 data,

@@ -17,7 +17,9 @@
     <div class="container" style="padding-top: 70px;"></div>
     <br>
     <div class="collapse" id="collapseExample">
-        <%- include('../partials/forms/formularioConsumibles'); %>
+        <% if (userInfo.admin) { %>
+            <%- include('../partials/forms/formularioConsumibles'); %>
+        <% } %>
     </div>
     <br>
 
@@ -34,6 +36,8 @@
     
     <div class="d-block mx-auto px-5 mb-5 text-center w-100">
         <%- include('../partials/data/dataConsumiblesTable'); %>
+        <!-- Contenedor de paginación -->
+        <div id="paginationConsumibles"></div>
     </div>
     <br>
     <%- include('../partials/btnFooterBottom/btnFooterBottom-goUp'); %>

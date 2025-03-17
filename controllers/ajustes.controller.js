@@ -5,6 +5,7 @@ const ProyectosService = require("../services/projects.service.js"),
     AjustesService = require("../services/ajustes.service.js"),
     ToolService = require("../services/tools.service.js"),
     CartsService = require("../services/carts.service.js"),
+    OrdersService = require("../services/orders.service.js"),
 
     csrf = require('csrf'),
     csrfTokens = csrf(),
@@ -21,6 +22,7 @@ const {catchError400,
     catchError400_2,
     catchError400_3,
     catchError400_4,
+    catchError400_5,
     catchError403,
     catchError401,
     catchError401_1,
@@ -39,6 +41,7 @@ class AjustesController {
         this.ajustes = new AjustesService()
         this.tools = new ToolService()
         this.carts = new CartsService()
+        this.orders = new OrdersService()
     }
 
     getAllProjectsWon = async (req, res, next) => {
@@ -53,6 +56,9 @@ class AjustesController {
             const proyectos = await this.ajustes.getAllProjectsWon()
             !proyectos ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -62,6 +68,7 @@ class AjustesController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 data,
                 csrfToken
@@ -88,6 +95,9 @@ class AjustesController {
             const proyectos = await this.projects.getProjectsByClientId(id)
             !proyectos ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -96,6 +106,7 @@ class AjustesController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 cliente,
                 data,
@@ -123,6 +134,9 @@ class AjustesController {
             const proyectos = await this.projects.getProjectsByClientId(id)
             !proyectos ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -131,6 +145,7 @@ class AjustesController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 expires,
                 cliente,
                 csrfToken
@@ -158,6 +173,9 @@ class AjustesController {
             const cliente = await this.clients.getClientByProjectId(idCliente)
             !cliente  ? catchError401(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -167,6 +185,7 @@ class AjustesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     data,
@@ -194,6 +213,9 @@ class AjustesController {
             const proyectos = await this.projects.getAllOciProjects()
             !proyectos ? catchError400(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(usuario._id)
             
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -201,6 +223,7 @@ class AjustesController {
                 username,
                 userInfo,
                 userCart,
+                ordenes,
                 proyectos,
                 clientes,
                 expires,
@@ -276,6 +299,9 @@ class AjustesController {
             proyecto = await this.projects.getProjectsByClientId(clientId)
             !proyecto ? catchError401_1(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -284,6 +310,7 @@ class AjustesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     proyecto,
@@ -358,6 +385,9 @@ class AjustesController {
             proyecto = await this.projects.getProjectsByClientId(clientId)
             !proyecto ? catchError401_1(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
 
             const csrfToken = csrfTokens.create(req.csrfSecret);
@@ -366,6 +396,7 @@ class AjustesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     proyecto,
@@ -463,6 +494,9 @@ class AjustesController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 0
@@ -472,6 +506,7 @@ class AjustesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     proyecto,
@@ -568,6 +603,9 @@ class AjustesController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 1
@@ -577,6 +615,7 @@ class AjustesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     proyecto,
@@ -667,6 +706,9 @@ class AjustesController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 2
@@ -676,6 +718,7 @@ class AjustesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     proyecto,
@@ -761,6 +804,9 @@ class AjustesController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 3
@@ -770,6 +816,7 @@ class AjustesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     proyecto,
@@ -855,6 +902,9 @@ class AjustesController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 4
@@ -864,6 +914,7 @@ class AjustesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     proyecto,
@@ -954,6 +1005,9 @@ class AjustesController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 5
@@ -963,6 +1017,7 @@ class AjustesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     proyecto,
@@ -1053,6 +1108,9 @@ class AjustesController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 6
@@ -1062,6 +1120,7 @@ class AjustesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     proyecto,
@@ -1152,6 +1211,9 @@ class AjustesController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 7
@@ -1161,6 +1223,7 @@ class AjustesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     proyecto,
@@ -1251,6 +1314,9 @@ class AjustesController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 8
@@ -1260,6 +1326,7 @@ class AjustesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     proyecto,
@@ -1350,6 +1417,9 @@ class AjustesController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 9
@@ -1359,6 +1429,7 @@ class AjustesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     proyecto,
@@ -1449,6 +1520,9 @@ class AjustesController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 10
@@ -1458,6 +1532,7 @@ class AjustesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     proyecto,
@@ -1548,6 +1623,9 @@ class AjustesController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 11
@@ -1557,6 +1635,7 @@ class AjustesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     proyecto,
@@ -1642,6 +1721,9 @@ class AjustesController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 12
@@ -1651,6 +1733,7 @@ class AjustesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     proyecto,
@@ -1741,6 +1824,9 @@ class AjustesController {
             proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
             !proyecto ? catchError401_4(req, res, next) : null
 
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
             const userCart = await this.carts.getCartByUserId(userId)
             
             data.slide = 13
@@ -1750,6 +1836,7 @@ class AjustesController {
                     username,
                     userInfo,
                     userCart,
+                    ordenes,
                     expires,
                     cliente,
                     proyecto,

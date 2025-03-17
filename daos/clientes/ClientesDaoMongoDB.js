@@ -166,15 +166,18 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                 if (itemMongoDB) {
                     // console.error("Cliente con Nombre existente!! ")
                     return new Error (`Cliente ya existe con este nombre: ${client.name}!`)
+
                 } else {
                     const newClient = new Clientes(client)
                     await newClient.save()
                     // console.info('Client ', newClient, ' created')
                     return newClient
                 }
+
             } catch (error) {
                 console.error("Error MongoDB createClient: ",error)
             }
+            
         } else {
             return new Error (`No se pudo crear el Cliente!`)
         }
