@@ -266,11 +266,11 @@ const renderConsumiblesAdmin = async (arrConsumibles, page = 1, direction = 'non
 
                 formattedDate === formattedDateModified ? formattedDateModified = '-' : null
 
-            if (element.favorito === 5) {
-                redHeart = `<i class="fa-solid fa-heart position-absolute top-0 start-100 text-primary" 
-                                style="font-size: 1.5em; z-index: 100 ;transform: translate(-125%, 40%) !important;">
-                            </i>`
-            }
+            element.favorito === 5
+            ? redHeart = `<i class="fa-solid fa-heart position-absolute top-0 start-100 text-primary" 
+                            style="font-size: 1.5em; z-index: 100 ;transform: translate(-225%, 40%) !important;">
+                        </i>`
+            : redHeart = ''
 
             if (element.visible) {
                 totalStock > 0 ? stockTr = `<tr id="consumibleRow_${element._id}">` : stockTr =`<tr id="consumibleRow_${element._id}" class="row-highlight-stockCero">`
@@ -482,11 +482,11 @@ const renderConsumiblesUser = async (arrConsumibles, page = 1, direction = 'none
 
                 formattedDate === formattedDateModified ? formattedDateModified = '-' : null
 
-            if (element.favorito === 5) {
-                redHeart = `<i class="fa-solid fa-heart position-absolute top-0 start-100 text-primary" 
-                                style="font-size: 1.5em; z-index: 100 ;transform: translate(-125%, 40%) !important;">
-                            </i>`
-            }
+            element.favorito === 5
+            ? redHeart = `<i class="fa-solid fa-heart position-absolute top-0 start-100 text-primary" 
+                            style="font-size: 1.5em; z-index: 100 ;transform: translate(-225%, 40%) !important;">
+                        </i>`
+            : redHeart = ''
 
             if (element.visible) {
                 totalStock > 0 ? stockTr = `<tr id="consumibleRow_${element._id}">` : stockTr =`<tr id="consumibleRow_${element._id}" class="row-highlight-stockCero">`

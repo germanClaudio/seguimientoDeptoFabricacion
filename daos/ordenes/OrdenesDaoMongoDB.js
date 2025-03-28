@@ -31,6 +31,26 @@ class OrdenesDaoMongoDB extends ContainerMongoDB {
 		}
 	}
 
+    async getOrderById(id) {
+        if(id){
+            try {
+                const orderMongoDB = await Ordenes.findById({_id: id })
+                if(orderMongoDB) {
+                    return orderMongoDB
+
+                } else {
+                    return new Error (`La Orden de solicitud no existe con ese Id: ${id}!`)
+                }
+
+            } catch (error) {
+                console.error("Error MongoDB deleteOrder: ",error)
+            }
+
+        } else {
+            return new Error (`La Orden no existe con ese Id${id}!`)
+        }    
+    }
+
 	async getActiveOrders() {
 		try {
 			const activeOrders = await Ordenes.find({ 
@@ -265,6 +285,126 @@ class OrdenesDaoMongoDB extends ContainerMongoDB {
         }    
     }
 
+    async updateOrderStatusMulti(arrId, arrStatus, userModificator) {
+        // Validar que los arrays tengan el mismo length
+        if (arrId.length !== arrStatus.length) {
+            throw new Error('Los arrays de entrada deben tener la misma longitud');
+        }
+    
+        // Mapeo de estados a valores active/prepared
+        const statusMapping = {
+            'noentregado': { active: true, prepared: false },
+            'preparado': { active: true, prepared: true },
+            'entregado': { active: false, prepared: true }
+        };
+    
+        const results = {
+            updated: [],
+            skipped: [],
+            errors: []
+        };
+    
+        for (let i = 0; i < arrId.length; i++) {
+            const currentId = arrId[i];
+            const currentStatus = arrStatus[i];
+    
+            try {
+                // Validaciones básicas
+                if (!currentId) {
+                    results.skipped.push({
+                        orderId: currentId,
+                        reason: 'ID de orden faltante'
+                    });
+                    continue;
+                }
+    
+                if (!statusMapping.hasOwnProperty(currentStatus)) {
+                    results.errors.push({
+                        orderId: currentId,
+                        error: `Estado '${currentStatus}' no válido`
+                    });
+                    continue;
+                }
+    
+                // Buscar la orden en MongoDB
+                const order = await Ordenes.findById(currentId);
+                if (!order) {
+                    results.errors.push({
+                        orderId: currentId,
+                        error: `Orden no encontrada con ID: ${currentId}`
+                    });
+                    continue;
+                }
+    
+                // Obtener los nuevos valores según el estado
+                const { active: newActive, prepared: newPrepared } = statusMapping[currentStatus];
+    
+                // Verificar si los valores actuales son diferentes a los nuevos
+                const needsUpdate = order.active !== newActive || order.prepared !== newPrepared;
+    
+                if (!needsUpdate) {
+                    results.skipped.push({
+                        orderId: currentId,
+                        reason: 'Los valores ya están actualizados',
+                        currentValues: {
+                            active: order.active,
+                            prepared: order.prepared
+                        }
+                    });
+                    continue;
+                }
+    
+                // Actualizar solo si hay cambios necesarios
+                const updateResult = await Ordenes.updateOne(
+                    { _id: currentId },
+                    {
+                        $set: {
+                            active: newActive,
+                            prepared: newPrepared,
+                            modificator: userModificator,
+                            modifiedOn: new Date()
+                        }
+                    }
+                );
+    
+                if (updateResult.acknowledged) {
+                    const updatedOrder = await Ordenes.findById(currentId);
+                    results.updated.push({
+                        orderId: currentId,
+                        previousValues: {
+                            active: order.active,
+                            prepared: order.prepared
+                        },
+                        newValues: {
+                            active: newActive,
+                            prepared: newPrepared
+                        },
+                        data: updatedOrder
+                    });
+
+                } else {
+                    throw new Error(`Falló la actualización de la orden ${currentId}`);
+                }
+
+            } catch (error) {
+                results.errors.push({
+                    orderId: currentId,
+                    error: error.message
+                });
+                console.error(`Error procesando orden ${currentId}:`, error);
+            }
+        }
+    
+        return {
+            success: results.errors.length === 0,
+            totalProcessed: arrId.length,
+            updatedCount: results.updated.length,
+            skippedCount: results.skipped.length,
+            errorCount: results.errors.length,
+            details: results
+        };
+    }
+
     // async getOrdenesBySearchingUser(query) {
     //     const buildQuery = (queryText) => {
     //         const conditions = [
@@ -358,6 +498,7 @@ class OrdenesDaoMongoDB extends ContainerMongoDB {
     //         return false;
     //     }
     // }
+
     async getOrdenesBySearchingUser(query) {
         // Función para construir la consulta de búsqueda en los campos designation, type y characteristics
         const buildQuery = (queryText) => {

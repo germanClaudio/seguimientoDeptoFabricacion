@@ -121,6 +121,9 @@ class ProgramationController {
             userInfo = res.locals.userInfo
 
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+            
             const cliente = await this.clients.getClientById(id)
             !cliente ? catchError401(req, res, next) : null 
 
@@ -156,6 +159,9 @@ class ProgramationController {
             userInfo = res.locals.userInfo
 
         try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
             const proyecto = await this.programms.selectProjectByProjectId(id)
             !proyecto ? catchError400(req, res, next) : null 
 

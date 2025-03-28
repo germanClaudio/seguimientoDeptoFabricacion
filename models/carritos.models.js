@@ -37,6 +37,10 @@ let ItemSchema = new Schema({
         type: String,
         default: 'unico'
     },
+    letterOrNumber: {
+        type: String,
+        default: 'none',
+    },
     quantity: {
         type: Number,
         required: true,

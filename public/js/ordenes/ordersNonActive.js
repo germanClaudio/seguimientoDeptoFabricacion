@@ -1,6 +1,11 @@
 const socket = io.connect(),
     offset = -3 * 60 * 60 * 1000
 
+let currentPage = 1;
+let itemsPerPage = 10; // Valor por defecto
+let ordenesGlobales = [];
+const maxVisiblePages = 3;
+
 function formatDate(date) {
     const DD = String(date.getDate()).padStart(2, '0'),
         MM = String(date.getMonth() + 1).padStart(2, '0'),
@@ -17,20 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('ordenesTable').style.display = 'none';
 });
 
-// ---------- Orders historial ----------------
-// socket.on('ordersNonActive', (arrOrders, arrUsers) => {
-//     let cadena = document.getElementById('mostrarUserName').innerText,
-//         indice = cadena.indexOf(","),
-//         name = cadena.substring(0,indice),
-//         index = arrUsers.findIndex(el=> el.name == name.trim())
-    
-//     if(index !== -1) {
-//         let user = arrUsers[index].admin,
-//             userId = arrUsers[index]._id
-//             // console.log('user: ', user)
-//         user ? renderOrdenesAdmin(arrOrders, userId) : renderOrdenesUser(arrOrders)
-//     }
-// })
 
 socket.on('ordersUsers', ( arrUsers ) => {
     let cadena = document.getElementById('mostrarUserName').innerText,
@@ -50,21 +41,131 @@ socket.on('ordersUsers', ( arrUsers ) => {
 socket.on('ordersNonActive', (data) => {
     const { allOrders, ordersByUser, allUsers, userAdmin } = data;
 
-    userAdmin ? renderOrdenesAdmin(allOrders, allUsers) : renderOrdenesUser(ordersByUser)
+    userAdmin ? renderOrdenesAdmin(allOrders) : renderOrdenesUser(ordersByUser)
 
 })
 
+// Función para generar los controles de paginación
+const generarControlesPaginacion = () => {
+    const totalPages = Math.ceil(ordenesGlobales.length / itemsPerPage);
+    let paginationHTML = `<div class="pagination-anchor">
+                            <div class="pagination-container justify-content-center">`;
+    
+    // Botón Anterior
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderOrdenesAdmin(ordenesGlobales, ${currentPage - 1}, 'right')">
+            &laquo; Anterior
+        </button>`;
 
-const renderOrdenesAdmin = (arrOrders) => {
-    const arrayOrders = arrOrders
-    if (arrOrders.length > 0) {
-        const html = arrayOrders.map((element) => {
+    // Primeros números
+    if (currentPage > maxVisiblePages + 1) {
+        paginationHTML += `
+            <button class="pagination-btn" onclick="renderOrdenesAdmin(ordenesGlobales, 1)">1</button>
+            <span class="pagination-ellipsis">...</span>`;
+    }
+
+    // Números centrales
+    const start = Math.max(1, currentPage - maxVisiblePages);
+    const end = Math.min(totalPages, currentPage + maxVisiblePages);
+    
+    for (let i = start; i <= end; i++) {
+        paginationHTML += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                onclick="renderOrdenesAdmin(ordenesGlobales, ${i})">
+                ${i}
+            </button>`;
+    }
+
+    // Últimos números
+    if (currentPage < totalPages - maxVisiblePages) {
+        paginationHTML += `
+            <span class="pagination-ellipsis">...</span>
+            <button class="pagination-btn" onclick="renderOrdenesAdmin(ordenesGlobales, ${totalPages})">${totalPages}</button>`;
+    }
+
+    // Botón Siguiente
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderOrdenesAdmin(ordenesGlobales, ${currentPage + 1}, 'left')">
+            Siguiente &raquo;
+        </button>`;
+
+    paginationHTML += '</div>';
+    return paginationHTML;
+};
+
+// Función para cambiar el número de filas por página
+let selectedItemsPerPage = 10; // Valor por defecto
+
+const cambiarItemsPorPagina = (nuevoItemsPerPage) => {
+    selectedItemsPerPage = nuevoItemsPerPage; // Guardar la selección del usuario
+    itemsPerPage = nuevoItemsPerPage;
+    currentPage = 1; // Reiniciar a la primera página
+    renderOrdenesAdmin(ordenesGlobales);
+};
+
+const agregarSelectItemsPorPagina = () => { 
+    // Crear el HTML del select y la leyenda
+    let selectHTML = `
+        Mostrando 
+        <select class="form-select small w-auto mx-2" id="itemsPerPageSelect" onchange="cambiarItemsPorPagina(parseInt(this.value))">
+            <option value="10" ${selectedItemsPerPage === 10 ? 'selected' : ''}>10</option>
+            <option value="25" ${selectedItemsPerPage === 25 ? 'selected' : ''}>25</option>
+            <option value="50" ${selectedItemsPerPage === 50 ? 'selected' : ''}>50</option>
+            <option value="100" ${selectedItemsPerPage === 100 ? 'selected' : ''}>100</option>
+            <option value="${ordenesGlobales.length}" ${selectedItemsPerPage === ordenesGlobales.length ? 'selected' : ''}>Todos</option>
+        </select>
+        ordenes de ${ordenesGlobales.length}
+    `;
+
+    const paginationContainer = document.getElementById('paginationOrdenes');
+    const existingSelectContainer = document.getElementById('selectContainer');
+
+    // Verificar si el contenedor de paginación existe
+    if (paginationContainer) {
+        // Si ya existe un contenedor para el select, actualizamos su contenido
+        if (existingSelectContainer) {
+            existingSelectContainer.innerHTML = selectHTML;
+        } else {
+            // Si no existe, creamos un nuevo contenedor y lo insertamos
+            const selectContainer = document.createElement('div');
+            selectContainer.id = 'selectContainer';
+            selectContainer.classList.add('row', 'align-items-center', 'justify-content-center')
+            selectContainer.innerHTML = selectHTML;
+            paginationContainer.insertAdjacentHTML('beforebegin', selectContainer.outerHTML);
+        }
+    } else {
+        console.error("El contenedor de paginación no existe en el DOM.");
+    }
+};
+
+// ------------------------- Render Admin ---------------------------------
+const renderOrdenesAdmin = async (arrOrders, page = 1, direction = 'none') => {
+    ordenesGlobales = arrOrders;
+    currentPage = page;
+
+    const container = document.getElementById('mostrarOrdenes');
+    const pagination = document.getElementById('paginationOrdenes');
+    container.classList.add('transition-out', direction);
+    
+    // Esperar a que termine la animación de salida
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedItems = ordenesGlobales.slice(startIndex, endIndex);
+    
+    let html = '', htmlPagination = '';
+
+    if (paginatedItems.length > 0) {
+        html = paginatedItems.map((element) => {
             let prodArr = []
             function loopProductId() {
                 for (i=0; i < element.items.length; i++) {
                     prodArr.push(element.items[i].consumibleId)
                 }
-                return prodArr.length//join('\n')
+                return prodArr.length
             }
 
             let qtyArr = [], qtyArrNumber = []
@@ -73,7 +174,7 @@ const renderOrdenesAdmin = (arrOrders) => {
                     qtyArr.push(element.items[i].quantity)
                     qtyArrNumber.push(element.items[i].quantity)
                 }
-                return qtyArr.join(' - ') //('\n')
+                return qtyArr.join(' - ')
             }
 
             for (i=0; i < element.items.length; i++) {
@@ -145,93 +246,44 @@ const renderOrdenesAdmin = (arrOrders) => {
                         </tr>`)
             }
         }).join(" ");
-        document.getElementById('mostrarOrdenes').innerHTML = html
-
-        const ordersActiveQty = []
-        for(let u=0; u<arrayOrders.length; u++) {
-            arrayOrders[u].visible ? ordersActiveQty.push(u) : null
-        }
-
-        const htmlOrderList = 
-            ( `<caption id="capOrderList">Cantidad de Ordenes: ${parseInt(ordersActiveQty.length)}</caption><br>
-            <caption id="capDeleteOrderList">Cantidad de Ordenes Eliminadas: ${parseInt(arrayOrders.length - ordersActiveQty.length)}</caption>`)
-
-        document.getElementById('capOrdersList').innerHTML = htmlOrderList
+        htmlPagination = generarControlesPaginacion();
 
     } else {
-        const html = (`<tr>
-                            <td colspan="10">
-                                <img class="img-fluid rounded-3 my-2 shadow-lg" alt="No hay items cargados para mostrar"
-                                    src='../../src/images/clean_table_graphic.png' width="auto" height="auto">
-                            </td>
-                        </tr>`)
+        html = (`<tr>
+                    <td colspan="15">
+                        <img class="img-fluid rounded-2 my-2 shadow-lg" alt="No hay items cargados para mostrar"
+                            src='../src/images/clean_table_graphic.png' width="auto" height="auto">
+                    </td>
+                </tr>`)
 
-        document.getElementById('mostrarOrdenes').innerHTML = html   
+                document.getElementById('mostrarOrdenes').innerHTML = html
     }
+
     // Ocultar el spinner y mostrar la tabla
     document.getElementById('loading-spinner').style.display = 'none';
     document.getElementById('ordenesTable').style.display = 'block';
 
-    // ---- mensaje confirmacion eliminar Order -----------
-    // function messageDeleteOrder(idOrden, userInformation, date) {
-    //     const htmlForm =
-    //         `La solicitud con fecha <b>${date}</b>, se eliminará completamente<br>
-    //             para el usuario: <strong>${userInformation}</strong> y usted.<br>
-    //             <strong>Esta acción no se puede deshacer!<strong><br>
-    //             Está seguro que desea continuar?<br>
-    //             <form id="formDeleteOrder" action="/api/ordenes/delete/${idOrden}" method="get">
-    //                 <fieldset>
-    //                 </fieldset>
-    //             </form>`
+    container.innerHTML = html;
+    pagination.innerHTML = htmlPagination;
+    container.classList.remove('transition-out', 'left', 'right');
+    container.classList.add('transition-in', direction);
+
+    const ordersActiveQty = []
+    for(let u=0; u<ordenesGlobales.length; u++) {
+        ordenesGlobales[u].visible ? ordersActiveQty.push(u) : null
+    }
+
+    const htmlOrderList = 
+        ( `<caption id="capOrderList">Cantidad de Ordenes: ${parseInt(ordersActiveQty.length)}</caption><br>
+        <caption id="capDeleteOrderList">Cantidad de Ordenes Eliminadas: ${parseInt(ordenesGlobales.length - ordersActiveQty.length)}</caption>`)
+
+    document.getElementById('capOrdersList').innerHTML = htmlOrderList
+
+    // Remover clases de animación después de completar
+    setTimeout(() => {
+        container.classList.remove('transition-in', direction);
+    }, 400);
     
-    //     Swal.fire({
-    //         title: `Eliminar Orden Id# ${idOrden}?`,
-    //         position: 'center',
-    //         width: 750,
-    //         html: htmlForm,
-    //         icon: 'warning',
-    //         showCancelButton: true,
-    //         confirmButtonColor: '#3085d6',
-    //         cancelButtonColor: '#d33',
-    //         focusConfirm: false,
-    //         confirmButtonText: 'Eliminarlo! <i class="fa-regular fa-trash-can"></i>',
-    //         cancelButtonText: 'Cancelar <i class="fa-solid fa-user-shield"></i>'
-    
-    //     }).then((result) => {
-    //         if (result.isConfirmed) {
-    //             document.getElementById("formDeleteOrder").submit()
-    //             setTimeout(() => {
-    //                 Swal.fire(
-    //                     'Eliminado!',
-    //                     `La Orden Id# <b>${idOrden}</b>, ha sido eliminada exitosamente.`,
-    //                     'success'
-    //                 )
-    //             }, 600)
-    //         } else {
-    //             Swal.fire(
-    //                 'No eliminada!',
-    //                 `La Orden Id# <b>${idOrden}</b>, no ha sido eliminada.`,
-    //                 'info'
-    //                 )
-    //             return false
-    //         }
-    //     })
-    // }
-
-    // const nodeList = document.querySelectorAll('button[name="btnDeleteOrder"]')
-    // nodeList.forEach(function(btn){
-    //     if (btn.id) {
-    //         btn.addEventListener("click", (event) => {
-    //             event.preventDefault()
-    //             const idOrden = btn.id,
-    //                 userInformation = document.getElementById(`userInformation_${idOrden}`).innerText,
-    //                 date = document.getElementById(`date_${idOrden}`).innerText
-
-    //             idOrden && userInformation && date ? messageDeleteOrder(idOrden, userInformation, date) : null
-    //         })
-    //     }
-    // })
-
     // ---- Descargar PDF Order -----------
     function downloadPdf(orderNumber) {
         const pdfUrl = `https://storage.googleapis.com/imagenesproyectosingenieria/upload/PdfOrders/Invoice_${orderNumber}.pdf`;
@@ -264,12 +316,124 @@ const renderOrdenesAdmin = (arrOrders) => {
                 })
             }
     })
+
+    // Llamar a la función para agregar el select después de renderizar la tabla
+    agregarSelectItemsPorPagina();
 }
 
-const renderOrdenesUser = (arrOrders) => {
-    const arrayOrders = arrOrders
-    if (arrOrders.length > 0) {
-        const html = arrayOrders.map((element) => {
+
+// Función para generar los controles de paginación
+const generarControlesPaginacionUser = () => {
+    const totalPages = Math.ceil(ordenesGlobales.length / itemsPerPage);
+    let paginationHTML = `<div class="pagination-anchor">
+                            <div class="pagination-container justify-content-center">`;
+    
+    // Botón Anterior
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderOrdenesUser(ordenesGlobales, ${currentPage - 1}, 'right')">
+            &laquo; Anterior
+        </button>`;
+
+    // Primeros números
+    if (currentPage > maxVisiblePages + 1) {
+        paginationHTML += `
+            <button class="pagination-btn" onclick="renderOrdenesUser(ordenesGlobales, 1)">1</button>
+            <span class="pagination-ellipsis">...</span>`;
+    }
+
+    // Números centrales
+    const start = Math.max(1, currentPage - maxVisiblePages);
+    const end = Math.min(totalPages, currentPage + maxVisiblePages);
+    
+    for (let i = start; i <= end; i++) {
+        paginationHTML += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                onclick="renderOrdenesUser(ordenesGlobales, ${i})">
+                ${i}
+            </button>`;
+    }
+
+    // Últimos números
+    if (currentPage < totalPages - maxVisiblePages) {
+        paginationHTML += `
+            <span class="pagination-ellipsis">...</span>
+            <button class="pagination-btn" onclick="renderOrdenesUser(ordenesGlobales, ${totalPages})">${totalPages}</button>`;
+    }
+
+    // Botón Siguiente
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderOrdenesUser(ordenesGlobales, ${currentPage + 1}, 'left')">
+            Siguiente &raquo;
+        </button>`;
+
+    paginationHTML += '</div>';
+    return paginationHTML;
+};
+
+const cambiarItemsPorPaginaUser = (nuevoItemsPerPage) => {
+    selectedItemsPerPage = nuevoItemsPerPage; // Guardar la selección del usuario
+    itemsPerPage = nuevoItemsPerPage;
+    currentPage = 1; // Reiniciar a la primera página
+    renderOrdenesUser(ordenesGlobales);
+};
+
+const agregarSelectItemsPorPaginaUser = () => {
+    // Crear el HTML del select y la leyenda
+    let selectHTML = `
+        Mostrando 
+        <select class="form-select small w-auto mx-2" id="itemsPerPageSelect" onchange="cambiarItemsPorPaginaUser(parseInt(this.value))">
+            <option value="10" ${selectedItemsPerPage === 10 ? 'selected' : ''}>10</option>
+            <option value="25" ${selectedItemsPerPage === 25 ? 'selected' : ''}>25</option>
+            <option value="50" ${selectedItemsPerPage === 50 ? 'selected' : ''}>50</option>
+            <option value="100" ${selectedItemsPerPage === 100 ? 'selected' : ''}>100</option>
+            <option value="${ordenesGlobales.length}" ${selectedItemsPerPage === ordenesGlobales.length ? 'selected' : ''}>Todos</option>
+        </select>
+        ordenes de ${ordenesGlobales.length}
+    `;
+
+    const paginationContainer = document.getElementById('paginationOrdenes');
+    const existingSelectContainer = document.getElementById('selectContainer');
+
+    // Verificar si el contenedor de paginación existe
+    if (paginationContainer) {
+        // Si ya existe un contenedor para el select, actualizamos su contenido
+        if (existingSelectContainer) {
+            existingSelectContainer.innerHTML = selectHTML;
+        } else {
+            // Si no existe, creamos un nuevo contenedor y lo insertamos
+            const selectContainer = document.createElement('div');
+            selectContainer.id = 'selectContainer';
+            selectContainer.classList.add('row', 'align-items-center', 'justify-content-center')
+            selectContainer.innerHTML = selectHTML;
+            paginationContainer.insertAdjacentHTML('beforebegin', selectContainer.outerHTML);
+        }
+    } else {
+        console.error("El contenedor de paginación no existe en el DOM.");
+    }
+};
+
+// ---------------------- Render Users -----------------------------
+const renderOrdenesUser = async (arrOrders, page = 1, direction = 'none') => {
+    ordenesGlobales = arrOrders;
+    currentPage = page;
+    console.log('ordenesGlobales: ', ordenesGlobales)
+    const container = document.getElementById('mostrarOrdenes');
+    const pagination = document.getElementById('paginationOrdenes');
+    container.classList.add('transition-out', direction);
+    
+    // Esperar a que termine la animación de salida
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedItems = ordenesGlobales.slice(startIndex, endIndex);
+    
+    let html = '', htmlPagination = '';
+
+    if (paginatedItems.length > 0) {
+        html = ordenesGlobales.map((element) => {
             let prodArr = []
             function loopProductId() {
                 for (i=0; i < element.items.length; i++) {
@@ -346,7 +510,7 @@ const renderOrdenesUser = (arrOrders) => {
                         </tr>`)
             }
         }).join(" ");
-        document.getElementById('mostrarOrdenes').innerHTML = html
+        htmlPagination = generarControlesPaginacion();
 
     } else {
         const html = (`<tr>
@@ -358,20 +522,25 @@ const renderOrdenesUser = (arrOrders) => {
         document.getElementById('mostrarOrdenes').innerHTML = html   
     }
 
+    // Ocultar el spinner y mostrar la tabla
+    document.getElementById('loading-spinner').style.display = 'none';
+    document.getElementById('ordenesTable').style.display = 'block';
+    
+    container.innerHTML = html;
+    pagination.innerHTML = htmlPagination;
+    container.classList.remove('transition-out', 'left', 'right');
+    container.classList.add('transition-in', direction);
+
     const ordersActiveQty = []
-    for(let u=0; u<arrayOrders.length; u++) {
-        arrayOrders[u].visible && !arrayOrders[u].active ? ordersActiveQty.push(u) : null
+    for(let u=0; u<ordenesGlobales.length; u++) {
+        ordenesGlobales[u].visible && !ordenesGlobales[u].active ? ordersActiveQty.push(u) : null
     }
 
     const htmlOrderList = 
         ( `<caption id="capDeleteOrderList">Cantidad de Ordenes Entregadas: ${parseInt(ordersActiveQty.length)}</caption>`)
 
     document.getElementById('capOrdersList').innerHTML = htmlOrderList
-
-    // Ocultar el spinner y mostrar la tabla
-    document.getElementById('loading-spinner').style.display = 'none';
-    document.getElementById('ordenesTable').style.display = 'block';
-
+    
     // ---- mensaje confirmacion eliminar Order -----------
     function messageDeleteOrder(idOrden, userInformation, date) {
         const idChain = idOrden.substring(19)
@@ -466,6 +635,9 @@ const renderOrdenesUser = (arrOrders) => {
             })
         }
     })
+
+    // Llamar a la función para agregar el select después de renderizar la tabla
+    agregarSelectItemsPorPaginaUser();
 }
 
 //------------- Rows & Cards selected ------------------
@@ -478,280 +650,431 @@ document.addEventListener("DOMContentLoaded", () => {
         btnCheckSelectionDownload = document.getElementById("btnCheckSelectionDownload"),
         spanCheckSelecMasiveDownload = document.getElementById("spanCheckSelecMasiveDownload");
 
-    // Función para inicializar eventos en checkboxes de filas
-    function initializeRowCheckboxes() {
-        const rowCheckboxes = table.querySelectorAll('input[type="checkbox"]');
-        rowCheckboxes.forEach((checkbox) => {
-            checkbox.addEventListener("change", () => {
-                syncCheckboxWithCard(checkbox);
-                updateSelectionState();
-                updateRowStyle(checkbox);
-            });
-        });
-    }
+    // Función para extraer ID
+    const extractIdNumber = (id) => id ? id.split('_').pop() : '';
 
-    // Función para inicializar eventos en checkboxes de cards
-    function initializeCardCheckboxes() {
-        const cardCheckboxes = cardsContainer.querySelectorAll('input.form-check-input');
-        cardCheckboxes.forEach((checkbox) => {
-            if (!checkbox.dataset.initialized) {
-                checkbox.dataset.initialized = true;
-                checkbox.addEventListener("change", () => {
-                    syncCheckboxWithRow(checkbox);
-                    updateSelectionState();
-                });
-            }
-        });
-    }
+    // Función para actualizar estilos CORREGIDA
+    function updateSelectionStyle(checkbox, isTable = true) {
+        const element = checkbox.closest(isTable ? "tr" : "div[id^='cardRow_']");
+        if (!element) return;
 
-    // Sincronizar checkbox de fila con card correspondiente
-    function syncCheckboxWithCard(rowCheckbox) {
-        const extractIdNumber = (id) => id.split('_').pop()
-        let idInputCard = extractIdNumber(rowCheckbox.id)
-        const cardCheckbox = cardsContainer.querySelector(`#inputCheckOrdenCard_${idInputCard}`);
-        if (cardCheckbox) {
-            if (rowCheckbox.checked) {
-                cardCheckbox.checked = true;
-                cardCheckbox.disabled = true; // Deshabilitar para evitar duplicados
-            } else {
-                cardCheckbox.checked = false;
-                cardCheckbox.disabled = false; // Habilitar nuevamente
-            }
-            updateCardStyle(cardCheckbox);
-            updateRowStyle(rowCheckbox);
-        }
-    }
+        const orderId = extractIdNumber(checkbox.id);
+        const originalColor = element.dataset.originalColor || '';
 
-    // Sincronizar checkbox de card con fila correspondiente
-    function syncCheckboxWithRow(cardCheckbox) {
-        const extractIdNumber = (id) => id.split('_').pop()
-        let idInputRow = extractIdNumber(cardCheckbox.id)
-        const rowCheckbox = table.querySelector(`#inputCheckOrder_${idInputRow}`)
-        if (rowCheckbox) {
-            if (cardCheckbox.checked) {
-                rowCheckbox.checked = true;
-                rowCheckbox.disabled = true; // Deshabilitar para evitar duplicados
-            } else {
-                rowCheckbox.checked = false;
-                rowCheckbox.disabled = false; // Habilitar nuevamente
-            }
-            updateRowStyle(rowCheckbox);
-            updateCardStyle(cardCheckbox);
-        }
-    }
-
-    // Actualizar estilo de las filas al cambiar el estado del checkbox
-    function updateRowStyle(rowCheckbox) {
-        const row = rowCheckbox.closest("tr");
-        if (rowCheckbox.checked) {
-            row.classList.add("row-highlight");
-            row.classList.remove("row-highlight-stockCero");
+        if (checkbox.checked) {
+            element.style.boxShadow = '0 0 0 2px #0d6efd';
+            element.style.backgroundColor = 'rgba(13, 110, 253, 0.1)';
         } else {
-            row.classList.remove("row-highlight");
-        }
-    }
-
-    // Actualizar estilo de las cards al cambiar el estado del checkbox
-    function updateCardStyle(cardCheckbox) {
-        const card = cardCheckbox.closest("div[id^='cardSelected_']");
-        if (cardCheckbox.checked) {
-            card.classList.add("cardSelected");
-            card.classList.remove("shadow-lg");
-        } else {
-            card.classList.remove("cardSelected");
-            card.classList.add("shadow-lg");
-        }
-    }
-
-    // Actualizar contador y estado del botón masivo
-    function updateSelectionState() {
-        const selectedRowCheckboxes = table.querySelectorAll('input[type="checkbox"]:checked');
-        // const selectedCardCheckboxes = cardsContainer.querySelectorAll('input.form-check-input:checked')
-        let totalSelected = selectedRowCheckboxes.length //+ selectedCardCheckboxes.length;
-
-        if (btnCheckSelectionAll) {
-            btnCheckSelectionAll.disabled = totalSelected === 0
-        }
-
-        if (btnCheckSelectionDownload) {
-            btnCheckSelectionDownload.disabled = totalSelected === 0
-        }
-
-        if (spanCheckSelecMasive) {
-            spanCheckSelecMasive.textContent = totalSelected
-            spanCheckSelecMasive.classList.toggle("bg-danger", totalSelected === 0)
-            spanCheckSelecMasive.classList.toggle("bg-success", totalSelected > 0)
-        }
-
-        if (spanCheckSelecMasiveDownload) {
-            spanCheckSelecMasiveDownload.textContent = totalSelected
-            spanCheckSelecMasiveDownload.classList.toggle("bg-danger", totalSelected === 0)
-            spanCheckSelecMasiveDownload.classList.toggle("bg-success", totalSelected > 0)
-        }
-    }
-
-    // Configurar MutationObservers
-    const rowObserver = new MutationObserver(() => {
-        initializeRowCheckboxes();
-    });
-
-    const cardObserver = new MutationObserver(() => {
-        initializeCardCheckboxes();
-    });
-
-    rowObserver.observe(table, { childList: true, subtree: true });
-    cardObserver.observe(cardsContainer, { childList: true, subtree: true });
-
-    // Inicializar eventos al cargar
-    initializeRowCheckboxes();
-    initializeCardCheckboxes();
-
-    // Botón de SweetAlert2 Resumen Ordenes
-    if(btnCheckSelectionDownload) {
-        btnCheckSelectionDownload.addEventListener("click", () => {
-            const extractIdNumber = (id) => id.split('_').pop(); // Función para extraer el número del ID
-    
-            const selectedCheckboxes = Array.from(table.querySelectorAll('input[type="checkbox"]:checked'))
-                .concat(Array.from(cardsContainer.querySelectorAll('input.form-check-input:checked')))
-                .reduce((accumulator, checkbox) => {
-                    const row = checkbox.closest("tr"),
-                        card = checkbox.closest("div[id^='cardSelected_']"),
-                        idNumber = extractIdNumber(checkbox.id); // Extrae el número del ID
-    
-                    // Verifica si el ID (número) ya fue procesado
-                    if (accumulator.some(item => item.idNumber === idNumber)) {
-                        return accumulator; // No agregar duplicados
-                    }
-    
-                    // Agrega al acumulador según corresponda (row o card)
-                    if (card) {
-                        accumulator.push({
-                            idNumber: idNumber,
-                            id: checkbox.id,
-                            codigo: card.querySelector(`[id^="cardInvoice_"]`).textContent.trim(),
-                            status: card.querySelector(`[id^="cardStatus_"]`).textContent.trim(),
-                            solicitadaPor: card.querySelector(`[id^="cardUserInformation_"]`).textContent.trim(),
-                            fecha: card.querySelector(`[id^="cardDate_"]`).textContent.trim(),
-                            productos: card.querySelector(`[id^="cardProductos_"]`).textContent.trim(),
-                            items: row.querySelector(`[id^="cardItems_"]`).textContent.trim(),
-                        });
-    
-                    } else if (row) {
-                        accumulator.push({
-                            idNumber: idNumber,
-                            id: checkbox.id,
-                            codigo: row.querySelector(`[id^="invoice_"]`).textContent.trim(),
-                            status: row.querySelector(`[id^="status_"]`).textContent.trim(),
-                            solicitadaPor: row.querySelector(`[id^="userInformation_"]`).textContent.trim(),
-                            fecha: row.querySelector(`[id^="date_"]`).textContent.trim(),
-                            productos: row.querySelector(`[id^="productos_"]`).textContent.trim(),
-                            items: row.querySelector(`[id^="items_"]`).textContent.trim(),
-                        });
-                    }
-                    return accumulator;
-                }, []);
-
-                const trTable = `<tr>
-                                    <th style="width:32vw" class="text-center">Orden N°</th>
-                                    <th style="width:7vw" class="text-center">Status</th>
-                                    <th style="width:20vw" class="text-center">Solicitada por</th>
-                                    <th style="width:26vw" class="text-center">Fecha</th>
-                                    <th style="width:16vw" class="text-center">Prod./Items</th>
-                                    <th style="width:4vw" class="text-center"></th>
-                                </tr>`
-                
-                const tableBody = selectedCheckboxes.map((data) =>
-                                    `<tr id="tr_${extractIdNumber(data.id)}">
-                                        <td><strong>...${data.codigo.substring(19)}</strong></td>
-                                        <td><span class="common-style ${data.status.replace(/\s+/g, "").toLowerCase()}">${data.status}</span></td>
-                                        <td>${data.solicitadaPor}</td>
-                                        <td>${data.fecha}</td>
-                                        <td>${data.productos} / ${data.items}
-                                            <input type="hidden" name="idOrdenHidden_${extractIdNumber(data.id)}" value="${extractIdNumber(data.id)}" style="display: none;"></td>
-                                        <td><button name="btnRemoveRow" type="button" id="btnRemoveRow_${extractIdNumber(data.id)}" class="btn btn-danger rounded-circle m-2 border border-2 shadow">
-                                            <i class="fa-solid fa-trash"></i></button></td>
-                                    </tr>`).join("")
-
-            // Generar SweetAlert2 con los datos seleccionados
-            const tableHtml = `
-                <form id="formResumenOrdenes" action="/api/ordenes/resumenMulti/" method="post">
-                    <fieldset>
-                        <table id="resumenOrdenesTable" class="table align-middle" style="font-size: 11pt";>
-                            <thead>
-                                ${trTable}
-                            </thead>
-                            <tbody>
-                                ${tableBody}
-                            </tbody>
-                        </table>
-                    </fieldset>
-                </form>`;
-    
-            Swal.fire({
-                title: "Descargar Resumen Múltiples Ordenes",
-                html: tableHtml,
-                confirmButtonText: 'Descargar Resumen <i class="fa-solid fa-download"></i>',
-                confirmButtonColor: '#3085d6',
-                showCancelButton: true,
-                showCloseButton: true,
-                cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>',
-                cancelButtonColor: '#d33',
-                width: 1220,
-                position: "center"
-    
-            }).then((result) => {
-                const formResumenOrdenes = document.getElementById('formResumenOrdenes')
-                if (result.isConfirmed) {
-                    formResumenOrdenes.submit()
-    
-                    setTimeout(() => {
-                        Swal.fire({
-                            title: `Resumen Ordenes descargada!`,
-                            html: 'El resumen de ordenes fue descargado con éxito',
-                            icon: 'success',
-                            width: 500
-                        })
-                    }, 500)
-    
-                } else {
-                    Swal.fire({
-                        title: `Resumen Ordenes no descargada!`,
-                        html: 'El resumen de ordenes no fue descargado',
-                        icon: 'warning',
-                        width: 500
-                    })
-                    return false
-                }
-            });
-    
+            element.style.boxShadow = '';
+            element.style.backgroundColor = originalColor;
             
-            document.querySelectorAll("[id^='btnRemoveRow_']").forEach(button => {
-                button.addEventListener("click", (event) => {
-                    event.preventDefault()
-                    const id = event.target.closest("button").id.split("_")[1];
-                    id ? removeRow(id) : null
-                });
-            });
-    
-            //---------------- Remove item Row ---------------------------
-            function removeRow(idButton, ) {
-                let removeButtons = document.querySelectorAll('button[name="btnRemoveRow"]')       
-                const rowToDelete = document.getElementById(`tr_${idButton}`)
-    
-                if (parseInt(removeButtons.length) > 1) {
-                    rowToDelete ? rowToDelete.remove() : null
-                    
+            // Restaurar color original si está definido en dataset
+            if (element.dataset.originalColor) {
+                element.style.backgroundColor = element.dataset.originalColor;
+            }
+        }
+
+        // Sincronizar con el otro componente
+        const targetPrefix = isTable ? "cardCheckOrder_" : "inputCheckOrder_";
+        const targetCheckbox = document.getElementById(`${targetPrefix}${orderId}`);
+        
+        if (targetCheckbox) {
+            targetCheckbox.checked = checkbox.checked;
+            const targetElement = targetCheckbox.closest(isTable ? "div[id^='cardRow_']" : "tr");
+            if (targetElement) {
+                if (checkbox.checked) {
+                    targetElement.style.boxShadow = '0 0 0 2px #0d6efd';
+                    targetElement.style.backgroundColor = 'rgba(13, 110, 253, 0.1)';
                 } else {
-                    Swal.close()
-                    Swal.fire({
-                        title: `Resumen de Ordenes no descargado!`,
-                        html: 'El resumen de ordenes no fue descargado',
-                        icon: 'warning',
-                        width: 500
-                    })
-                    return false
+                    targetElement.style.boxShadow = '';
+                    // Restaurar color original para cards
+                    if (targetElement.dataset.originalColor) {
+                        targetElement.style.backgroundColor = targetElement.dataset.originalColor;
+                    }
                 }
             }
+        }
+    }
+
+    // Función para sincronizar selección
+    function syncSelection(sourceCheckbox, isTable = true) {
+        const orderId = extractIdNumber(sourceCheckbox.id);
+        const targetPrefix = isTable ? "cardCheckOrder_" : "inputCheckOrder_";
+        const targetCheckbox = document.getElementById(`${targetPrefix}${orderId}`);
+        
+        if (targetCheckbox) {
+            targetCheckbox.checked = sourceCheckbox.checked;
+            updateSelectionStyle(targetCheckbox, !isTable);
+        }
+        
+        updateGlobalSelectionState();
+    }
+
+    // Función para actualizar estado global CORREGIDA
+    function updateGlobalSelectionState() {
+        // Usamos un Set para almacenar IDs únicos de órdenes seleccionadas
+        const selectedOrders = new Set();
+        
+        // Agregar IDs de checkboxes seleccionados en la tabla
+        document.querySelectorAll('#ordenesTable input[type="checkbox"]:checked').forEach(checkbox => {
+            selectedOrders.add(extractIdNumber(checkbox.id));
         });
+        
+        // Agregar IDs de checkboxes seleccionados en las cards
+        document.querySelectorAll('.order-checkbox:checked').forEach(checkbox => {
+            selectedOrders.add(extractIdNumber(checkbox.id));
+        });
+
+        const totalSelected = selectedOrders.size; // Tamaño del Set = selecciones únicas
+
+        [btnCheckSelectionAll, btnCheckSelectionDownload].forEach(btn => {
+            if (btn) btn.disabled = totalSelected === 0;
+        });
+
+        [spanCheckSelecMasive, spanCheckSelecMasiveDownload].forEach(span => {
+            if (span) {
+                span.textContent = totalSelected;
+                span.classList.toggle("bg-danger", totalSelected === 0);
+                span.classList.toggle("bg-success", totalSelected > 0);
+            }
+        });
+    }
+
+    // Función para inicializar checkboxes
+    function initializeCheckboxes(container, isTable = true) {
+        const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            if (!checkbox.dataset.initialized) {
+                checkbox.dataset.initialized = "true";
+                checkbox.addEventListener("change", () => {
+                    syncSelection(checkbox, isTable);
+                    updateSelectionStyle(checkbox, isTable);
+                });
+            }
+        });
+    }
+
+    // Observers para cambios dinámicos
+    const tableObserver = new MutationObserver(() => initializeCheckboxes(table, true));
+    const cardsObserver = new MutationObserver(() => initializeCheckboxes(cardsContainer, false));
+
+    if (table) tableObserver.observe(table, { childList: true, subtree: true });
+    if (cardsContainer) cardsObserver.observe(cardsContainer, { childList: true, subtree: true });
+
+    // Inicialización
+    if (table) initializeCheckboxes(table, true);
+    if (cardsContainer) initializeCheckboxes(cardsContainer, false);
+
+    // Función para manejar la descarga masiva (mantenida igual)
+    if (btnCheckSelectionDownload) {
+        btnCheckSelectionDownload.addEventListener("click", handleMassiveDownload);
+    }
+
+    // async function handleMassiveDownload() {
+    //     const selectedOrders = getSelectedOrdersData();
+        
+    //     if (selectedOrders.length === 0) {
+    //         Swal.fire('Error', 'No hay órdenes seleccionadas', 'error');
+    //         return;
+    //     }
+
+    //     const groupedOrders = groupOrdersByUser(selectedOrders);
+    //     const modalHtml = generateOrdersModalHtml(groupedOrders);
+
+    //     const { isConfirmed } = await Swal.fire({
+    //         title: "Descargar Resumen Múltiples Ordenes",
+    //         html: modalHtml,
+    //         confirmButtonText: 'Descargar Resumen <i class="fa-solid fa-download"></i>',
+    //         confirmButtonColor: '#3085d6',
+    //         showCancelButton: true,
+    //         showCloseButton: true,
+    //         cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>',
+    //         cancelButtonColor: '#d33',
+    //         width: 1220,
+    //         position: "center"
+    //     });
+
+    //     if (isConfirmed) {
+    //         submitOrdersForm(groupedOrders);
+    //     }
+    // }
+    // Modifica la función handleMassiveDownload para asignar los event listeners después de generar el modal
+    
+    async function handleMassiveDownload() {
+        const selectedOrders = getSelectedOrdersData();
+        
+        if (selectedOrders.length === 0) {
+            Swal.fire('Error', 'No hay órdenes seleccionadas', 'error');
+            return;
+        }
+
+        const groupedOrders = groupOrdersByUser(selectedOrders);
+        const modalHtml = generateOrdersModalHtml(groupedOrders);
+
+        const { isConfirmed } = await Swal.fire({
+            title: "Descargar Resumen Múltiples Ordenes",
+            html: modalHtml,
+            confirmButtonText: 'Descargar Resumen <i class="fa-solid fa-download"></i>',
+            confirmButtonColor: '#3085d6',
+            showCancelButton: true,
+            showCloseButton: true,
+            cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>',
+            cancelButtonColor: '#d33',
+            width: 1220,
+            position: "center",
+            didOpen: () => {
+                // Asignar event listeners aquí, después de que el modal se abre
+                document.querySelectorAll("[id^='btnRemoveRow_']").forEach(button => {
+                    button.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        const id = event.target.closest("button").id.split("_")[1];
+                        id && removeRow(id);
+                    });
+                });
+                
+                document.querySelectorAll("[name='btnRemoveUser']").forEach(button => {
+                    button.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        const user = event.target.closest("button").id.split("_")[1];
+                        removeUserOrders(user);
+                    });
+                });
+            }
+        });
+
+        if (isConfirmed) {
+            submitOrdersForm(groupedOrders);
+        }
+    }
+
+    function getSelectedOrdersData() {
+        return Array.from(table.querySelectorAll('input[type="checkbox"]:checked'))
+            .map(checkbox => {
+                const row = checkbox.closest("tr");
+                return row ? {
+                    id: checkbox.id,
+                    codigo: row.querySelector('[id^="invoice_"]')?.textContent.trim(),
+                    status: row.querySelector('[id^="status_"]')?.textContent.trim(),
+                    solicitadaPor: row.querySelector('[id^="userInformation_"]')?.textContent.trim(),
+                    fecha: row.querySelector('[id^="date_"]')?.textContent.trim(),
+                    productos: row.querySelector('[id^="productos_"]')?.textContent.trim(),
+                    items: row.querySelector('[id^="items_"]')?.textContent.trim()
+                } : null;
+            })
+            .filter(Boolean);
+    }
+
+    function groupOrdersByUser(orders) {
+        return orders.reduce((acc, order) => {
+            const user = order.solicitadaPor;
+            if (!acc[user]) acc[user] = [];
+            acc[user].push(order);
+            return acc;
+        }, {});
+    }
+
+    function generateOrdersModalHtml(groupedOrders) {
+        const tableHeaders = `
+            <tr>
+                <th style="width:32vw" class="text-center">Orden N°</th>
+                <th style="width:7vw" class="text-center">Status</th>
+                <th style="width:20vw" class="text-center">Solicitada por</th>
+                <th style="width:26vw" class="text-center">Fecha</th>
+                <th style="width:16vw" class="text-center">Prod./Items</th>
+                <th style="width:4vw" class="text-center"></th>
+            </tr>`;
+
+        const tableBody = Object.entries(groupedOrders).map(([user, orders]) => {
+            const userRows = orders.map(order => `
+                <tr id="tr_${extractIdNumber(order.id)}">
+                    <td><strong>...${order.codigo.substring(19)}</strong></td>
+                    <td><span class="common-style ${order.status.replace(/\s+/g, "").toLowerCase()}">${order.status}</span></td>
+                    <td>${order.solicitadaPor}</td>
+                    <td>${order.fecha}</td>
+                    <td>${order.productos} / ${order.items}
+                        <input type="hidden" name="idOrdenHidden_${extractIdNumber(order.id)}" value="${extractIdNumber(order.id)}">
+                    </td>
+                    <td>
+                        <button name="btnRemoveRow" title="Remover Orden ${extractIdNumber(order.id)}" 
+                                type="button" id="btnRemoveRow_${extractIdNumber(order.id)}" 
+                                class="btn btn-danger rounded-circle m-2 border border-2 shadow">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join("");
+
+            return `
+                <tr class="user-header-row" id="user-header-${user.replace(/[\s-]/g, '').toLowerCase()}">
+                    <td colspan="6" class="bg-light">
+                        <strong>Usuario: ${user}</strong>
+                        <input type="hidden" name="user-header-${user.replace(/[\s-]/g, '').toLowerCase()}" 
+                                value="${user.replace(/[\s-]/g, '').toLowerCase()}">
+                        <button name="btnRemoveUser" type="button" title="Remover Usuario ${user}" 
+                                id="btnRemoveUser_${user.replace(/[\s-]/g, '').toLowerCase()}" 
+                                class="btn btn-delete-user float-end">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                ${userRows}
+            `;
+        }).join("");
+
+        return `
+            <form id="formResumenOrdenes" action="/api/ordenes/resumenMulti/" method="post">
+                <fieldset>
+                    <table id="resumenOrdenesTable" class="table align-middle" style="font-size: 11pt">
+                        <thead>${tableHeaders}</thead>
+                        <tbody>${tableBody}</tbody>
+                    </table>
+                </fieldset>
+            </form>`;
+    }
+
+    function submitOrdersForm(groupedOrders) {
+        const form = document.getElementById('formResumenOrdenes');
+        if (form) {
+            form.submit();
+            setTimeout(() => {
+                Swal.fire({
+                    title: `Resumen Ordenes descargado!`,
+                    html: 'El resumen de órdenes fue descargado con éxito',
+                    icon: 'success',
+                    width: 500
+                });
+            }, 500);
+        }
+    }
+
+    // Funciones para manejar eliminación en el modal (mantenidas igual)
+    // function removeModal() {
+    //     const removeButtons = document.querySelectorAll('button[name="btnRemoveRow"]'),
+    //         removeUsers = document.querySelectorAll('button[name="btnRemoveUser"]');
+        
+    //     if (removeButtons.length < 1 || removeUsers.length < 1) {
+    //         Swal.close();
+    //         Swal.fire({
+    //             title: `Resumen de Órdenes no descargado!`,
+    //             html: 'El resumen de órdenes no fue descargado',
+    //             icon: 'warning',
+    //             width: 500
+    //         });
+    //         return false;
+    //     }
+    // }
+
+    // Función removeModal mejorada
+    function removeModal() {
+        const remainingRows = document.querySelectorAll('#resumenOrdenesTable tbody tr:not(.user-header-row)');
+        if (remainingRows.length === 0) {
+            Swal.close();
+            Swal.fire({
+                title: `Resumen de Órdenes no descargado!`,
+                html: 'No quedan órdenes seleccionadas para descargar',
+                icon: 'warning',
+                width: 500
+            });
+            return false;
+        }
+        return true;
+    }
+
+    document.querySelectorAll("[id^='btnRemoveRow_']").forEach(button => {
+        button.addEventListener("click", (event) => {
+            event.preventDefault()
+            console.log('button: ', button)
+            const id = event.target.closest("button").id.split("_")[1];
+            id ? removeRow(id) : null
+        });
+    });
+    
+    // function removeRow(idButton) {
+    //     const rowToDelete = document.getElementById(`tr_${idButton}`);
+    //     if (rowToDelete) {
+    //         const userHeader = rowToDelete.previousElementSibling;
+    //         rowToDelete.remove();
+            
+    //         if (userHeader?.classList.contains("user-header-row")) {
+    //             const nextRow = userHeader.nextElementSibling;
+    //             if (!nextRow || nextRow.classList.contains("user-header-row")) {
+    //                 userHeader.remove();
+    //             }
+    //         }
+    //     }
+    //     removeModal();
+    // }
+
+    // Función removeRow mejorada
+    
+    function removeRow(idButton) {
+        const rowToDelete = document.getElementById(`tr_${idButton}`);
+        if (!rowToDelete) return;
+
+        const userHeader = findPreviousUserHeader(rowToDelete);
+        rowToDelete.remove();
+        
+        // Verificar si quedan filas para este usuario
+        if (userHeader) {
+            const nextRow = userHeader.nextElementSibling;
+            if (!nextRow || nextRow.classList.contains("user-header-row")) {
+                userHeader.remove();
+            }
+        }
+        
+        removeModal();
+    }
+    
+    // Asignar eventos a los botones de eliminar usuario
+    document.querySelectorAll("[name='btnRemoveUser']").forEach(button => {
+        button.addEventListener("click", (event) => {
+            event.preventDefault();
+            const user = event.target.closest("button").id.split("_")[1].replace(/-/g, "");
+            removeUserOrders(user);
+        });
+    });
+
+    // Función auxiliar para encontrar el encabezado de usuario
+    function findPreviousUserHeader(row) {
+        let prev = row.previousElementSibling;
+        while (prev) {
+            if (prev.classList.contains("user-header-row")) {
+                return prev;
+            }
+            prev = prev.previousElementSibling;
+        }
+        return null;
+    }
+    
+    // function removeUserOrders(user) {
+    //     const userHeader = document.getElementById(`user-header-${user.replace(/[\s-]/g, '').toLowerCase().trim()}`);
+    //     if (userHeader) {
+    //         let nextRow = userHeader.nextElementSibling;
+    //         while (nextRow && !nextRow.classList.contains("user-header-row")) {
+    //             const temp = nextRow.nextElementSibling;
+    //             nextRow.remove();
+    //             nextRow = temp;
+    //         }
+    //         userHeader.remove();
+    //     }
+    //     removeModal();
+    // }
+
+    // Función removeUserOrders mejorada
+    function removeUserOrders(user) {
+        const normalizedUser = user.replace(/[\s-]/g, '').toLowerCase().trim();
+        const userHeader = document.getElementById(`user-header-${normalizedUser}`);
+        if (!userHeader) return;
+
+        // Eliminar todas las filas de este usuario
+        let nextRow = userHeader.nextElementSibling;
+        while (nextRow && !nextRow.classList.contains("user-header-row")) {
+            const temp = nextRow.nextElementSibling;
+            nextRow.remove();
+            nextRow = temp;
+        }
+        
+        userHeader.remove();
+        removeModal();
     }
 });

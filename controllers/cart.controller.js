@@ -163,6 +163,11 @@ class CartsController {
             !ordenes ? catchError400_5(req, res, next) : null
             
             let cart = await this.carts.getCartByUserId(userId)
+
+            let letterOrNumber = productDetails.tipoTalle === 'unico'
+            ? 'none'
+            : productDetails.tipoTalle === 'talle' ? 'letter' : 'numero'
+
             if (cart) { //--If Cart Exists ----
                 //---- check if index product exists ----
                 const indexFound = cart.items.findIndex(item => item.consumibleId == productId)
@@ -177,6 +182,7 @@ class CartsController {
                     cart.modifiedOn = formatDate()
                 
                 } else if (quantity > 0) { //----Check if Quantity is Greater than 0 then add item to items Array ----
+                    
                     if (quantity <= productDetails.limMaxUser) {
                         cart.items.push({
                             consumibleId: productDetails.id,
@@ -184,6 +190,7 @@ class CartsController {
                             code: productDetails.code,
                             type: productDetails.type,
                             tipoTalle: productDetails.tipoTalle,
+                            letterOrNumber: letterOrNumber,
                             imageConsumible: productDetails.imageConsumible || consumiblePictureNotFound,
                             qrCode: productDetails.qrCode,
                             characteristics: productDetails.characteristics,
@@ -200,6 +207,7 @@ class CartsController {
                             code: productDetails.code,
                             type: productDetails.type,
                             tipoTalle: productDetails.tipoTalle,
+                            letterOrNumber: letterOrNumber,
                             imageConsumible: productDetails.imageConsumible || consumiblePictureNotFound,
                             qrCode: productDetails.qrCode,
                             characteristics: productDetails.characteristics,
@@ -242,6 +250,7 @@ class CartsController {
                         code: productDetails.code,
                         type: productDetails.type,
                         tipoTalle: productDetails.tipoTalle,
+                        letterOrNumber: letterOrNumber,
                         imageConsumible: productDetails.imageConsumible || consumiblePictureNotFound,
                         qrCode: productDetails.qrCode,
                         characteristics: productDetails.characteristics,
@@ -307,6 +316,10 @@ class CartsController {
             let arrayItemAddedToCart = []
             for (let i=0; i<parseInt(idItemHidden.length); i++) {
                 let productDetails = await this.consumibles.getConsumibleById(idItemHidden[i])
+                let letterOrNumber = productDetails.tipoTalle === 'unico'
+                    ? 'none'
+                    : productDetails.tipoTalle === 'talle' ? 'letter' : 'numero'
+
                 if (!productDetails) {
                     catchError401_3(req, res, next)
 
@@ -315,7 +328,8 @@ class CartsController {
                         itemIdNumber: idItemHidden[i],
                         itemQuantity: Number.parseInt(arrayInputQuantityNumber[i]),
                         itemDetails: productDetails,
-                        itemLimMaxUser: Number.parseInt(arrayLimMaxUser[i])
+                        itemLimMaxUser: Number.parseInt(arrayLimMaxUser[i]),
+                        itemLetterOrNumber: letterOrNumber
                     }
                     arrayItemAddedToCart.push(itemAddedToCart)
                 }
@@ -356,6 +370,7 @@ class CartsController {
                                 code: arrayItemAddedToCart[i].itemDetails.code,
                                 type: arrayItemAddedToCart[i].itemDetails.type,
                                 tipoTalle: arrayItemAddedToCart[i].itemDetails.tipoTalle,
+                                letterOrNumber: arrayItemAddedToCart[i].itemLetterOrNumber,
                                 imageConsumible: arrayItemAddedToCart[i].itemDetails.imageConsumible || consumiblePictureNotFound,
                                 qrCode: arrayItemAddedToCart[i].itemDetails.qrCode,
                                 characteristics: arrayItemAddedToCart[i].itemDetails.characteristics,
@@ -373,6 +388,7 @@ class CartsController {
                                 code: arrayItemAddedToCart[i].itemDetails.code,
                                 type: arrayItemAddedToCart[i].itemDetails.type,
                                 tipoTalle: arrayItemAddedToCart[i].itemDetails.tipoTalle,
+                                letterOrNumber: arrayItemAddedToCart[i].itemLetterOrNumber,
                                 imageConsumible: arrayItemAddedToCart[i].itemDetails.imageConsumible || consumiblePictureNotFound,
                                 qrCode: arrayItemAddedToCart[i].itemDetails.qrCode,
                                 characteristics: arrayItemAddedToCart[i].itemDetails.characteristics,
@@ -413,6 +429,7 @@ class CartsController {
                             code: arrayItemAddedToCart[i].itemDetails.code,
                             type: arrayItemAddedToCart[i].itemDetails.type,
                             tipoTalle: arrayItemAddedToCart[i].itemDetails.tipoTalle,
+                            letterOrNumber: arrayItemAddedToCart[i].itemLetterOrNumber,
                             imageConsumible: arrayItemAddedToCart[i].itemDetails.imageConsumible || consumiblePictureNotFound,
                             qrCode: arrayItemAddedToCart[i].itemDetails.qrCode,
                             characteristics: arrayItemAddedToCart[i].itemDetails.characteristics,
@@ -593,7 +610,8 @@ class CartsController {
             arrayItemsQty = [],
             arrayConsumiblesId = [],
             arrayTipoTalle = [],
-            arrayTipoStock = [];            
+            arrayTipoStockBody = [],
+            arrayTipoStock = [];
 
         const expires = cookie(req),
             id = req.body.cartId;
@@ -601,7 +619,24 @@ class CartsController {
         arrayItemsQty = req.body.quantities.split(',')
         arrayConsumiblesId = req.body.consumiblesId.split(',')
         arrayTipoTalle = req.body.tipoTalle.split(',')
-        arrayTipoStock = req.body.tipoStock.split(',')
+        arrayTipoStockBody = req.body.tipoStock.split(',')
+
+        function generarArrayTipoStock(tipoTalle, stockBody) {
+            let arrayTipoStock = [];
+            let bodyIndex = 0; // Índice separado para arrayTipoStockBody
+            
+            for (let ts = 0; ts < tipoTalle.length; ts++) {
+                if (tipoTalle[ts] === 'unico') {
+                    arrayTipoStock.push('none');
+                } else {
+                    arrayTipoStock.push(stockBody[bodyIndex]);
+                    bodyIndex++;
+                }
+            }    
+            return arrayTipoStock;
+        }
+        
+        arrayTipoStock = generarArrayTipoStock(arrayTipoTalle, arrayTipoStockBody);
         
         if (id) {
             //------ Storage New Order pdf in Google Store --------        
@@ -629,6 +664,7 @@ class CartsController {
                                     area: usuario.area
                                 },
                                 items: cart.items,
+                                letterOrNumber: arrayTipoStock,
                                 quantity: parseInt(cart.items.length),
                                 timestamp: new Date(),
                                 modificator: dataUserModificatorEmpty(),

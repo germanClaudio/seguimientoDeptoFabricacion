@@ -48,7 +48,7 @@
                     <span class="d-none d-lg-inline">Pedidos</span>
                     <% let cantOrdenesPreparadas=0
                         for (let i=0; ordenes.length>i; i++) {
-                            ordenes[i].visible && ordenes[i].prepared ? cantOrdenesPreparadas++ : null
+                            ordenes[i].visible && ordenes[i].prepared && !ordenes[i].active ? cantOrdenesPreparadas++ : null
                         }
                         if(parseInt(cantOrdenesPreparadas)>0) { %>
                         <span title="Pedidos Preparados"

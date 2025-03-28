@@ -28,8 +28,17 @@ routerOrders.post('/delete/:id', checkAuthentication, orders.deleteOrderById)
 // -------------------  Prepare Order ------------------ 
 routerOrders.post('/prepare/:id', checkAuthentication, orders.prepareOrderById)
 
-// -------------------  Prepare Order ------------------ 
+// -------------------  Deliver Order ------------------ 
 routerOrders.post('/deliver/:id', checkAuthentication, orders.deliverOrderById)
+
+// -------------------  Change Status multi Orders ------------------ 
+routerOrders.post('/modifyMulti/:screen', checkAuthentication, orders.modifyMultiOrderById)
+
+
+// -------------------  Download Multi Resumen Orders ------------------ 
+routerOrders.post('/resumenMulti/', checkAuthentication, orders.resumenMultiOrders)
+
+
 
 
 module.exports = routerOrders

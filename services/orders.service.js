@@ -11,6 +11,11 @@ class OrdersService {
         return this.ordenes.getAllOrders()
     }
 
+    // returns one Order by Id
+    async getOrderById(id) {
+        return this.ordenes.getOrderById(id)
+    }
+
     // returns Active Orders
     async getActiveOrders() {
         return this.ordenes.getActiveOrders()
@@ -36,9 +41,19 @@ class OrdersService {
         return this.ordenes.prepareOrderById(id, userModificator)
     }
 
+    // Change Status Multi Order by Id
+    async updateOrderStatusMulti(idOrders, arrayInputStatus, userModificator) {
+        return this.ordenes.updateOrderStatusMulti(idOrders, arrayInputStatus, userModificator)
+    }
+
     // Deliver Order by Id
     async deliverOrderById(id, userModificator) {
         return this.ordenes.deliverOrderById(id, userModificator)
+    }
+
+    // Download Multi Resumen Orders
+    async resumenMultiOrders(id, userModificator) {
+        return this.ordenes.resumenMultiOrders(id, userModificator)
     }
     
 }

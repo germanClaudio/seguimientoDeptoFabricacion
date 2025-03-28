@@ -400,14 +400,9 @@ html body .display-7 {
   object-fit: contain;
 }
 
-/* .card_dashboard{
-  width: 20vw;
-  cursor: grab;
-} */
-
-/* .card_dashboard:active {
-  cursor: grabbing;
-} */
+.container {
+  width: 100%
+}
 
 .card_dashboard-link {
   cursor: pointer;
@@ -431,7 +426,8 @@ html body .display-7 {
 
 /* Espaciado entre tarjetas */
 .card-container {
-  padding: 11px; /* Espaciado interno */
+  min-width: 25%; /* nuevo */
+  padding: 9px; /* Espaciado interno era 11*/
 }
 
 /* Estilos para pantallas pequeñas */
@@ -2122,3 +2118,37 @@ td {
   user-select: none;
 }
 /* End paginacion */
+
+/* Estilo para la fila de encabezado del usuario */
+
+.user-header-row td {
+  height: 20px; /* Altura fija en píxeles */
+  line-height: 25px; /* Igual que la altura para centrar el texto */
+  font-size: 1em; /* Opcional: Reduce el tamaño de la fuente */
+  padding: 0 8px; /* Elimina el padding vertical y mantiene el horizontal */
+}
+
+/* Estilo para el botón de eliminar usuario */
+.btn-delete-user {
+  background-color: #dc3545; /* Color rojo */
+  border-color: #dc3545;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 50%;
+  font-size: 0.9em;
+  margin-left: 10px;
+}
+
+.btn-delete-user:hover {
+  background-color: #c82333; /* Color rojo más oscuro al pasar el mouse */
+  border-color: #bd2130;
+}
+
+.download-btn {
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px;
+}

@@ -243,11 +243,11 @@ const renderConsumiblesAdmin = async (arrConsumibles, page = 1, direction = 'non
 
                 formattedDate === formattedDateModified ? formattedDateModified = '-' : null
 
-            if (element.favorito === 5) {
-                redHeart = `<i class="fa-solid fa-heart position-absolute top-0 start-100 text-primary" 
-                                style="font-size: 1.5em; z-index: 100 ;transform: translate(-125%, 40%) !important;">
-                            </i>`
-            }
+            element.favorito === 5
+            ? redHeart = `<i class="fa-solid fa-heart position-absolute top-0 start-100 text-primary" 
+                            style="font-size: 1.5em; z-index: 100 ;transform: translate(-225%, 40%) !important;">
+                        </i>`
+            : redHeart = ''
 
             if (element.visible) {
                 totalStock > 0 ? stockTr = `<tr id="consumibleRow_${element._id}">` : stockTr =`<tr id="consumibleRow_${element._id}" class="row-highlight-stockCero">`
@@ -553,11 +553,11 @@ const renderConsumiblesUser = async (arrConsumibles, page = 1, direction = 'none
 
                 formattedDate === formattedDateModified ? formattedDateModified = '-' : null
 
-            if (element.favorito === 5) {
-                redHeart = `<i class="fa-solid fa-heart position-absolute top-0 start-100 text-primary" 
-                                style="font-size: 1.5em; z-index: 100 ;transform: translate(-225%, 40%) !important;">
-                            </i>`
-            }
+            element.favorito === 5
+            ? redHeart = `<i class="fa-solid fa-heart position-absolute top-0 start-100 text-primary" 
+                            style="font-size: 1.5em; z-index: 100 ;transform: translate(-225%, 40%) !important;">
+                        </i>`
+            : redHeart = ''
 
             if (element.visible) {
                 totalStock > 0 ? stockTr = `<tr id="consumibleRow_${element._id}">` : stockTr =`<tr id="consumibleRow_${element._id}" class="row-highlight-stockCero">`
@@ -569,8 +569,8 @@ const renderConsumiblesUser = async (arrConsumibles, page = 1, direction = 'none
                             <td class="text-center" id="characteristics_${element._id}">${characteristicsTrim}</td>
                             <td class="text-center position-relative" id="imagenConsumible_${element._id}">
                                 ${element.imageConsumible ? `<img id="imagen_${element._id}" class="imgLazyLoad img-fluid rounded-3 py-2" alt="Imagen" data-src="${element.imageConsumible}"
-                                                            src='${imagenLazy}' width="125px" height="125px" loading="lazy">` : '<div class="img-placeholder"></div>'}
-                                                            ${redHeart}
+                                                            src='${imagenLazy}' width="125px" height="125px" loading="lazy">` : `<div class="img-placeholder"></div>`}
+                                                            ${redHeart}                                                            
                             </td>
                             <td class="text-center" id="tipoTalle_${element._id}"><span class="badge bg-${background} text-light">${tipoTalle}</span></td>
                             <td class="text-center" id="limMaxUser_${element._id}"><span class="badge bg-danger text-light">${element.limMaxUser}</span></td>

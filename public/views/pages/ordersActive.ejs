@@ -21,9 +21,9 @@
 
     <div class="d-block mx-auto mt-4 text-center bg-primary-light">
         <% if (userInfo.admin) { %>
-            <%- include('../partials/forms/formularioBuscarOrdenes'); %>
+            <%- include('../partials/forms/formularioBuscarOrdenesNAAdmin'); %>
         <% } else { %>
-            <%- include('../partials/forms/formularioBuscarOrdenesUserA'); %>
+            <%- include('../partials/forms/formularioBuscarOrdenesUserNAUser'); %>
         <% } %>  
         <%- include('../partials/data/dataOrdenesSearch'); %>
     </div>

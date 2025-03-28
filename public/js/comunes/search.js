@@ -1571,7 +1571,20 @@ const searchOrdenesUser = () => {
 }
 
 const renderSearchedOrdenesUser = (arrOrdenesSearch) => {
-    document.getElementById('showCountOrdenesSearch').innerHTML = ''
+    // Spinner y limpieza inicial (código original)
+    const spinnerTimeout = setTimeout(() => {
+        document.getElementById('loading-spinner').style.display = 'block';
+        document.getElementById('showOrdenesSearch').style.display = 'none';
+        document.getElementById('showOrdenesSearch').innerHTML = '<div class="text-center my-4">Cargando resultados...</div>';
+    }, 500);
+
+    document.getElementById('showCountOrdenesSearch').innerHTML = '';
+
+    const clearSpinner = () => {
+        clearTimeout(spinnerTimeout);
+        document.getElementById('loading-spinner').style.display = 'none';
+        document.getElementById('showOrdenesSearch').style.display = 'block';
+    };
 
     if(!arrOrdenesSearch) {
         const htmlSearchOrdenesNull = (
@@ -1595,10 +1608,12 @@ const renderSearchedOrdenesUser = (arrOrdenesSearch) => {
                         </div>
                     </div>
                 </div>
-            </div>`)
+            </div>`);
         
-        const showOrdenes = document.getElementById('showOrdenesSearch')
-        showOrdenes ? showOrdenes.innerHTML = htmlSearchOrdenesNull : null
+        const showOrdenes = document.getElementById('showOrdenesSearch');
+        showOrdenes ? showOrdenes.innerHTML = htmlSearchOrdenesNull : null;
+        clearSpinner();
+        return;
 
     } else if (arrOrdenesSearch.length === 1 && arrOrdenesSearch[0] === 'vacio') {     
         const htmlSearchOrdenesNull = (
@@ -1624,101 +1639,359 @@ const renderSearchedOrdenesUser = (arrOrdenesSearch) => {
                     </div>
                 </div>
             </div>`
-        )
-        document.getElementById('showOrdenesSearch').innerHTML = htmlSearchOrdenesNull
+        );
+        document.getElementById('showOrdenesSearch').innerHTML = htmlSearchOrdenesNull;
+        clearSpinner();
+        return;
 
     } else {
-        const htmlSearchOrdenes = arrOrdenesSearch.map((element) => {
-            const typeMapping = {
-                prepared: { label: 'Preparado', class: 'warning', text: 'dark' },
-                delivered: { label: 'Entregado', class: 'success', text: 'light' },
-                notDelivered: { label: 'No Entregado', class: 'danger', text: 'light' },
-                default: { label: 'Eliminado', class: 'primary', text: 'dark' }
-            };
-            
-            // Determinar valores dinámicos
-            let showType, optionType, optionText, color = '';
-        
-            if (element.prepared) {
-                showType = typeMapping.prepared.label;
-                optionType = typeMapping.prepared.class;
-                optionText = typeMapping.prepared.text;
-            } else if (!element.active) {
-                showType = typeMapping.delivered.label;
-                optionType = typeMapping.delivered.class;
-                optionText = typeMapping.delivered.text;
-            } else if (element.active && !element.prepared) {
-                showType = typeMapping.notDelivered.label;
-                optionType = typeMapping.notDelivered.class;
-                optionText = typeMapping.notDelivered.text;
-            } else {
-                showType = typeMapping.default.label;
-                optionType = typeMapping.default.class;
-                optionText = typeMapping.default.text;
-            }
-        
-            !element.active ? color = 'background-color:rgba(39, 181, 0, 0.19)' : color = 'background-color:rgba(181, 0, 0, 0.19)';
-            element.prepared ? color = 'background-color:rgba(181, 172, 0, 0.19)' : null
+        // Agrupar órdenes por usuario
+        const ordersByUser = {};
+        arrOrdenesSearch.forEach(order => {
+            const userId = order.shipping[0].legajoIdUser;
+            if (!ordersByUser[userId]) ordersByUser[userId] = [];
+            ordersByUser[userId].push(order);
+        });
 
-            let btnConfiguration = '',
-                idChain = element._id.substring(19);
-        
-            element.active
-            ? element.prepared
-                ? btnPreprared = Boolean(true) : null
-            : btnPreprared = Boolean(true);
-        
-            !element.active
-            ? btnConfiguration = `<button type="button" class="btn btn-secondary btn-sm disabled"><i class="fa-solid fa-trash-can"></i></button>`
-            : btnConfiguration = `<button id="${element._id}" name="btnCardDeleteOrder" type="button" class="btn btn-danger btn-sm" title="Eliminar Orden ...${idChain}"><i class="fa-solid fa-trash-can"></i></button>`;
-        
-            let utcDate = new Date(element.timestamp),
-                localDate = new Date(utcDate.getTime() + offset),
-                formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0];
-        
-            // Retornar el HTML generado
-            return (`
-                <div class="col mx-auto">
-                    <div class="card mx-auto rounded-2 shadow-lg" id="cardSelected_${element._id}" style="max-width: 540px; ${color}">
-                        <div class="row align-items-center">
-                            <div class="col-md-auto mx-auto">
-                                <div class="card-body">
-                                    <h6 id="cardDesignation_${element._id}" class="card-title"><strong>...${idChain}</strong></h6>
-                                    # Solicitud: <span id="cardCodigo_${element._id}" class="my-1"><strong>${element.invoice_nr}</strong></span><br>
-                                    Status: <span class="badge rounded-pill bg-${optionType} my-1">${showType}</span><br>
-                                    Fecha solicitud: ${formattedDate}<br>
-                                    Solicitado por: <strong>${element.shipping[0].name} ${element.shipping[0].lastName} - ${element.shipping[0].legajoIdUser}</strong><br>
-                                </div>
-                                <div class="card-footer px-2">
-                                    <div class="row">
-                                        <div class="col m-auto align-items-center text-center">
-                                            <button id="cardDownloadOrder_${element._id}" name="cardDownloadOrder" type="button" class="btn btn-primary btn-sm" title="Descargar pdf Orden ...${idChain}"><i class="fa-solid fa-download"></i></button>
-                                            ${btnConfiguration}
+        // Colores para diferenciar usuarios
+        const userColors = [
+            'rgba(39, 181, 0, 0.1)',   // Verde claro
+            'rgba(181, 0, 0, 0.1)',     // Rojo claro
+            'rgba(181, 172, 0, 0.1)',    // Amarillo claro
+            'rgba(0, 102, 204, 0.1)',   // Azul claro
+            'rgba(102, 0, 204, 0.1)',    // Morado claro
+            'rgba(204, 102, 0, 0.1)'     // Naranja claro
+        ];
+
+        let htmlSearchOrdenes = '', userIndex = 0;
+        // Objeto para almacenar colores por grupo de usuario
+        const userGroupColors = {};
+
+        // Generar HTML para cada grupo de usuario
+        for (const [userId, userOrders] of Object.entries(ordersByUser)) {
+            const userColor = userColors[userIndex % userColors.length];
+            userGroupColors[userId] = userColor; // Almacenar color por userId
+            userIndex++;
+            
+            // Agregar ID único al div del grupo de usuario
+            htmlSearchOrdenes += `
+                <div id="userGroup-${userId}" class="row mb-3 shadow" style="background-color: ${userColor}; border-radius: 5px; padding: 10px;">
+                    <div class="col-12">
+                        <h6 class="mb-0"><strong>Usuario: ${userOrders[0].shipping[0].name} ${userOrders[0].shipping[0].lastName} (${userId})</strong></h6>
+                    </div>
+                </div>`;
+
+            // Generar cards para cada orden del usuario
+                htmlSearchOrdenes += userOrders.map((element) => {
+                        const typeMapping = {
+                            prepared: { label: 'Preparado', class: 'warning', text: 'dark' },
+                            delivered: { label: 'Entregado', class: 'success', text: 'light' },
+                            notDelivered: { label: 'No Entregado', class: 'danger', text: 'light' },
+                            default: { label: 'Eliminado', class: 'primary', text: 'dark' }
+                        };
+                        
+                        // Determinar valores dinámicos
+                        let showType, optionType, optionText, color = '';
+                    
+                        if (element.prepared) {
+                            showType = typeMapping.prepared.label;
+                            optionType = typeMapping.prepared.class;
+                            optionText = typeMapping.prepared.text;
+                            color = 'background-color:rgba(181, 172, 0, 0.19)';
+                        } else if (!element.active) {
+                            showType = typeMapping.delivered.label;
+                            optionType = typeMapping.delivered.class;
+                            optionText = typeMapping.delivered.text;
+                            color = 'background-color:rgba(39, 181, 0, 0.19)';
+                        } else if (element.active && !element.prepared) {
+                            showType = typeMapping.notDelivered.label;
+                            optionType = typeMapping.notDelivered.class;
+                            optionText = typeMapping.notDelivered.text;
+                            color = 'background-color:rgba(181, 0, 0, 0.19)';
+                        } else {
+                            showType = typeMapping.default.label;
+                            optionType = typeMapping.default.class;
+                            optionText = typeMapping.default.text;
+                        }
+
+                        let btnConfiguration = '',
+                            idChain = element._id.substring(19);
+                    
+                        element.active
+                        ? element.prepared
+                            ? btnPreprared = Boolean(true) : null
+                        : btnPreprared = Boolean(true);
+                    
+                        !element.active
+                        ? btnConfiguration = `<button type="button" class="btn btn-secondary btn-sm disabled"><i class="fa-solid fa-trash-can"></i></button>`
+                        : btnConfiguration = `<button id="${element._id}" name="btnCardDeleteOrder" type="button" class="btn btn-danger btn-sm" title="Eliminar Orden ...${idChain}"><i class="fa-solid fa-trash-can"></i></button>`;
+                    
+                        let utcDate = new Date(element.timestamp),
+                            localDate = new Date(utcDate.getTime() + offset),
+                            formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0];
+                    
+                        // Retornar el HTML generado para cada card onclick="toggleRowSelection('${element._id}')"
+                        return (`<div class="row mb-2 align-items-center card-order-row" id="cardRow_${element._id}" 
+                                        style="${color}; border-radius: 5px; cursor: pointer;" data-user-id="${userId}" 
+                                        data-original-color="${color}">
+                                        <div class="col-auto">
+                                            <input class="form-check-input order-checkbox" type="checkbox" 
+                                                id="cardCheckOrder_${element._id}" data-order-id="${element._id}">
+                                        </div>
+                                    <div class="col">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-2">
+                                                <h6 id="cardDesignation_${element._id}" class="card-title mb-0"><strong>...${idChain}</strong></h6>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span id="cardCodigo_${element._id}" class="my-1"><strong>${element.invoice_nr}</strong></span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <span class="badge rounded-pill bg-${optionType} my-1">${showType}</span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                ${formattedDate}
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button id="cardDownloadOrder_${element._id}" name="cardDownloadOrder" type="button" class="btn btn-primary btn-sm" title="Descargar pdf Orden ...${idChain}"><i class="fa-solid fa-download"></i></button>
+                                                ${btnConfiguration}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>`
-            );
-        }).join(" ");
-
-        let mensaje = ''
-        arrOrdenesSearch.length ===1
-        ? mensaje = `Se encontró <strong>${arrOrdenesSearch.length}</strong> resultado.`
-        : mensaje = `Se encontraron <strong>${arrOrdenesSearch.length}</strong> resultados.`
-        
-        const htmlResultados = `<div class="row align-items-center">
-                                    <div class="col mx-auto">
-                                        <span class="my-1">${mensaje}</span>
-                                    </div>
                                 </div>`
+                        );
+                }).join("");
+        };
+    
+        let mensaje = '';
+        arrOrdenesSearch.length === 1
+        ? mensaje = `Se encontró <strong>${arrOrdenesSearch.length}</strong> resultado.`
+        : mensaje = `Se encontraron <strong>${arrOrdenesSearch.length}</strong> resultados.`;
+        
+        const htmlResultados = `
+            <div class="row align-items-center justify-content-center mb-3">
+                <div class="col-auto">
+                    <span class="my-1">${mensaje}</span>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check">
+                        <input class="form-check-input mt-2" type="checkbox" id="selectAllOrders">
+                        <label class="form-check-label mt-1" for="selectAllOrders">
+                            Seleccionar todos
+                        </label>
+                    </div>
+                </div>
+            </div>`;
 
-        document.getElementById('showOrdenesSearch').innerHTML = htmlSearchOrdenes
-        document.getElementById('showCountOrdenesSearch').innerHTML = htmlResultados
+        document.getElementById('showCountOrdenesSearch').innerHTML = htmlResultados;
+        document.getElementById('showOrdenesSearch').innerHTML = htmlSearchOrdenes;
+        clearSpinner();
+
+        // Función para sincronizar selección
+        function syncSelection(checkbox, isCard = true) {
+            const orderId = checkbox.dataset.orderId || extractIdNumber(checkbox.id);
+            const targetPrefix = isCard ? "inputCheckOrder_" : "cardCheckOrder_";
+            const targetCheckbox = document.getElementById(`${targetPrefix}${orderId}`);
+            
+            if (targetCheckbox) {
+                targetCheckbox.checked = checkbox.checked;
+                updateSelectionStyle(targetCheckbox, !isCard);
+            }
+            updateGlobalSelectionState();
+        }
+
+        // Función para actualizar estilos CORREGIDA
+        function updateSelectionStyle(checkbox, isCard = true) {
+            const element = checkbox.closest(isCard ? "div[id^='cardRow_']" : "tr");
+            if (!element) return;
+
+            if (checkbox.checked) {
+                element.style.boxShadow = '0 0 0 2px #0d6efd';
+                element.style.backgroundColor = 'rgba(13, 110, 253, 0.1)';
+            } else {
+                element.style.boxShadow = '';
+                // Restaurar color original basado en el grupo de usuario
+                const userId = element.dataset.userId;
+                if (userId && userGroupColors[userId]) {
+                    element.style.backgroundColor = userGroupColors[userId];
+                } else if (element.dataset.originalColor) {
+                    element.style.backgroundColor = element.dataset.originalColor;
+                }
+            }
+
+            // Sincronizar con el otro componente
+            const orderId = checkbox.dataset.orderId || extractIdNumber(checkbox.id);
+            const targetPrefix = isCard ? "inputCheckOrder_" : "cardCheckOrder_";
+            const targetCheckbox = document.getElementById(`${targetPrefix}${orderId}`);
+            
+            if (targetCheckbox) {
+                targetCheckbox.checked = checkbox.checked;
+                const targetElement = targetCheckbox.closest(isCard ? "tr" : "div[id^='cardRow_']");
+                if (targetElement) {
+                    if (checkbox.checked) {
+                        targetElement.style.boxShadow = '0 0 0 2px #0d6efd';
+                        targetElement.style.backgroundColor = 'rgba(13, 110, 253, 0.1)';
+                    } else {
+                        targetElement.style.boxShadow = '';
+                        // Restaurar color original para el otro componente
+                        const targetUserId = targetElement.dataset.userId;
+                        if (targetUserId && userGroupColors[targetUserId]) {
+                            targetElement.style.backgroundColor = userGroupColors[targetUserId];
+                        } else if (targetElement.dataset.originalColor) {
+                            targetElement.style.backgroundColor = targetElement.dataset.originalColor;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Función para actualizar estado global CORREGIDA
+        function updateGlobalSelectionState() {
+            const selectedOrders = new Set();
+            
+            // Tabla
+            document.querySelectorAll('#ordenesTable input[type="checkbox"]:checked').forEach(checkbox => {
+                selectedOrders.add(extractIdNumber(checkbox.id));
+            });
+            
+            // Cards
+            document.querySelectorAll('.order-checkbox:checked').forEach(checkbox => {
+                selectedOrders.add(checkbox.dataset.orderId);
+            });
+
+            const totalSelected = selectedOrders.size;
+
+            const btnDownload = document.getElementById('btnCheckSelectionDownload');
+            const spanCounter = document.getElementById('spanCheckSelecMasiveDownload');
+            
+            if (btnDownload) btnDownload.disabled = totalSelected === 0;
+            if (spanCounter) {
+                spanCounter.textContent = totalSelected;
+                spanCounter.classList.toggle("bg-danger", totalSelected === 0);
+                spanCounter.classList.toggle("bg-success", totalSelected > 0);
+            }
+        }
+
+        // Evento para seleccionar/deseleccionar todos
+        document.getElementById('selectAllOrders')?.addEventListener('change', function() {
+            const isChecked = this.checked;
+            document.querySelectorAll('.order-checkbox').forEach(checkbox => {
+                checkbox.checked = isChecked;
+                syncSelection(checkbox, true);
+                updateSelectionStyle(checkbox, true);
+            });
+        });
+
+        // Eventos para checkboxes individuales
+        document.querySelectorAll('.order-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                syncSelection(this, true);
+                updateSelectionStyle(this, true);
+                
+                // Actualizar "Seleccionar todos"
+                const allCheckboxes = document.querySelectorAll('.order-checkbox');
+                const allChecked = Array.from(allCheckboxes).every(cb => cb.checked);
+                document.getElementById('selectAllOrders').checked = allChecked;
+            });
+        });
+
+        // Funciones auxiliares
+        function extractIdNumber(id) {
+            return id ? id.split('_').pop() : '';
+        }
+
     }
 
+    //---------------------------------------------------
+    // const extractIdNumber = (id) => id ? id.split('_').pop() : '';
+
+    // Función para actualizar estilo de cards
+    // function updateCardStyle(checkbox) {
+    //     const card = checkbox.closest("div[id^='cardRow_']");
+    //     if (checkbox.checked) {
+    //         card.style.boxShadow = '0 0 0 2px #0d6efd';
+    //         card.style.backgroundColor = 'rgba(13, 110, 253, 0.1)';
+    //     } else {
+    //         card.style.boxShadow = '';
+    //         card.style.backgroundColor = '';
+    //     }
+    // }
+
+    // Función para actualizar estilo de filas en tabla (si existe)
+    // function updateTableRowStyle(checkbox) {
+    //     const table = document.getElementById('ordenesTable');
+    //     if (!table) return;
+        
+    //     const row = checkbox.closest("tr");
+    //     if (row) {
+    //         if (checkbox.checked) {
+    //             row.style.backgroundColor = 'rgba(13, 110, 253, 0.1)';
+    //             row.style.boxShadow = '0 0 0 2px #0d6efd';
+    //         } else {
+    //             row.style.backgroundColor = '';
+    //             row.style.boxShadow = '';
+    //         }
+    //     }
+    // }
+
+    // Función global para sincronizar selección
+    // window.syncSelection = function(sourceCheckbox, isCard = true) {
+    //     // Función para extraer ID (compartida con el otro código)
+    //     const orderId = extractIdNumber(sourceCheckbox.id);
+    //     const tableCheckbox = document.getElementById(`inputCheckOrder_${orderId}`);
+    //     const cardCheckbox = document.getElementById(`cardCheckOrder_${orderId}`);
+        
+    //     // Sincronizar con el otro componente
+    //     if (isCard && tableCheckbox) {
+    //         tableCheckbox.checked = sourceCheckbox.checked;
+    //         updateTableRowStyle(tableCheckbox);
+    //     } else if (!isCard && cardCheckbox) {
+    //         cardCheckbox.checked = sourceCheckbox.checked;
+    //         updateCardStyle(cardCheckbox);
+    //     }
+        
+    //     // Actualizar contadores globales
+    //     updateGlobalSelectionState();
+    // };
+
+    // Función para actualizar estado global
+    // function updateGlobalSelectionState() {
+    //     const tableCheckboxes = document.querySelectorAll('#ordenesTable input[type="checkbox"]:checked');
+    //     const cardCheckboxes = document.querySelectorAll('.order-checkbox:checked');
+    //     const totalSelected = tableCheckboxes.length + cardCheckboxes.length;
+
+    //     // Actualizar botones y contadores
+    //     const btnCheckSelectionDownload = document.getElementById('btnCheckSelectionDownload');
+    //     const spanCheckSelecMasive = document.getElementById('spanCheckSelecMasive');
+        
+    //     if (btnCheckSelectionDownload) btnCheckSelectionDownload.disabled = totalSelected === 0;
+    //     if (spanCheckSelecMasive) {
+    //         spanCheckSelecMasive.textContent = totalSelected;
+    //         spanCheckSelecMasive.classList.toggle("bg-danger", totalSelected === 0);
+    //         spanCheckSelecMasive.classList.toggle("bg-success", totalSelected > 0);
+    //     }
+    // }
+
+    // Modificar el evento de los checkboxes de cards
+    // document.querySelectorAll('.order-checkbox').forEach(checkbox => {
+    //     checkbox.addEventListener('change', function() {
+    //         syncSelection(this, true);
+    //         updateCardStyle(this);
+    //     });
+    // });
+
+    // Modificar el "Seleccionar todos"
+    // document.getElementById('selectAllOrders')?.addEventListener('change', function() {
+    //     const isChecked = this.checked;
+    //     document.querySelectorAll('.order-checkbox').forEach(checkbox => {
+    //         checkbox.checked = isChecked;
+    //         syncSelection(checkbox, true);
+    //         updateCardStyle(checkbox);
+    //     });
+    // });
+    //--------------------------------------------------
+
+    // Resto de las funciones existentes (downloadPdf, messageDeleteOrder, etc.)
     function downloadPdf(orderNumber) {
         const pdfUrl = `https://storage.googleapis.com/imagenesproyectosingenieria/upload/PdfOrders/Invoice_${orderNumber}.pdf`;
     
@@ -1730,31 +2003,30 @@ const renderSearchedOrdenesUser = (arrOrdenesSearch) => {
             newWindow.focus();
         } else {
             // Fallback for browsers that block pop-ups
-            //TODO: Swal
             alert('Por favor, autorice los pop-ups en este sitio para visualizar el PDF.');
         }
     }
     
-    const nodeCardDownloadList = document.querySelectorAll('button[name="cardDownloadOrder"]')
+    const nodeCardDownloadList = document.querySelectorAll('button[name="cardDownloadOrder"]');
     nodeCardDownloadList.forEach(function(btn){
-            if (btn.id) {
-                btn.addEventListener("click", (event) => {
-                    event.preventDefault()
-                    const tdNodeList = document.querySelectorAll('td[name="invoiceNumber"]')
-                    tdNodeList.forEach(function(td){
-                        const invoiceId = document.getElementById(`invoice_${btn.id.substring(18)}`)
-                        if (td.innerHTML === invoiceId.innerText) {
-                            const idInvoice = td.innerHTML.toString()
-                            td.innerHTML ? downloadPdf(idInvoice) : null
-                        }
-                    })
-                })
-            }
-        })
+        if (btn.id) {
+            btn.addEventListener("click", (event) => {
+                event.preventDefault();
+                const tdNodeList = document.querySelectorAll('td[name="invoiceNumber"]');
+                tdNodeList.forEach(function(td){
+                    const invoiceId = document.getElementById(`invoice_${btn.id.substring(18)}`);
+                    if (td.innerHTML === invoiceId.innerText) {
+                        const idInvoice = td.innerHTML.toString();
+                        td.innerHTML ? downloadPdf(idInvoice) : null;
+                    }
+                });
+            });
+        }
+    });
 
     // ---- mensaje confirmacion eliminar Order -----------
     function messageDeleteOrder(idOrden, userInformation, date) {
-        const idChain = idOrden.substring(19)
+        const idChain = idOrden.substring(19);
         const htmlForm =
             `La solicitud con fecha <b>${date}</b>, se eliminará completamente<br>
                 para el <strong>Administrador de pañol</strong> y usted.<br>
@@ -1764,7 +2036,7 @@ const renderSearchedOrdenesUser = (arrOrdenesSearch) => {
                     <fieldset>
                         <input type="hidden" id="screen" name="screen" value="0">
                     </fieldset>
-                </form>`
+                </form>`;
     
         Swal.fire({
             title: `Eliminar Orden Id#...${idChain}?`,
@@ -1781,56 +2053,81 @@ const renderSearchedOrdenesUser = (arrOrdenesSearch) => {
     
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById("formDeleteOrder").submit()
+                document.getElementById("formDeleteOrder").submit();
                 setTimeout(() => {
                     Swal.fire(
                         'Eliminado!',
                         `La Orden Id#<b>...${idChain}</b>, ha sido eliminada exitosamente.`,
                         'success'
-                    )
-                }, 600)
+                    );
+                }, 600);
             } else {
                 Swal.fire(
                     'No eliminada!',
                     `La Orden Id#<b>...${idChain}</b>, no ha sido eliminada.`,
                     'info'
-                    )
-                return false
+                );
+                return false;
             }
-        })
+        });
     }
 
-    const nodeList = document.querySelectorAll('button[name="btnCardDeleteOrder"]')
+    const nodeList = document.querySelectorAll('button[name="btnCardDeleteOrder"]');
     nodeList.forEach(function(btn){
         if (btn.id) {
             btn.addEventListener("click", (event) => {
-                event.preventDefault()
+                event.preventDefault();
                 const idOrden = btn.id,
-                    userInformation = document.getElementById(`userInformation_${idOrden}`).innerText,
-                    date = document.getElementById(`date_${idOrden}`).innerText
+                    userInformation = document.getElementById(`userInformation_${idOrden}`)?.innerText,
+                    date = document.getElementById(`date_${idOrden}`)?.innerText;
 
-                idOrden && userInformation && date ? messageDeleteOrder(idOrden, userInformation, date) : null
-            })
+                idOrden && userInformation && date ? messageDeleteOrder(idOrden, userInformation, date) : null;
+            });
         }
-    })
-}
+    });
+};
 
 document.addEventListener('DOMContentLoaded', () => {
-    const fechaInicioInput = document.getElementById('queryFechaDesde');
-    const fechaFinInput = document.getElementById('queryFechaHasta');
+    const fechaInicioInput = document.getElementById('queryFechaDesde'),
+        fechaFinInput = document.getElementById('queryFechaHasta'),
+        hoy = new Date(), // Obtener la fecha actual en formato YYYY-MM-DD
+        fechaMaximaPermitida = hoy.toISOString().split('T')[0],
+        fechaMinimaPermitida = new Date('2025-01-01');  // Fecha mínima permitida: 1/1/2025
 
-    // Fecha mínima permitida: 1/1/2025
-    const fechaMinimaPermitida = new Date('2025-01-01');
+    let title = 'Advertencia',
+        icon = 'warning'
 
-    // Deshabilitar fechas anteriores al 1/1/2025 en ambos campos
-    fechaInicioInput ? fechaInicioInput.min = fechaMinimaPermitida.toISOString().split('T')[0] : null;
-    fechaFinInput ? fechaFinInput.min = fechaMinimaPermitida.toISOString().split('T')[0] : null;
+    function messageAlertDates(title, message, icon){
+        Swal.fire(
+            title, 
+            message, 
+            icon);
+        return false
+    }
+
+    // Configurar valores mínimos y máximos iniciales
+    if (fechaInicioInput) {
+        fechaInicioInput.min = fechaMinimaPermitida.toISOString().split('T')[0];
+        fechaInicioInput.max = fechaMaximaPermitida; // No puede seleccionar fechas futuras
+    }
+    
+    if (fechaFinInput) {
+        fechaFinInput.min = fechaMinimaPermitida.toISOString().split('T')[0];
+        fechaFinInput.max = fechaMaximaPermitida; // No puede seleccionar fechas futuras
+    }
 
     if (fechaInicioInput && fechaFinInput) {
         // Punto #1: Si se selecciona una fecha inicial, deshabilitar fechas anteriores en el campo de fecha final
         fechaInicioInput.addEventListener('change', () => {
             if (fechaInicioInput.value) {
                 fechaFinInput.min = fechaInicioInput.value; // Fecha final no puede ser anterior a la fecha inicial
+                // Asegurar que no se exceda la fecha máxima permitida
+                if (new Date(fechaInicioInput.value) > hoy) {
+                    let message = 'La fecha inicial no puede ser mayor a la fecha actual'
+                    messageAlertDates(title, message, icon)
+                    fechaInicioInput.value = fechaMaximaPermitida;
+                    fechaFinInput.min = fechaMaximaPermitida;
+                }
             } else {
                 fechaFinInput.min = fechaMinimaPermitida.toISOString().split('T')[0]; // Restablecer al mínimo permitido
             }
@@ -1840,8 +2137,16 @@ document.addEventListener('DOMContentLoaded', () => {
         fechaFinInput.addEventListener('change', () => {
             if (fechaFinInput.value) {
                 fechaInicioInput.max = fechaFinInput.value; // Fecha inicial no puede ser posterior a la fecha final
+                // Validar que la fecha final no sea futura
+                if (new Date(fechaFinInput.value) > hoy) {
+                    let message = 'La fecha final no puede ser mayor a la fecha actual'
+                    messageAlertDates(title, message, icon)
+                    fechaFinInput.value = fechaMaximaPermitida;
+                    fechaInicioInput.max = fechaMaximaPermitida;
+                }
             } else {
                 fechaInicioInput.removeAttribute('max'); // Restablecer sin límite máximo
+                fechaInicioInput.max = fechaMaximaPermitida; // Pero manteniendo el límite de no futuro
             }
         });
 
@@ -1852,8 +2157,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 const fechaFin = new Date(fechaFinInput.value);
 
                 if (fechaFin < fechaInicio) {
-                    alert('La fecha final no puede ser anterior a la fecha inicial.');
+                    let message = 'La fecha final no puede ser anterior a la fecha inicial'
+                    messageAlertDates(title, message, icon)
                     fechaFinInput.value = ''; // Limpiar el campo de fecha final
+                }
+                
+                // Validación adicional para fechas futuras
+                if (fechaInicio > hoy) {
+                    let message = 'La fecha inicial no puede ser mayor a la fecha actual'
+                    messageAlertDates(title, message, icon)
+                    fechaInicioInput.value = fechaMaximaPermitida;
+                }
+                
+                if (fechaFin > hoy) {
+                    let message = 'La fecha final no puede ser mayor a la fecha actual'
+                    messageAlertDates(title, message, icon)
+                    fechaFinInput.value = fechaMaximaPermitida;
                 }
             }
         };
@@ -1872,10 +2191,191 @@ document.addEventListener('DOMContentLoaded', () => {
         fechaFinInput.addEventListener('input', () => {
             if (!fechaFinInput.value) {
                 fechaInicioInput.removeAttribute('max');
+                fechaInicioInput.max = fechaMaximaPermitida; // Mantener el límite de no futuro
+            }
+        });
+        
+        // Validación inicial al cargar la página si hay valores en los campos
+        validarFechas();
+    }
+
+    //-----Btns Buscar en BBDD el Usuario Seguidor de Diseño/Simulación --------------
+    const userNameBanner = document.getElementById('userNameBanner').innerText
+
+    function messageAlertUser(titulo, message, icon){
+        Swal.fire(
+            titulo, 
+            message, 
+            icon);
+        return false
+    }
+
+    async function cargarUsuario() {
+        const permisos = {
+            'searchUser': {
+                permisoUsuario: 'ajuste',
+                titulo: `Seleccionar Usuario `,
+                inputTarget: `queryUsuarios`
+            },
+            'searchUserModal': {
+                permisoUsuario: 'diseno',
+                titulo: 'Seleccionar Usuario',
+                inputTarget: `queryUsuarios`
+            }
+        };
+        
+        const { permisoUsuario, titulo, inputTarget } = permisos[`searchUser`] || {};
+
+        if (!permisoUsuario || !titulo || !inputTarget) {
+            throw new Error(`Permiso no encontrado`)
+        }
+
+        try {
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            const url = `../../../api/usuarios/searchUsers/${userNameBanner}`
+            const response = await fetch(url, {
+                method: "GET",
+                headers: myHeaders,
+                mode: 'cors',
+                cache: 'default',
+            });
+
+            if(!response.ok ){
+                throw new Error(`Error en la solicitud`);
+            }
+
+            const users = await response.json(),
+                arrayUsuariosEspecificos = [], arrayUsersAll = [];
+
+            if (users && users.length > 0) {
+                users.forEach((user, i) => {
+                    const userHTML = `<label>
+                                        <span id="${user._id}" class="badge rounded-pill ${user.permiso === `${permisoUsuario}` ? 'bg-info' : 'bg-light'} text-dark my-2">
+                                            <input id="${i}" class="form-check-input mb-1" type="radio"
+                                                name="radioUsuarios" value="${user.name}, ${user.lastName}">
+                                                ${user.name} ${user.lastName} - Id#:${user.legajoId}   
+                                        </span>
+                                    </label>`;
+                    
+                    if (user.status) {
+                        user.permiso === `${permisoUsuario}` ? arrayUsuariosEspecificos.push(userHTML) : arrayUsersAll.push(userHTML);
+                    }    
+                });
+
+                const html = `<div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="mb-3">
+                                            <label>${titulo} ${permisoUsuario}</label>
+                                            <div name='container' class="container">
+                                                ${arrayUsuariosEspecificos.join(' ')}
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="mb-3">
+                                            <label>Usuarios</label>
+                                            <div name='container' class="container">
+                                                ${arrayUsersAll.join(' ')}
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                </div>
+                            </div>`;
+                
+                let anchoModal = 600; // Valor base
+                // Calculamos el ancho del modal basado en la cantidad de usuarios
+                const incrementos = Math.floor(users.length / 20); // Cada 20 usuarios aumenta 100px
+                if (incrementos > 0) {
+                    anchoModal += incrementos * 100;
+                    anchoModal = Math.min(anchoModal, 1400); // Limitamos el ancho máximo a 1400px
+                }
+
+                Swal.fire({
+                    title: titulo,
+                    html: html,
+                    width: anchoModal,
+                    background: "#eee",
+                    allowOutsideClick: false,
+                    showCloseButton: true,
+                    focusConfirm: false,
+                    confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>',
+                    didOpen: () => {
+                        const btnAceptar = document.querySelector('.swal2-confirm');
+                        btnAceptar.setAttribute('id', 'btnAceptarModal');
+                        btnAceptar.style.cursor = "not-allowed";
+                        btnAceptar.disabled = true;
+
+                        const radios = document.getElementsByName('radioUsuarios');
+                        radios.forEach((radio) => {
+                            radio.addEventListener('change', () => {
+                                btnAceptar.style.cursor = "pointer";
+                                btnAceptar.disabled = false;
+                            });
+                        });
+                    }
+
+                }).then((result) => {
+                    const radioSelected = document.querySelector('input[name="radioUsuarios"]:checked');
+                    if (result.isConfirmed && radioSelected) {
+                        const inputUserSelected = document.getElementById(`${inputTarget}`);
+                        inputUserSelected.value = radioSelected.value;
+
+                    } else {
+                        const titulo = 'Usuario no seleccionado',
+                            message = 'No ha seleccionado ningún usuario!',
+                            icon = 'warning'
+                        messageAlertUser(titulo, message, icon)
+                    }
+                });
+
+            } else {
+                throw new Error(`No hay usuarios que seleccionar`);
+            }
+
+        } catch (error) {
+            const titulo = 'Error',
+                message = `${error}`,
+                icon = 'error'
+            messageAlertUser(titulo, message, icon)
+        }
+        disabledBtnAceptar()
+    }
+
+    function disabledBtnAceptar () {
+        let btnAceptarModal = document.getElementsByClassName('swal2-confirm');
+        const allInputsRadio = document.querySelectorAll('input[type="radio"]')
+
+        allInputsRadio.forEach(function(input) {
+            input.value && input.name != 'ociNumber' ?
+                input.addEventListener('input', (event) => {
+                    event.preventDefault()
+                    if (btnAceptarModal) {
+                        btnAceptarModal[0].removeAttribute('disabled')
+                        btnAceptarModal[0].style = "cursor: pointer;"
+                    }
+                })    
+            : null
+        })
+    }
+
+    let btnSearchUser = document.getElementById('searchOrderUser')
+    if (btnSearchUser) {
+        btnSearchUser.addEventListener('click', async (event) => {
+            try {
+                await cargarUsuario()
+
+            } catch (error) {
+                const titulo = 'Error al cargar los usuarios'
+                const message = `${error}`
+                const icon = 'error'
+                messageAlertUser(titulo, message, icon)
             }
         });
     }
 });
+
 //TODO:
 // const deleteFilters = document.getElementById('deleteFilters')
 //     console.log('deleteFilters: ', deleteFilters)

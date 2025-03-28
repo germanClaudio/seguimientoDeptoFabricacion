@@ -23,20 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ---------- Orders historial ----------------
-// socket.on('ordersActive', (arrOrders, arrUsers) => {
-//     let cadena = document.getElementById('mostrarUserName').innerText,
-//         indice = cadena.indexOf(","),
-//         name = cadena.substring(0,indice),
-//         index = arrUsers.findIndex(el=> el.name == name.trim())
-
-//     if(index !== -1) {
-//         let user = arrUsers[index].admin,
-//             userId = arrUsers[index]._id
-//             // console.log('user: ', user)
-//         user ? renderOrdenesAdmin(arrOrders, userId) : renderOrdenesUser(arrOrders)
-//     }
-// })
-
 socket.on('ordersUsers', ( arrUsers ) => {
     let cadena = document.getElementById('mostrarUserName').innerText,
         indice = cadena.indexOf(","),
@@ -839,7 +825,7 @@ const renderOrdenesUser = async (arrOrders, page = 1, direction = 'none') => {
     })
 
     // Llamar a la función para agregar el select después de renderizar la tabla
-    agregarSelectItemsPorPagina();
+    agregarSelectItemsPorPaginaUser();
 }
 
 //------------- Rows & Cards selected ------------------
@@ -989,7 +975,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             productos: card.querySelector(`[id^="cardProductos_"]`).textContent.trim(),
                             items: row.querySelector(`[id^="cardItems_"]`).textContent.trim(),
                         });
-    
+
                     } else if (row) {
                         accumulator.push({
                             idNumber: idNumber,
@@ -1016,7 +1002,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 </tr>`
 
                 function showSelectOptions(statusOptions) {
-                    console.log('statusOptions: ', statusOptions)
+                    //console.log('statusOptions: ', statusOptions)
                     let selectOptionsStatus = ''
                     statusOptions === 'noentregado'
                     ? selectOptionsStatus = `<option selected disabled value="${statusOptions}">No Entregado</option>
@@ -1039,17 +1025,17 @@ document.addEventListener("DOMContentLoaded", () => {
                         <td>${data.productos} / ${data.items}
                             <input type="hidden" name="idOrdenHidden_${extractIdNumber(data.id)}" value="${extractIdNumber(data.id)}" style="display: none;"></td>
                         <td>
-                            <select id="newOrdenSatus_${extractIdNumber(data.id)}" name="newOrdenSatus" class="form-select" required>
+                            <select id="newOrdenSatus_${extractIdNumber(data.id)}" name="newOrdenSatus_${extractIdNumber(data.id)}" class="form-select" required>
                                 ${ showSelectOptions(data.status.replace(/\s+/g, "").toLowerCase()) }
                             </select>
                         </td>
                         <td><button name="btnRemoveRow" type="button" id="btnRemoveRow_${extractIdNumber(data.id)}" class="btn btn-danger rounded-circle m-2 border border-2 shadow">
                             <i class="fa-solid fa-trash"></i></button></td>
                     </tr>`).join("")}`
-    
+
             // Generar SweetAlert2 con los datos seleccionados
             const tableHtml = `
-                <form id="formModifyStatus" action="/api/ordenes/modifyMulti/" method="post">
+                <form id="formModifyStatus" action="/api/ordenes/modifyMulti/1" method="post">
                     <fieldset>
                         <table id="statusOrdenesTable" class="table align-middle" style="font-size: 11pt";>
                             <thead>
@@ -1073,12 +1059,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 cancelButtonColor: '#d33',
                 width: 1500,
                 position: "center"
-    
+
             }).then((result) => {
+                const nodeSelectList = document.querySelectorAll('select[id^="newOrdenSatus_"]')
+                nodeSelectList.forEach(function(select){
+                    select ? select[0].removeAttribute('disabled') : null
+                })
+
                 const formModifyStatus = document.getElementById('formModifyStatus')
                 if (result.isConfirmed) {
                     formModifyStatus.submit()
-    
                     setTimeout(() => {
                         Swal.fire({
                             title: `Ordenes modificadas!`,
@@ -1087,7 +1077,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             width: 500
                         })
                     }, 500)
-    
+
                 } else {
                     Swal.fire({
                         title: `Ordenes no modificadas!`,
@@ -1098,7 +1088,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     return false
                 }
             });
-    
+
             
             document.querySelectorAll("[id^='btnRemoveRow_']").forEach(button => {
                 button.addEventListener("click", (event) => {
@@ -1107,12 +1097,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     id ? removeRow(id) : null
                 });
             });
-    
+
             //---------------- Remove item Row ---------------------------
             function removeRow(idButton, ) {
                 let removeButtons = document.querySelectorAll('button[name="btnRemoveRow"]')       
                 const rowToDelete = document.getElementById(`tr_${idButton}`)
-    
+
                 if (parseInt(removeButtons.length) > 1) {
                     rowToDelete ? rowToDelete.remove() : null
                     

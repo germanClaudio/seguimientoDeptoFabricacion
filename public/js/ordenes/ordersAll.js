@@ -1,6 +1,11 @@
 const socket = io.connect(),
     offset = -3 * 60 * 60 * 1000
 
+let currentPage = 1;
+let itemsPerPage = 10; // Valor por defecto
+let ordenesGlobales = [];
+const maxVisiblePages = 3;
+
 function formatDate(date) {
     const DD = String(date.getDate()).padStart(2, '0'),
         MM = String(date.getMonth() + 1).padStart(2, '0'),
@@ -36,20 +41,130 @@ socket.on('ordersUsers', ( arrUsers ) => {
 socket.on('ordersAllByUserId', (data) => {
     const { allOrders, ordersByUser, allUsers, userAdmin } = data;
 
-    userAdmin ? renderOrdenesAdmin(allOrders, allUsers) : renderOrdenesUser(ordersByUser)
+    userAdmin ? renderOrdenesAdmin(allOrders) : renderOrdenesUser(ordersByUser)
 
 })
 
-const renderOrdenesAdmin = (arrOrders) => {
-    const arrayOrders = arrOrders
-    if (arrOrders.length > 0) {
-        const html = arrayOrders.map((element) => {
+// Función para generar los controles de paginación
+const generarControlesPaginacion = () => {
+    const totalPages = Math.ceil(ordenesGlobales.length / itemsPerPage);
+    let paginationHTML = `<div class="pagination-anchor">
+                            <div class="pagination-container justify-content-center">`;
+    
+    // Botón Anterior
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderOrdenesAdmin(ordenesGlobales, ${currentPage - 1}, 'right')">
+            &laquo; Anterior
+        </button>`;
+
+    // Primeros números
+    if (currentPage > maxVisiblePages + 1) {
+        paginationHTML += `
+            <button class="pagination-btn" onclick="renderOrdenesAdmin(ordenesGlobales, 1)">1</button>
+            <span class="pagination-ellipsis">...</span>`;
+    }
+
+    // Números centrales
+    const start = Math.max(1, currentPage - maxVisiblePages);
+    const end = Math.min(totalPages, currentPage + maxVisiblePages);
+    
+    for (let i = start; i <= end; i++) {
+        paginationHTML += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                onclick="renderOrdenesAdmin(ordenesGlobales, ${i})">
+                ${i}
+            </button>`;
+    }
+
+    // Últimos números
+    if (currentPage < totalPages - maxVisiblePages) {
+        paginationHTML += `
+            <span class="pagination-ellipsis">...</span>
+            <button class="pagination-btn" onclick="renderOrdenesAdmin(ordenesGlobales, ${totalPages})">${totalPages}</button>`;
+    }
+
+    // Botón Siguiente
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderOrdenesAdmin(ordenesGlobales, ${currentPage + 1}, 'left')">
+            Siguiente &raquo;
+        </button>`;
+
+    paginationHTML += '</div>';
+    return paginationHTML;
+};
+
+// Función para cambiar el número de filas por página
+let selectedItemsPerPage = 10; // Valor por defecto
+
+const cambiarItemsPorPagina = (nuevoItemsPerPage) => {
+    selectedItemsPerPage = nuevoItemsPerPage; // Guardar la selección del usuario
+    itemsPerPage = nuevoItemsPerPage;
+    currentPage = 1; // Reiniciar a la primera página
+    renderOrdenesAdmin(ordenesGlobales);
+};
+
+const agregarSelectItemsPorPagina = () => { 
+    // Crear el HTML del select y la leyenda
+    let selectHTML = `
+        Mostrando 
+        <select class="form-select small w-auto mx-2" id="itemsPerPageSelect" onchange="cambiarItemsPorPagina(parseInt(this.value))">
+            <option value="10" ${selectedItemsPerPage === 10 ? 'selected' : ''}>10</option>
+            <option value="25" ${selectedItemsPerPage === 25 ? 'selected' : ''}>25</option>
+            <option value="50" ${selectedItemsPerPage === 50 ? 'selected' : ''}>50</option>
+            <option value="100" ${selectedItemsPerPage === 100 ? 'selected' : ''}>100</option>
+            <option value="${ordenesGlobales.length}" ${selectedItemsPerPage === ordenesGlobales.length ? 'selected' : ''}>Todos</option>
+        </select>
+        ordenes de ${ordenesGlobales.length}
+    `;
+
+    const paginationContainer = document.getElementById('paginationOrdenes');
+    const existingSelectContainer = document.getElementById('selectContainer');
+
+    // Verificar si el contenedor de paginación existe
+    if (paginationContainer) {
+        // Si ya existe un contenedor para el select, actualizamos su contenido
+        if (existingSelectContainer) {
+            existingSelectContainer.innerHTML = selectHTML;
+        } else {
+            // Si no existe, creamos un nuevo contenedor y lo insertamos
+            const selectContainer = document.createElement('div');
+            selectContainer.id = 'selectContainer';
+            selectContainer.classList.add('row', 'align-items-center', 'justify-content-center')
+            selectContainer.innerHTML = selectHTML;
+            paginationContainer.insertAdjacentHTML('beforebegin', selectContainer.outerHTML);
+        }
+    } else {
+        console.error("El contenedor de paginación no existe en el DOM.");
+    }
+};
+
+const renderOrdenesAdmin = async (arrOrders, page = 1, direction = 'none') => {
+    ordenesGlobales = arrOrders;
+    currentPage = page;
+
+    const container = document.getElementById('mostrarOrdenes');
+    const pagination = document.getElementById('paginationOrdenes');
+    container.classList.add('transition-out', direction);
+    
+    // Esperar a que termine la animación de salida
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedItems = ordenesGlobales.slice(startIndex, endIndex);
+    
+    let html = '', htmlPagination = '';
+
+    if (paginatedItems.length > 0) {
+        html = paginatedItems.map((element) => {
             let prodArr = []
             function loopProductId() {
                 for (i=0; i < element.items.length; i++) {
                     prodArr.push(element.items[i].consumibleId)
                 }
-                return prodArr.length//join('\n')
+                return prodArr.length
             }
 
             let qtyArr = [], qtyArrNumber = []
@@ -58,7 +173,7 @@ const renderOrdenesAdmin = (arrOrders) => {
                     qtyArr.push(element.items[i].quantity)
                     qtyArrNumber.push(element.items[i].quantity)
                 }
-                return qtyArr.join(' - ') //('\n')
+                return qtyArr.join(' - ')
             }
 
             for (i=0; i < element.items.length; i++) {
@@ -134,34 +249,44 @@ const renderOrdenesAdmin = (arrOrders) => {
                         </tr>`)
             }
         }).join(" ");
-        document.getElementById('mostrarOrdenes').innerHTML = html
-
-        const ordersActiveQty = []
-        for(let u=0; u<arrayOrders.length; u++) {
-            arrayOrders[u].visible ? ordersActiveQty.push(u) : null
-        }
-
-        const htmlOrderList = 
-            ( `<caption id="capOrderList">Cantidad de Ordenes: ${parseInt(ordersActiveQty.length)}</caption><br>
-                <caption id="capDeleteOrderList">Cantidad de Ordenes Eliminadas: ${parseInt(arrayOrders.length - ordersActiveQty.length)}</caption>`)
-
-        document.getElementById('capOrdersList').innerHTML = htmlOrderList
+        htmlPagination = generarControlesPaginacion();
 
     } else {
-        const html = (`<tr>
-                            <td colspan="10">
-                                <img class="img-fluid rounded-3 my-2 shadow-lg" alt="No hay items cargados para mostrar"
-                                    src='../../src/images/clean_table_graphic.png' width="auto" height="auto">
-                            </td>
-                        </tr>`)
+        html = (`<tr>
+                    <td colspan="15">
+                        <img class="img-fluid rounded-2 my-2 shadow-lg" alt="No hay items cargados para mostrar"
+                            src='../src/images/clean_table_graphic.png' width="auto" height="auto">
+                    </td>
+                </tr>`)
 
-        document.getElementById('mostrarOrdenes').innerHTML = html   
+                document.getElementById('mostrarOrdenes').innerHTML = html
     }
+
     // Ocultar el spinner y mostrar la tabla
     document.getElementById('loading-spinner').style.display = 'none';
     document.getElementById('ordenesTable').style.display = 'block';
 
+    container.innerHTML = html;
+    pagination.innerHTML = htmlPagination;
+    container.classList.remove('transition-out', 'left', 'right');
+    container.classList.add('transition-in', direction);
 
+    const ordersActiveQty = []
+    for(let u=0; u<ordenesGlobales.length; u++) {
+        ordenesGlobales[u].visible ? ordersActiveQty.push(u) : null
+    }
+
+    const htmlOrderList = 
+        ( `<caption id="capOrderList">Cantidad de Ordenes: ${parseInt(ordersActiveQty.length)}</caption><br>
+            <caption id="capDeleteOrderList">Cantidad de Ordenes Eliminadas: ${parseInt(ordenesGlobales.length - ordersActiveQty.length)}</caption>`)
+
+    document.getElementById('capOrdersList').innerHTML = htmlOrderList
+
+    // Remover clases de animación después de completar
+    setTimeout(() => {
+        container.classList.remove('transition-in', direction);
+    }, 400);
+    
     // ---- mensaje confirmacion Preparar Order -----------
     function messagePrepareOrder(idOrden, userInformation, date) {
         const idChain = idOrden.substring(19)
@@ -378,18 +503,131 @@ const renderOrdenesAdmin = (arrOrders) => {
                 })
             }
     })
+
+    // Llamar a la función para agregar el select después de renderizar la tabla
+    agregarSelectItemsPorPagina();
 }
 
-const renderOrdenesUser = (arrOrders) => {
-    const arrayOrders = arrOrders
-    if (arrOrders.length > 0) {
-        const html = arrayOrders.map((element) => {
+
+// Función para generar los controles de paginación
+const generarControlesPaginacionUser = () => {
+    const totalPages = Math.ceil(ordenesGlobales.length / itemsPerPage);
+    let paginationHTML = `<div class="pagination-anchor">
+                            <div class="pagination-container justify-content-center">`;
+    
+    // Botón Anterior
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderOrdenesUser(ordenesGlobales, ${currentPage - 1}, 'right')">
+            &laquo; Anterior
+        </button>`;
+
+    // Primeros números
+    if (currentPage > maxVisiblePages + 1) {
+        paginationHTML += `
+            <button class="pagination-btn" onclick="renderOrdenesUser(ordenesGlobales, 1)">1</button>
+            <span class="pagination-ellipsis">...</span>`;
+    }
+
+    // Números centrales
+    const start = Math.max(1, currentPage - maxVisiblePages);
+    const end = Math.min(totalPages, currentPage + maxVisiblePages);
+    
+    for (let i = start; i <= end; i++) {
+        paginationHTML += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                onclick="renderOrdenesUser(ordenesGlobales, ${i})">
+                ${i}
+            </button>`;
+    }
+
+    // Últimos números
+    if (currentPage < totalPages - maxVisiblePages) {
+        paginationHTML += `
+            <span class="pagination-ellipsis">...</span>
+            <button class="pagination-btn" onclick="renderOrdenesUser(ordenesGlobales, ${totalPages})">${totalPages}</button>`;
+    }
+
+    // Botón Siguiente
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderOrdenesUser(ordenesGlobales, ${currentPage + 1}, 'left')">
+            Siguiente &raquo;
+        </button>`;
+
+    paginationHTML += '</div>';
+    return paginationHTML;
+};
+
+
+const cambiarItemsPorPaginaUser = (nuevoItemsPerPage) => {
+    selectedItemsPerPage = nuevoItemsPerPage; // Guardar la selección del usuario
+    itemsPerPage = nuevoItemsPerPage;
+    currentPage = 1; // Reiniciar a la primera página
+    renderOrdenesUser(ordenesGlobales);
+};
+
+const agregarSelectItemsPorPaginaUser = () => {
+    // Crear el HTML del select y la leyenda
+    let selectHTML = `
+        Mostrando 
+        <select class="form-select small w-auto mx-2" id="itemsPerPageSelect" onchange="cambiarItemsPorPaginaUser(parseInt(this.value))">
+            <option value="10" ${selectedItemsPerPage === 10 ? 'selected' : ''}>10</option>
+            <option value="25" ${selectedItemsPerPage === 25 ? 'selected' : ''}>25</option>
+            <option value="50" ${selectedItemsPerPage === 50 ? 'selected' : ''}>50</option>
+            <option value="100" ${selectedItemsPerPage === 100 ? 'selected' : ''}>100</option>
+            <option value="${ordenesGlobales.length}" ${selectedItemsPerPage === ordenesGlobales.length ? 'selected' : ''}>Todos</option>
+        </select>
+        ordenes de ${ordenesGlobales.length}
+    `;
+
+    const paginationContainer = document.getElementById('paginationOrdenes');
+    const existingSelectContainer = document.getElementById('selectContainer');
+
+    // Verificar si el contenedor de paginación existe
+    if (paginationContainer) {
+        // Si ya existe un contenedor para el select, actualizamos su contenido
+        if (existingSelectContainer) {
+            existingSelectContainer.innerHTML = selectHTML;
+        } else {
+            // Si no existe, creamos un nuevo contenedor y lo insertamos
+            const selectContainer = document.createElement('div');
+            selectContainer.id = 'selectContainer';
+            selectContainer.classList.add('row', 'align-items-center', 'justify-content-center')
+            selectContainer.innerHTML = selectHTML;
+            paginationContainer.insertAdjacentHTML('beforebegin', selectContainer.outerHTML);
+        }
+    } else {
+        console.error("El contenedor de paginación no existe en el DOM.");
+    }
+};
+
+
+const renderOrdenesUser = async (arrOrders, page = 1, direction = 'none') => {
+    ordenesGlobales = arrOrders;
+    currentPage = page;
+    console.log('ordenesGlobales: ', ordenesGlobales)
+    const container = document.getElementById('mostrarOrdenes');
+    const pagination = document.getElementById('paginationOrdenes');
+    container.classList.add('transition-out', direction);
+    
+    // Esperar a que termine la animación de salida
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedItems = ordenesGlobales.slice(startIndex, endIndex);
+    
+    let html = '', htmlPagination = '';
+
+    if (paginatedItems.length > 0) {
+        html = ordenesGlobales.map((element) => {
             let prodArr = []
             function loopProductId() {
                 for (i=0; i < element.items.length; i++) {
                     prodArr.push(element.items[i].consumibleId)
                 }
-                return prodArr.length  //join('\n')
+                return prodArr.length
             }
 
             let qtyArr = [], qtyArrNumber = []
@@ -398,7 +636,7 @@ const renderOrdenesUser = (arrOrders) => {
                     qtyArr.push(element.items[i].quantity)
                     qtyArrNumber.push(element.items[i].quantity)
                 }
-                return qtyArr.join(' - ')  //('\n')
+                return qtyArr.join(' - ')
             }
 
             for (i=0; i < element.items.length; i++) {
@@ -460,7 +698,7 @@ const renderOrdenesUser = (arrOrders) => {
                         </tr>`)
             }
         }).join(" ");
-        document.getElementById('mostrarOrdenes').innerHTML = html
+        htmlPagination = generarControlesPaginacionUser();
 
     } else {
         const html = (`<tr>
@@ -469,17 +707,27 @@ const renderOrdenesUser = (arrOrders) => {
                                 src='../../src/images/clean_table_graphic.png' width="auto" height="auto">
                         </td>
                     </tr>`)
+
         document.getElementById('mostrarOrdenes').innerHTML = html   
     }
 
+    // Ocultar el spinner y mostrar la tabla
+    document.getElementById('loading-spinner').style.display = 'none';
+    document.getElementById('ordenesTable').style.display = 'block';
+    
+    container.innerHTML = html;
+    pagination.innerHTML = htmlPagination;
+    container.classList.remove('transition-out', 'left', 'right');
+    container.classList.add('transition-in', direction);
+
     const ordersActiveQty = [], ordersPreparedQty = []
-    for(let u=0; u<arrayOrders.length; u++) {
-        arrayOrders[u].visible && !arrayOrders[u].active ? ordersActiveQty.push(u) : null
-        arrayOrders[u].visible && arrayOrders[u].prepared ? ordersPreparedQty.push(u) : null
+    for(let u=0; u<ordenesGlobales.length; u++) {
+        ordenesGlobales[u].visible && !ordenesGlobales[u].active ? ordersActiveQty.push(u) : null
+        ordenesGlobales[u].visible && ordenesGlobales[u].prepared ? ordersPreparedQty.push(u) : null
     }
 
     const htmlOrderList = 
-        ( `<caption id="capOrderList">Cantidad de Ordenes Totales: ${parseInt(arrayOrders.length)}</caption><br>
+        ( `<caption id="capOrderList">Cantidad de Ordenes Totales: ${parseInt(ordenesGlobales.length)}</caption><br>
             <caption id="capPreparedList">Cantidad de Ordenes Preparadas: ${parseInt(ordersPreparedQty.length)}</caption><br>
             <caption id="capDeleteOrderList">Cantidad de Ordenes Entregadas: ${parseInt(ordersActiveQty.length)}</caption>`)
 
@@ -583,4 +831,300 @@ const renderOrdenesUser = (arrOrders) => {
             })
         }
     })
+
+    // Llamar a la función para agregar el select después de renderizar la tabla
+    agregarSelectItemsPorPaginaUser();
 }
+
+//------------- Rows & Cards selected ------------------
+document.addEventListener("DOMContentLoaded", () => {
+    const tableId = "ordenesTable",
+        table = document.getElementById(tableId),
+        cardsContainer = document.getElementById("showOrdenesSearch"),
+        btnCheckSelectionAll = document.getElementById("btnCheckSelectionAll"),
+        spanCheckSelecMasive = document.getElementById("spanCheckSelecMasive");
+
+    // Función para inicializar eventos en checkboxes de filas
+    function initializeRowCheckboxes() {
+        const rowCheckboxes = table.querySelectorAll('input[type="checkbox"]');
+        rowCheckboxes.forEach((checkbox) => {
+            checkbox.addEventListener("change", () => {
+                syncCheckboxWithCard(checkbox);
+                updateSelectionState();
+                updateRowStyle(checkbox);
+            });
+        });
+    }
+
+    // Función para inicializar eventos en checkboxes de cards
+    function initializeCardCheckboxes() {
+        const cardCheckboxes = cardsContainer.querySelectorAll('input.form-check-input');
+        cardCheckboxes.forEach((checkbox) => {
+            if (!checkbox.dataset.initialized) {
+                checkbox.dataset.initialized = true;
+                checkbox.addEventListener("change", () => {
+                    syncCheckboxWithRow(checkbox);
+                    updateSelectionState();
+                });
+            }
+        });
+    }
+
+    // Sincronizar checkbox de fila con card correspondiente
+    function syncCheckboxWithCard(rowCheckbox) {
+        const extractIdNumber = (id) => id.split('_').pop()
+        let idInputCard = extractIdNumber(rowCheckbox.id)
+        const cardCheckbox = cardsContainer.querySelector(`#inputCheckOrdenCard_${idInputCard}`);
+        if (cardCheckbox) {
+            if (rowCheckbox.checked) {
+                cardCheckbox.checked = true;
+                cardCheckbox.disabled = true; // Deshabilitar para evitar duplicados
+            } else {
+                cardCheckbox.checked = false;
+                cardCheckbox.disabled = false; // Habilitar nuevamente
+            }
+            updateCardStyle(cardCheckbox);
+            updateRowStyle(rowCheckbox);
+        }
+    }
+
+    // Sincronizar checkbox de card con fila correspondiente
+    function syncCheckboxWithRow(cardCheckbox) {
+        const extractIdNumber = (id) => id.split('_').pop()
+        let idInputRow = extractIdNumber(cardCheckbox.id)
+        const rowCheckbox = table.querySelector(`#inputCheckOrder_${idInputRow}`)
+        if (rowCheckbox) {
+            if (cardCheckbox.checked) {
+                rowCheckbox.checked = true;
+                rowCheckbox.disabled = true; // Deshabilitar para evitar duplicados
+            } else {
+                rowCheckbox.checked = false;
+                rowCheckbox.disabled = false; // Habilitar nuevamente
+            }
+            updateRowStyle(rowCheckbox);
+            updateCardStyle(cardCheckbox);
+        }
+    }
+
+    // Actualizar estilo de las filas al cambiar el estado del checkbox
+    function updateRowStyle(rowCheckbox) {
+        const row = rowCheckbox.closest("tr");
+        rowCheckbox.checked ? row.classList.add("row-highlight") : row.classList.remove("row-highlight")
+    }
+
+    // Actualizar estilo de las cards al cambiar el estado del checkbox
+    function updateCardStyle(cardCheckbox) {
+        const card = cardCheckbox.closest("div[id^='cardSelected_']");
+        if (cardCheckbox.checked) {
+            card.classList.add("cardSelected");
+            card.classList.remove("shadow-lg");
+        } else {
+            card.classList.remove("cardSelected");
+            card.classList.add("shadow-lg");
+        }
+    }
+
+    // Actualizar contador y estado del botón masivo
+    function updateSelectionState() {
+        const selectedRowCheckboxes = table.querySelectorAll('input[type="checkbox"]:checked');
+        // const selectedCardCheckboxes = cardsContainer.querySelectorAll('input.form-check-input:checked')
+        let totalSelected = selectedRowCheckboxes.length //+ selectedCardCheckboxes.length;
+
+        if (btnCheckSelectionAll) {
+            btnCheckSelectionAll.disabled = totalSelected === 0
+            spanCheckSelecMasive.textContent = totalSelected
+            spanCheckSelecMasive.classList.toggle("bg-danger", totalSelected === 0)
+            spanCheckSelecMasive.classList.toggle("bg-success", totalSelected > 0)
+        }
+    }
+
+    // Configurar MutationObservers
+    const rowObserver = new MutationObserver(() => {
+        initializeRowCheckboxes();
+    });
+
+    const cardObserver = new MutationObserver(() => {
+        initializeCardCheckboxes();
+    });
+
+    rowObserver.observe(table, { childList: true, subtree: true });
+    cardObserver.observe(cardsContainer, { childList: true, subtree: true });
+
+    // Inicializar eventos al cargar
+    initializeRowCheckboxes();
+    initializeCardCheckboxes();
+
+    // Botón de SweetAlert2 Modificar Status
+    if(btnCheckSelectionAll) {
+        btnCheckSelectionAll.addEventListener("click", () => {
+            const extractIdNumber = (id) => id.split('_').pop(); // Función para extraer el número del ID
+    
+            const selectedCheckboxes = Array.from(table.querySelectorAll('input[type="checkbox"]:checked'))
+                .concat(Array.from(cardsContainer.querySelectorAll('input.form-check-input:checked')))
+                .reduce((accumulator, checkbox) => {
+                    const row = checkbox.closest("tr"),
+                        card = checkbox.closest("div[id^='cardSelected_']"),
+                        idNumber = extractIdNumber(checkbox.id); // Extrae el número del ID
+    
+                    // Verifica si el ID (número) ya fue procesado
+                    if (accumulator.some(item => item.idNumber === idNumber)) {
+                        return accumulator; // No agregar duplicados
+                    }
+    
+                    // Agrega al acumulador según corresponda (row o card)
+                    if (card) {
+                        accumulator.push({
+                            idNumber: idNumber,
+                            id: checkbox.id,
+                            codigo: card.querySelector(`[id^="cardInvoice_"]`).textContent.trim(),
+                            status: card.querySelector(`[id^="cardStatus_"]`).textContent.trim(),
+                            solicitadaPor: card.querySelector(`[id^="cardUserInformation_"]`).textContent.trim(),
+                            fecha: card.querySelector(`[id^="cardDate_"]`).textContent.trim(),
+                            productos: card.querySelector(`[id^="cardProductos_"]`).textContent.trim(),
+                            items: row.querySelector(`[id^="cardItems_"]`).textContent.trim(),
+                        });
+
+                    } else if (row) {
+                        accumulator.push({
+                            idNumber: idNumber,
+                            id: checkbox.id,
+                            codigo: row.querySelector(`[id^="invoice_"]`).textContent.trim(),
+                            status: row.querySelector(`[id^="status_"]`).textContent.trim(),
+                            solicitadaPor: row.querySelector(`[id^="userInformation_"]`).textContent.trim(),
+                            fecha: row.querySelector(`[id^="date_"]`).textContent.trim(),
+                            productos: row.querySelector(`[id^="productos_"]`).textContent.trim(),
+                            items: row.querySelector(`[id^="items_"]`).textContent.trim(),
+                        });
+                    }
+                    return accumulator;
+                }, []);
+
+                const trTable = `<tr>
+                                    <th style="width:22vw" class="text-center">Solicitud N°</th>
+                                    <th style="width:5vw" class="text-center">Status</th>
+                                    <th style="width:16vw" class="text-center">Solicitada por</th>
+                                    <th style="width:19vw" class="text-center">Fecha</th>
+                                    <th style="width:18vw" class="text-center">Prod./Items</th>
+                                    <th style="width:16vw" class="text-center">Nuevo Status</th>
+                                    <th style="width:4vw" class="text-center"></th>
+                                </tr>`
+
+                function showSelectOptions(statusOptions) {
+                    //console.log('statusOptions: ', statusOptions)
+                    let selectOptionsStatus = ''
+                    statusOptions === 'noentregado'
+                    ? selectOptionsStatus = `<option selected disabled value="${statusOptions}">No Entregado</option>
+                                            <option value="preparado">Preparado</option>
+                                            <option value="entregado">Entregado</option>`
+
+                    : selectOptionsStatus = `<option selected disabled value="${statusOptions}">Preparado</option>
+                                            <option value="entregado">Entregado</option>
+                                            <option value="${statusOptions}">No Entregado</option>`
+                    
+                    return selectOptionsStatus
+                }
+
+                const tableBody = `${selectedCheckboxes.map((data) =>
+                    `<tr id="tr_${extractIdNumber(data.id)}">
+                        <td><strong>...${data.codigo.substring(19)}</strong></td>
+                        <td><span class="common-style ${data.status.replace(/\s+/g, "").toLowerCase()}">${data.status}</span></td>
+                        <td>${data.solicitadaPor}</td>
+                        <td>${data.fecha}</td>
+                        <td>${data.productos} / ${data.items}
+                            <input type="hidden" name="idOrdenHidden_${extractIdNumber(data.id)}" value="${extractIdNumber(data.id)}" style="display: none;"></td>
+                        <td>
+                            <select id="newOrdenSatus_${extractIdNumber(data.id)}" name="newOrdenSatus_${extractIdNumber(data.id)}" class="form-select" required>
+                                ${ showSelectOptions(data.status.replace(/\s+/g, "").toLowerCase()) }
+                            </select>
+                        </td>
+                        <td><button name="btnRemoveRow" type="button" id="btnRemoveRow_${extractIdNumber(data.id)}" class="btn btn-danger rounded-circle m-2 border border-2 shadow">
+                            <i class="fa-solid fa-trash"></i></button></td>
+                    </tr>`).join("")}`
+
+            // Generar SweetAlert2 con los datos seleccionados
+            const tableHtml = `
+                <form id="formModifyStatus" action="/api/ordenes/modifyMulti/2" method="post">
+                    <fieldset>
+                        <table id="statusOrdenesTable" class="table align-middle" style="font-size: 11pt";>
+                            <thead>
+                                ${trTable}
+                            </thead>
+                            <tbody>
+                                ${tableBody}
+                            </tbody>
+                        </table>
+                    </fieldset>
+                </form>`;
+    
+            Swal.fire({
+                title: "Modificar Status Múltiples Ordenes",
+                html: tableHtml,
+                confirmButtonText: 'Modificar Ordenes <i class="fa-regular fa-pen-to-square"></i>',
+                confirmButtonColor: '#3085d6',
+                showCancelButton: true,
+                showCloseButton: true,
+                cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>',
+                cancelButtonColor: '#d33',
+                width: 1500,
+                position: "center"
+
+            }).then((result) => {
+                const nodeSelectList = document.querySelectorAll('select[id^="newOrdenSatus_"]')
+                nodeSelectList.forEach(function(select){
+                    select ? select[0].removeAttribute('disabled') : null
+                })
+
+                const formModifyStatus = document.getElementById('formModifyStatus')
+                if (result.isConfirmed) {
+                    formModifyStatus.submit()
+                    setTimeout(() => {
+                        Swal.fire({
+                            title: `Ordenes modificadas!`,
+                            html: 'Las ordenes fueron modificadas con éxito',
+                            icon: 'success',
+                            width: 500
+                        })
+                    }, 500)
+
+                } else {
+                    Swal.fire({
+                        title: `Ordenes no modificadas!`,
+                        html: 'El status de las ordenes no fue modificado.',
+                        icon: 'warning',
+                        width: 500
+                    })
+                    return false
+                }
+            });
+
+            
+            document.querySelectorAll("[id^='btnRemoveRow_']").forEach(button => {
+                button.addEventListener("click", (event) => {
+                    event.preventDefault()
+                    const id = event.target.closest("button").id.split("_")[1];
+                    id ? removeRow(id) : null
+                });
+            });
+
+            //---------------- Remove item Row ---------------------------
+            function removeRow(idButton, ) {
+                let removeButtons = document.querySelectorAll('button[name="btnRemoveRow"]')       
+                const rowToDelete = document.getElementById(`tr_${idButton}`)
+
+                if (parseInt(removeButtons.length) > 1) {
+                    rowToDelete ? rowToDelete.remove() : null
+                    
+                } else {
+                    Swal.close()
+                    Swal.fire({
+                        title: `Ordenes no modificadas!`,
+                        html: 'El status de las ordenes no fue modificado.',
+                        icon: 'warning',
+                        width: 500
+                    })
+                    return false
+                }
+            }
+        });
+    }
+});

@@ -482,3 +482,51 @@ const renderConsumiblesUser = async (arrConsumibles, page = 1, direction = 'none
         container.classList.remove('transition-in', direction);
     }, 500);
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('dashboard-container');
+    const container2 = document.getElementById('dashboard-container2');
+    const container3 = document.getElementById('dashboard-container3');
+    const container4 = document.getElementById('dashboard-container4');
+    
+
+    Swapy.createSwapy(container, {
+        animation: 'dynamic'
+    });
+
+    Swapy.createSwapy(container2, {
+        animation: 'dynamic'
+    });
+
+    Swapy.createSwapy(container3, {
+        animation: 'dynamic'
+    });
+
+    Swapy.createSwapy(container4, {
+        animation: 'dynamic'
+    });
+    
+
+    // Variable para rastrear si se está arrastrando una tarjeta
+    let isDragging = false;
+
+    // Evento cuando comienza el arrastre
+    container.addEventListener('swapy:dragstart', () => {
+        isDragging = true;
+    });
+
+    // Evento cuando termina el arrastre
+    container.addEventListener('swapy:dragend', () => {
+        isDragging = false;
+    });
+
+    // Prevenir el clic en los enlaces si se está arrastrando
+    const cardLinks = document.querySelectorAll('.card-link');
+    cardLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+            if (isDragging) {
+                event.preventDefault(); // Evita que el enlace se active
+            }
+        });
+    });
+});

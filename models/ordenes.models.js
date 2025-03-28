@@ -35,6 +35,14 @@ let ItemSchema = new Schema({
     },
     quantity: {
         type: Number,
+    },
+    tipoTalle: {
+        type: String,
+        default: 'unico'
+    },
+    letterOrNumber: {
+        type: String,
+        default: 'none',
     }
 })
 
@@ -74,9 +82,23 @@ let ShippingSchema = new Schema({
 const orderSchema = new Schema({
         shipping: [ShippingSchema],
         items: [ItemSchema],
+        letterOrNumber: {
+            type: Array
+        },
+        // active = true => no Entregada // false => Entregada
         active: {
             type: Boolean,
             default: true
+        },
+        // visible = true => activa // = false => eliminada
+        visible : {
+            type: Boolean,
+            default: true
+        },
+        // prepared = true => preparada // = flase => no preparada
+        prepared: {
+            type: Boolean,
+            default: false
         },
         quantity: {
             type: Number,
@@ -97,14 +119,6 @@ const orderSchema = new Schema({
         invoiceStorageUrl: {
             type: String,
         },
-        visible : {
-            type: Boolean,
-            default: true
-        },
-        prepared: {
-            type: Boolean,
-            default: false
-        }
     },
     {
         timestamp: true

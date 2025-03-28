@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head/head'); %>
+</head>
+
+<body>
+    <header>
+        <% if (userInfo.admin) { %>
+            <%- include('../partials/header/header'); %>
+        <% } else { %>
+            <%- include('../partials/header/headerToolShop'); %>
+        <% } %>
+    </header>
+    
+    <div class="container" style="padding-top: 70px;"></div>
+    <br>
+    <div class="container-fluid">
+        <%- include('../partials/sections/sectionResumenOrderDetails'); %>
+    </div>
+    <div class="card shadow-lg rounded-3 mx-auto my-4" style="max-width: 900px;">
+        <div class="card-body text-center">
+            <% if (arrayResumen.length === 1 ) { %>
+                <h3 class="card-title my-3">El resumen de ordenes de solicitudes fue generado exitosamente!</h3>
+            <% } else { %>
+                <h3 class="card-title my-3"><strong><%= arrayResumen.length %> resumenes</strong> de ordenes de solicitudes fueron generados exitosamente!</h3>
+            <% } %>
+            <hr>
+            <% for (let i=0; arrayResumen.length > i; i++) { %>
+                <div class="download-section my-3">
+                    <h5><%= arrayResumen[i].shipping.name %> <%= arrayResumen[i].shipping.lastName %> - Legajo: <%= arrayResumen[i].shipping.legajoIdUser %></h5>
+                    <input type="hidden" id="orderNumber_<%= arrayResumen[i].orders._id %>" name="orderNumber" value="<%= arrayResumen[i].resumen_nr %>">
+                    <button id="download-btn_<%= arrayResumen[i].shipping.legajoIdUser %>" class="btn download-btn" data-order-number="<%= arrayResumen[i].resumen_nr %>" style="background-color: getRandomColor();">
+                        Descargar PDF - <%= arrayResumen[i].shipping.name %> <%= arrayResumen[i].shipping.lastName %> <i class="fa-solid fa-cloud-arrow-down"></i>
+                    </button>
+                </div>
+                <hr>
+            <% } %>
+        </div>
+
+        <div class="card-footer text-center">
+            <% if (userInfo.area === 'fabricacion') { %>
+                <a href="/api/auth/indexToolShop" class="btn btn-primary ms-3 my-3">Volver al Home <i class="fa-solid fa-home" aria-hidden="true"></i></a>
+            
+            <% } else { %>
+                <a href="/api/auth/index" class="btn btn-primary ms-3 my-3">Volver al Home <i class="fa-solid fa-home" aria-hidden="true"></i></a>
+            <% } %>
+
+            <a href="javascript:history.back()" class="btn btn-secondary ms-3 my-3">Volver Atrás <i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a>
+        </div>
+    </div>
+    <br>
+    <footer>
+        <%- include('../partials/footer/footer'); %>
+    </footer>
+
+    <!--    scripts     -->
+    <script type="text/javascript" src="/js/comunes/downloadPdfResumenFile.js"></script>
+</body>
+
+</html>
