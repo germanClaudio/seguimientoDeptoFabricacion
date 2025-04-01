@@ -418,7 +418,7 @@ const agregarSelectItemsPorPaginaUser = () => {
 const renderOrdenesUser = async (arrOrders, page = 1, direction = 'none') => {
     ordenesGlobales = arrOrders;
     currentPage = page;
-    console.log('ordenesGlobales: ', ordenesGlobales)
+    // console.log('ordenesGlobales: ', ordenesGlobales)
     const container = document.getElementById('mostrarOrdenes');
     const pagination = document.getElementById('paginationOrdenes');
     container.classList.add('transition-out', direction);
@@ -642,9 +642,9 @@ const renderOrdenesUser = async (arrOrders, page = 1, direction = 'none') => {
 
 //------------- Rows & Cards selected ------------------
 document.addEventListener("DOMContentLoaded", () => {
-    const tableId = "ordenesTable",
-        table = document.getElementById(tableId),
-        cardsContainer = document.getElementById("showOrdenesSearch"),
+    const tableId = "ordenesTable"
+    let table = document.getElementById(tableId);
+    const cardsContainer = document.getElementById("showOrdenesSearch"),
         btnCheckSelectionAll = document.getElementById("btnCheckSelectionAll"),
         spanCheckSelecMasive = document.getElementById("spanCheckSelecMasive"),
         btnCheckSelectionDownload = document.getElementById("btnCheckSelectionDownload"),
@@ -770,36 +770,8 @@ document.addEventListener("DOMContentLoaded", () => {
         btnCheckSelectionDownload.addEventListener("click", handleMassiveDownload);
     }
 
-    // async function handleMassiveDownload() {
-    //     const selectedOrders = getSelectedOrdersData();
-        
-    //     if (selectedOrders.length === 0) {
-    //         Swal.fire('Error', 'No hay órdenes seleccionadas', 'error');
-    //         return;
-    //     }
-
-    //     const groupedOrders = groupOrdersByUser(selectedOrders);
-    //     const modalHtml = generateOrdersModalHtml(groupedOrders);
-
-    //     const { isConfirmed } = await Swal.fire({
-    //         title: "Descargar Resumen Múltiples Ordenes",
-    //         html: modalHtml,
-    //         confirmButtonText: 'Descargar Resumen <i class="fa-solid fa-download"></i>',
-    //         confirmButtonColor: '#3085d6',
-    //         showCancelButton: true,
-    //         showCloseButton: true,
-    //         cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>',
-    //         cancelButtonColor: '#d33',
-    //         width: 1220,
-    //         position: "center"
-    //     });
-
-    //     if (isConfirmed) {
-    //         submitOrdersForm(groupedOrders);
-    //     }
-    // }
-    // Modifica la función handleMassiveDownload para asignar los event listeners después de generar el modal
     
+    // Modifica la función handleMassiveDownload para asignar los event listeners después de generar el modal
     async function handleMassiveDownload() {
         const selectedOrders = getSelectedOrdersData();
         
@@ -848,20 +820,66 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function getSelectedOrdersData() {
-        return Array.from(table.querySelectorAll('input[type="checkbox"]:checked'))
-            .map(checkbox => {
-                const row = checkbox.closest("tr");
-                return row ? {
-                    id: checkbox.id,
-                    codigo: row.querySelector('[id^="invoice_"]')?.textContent.trim(),
-                    status: row.querySelector('[id^="status_"]')?.textContent.trim(),
-                    solicitadaPor: row.querySelector('[id^="userInformation_"]')?.textContent.trim(),
-                    fecha: row.querySelector('[id^="date_"]')?.textContent.trim(),
-                    productos: row.querySelector('[id^="productos_"]')?.textContent.trim(),
-                    items: row.querySelector('[id^="items_"]')?.textContent.trim()
-                } : null;
-            })
-            .filter(Boolean);
+        // Obtener todos los IDs de órdenes seleccionadas (de checkboxes visibles y no visibles)
+        const selectedOrderIds = new Set();
+        
+        // Agregar IDs de checkboxes seleccionados en la tabla (visibles)
+        document.querySelectorAll('#ordenesTable input[type="checkbox"]:checked').forEach(checkbox => {
+            selectedOrderIds.add(extractIdNumber(checkbox.id));
+        });
+        
+        // Agregar IDs de checkboxes seleccionados en las cards (si aplica)
+        document.querySelectorAll('.order-checkbox:checked').forEach(checkbox => {
+            selectedOrderIds.add(extractIdNumber(checkbox.id));
+        });
+    
+        // console.log('selectedOrderIds: ', selectedOrderIds)
+        // Obtener datos de las órdenes seleccionadas
+        return Array.from(selectedOrderIds).map(orderId => {
+            // Buscar la orden en los datos globales
+            const orderData = ordenesGlobales.find(order => 
+                order._id === orderId || 
+                extractIdNumber(order.invoice_nr) === orderId
+            );
+            
+            if (!orderData) return null;
+            
+            function sumarCantidadesItems(orden) {
+                if (!orden.items || !Array.isArray(orden.items) || orden.items.length === 0) {
+                    return "0 (0)";
+                }
+                const cantidades = orden.items.map(item => item.quantity || 0);
+                const total = cantidades.reduce((sum, cantidad) => sum + cantidad, 0);
+                const resultado = `${cantidades.join('-')} <b>(${total})</b>`;
+                return resultado;
+            }
+
+            // Función auxiliar para formatear fechas
+            function formateDate(dateString) {
+                if (!dateString) return 'Fecha no disponible';
+                const date = new Date(dateString);
+                
+                const DD = String(date.getDate()).padStart(2, '0'),
+                    MM = String(date.getMonth() + 1).padStart(2, '0'),
+                    YY = date.getFullYear(),
+                    hh = String(date.getHours()).padStart(2, '0'),
+                    mm = String(date.getMinutes()).padStart(2, '0'),
+                    ss = String(date.getSeconds()).padStart(2, '0');
+                return DD + '-' + MM + '-' + YY + " " + hh + ':' + mm + ':' + ss
+            }
+            
+            // Formatear los datos según la estructura de tu objeto
+            return {
+                id: `inputCheckOrder_${orderId}`,
+                codigo: orderData.invoice_nr || `Orden_${orderId}`,
+                status: orderData.active ? 'No Entregado' : 'Entregado', // Adapta según tu lógica
+                solicitadaPor: orderData.shipping[0] ? 
+                    `${orderData.shipping[0].name}, ${orderData.shipping[0].lastName}` : 'Desconocido',
+                fecha: formateDate(orderData.timestamp || orderData.modifiedOn), // Necesitarás una función formatDate
+                productos: orderData.quantity || (orderData.items ? orderData.items.length : 0),
+                items: sumarCantidadesItems(orderData) //orderData.items ? orderData.items.length : 0,
+            };
+        }).filter(Boolean);
     }
 
     function groupOrdersByUser(orders) {
@@ -876,11 +894,11 @@ document.addEventListener("DOMContentLoaded", () => {
     function generateOrdersModalHtml(groupedOrders) {
         const tableHeaders = `
             <tr>
-                <th style="width:32vw" class="text-center">Orden N°</th>
+                <th style="width:30vw" class="text-center">Orden N°</th>
                 <th style="width:7vw" class="text-center">Status</th>
-                <th style="width:20vw" class="text-center">Solicitada por</th>
-                <th style="width:26vw" class="text-center">Fecha</th>
-                <th style="width:16vw" class="text-center">Prod./Items</th>
+                <th style="width:19vw" class="text-center">Solicitada por</th>
+                <th style="width:25vw" class="text-center">Fecha</th>
+                <th style="width:20vw" class="text-center">Prod./Items</th>
                 <th style="width:4vw" class="text-center"></th>
             </tr>`;
 
@@ -891,7 +909,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <td><span class="common-style ${order.status.replace(/\s+/g, "").toLowerCase()}">${order.status}</span></td>
                     <td>${order.solicitadaPor}</td>
                     <td>${order.fecha}</td>
-                    <td>${order.productos} / ${order.items}
+                    <td><b>${order.productos}</b> / ${order.items}
                         <input type="hidden" name="idOrdenHidden_${extractIdNumber(order.id)}" value="${extractIdNumber(order.id)}">
                     </td>
                     <td>
@@ -947,24 +965,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Funciones para manejar eliminación en el modal (mantenidas igual)
-    // function removeModal() {
-    //     const removeButtons = document.querySelectorAll('button[name="btnRemoveRow"]'),
-    //         removeUsers = document.querySelectorAll('button[name="btnRemoveUser"]');
-        
-    //     if (removeButtons.length < 1 || removeUsers.length < 1) {
-    //         Swal.close();
-    //         Swal.fire({
-    //             title: `Resumen de Órdenes no descargado!`,
-    //             html: 'El resumen de órdenes no fue descargado',
-    //             icon: 'warning',
-    //             width: 500
-    //         });
-    //         return false;
-    //     }
-    // }
-
-    // Función removeModal mejorada
+    // Función removeModal
     function removeModal() {
         const remainingRows = document.querySelectorAll('#resumenOrdenesTable tbody tr:not(.user-header-row)');
         if (remainingRows.length === 0) {
@@ -989,24 +990,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
     
-    // function removeRow(idButton) {
-    //     const rowToDelete = document.getElementById(`tr_${idButton}`);
-    //     if (rowToDelete) {
-    //         const userHeader = rowToDelete.previousElementSibling;
-    //         rowToDelete.remove();
-            
-    //         if (userHeader?.classList.contains("user-header-row")) {
-    //             const nextRow = userHeader.nextElementSibling;
-    //             if (!nextRow || nextRow.classList.contains("user-header-row")) {
-    //                 userHeader.remove();
-    //             }
-    //         }
-    //     }
-    //     removeModal();
-    // }
-
-    // Función removeRow mejorada
-    
+    // Función removeRow
     function removeRow(idButton) {
         const rowToDelete = document.getElementById(`tr_${idButton}`);
         if (!rowToDelete) return;
@@ -1045,22 +1029,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         return null;
     }
-    
-    // function removeUserOrders(user) {
-    //     const userHeader = document.getElementById(`user-header-${user.replace(/[\s-]/g, '').toLowerCase().trim()}`);
-    //     if (userHeader) {
-    //         let nextRow = userHeader.nextElementSibling;
-    //         while (nextRow && !nextRow.classList.contains("user-header-row")) {
-    //             const temp = nextRow.nextElementSibling;
-    //             nextRow.remove();
-    //             nextRow = temp;
-    //         }
-    //         userHeader.remove();
-    //     }
-    //     removeModal();
-    // }
 
-    // Función removeUserOrders mejorada
+    // Función removeUserOrders
     function removeUserOrders(user) {
         const normalizedUser = user.replace(/[\s-]/g, '').toLowerCase().trim();
         const userHeader = document.getElementById(`user-header-${normalizedUser}`);

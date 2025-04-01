@@ -830,9 +830,9 @@ const renderOrdenesUser = async (arrOrders, page = 1, direction = 'none') => {
 
 //------------- Rows & Cards selected ------------------
 document.addEventListener("DOMContentLoaded", () => {
-    const tableId = "ordenesTable",
-        table = document.getElementById(tableId),
-        cardsContainer = document.getElementById("showOrdenesSearch"),
+    const tableId = "ordenesTable"
+    let table = document.getElementById(tableId);
+    const cardsContainer = document.getElementById("showOrdenesSearch"),
         btnCheckSelectionAll = document.getElementById("btnCheckSelectionAll"),
         spanCheckSelecMasive = document.getElementById("spanCheckSelecMasive");
 

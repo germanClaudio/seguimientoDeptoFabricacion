@@ -374,24 +374,36 @@ html body .display-7 {
 -------------------------*/
 
 .card {
-  min-width: 200px; /* Ancho mínimo para mantener legibilidad */
+  /* min-width: 200px;  Ancho mínimo para mantener legibilidad
   max-height: max-content;
   max-width: 380px;
   transition: transform 0.3s ease;
-
-  margin-bottom: 5px;
-  margin-top: 12px;
-  /* width: 20vw; */
+  
   align-content: center;
-  border: none;
   -webkit-box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
-  -moz-box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
+  -moz-box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);*/
+
+  min-width: 160px;
+  max-width: 100%;
+  height: auto;
+  transition: all 0.3s ease;
+  margin-top: 12px;
+  margin-bottom: 5px;
+  border: none;
   box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: white;
+  display: flex;
+  flex-direction: column;
+
 }
 
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+
+  z-index: 10;
 }
 
 .card-img-top {
@@ -1897,8 +1909,8 @@ height: 4px;
 
 
 td {
-  height: 110px;
-  min-height: 110px;
+  height: 7vh; /* era 110px */
+  min-height: 7vh; /* era 110px */
   vertical-align: middle;
   align-items: center;
   justify-content: center;

@@ -1338,8 +1338,10 @@ const searchOrdenes = () => {
     statusOrdenes != 'todas'
         ? statusOrdenes != 'activas'
             ? statusOrdenes != 'preparadas'
-                ? statusOrdenes = true
-                : statusOrdenes = false
+                ? statusOrdenes != 'activasPreparadas'
+                    ? statusOrdenes = true
+                    : statusOrdenes = false
+                : null
             : null
         : null
         
@@ -1555,11 +1557,16 @@ socket.on('searchOrdenesAllUser', async (arrOrdenesSearch) => {
 const searchOrdenesUser = () => {
     let queryOrdenes = document.getElementById('queryOrdenes').value,
         statusOrdenes = document.getElementById('statusOrdenes').value,
-        solicitadasOrdenes = document.getElementById('userNameBanner').innerText,
         fechaInicioOrdenes = document.getElementById('queryFechaDesde').value,
-        fechaFinOrdenes = document.getElementById('queryFechaHasta').value
-
+        fechaFinOrdenes = document.getElementById('queryFechaHasta').value,
+        solicitadasOrdenes = '';
         
+    if (document.getElementById('queryUsuarios').value != '') {
+        document.getElementById('queryUsuarios').removeAttribute('disabled')
+        let isolateUserNameSelected = document.getElementById('queryUsuarios').value.split(',');
+        solicitadasOrdenes = isolateUserNameSelected[3].trim()
+    }
+
     socket.emit('searchOrdenAllUser', {
         queryOrdenes,
         statusOrdenes,
@@ -1567,6 +1574,7 @@ const searchOrdenesUser = () => {
         fechaInicioOrdenes,
         fechaFinOrdenes
     })
+    document.getElementById('queryUsuarios').setAttribute('disabled', true)
     return false
 }
 
@@ -1658,9 +1666,9 @@ const renderSearchedOrdenesUser = (arrOrdenesSearch) => {
             'rgba(39, 181, 0, 0.1)',   // Verde claro
             'rgba(181, 0, 0, 0.1)',     // Rojo claro
             'rgba(181, 172, 0, 0.1)',    // Amarillo claro
-            'rgba(0, 102, 204, 0.1)',   // Azul claro
             'rgba(102, 0, 204, 0.1)',    // Morado claro
-            'rgba(204, 102, 0, 0.1)'     // Naranja claro
+            'rgba(204, 102, 0, 0.1)',     // Naranja claro
+            'rgba(0, 0, 204, 0.1)'   // Azul claro
         ];
 
         let htmlSearchOrdenes = '', userIndex = 0;
@@ -1675,9 +1683,9 @@ const renderSearchedOrdenesUser = (arrOrdenesSearch) => {
             
             // Agregar ID único al div del grupo de usuario
             htmlSearchOrdenes += `
-                <div id="userGroup-${userId}" class="row mb-3 shadow" style="background-color: ${userColor}; border-radius: 5px; padding: 10px;">
+                <div id="userGroup-${userId}" class="row my-3 shadow" style="background-color: ${userColor}; border-radius: 5px; padding: 10px;">
                     <div class="col-12">
-                        <h6 class="mb-0"><strong>Usuario: ${userOrders[0].shipping[0].name} ${userOrders[0].shipping[0].lastName} (${userId})</strong></h6>
+                        <h6 class="mb-0"><strong>Usuario: ${userOrders[0].shipping[0].name} ${userOrders[0].shipping[0].lastName} (Id# ${userId})</strong></h6>
                     </div>
                 </div>`;
 
@@ -1715,7 +1723,8 @@ const renderSearchedOrdenesUser = (arrOrdenesSearch) => {
                         }
 
                         let btnConfiguration = '',
-                            idChain = element._id.substring(19);
+                            idChain = element._id.substring(19),
+                            invoiveChain = element.invoice_nr.substring(14)
                     
                         element.active
                         ? element.prepared
@@ -1726,14 +1735,14 @@ const renderSearchedOrdenesUser = (arrOrdenesSearch) => {
                         ? btnConfiguration = `<button type="button" class="btn btn-secondary btn-sm disabled"><i class="fa-solid fa-trash-can"></i></button>`
                         : btnConfiguration = `<button id="${element._id}" name="btnCardDeleteOrder" type="button" class="btn btn-danger btn-sm" title="Eliminar Orden ...${idChain}"><i class="fa-solid fa-trash-can"></i></button>`;
                     
-                        let utcDate = new Date(element.timestamp),
+                        let utcDate = new Date(element.modifiedOn), //timestamp
                             localDate = new Date(utcDate.getTime() + offset),
                             formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0];
                     
                         // Retornar el HTML generado para cada card onclick="toggleRowSelection('${element._id}')"
                         return (`<div class="row mb-2 align-items-center card-order-row" id="cardRow_${element._id}" 
-                                        style="${color}; border-radius: 5px; cursor: pointer;" data-user-id="${userId}" 
-                                        data-original-color="${color}">
+                                        style="background-color: ${userColor}; border-radius: 5px; cursor: pointer;" data-user-id="${userId}" 
+                                        data-original-color="${userColor}">
                                         <div class="col-auto">
                                             <input class="form-check-input order-checkbox" type="checkbox" 
                                                 id="cardCheckOrder_${element._id}" data-order-id="${element._id}">
@@ -1743,14 +1752,14 @@ const renderSearchedOrdenesUser = (arrOrdenesSearch) => {
                                             <div class="col-md-2">
                                                 <h6 id="cardDesignation_${element._id}" class="card-title mb-0"><strong>...${idChain}</strong></h6>
                                             </div>
-                                            <div class="col-md-4">
-                                                <span id="cardCodigo_${element._id}" class="my-1"><strong>${element.invoice_nr}</strong></span>
+                                            <div class="col-md-3">
+                                                <span id="cardCodigo_${element._id}" class="my-1"><strong>...${invoiveChain}</strong></span>
                                             </div>
                                             <div class="col-md-2">
                                                 <span class="badge rounded-pill bg-${optionType} my-1">${showType}</span>
                                             </div>
-                                            <div class="col-md-2">
-                                                ${formattedDate}
+                                            <div class="col-md-3">
+                                                ${showType}: <b>${formattedDate}</b>
                                             </div>
                                             <div class="col-md-2">
                                                 <button id="cardDownloadOrder_${element._id}" name="cardDownloadOrder" type="button" class="btn btn-primary btn-sm" title="Descargar pdf Orden ...${idChain}"><i class="fa-solid fa-download"></i></button>
@@ -2253,7 +2262,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const userHTML = `<label>
                                         <span id="${user._id}" class="badge rounded-pill ${user.permiso === `${permisoUsuario}` ? 'bg-info' : 'bg-light'} text-dark my-2">
                                             <input id="${i}" class="form-check-input mb-1" type="radio"
-                                                name="radioUsuarios" value="${user.name}, ${user.lastName}">
+                                                name="radioUsuarios" value="${[user.name, user.lastName, user.legajoId, user.username]}">
                                                 ${user.name} ${user.lastName} - Id#:${user.legajoId}   
                                         </span>
                                     </label>`;
@@ -2320,7 +2329,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const radioSelected = document.querySelector('input[name="radioUsuarios"]:checked');
                     if (result.isConfirmed && radioSelected) {
                         const inputUserSelected = document.getElementById(`${inputTarget}`);
-                        inputUserSelected.value = radioSelected.value;
+                        let valueUserToShow = radioSelected.value.split(',')
+                        inputUserSelected.value = valueUserToShow[0] + ', ' + valueUserToShow[1] + ', ' + valueUserToShow[2] + ', ' + valueUserToShow[3];
 
                     } else {
                         const titulo = 'Usuario no seleccionado',

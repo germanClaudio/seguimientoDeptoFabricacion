@@ -19,11 +19,11 @@
 
     <%- include('../partials/btnHeaderTop/btnHeaderTop-GoToConsumible'); %>
 
-    <div class="d-block mx-auto mt-4 text-center bg-primary-light">    
+    <div class="d-block mx-auto mt-4 text-center bg-primary-light">
         <% if (userInfo.admin) { %>
-            <%- include('../partials/forms/formularioBuscarOrdenes'); %>
+            <%- include('../partials/forms/formularioBuscarOrdenesAllAdmin'); %>
         <% } else { %>
-            <%- include('../partials/forms/formularioBuscarOrdenesUserAll'); %>
+            <%- include('../partials/forms/formularioBuscarOrdenesAllUser'); %>
         <% } %>  
         <%- include('../partials/data/dataOrdenesSearch'); %>
     </div>

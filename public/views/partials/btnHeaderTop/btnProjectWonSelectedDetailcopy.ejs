@@ -1,0 +1,156 @@
+<div class="custom-cards-container">
+        <!-- Volver al Home -->
+        <div class="custom-card">
+            <div class="custom-card-body">
+                <div class="custom-card-img">
+                    <img class="img-fluid" src="/src/images/home.png" alt="Volver al Home">
+                    <a href="/api/auth/index" class="custom-card-link">
+                        <div class="custom-card-circle">
+                            <span><i class="fas fa-circle text-primary fa-2x"></i></span>
+                        </div>
+                    </a>
+                </div>
+                <div class="custom-card-content">
+                    <h6 class="custom-card-title"><a href="/api/auth/index">Home</a></h6>
+                    <p class="custom-card-text">Volver al Home</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ir a Proyectos ganados -->
+        <div class="custom-card">
+            <div class="custom-card-body">
+                <div class="custom-card-img">
+                    <img class="img-fluid" src="/src/images/proyectos.jpg" alt="Ir a Proyectos Ganados">
+                    <a href="/api/programas" class="custom-card-link">
+                        <div class="custom-card-circle">
+                            <span><i class="fas fa-circle text-primary fa-2x"></i></span>
+                        </div>
+                    </a>
+                </div>
+                <div class="custom-card-content">
+                    <h6 class="custom-card-title"><a href="/api/proyectos">Proyectos Ganados</a></h6>
+                    <p class="custom-card-text">Ir a Proyectos Ganados</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ir a Máquinas -->
+        <div class="custom-card">
+            <div class="custom-card-body">
+                <div class="custom-card-img">
+                    <img class="img-fluid" src="/src/images/maquinas.png" alt="Ir a Máquinas">
+                    <a href="/api/maquinas" class="custom-card-link">
+                        <div class="custom-card-circle">
+                            <span><i class="fas fa-circle text-primary fa-2x"></i></span>
+                        </div>
+                    </a>
+                </div>
+                <div class="custom-card-content">
+                    <h6 class="custom-card-title"><a href="/api/maquinas">Máquinas</a></h6>
+                    <p class="custom-card-text">Ir a Máquinas</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ir a Proveedores -->
+        <div class="custom-card">
+            <div class="custom-card-body">
+                <div class="custom-card-img">
+                    <img class="img-fluid" src="/src/images/proveedores.png" alt="Ir a Proveedores">
+                    <a href="/api/proveedores" class="custom-card-link">
+                        <div class="custom-card-circle">
+                            <span><i class="fas fa-circle text-primary fa-2x"></i></span>
+                        </div>
+                    </a>
+                </div>
+                <div class="custom-card-content">
+                    <h6 class="custom-card-title"><a href="/api/proveedores">Proveedores</a></h6>
+                    <p class="custom-card-text">Ir a Proveedores</p>
+                </div>
+            </div>
+        </div>
+    
+        <% if (proyecto[0].project[0].statusProject ) { %>
+            <!-- Agregar nueva/s OT's -->
+            <% if (userInfo.admin || userInfo.area === 'ingenieria' || userInfo.area === 'fabricacion' ) { %>
+            <div class="custom-card">
+            <% } else { %>
+            <div class="custom-card disabled-card">
+            <% } %>
+                <div class="custom-card-body">
+                    <div class="custom-card-img" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        <img class="img-fluid" src="/src/images/plus-icon-blue.jpg" alt="Agregar OT's">
+                        <a href="#" class="custom-card-link">
+                            <div class="custom-card-circle">
+                                <span><i class="fas fa-circle text-primary fa-2x"></i></span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="custom-card-content" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        <h6 class="custom-card-title"><a href="#">Agregar OT's</a></h6>
+                        <p class="custom-card-text">Agregar nueva/s OT's</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agregar Items a OT -->
+            <% if (userInfo.admin || userInfo.area === 'ingenieria' || userInfo.area === 'fabricacion' ) { %>
+            <div class="custom-card" id="idAddDetallesModal">
+            <% } else { %>
+            <div class="custom-card disabled-card" id="idAddDetallesModal">
+            <% } %>
+                <div class="custom-card-body">
+                    <div class="custom-card-img">
+                        <img class="img-fluid" src="/src/images/plus-icon-green.png" alt="Agregar Items">
+                        <a href="#" class="custom-card-link">
+                            <div class="custom-card-circle">
+                                <span><i class="fas fa-circle text-primary fa-2x"></i></span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="custom-card-content">
+                        <h6 class="custom-card-title"><a href="#">Agregar Items</a></h6>
+                        <p class="custom-card-text">Agregar Items a OT</p>
+                    </div>
+                </div>
+            </div>
+
+        <% } else { %>
+            <!-- Agregar nueva/s OT's -->
+            <div class="custom-card pe-none opacity-50">
+                <div class="custom-card-body">
+                    <div class="custom-card-img" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        <img class="img-fluid" src="/src/images/plus-icon-blue.jpg" alt="Agregar OT's">
+                        <a href="#" class="custom-card-link">
+                            <div class="custom-card-circle">
+                                <span><i class="fas fa-circle text-primary fa-2x"></i></span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="custom-card-content" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        <h6 class="custom-card-title"><a href="#">Agregar OT's</a></h6>
+                        <p class="custom-card-text">Agregar nueva/s OT's</p>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Agregar Items a OT -->
+            <div class="custom-card pe-none opacity-50" id="idAddDetallesModal">
+                <div class="custom-card-body">
+                    <div class="custom-card-img">
+                        <img src="/src/images/plus-icon-green.png" alt="Agregar Items">
+                        <a href="#" class="custom-card-link">
+                            <div class="custom-card-circle">
+                                <span><i class="fas fa-circle text-primary fa-2x"></i></span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="custom-card-content">
+                        <h6 class="custom-card-title"><a href="#">Agregar Items</a></h6>
+                        <p class="custom-card-text">Agregar Items a OT</p>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+</div>

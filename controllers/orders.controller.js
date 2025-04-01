@@ -277,7 +277,7 @@ class OrdersController {
             const order = await this.orders.updateOrderStatusMulti(arrayIdOrderHidden, arrayInputStatus, dataUserModificatorNotEmpty(userLogged))
             !order.success ? catchError401_3(req, res, next) : null
 
-            console.log('req.params.screen: ', req.params.screen)
+            //console.log('req.params.screen: ', req.params.screen)
             const numberScreen = parseInt(req.params.screen) || 1;
             const screenHandlers = {
                 1: {
