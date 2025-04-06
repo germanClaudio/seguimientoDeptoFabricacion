@@ -108,8 +108,8 @@
             <div class="col-xl-3 col-sm-6 col-12 card-container" data-swapy-slot="d">
                 <div data-swapy-item="d">
                     <a href="/api/ordenes/allOrdersByUserId" style="text-decoration: none;">
-                        <div class="card rounded-3 card_dashboard-link">
-                            <div class="card-content">
+                        <div class="card rounded-3 card_dashboard-link overflow-visible">
+                            <div class="card-content overflow-visible">
                                 <div class="card-body position-relative">
                                     <div class="media d-flex mx-2">
                                         <div class="media-body text-start">
@@ -132,7 +132,7 @@
                                     </div>
                                     <% if(parseInt(cantOrdenesPreparadas)>0) { %>
                                         <span title="Pedidos Preparados"
-                                            class="badge rounded-pill bg-danger text-light position-absolute top-0 start-100 translate-middle">
+                                            class="badge rounded-pill bg-danger text-light position-absolute top-0 start-100 translate-middle z-index-1">
                                             <%= parseInt(cantOrdenesPreparadas) %>
                                         </span>
                                     <% } %>

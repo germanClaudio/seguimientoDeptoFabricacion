@@ -653,7 +653,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Función para extraer ID
     const extractIdNumber = (id) => id ? id.split('_').pop() : '';
 
-    // Función para actualizar estilos CORREGIDA
+    // Función para actualizar estilos
     function updateSelectionStyle(checkbox, isTable = true) {
         const element = checkbox.closest(isTable ? "tr" : "div[id^='cardRow_']");
         if (!element) return;
@@ -710,7 +710,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateGlobalSelectionState();
     }
 
-    // Función para actualizar estado global CORREGIDA
+    // Función para actualizar estado global
     function updateGlobalSelectionState() {
         // Usamos un Set para almacenar IDs únicos de órdenes seleccionadas
         const selectedOrders = new Set();
@@ -765,7 +765,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (table) initializeCheckboxes(table, true);
     if (cardsContainer) initializeCheckboxes(cardsContainer, false);
 
-    // Función para manejar la descarga masiva (mantenida igual)
+    // Función para manejar la descarga masiva
     if (btnCheckSelectionDownload) {
         btnCheckSelectionDownload.addEventListener("click", handleMassiveDownload);
     }
@@ -925,7 +925,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return `
                 <tr class="user-header-row" id="user-header-${user.replace(/[\s-]/g, '').toLowerCase()}">
                     <td colspan="6" class="bg-light">
-                        <strong>Usuario: ${user}</strong>
+                        <strong>Usuario: ${user}</strong> - <strong>Ordenes: ${orders.length}</strong>
                         <input type="hidden" name="user-header-${user.replace(/[\s-]/g, '').toLowerCase()}" 
                                 value="${user.replace(/[\s-]/g, '').toLowerCase()}">
                         <button name="btnRemoveUser" type="button" title="Remover Usuario ${user}" 

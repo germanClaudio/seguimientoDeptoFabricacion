@@ -834,289 +834,428 @@ document.addEventListener("DOMContentLoaded", () => {
     let table = document.getElementById(tableId);
     const cardsContainer = document.getElementById("showOrdenesSearch"),
         btnCheckSelectionAll = document.getElementById("btnCheckSelectionAll"),
-        spanCheckSelecMasive = document.getElementById("spanCheckSelecMasive");
+        spanCheckSelecMasive = document.getElementById("spanCheckSelecMasive"),
+        btnCheckSelectionDownload = document.getElementById("btnCheckSelectionDownload"),
+        spanCheckSelecMasiveDownload = document.getElementById("spanCheckSelecMasiveDownload");
 
-    // Función para inicializar eventos en checkboxes de filas
-    function initializeRowCheckboxes() {
-        const rowCheckboxes = table.querySelectorAll('input[type="checkbox"]');
-        rowCheckboxes.forEach((checkbox) => {
-            checkbox.addEventListener("change", () => {
-                syncCheckboxWithCard(checkbox);
-                updateSelectionState();
-                updateRowStyle(checkbox);
-            });
+    // Función para extraer ID
+    const extractIdNumber = (id) => id ? id.split('_').pop() : '';
+
+    // Función para actualizar estilos
+    function updateSelectionStyleTable(checkbox, isTable = true) {
+        const element = checkbox.closest(isTable ? "tr" : "div[id^='cardRow_']");
+        if (!element) return;
+
+        const orderId = extractIdNumber(checkbox.id);
+        const originalColor = element.dataset.originalColor || '';
+
+        if (checkbox.checked) {
+            element.style.boxShadow = '0 0 0 2px #0d6efd';
+            element.style.backgroundColor = 'rgba(13, 110, 253, 0.1)';
+        } else {
+            element.style.boxShadow = '';
+            element.style.backgroundColor = originalColor;
+            
+            // Restaurar color original si está definido en dataset
+            if (element.dataset.originalColor) {
+                element.style.backgroundColor = element.dataset.originalColor;
+            }
+        }
+
+        // Sincronizar con el otro componente
+        const targetPrefix = isTable ? "cardCheckOrder_" : "inputCheckOrder_";
+        const targetCheckbox = document.getElementById(`${targetPrefix}${orderId}`);
+        
+        if (targetCheckbox) {
+            targetCheckbox.checked = checkbox.checked;
+            const targetElement = targetCheckbox.closest(isTable ? "div[id^='cardRow_']" : "tr");
+            if (targetElement) {
+                if (checkbox.checked) {
+                    targetElement.style.boxShadow = '0 0 0 2px #0d6efd';
+                    targetElement.style.backgroundColor = 'rgba(13, 110, 253, 0.1)';
+                } else {
+                    targetElement.style.boxShadow = '';
+                    // Restaurar color original para cards
+                    if (targetElement.dataset.originalColor) {
+                        targetElement.style.backgroundColor = targetElement.dataset.originalColor;
+                    }
+                }
+            }
+        }
+    }
+
+    // Función para sincronizar selección
+    function syncSelectionTable(sourceCheckbox, isTable = true) {
+        const orderId = extractIdNumber(sourceCheckbox.id);
+        const targetPrefix = isTable ? "cardCheckOrder_" : "inputCheckOrder_";
+        const targetCheckbox = document.getElementById(`${targetPrefix}${orderId}`);
+        
+        if (targetCheckbox) {
+            targetCheckbox.checked = sourceCheckbox.checked;
+            updateSelectionStyleTable(targetCheckbox, !isTable);
+        }
+        updateGlobalSelectionStateTable();
+    }
+    
+    // Función para actualizar estado global
+    function updateGlobalSelectionStateTable() {
+        // Usamos un Set para almacenar IDs únicos de órdenes seleccionadas
+        const selectedOrders = new Set();
+        
+        // Agregar IDs de checkboxes seleccionados en la tabla
+        document.querySelectorAll('#ordenesTable input[type="checkbox"]:checked').forEach(checkbox => {
+            selectedOrders.add(extractIdNumber(checkbox.id));
+        });
+        
+        // Agregar IDs de checkboxes seleccionados en las cards
+        document.querySelectorAll('.order-checkbox:checked').forEach(checkbox => {
+            selectedOrders.add(extractIdNumber(checkbox.id));
+        });
+
+        const totalSelected = selectedOrders.size; // Tamaño del Set = selecciones únicas
+
+        [btnCheckSelectionAll, btnCheckSelectionDownload].forEach(btn => {
+            if (btn) btn.disabled = totalSelected === 0;
+        });
+
+        [spanCheckSelecMasive, spanCheckSelecMasiveDownload].forEach(span => {
+            if (span) {
+                span.textContent = totalSelected;
+                span.classList.toggle("bg-danger", totalSelected === 0);
+                span.classList.toggle("bg-success", totalSelected > 0);
+            }
         });
     }
 
-    // Función para inicializar eventos en checkboxes de cards
-    function initializeCardCheckboxes() {
-        const cardCheckboxes = cardsContainer.querySelectorAll('input.form-check-input');
-        cardCheckboxes.forEach((checkbox) => {
+    // Función para inicializar checkboxes
+    function initializeCheckboxes(container, isTable = true) {
+        const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
             if (!checkbox.dataset.initialized) {
-                checkbox.dataset.initialized = true;
+                checkbox.dataset.initialized = "true";
                 checkbox.addEventListener("change", () => {
-                    syncCheckboxWithRow(checkbox);
-                    updateSelectionState();
+                    syncSelectionTable(checkbox, isTable);
+                    updateSelectionStyleTable(checkbox, isTable);
                 });
             }
         });
     }
 
-    // Sincronizar checkbox de fila con card correspondiente
-    function syncCheckboxWithCard(rowCheckbox) {
-        const extractIdNumber = (id) => id.split('_').pop()
-        let idInputCard = extractIdNumber(rowCheckbox.id)
-        const cardCheckbox = cardsContainer.querySelector(`#inputCheckOrdenCard_${idInputCard}`);
-        if (cardCheckbox) {
-            if (rowCheckbox.checked) {
-                cardCheckbox.checked = true;
-                cardCheckbox.disabled = true; // Deshabilitar para evitar duplicados
-            } else {
-                cardCheckbox.checked = false;
-                cardCheckbox.disabled = false; // Habilitar nuevamente
+    // Observers para cambios dinámicos
+    const tableObserver = new MutationObserver(() => initializeCheckboxes(table, true));
+    const cardsObserver = new MutationObserver(() => initializeCheckboxes(cardsContainer, false));
+
+    if (table) tableObserver.observe(table, { childList: true, subtree: true });
+    if (cardsContainer) cardsObserver.observe(cardsContainer, { childList: true, subtree: true });
+
+    // Inicialización
+    if (table) initializeCheckboxes(table, true);
+    if (cardsContainer) initializeCheckboxes(cardsContainer, false);
+
+    // Función para manejar la modificacion masiva de status
+    if (btnCheckSelectionAll) {
+        btnCheckSelectionAll.addEventListener("click", handleMassiveUpdate);
+    }
+    
+    // Modifica la función handleMassiveUpdate para asignar los event listeners después de generar el modal
+    async function handleMassiveUpdate() {
+        const selectedOrders = getSelectedOrdersData();
+        
+        if (selectedOrders.length === 0) {
+            Swal.fire('Error', 'No hay órdenes seleccionadas', 'error');
+            return;
+        }
+
+        const groupedOrders = groupOrdersByUser(selectedOrders);
+        const modalHtml = generateOrdersModalHtml(groupedOrders);
+
+        const { isConfirmed } = await Swal.fire({
+            title: "Modificar Status Múltiples Ordenes",
+            html: modalHtml,
+            confirmButtonText: 'Modificar Ordenes <i class="fa-regular fa-pen-to-square"></i>',
+            confirmButtonColor: '#3085d6',
+            showCancelButton: true,
+            showCloseButton: true,
+            cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>',
+            cancelButtonColor: '#d33',
+            width: 1500,
+            position: "center",
+            didOpen: () => {
+                // Asignar event listeners aquí, después de que el modal se abre
+                document.querySelectorAll("[id^='btnRemoveRow_']").forEach(button => {
+                    button.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        const id = event.target.closest("button").id.split("_")[1];
+                        id && removeRow(id);
+                    });
+                });
+                
+                document.querySelectorAll("[name='btnRemoveUser']").forEach(button => {
+                    button.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        const user = event.target.closest("button").id.split("_")[1];
+                        removeUserOrders(user);
+                    });
+                });
             }
-            updateCardStyle(cardCheckbox);
-            updateRowStyle(rowCheckbox);
+        });
+
+        if (isConfirmed) {
+            submitOrdersForm(groupedOrders);
         }
     }
 
-    // Sincronizar checkbox de card con fila correspondiente
-    function syncCheckboxWithRow(cardCheckbox) {
-        const extractIdNumber = (id) => id.split('_').pop()
-        let idInputRow = extractIdNumber(cardCheckbox.id)
-        const rowCheckbox = table.querySelector(`#inputCheckOrder_${idInputRow}`)
-        if (rowCheckbox) {
-            if (cardCheckbox.checked) {
-                rowCheckbox.checked = true;
-                rowCheckbox.disabled = true; // Deshabilitar para evitar duplicados
-            } else {
-                rowCheckbox.checked = false;
-                rowCheckbox.disabled = false; // Habilitar nuevamente
-            }
-            updateRowStyle(rowCheckbox);
-            updateCardStyle(cardCheckbox);
-        }
-    }
-
-    // Actualizar estilo de las filas al cambiar el estado del checkbox
-    function updateRowStyle(rowCheckbox) {
-        const row = rowCheckbox.closest("tr");
-        rowCheckbox.checked ? row.classList.add("row-highlight") : row.classList.remove("row-highlight")
-    }
-
-    // Actualizar estilo de las cards al cambiar el estado del checkbox
-    function updateCardStyle(cardCheckbox) {
-        const card = cardCheckbox.closest("div[id^='cardSelected_']");
-        if (cardCheckbox.checked) {
-            card.classList.add("cardSelected");
-            card.classList.remove("shadow-lg");
-        } else {
-            card.classList.remove("cardSelected");
-            card.classList.add("shadow-lg");
-        }
-    }
-
-    // Actualizar contador y estado del botón masivo
-    function updateSelectionState() {
-        const selectedRowCheckboxes = table.querySelectorAll('input[type="checkbox"]:checked');
-        // const selectedCardCheckboxes = cardsContainer.querySelectorAll('input.form-check-input:checked')
-        let totalSelected = selectedRowCheckboxes.length //+ selectedCardCheckboxes.length;
-
-        if (btnCheckSelectionAll) {
-            btnCheckSelectionAll.disabled = totalSelected === 0
-            spanCheckSelecMasive.textContent = totalSelected
-            spanCheckSelecMasive.classList.toggle("bg-danger", totalSelected === 0)
-            spanCheckSelecMasive.classList.toggle("bg-success", totalSelected > 0)
-        }
-    }
-
-    // Configurar MutationObservers
-    const rowObserver = new MutationObserver(() => {
-        initializeRowCheckboxes();
-    });
-
-    const cardObserver = new MutationObserver(() => {
-        initializeCardCheckboxes();
-    });
-
-    rowObserver.observe(table, { childList: true, subtree: true });
-    cardObserver.observe(cardsContainer, { childList: true, subtree: true });
-
-    // Inicializar eventos al cargar
-    initializeRowCheckboxes();
-    initializeCardCheckboxes();
-
-    // Botón de SweetAlert2 Modificar Status
-    if(btnCheckSelectionAll) {
-        btnCheckSelectionAll.addEventListener("click", () => {
-            const extractIdNumber = (id) => id.split('_').pop(); // Función para extraer el número del ID
+    function getSelectedOrdersData() {
+        // Obtener todos los IDs de órdenes seleccionadas (de checkboxes visibles y no visibles)
+        const selectedOrderIds = new Set();
+        
+        // Agregar IDs de checkboxes seleccionados en la tabla (visibles)
+        document.querySelectorAll('#ordenesTable input[type="checkbox"]:checked').forEach(checkbox => {
+            selectedOrderIds.add(extractIdNumber(checkbox.id));
+        });
+        
+        // Agregar IDs de checkboxes seleccionados en las cards (si aplica)
+        document.querySelectorAll('.order-checkbox:checked').forEach(checkbox => {
+            selectedOrderIds.add(extractIdNumber(checkbox.id));
+        });
     
-            const selectedCheckboxes = Array.from(table.querySelectorAll('input[type="checkbox"]:checked'))
-                .concat(Array.from(cardsContainer.querySelectorAll('input.form-check-input:checked')))
-                .reduce((accumulator, checkbox) => {
-                    const row = checkbox.closest("tr"),
-                        card = checkbox.closest("div[id^='cardSelected_']"),
-                        idNumber = extractIdNumber(checkbox.id); // Extrae el número del ID
-    
-                    // Verifica si el ID (número) ya fue procesado
-                    if (accumulator.some(item => item.idNumber === idNumber)) {
-                        return accumulator; // No agregar duplicados
-                    }
-    
-                    // Agrega al acumulador según corresponda (row o card)
-                    if (card) {
-                        accumulator.push({
-                            idNumber: idNumber,
-                            id: checkbox.id,
-                            codigo: card.querySelector(`[id^="cardInvoice_"]`).textContent.trim(),
-                            status: card.querySelector(`[id^="cardStatus_"]`).textContent.trim(),
-                            solicitadaPor: card.querySelector(`[id^="cardUserInformation_"]`).textContent.trim(),
-                            fecha: card.querySelector(`[id^="cardDate_"]`).textContent.trim(),
-                            productos: card.querySelector(`[id^="cardProductos_"]`).textContent.trim(),
-                            items: row.querySelector(`[id^="cardItems_"]`).textContent.trim(),
-                        });
-
-                    } else if (row) {
-                        accumulator.push({
-                            idNumber: idNumber,
-                            id: checkbox.id,
-                            codigo: row.querySelector(`[id^="invoice_"]`).textContent.trim(),
-                            status: row.querySelector(`[id^="status_"]`).textContent.trim(),
-                            solicitadaPor: row.querySelector(`[id^="userInformation_"]`).textContent.trim(),
-                            fecha: row.querySelector(`[id^="date_"]`).textContent.trim(),
-                            productos: row.querySelector(`[id^="productos_"]`).textContent.trim(),
-                            items: row.querySelector(`[id^="items_"]`).textContent.trim(),
-                        });
-                    }
-                    return accumulator;
-                }, []);
-
-                const trTable = `<tr>
-                                    <th style="width:22vw" class="text-center">Solicitud N°</th>
-                                    <th style="width:5vw" class="text-center">Status</th>
-                                    <th style="width:16vw" class="text-center">Solicitada por</th>
-                                    <th style="width:19vw" class="text-center">Fecha</th>
-                                    <th style="width:18vw" class="text-center">Prod./Items</th>
-                                    <th style="width:16vw" class="text-center">Nuevo Status</th>
-                                    <th style="width:4vw" class="text-center"></th>
-                                </tr>`
-
-                function showSelectOptions(statusOptions) {
-                    //console.log('statusOptions: ', statusOptions)
-                    let selectOptionsStatus = ''
-                    statusOptions === 'noentregado'
-                    ? selectOptionsStatus = `<option selected disabled value="${statusOptions}">No Entregado</option>
-                                            <option value="preparado">Preparado</option>
-                                            <option value="entregado">Entregado</option>`
-
-                    : selectOptionsStatus = `<option selected disabled value="${statusOptions}">Preparado</option>
-                                            <option value="entregado">Entregado</option>
-                                            <option value="${statusOptions}">No Entregado</option>`
-                    
-                    return selectOptionsStatus
+        // Obtener datos de las órdenes seleccionadas
+        return Array.from(selectedOrderIds).map(orderId => {
+            // Buscar la orden en los datos globales
+            const orderData = ordenesGlobales.find(order => 
+                order._id === orderId || 
+                extractIdNumber(order.invoice_nr) === orderId
+            );
+            
+            if (!orderData) return null;
+            
+            function sumarCantidadesItems(orden) {
+                if (!orden.items || !Array.isArray(orden.items) || orden.items.length === 0) {
+                    return "0 (0)";
                 }
+                const cantidades = orden.items.map(item => item.quantity || 0);
+                const total = cantidades.reduce((sum, cantidad) => sum + cantidad, 0);
+                const resultado = `${cantidades.join('-')} <b>(${total})</b>`;
+                return resultado;
+            }
 
-                const tableBody = `${selectedCheckboxes.map((data) =>
-                    `<tr id="tr_${extractIdNumber(data.id)}">
-                        <td><strong>...${data.codigo.substring(19)}</strong></td>
-                        <td><span class="common-style ${data.status.replace(/\s+/g, "").toLowerCase()}">${data.status}</span></td>
-                        <td>${data.solicitadaPor}</td>
-                        <td>${data.fecha}</td>
-                        <td>${data.productos} / ${data.items}
-                            <input type="hidden" name="idOrdenHidden_${extractIdNumber(data.id)}" value="${extractIdNumber(data.id)}" style="display: none;"></td>
-                        <td>
-                            <select id="newOrdenSatus_${extractIdNumber(data.id)}" name="newOrdenSatus_${extractIdNumber(data.id)}" class="form-select" required>
-                                ${ showSelectOptions(data.status.replace(/\s+/g, "").toLowerCase()) }
+            // Función auxiliar para formatear fechas
+            function formateDate(dateString) {
+                if (!dateString) return 'Fecha no disponible';
+                const date = new Date(dateString);
+                
+                const DD = String(date.getDate()).padStart(2, '0'),
+                    MM = String(date.getMonth() + 1).padStart(2, '0'),
+                    YY = date.getFullYear(),
+                    hh = String(date.getHours()).padStart(2, '0'),
+                    mm = String(date.getMinutes()).padStart(2, '0'),
+                    ss = String(date.getSeconds()).padStart(2, '0');
+                return DD + '-' + MM + '-' + YY + " " + hh + ':' + mm + ':' + ss
+            }
+
+            function showSelectOptions(statusOptions) {
+                let selectOptionsStatus = ''
+                statusOptions === 'noentregado'
+                ? selectOptionsStatus = `<option selected disabled value="${statusOptions}">No Entregado</option>
+                                        <option value="preparado">Preparado</option>
+                                        <option value="entregado">Entregado</option>`
+
+                : selectOptionsStatus = `<option selected disabled value="${statusOptions}">Preparado</option>
+                                        <option value="entregado">Entregado</option>
+                                        <option value="${statusOptions}">No Entregado</option>`
+                
+                return selectOptionsStatus
+            }
+            
+            // Formatear los datos según la estructura de tu objeto
+            return {
+                id: `inputCheckOrder_${orderId}`,
+                codigo: orderData.invoice_nr || `Orden_${orderId}`,
+                status: orderData.prepared ? 'Preparado' : 'No Entregado',
+                solicitadaPor: orderData.shipping[0] ? 
+                    `${orderData.shipping[0].name}, ${orderData.shipping[0].lastName}` : 'Desconocido',
+                fecha: formateDate(orderData.timestamp || orderData.modifiedOn), // Necesitarás una función formatDate
+                productos: orderData.quantity || (orderData.items ? orderData.items.length : 0),
+                items: sumarCantidadesItems(orderData),
+                newStatus: showSelectOptions(orderData.prepared ? 'preparado' : 'noentregado')
+            };
+        }).filter(Boolean);
+    }
+
+    function groupOrdersByUser(orders) {
+        return orders.reduce((acc, order) => {
+            const user = order.solicitadaPor;
+            if (!acc[user]) acc[user] = [];
+            acc[user].push(order);
+            return acc;
+        }, {});
+    }
+
+    function generateOrdersModalHtml(groupedOrders) {
+        const tableHeaders = `
+            <tr>
+                <th style="width:24vw" class="text-center">Solicitud N°</th>
+                <th style="width:5vw" class="text-center">Status</th>
+                <th style="width:14vw" class="text-center">Solicitada por</th>
+                <th style="width:17vw" class="text-center">Fecha</th>
+                <th style="width:20vw" class="text-center">Prod./Items</th>
+                <th style="width:16vw" class="text-center">Nuevo Status</th>
+                <th style="width:4vw" class="text-center"></th>
+            </tr>`;
+
+        const tableBody = Object.entries(groupedOrders).map(([user, orders]) => {
+            const userRows = orders.map(order => `
+                <tr id="tr_${extractIdNumber(order.id)}">
+                    <td><strong>...${order.codigo.substring(19)}</strong></td>
+                    <td><span class="common-style ${order.status.replace(/\s+/g, "").toLowerCase()}">${order.status}</span></td>
+                    <td>${order.solicitadaPor}</td>
+                    <td>${order.fecha}</td>
+                    <td><b>${order.productos}</b> / ${order.items}
+                        <input type="hidden" name="idOrdenHidden_${extractIdNumber(order.id)}" value="${extractIdNumber(order.id)}">
+                    </td>
+                    <td>
+                        <select id="newOrdenSatus_${extractIdNumber(order.id)}" name="newOrdenSatus_${extractIdNumber(order.id)}" class="form-select" required>
+                            ${ order.newStatus }
                             </select>
                         </td>
-                        <td><button name="btnRemoveRow" type="button" id="btnRemoveRow_${extractIdNumber(data.id)}" class="btn btn-danger rounded-circle m-2 border border-2 shadow">
-                            <i class="fa-solid fa-trash"></i></button></td>
-                    </tr>`).join("")}`
+                    <td>
+                        <button name="btnRemoveRow" title="Remover Orden ${extractIdNumber(order.id)}" 
+                                type="button" id="btnRemoveRow_${extractIdNumber(order.id)}" 
+                                class="btn btn-danger rounded-circle m-2 border border-2 shadow">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join("");
 
-            // Generar SweetAlert2 con los datos seleccionados
-            const tableHtml = `
-                <form id="formModifyStatus" action="/api/ordenes/modifyMulti/1" method="post">
-                    <fieldset>
-                        <table id="statusOrdenesTable" class="table align-middle" style="font-size: 11pt";>
-                            <thead>
-                                ${trTable}
-                            </thead>
-                            <tbody>
-                                ${tableBody}
-                            </tbody>
-                        </table>
-                    </fieldset>
-                </form>`;
-    
-            Swal.fire({
-                title: "Modificar Status Múltiples Ordenes",
-                html: tableHtml,
-                confirmButtonText: 'Modificar Ordenes <i class="fa-regular fa-pen-to-square"></i>',
-                confirmButtonColor: '#3085d6',
-                showCancelButton: true,
-                showCloseButton: true,
-                cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>',
-                cancelButtonColor: '#d33',
-                width: 1500,
-                position: "center"
+            return `
+                <tr class="user-header-row" id="user-header-${user.replace(/[\s-]/g, '').toLowerCase()}">
+                    <td colspan="7" class="bg-light">
+                        <strong>Usuario: ${user}</strong> - <strong>Ordenes: ${orders.length}</strong>
 
-            }).then((result) => {
-                const nodeSelectList = document.querySelectorAll('select[id^="newOrdenSatus_"]')
-                nodeSelectList.forEach(function(select){
-                    select ? select[0].removeAttribute('disabled') : null
-                })
+                        <input type="hidden" name="user-header-${user.replace(/[\s-]/g, '').toLowerCase()}" 
+                                value="${user.replace(/[\s-]/g, '').toLowerCase()}">
+                        <button name="btnRemoveUser" type="button" title="Remover Usuario ${user}" 
+                                id="btnRemoveUser_${user.replace(/[\s-]/g, '').toLowerCase()}" 
+                                class="btn btn-delete-user float-end">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                ${userRows}
+            `;
+        }).join("");
 
-                const formModifyStatus = document.getElementById('formModifyStatus')
-                if (result.isConfirmed) {
-                    formModifyStatus.submit()
-                    setTimeout(() => {
-                        Swal.fire({
-                            title: `Ordenes modificadas!`,
-                            html: 'Las ordenes fueron modificadas con éxito',
-                            icon: 'success',
-                            width: 500
-                        })
-                    }, 500)
+        return `
+            <form id="formModifyStatus" action="/api/ordenes/modifyMulti/1" method="post">
+                <fieldset>
+                    <table id="statusOrdenesTable" class="table align-middle" style="font-size: 11pt">
+                        <thead>${tableHeaders}</thead>
+                        <tbody>${tableBody}</tbody>
+                    </table>
+                </fieldset>
+            </form>`;
+    }
 
-                } else {
-                    Swal.fire({
-                        title: `Ordenes no modificadas!`,
-                        html: 'El status de las ordenes no fue modificado.',
-                        icon: 'warning',
-                        width: 500
-                    })
-                    return false
-                }
-            });
+    function submitOrdersForm(groupedOrders) {
+        const nodeSelectList = document.querySelectorAll('select[id^="newOrdenSatus_"]')
+        nodeSelectList.forEach(function(select){
+            select ? select[0].removeAttribute('disabled') : null
+        })
 
-            
-            document.querySelectorAll("[id^='btnRemoveRow_']").forEach(button => {
-                button.addEventListener("click", (event) => {
-                    event.preventDefault()
-                    const id = event.target.closest("button").id.split("_")[1];
-                    id ? removeRow(id) : null
+        const form = document.getElementById('formModifyStatus');
+        if (form) {
+            form.submit();
+            setTimeout(() => {
+                Swal.fire({
+                    title: `Ordenes modificadas!`,
+                    html: 'Las ordenes fueron modificadas con éxito',
+                    icon: 'success',
+                    width: 500
                 });
+            }, 500);
+        }
+    }
+
+    // Función removeModal
+    function removeModal() {
+        const remainingRows = document.querySelectorAll('#statusOrdenesTable tbody tr:not(.user-header-row)');
+        if (remainingRows.length === 0) {
+            Swal.close();
+            Swal.fire({
+                title: `Ordenes no modificadas!`,
+                html: 'No quedan ordenes seleccionadas para modificar',
+                icon: 'warning',
+                width: 500
             });
+            return false;
+        }
+        return true;
+    }
 
-            //---------------- Remove item Row ---------------------------
-            function removeRow(idButton, ) {
-                let removeButtons = document.querySelectorAll('button[name="btnRemoveRow"]')       
-                const rowToDelete = document.getElementById(`tr_${idButton}`)
-
-                if (parseInt(removeButtons.length) > 1) {
-                    rowToDelete ? rowToDelete.remove() : null
-                    
-                } else {
-                    Swal.close()
-                    Swal.fire({
-                        title: `Ordenes no modificadas!`,
-                        html: 'El status de las ordenes no fue modificado.',
-                        icon: 'warning',
-                        width: 500
-                    })
-                    return false
-                }
-            }
+    document.querySelectorAll("[id^='btnRemoveRow_']").forEach(button => {
+        button.addEventListener("click", (event) => {
+            event.preventDefault()
+            console.log('button: ', button)
+            const id = event.target.closest("button").id.split("_")[1];
+            id ? removeRow(id) : null
         });
+    });
+    
+    // Función removeRow
+    function removeRow(idButton) {
+        const rowToDelete = document.getElementById(`tr_${idButton}`);
+        if (!rowToDelete) return;
+
+        const userHeader = findPreviousUserHeader(rowToDelete);
+        rowToDelete.remove();
+        
+        // Verificar si quedan filas para este usuario
+        if (userHeader) {
+            const nextRow = userHeader.nextElementSibling;
+            if (!nextRow || nextRow.classList.contains("user-header-row")) {
+                userHeader.remove();
+            }
+        }
+        removeModal();
+    }
+    
+    // Asignar eventos a los botones de eliminar usuario
+    document.querySelectorAll("[name='btnRemoveUser']").forEach(button => {
+        button.addEventListener("click", (event) => {
+            event.preventDefault();
+            const user = event.target.closest("button").id.split("_")[1].replace(/-/g, "");
+            removeUserOrders(user);
+        });
+    });
+
+    // Función auxiliar para encontrar el encabezado de usuario
+    function findPreviousUserHeader(row) {
+        let prev = row.previousElementSibling;
+        while (prev) {
+            if (prev.classList.contains("user-header-row")) {
+                return prev;
+            }
+            prev = prev.previousElementSibling;
+        }
+        return null;
+    }
+
+    // Función removeUserOrders
+    function removeUserOrders(user) {
+        const normalizedUser = user.replace(/[\s-]/g, '').toLowerCase().trim();
+        const userHeader = document.getElementById(`user-header-${normalizedUser}`);
+        if (!userHeader) return;
+
+        // Eliminar todas las filas de este usuario
+        let nextRow = userHeader.nextElementSibling;
+        while (nextRow && !nextRow.classList.contains("user-header-row")) {
+            const temp = nextRow.nextElementSibling;
+            nextRow.remove();
+            nextRow = temp;
+        }
+        
+        userHeader.remove();
+        removeModal();
     }
 });

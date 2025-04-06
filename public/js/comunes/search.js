@@ -1809,7 +1809,7 @@ const renderSearchedOrdenesUser = (arrOrdenesSearch) => {
             updateGlobalSelectionState();
         }
 
-        // Función para actualizar estilos CORREGIDA
+        // Función para actualizar estilos
         function updateSelectionStyle(checkbox, isCard = true) {
             const element = checkbox.closest(isCard ? "div[id^='cardRow_']" : "tr");
             if (!element) return;
@@ -1870,8 +1870,8 @@ const renderSearchedOrdenesUser = (arrOrdenesSearch) => {
 
             const totalSelected = selectedOrders.size;
 
-            const btnDownload = document.getElementById('btnCheckSelectionDownload');
-            const spanCounter = document.getElementById('spanCheckSelecMasiveDownload');
+            const btnDownload = document.getElementById('btnCheckSelectionDownload') || document.getElementById('btnCheckSelectionAll');
+            const spanCounter = document.getElementById('spanCheckSelecMasiveDownload') || document.getElementById('spanCheckSelecMasive');
             
             if (btnDownload) btnDownload.disabled = totalSelected === 0;
             if (spanCounter) {

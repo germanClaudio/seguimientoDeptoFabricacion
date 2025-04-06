@@ -22,6 +22,10 @@ routerOrders.get('/nonActive', checkAuthentication, orders.getNonActiveOrders)
 // -------------------  Get All Orders By UserId List ------------------ 
 routerOrders.get('/allOrdersByUserId', checkAuthentication, orders.getAllOrdersByUserId)
 
+// -------------------  Get Consumos Items Resumen ------------------ 
+routerOrders.get('/consumosItems/', checkAuthentication, orders.getConsumosItems)
+
+
 // -------------------  Delete Order ------------------ 
 routerOrders.post('/delete/:id', checkAuthentication, orders.deleteOrderById)
 
@@ -36,6 +40,7 @@ routerOrders.post('/modifyMulti/:screen', checkAuthentication, orders.modifyMult
 
 // -------------------  Download Multi Resumen Orders ------------------ 
 routerOrders.post('/resumenMulti/', checkAuthentication, orders.resumenMultiOrders)
+
 
 
 

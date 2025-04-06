@@ -1933,17 +1933,17 @@ td {
 }
 
 .imgLazyLoadQr {
-  width: 40%;
-  height: 40%; /*auto*/
+  width: 60%;
+  height: 60%; /*auto*/
   transition: opacity 0.4s ease-in-out; /* Suaviza la aparición */
   opacity: 1;
   object-fit: contain;
 }
 
 .imgLazyLoadQr.loaded {
-  width: 60%;
-  height: 60%; /*auto*/
-  min-height: 60%;
+  width: 100%;
+  height: 100%; /*auto*/
+  min-height: 100%;
   opacity: 1;
   object-fit: contain;
 }
@@ -2164,3 +2164,19 @@ td {
   cursor: pointer;
   margin: 5px;
 }
+
+/*---------- Charts --------------*/
+
+.chart-container {
+  position: relative;
+  height: 270px; /* Altura fija */
+  width: 100%;
+}
+
+.chart-container-porUsuario {
+  position: relative;
+  height: 400px; /* Altura fija */
+  width: 100%;
+}
+
+/*---------- End Charts --------------*/

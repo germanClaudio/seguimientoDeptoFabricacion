@@ -1,0 +1,39 @@
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <!-- Gráfico de Barras (Cantidad por tipo de producto) -->
+    <div class="col-md-6">
+        <div class="card shadow p-3 mb-4 bg-body rounded">
+            <div class="card-body">
+                <h5 class="card-title">Cantidad por Tipo</h5>
+                <div class="chart-container">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráfico Circular (Distribución por tipo) -->
+    <div class="col-md-6">
+        <div class="card shadow p-3 mb-4 bg-body rounded">
+            <div class="card-body">
+                <h5 class="card-title">Distribución por Tipo</h5>
+                <div class="chart-container">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráfico Acumulativo (Total por usuario) -->
+    <div class="col-md-12">
+        <div class="card shadow p-3 mb-4 bg-body rounded">
+            <div class="card-body">
+                <h5 class="card-title">Total de Items por Usuario</h5>
+                <div class="chart-container-porUsuario">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="itemsGroupByUser" data-items="<%= itemsGroupByUser %>"></div>
+</div>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head/head'); %>
+</head>
+
+<body>
+    <header>
+        <% if (userInfo.admin) { %>
+            <%- include('../partials/header/header'); %>
+        <% } else { %>
+            <%- include('../partials/header/headerToolShop'); %>
+        <% } %>
+    </header>
+    
+    <div class="container" style="padding-top: 70px;"></div>
+    <br>
+
+    <%- include('../partials/btnHeaderTop/btnHeaderTop-GoToConsumible'); %>
+
+    <div class="d-block mx-auto mt-4 text-center bg-primary-light">    
+        <%- include('../partials/forms/formularioBuscarOrdenesAllUser'); %>
+        <%- include('../partials/data/dataOrdenesSearch'); %>
+    </div>
+
+    <%- include('../partials/sections/sectionGraphsGenerated'); %>
+    
+    <br>
+    <!-- ------------ Lista de Ordenes ------------ -->
+    <div class="d-block mx-auto mb-3 text-center w-100 px-5">
+        <%- include('../partials/graphics/dataItemsGraph'); %>
+    </div>
+    <br>
+    <%- include('../partials/btnFooterBottom/btnFooterBottom-goUp'); %>
+    <br>
+    <footer>
+        <%- include('../partials/footer/footer'); %>
+    </footer>
+<!--    scripts     -->
+<script type="text/javascript" src="/js/graphics/graphicsItems.js"></script>
+<!-- <script type="text/javascript" src="/js/comunes/search.js"></script> -->
+
+</body>
+
+</html>

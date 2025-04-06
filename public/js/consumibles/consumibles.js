@@ -28,7 +28,7 @@ function formatDate(date) {
 
 const green = 'success', red = 'danger', blue = 'primary', grey = 'secondary', yellow = 'warning', black = 'dark', white = 'light',
         active = 'Activo', inactive = 'Inactivo', info = 'info',
-        epp = 'EPP', consumibleAjuste = 'Consumible Ajuste', consumibleMeca = 'Consumible Mecanizado', consumibleLineas = 'Consumible Líneas', ropa = "Ropa", otros = 'Otros'
+        epp = 'EPP', consumibleAjuste = 'Consumible Ajuste', consumibleMeca = 'Consumible Mecanizado', consumibleLineas = 'Consumible Lineas', ropa = "Ropa", otros = 'Otros'
 let html, stockTr
 
 const typeConfigurations = {
@@ -1239,8 +1239,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         <thead>
                             <tr>
                                 <th style="width:15vw" class="text-center">Código</th>
-                                <th style="width:25vw" class="text-center">Tipo</th>
-                                <th style="width:25vw" class="text-center">Designación</th>
+                                <th style="width:15vw" class="text-center">Tipo</th>
+                                <th style="width:40vw" class="text-center">Designación</th>
                                 <th style="width:15vw" class="text-center">Imagen</th>
                                 <th style="width:15vw" class="text-center">Stock Total</th>
                             </tr>

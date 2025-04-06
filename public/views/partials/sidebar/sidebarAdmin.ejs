@@ -43,8 +43,14 @@
                 </a>
             </li>
             <li class="nav-item my-1">
-                <a class="nav-link" title="Máquinas" href="/api/maquinas">
+                <a class="nav-link" title="Herramientas" href="/api/herramientas">
                     <i class="icon-wrench" aria-hidden="true"></i>
+                    <span class="d-none d-lg-inline">Herramientas</span>
+                </a>
+            </li>
+            <li class="nav-item my-1">
+                <a class="nav-link" title="Máquinas" href="/api/maquinas">
+                    <i class="icon-bulb" aria-hidden="true"></i>
                     <span class="d-none d-lg-inline">Máquinas</span>
                 </a>
             </li>
@@ -56,22 +62,28 @@
             </li>
             <li class="nav-item my-1">
                 <a class="nav-link" title="WebChat" href="/api/webchat">
-                    <i class="icon-bubbles" aria-hidden="true"></i>
+                    <i class="icon-bell" aria-hidden="true"></i>
                     <span class="d-none d-lg-inline">WebChat</span>
+                </a>
+            </li>
+            <li class="nav-item my-1">
+                <a class="nav-link" title="Consumibles/EPP" href="/api/consumibles">
+                    <i class="icon-basket" aria-hidden="true"></i>
+                    <span class="d-none d-lg-inline">Consumibles</span>
                 </a>
             </li>
             <li class="nav-item my-1">
                 <a class="nav-link position-relative" title="Pedidos" href="/api/ordenes/allOrdersByUserId">
                     <i class="icon-bubbles" aria-hidden="true"></i>
                     <span class="d-none d-lg-inline">Pedidos</span>
-                    <% let cantOrdenesPreparadas=0
-                        for (let i=0; ordenes.length>i; i++) {
-                            ordenes[i].visible && ordenes[i].prepared && !ordenes[i].active ? cantOrdenesPreparadas++ : null
-                        }
-                        if(parseInt(cantOrdenesPreparadas)>0) { %>
+                    <% let cantOrdenesNoEntregadas=0;
+                    for (let i=0; ordenes.length>i; i++) {
+                        ordenes[i].visible && !ordenes[i].prepared && ordenes[i].active ? cantOrdenesNoEntregadas++ : null
+                    }
+                    if(parseInt(cantOrdenesNoEntregadas)>0) { %>
                         <span title="Pedidos Preparados"
-                            class="badge rounded-pill bg-danger text-light position-absolute top-0 start-100 translate-start">
-                            <%= parseInt(cantOrdenesPreparadas) %>
+                            class="badge rounded-pill bg-danger text-light position-absolute top-0 start-100 translate-start z-index-1">
+                            <%= parseInt(cantOrdenesNoEntregadas) %>
                         </span>
                     <% } %>
                 </a>

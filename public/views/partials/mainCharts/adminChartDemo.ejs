@@ -103,7 +103,7 @@
                                             <span>Mensajes</span>
                                         </div>
                                         <div class="align-self-center ms-auto">
-                                            <i class="icon-bubbles warning font-large-2 float-right"></i>
+                                            <i class="icon-bell warning font-large-2 float-right"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -146,9 +146,9 @@
             <div class="col-xl-3 col-sm-6 col-12 card-container" data-swapy-slot="f">
                 <div data-swapy-item="f">
                     <a href="/api/herramientas" style="text-decoration: none;">
-                        <div class="card rounded-3 card_dashboard-link">
-                            <div class="card-content">
-                                <div class="card-body">
+                        <div class="card rounded-3 card_dashboard-link overflow-visible">
+                            <div class="card-content overflow-visible">
+                                <div class="card-body position-relative">
                                     <div class="media d-flex mx-2">
                                         <div class="media-body text-left">
                                             <% let herramientasVisibles = [], herramientasEnUso = [];
@@ -158,13 +158,17 @@
                                                 <h3 class="font-medium"><%= parseInt(herramientasVisibles.length) %>/<span style="font-size: 0.95rem;"><%= parseInt(herramientas.length) %></span></h3>
                                                 <% if ( herramientasEnUso.length != 0 ) { %>
                                                     <span><%= parseInt(herramientasVisibles.length) %> Herramientas</span> / <span class="badge rounded-pill text-bg-danger"><%= herramientasEnUso.length %> de Baja</span>
-                                                    <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #b09b12;"></i>
                                                 <% } %>
                                         </div>
                                         <div class="align-self-center ms-auto">
                                             <i class="icon-wrench success font-large-2 float-right"></i>
                                         </div>
                                     </div>
+                                    <% if ( herramientasEnUso.length != 0 ) { %>
+                                        <i title="Herramientas de baja" class="fa-solid fa-triangle-exclamation fa-xl position-absolute
+                                            top-0 start-100 translate-middle z-index-1" style="color: #ffc90d;">
+                                        </i>
+                                    <% } %>
                                 </div>
                             </div>
                         </div>
@@ -175,9 +179,9 @@
             <div class="col-xl-3 col-sm-6 col-12 card-container" data-swapy-slot="g">
                 <div data-swapy-item="g">
                     <a href="/api/maquinas" style="text-decoration: none;">
-                        <div class="card rounded-3 card_dashboard-link">
-                            <div class="card-content">
-                                <div class="card-body">
+                        <div class="card rounded-3 card_dashboard-link overflow-visible">
+                            <div class="card-content overflow-visible">
+                                <div class="card-body position-relative">
                                     <div class="media d-flex mx-2">
                                         <div class="media-body text-left">
                                             <% let maquinasVisibles = [], maquinasEnMantenimiento = [];
@@ -187,8 +191,7 @@
                                                 <h3 class="font-medium"><%= parseInt(maquinasVisibles.length) %>/<span style="font-size: 0.95rem;" ><%= parseInt(maquinas.length) %></span></h3>
                                                 <% if ( maquinasEnMantenimiento.length != 0 ) { %>
                                                     <span class="me-1">Máquinas</span>
-                                                    <span class="badge rounded-pill text-bg-danger"><%= maquinasEnMantenimiento.length %> Mantenimiento</span>
-                                                    <i class="fa-solid fa-triangle-exclamation fa-lg" style="color: #b09b12;"></i>
+                                                    <span class="badge rounded-pill text-bg-danger"><%= maquinasEnMantenimiento.length %> en Mantenimiento</span>
                                                 <% } else { %>
                                                     <span class="badge rounded-pill text-bg-success">Máquinas Activas</span>
                                                 <% } %>
@@ -197,6 +200,11 @@
                                             <i class="icon-bulb success font-large-2 float-right"></i>
                                         </div>
                                     </div>
+                                    <% if ( maquinasEnMantenimiento.length != 0 ) { %>
+                                        <i title="Máquinas en Mantenimiento" class="fa-solid fa-triangle-exclamation fa-xl position-absolute
+                                            top-0 start-100 translate-middle z-index-1" style="color: #ffc90d;">
+                                        </i>
+                                    <% } %>
                                 </div>
                             </div>
                         </div>
@@ -266,9 +274,9 @@
             <div class="col-xl-3 col-sm-6 col-12 card-container" data-swapy-slot="j">
                 <div data-swapy-item="j">
                     <a href="/api/consumibles" style="text-decoration: none;">
-                        <div class="card rounded-3 card_dashboard-link">
-                            <div class="card-content">
-                                <div class="card-body">
+                        <div class="card rounded-3 card_dashboard-link overflow-visible">
+                            <div class="card-content overflow-visible">
+                                <div class="card-body position-relative">
                                     <div class="media d-flex mx-2">
                                         <div class="media-body text-left">
                                             <% let arrayVisibleConsumibles = [], arrayActiveConsumibles = [] , arrayConsumiblesWStock = []
@@ -298,6 +306,12 @@
                                             <i class="icon-basket font-large-2 float-right"></i>
                                         </div>
                                     </div>
+                                    <% if(parseInt(arrayVisibleConsumibles.length)-parseInt(arrayConsumiblesWStock.length) > 0) { %>
+                                        <span title="Consumibles sin Stock"
+                                            class="badge rounded-pill bg-danger text-light position-absolute top-0 start-100 translate-middle z-index-1">
+                                            <%= parseInt(arrayVisibleConsumibles.length)-parseInt(arrayConsumiblesWStock.length) %>
+                                        </span>
+                                    <% } %>
                                 </div>
                             </div>
                         </div>
@@ -308,14 +322,15 @@
             <div class="col-xl-3 col-sm-6 col-12 card-container" data-swapy-slot="k">
                 <div data-swapy-item="k">
                     <a href="/api/ordenes/active" style="text-decoration: none;">
-                        <div class="card rounded-3 card_dashboard-link">
-                            <div class="card-content">
+                        <div class="card rounded-3 card_dashboard-link overflow-visible">
+                            <div class="card-content overflow-visible">
                                 <div class="card-body position-relative">
                                     <div class="media d-flex mx-2">
                                         <div class="media-body text-left">
-                                            <% let cantOrdenes=0, cantOrdenesPreparadas=0, cantOrdenesEntregadas=0
+                                            <% let cantOrdenes=0, cantOrdenesPreparadas=0, cantOrdenesEntregadas=0, cantOrdenesNoEntregadas=0;
                                             for (let i=0; ordenes.length>i; i++) {
                                                 ordenes[i].visible ? cantOrdenes++ : null
+                                                ordenes[i].visible && !ordenes[i].prepared && ordenes[i].active ? cantOrdenesNoEntregadas++ : null
                                                 ordenes[i].visible && ordenes[i].prepared && !ordenes[i].active ? cantOrdenesPreparadas++ : null
                                                 ordenes[i].visible && !ordenes[i].active ? cantOrdenesEntregadas++ : null
                                             } %>
@@ -323,16 +338,16 @@
                                                 <span style="font-size: 1rem; color: darkgreen;">Entregados <%= parseInt(cantOrdenesEntregadas) %> </span> /
                                                 <span style="font-size: 1rem; color: rgb(255, 0, 0);">Total <%= parseInt(cantOrdenes) %></span>
                                             </h3>
-                                            <span>Solicitudes EPP's</span>
+                                            <span>Solicitudes Consumibles y EPP's</span>
                                         </div>
                                         <div class="align-self-center ms-auto">
-                                            <i class="icon-bell success font-large-2 float-right"></i>
+                                            <i class="icon-bubbles success font-large-2 float-right"></i>
                                         </div>
                                     </div>
-                                    <% if(parseInt(cantOrdenesPreparadas)>0) { %>
-                                        <span title="Pedidos Preparados"
-                                            class="badge rounded-pill bg-danger text-light position-absolute top-0 start-100 translate-middle">
-                                            <%= parseInt(cantOrdenesPreparadas) %>
+                                    <% if(parseInt(cantOrdenesNoEntregadas)>0) { %>
+                                        <span title="Pedidos No Entregados"
+                                            class="badge rounded-pill bg-danger text-light position-absolute top-0 start-100 translate-middle z-index-1">
+                                            <%= parseInt(cantOrdenesNoEntregadas) %>
                                         </span>
                                     <% } %>
                                 </div>

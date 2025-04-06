@@ -175,6 +175,70 @@ class OrdenesDaoMongoDB extends ContainerMongoDB {
         }
 	}
 
+
+    async getAllItemsOrdered(usuario) {
+        let legajoUserId = usuario.legajoId
+        
+        if(legajoUserId) {
+            try {
+                const ordersByUser = await Ordenes.aggregate([
+                    {
+                        $match: {
+                            visible: true,
+                            active: false
+                        }
+                    },
+                    {
+                        $unwind: "$items" // Descompone el array de items en documentos individuales
+                    },
+                    {
+                        $project: {
+                            legajoIdUser: { $arrayElemAt: ["$shipping.legajoIdUser", 0] }, // Obtiene el legajoIdUser del primer elemento del array shipping
+                            name: { $arrayElemAt: ["$shipping.name", 0] },
+                            lastName: { $arrayElemAt: ["$shipping.lastName", 0] },
+                            consumibleId: "$items.consumibleId",
+                            designation: "$items.designation",
+                            type: "$items.type",
+                            quantity: "$items.quantity"
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: "$legajoIdUser", // Agrupa por legajoIdUser
+                            userData: {
+                                $push: {
+                                    name: "$name",
+                                    lastName: "$lastName"
+                                }
+                            },
+                            items: {
+                                $push: {
+                                    consumibleId: "$consumibleId",
+                                    designation: "$designation",
+                                    type: "$type",
+                                    quantity: "$quantity"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        $sort: { "_id": 1 } // Ordena por legajoIdUser ascendente
+                    }
+                ]);
+    
+                // console.log('ordersByUser-Dao: ', ordersByUser)
+
+                return ordersByUser;
+            } catch (error) {
+                console.log("Error MongoDB getAllItemsOrdered: ", error);
+                return new Error("No hay ordenes en la DB!");
+            }
+        
+        } else {
+            return new Error (`Usuario no existe con ese legajo Id# ${legajoUserId}!`)
+        }
+	}
+
 	async deleteOrderById(id, userModificator) {
         if(id){
             try {

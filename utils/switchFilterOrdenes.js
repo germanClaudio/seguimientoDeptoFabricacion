@@ -75,7 +75,7 @@ async function switchFilterOrdenesByUser(Ordenes, searchQuery) {
 
 async function switchFilterOrdenes(Ordenes, searchQuery) {
     let query = {};
-    console.log('X - searchQuery: ', searchQuery)
+    // console.log('X - searchQuery: ', searchQuery)
 
     // Procesar $or si existe
     if (searchQuery.$or && Array.isArray(searchQuery.$or)) {
@@ -102,7 +102,7 @@ async function switchFilterOrdenes(Ordenes, searchQuery) {
     const milisegundosPorDia = 1000 * 60 * 60 * 24; // Milisegundos en un día
     const diferenciaDias = (diferenciaMs / milisegundosPorDia);
 
-    console.log(`La diferencia en días es: ${diferenciaDias}`);
+    // console.log(`La diferencia en días es: ${diferenciaDias}`);
 
     // Obtener la fecha actual
     const fechaActual = new Date();
@@ -140,8 +140,8 @@ async function switchFilterOrdenes(Ordenes, searchQuery) {
     // 5. Filtrar siempre las ordenes visibles
     query.visible = Boolean(true)
     
-    console.log('3- query-SwitchFilter: ', query)
-    console.log('3.1- Object.query: ', Object.keys(query).length)
+    // console.log('3- query-SwitchFilter: ', query)
+    // console.log('3.1- Object.query: ', Object.keys(query).length)
     
     // Ejecutar consulta
     const resultados = Object.keys(query).length > 0

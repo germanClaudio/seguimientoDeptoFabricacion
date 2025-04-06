@@ -38,8 +38,8 @@
             </li>
             <li class="nav-item my-1">
                 <a class="nav-link" title="Configuracion Herrameintas" href="/api/herramientas/solicitud">
-                    <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
-                    <span class="d-none d-lg-inline">Configuración Herramientas</span>
+                    <i class="icon-wrench" aria-hidden="true"></i>
+                    <span class="d-none d-lg-inline">Herramientas</span>
                 </a>
             </li>
             <li class="nav-item my-1">
@@ -47,14 +47,14 @@
                     <i class="icon-bubbles" aria-hidden="true"></i>
                     <span class="d-none d-lg-inline">Pedidos</span>
                     <% let cantOrdenesPreparadas=0
-                        for (let i=0; ordenes.length>i; i++) {
-                            ordenes[i].visible && ordenes[i].prepared && !ordenes[i].active ? cantOrdenesPreparadas++ : null
-                        }
-                        if(parseInt(cantOrdenesPreparadas)>0) { %>
-                        <span title="Pedidos Preparados"
-                            class="badge rounded-pill bg-danger text-light position-absolute top-0 start-100 translate-start">
-                            <%= parseInt(cantOrdenesPreparadas) %>
-                        </span>
+                    for (let i=0; ordenes.length>i; i++) {
+                        ordenes[i].visible && ordenes[i].prepared ? cantOrdenesPreparadas++ : null
+                    }
+                    if(parseInt(cantOrdenesPreparadas)>0) { %>
+                    <span title="Pedidos Preparados"
+                        class="badge rounded-pill bg-danger text-light position-absolute top-0 start-100 translate-start">
+                        <%= parseInt(cantOrdenesPreparadas) %>
+                    </span>
                     <% } %>
                 </a>
             </li>
