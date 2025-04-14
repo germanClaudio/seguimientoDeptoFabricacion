@@ -1,45 +1,48 @@
 const { Schema, mongoose } = require('mongoose')
 const now = require('../utils/formatDate.js')
 
+const creatorModels = require('./creator.models.js')
+const modificatorModels = require('./modificator.models.js')
+
 // ------- Creator Schema -------------
-let creatorSchema = new Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Usuarios",
-    },
-    name: { 
-        type: String,
-    },
-    lastName: {
-        type: String,
-    },
-    username:{
-        type: String,
-    },
-    email: {
-        type: String,
-    }
-})
+// let creatorModels = new Schema({
+//     userId: {
+//         type: mongoose.Schema.Types.ObjectId,
+//         ref: "Usuarios",
+//     },
+//     name: { 
+//         type: String,
+//     },
+//     lastName: {
+//         type: String,
+//     },
+//     username:{
+//         type: String,
+//     },
+//     email: {
+//         type: String,
+//     }
+// })
 
 // ------- Modificator Schema -------------
-let modificatorSchema = new Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Usuarios",
-    },
-    name: { 
-        type: String,
-    },
-    lastName: {
-        type: String,
-    },
-    username:{
-        type: String,
-    },
-    email: {
-        type: String,
-    }
-})
+// let modificatorModels = new Schema({
+//     userId: {
+//         type: mongoose.Schema.Types.ObjectId,
+//         ref: "Usuarios",
+//     },
+//     name: { 
+//         type: String,
+//     },
+//     lastName: {
+//         type: String,
+//     },
+//     username:{
+//         type: String,
+//     },
+//     email: {
+//         type: String,
+//     }
+// })
 
 // ------- Authorizator Schema -------------
 // let authorizatorSchema = new Schema({
@@ -95,12 +98,12 @@ let otArmadoSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -146,12 +149,12 @@ let otEtapaPrimeraSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -189,12 +192,12 @@ let otEtapaSegundaPrimeraSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -224,12 +227,12 @@ let otEtapaSegundaSegundaSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -259,12 +262,12 @@ let otAnalisisCriticoSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -302,12 +305,12 @@ let otEtapaTerceraPrimeraSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -345,12 +348,12 @@ let otEtapaTerceraSegundaSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -388,12 +391,12 @@ let otCicloCorreccionPrimeraSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -431,12 +434,12 @@ let otCicloCorreccionSegundaSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -474,12 +477,12 @@ let otCicloCorreccionTerceraSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -517,12 +520,12 @@ let otLiberacionBuyOffPrimeraSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -560,12 +563,12 @@ let otLiberacionBuyOffSegundaSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -595,12 +598,12 @@ let otBuyOffSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -638,12 +641,12 @@ let otPendientesFinalesSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -669,12 +672,12 @@ let AjusteSchema = new Schema({
     otInfoLiberacionBuyOffSegunda: [otLiberacionBuyOffSegundaSchema],
     otInfoBuyOff: [otBuyOffSchema],
     otInfoPendientesFinales: [otPendientesFinalesSchema],
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""

@@ -23,8 +23,8 @@ class ClientService {
     }
 
     // returns one client by Name
-    async getClientByName(name) {
-        return await this.clientes.getClientByName(name)
+    async getClientByNameOrCode(name, code) {
+        return await this.clientes.getClientByNameOrCode(name, code)
     }
 
     // returns all Projects from one client by id
@@ -63,13 +63,13 @@ class ClientService {
     }
 
     // update Project Qty. of one client
-    async updateClientProjectsQty(id, cliente, user) {
-        return await this.clientes.updateClientProjectsQty(id, cliente, user)
+    async updateClientProjectsQty(id, cliente, user, uNegocio) {
+        return await this.clientes.updateClientProjectsQty(id, cliente, user, uNegocio)
     }
 
     // reduce Project Qty. of one client
-    async reduceClientProjectQty(id, cliente, user) {
-        return await this.clientes.reduceClientProjectQty(id, cliente, user)
+    async reduceClientProjectQty(id, cliente, user, uNegocio) {
+        return await this.clientes.reduceClientProjectQty(id, cliente, user, uNegocio)
     }
     
     // delete one client by Id

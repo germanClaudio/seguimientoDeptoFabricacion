@@ -416,6 +416,10 @@ html body .display-7 {
   width: 100%
 }
 
+.container-graphs {
+  max-width: 90%
+}
+
 .card_dashboard-link {
   cursor: pointer;
   width: 100%; /* Ancho completo del contenedor */
@@ -1429,7 +1433,7 @@ form.dropzone {
 }
 
 /* Input range */
-.form-range {
+.form-range-custom {
     appearance: none;
     -webkit-appearance: none;
     width: 75%;
@@ -1444,13 +1448,13 @@ form.dropzone {
 }
 
 /* Cambia el color de la barra pintada */
-.form-range::-webkit-slider-runnable-track {
+.form-range-custom::-webkit-slider-runnable-track {
     -webkit-appearance: none;
     height: 4px;
     background: transparent;
 }
 
-.form-range::-moz-range-track {
+.form-range-custom::-moz-range-track {
 background: transparent;
 height: 4px;
 }
@@ -1461,7 +1465,7 @@ height: 4px;
     width: 6vw;
 }
 
-.form-range::-webkit-slider-thumb {
+.form-range-custom::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 20px;
     height: 20px;
@@ -1475,7 +1479,7 @@ height: 4px;
     cursor: pointer;
 }
 
-.form-range::-moz-range-thumb {
+.form-range-custom::-moz-range-thumb {
     width: 20px;
     height: 20px;
     background: #830000;
@@ -1487,7 +1491,7 @@ height: 4px;
 }
 
 /* Ajusta el color de la barra en navegadores compatibles con WebKit */
-.form-range::-webkit-slider-runnable-track:before {
+.form-range-custom::-webkit-slider-runnable-track:before {
     content: "";
     height: 100%;
     width: 100%;
@@ -1498,7 +1502,7 @@ height: 4px;
 }
 
 /* Estilo del track en navegadores Firefox */
-.form-range::-moz-range-track {
+.form-range-custom::-moz-range-track {
         background: transparent;
         height: 4px;
 }
@@ -1925,9 +1929,9 @@ td {
 }
 
 .imgLazyLoad.loaded {
-  width: 70%;
+  width: 50%;
   height: 80%; /*auto*/
-  min-height: 90%;
+  min-height: 100%;
   opacity: 1;
   object-fit: contain;
 }

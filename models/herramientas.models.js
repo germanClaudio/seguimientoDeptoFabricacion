@@ -1,6 +1,9 @@
 const { Schema, model } = require('mongoose')
 const now = require('../utils/formatDate.js')
 
+const creatorModels = require('./creator.models.js')
+const modificatorModels = require('./modificator.models.js')
+
 const herramientasSchema = new Schema({
     designation: {
         type: String,
@@ -116,18 +119,20 @@ const herramientasSchema = new Schema({
         default: '',
         trim: true,
     },
-    creator: {
-        type: Array,
-        default: []
-    },
+    // creator: {
+    //     type: Array,
+    //     default: []
+    // },
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: {
-        type: Array,
-        default: []
-    },
+    // modificator: {
+    //     type: Array,
+    //     default: []
+    // },
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: now,

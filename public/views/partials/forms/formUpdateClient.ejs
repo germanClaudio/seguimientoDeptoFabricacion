@@ -13,11 +13,22 @@
                     <input type="text" name="idCreator" id="idCreator" class="form-control-plaintext text-white small"
                         value="<%=cliente.creator[0].name%> <%=cliente.creator[0].lastName%>" disabled>
                 </div>
+
+                <% const offset = -3 * 60 * 60 * 1000;
+                    let utcDate = new Date(cliente.timestamp),
+                    utcDateModified = new Date(cliente.modifiedOn),
+                    localDate = new Date(utcDate.getTime() + offset),
+                    localDateModified = new Date(utcDateModified.getTime() + offset),
+                    formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
+                    formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
+
+                    formattedDate === formattedDateModified ? formattedDateModified = '' : null
+                %>
                 
                 <div class="col mx-auto my-1">
                     <label for="timestampDisable">Fecha creación</label>
                     <input type="text" name="timestampDisable" id="timestampDisable" class="form-control-plaintext text-white small"
-                        value="<%=cliente.timestamp%>" disabled>
+                        value="<%=formattedDate%>" disabled>
                 </div>
                 
                 <div class="col mx-auto my-1">
@@ -34,7 +45,7 @@
                 <div class="col-auto mx-auto my-1">
                     <label for="modifiedOnDisable">Fecha modificación</label>
                     <input type="text" name="modifiedOnDisable" id="modifiedOnDisable" class="form-control-plaintext text-white small"
-                        value="<%=cliente.modifiedOn%>" disabled>
+                        value="<%=formattedDateModified%>" disabled>
                 </div>
             </div>    
             <hr class="border my-1">
@@ -45,16 +56,22 @@
                         placeholder="Nombre Cliente" required>
                 </div>
                 
-                <div class="col-3 my-1 mx-auto">
+                <div class="col-2 my-1 mx-auto">
                     <label class="form-label" for="code">Codigo</label>
                     <input type="text" name="code" id="code" class="form-control" value="<%=cliente.code%>"
                         placeholder="Codigo" required>
                 </div>
                 
                 <div class="col-2 my-1 mx-auto">
-                    <label class="form-label" for="project">Proyectos</label>
+                    <label class="form-label" for="project">Proyectos Matrices</label>
                     <input type="number" name="project" id="project" class="form-control"
                         value="<%=cliente.project %>" disabled>
+                </div>
+
+                <div class="col-2 my-1 mx-auto">
+                    <label class="form-label" for="projectLineas">Proyectos Líneas</label>
+                    <input type="number" name="projectLineas" id="projectLineas" class="form-control"
+                        value="<%= cliente.projectLineas %>" disabled>
                 </div>
                 
                 <% if(cliente.status) { %>

@@ -1,4 +1,5 @@
-const socket = io.connect()
+const socket = io.connect(),
+    offset = -3 * 60 * 60 * 1000;
 
 let currentPage = 1;
 let itemsPerPage = 10; // Valor por defecto
@@ -178,7 +179,7 @@ const renderClientAdmin = async (arrClient, page = 1, direction = 'none') => {
     if (paginatedItems.length > 0) {
         html = paginatedItems.map((element) => {
             let green = 'success', red = 'danger', text = "Activo", grey = 'secondary', black = 'dark',
-                blue = 'primary', result = 'S/P', colorResult = grey, colorStatus = green, idChain = element._id.substring(19)
+                blue = 'primary', result = resultLineas = 'S/P', colorResult = colorResultLineas = grey, colorStatus = green, idChain = element._id.substring(19)
             
             let userArr = []
             function loopUserId() {
@@ -207,25 +208,40 @@ const renderClientAdmin = async (arrClient, page = 1, direction = 'none') => {
 
             // Asignar colorResult y result solo si project > 0
             if (element.project > 0) {
-                colorResult = element.status ? black : blue;
+                colorResult = element.status ? black : red;
                 result = element.project;
             }
 
+            if (element.projectLineas > 0) {
+                colorResultLineas = element.status ? blue : red;
+                resultLineas = element.projectLineas;
+            }
+
             // Asignar text solo si está inactivo
-            !element.status ? text = "Inactivo" : text = ''
+            !element.status ? text = "Inactivo" : text
+
+            let utcDate = new Date(element.timestamp),
+                utcDateModified = new Date(element.modifiedOn),
+                localDate = new Date(utcDate.getTime() + offset),
+                localDateModified = new Date(utcDateModified.getTime() + offset),
+                formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
+                formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
+
+                formattedDate === formattedDateModified ? formattedDateModified = '-' : null
 
             if(element.visible) {
                 return (`<tr>
                             <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
                             <td class="text-center" id="name_${element._id}">${element.name}</td>
-                            <td class="text-center"><a href="/api/clientes/select/${element._id}"><img id="logo_${element._id}" class="imgLazyLoad img-fluid rounded m-2 py-2" alt="Logo Cliente" data-src="${element.logo}" src='${imagenLazy}' width="100px" height="80px" loading="lazy"></a></td>
+                            <td class="text-center"><a href="/api/clientes/select/${element._id}"><img id="logo_${element._id}" class="imgLazyLoad img-fluid rounded m-2" alt="Logo Cliente" data-src="${element.logo}" src='${imagenLazy}' width="100px" height="80px" loading="lazy"></a></td>
                             <td class="text-center">${element.code}</td>
                             <td class="text-center"><span class="badge rounded-pill bg-${colorStatus}">${text}</span></td>
                             <td class="text-center"><span id="projectQty_${element._id}" class="badge rounded-pill bg-${colorResult}">${result}</span></td>
+                            <td class="text-center"><span id="projectLineasQty_${element._id}" class="badge rounded-pill bg-${colorResultLineas}">${resultLineas}</span></td>
                             <td class="text-center">${loopUserId()}</td>
-                            <td class="text-center">${element.timestamp}</td>
+                            <td class="text-center">${formattedDate}</td>
                             <td class="text-center">${loopModifId()}</td>
-                            <td class="text-center">${element.modifiedOn}</td>
+                            <td class="text-center">${formattedDateModified}</td>
                             <td class="text-center">
                                 <div class="d-block align-items-center">
                                     <a href="/api/clientes/select/${element._id}" class="btn btn-secondary btn-sm me-1" data-toggle="tooltip" data-placement="top" title="Editar cliente ${element.name}"><i class="fa-regular fa-pen-to-square"></i></a>
@@ -310,7 +326,7 @@ const renderClientUser = (arrClient) => {
     
     const html = arrClient.map((element) => {
         let green = 'success', red = 'danger', text = "Activo", grey = 'secondary', black = 'dark',
-            blue = 'primary', result = 'S/P', colorResult = grey, idChain = element._id.substring(19)
+            blue = 'primary', result = resultLineas = 'S/P', colorResult = colorResultLineas = grey, colorStatus = green, idChain = element._id.substring(19)
 
         let userArr = []
         function loopUserId() {
@@ -350,6 +366,20 @@ const renderClientUser = (arrClient) => {
             text = "Inactivo"
         }
 
+        if (element.projectLineas > 0) {
+            colorResultLineas = element.status ? blue : red;
+            resultLineas = element.projectLineas;
+        }
+
+        let utcDate = new Date(element.timestamp),
+            utcDateModified = new Date(element.modifiedOn),
+            localDate = new Date(utcDate.getTime() + offset),
+            localDateModified = new Date(utcDateModified.getTime() + offset),
+            formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
+            formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
+
+            formattedDate === formattedDateModified ? formattedDateModified = '-' : null
+
         if(element.visible) {
             return (`<tr>
                         <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
@@ -358,10 +388,11 @@ const renderClientUser = (arrClient) => {
                         <td class="text-center">${element.code}</td>
                         <td class="text-center"><span class="badge rounded-pill bg-${colorStatus}">${text}</span></td>
                         <td class="text-center"><span id="projectQty_${element._id}" class="badge rounded-pill bg-${colorResult}">${result}</span></td>
+                        <td class="text-center"><span id="projectLineasQty_${element._id}" class="badge rounded-pill bg-${colorResultLineas}">${resultLineas}</span></td>
                         <td class="text-center">${loopUserId()}</td>
-                        <td class="text-center">${element.timestamp}</td>
+                        <td class="text-center">${formattedDate}</td>
                         <td class="text-center">${loopModifId()}</td>
-                        <td class="text-center">${element.modifiedOn}</td>
+                        <td class="text-center">${formattedDateModified}</td>
                         <td class="text-center">
                             <div class="d-block align-items-center">
                                 <a href="/api/clientes/select/${element._id}" class="btn btn-secondary btn-sm me-1" data-toggle="tooltip" data-placement="top" title="Ver cliente ${element.name}"><i class="fa-regular fa-eye"></i></a>

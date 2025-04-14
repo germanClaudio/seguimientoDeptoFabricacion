@@ -5,7 +5,9 @@ const ContainerMongoDB = require('../../contenedores/containerMongoDB.js'),
     advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000 },
     formatDate = require('../../utils/formatDate.js')
 
-const { switchFilterOrdenesByUser, switchFilterOrdenes } = require('../../utils/switchFilterOrdenes.js')
+const { switchFilterOrdenesByUser,
+        switchFilterOrdenes,
+        switchFilterItemsConsumidos } = require('../../utils/switchFilterOrdenes.js')
 
 class OrdenesDaoMongoDB extends ContainerMongoDB {
 	constructor(cnxStr) {
@@ -175,7 +177,6 @@ class OrdenesDaoMongoDB extends ContainerMongoDB {
         }
 	}
 
-
     async getAllItemsOrdered(usuario) {
         let legajoUserId = usuario.legajoId
         
@@ -225,10 +226,10 @@ class OrdenesDaoMongoDB extends ContainerMongoDB {
                         $sort: { "_id": 1 } // Ordena por legajoIdUser ascendente
                     }
                 ]);
-    
                 // console.log('ordersByUser-Dao: ', ordersByUser)
 
                 return ordersByUser;
+
             } catch (error) {
                 console.log("Error MongoDB getAllItemsOrdered: ", error);
                 return new Error("No hay ordenes en la DB!");
@@ -579,6 +580,63 @@ class OrdenesDaoMongoDB extends ContainerMongoDB {
 
         } catch (error) {
             console.error("Error MongoDB getOrdenesBySearching: ", error);
+            return false;
+        }
+    }
+
+    async getItemsConsumidosBySearchingUser(query) {
+        try {
+            const searchQuery = {};
+
+            // Función para formatear una fecha a ISO 8601
+            const formatoISO = (fecha) => fecha.toISOString();
+    
+            // Asignar la fecha de inicio
+            const fechaInicioDefault = new Date('2025-01-01'); // Fecha por defecto: 1/1/2025
+            const fechaInicio = query.fechaInicioOrdenes ? new Date(query.fechaInicioOrdenes) : fechaInicioDefault;
+    
+            // Asignar la fecha de fin
+            const fechaFinDefault = new Date(); // Fecha actual por defecto
+            const fechaFin = query.fechaFinOrdenes ? new Date(query.fechaFinOrdenes) : fechaFinDefault;
+    
+            // Validar que las fechas sean válidas
+            if (isNaN(fechaInicio.getTime())) {
+                throw new Error('Fecha de inicio no válida');
+            }
+    
+            if (isNaN(fechaFin.getTime())) {
+                throw new Error('Fecha de fin no válida');
+            }
+    
+            // Convertir las fechas a formato ISO 8601
+            const fechaInicioISO = formatoISO(fechaInicio);
+            const fechaFinISO = formatoISO(fechaFin);
+    
+            // Agregar rango de fechas a la consulta
+            searchQuery.timestamp = {
+                $gte: fechaInicioISO,
+                $lte: fechaFinISO
+            };
+    
+            // Buscar el usuario solicitante
+            if (query.solicitadasOrdenes) {
+                searchQuery.username = await Users.findOne({ username: query.solicitadasOrdenes });
+            }
+    
+            // console.log('2- searchQuery-Dao pre-result: ', searchQuery);
+    
+            // Ejecutar consulta
+            let resultados = []
+            searchQuery.username
+            ? resultados = await switchFilterItemsConsumidos(Ordenes, searchQuery)
+            : null
+            
+            // console.log('resultados: ', resultados);
+    
+            return resultados.length ? resultados : false;
+
+        } catch (error) {
+            console.error("Error MongoDB getItemsConsumidosBySearching: ", error);
             return false;
         }
     }

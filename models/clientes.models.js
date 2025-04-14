@@ -1,10 +1,10 @@
 const { Schema, model } = require('mongoose')
-const now = require('../utils/formatDate.js')
+//const now = require('../utils/formatDate.js')
+
+const creatorModels = require('./creator.models.js')
+const modificatorModels = require('./modificator.models.js')
 
 const ClientsSchema = new Schema({
-    creator: {
-        type: Array,
-    },
     name: {
         type: String,
         maxlength: 100,
@@ -28,16 +28,25 @@ const ClientsSchema = new Schema({
         maxlength: 100,
         min: [0, 'Proyectos can not be less than 0.']
     },
+    projectLineas: {
+        type: Number,
+        default: 0,
+        maxlength: 100,
+        min: [0, 'Proyectos can not be less than 0.']
+    },
+    creator: { 
+        type: Array,
+        default: [creatorModels],
+    },
     timestamp: {
-        type: String,
-        default: now,
+        type: Date,
     },
     modificator: {
         type: Array,
+        default: [modificatorModels],
     },
     modifiedOn: {
-        type: String,
-        default: now
+        type: Date,
     },
     visible: {
         type: Boolean,

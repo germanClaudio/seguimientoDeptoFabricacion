@@ -1,44 +1,48 @@
-function dataUserCreator(userCreator) {
+async function dataUserCreator(userCreator) {
     const user = [{
         name: userCreator.name,
         lastName: userCreator.lastName,
         username: userCreator.username,
-        email: userCreator.email
+        email: userCreator.email,
+        legajoId: userCreator.legajoId
     }]
     return user
 }
 
-function dataUserModificatorEmpty() {
+async function dataUserModificatorEmpty() {
     const modificator = [{
         name: "",
         lastName: "",
         username: "",
-        email: ""
+        email: "",
+        legajoId: "",
     }]
     return modificator
 }
 
-function dataUserModificatorNotEmpty(userCreator) {
+async function dataUserModificatorNotEmpty(userCreator) {
     const userModificator = [{
         name: userCreator.name,
         lastName: userCreator.lastName,
         username: userCreator.username,
-        email: userCreator.email
+        email: userCreator.email,
+        legajoId: userCreator.legajoId
     }]
     return userModificator
 }
 
-function dataUserAuthorizator(userCreator) {
+async function dataUserAuthorizator(userCreator) {
     const user = [{
         name: userCreator.name,
         lastName: userCreator.lastName,
         username: userCreator.username,
-        email: userCreator.email
+        email: userCreator.email,
+        legajoId: userCreator.legajoId
     }]
     return user
 }
 
-function dataUserOciOwnerEmpty() {
+async function dataUserOciOwnerEmpty() {
     const modificator = [{
         name: "",
         lastName: "",
@@ -49,7 +53,7 @@ function dataUserOciOwnerEmpty() {
     return modificator
 }
 
-function dataToolEmpty() {
+async function dataToolEmpty() {
     const tool = [{
         designation: "",
         code: "",

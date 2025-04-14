@@ -55,6 +55,7 @@ class ProjectsController {
 
             const cliente = await this.clients.getClientById()
             !cliente ? catchError401(req, res, next) : null
+
             const proyectos = await this.projects.getAllProjects()
             !proyectos ? catchError400(req, res, next) : null
 
@@ -282,11 +283,11 @@ class ProjectsController {
                             ociDescription: arrayOciDescription[i],
                             ociAlias: arrayOciAlias[i],
                             ociStatus: arrayOciStatus[i] === 'on' ?  Boolean(true) : Boolean(false),
-                            ociOwner: dataUserOciOwnerEmpty(),
-                            creator: dataUserCreator(userCreator),
-                            timestamp: formatDate(),
+                            ociOwner: await dataUserOciOwnerEmpty(),
+                            creator: await dataUserCreator(userCreator),
+                            timestamp: new Date(),
                             ociImage: arrayOciImages[i] || imageNotFound,
-                            modificator: dataUserModificatorEmpty(),
+                            modificator: await dataUserModificatorEmpty(),
                             modifiedOn: "",
                             visible: true
                         }
@@ -298,6 +299,7 @@ class ProjectsController {
                 const projectCodeInput = req.body.codeProject
                 const projectNameExist = await this.projects.getExistingProject(projectInput, projectCodeInput);
                 projectNameExist ? catchError400_2(req, res, next) : null
+                const projectUnidadNegocio = req.body.uNegocio || "matrices";
 
                 const selectFieldLevel = req.body.levelProject;
                 if (validateSelectField(selectFieldLevel)) {
@@ -306,15 +308,16 @@ class ProjectsController {
                         projectName: projectInput,
                         statusProject: req.body.statusProject == 'on' ? Boolean(true) : Boolean(false),
                         levelProject: selectFieldLevel,
+                        uNegocioProject: projectUnidadNegocio,
                         codeProject: projectCodeInput,
                         projectDescription: req.body.projectDescription,
                         prioProject: parseInt(req.body.prioProject),
                         imageProject: req.body.imageProject || imageNotFound,
                         visible: true,
-                        creator: dataUserCreator(userCreator),
-                        timestamp: formatDate(),
-                        modificator: dataUserModificatorEmpty(),
-                        modifiedOn: "",
+                        creator: await dataUserCreator(userCreator),
+                        timestamp: new Date(),
+                        modificator: await dataUserModificatorEmpty(),
+                        modifiedOn: new Date(),
                         oci: arrayOciProjects
                     }
 
@@ -322,18 +325,21 @@ class ProjectsController {
                         creator: dataUserCreator(userCreator),
                         client: clienteSeleccionado,
                         project: project,
-                        timestamp: formatDate(),
+                        uNegocioProject: projectUnidadNegocio,
+                        timestamp: new Date(),
                         modificator: dataUserModificatorEmpty(),
-                        modifiedOn: "",
+                        modifiedOn: new Date(),
                         visible: true
                     }
                     // console.log('newProject:', newProject)
                     const newProjectCreated = await this.projects.createNewProject(newProject)
                     !newProjectCreated ? catchError401_1(req, res, next) : null
+
                     const cliente = await this.clients.updateClientProjectsQty(
                         clientId, 
                         clienteSeleccionado, 
-                        dataUserCreator(userCreator)
+                        dataUserCreator(userCreator),
+                        projectUnidadNegocio
                     )
 
                     const proyectos = await this.projects.getProjectsByClientId(clientId)
@@ -475,7 +481,7 @@ class ProjectsController {
                         otSimulation: arrayOtSimulation[i],
                         otSupplier: arrayOtSupplier[i],
                         creator: dataUserCreator(userCreator),
-                        timestamp: formatDate(),
+                        timestamp: new Date(),
                         modificator: dataUserModificatorEmpty(),
                         modifiedOn: "",
                         otInformation: otInformationEmpty,
@@ -901,7 +907,7 @@ class ProjectsController {
                         ociImage: arrayOciImages[i],
                         ociAlias: arrayOciAlias[i] || "Sin Apodo",
                         ociOwner: dataUserOciOwnerEmpty(),
-                        timestamp: formatDate(),
+                        timestamp: new Date(),
                         creator: dataUserCreator(userCreator),
                         modificator: dataUserModificatorEmpty(),
                         modifiedOn: "",
@@ -1455,7 +1461,7 @@ class ProjectsController {
                     revisionProcesoR14: parseInt(arrayRevisionProcesoR14[i]) || 0,
                     aprobadoR14: arrayAprobadoR14[i] || "sinDato",
                     revisionAprobadoR14: parseInt(arrayRevisionAprobadoR14[i]) || 0,
-                    timestamp: formatDate(),
+                    timestamp: new Date(),
                     creator: dataUserCreator(userCreator),
                     modificator: dataUserModificatorEmpty(),
                     modifiedOn: "",
@@ -1552,7 +1558,7 @@ class ProjectsController {
                     revisionProceso3d: parseInt(arrayRevisionProceso3d[i]) || 0,
                     horasProceso3d: parseInt(arrayHorasProceso3d[i]) || 0,
                     revisionHorasProceso3d: parseInt(arrayRevisionHorasProceso3d[i]) || 0,
-                    timestamp: formatDate(),
+                    timestamp: new Date(),
                     creator: dataUserCreator(userCreator),
                     modificator: dataUserModificatorEmpty(),
                     modifiedOn: "",
@@ -1658,7 +1664,7 @@ class ProjectsController {
                     revisionAvDiseno80: parseInt(arrayRevisionAv80Diseno[i]) || 0,
                     envioCliente: arrayEnvioCliente[i] || 'sinDato',
                     revisionEnvioCliente: parseInt(arrayRevisionEnvioCliente[i]) || 0,
-                    timestamp: formatDate(),
+                    timestamp: new Date(),
                     creator: dataUserCreator(userCreator),
                     modificator: dataUserModificatorEmpty(),
                     modifiedOn: "",
@@ -1764,7 +1770,7 @@ class ProjectsController {
                     revisionLdmProvisoria: parseInt(arrayRevisionLdmProvisoria[i]) || 0,
                     aprobadoCliente: arrayAprobadoCliente[i] || 'sinDato',
                     revisionAprobadoCliente: parseInt(arrayRevisionAprobadoCliente[i]) || 0,
-                    timestamp: formatDate(),
+                    timestamp: new Date(),
                     creator: dataUserCreator(userCreator),
                     modificator: dataUserModificatorEmpty(),
                     modifiedOn: "",
@@ -1870,7 +1876,7 @@ class ProjectsController {
                     revisionLdm80: parseInt(arrayRevisionLdm80[i]) || 0,
                     infoModelo: parseInt(arrayInfoModelo[i]) || 0,
                     revisionInfoModelo: parseInt(arrayRevisionInfoModelo[i]) || 0,
-                    timestamp: formatDate(),
+                    timestamp: new Date(),
                     creator: dataUserCreator(userCreator),
                     modificator: dataUserModificatorEmpty(),
                     modifiedOn: "",
@@ -1967,7 +1973,7 @@ class ProjectsController {
                     revisionLdm100: parseInt(arrayRevisionLdm100[i]) || 0,
                     info100: parseInt(arrayInfo100[i]) || 0,
                     revisionInfo100: parseInt(arrayRevisionInfo100[i]) || 0,
-                    timestamp: formatDate(),
+                    timestamp: new Date(),
                     creator: dataUserCreator(userCreator),
                     modificator: dataUserModificatorEmpty(),
                     modifiedOn: "",
@@ -2063,7 +2069,7 @@ class ProjectsController {
                     revisionSim0: parseInt(arrayRevisionSim0[i]) || 0,
                     docuSim0: arrayDocuSim0[i] || "sinDato",
                     revisionDocuSim0: parseInt(arrayRevisionDocuSim0[i]) || 0,
-                    timestamp: formatDate(),
+                    timestamp: new Date(),
                     creator: dataUserCreator(userCreator),
                     modificator: dataUserModificatorEmpty(),
                     modifiedOn: "",
@@ -2175,7 +2181,7 @@ class ProjectsController {
                     revisionPpt: parseInt(arrayRevisionPpt[i]) || 0,
                     s1pOp20: arrayS1pOp20[i] || "sinDato",
                     revisionS1pOp20: parseInt(arrayRevisionS1pOp20[i]) || 0,
-                    timestamp: formatDate(),
+                    timestamp: new Date(),
                     creator: dataUserCreator(userCreator),
                     modificator: dataUserModificatorEmpty(),
                     modifiedOn: "",
@@ -2282,7 +2288,7 @@ class ProjectsController {
                     revisionDfnProdismo: parseInt(arrayRevisionDfnProdismo[i]) || 0,
                     sim3: arraySim3[i] || "sinDato",
                     revisionSim3: parseInt(arrayRevisionSim3[i]) || 0,
-                    timestamp: formatDate(),
+                    timestamp: new Date(),
                     creator: dataUserCreator(userCreator),
                     modificator: dataUserModificatorEmpty(),
                     modifiedOn: "",
@@ -2389,7 +2395,7 @@ class ProjectsController {
                     revisionMpAlternativo: parseInt(arrayRevisionMpAlternativo[i]) || 0,
                     reunionSim: arrayReunionSim[i] || "sinDato",
                     revisionReunionSim: parseInt(arrayRevisionReunionSim[i]) || 0,
-                    timestamp: formatDate(),
+                    timestamp: new Date(),
                     creator: dataUserCreator(userCreator),
                     modificator: dataUserModificatorEmpty(),
                     modifiedOn: "",
@@ -2496,7 +2502,7 @@ class ProjectsController {
                     revisionGeoCopiado2: parseInt(arrayRevisionGeoCopiado2[i]) || 0,
                     horasSim: parseInt(arrayHorasSim[i]) || 0,
                     revisionHorasSim: parseInt(arrayRevisionHorasSim[i]) || 0,
-                    timestamp: formatDate(),
+                    timestamp: new Date(),
                     creator: dataUserCreator(userCreator),
                     modificator: dataUserModificatorEmpty(),
                     modifiedOn: "",
@@ -2593,7 +2599,7 @@ class ProjectsController {
                     revisionGrillado: parseInt(arrayRevisionGrillado[i]) || 0,
                     mpEnsayada: arrayMpEnsayada[i] || "sinDato",
                     revisionMpEnsayada: parseInt(arrayRevisionMpEnsayada[i]) || 0,
-                    timestamp: formatDate(),
+                    timestamp: new Date(),
                     creator: dataUserCreator(userCreator),
                     modificator: dataUserModificatorEmpty(),
                     modifiedOn: "",

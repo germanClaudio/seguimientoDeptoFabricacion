@@ -37,8 +37,8 @@ function extractNumbers(str) {
 }
 
 //------------- Create New Project ---------------
-function messageNewProject(imgCliente,idCliente) { 
-    if (imgCliente, idCliente) {
+function messageNewProject(imgCliente, idCliente, nameCliente) { 
+    if (imgCliente, idCliente, nameCliente) {
         let html = `<form id="formNewProject" action="/api/proyectos/newProject/${idCliente}" enctype="multipart/form-data" method="post">
                 <fieldset>
                     <div class="row justify-content-between align-items-center mx-auto my-3">
@@ -58,13 +58,22 @@ function messageNewProject(imgCliente,idCliente) {
                             </div>
                         </div>
                         <br>
-                        <div class="col-3">
+                        <div class="col-2">
                             <label for="levelProject" class="d-flex justify-content-start">Nivel</label>
                             <select id="levelProject" name="levelProject" class="form-select" required>
                                 <option selected disabled value="">Seleccione un Nivel</option>
                                 <option value="ganado">Ganado</option>
                                 <option value="paraCotizar">Para Cotizar</option>
                                 <option value="aRiesgo">A Riesgo</option>
+                            </select>
+                        </div>
+                        <br>
+                        <div class="col-2">
+                            <label for="uNegocioProject" class="d-flex justify-content-start">Unidad de Negocio</label>
+                            <select id="uNegocioProject" name="uNegocioProject" class="form-select" required>
+                                <option selected disabled value="">Seleccione Unidad Negocio</option>
+                                <option value="mtrices">Matrices</option>
+                                <option value="lineas">Líneas</option>
                             </select>
                         </div>
                         <br>
@@ -158,8 +167,7 @@ function messageNewProject(imgCliente,idCliente) {
                                                 </div>
                                                 <div class="col">
                                                     <input type="text" id="fileInputNewOciText" name="imageOciFileName" value="" style="display: none;">
-                                                    <input type="file" id="fileInputNewOci" name="imageNewOci"
-                                                    value="" accept="image/*" style="display: none;">
+                                                    <input type="file" id="fileInputNewOci" name="imageNewOci" value="" accept="image/*" style="display: none;">
                                                     <div id="drop-area-oci" class="mx-auto" style="font-size: .75em;">
                                                         <label for="fileInputNewOci" id="labelOciImage" class="d-flex justify-content-center">
                                                             Seleccione una imagen para la OCI
@@ -167,10 +175,8 @@ function messageNewProject(imgCliente,idCliente) {
                                                         <p>Haz click o arrastra y suelta una imagen aquí</p>
                                                     </div>
 
-                                                    <button title="Eliminar Imagen" type="button"
-                                                        class="btn btn-danger rounded-circle mx-auto mt-2"
-                                                        id="btnRemoveOciImage0" name="btnRemoveOciImage"
-                                                        style="display: none;">
+                                                    <button title="Eliminar Imagen" type="button" class="btn btn-danger rounded-circle mx-auto mt-2"
+                                                        id="btnRemoveOciImage0" name="btnRemoveOciImage" style="display: none;">
                                                         <i class="fa-solid fa-xmark"></i>
                                                     </button>
                                                     
@@ -193,10 +199,8 @@ function messageNewProject(imgCliente,idCliente) {
                         </div>
                         <div class="col mx-auto">
                                 <div class="d-flex justify-content-center">
-                                    <button type="button" id="btnAddNewRow"
-                                        title="Agregar nueva línea de OCI" 
-                                        class="btn btn-primary rounded-circle me-2 my-2"
-                                        autocomplete="off" disabled>
+                                    <button type="button" id="btnAddNewRow" title="Agregar nueva línea de OCI" 
+                                        class="btn btn-primary rounded-circle me-2 my-2" autocomplete="off" disabled>
                                         <i class="fa-solid fa-plus-circle"></i>
                                     </button>
                                 </div>
@@ -205,12 +209,189 @@ function messageNewProject(imgCliente,idCliente) {
                     <div id="mensajeError" class="alert alert-warning align-items-center justify-content-center w-50 mx-auto" role="alert"
                         style="display: none; font-size: 0.85rem; height: 1.15rem;">
                     </div>
-                    <input type="hidden" name="ociQuantity" id="ociQuantity" value="1">
+                    <input type="hidden" name="ociQuantity" id="ociQuantity" value="0">
                 </fieldset>
             </form>`
 
+        // swal.fire({
+        //     title: `Ingreso Nuevo Proyecto a cliente: ${nameCliente}`,
+        //     position: 'center',
+        //     html: html,
+        //     width: 1500,
+        //     imageUrl: `${imgCliente}`,
+        //     imageWidth: `8%`,
+        //     focusConfirm: false,
+        //     showCancelButton: true,
+        //     showConfirmButton: true,
+        //     showCloseButton: true,
+        //     confirmButtonText: 'Guardar <i class="fa-regular fa-save"></i>',
+        //     cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>',
+        //     didOpen: ()=> {
+        //         let btnAceptar = document.getElementsByClassName('swal2-confirm');
+        //         btnAceptar[0].setAttribute('id','btnAceptarModal')
+        //         btnAceptar[0].style = "cursor: not-allowed;"
+        //         btnAceptar[0].disabled = true
+        //     },
+        //     showLoaderOnConfirm: true,
+        //     preConfirm: async () => {
+                
+        //             // Validar formulario
+        //             const form = document.getElementById('formNewProject');
+        //             let isValid = true;
+        //             let firstInvalidElement = null;
+        //             let errorMessages = [];
+                    
+        //             // 1. Validar campos principales
+        //             const mainFields = form.querySelectorAll('input, textarea, select');
+        //             mainFields.forEach(field => {
+        //                 if (field.hasAttribute('required') && !field.value.trim() && !field.closest('[id^="ociItemRow"]')) {
+        //                     field.classList.add('is-invalid');
+        //                     field.style.border = '1px solid red';
+        //                     isValid = false;
+                            
+        //                     const fieldLabel = document.querySelector(`label[for="${field.id}"]`);
+        //                     errorMessages.push(fieldLabel ? fieldLabel.textContent.trim() : field.name);
+                            
+        //                     if (!firstInvalidElement) firstInvalidElement = field;
+        //                 }
+        //             });
+            
+        //             // 2. Validar campos OCI
+        //             const ociQuantity = parseInt(document.getElementById('ociQuantity').value);
+
+        //             if (parseInt(ociQuantity) === 0) {
+        //                 swal.showValidationMessage(`El proyecto debe contener al menos 1 OCI!`);
+        //                 return false
+                        
+        //             } else {
+        //                 for (let i = 0; i < ociQuantity; i++) {
+        //                     const suffix = i === 0 ? '' : i;
+        //                     const ociFields = [
+        //                         {id: `ociNumber${suffix}`, name: `Número OCI #${i+1}`},
+        //                         {id: `ociDescription${suffix}`, name: `Descripción OCI #${i+1}`}
+        //                     ];
+                            
+        //                     ociFields.forEach(field => {
+        //                         const element = document.getElementById(field.id);
+        //                         if (element && !element.value.trim()) {
+        //                             element.classList.add('is-invalid');
+        //                             element.style.border = '1px solid red';
+        //                             isValid = false;
+        //                             errorMessages.push(field.name);
+        //                             if (!firstInvalidElement) firstInvalidElement = element;
+        //                         }
+        //                     });
+                            
+        //                     // Validar imagen OCI
+        //                     const ociImageInput = document.getElementById(`fileInputNewOci${suffix}`);
+        //                     const ociDropArea = document.getElementById(`drop-area-oci${suffix}`);
+    
+        //                     if (ociImageInput && ociImageInput.hasAttribute('required') && !ociImageInput.files[0]) {
+        //                         ociDropArea.style.border = '1px solid red';
+        //                         isValid = false;
+        //                         errorMessages.push(`Imagen OCI #${i+1}`);
+        //                         if (!firstInvalidElement) firstInvalidElement = ociDropArea;
+        //                     }
+        //                 }
+        //             }
+                    
+        //             // 3. Manejo de errores
+        //             if (!isValid) {
+        //                 const errorMessage = document.getElementById('mensajeError');
+        //                 errorMessage.style.display = 'flex';
+        //                 errorMessage.innerHTML = `
+        //                     <i class="fa-solid fa-triangle-exclamation me-2"></i>
+        //                     Faltan campos requeridos: ${errorMessages.join(', ')}
+        //                 `;
+                        
+        //                 // Abrir acordeón si es necesario
+        //                 if (firstInvalidElement?.closest('.accordion-item')) {
+        //                     const accordion = document.getElementById('panelsStayOpen-collapseOneForm');
+        //                     if (accordion.classList.contains('collapse')) {
+        //                         document.getElementById('buttonOne').click();
+        //                     }
+        //                 }
+                        
+        //                 // Scroll al primer error
+        //                 firstInvalidElement?.scrollIntoView({
+        //                     behavior: 'smooth',
+        //                     block: 'center'
+        //                 });
+        //             }
+        //             swal.showValidationMessage(`Faltan campos requeridos!`);
+                
+        //     },
+        //     allowOutsideClick: () => !swal.isLoading()
+
+        // }).then((result) => {
+        //     if (result.isConfirmed) {
+        
+        //         // 4. Si todo es válido, enviar formulario
+                // document.getElementById('mensajeError').style.display = 'none';
+                
+                // const ociTotalQuantity = parseInt(document.getElementById('ociQuantity').value)
+        
+                // if (ociTotalQuantity === 1) {
+                //     const ociNumber = parseInt(document.getElementById('ociNumber').value)
+                //     const projectName = document.getElementById('projectName').value
+                //     const formularioNewProject = document.getElementById('formNewProject')
+                //     //formularioNewProject.submit()
+                
+                //     setTimeout(() => {
+                //         swal.fire({
+                //             icon: 'success',
+                //             title: `El proyecto ${projectName}, con la OCI# ${ociNumber}, se creó con éxito!`
+                //         })
+                //     }, 1000)
+
+                // } else {
+                //     let arrayOciNumbers = []
+                //     const ociNumber = parseInt(document.getElementById('ociNumber').value)
+                //     arrayOciNumbers.push(ociNumber)
+
+                //     for (let oci=0; oci<ociTotalQuantity; oci++) {
+                //         if (document.getElementById(`ociNumber${oci}`)) {
+                //             arrayOciNumbers.push(parseInt(document.getElementById(`ociNumber${oci}`).value))
+                //         }
+                //     }
+                //     // Filtrar los elementos únicos
+                //     const elementosUnicos = arrayOciNumbers.filter((valor, indice, self) => {
+                //         return self.indexOf(valor) === indice;
+                //     });
+                
+                //     if (elementosUnicos.length !== arrayOciNumbers.length) {
+                //         swal.fire(
+                //             'Números de OCI repetidas!',
+                //             `El proyecto no puede tener 2 números de OCI repetidas!`,
+                //             'warning'
+                //         )
+                //         return false
+
+                //     } else {
+                //         const projectName = document.getElementById('projectName').value
+                //         document.getElementById('formNewProject').submit()
+                
+                //         setTimeout(() => {
+                //             swal.fire({
+                //                 icon: 'success',
+                //                 title: `El proyecto ${projectName} con ${ociTotalQuantity} OCI's, se creó con éxito!`
+                //             })
+                //         }, 1000)            
+                //     }
+                // }
+
+            // } else {
+            //     swal.fire(
+            //         'Proyecto no creado!',
+            //         `El proyecto, no se creó correctamente!`,
+            //         'warning'
+            //     )
+            //     return false
+            // }
+        // })
+
         swal.fire({
-            title: `Ingreso Nuevo Proyecto`,
+            title: `Ingreso Nuevo Proyecto a cliente: ${nameCliente}`,
             position: 'center',
             html: html,
             width: 1500,
@@ -222,110 +403,237 @@ function messageNewProject(imgCliente,idCliente) {
             showCloseButton: true,
             confirmButtonText: 'Guardar <i class="fa-regular fa-save"></i>',
             cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>',
-            didOpen: ()=> {
+            didOpen: () => {
                 let btnAceptar = document.getElementsByClassName('swal2-confirm');
                 btnAceptar[0].setAttribute('id','btnAceptarModal')
                 btnAceptar[0].style = "cursor: not-allowed;"
                 btnAceptar[0].disabled = true
-            }
+            },
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                // Resetear mensajes y estilos
+                document.getElementById('mensajeError').style.display = 'none';
+                document.querySelectorAll('.is-invalid').forEach(el => {
+                    el.classList.remove('is-invalid');
+                    el.style.border = '';
+                });
+                document.querySelectorAll('[id^="drop-area-oci"]').forEach(el => {
+                    el.style.border = '2px dashed #ccc';
+                });
+        
+                // Validación principal
+                const form = document.getElementById('formNewProject');
+                let errorMessages = [];
+                let firstInvalidElement = null;
+        
+                // 1. Validar campos del proyecto
+                const projectRequiredFields = [
+                    'projectName', 'levelProject', 'uNegocioProject', 
+                    'codeProject', 'projectDescription'
+                ];
+        
+                projectRequiredFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (field && field.hasAttribute('required') && !field.value.trim()) {
+                        field.classList.add('is-invalid');
+                        field.style.border = '1px solid red';
+                        const label = document.querySelector(`label[for="${fieldId}"]`);
+                        errorMessages.push(label ? label.textContent.trim() : fieldId);
+                        if (!firstInvalidElement) firstInvalidElement = field;
+                    }
+                });
+        
+                // 2. Validar OCIs
+                const ociQuantity = parseInt(document.getElementById('ociQuantity').value);
+                
+                if (ociQuantity === 0) {
+                    swal.showValidationMessage('El proyecto debe contener al menos 1 OCI');
+                    return false;
+                }
+        
+                let ociNumbers = new Set();
+                let hasDuplicateOci = false;
+        
+                for (let i = 0; i < ociQuantity; i++) {
+                    const suffix = i === 0 ? '' : i;
+                    const ociNumber = document.getElementById(`ociNumber${suffix}`);
+                    const ociDesc = document.getElementById(`ociDescription${suffix}`);
+                    const ociImage = document.getElementById(`fileInputNewOci${suffix}`);
+                    const ociDropArea = document.getElementById(`drop-area-oci${suffix}`);
+        
+                    // Validar número OCI
+                    if (ociNumber && !ociNumber.value.trim()) {
+                        ociNumber.classList.add('is-invalid');
+                        ociNumber.style.border = '1px solid red';
+                        errorMessages.push(`Número OCI #${i+1}`);
+                        if (!firstInvalidElement) firstInvalidElement = ociNumber;
+
+                    } else if (ociNumber) {
+                        // Verificar duplicados
+                        if (ociNumbers.has(ociNumber.value)) {
+                            hasDuplicateOci = true;
+                            ociNumber.classList.add('is-invalid');
+                            ociNumber.style.border = '1px solid red';
+                            errorMessages.push(`Número OCI #${i+1} (duplicado)`);
+                        }
+                        ociNumbers.add(ociNumber.value);
+                    }
+        
+                    // Validar descripción OCI
+                    if (ociDesc && !ociDesc.value.trim()) {
+                        ociDesc.classList.add('is-invalid');
+                        ociDesc.style.border = '1px solid red';
+                        errorMessages.push(`Descripción OCI #${i+1}`);
+                        if (!firstInvalidElement) firstInvalidElement = ociDesc;
+                    }
+        
+                    // Validar imagen OCI
+                    if (ociImage && ociImage.hasAttribute('required') && !ociImage.files[0]) {
+                        ociDropArea.style.border = '1px solid red';
+                        errorMessages.push(`Imagen OCI #${i+1}`);
+                        if (!firstInvalidElement) firstInvalidElement = ociDropArea;
+                    }
+                }
+        
+                if (hasDuplicateOci) {
+                    swal.showValidationMessage('No puede haber números de OCI duplicados');
+                    return false;
+                }
+        
+                // 3. Mostrar errores acumulados
+                if (errorMessages.length > 0) {
+                    // Mostrar mensaje en el formulario
+                    const errorDiv = document.getElementById('mensajeError');
+                    errorDiv.style.display = 'flex';
+                    errorDiv.innerHTML = `
+                        <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                        Campos requeridos faltantes: ${errorMessages.join(', ')}
+                    `;
+        
+                    // Scroll y acordeón
+                    if (firstInvalidElement?.closest('.accordion-item')) {
+                        const accordion = document.getElementById('panelsStayOpen-collapseOneForm');
+                        if (!accordion.classList.contains('show')) { //collapse
+                            document.getElementById('buttonOne').click();
+                        }
+                    }
+                    
+                    firstInvalidElement?.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+        
+                    swal.showValidationMessage('Complete los campos requeridos');
+                    return false;
+                }
+        
+                // Si todo está validado, retornar los datos
+                return {
+                    formData: new FormData(form),
+                    projectName: document.getElementById('projectName').value
+                };
+            },
+            allowOutsideClick: () => !swal.isLoading()
 
         }).then((result) => {
             if (result.isConfirmed) {
-                let formFields = document.querySelectorAll('#formNewProject input, #formNewProject textarea, #formNewProject select')
-                let isEmpty = false
-
-                // Verificar si algún campo está vacío
-                formFields.forEach(function(field) {
-                    if (field.hasAttribute('required') && field.value.trim() === '') {
-                        isEmpty = true
-                        field.style.border = '1px solid red'
-                        field.classList.remove('is-valid')
-                        field.classList.add('is-invalid')
-                    } else {
-                        field.style.border = '1px solid green'
-                        field.classList.remove('is-invalid')
-                        field.classList.add('is-valid')
+                // const form = document.getElementById('formNewProject');
+                document.getElementById('mensajeError').style.display = 'none';
+                
+                // Mostrar loader mientras se envía
+                swal.fire({
+                    title: 'Guardando proyecto...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        swal.isLoading()  //showLoading();
                     }
-                })
+                });
+        
+                // Enviar formulario                
+                const ociTotalQuantity = parseInt(document.getElementById('ociQuantity').value)
+        
+                if (ociTotalQuantity === 1) {
+                    const ociNumber = parseInt(document.getElementById('ociNumber').value)
+                    const projectName = document.getElementById('projectName').value
+                    const formularioNewProject = document.getElementById('formNewProject')
+                    //formularioNewProject.submit()
+                
+                    setTimeout(() => {
+                        swal.fire({
+                            icon: 'success',
+                            title: `El proyecto ${projectName}, con la OCI# ${ociNumber}, se creó con éxito!`
+                        })
+                    }, 1000)
 
-                if (isEmpty) {
-                    // event.preventDefault()
-                    document.getElementById('mensajeError').style.display = 'flex'
-                    document.getElementById('mensajeError').innerHTML = `<i class="fa-solid fa-triangle-exclamation me-3"></i> Por favor, completa todos los campos obligatorios`
-                    
                 } else {
-                    document.getElementById('mensajeError').innerHTML = ''
-                    document.getElementById('mensajeError').style.display = 'none'
+                    let arrayOciNumbers = []
+                    const ociNumber = parseInt(document.getElementById('ociNumber').value)
+                    arrayOciNumbers.push(ociNumber)
+
+                    for (let oci=0; oci<ociTotalQuantity; oci++) {
+                        if (document.getElementById(`ociNumber${oci}`)) {
+                            arrayOciNumbers.push(parseInt(document.getElementById(`ociNumber${oci}`).value))
+                        }
+                    }
+                    // Filtrar los elementos únicos
+                    const elementosUnicos = arrayOciNumbers.filter((valor, indice, self) => {
+                        return self.indexOf(valor) === indice;
+                    });
                     
-                    const ociTotalQuantity = parseInt(document.getElementById('ociQuantity').value)
-                    if (ociTotalQuantity === 0) {
+                    if (elementosUnicos.length !== arrayOciNumbers.length) {
                         swal.fire(
-                            'Proyecto no creado!',
-                            `El proyecto debe contener al menos 1 OCI!`,
+                            'Números de OCI repetidas!',
+                            `El proyecto no puede tener 2 números de OCI repetidas!`,
                             'warning'
                         )
                         return false
 
-                    } else if (ociTotalQuantity === 1) {
-                        const ociNumber = parseInt(document.getElementById('ociNumber').value)
+                    } else {
                         const projectName = document.getElementById('projectName').value
-                        const formularioNewProject = document.getElementById('formNewProject')
-                        formularioNewProject.submit()
-                    
+                        document.getElementById('formNewProject').submit()
+                        
                         setTimeout(() => {
                             swal.fire({
                                 icon: 'success',
-                                title: `El proyecto ${projectName}, con la OCI# ${ociNumber}, se creó con éxito!`
+                                title: `El proyecto ${projectName} con ${ociTotalQuantity} OCI's, se creó con éxito!`
                             })
-                        }, 1000)
-
-                    } else {
-                        let arrayOciNumbers = []
-                        const ociNumber = parseInt(document.getElementById('ociNumber').value)
-                        arrayOciNumbers.push(ociNumber)
-
-                        for (let oci=0; oci<ociTotalQuantity; oci++) {
-                            if (document.getElementById(`ociNumber${oci}`)) {
-                                arrayOciNumbers.push(parseInt(document.getElementById(`ociNumber${oci}`).value))
-                            }
-                        }
-                        // Filtrar los elementos únicos
-                        const elementosUnicos = arrayOciNumbers.filter((valor, indice, self) => {
-                            return self.indexOf(valor) === indice;
-                        });
-                        
-                        if (elementosUnicos.length !== arrayOciNumbers.length) {
-                            swal.fire(
-                                'Números de OCI repetidas!',
-                                `El proyecto no puede tener 2 números de OCI repetidas!`,
-                                'warning'
-                            )
-                            return false
-
-                        } else {
-                            const projectName = document.getElementById('projectName').value
-                            document.getElementById('formNewProject').submit()
-                            
-                            setTimeout(() => {
-                                swal.fire({
-                                    icon: 'success',
-                                    title: `El proyecto ${projectName} con ${ociTotalQuantity} OCI's, se creó con éxito!`
-                                })
-                            }, 1000)            
-                        }
+                        }, 1000)            
                     }
                 }
-                //----------
+
+                // fetch(form.action, {
+                //     method: 'POST',
+                //     body: result.value.formData
+                // })
+                // .then(response => {
+                //     if (!response.ok) throw new Error('Error en el servidor');
+                //     return response.json();
+                // })
+                // .then(data => {
+                //     swal.fire({
+                //         icon: 'success',
+                //         title: `Proyecto ${result.value.projectName} creado exitosamente!`,
+                //         timer: 2000,
+                //         showConfirmButton: false
+                //     });
+                // })
+                // .catch(error => {
+                //     swal.fire({
+                //         icon: 'error',
+                //         title: 'Error al guardar el proyecto',
+                //         text: error.message
+                //     });
+                // });
 
             } else {
                 swal.fire(
                     'Proyecto no creado!',
-                    `El proyecto, no se creó correctamente!`,
+                    `El proyecto, no se creó!`,
                     'warning'
                 )
                 return false
             }
-        })
+        });
         disabledBtnAceptar()
 
     } else {
@@ -358,7 +666,7 @@ function messageNewProject(imgCliente,idCliente) {
     //*********** */
     tippy(btnAddNewRow, {
         content: `<strong>Límite máximo de OCI 5</strong><br>
-                Puedes agregar 4 OT's mas`,
+                Puedes agregar 4 OCI's mas`,
         allowHTML: true,
         maxWidth: 350,
         inlinePositioning: true,
@@ -422,8 +730,7 @@ function messageNewProject(imgCliente,idCliente) {
                     </div>
                     <div class="col">
                         <input type="text" id="fileInputNewOciText${i}" name="imageOciFileName${i}" style="display: none;">
-                        <input type="file" id="fileInputNewOci${i}" name="imageNewOci${i}" value=""
-                            accept="image/*" style="display: none;" required> 
+                        <input type="file" id="fileInputNewOci${i}" name="imageNewOci${i}" value="" accept="image/*" style="display: none;">
                         <div id="drop-area-oci${i}" class="mb-1 mx-auto" style="font-size: 0.75em;">
                             <label for="fileInputNewOciText${i}" id="labelNewOciImage${i} class="d-flex justify-content-center">
                                 Seleccione una imagen para la OCI
@@ -489,7 +796,7 @@ function messageNewProject(imgCliente,idCliente) {
             }
 
             let arrayDropAreas = [], arrayBtnRemoveOciImage = [], arrayAlertOci = [],
-                arrayAlertSizeOci = [], arrayImageOciFileName = [], arrayFileInputNewOci = []
+                arrayAlertSizeOci = [], arrayImageOciFileName = [], arrayFileInputNewOci = [];
             const totalOciQty = parseInt(document.getElementById("ociQuantity").value)
             
             function addElementToArray(elementId, array) {
@@ -609,7 +916,8 @@ function messageNewProject(imgCliente,idCliente) {
                     const dotIndex = file.name.lastIndexOf('.'),
                         name = file.name.substring(0, dotIndex),
                         extension = file.name.substring(dotIndex);
-                    arrayOciFileName[number].value = pathToImage + name.replace(/[^a-zA-Z0-9./_ ]/g, '-') + "-" + formatDate(new Date()) + extension
+                    
+                    arrayImageOciFileName[number].value = pathToImage + name.replace(/[^a-zA-Z0-9./_ ]/g, '-') + "-" + formatDate(new Date()) + extension
                     arrayBtnRemoveOciImage[number].style.display = 'flex'
         
                     const reader = new FileReader()
@@ -1001,16 +1309,28 @@ function messageNewProject(imgCliente,idCliente) {
     }
     //------------------------------------------------------------------------------
 }
+const btnCreateNewProjectOutSide = document.getElementById('btnNewProject'),
+    btnCreateNewProject = document.getElementById('btnAddProjectToClient0')
 
-const btnCreateNewProject = document.getElementById('btnAddProjectToClient0')
 if (btnCreateNewProject) {
-
     btnCreateNewProject.addEventListener('click', (event) => {
         event.preventDefault()
         const imgCliente = document.getElementById('imgCliente').src,
-            idCliente = document.getElementById('idCliente').value
+            idCliente = document.getElementById('idCliente').value,
+            nameCliente = document.getElementById(`name_${idCliente}`).innerText
         
-        messageNewProject( imgCliente, idCliente )
+        messageNewProject( imgCliente, idCliente, nameCliente )
+    })
+}
+
+if (btnCreateNewProjectOutSide) {
+    btnCreateNewProjectOutSide.addEventListener('click', (event) => {
+        event.preventDefault()
+        const imgCliente = document.getElementById('imgCliente').src,
+            idCliente = document.getElementById('idCliente').value,
+            nameCliente = document.getElementById(`name_${idCliente}`).innerText
+        
+        messageNewProject( imgCliente, idCliente, nameCliente )
     })
 }
 
@@ -1667,10 +1987,9 @@ function messageDeleteOci(
 }
 
 let maxOciQuantity
-document.getElementById('totalOciQtyHidden') ?
-    maxOciQuantity = parseInt(document.getElementById('totalOciQtyHidden').value)
-    :
-    maxOciQuantity=0
+document.getElementById('totalOciQtyHidden')
+? maxOciQuantity = parseInt(document.getElementById('totalOciQtyHidden').value)
+: maxOciQuantity=0
 
 let arrayBtnChangeStatusOci = [], arrayBtnUpdateOci = [], arrayBtnDeleteOci = []
 for (let m=0; m<maxOciQuantity; m++) {

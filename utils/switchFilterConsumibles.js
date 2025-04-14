@@ -25,7 +25,7 @@ async function switchFilterConsumibles(Consumibles, designationAndCodeQuery) {
 
     // Procesar campo type Stock
     if (designationAndCodeQuery.typeStock !== 'todos' && typesStock.includes(designationAndCodeQuery.typeStock)) {
-        query.typeStock = designationAndCodeQuery.typeStock;
+        query.tipoTalle = designationAndCodeQuery.typeStock;
     }
     
     // Procesar campo stock

@@ -1,45 +1,48 @@
 const { Schema, mongoose } = require('mongoose')
 const now = require('../utils/formatDate.js')
 
+const creatorModels = require('./creator.models.js')
+const modificatorModels = require('./modificator.models.js')
+
 // ------- Creator Schema -------------
-let creatorSchema = new Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Usuarios",
-    },
-    name: { 
-        type: String,
-    },
-    lastName: {
-        type: String,
-    },
-    username:{
-        type: String,
-    },
-    email: {
-        type: String,
-    }
-})
+// let creatorSchema = new Schema({
+//     userId: {
+//         type: mongoose.Schema.Types.ObjectId,
+//         ref: "Usuarios",
+//     },
+//     name: { 
+//         type: String,
+//     },
+//     lastName: {
+//         type: String,
+//     },
+//     username:{
+//         type: String,
+//     },
+//     email: {
+//         type: String,
+//     }
+// })
 
 // ------- Modificator Schema -------------
-let modificatorSchema = new Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Usuarios",
-    },
-    name: { 
-        type: String,
-    },
-    lastName: {
-        type: String,
-    },
-    username:{
-        type: String,
-    },
-    email: {
-        type: String,
-    }
-})
+// let modificatorSchema = new Schema({
+//     userId: {
+//         type: mongoose.Schema.Types.ObjectId,
+//         ref: "Usuarios",
+//     },
+//     name: { 
+//         type: String,
+//     },
+//     lastName: {
+//         type: String,
+//     },
+//     username:{
+//         type: String,
+//     },
+//     email: {
+//         type: String,
+//     }
+// })
 
 // ------- OT Distribucion Schema ---------
 let otDistribucionSchema = new Schema({
@@ -75,12 +78,12 @@ let otDistribucionSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -125,12 +128,12 @@ let otProgramacionPrimeraSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -171,12 +174,12 @@ let otProgramacionSegundaSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -221,12 +224,12 @@ let otMecanizadoPrimeraSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -267,12 +270,12 @@ let otMecanizadoSegundaSchema = new Schema({
         type: Number,
         default: 0,
     },
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""
@@ -297,12 +300,12 @@ let ProgramacionSchema = new Schema({
     otProgramacionSegunda: [otProgramacionSegundaSchema],
     otMecanizadoPrimera: [otMecanizadoPrimeraSchema],
     otMecanizadoSegunda: [otMecanizadoSegundaSchema],
-    creator: [creatorSchema],
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: [modificatorSchema],
+    modificator: [modificatorModels],
     modifiedOn: {
         type: String,
         default: ""

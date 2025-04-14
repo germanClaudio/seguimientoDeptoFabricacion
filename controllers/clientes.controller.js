@@ -213,11 +213,12 @@ class ClientsController {
                     status: req.body.statusClient === 'on' ? Boolean(true) : Boolean(false) || Boolean(true),
                     code: codeInput,
                     project: 0,
+                    projectLineas: 0,
                     logo: req.body.imageTextLogoClient || imageNotFound,
-                    creator: dataUserCreator(userCreator),
-                    timestamp: formatDate(),
-                    modificator: dataUserModificatorEmpty(),
-                    modifiedOn: '',
+                    creator: await dataUserCreator(userCreator),
+                    timestamp: new Date(),
+                    modificator: await dataUserModificatorEmpty(),
+                    modifiedOn: new Date(),
                     visible: true
                 }
 
@@ -268,41 +269,52 @@ class ClientsController {
                 req.file ? await uploadToGCS(req, res, next) : null
 
                 const nameInput = req.body.name.replace(/[!@#$%^&*]/g, ""),
-                    nameValid = await this.clients.getClientByName(nameInput),
+                    codeInput = req.body.code.replace(/[!@#$%^&*]/g, ""),
+                    clientValid = await this.clients.getClientByNameOrCode(nameInput, codeInput),
                     otherClients = await this.clients.getAllClients()
 
                 // Función para eliminar un cliente de la lista si coincide con el cliente a comparar
-                function eliminarCliente(lista, cliente) {
+                function eliminarCliente(lista) { //, cliente) {
                     return lista.filter(c => {
                         // Compara los campos que sean necesarios
-                        return c._id.toString() !== cliente._id.toString()
+                        return c._id.toString() !== clienteToModify._id.toString()
                     })
+
+                    // lista.some(cliente => 
+                    //     cliente._id.toString() !== clienteToModify._id.toString() //&& 
+                    //     //cliente.code === clienteToModify.code
+                    // )
                 }
+
                 // Eliminar el cliente de la lista
-                let clientesRestantes = eliminarCliente(otherClients, nameValid)
+                let clientesRestantes = []
+                if (clientValid) {
+                    clientesRestantes = eliminarCliente(otherClients) //, nameValid)
+                    const clientesNamesOrCodes = clientesRestantes.map(cliente => cliente.name) || clientesRestantes.map(cliente => cliente.code)
+                    console.log('clientesNamesOrCodes: ', clientesNamesOrCodes)
+                    clientesNamesOrCodes.includes(clienteToModify.name || clienteToModify.code) ? catchError400_4(req, res, next) : null
+                }
                 
-                const clientesNames = clientesRestantes.map(cliente => cliente.name)
-                clientesNames.includes(clienteToModify.name) ? catchError400_4(req, res, next) : null
-                
-                const codeInput = req.body.code.replace(/[!@#$%^&*]/g, "")
-                const clientesCodes = clientesRestantes.map(cliente => cliente.code)
-                
-                clientesCodes.includes(clienteToModify.code) ? catchError400_4(req, res, next) : null
+                // if (codeInput) {
+                //     clientesRestantes = eliminarCliente(otherClients) //, codeInput)
+                //     const clientesCodes = clientesRestantes.some(cliente => cliente.code)
+                //     clientesCodes.includes(clienteToModify.code) ? catchError400_4(req, res, next) : null
+                // }
                 
                 const updatedCliente = {
                     name: req.body.name,
                     status: req.body.statusClient === 'on' ? true : false,
                     code: codeInput,
                     logo: req.body.imageTextLogoUpdate,
-                    modificator: dataUserModificatorNotEmpty(userCreator),
-                    modifiedOn: formatDate()
+                    modificator: await dataUserModificatorNotEmpty(userCreator),
+                    modifiedOn: new Date(),
                 }
-                                
+                
                 if (clienteToModify) {
                     const clientUpdated = await this.clients.updateClient(
                         id, 
                         updatedCliente, 
-                        dataUserModificatorNotEmpty(userCreator)
+                        updatedCliente.modificator
                     )
                     !clientUpdated ? catchError401(req, res, next) : null
 
@@ -432,7 +444,7 @@ class ClientsController {
             const userCreator = await this.users.getUserById(userId)
             !userCreator ? catchError401_3(req, res, next) : null
 
-            const cliente = await this.clients.deleteClientById(clientId, dataUserModificatorNotEmpty(userCreator))
+            const cliente = await this.clients.deleteClientById(clientId, await dataUserModificatorNotEmpty(userCreator))
             !cliente ? catchError401(req, res, next) : null
 
             const ordenes = await this.orders.getAllOrders()

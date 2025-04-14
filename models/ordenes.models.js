@@ -1,5 +1,6 @@
 const { Schema, model, mongoose } = require('mongoose')
-// const now = require('../utils/formatDate.js')
+
+const modificatorModels = require('./modificator.models.js')
 
 let ItemSchema = new Schema({
     consumibleId: {
@@ -106,10 +107,11 @@ const orderSchema = new Schema({
         timestamp: {
             type: Date,
         },
-        modificator: {
-            type: Array,
-            default: []
-        },
+        modificator: [modificatorModels],
+        // modificator: {
+        //     type: Array,
+        //     default: []
+        // },
         modifiedOn: {
             type: Date, //String,
         },

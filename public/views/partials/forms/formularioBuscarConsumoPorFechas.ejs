@@ -1,0 +1,37 @@
+<div class="shadow-lg col-md-6 mx-auto my-2 w-50 border rounded p-2 text-white bg-opacity-50" style="background-color: #272787;">
+    <form class="row align-items-center" id="searchFormConsumoItems" onsubmit="return searchConsumoItemsDates(this)">
+
+        <div class="col-md-3">
+            <label class="form-label text-white" for="queryUsuarios">Solicitadas por</label>
+            <div class="input-group">
+                <input class="form-control position-relative rounded-2" type="text" id="queryUsuarios" name="queryUsuarios" placeholder="Buscar Usuario" disabled>
+                <button type="button" title="Buscar Usuarios" id="searchOrderUser"
+                    class="btn btn-sm btn-primary rounded-circle border shadow position-absolute top-50 start-100 translate-middle">
+                    <i class="fa-solid fa-database"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="row align-items-center mx-2 px-3">
+                <div class="col-md-6">
+                    <label class="form-check-label text-white" for="queryFechaDesde">Desde</label>
+                    <input class="form-control" type="date" id="queryFechaDesde" name="queryFechaDesde">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-check-label text-white" for="queryFechaHasta">Hasta</label>
+                    <input class="form-control" type="date" id="queryFechaHasta" name="queryFechaHasta">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <button class="btn rounded-circle bg-white me-2 my-1 text-dark" title="Buscar" type="submit">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <button class="btn rounded-circle bg-white ms-2 my-1 text-dark" id="deleteFilters" title="Eliminar filtros" type="reset">
+                <i class="fa-solid fa-filter-circle-xmark"></i>
+            </button>
+        </div>
+    </form>
+</div>

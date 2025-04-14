@@ -146,37 +146,7 @@ class OrdersController {
         }
     }
 
-    // ---------------- Get All Orders by User Id ---------------
-    getAllOrdersByUserId = async (req, res, next) => {
-        let username = res.locals.username,
-            userInfo = res.locals.userInfo
-        const expires = cookie(req)
-
-        try {
-            const usuario = await this.users.getUserByUsername(username)
-                !usuario ? catchError401_3(req, res, next) : null
-
-            const ordenes = await this.orders.getAllOrdersByUserId(usuario)
-            !ordenes ? catchError400_5(req, res, next) : null
-
-            const userCart = await this.carts.getCartByUserId(usuario._id)
-            
-            const csrfToken = csrfTokens.create(req.csrfSecret)
-            res.render('ordersAllByUserId', {
-                username,
-                userInfo,
-                ordenes,
-                userCart,
-                data,
-                csrfToken,
-                expires })
-            
-        } catch (err) {
-            catchError500(err, req, res, next)
-        }
-    }
-
-    // ---------------- Get All Orders by User Id ---------------
+    // -------- Get All Items Consumidos Totales ------------
     getConsumosItems = async (req, res, next) => {
         let username = res.locals.username,
             userInfo = res.locals.userInfo

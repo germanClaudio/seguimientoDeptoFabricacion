@@ -126,47 +126,56 @@ const renderClient = async (arrClient, page = 1, direction = 'none') => {
         
         if (paginatedItems.length > 0) {
             html = paginatedItems.map((element) => {
-            let disabled = 'disabled', result = 'S/P', text = "Activo",
-                green = 'success', red = 'danger', grey = 'secondary', black = 'dark', blue = 'primary'
-            colorResult = grey
+            
+            const getStatusConfig = (element, projectField = 'project') => {
+                const config = {
+                    disabled: 'disabled',
+                    text: 'Activo',
+                    result: 'S/P',
+                    colorStatus: 'secondary',
+                    colorResult: 'secondary'
+                };
 
-            if ( element.status === true && element.project > 0 ) {
-                disabled = ''
-                colorStatus = green
-                colorResult = red
-                result = element.project
-            } else if ( element.status === true && element.project === 0 ) {
-                colorStatus = green
-                colorResult = grey
-            } else if ( element.status === false && element.project > 0 ) {
-                disabled = ''
-                colorStatus = red
-                colorResult = blue
-                result = element.project
-                text = "Inactivo"
-            } else if ( element.status === false && element.project === 0 ) {
-                colorStatus = red
-                text = "Inactivo"
-            }
+                // Configuraciones base según el estado
+                if (element.status) {
+                    config.colorStatus = 'success';
+                    if (element[projectField] > 0) {
+                        config.disabled = '';
+                        config.colorResult = 'danger';
+                        config.result = element[projectField];
+                    }
+                } else {
+                    config.text = 'Inactivo';
+                    config.colorStatus = 'danger';
+                    if (element[projectField] > 0) {
+                        config.disabled = '';
+                        config.colorResult = 'primary';
+                        config.result = element[projectField];
+                    }
+                }
+                return config;
+            };
+
+            const { disabled, text, result, colorStatus, colorResult } = getStatusConfig(element, 'project');
+            const { result: resultLineas, colorResult: colorResultLineas } = getStatusConfig(element, 'projectLineas');
 
             if(element.visible) {
                 return (`<div class="col">
                             <div class="card shadow-lg rounded-3 my-2 mx-4 fixed-card">
                                 <img src="${element.logo}" class="card-img-top mx-auto px-2 pt-2" alt="Logo Cliente" style="min-height: 10rem; object-fit: contain;">
-                                <div class="card-body d-flex flex-column">
+                                <div class="card-body flex-column">
                                     <h7 class="card-title"><strong>${element.name}</strong></h7>
-                                    <p class="card-text flex-grow-1">Codigo: ${element.code}<br>
-                                                            <span class="badge rounded-pill bg-${colorStatus}">${text}</span><br>
-                                                            Proyectos: <span class="badge rounded-pill bg-${colorResult}">${result}</span>
-                                    </p>
+                                    <p class="card-text flex-grow-1">Codigo: ${element.code}</p>
+                                    <span class="badge rounded-pill bg-${colorStatus}">${text}</span><br>
+                                        Proyectos Matrices: <span class="badge rounded-pill bg-${colorResult}">${result}</span><br>
+                                        Proyectos Líneas: <span class="badge rounded-pill bg-${colorResultLineas}">${resultLineas}</span>
+
                                     <div class="card-footer card-footer-client">
                                         <a class="btn mx-auto text-light w-75 my-1 small ${disabled}" type="submit" href="/api/clientes/projects/${element._id}" style="background-color: #1d1d1d;">
-                                            <i class="icon-rocket"></i>
-                                                Proyectos
+                                            <i class="icon-rocket"></i> Proyectos
                                         </a>        
                                         <a class="btn mx-auto text-light w-75 my-1 small" type="submit" href="/api/clientes/select/${element._id}" style="background-color: #272787;">
-                                            <i class="fa-solid fa-info-circle"></i>
-                                                Cliente
+                                            <i class="fa-solid fa-info-circle"></i> Cliente
                                         </a>
                                     </div>
                                 </div>
@@ -177,20 +186,19 @@ const renderClient = async (arrClient, page = 1, direction = 'none') => {
                 return (`<div class="col">
                             <div class="card shadow-lg rounded-3 my-2 mx-4 fixed-card pe-none" contenteditable="false" style="background-color: #00000060; opacity: 0.5" title="Consulte a SuperAdmin">
                                 <img src="${element.logo}" class="card-img-top mx-auto px-2 pt-2" alt="Logo Cliente" style="min-height: 10rem; object-fit: contain;">
-                                <div class="card-body d-flex flex-column">
+                                <div class="card-body flex-column">
                                     <h6 class="card-title"><strong>${element.name}</strong></h6>
-                                    <p class="card-text flex-grow-1">Codigo: ${element.code}<br>
-                                                            <span class="badge rounded-pill bg-${colorStatus}">${text}</span><br>
-                                                            Proyectos: <span class="badge rounded-pill bg-${colorResult}">${result}</span>
-                                    </p>
+                                    <p class="card-text flex-grow-1">Codigo: ${element.code}</p>
+                                    <span class="badge rounded-pill bg-${colorStatus}">${text}</span><br>
+                                        Proyectos Matrices: <span class="badge rounded-pill bg-${colorResult}">${result}</span><br>
+                                        Proyectos Líneas: <span class="badge rounded-pill bg-${colorResultLineas}">${resultLineas}</span>
+
                                     <div class="card-footer card-footer-client disabled" style="background-color: #aabbaa25">
                                         <a class="btn mx-auto text-light w-75 my-1 small ${disabled}" type="submit" href="/api/clientes/projects/${element._id}" style="background-color: #1d1d1d;">
-                                            <i class="icon-rocket"></i>
-                                                Proyectos
+                                            <i class="icon-rocket"></i> Proyectos
                                         </a>        
                                         <a class="btn mx-auto text-light w-75 my-1 small ${disabled}" type="submit" href="/api/clientes/select/${element._id}" style="background-color: #272787;">
-                                            <i class="fa-solid fa-info-circle"></i>
-                                                Cliente
+                                            <i class="fa-solid fa-info-circle"></i> Cliente
                                         </a>
                                     </div>
                                 </div>

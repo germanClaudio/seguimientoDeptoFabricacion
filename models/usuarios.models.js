@@ -1,6 +1,9 @@
 const { Schema, model } = require('mongoose')
 const now = require('../utils/formatDate.js')
 
+const creatorModels = require('./creator.models.js')
+const modificatorModels = require('./modificator.models.js')
+
 const userSchema = new Schema({
     name: {
         type: String,
@@ -60,16 +63,18 @@ const userSchema = new Schema({
         type: String,
         default: 'disenoSimulacion'
     },
-    creator: {
-        type: Array,
-    },
+    // creator: {
+    //     type: Array,
+    // },
+    creator: [creatorModels],
     timestamp: {
         type: String,
         default: now,
     },
-    modificator: {
-        type: Array,
-    },
+    modificator: [modificatorModels],
+    // modificator: {
+    //     type: Array,
+    // },
     modifiedOn: {
         type: String,
         default: now,

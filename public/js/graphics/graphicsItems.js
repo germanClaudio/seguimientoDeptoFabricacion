@@ -1,3 +1,5 @@
+const socket = io.connect();
+
 // Parsear los datos del div
 const itemsGroupByUserJSON = document.getElementById('itemsGroupByUser').dataset.items;
 const ordersByUser = JSON.parse(itemsGroupByUserJSON);
@@ -17,10 +19,24 @@ function renderCharts(data) {
         });
     });
 
+    function labels(typeCounts) {
+        const typeMapping = {
+            epp: 'EPP',
+            consumiblesAjuste: 'Cons. Ajuste',
+            consumiblesLineas: 'Cons. Líneas',
+            ropa: 'Ropa',
+            consumiblesMeca: 'Cons. Mecanizado',
+            otros: 'Otros'
+        };
+    
+        // Mapea las keys a sus etiquetas (strings)
+        return Object.keys(typeCounts).map(key => typeMapping[key] || typeMapping.otros);
+    }
+
     new Chart(barCtx, {
         type: 'bar',
         data: {
-            labels: Object.keys(typeCounts),
+            labels: labels(typeCounts), //Object.keys(typeCounts),
             datasets: [{
                 label: 'Cantidad por Tipo',
                 data: Object.values(typeCounts),
@@ -49,9 +65,7 @@ function renderCharts(data) {
             responsive: true, // Permite ajuste responsivo
             maintainAspectRatio: false, // Importante: Desactiva el aspect ratio automático
             aspectRatio: 1, // Proporción 1:1 (opcional, si quieres cuadrados)
-            plugins: {
-                legend: { display: false } // true muestra la leynda superior
-            },
+            plugins: { legend: { display: false } }, // true muestra la leynda superior
             scales: { y: { beginAtZero: true } }
         }
     });
@@ -62,7 +76,7 @@ function renderCharts(data) {
     new Chart(pieCtx, {
         type: 'pie',
         data: {
-            labels: Object.keys(typeCounts),
+            labels: labels(typeCounts),
             datasets: [{
                 data: Object.values(typeCounts),
                 backgroundColor: [
@@ -90,8 +104,7 @@ function renderCharts(data) {
             responsive: true,
             maintainAspectRatio: false, // Desactiva el aspect ratio automático
             aspectRatio: 1, // Proporción 1:1 (para que sea circular perfecto)
-            plugins: {
-                legend: { position: 'top' } // Leyenda a la derecha
+            plugins: { legend: { position: 'top' } // Leyenda a la derecha
             }
         }
     });
@@ -110,13 +123,12 @@ function renderCharts(data) {
         consumiblesLineasTotal: user.items.reduce((sum, item) => sum + (item.type === 'consumiblesLineas' ? item.quantity : 0), 0),
         ropaTotal: user.items.reduce((sum, item) => sum + (item.type === 'ropa' ? item.quantity : 0), 0)
     }));
-
     // console.log('userTotals: ', userTotals)
 
     new Chart(lineCtx, {
         type: 'line',
         data: {
-            labels: userTotals.map(user => `${user.name}, ${user.lastName} - Id#:${user.userId}`),
+            labels: userTotals.map(user => `${user.name}, ${user.lastName}\nId#:${user.userId}`),
             datasets: [
                 {
                     label: 'Total de Items',
@@ -171,9 +183,20 @@ function renderCharts(data) {
         },
         options: {
             responsive: true,
-            scales: { y: { beginAtZero: false } },
+            scales: { 
+                y: { beginAtZero: false },
+            },
             maintainAspectRatio: false,
             aspectRatio: 2,
+            plugins: {
+                legend: {
+                    labels: {
+                        boxWidth: 15,
+                        padding: 20,
+                        usePointStyle: true,
+                    }
+                }
+            }
         }
     });
 }

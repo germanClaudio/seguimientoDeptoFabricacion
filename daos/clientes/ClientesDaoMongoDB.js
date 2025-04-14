@@ -21,12 +21,108 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
     
     async getAllClients() {
         try {
-            const clients = await Clientes.find()
+            const clients = await Clientes.find({
+                visible: true
+            }).sort({ 
+                timestamp: -1, // Luego ordena por "timestamp" de más reciente a más antiguo
+                modifiedOn: -1 // Luego ordena por "timestamp" de más reciente a más antiguo
+            });
             
             if ( clients === undefined || clients === null) {
                 return new Error ('No hay clientes en la DB!')
             } else {
                 // console.info('Clientes encontrados...>')
+                // await Clientes.updateMany(
+                //     {}, // Filtro vacío para seleccionar todos los documentos
+                //     {
+                //         $set: {
+                //             "projectLineas": 0 // Establece el valor por defecto
+                //         }
+                //     }
+                // );
+                // const clients = await Clientes.find()
+
+                // await Clientes.updateMany(
+                //     {}, // Filtro para todos los documentos (ajústalo si es necesario)
+                //     [
+                //       {
+                //         $set: {
+                //           // Convertir "timestamp" a Date (formato "dd-mm-yyyy HH.mm.ss")
+                //           timestamp: {
+                //             $dateFromString: {
+                //               dateString: {
+                //                 $concat: [
+                //                   { $substr: ["$timestamp", 6, 4] }, // Año
+                //                   "-",
+                //                   { $substr: ["$timestamp", 3, 2] }, // Mes
+                //                   "-",
+                //                   { $substr: ["$timestamp", 0, 2] }, // Día
+                //                   "T",
+                //                   { $substr: ["$timestamp", 11, 2] }, // Hora
+                //                   ":",
+                //                   { $substr: ["$timestamp", 14, 2] }, // Minutos
+                //                   ":",
+                //                   { $substr: ["$timestamp", 17, 2] }, // Segundos
+                //                   ".000Z" // Milisegundos y Zona horaria (UTC)
+                //                 ]
+                //               },
+                //               format: "%Y-%m-%dT%H:%M:%S.%LZ" // Formato ISO
+                //             }
+                //           },
+                //           // Convertir "modifiedOn" a Date, o usar "timestamp" si es ""
+                //           modifiedOn: {
+                //             $cond: {
+                //               if: { $eq: ["$modifiedOn", ""] }, // Si modifiedOn es ""
+                //               then: {
+                //                 $dateFromString: {
+                //                   dateString: {
+                //                     $concat: [
+                //                       { $substr: ["$timestamp", 6, 4] }, // Año
+                //                       "-",
+                //                       { $substr: ["$timestamp", 3, 2] }, // Mes
+                //                       "-",
+                //                       { $substr: ["$timestamp", 0, 2] }, // Día
+                //                       "T",
+                //                       { $substr: ["$timestamp", 11, 2] }, // Hora
+                //                       ":",
+                //                       { $substr: ["$timestamp", 14, 2] }, // Minutos
+                //                       ":",
+                //                       { $substr: ["$timestamp", 17, 2] }, // Segundos
+                //                       ".000Z" // Milisegundos y Zona horaria (UTC)
+                //                     ]
+                //                   },
+                //                   format: "%Y-%m-%dT%H:%M:%S.%LZ"
+                //                 }
+                //               },
+                //               else: {
+                //                 $dateFromString: {
+                //                   dateString: {
+                //                     $concat: [
+                //                       { $substr: ["$modifiedOn", 6, 4] }, // Año
+                //                       "-",
+                //                       { $substr: ["$modifiedOn", 3, 2] }, // Mes
+                //                       "-",
+                //                       { $substr: ["$modifiedOn", 0, 2] }, // Día
+                //                       "T",
+                //                       { $substr: ["$modifiedOn", 11, 2] }, // Hora
+                //                       ":",
+                //                       { $substr: ["$modifiedOn", 14, 2] }, // Minutos
+                //                       ":",
+                //                       { $substr: ["$modifiedOn", 17, 2] }, // Segundos
+                //                       ".000Z" // Milisegundos y Zona horaria (UTC)
+                //                     ]
+                //                   },
+                //                   format: "%Y-%m-%dT%H:%M:%S.%LZ"
+                //                 }
+                //               }
+                //             }
+                //           }
+                //         }
+                //       }
+                //     ]
+                //   );
+
+                // const clients = await Clientes.find()
                 return clients
             }    
         } catch (error) {
@@ -73,15 +169,20 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
         }
     }
 
-    async getClientByName(name) {   
-        if(name){
+    async getClientByNameOrCode(name, code) {   
+        if(name || code){
             try {
-                const client = await Clientes.findOne({name: name})
+                const client = await Clientes.findOne({
+                    $or: [
+                        { name: name },
+                        { code: code }
+                    ]
+                });
                 // console.info('Cliente encontrado: ',client)
                 return client
 
             } catch (error) {
-                console.error("Error MongoDB getClientByName-Dao: ",error)
+                console.error("Error MongoDB getClientByName-Dao: ", error)
             }
 
         } else {
@@ -150,6 +251,9 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                 { $or: [ {name: `${newClient.name}`},
                         {code: `${newClient.code}`}
                         ]
+                }).sort({ 
+                    timestamp: -1,
+                    modifiedOn: -1
                 });
 
             client ? client : false
@@ -184,6 +288,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
     }
 
     async updateClient(id, client, userModificator) {
+        console.log('userModificator-Dao: ', userModificator)
         if (client) {
             try {
                 const itemMongoDB = await Clientes.findById({_id: id})
@@ -191,7 +296,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                 client.logo === '' ? logoCliente = itemMongoDB.logo : logoCliente = client.logo  
                 
                 if(itemMongoDB) {
-                    var updatedClient = await Clientes.updateOne(
+                    let updatedClient = await Clientes.updateOne(
                         { _id: itemMongoDB._id },
                         {
                             $set: {
@@ -200,14 +305,17 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                                 logo: logoCliente,
                                 code: client.code,
                                 modificator: userModificator,
-                                modifiedOn: formatDate()
+                                modifiedOn: new Date(),
                             }
                         },
                         { new: true }
                     )
+
+                    console.log('updatedClient-Dao: ', updatedClient)
                     
                     if(updatedClient.acknowledged) {
                         const itemUpdated = await Clientes.findById({ _id: id })
+                        console.log('itemUpdated-Dao: ', itemUpdated)
                         return itemUpdated
 
                     } else {
@@ -228,23 +336,39 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
         }
     }
 
-    async updateClientProjectsQty(id, clienteSelected, userModificator) {
-        if (id && clienteSelected) {
+    async updateClientProjectsQty(id, clienteSelected, userModificator, uNegocio) {
+        let updatedClientProjectsQty
+        if (id && clienteSelected && uNegocio) {
             try {
                 const itemMongoDB = await Clientes.findById({_id: id})
             
                 if (itemMongoDB) {
-                    var updatedClientProjectsQty = await Clientes.updateOne(
-                        { _id: itemMongoDB._id },
-                        {
-                            $set: {
-                                project: parseInt(itemMongoDB.project + 1),
-                                modificator: userModificator,
-                                modifiedOn: formatDate()
-                            }
-                        },
-                        { new: true }
-                    )
+                    if (uNegocio === 'matrices') {
+                        updatedClientProjectsQty = await Clientes.updateOne(
+                            { _id: itemMongoDB._id },
+                            {
+                                $set: {
+                                    project: parseInt(itemMongoDB.project + 1),
+                                    modificator: userModificator,
+                                    modifiedOn: new Date(),
+                                }
+                            },
+                            { new: true }
+                        )
+
+                    } else {
+                        updatedClientProjectsQty = await Clientes.updateOne(
+                            { _id: itemMongoDB._id },
+                            {
+                                $set: {
+                                    projectLineas: parseInt(itemMongoDB.projectLineas + 1),
+                                    modificator: userModificator,
+                                    modifiedOn: new Date(),
+                                }
+                            },
+                            { new: true }
+                        )
+                    }
                     
                     if(updatedClientProjectsQty.acknowledged) {
                         const itemUpdated = await Clientes.findById({ _id: id })
@@ -263,22 +387,38 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
         }
     }
 
-    async reduceClientProjectQty(id, clienteSelected, user){
+    async reduceClientProjectQty(id, clienteSelected, user, uNegocio) {
+        let updatedClientProjectsQty
         if (id && clienteSelected) {
             try {
                 const itemMongoDB = await Clientes.findById({_id: id})
                 
                 if(itemMongoDB) {
-                    var updatedClientProjectsQty = await Clientes.updateOne(
-                        { _id: id }, 
-                        {
-                            $set: {
-                                project: parseInt(itemMongoDB.project - 1),
-                                modificator: user,
-                                modifiedOn: formatDate()
-                            }
-                        },
-                        { new: true })
+                    if (uNegocio === 'matrices') {
+                        updatedClientProjectsQty = await Clientes.updateOne(
+                            { _id: itemMongoDB._id }, 
+                            {
+                                $set: {
+                                    project: parseInt(itemMongoDB.project - 1),
+                                    modificator: user,
+                                    modifiedOn: new Date(),
+                                }
+                            },
+                            { new: true })
+
+                    } else {
+                        updatedClientProjectsQty = await Clientes.updateOne(
+                            { _id: itemMongoDB._id },
+                            {
+                                $set: {
+                                    projectLineas: parseInt(itemMongoDB.projectLineas - 1),
+                                    modificator: userModificator,
+                                    modifiedOn: new Date(),
+                                }
+                            },
+                            { new: true }
+                        )
+                    }
 
                     if(updatedClientProjectsQty.acknowledged) {
                         const itemUpdated = await Clientes.findById({ _id: id })
@@ -308,14 +448,14 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                 
                 if(itemMongoDB) {
                     let inactive = Boolean(false)
-                    var clientDeleted = await Clientes.updateOne(
+                    let clientDeleted = await Clientes.updateOne(
                         { _id: id }, 
                         {
                             $set: {
                                 visible: inactive,
                                 status: inactive,
                                 modificator: modificator,
-                                modifiedOn: formatDate()
+                                modifiedOn: new Date()
                             }
                         },
                         { new: true }
@@ -330,7 +470,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                     }
 
                 } else {
-                    // console.info('El Cliente no existe! ', itemMongoDB)
+                    console.info('El Cliente no existe! ', id)
                 }
             } catch (error) {
                 console.error("Error MongoDB deleteClient: ",error)

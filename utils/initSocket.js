@@ -364,12 +364,18 @@ const ContainerMessages = require("../daos/mensajes/MensajesDaoFactory.js"),
                 }
             });
 
-
             socket.on('searchOrdenAllUser', async (query) => {
                 io.sockets.emit('searchOrdenesAllUser', 
                     await containerOrders.getOrdenesBySearchingUser(query)
                 )
-            })
+            });
+
+            //----------- Items consumidos por User/s between dates -------------
+            socket.on('searchConsumoItemsAllDates', async (query) => {
+                io.sockets.emit('searchConsumoItemsDates',
+                    await containerOrders.getItemsConsumidosBySearchingUser(query)
+                )
+            });
 
         });
 

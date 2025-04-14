@@ -36,6 +36,11 @@ class OrdersService {
         return this.ordenes.getAllItemsOrdered(user)
     }
 
+    // returns All items consumed by User/s between dates
+    async getItemsConsumidosBySearchingUser(user) {
+        return this.ordenes.getItemsConsumidosBySearchingUser(user)
+    }
+
     // Detele Order by Id
     async deleteOrderById(id, userModificator) {
         return this.ordenes.deleteOrderById(id, userModificator)

@@ -22,8 +22,8 @@ routerOrders.get('/nonActive', checkAuthentication, orders.getNonActiveOrders)
 // -------------------  Get All Orders By UserId List ------------------ 
 routerOrders.get('/allOrdersByUserId', checkAuthentication, orders.getAllOrdersByUserId)
 
-// -------------------  Get Consumos Items Resumen ------------------ 
-routerOrders.get('/consumosItems/', checkAuthentication, orders.getConsumosItems)
+// -------------------  Get Consumos Items Resumen Total ------------------ 
+routerOrders.get('/consumosItems', checkAuthentication, orders.getConsumosItems)
 
 
 // -------------------  Delete Order ------------------ 

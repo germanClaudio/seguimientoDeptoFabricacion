@@ -1,6 +1,7 @@
 let clientNotFound = "../../../src/images/upload/LogoClientImages/dead-emoji-face.jpg",
     allClientsFound = "../../../src/images/upload/LogoClientImages/indiceAbajo.jpeg"
 
+//*******************************************************/
 // -------------- Show Searched Clients Index page----------------
 socket.on('searchClientsAll', async (arrClientSearch) => {
     renderSearchedClients (await arrClientSearch)
@@ -84,27 +85,38 @@ const renderSearchedClients = (arrClientSearch) => {
 
     } else {
         const htmlSearchClient = arrClientSearch.map((element) => {
-            let disabled = 'disabled', text = "Activo", result = 'S/P',
-                green = 'success', red = 'danger', grey = 'secondary', blue = 'primary', colorResult = grey
+            
+            const getStatusConfig = (element, projectField = 'project') => {
+                const config = {
+                    disabled: 'disabled',
+                    text: 'Activo',
+                    result: 'S/P',
+                    colorStatus: 'secondary',
+                    colorResult: 'secondary'
+                };
 
-            if ( element.status === true && element.project > 0 ) {
-                disabled = ''
-                colorStatus = green
-                colorResult = red
-                result = element.project
-            } else if ( element.status === true && element.project === 0 ) {
-                colorStatus = green
-                colorResult = grey
-            } else if ( element.status === false && element.project > 0 ) {
-                disabled = ''
-                colorStatus = red
-                colorResult = blue
-                result = element.project
-                text = "Inactivo"
-            } else if ( element.status === false && element.project === 0 ) {
-                colorStatus = red
-                text = "Inactivo"
-            }
+                // Configuraciones base según el estado
+                if (element.status) {
+                    config.colorStatus = 'success';
+                    if (element[projectField] > 0) {
+                        config.disabled = '';
+                        config.colorResult = 'danger';
+                        config.result = element[projectField];
+                    }
+                } else {
+                    config.text = 'Inactivo';
+                    config.colorStatus = 'danger';
+                    if (element[projectField] > 0) {
+                        config.disabled = '';
+                        config.colorResult = 'primary';
+                        config.result = element[projectField];
+                    }
+                }
+                return config;
+            };
+
+            const { disabled, text, result, colorStatus, colorResult } = getStatusConfig(element, 'project');
+            const { result: resultLineas, colorResult: colorResultLineas } = getStatusConfig(element, 'projectLineas');
 
             if(element.visible) {
                 return (`
@@ -112,33 +124,29 @@ const renderSearchedClients = (arrClientSearch) => {
                         <div class="card mx-auto rounded-2 shadow-lg" style="max-width: 540px;">
                             <div class="row align-items-center">
                                 <div class="col-md-4 text-center">
-                                    <img src="${element.logo}"
-                                        style="max-width=160vw; object-fit: contain;"
-                                        class="img-fluid rounded p-3 mx-auto"
-                                        alt="Logo Cliente">
+                                    <img src="${element.logo}" style="max-width=160vw; object-fit: contain;"
+                                        class="img-fluid rounded p-3 mx-auto" alt="Logo Cliente">
                                 </div>
                                 <div class="col-md-8 border-start">
                                     <div class="card-body">
                                         <h5 class="card-title"><strong>${element.name}</strong></h5>
-                                        <p class="card-text">Codigo: ${element.code}<br></p>
+                                        <p class="card-text">Codigo: ${element.code}</p>
                                         <span class="badge rounded-pill bg-${colorStatus}">${text}</span><br>
-                                            Proyectos: <span class="badge rounded-pill bg-${colorResult}">${result}
-                                        </span>
+                                            Proyectos Matrices: <span class="badge rounded-pill bg-${colorResult}">${result}</span><br>
+                                            Proyectos Líneas: <span class="badge rounded-pill bg-${colorResultLineas}">${resultLineas}</span>
                                     </div>
                                     <div class="card-footer px-2">
                                         <div class="row">
                                             <div class="col m-auto">
                                                 <a class="btn text-light small ${disabled}" type="submit" href="/api/clientes/projects/${element._id}"
                                                     style="background-color: #1d1d1d; font-size: .85rem; width: 8em;">
-                                                        <i class="icon-rocket"></i>
-                                                            Proyectos
+                                                        <i class="icon-rocket"></i> Proyectos
                                                 </a>        
                                             </div>
                                             <div class="col m-auto">
                                                 <a class="btn text-light small" type="submit" href="/api/clientes/select/${element._id}"
                                                     style="background-color: #272787; font-size: .85rem; width: 8em;">
-                                                        <i class="fa-solid fa-info-circle"></i>
-                                                            Cliente
+                                                        <i class="fa-solid fa-info-circle"></i> Cliente
                                                 </a>
                                             </div>
                                         </div>
@@ -155,18 +163,16 @@ const renderSearchedClients = (arrClientSearch) => {
                         <div class="card mx-auto rounded-2 shadow-lg pe-none" contenteditable="false" style="max-width: 540px; background-color: #00000060; opacity: 0.5" title="Consulte a SuperAdmin">
                             <div class="row align-items-center">
                                 <div class="col-md-4 text-center">
-                                    <img src="${element.logo}"
-                                        style="max-width=160vw; object-fit: contain;"
-                                        class="img-fluid rounded p-3 mx-auto"
-                                        alt="Logo Cliente">
+                                    <img src="${element.logo}" style="max-width=160vw; object-fit: contain;"
+                                        class="img-fluid rounded p-3 mx-auto" alt="Logo Cliente">
                                 </div>
                                 <div class="col-md-8 border-start">
                                     <div class="card-body">
                                         <h5 class="card-title"><strong>${element.name}</strong></h5>
-                                        <p class="card-text">Codigo: ${element.code}<br></p>
+                                        <p class="card-text">Codigo: ${element.code}</p>
                                         <span class="badge rounded-pill bg-${colorStatus}">${text}</span><br>
-                                            Proyectos: <span class="badge rounded-pill bg-${colorResult}">${result}
-                                        </span>
+                                            Proyectos Matrices: <span class="badge rounded-pill bg-${colorResult}">${result}</span><br>
+                                            Proyectos Líneas: <span class="badge rounded-pill bg-${colorResultLineas}">${resultLineas}</span>
                                     </div>
                                     <div class="card-footer px-2">
                                         <div class="row">
@@ -197,6 +203,7 @@ const renderSearchedClients = (arrClientSearch) => {
     }
 }
 
+//*******************************************************/
 // -------------- Show Searched Clients AddNewClient page----------------
 socket.on('searchClientsNew', async (arrClientNewSearch) => {
     renderSearchedNewClients (await arrClientNewSearch)
@@ -282,32 +289,38 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
 
     } else {
         const htmlSearchNewClient = arrClientNewSearch.map((element) => {
-            // Definir los valores por defecto
-            let disabled = 'disabled', text = "Activo", result = 'S/P',
-                green = 'success', red = 'danger', grey = 'secondary', blue = 'primary', colorResult = grey
+            
+            const getStatusConfig = (element, projectField = 'project') => {
+                const config = {
+                    disabled: 'disabled',
+                    text: 'Activo',
+                    result: 'S/P',
+                    colorStatus: 'secondary',
+                    colorResult: 'secondary'
+                };
 
-            const config = {
-                true: {
-                    true: { disabled: '', colorStatus: green, colorResult: red, result: element.project },
-                    false: { colorStatus: green, colorResult: grey }
-                },
-                false: {
-                    true: { disabled: '', colorStatus: red, colorResult: blue, result: element.project, text: 'Inactivo' },
-                    false: { colorStatus: red, text: 'Inactivo' }
+                // Configuraciones base según el estado
+                if (element.status) {
+                    config.colorStatus = 'success';
+                    if (element[projectField] > 0) {
+                        config.disabled = '';
+                        config.colorResult = 'danger';
+                        config.result = element[projectField];
+                    }
+                } else {
+                    config.text = 'Inactivo';
+                    config.colorStatus = 'danger';
+                    if (element[projectField] > 0) {
+                        config.disabled = '';
+                        config.colorResult = 'primary';
+                        config.result = element[projectField];
+                    }
                 }
+                return config;
             };
 
-            // Verificar las condiciones y asignar los valores correspondientes
-            const statusKey = element.status ? 'true' : 'false',
-                projectKey = element.project > 0 ? 'true' : 'false',
-                configValues = config[statusKey][projectKey];
-
-            // Asignar los valores desde el objeto de configuración
-            disabled = configValues.disabled !== undefined ? configValues.disabled : disabled;
-            colorStatus = configValues.colorStatus || colorStatus;
-            colorResult = configValues.colorResult || colorResult;
-            result = configValues.result !== undefined ? configValues.result : result;
-            text = configValues.text || text;
+            const { disabled, text, result, colorStatus, colorResult } = getStatusConfig(element, 'project');
+            const { result: resultLineas, colorResult: colorResultLineas } = getStatusConfig(element, 'projectLineas');
 
             if (element.visible) {
                 return (`
@@ -315,18 +328,16 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
                         <div class="card mx-auto rounded-2 shadow-lg" style="max-width: 540px;">
                             <div class="row align-items-center">
                                 <div class="col-md-4 text-center">
-                                    <img src="${element.logo}"
-                                        style="max-width=160vw; object-fit: contain;"
-                                        class="img-fluid rounded p-3 mx-auto"
-                                        alt="Logo Cliente">
+                                    <img src="${element.logo}" style="max-width=160vw; object-fit: contain;"
+                                        class="img-fluid rounded p-3 mx-auto" alt="Logo Cliente">
                                 </div>
                                 <div class="col-md-8 border-start">
                                     <div class="card-body">
                                         <h5 class="card-title"><strong>${element.name}</strong></h5>
-                                        <p class="card-text">Codigo: ${element.code}<br></p>
+                                        <p class="card-text">Codigo: ${element.code}</p>
                                         <span class="badge rounded-pill bg-${colorStatus}">${text}</span><br>
-                                            Proyectos: <span class="badge rounded-pill bg-${colorResult}">${result}
-                                        </span>
+                                            Proyectos Matrices: <span class="badge rounded-pill bg-${colorResult}">${result}</span><br>
+                                            Proyectos Líneas: <span class="badge rounded-pill bg-${colorResultLineas}">${resultLineas}</span>
                                     </div>
                                     <div class="card-footer px-2">
                                         <div class="row">
@@ -363,18 +374,16 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
                         <div class="card mx-auto rounded-2 shadow-lg pe-none" contenteditable="false" style="max-width: 540px; background-color: #00000060; opacity: 0.5" title="Consulte a SuperAdmin"">
                             <div class="row align-items-center">
                                 <div class="col-md-4 text-center">
-                                    <img src="${element.logo}"
-                                        style="max-width=160vw; object-fit: contain;"
-                                        class="img-fluid rounded p-3 mx-auto"
-                                        alt="Logo Cliente">
+                                    <img src="${element.logo}" style="max-width=160vw; object-fit: contain;"
+                                        class="img-fluid rounded p-3 mx-auto" alt="Logo Cliente">
                                 </div>
                                 <div class="col-md-8 border-start">
                                     <div class="card-body">
                                         <h5 class="card-title"><strong>${element.name}</strong></h5>
-                                        <p class="card-text">Codigo: ${element.code}<br></p>
+                                        <p class="card-text">Codigo: ${element.code}</p>
                                         <span class="badge rounded-pill bg-${colorStatus}">${text}</span><br>
-                                            Proyectos: <span class="badge rounded-pill bg-${colorResult}">${result}
-                                        </span>
+                                            Proyectos Matrices: <span class="badge rounded-pill bg-${colorResult}">${result}</span><br>
+                                            Proyectos Líneas: <span class="badge rounded-pill bg-${colorResultLineas}">${resultLineas}</span>
                                     </div>
                                     <div class="card-footer px-2">
                                         <div class="row">
@@ -405,7 +414,6 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
                     </div>`
                 )
             }
-            
         }).join(" ");
 
         let mensaje = ''
@@ -2385,6 +2393,636 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// -------------- Show Searched Items consumed by User ----------------
+socket.on('searchConsumoItemsDates', async (arrConsumoItemsSearch) => {
+    renderSearchedItemsDates (await arrConsumoItemsSearch)
+})
+
+const searchConsumoItemsDates = () => {
+    let fechaInicioOrdenes = document.getElementById('queryFechaDesde').value,
+        fechaFinOrdenes = document.getElementById('queryFechaHasta').value,
+        solicitadasOrdenes = '';
+        
+    if (document.getElementById('queryUsuarios').value != '') {
+        document.getElementById('queryUsuarios').removeAttribute('disabled')
+        let isolateUserNameSelected = document.getElementById('queryUsuarios').value.split(',');
+        solicitadasOrdenes = isolateUserNameSelected[3].trim()
+    }
+    //console.log(solicitadasOrdenes, fechaInicioOrdenes, fechaFinOrdenes)
+
+    socket.emit('searchConsumoItemsAllDates', {
+        solicitadasOrdenes,
+        fechaInicioOrdenes,
+        fechaFinOrdenes
+    })
+    return false
+}
+
+const renderSearchedItemsDates = (arrConsumoItemsSearch) => {
+    // Spinner y limpieza inicial (mantener código original)
+    const spinnerTimeout = setTimeout(() => {
+        document.getElementById('showConsumoItemsSearch').style.display = 'none';
+        document.getElementById('showConsumoItemsSearch').innerHTML = '<div class="text-center my-4">Cargando resultados...</div>';
+    }, 100);
+
+    const clearSpinner = () => {
+        clearTimeout(spinnerTimeout);
+        document.getElementById('showConsumoItemsSearch').style.display = 'block';
+    };
+
+    //console.log('arrConsumoItemsSearch: ', arrConsumoItemsSearch)
+
+    // Casos para resultados nulos o vacíos (mantener código original)
+    if(!arrConsumoItemsSearch) {
+        const htmlSearchOrdenesNull = (
+            `<div class="col mx-auto">
+                <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4 my-auto px-1">
+                            <img src="${clientNotFound}" style="max-width=170vw; object-fit: contain;"
+                                class="img-fluid rounded p-1" alt="Ítems no encontrados">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Ítems no encontrados</h5>
+                                <p class="card-text">Lo siento, no pudimos encontrar los ítems</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Pruebe nuevamente con fechas o usuario diferente.
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`);
+        
+        const showOrdenes = document.getElementById('showConsumoItemsSearch'); //showOrdenesSearch
+        showOrdenes ? showOrdenes.innerHTML = htmlSearchOrdenesNull : null;
+        clearSpinner();
+        return;
+
+    } else if (arrConsumoItemsSearch.length === 1 && arrConsumoItemsSearch[0] === 'vacio') {     
+        const htmlSearchOrdenesNull = (
+            `<div class="col mx-auto">
+                <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 640px;">
+                    <div class="row g-0">
+                        <div class="col-md-4 my-auto px-1">
+                            <img src="${allClientsFound}" style="max-width=170vw; object-fit: contain;"
+                                class="img-fluid rounded p-1" alt="Todas las Ordenes">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Todas las Ordenes</h5>
+                                <p class="card-text">Todas las Ordenes están listadas en la tabla de abajo</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Pruebe nuevamente con un nombre, status o fechas diferentes o haga scroll hacia abajo.
+                                        La diferencia entre fechas no debe exeder los 30 días.
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+        );
+        document.getElementById('showConsumoItemsSearch').innerHTML = htmlSearchOrdenesNull; //showOrdenesSearch
+        clearSpinner();
+        return;
+    }
+
+    // Procesamiento de datos
+    const ordersByUser = {};
+    arrConsumoItemsSearch.forEach(order => {
+        const userId = order.id;
+        if (!ordersByUser[userId]) ordersByUser[userId] = [];
+        ordersByUser[userId].push(order);
+    });
+
+    const { _id, userData } = arrConsumoItemsSearch[0],
+        { name, lastName } = userData[0];
+    let fechaInicioItems = document.getElementById('queryFechaDesde').value,
+        fechaFinItems = document.getElementById('queryFechaHasta').value
+
+    function calcularDiasDesdeFecha(fechaString) {
+        // Convertir el string a fecha
+        let fecha
+        fechaString !== '' ? fecha = new Date(fechaString) : fecha = new Date("2025-01-01");
+        const fechaActual = new Date();
+        
+        // Calcular la diferencia en milisegundos
+        const diferenciaMs = fechaActual - fecha;
+        
+        // Convertir milisegundos a días
+        const diasDiferencia = Math.floor(diferenciaMs / (1000 * 60 * 60 * 24));
+        
+        // Verificar si la diferencia es mayor a 90 días
+        if (diasDiferencia > 90) {
+            return '90 días atrás';
+        } else {
+            return fechaString //diasDiferencia;
+        }
+    }
+    
+    let resultadoFechaInicioItems =  fechaInicioItems === '' ? calcularDiasDesdeFecha(fechaInicioItems) : fechaInicioItems 
+    fechaFinItems === '' ? fechaFinItems = 'Hoy' : fechaFinItems
+
+    // Generar HTML para los gráficos
+    let htmlSeachItemsConsumidos = '';
+    let chartCounter = 0; // Contador para IDs únicos
+
+    Object.entries(ordersByUser).forEach(([userId, orders]) => {
+        // Convertir datos a JSON para el dataset
+        const ordersJSON = JSON.stringify(orders);
+        
+        // HTML para los gráficos con IDs únicos
+        htmlSeachItemsConsumidos += `
+            <div class="row row-cols-1 row-cols-md-3 g-3 mb-2 user-charts-section" data-user-id="${_id}">
+                <!-- Gráfico de Barras -->
+                <div class="col-md-6">
+                    <div class="card shadow p-1 mb-3 bg-body rounded">
+                        <div class="card-body">
+                            <h5 class="card-title">Cantidad Ítems por Tipo</h5>
+                            <h6>Usuario: <b>${name}, ${lastName}</b> - id#: <b>${_id}</b>  .  Desde: <b>${resultadoFechaInicioItems}</b> / Hasta: <b>${fechaFinItems}</b></h6>
+                            <div class="chart-container">
+                                <canvas id="barChartUserDates-${chartCounter}"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico Circular -->
+                <div class="col-md-6">
+                    <div class="card shadow p-1 mb-3 bg-body rounded">
+                        <div class="card-body">
+                            <h5 class="card-title">Distribución Ítems por Tipo</h5>
+                            <h6>Usuario: <b>${name}, ${lastName}</b> - id#: <b>${_id}</b>  .  Desde: <b>${resultadoFechaInicioItems}</b> / Hasta: <b>${fechaFinItems}</b></h6>
+                            <div class="chart-container">
+                                <canvas id="pieChartUserDates-${chartCounter}"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Datos ocultos para los gráficos -->
+                <div class="chart-data" data-orders='${ordersJSON}' style="display:none;"></div>
+            </div>
+        `;
+        chartCounter++;
+    });
+
+    // Mostrar resultados
+    const mensaje = arrConsumoItemsSearch.length === 1 
+        ? `Se encontró <strong>${arrConsumoItemsSearch.length}</strong> resultado.`
+        : `Se encontraron <strong>${arrConsumoItemsSearch.length}</strong> resultados.`;
+
+    document.getElementById('showCountConsumoItemsSearch').innerHTML = `
+        <div class="row align-items-center justify-content-center mb-1">
+            <div class="col-auto">
+                <span class="my-1">${mensaje}</span>
+            </div>
+        </div>`;
+
+    document.getElementById('showConsumoItemsSearch').innerHTML = htmlSeachItemsConsumidos;
+    clearSpinner();
+
+    // Renderizar gráficos después de que el HTML esté en el DOM
+    setTimeout(() => {
+        document.querySelectorAll('.user-charts-section').forEach(section => {
+            const ordersJSON = section.querySelector('.chart-data').dataset.orders;
+            const orders = JSON.parse(ordersJSON);
+            const chartIdSuffix = section.querySelector('canvas').id.split('-')[1];
+            
+            renderUserCharts(orders, chartIdSuffix);
+        });
+    }, 150);
+};
+
+// Función separada para renderizar gráficos
+function renderUserCharts(data, chartIdSuffix) {
+    // 1. Gráfico de Barras
+    const barCtx = document.getElementById(`barChartUserDates-${chartIdSuffix}`).getContext('2d');
+    
+    // Agrupar por tipo y sumar cantidades
+    const typeCounts = {};
+    data.forEach(user => {
+        user.items.forEach(item => {
+            if (!typeCounts[item.type]) typeCounts[item.type] = 0;
+            typeCounts[item.type] += item.quantity;
+        });
+    });
+
+    function getTypeLabels(typeCounts) {
+        const typeMapping = {
+            epp: 'EPP',
+            consumiblesAjuste: 'Cons. Ajuste',
+            consumiblesLineas: 'Cons. Líneas',
+            ropa: 'Ropa',
+            consumiblesMeca: 'Cons. Mecanizado',
+            otros: 'Otros'
+        };
+    
+        return Object.keys(typeCounts).map(key => typeMapping[key] || typeMapping.otros);
+    }
+
+    const userTotals = data.map(user => ({
+        total: user.items.reduce((sum, item) => sum + item.quantity, 0)
+    }));
+
+    new Chart(barCtx, {
+        type: 'bar',
+        data: {
+            labels: getTypeLabels(typeCounts),
+            datasets: [{
+                label: `Total de Items: ${userTotals.reduce((sum, user) => sum + user.total, 0)}`,
+                data: Object.values(typeCounts),
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.3)',
+                    'rgba(255, 159, 64, 0.3)',
+                    'rgba(75, 192, 192, 0.3)',
+                    'rgba(255, 205, 86, 0.3)',
+                    'rgba(54, 162, 235, 0.3)',
+                    'rgba(201, 203, 207, 0.3)',
+                    'rgba(153, 102, 255, 0.3)'
+                ],
+                borderColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(255, 159, 64)',
+                    'rgb(75, 192, 192)',
+                    'rgb(255, 205, 86)',
+                    'rgb(54, 162, 235)',
+                    'rgb(201, 203, 207)',
+                    'rgb(153, 102, 255)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            aspectRatio: 1,
+            //plugins: { legend: { display: true } },
+            scales: { y: { beginAtZero: true } },
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        usePointStyle: false, // No usar ícono de punto
+                        boxWidth: 0, // Ancho cero para el cuadro de color
+                        padding: 10, // Espaciado para mejor legibilidad
+                        // font: {
+                        //     size: 12 // Tamaño de fuente
+                        // },
+                        generateLabels: function(chart) {
+                            // Personalización completa de las etiquetas
+                            return [{
+                                text: chart.data.datasets[0].label,
+                                fillStyle: 'transparent', // Fondo transparente
+                                strokeStyle: 'transparent', // Borde transparente
+                                hidden: false,
+                                lineWidth: 0, // Sin ancho de línea
+                                pointStyle: undefined // Sin estilo de punto
+                            }];
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // 2. Gráfico Circular
+    const pieCtx = document.getElementById(`pieChartUserDates-${chartIdSuffix}`).getContext('2d');
+    
+    new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+            labels: getTypeLabels(typeCounts),
+            datasets: [{
+                data: Object.values(typeCounts),
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(255, 159, 64, 0.5)',
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(255, 205, 86, 0.5)',
+                    'rgba(153, 102, 255, 0.5)',
+                    'rgba(201, 203, 207, 0.5)',
+                    'rgba(54, 162, 235, 0.5)'
+                ],
+                borderColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(255, 159, 64)',
+                    'rgb(75, 192, 192)',
+                    'rgb(255, 205, 86)',
+                    'rgb(153, 102, 255)',
+                    'rgb(201, 203, 207)',
+                    'rgb(54, 162, 235)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            aspectRatio: 1,
+            plugins: { legend: { position: 'right' } }
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const fechaInicioInput = document.getElementById('queryFechaDesde'),
+        fechaFinInput = document.getElementById('queryFechaHasta'),
+        hoy = new Date(), // Obtener la fecha actual en formato YYYY-MM-DD
+        fechaMaximaPermitida = hoy.toISOString().split('T')[0],
+        fechaMinimaPermitida = new Date('2025-01-01');  // Fecha mínima permitida: 1/1/2025
+
+    let title = 'Advertencia',
+        icon = 'warning'
+
+    function messageAlertDates(title, message, icon){
+        Swal.fire(
+            title, 
+            message, 
+            icon);
+        return false
+    }
+
+    // Configurar valores mínimos y máximos iniciales
+    if (fechaInicioInput) {
+        fechaInicioInput.min = fechaMinimaPermitida.toISOString().split('T')[0];
+        fechaInicioInput.max = fechaMaximaPermitida; // No puede seleccionar fechas futuras
+    }
+    
+    if (fechaFinInput) {
+        fechaFinInput.min = fechaMinimaPermitida.toISOString().split('T')[0];
+        fechaFinInput.max = fechaMaximaPermitida; // No puede seleccionar fechas futuras
+    }
+
+    if (fechaInicioInput && fechaFinInput) {
+        // Punto #1: Si se selecciona una fecha inicial, deshabilitar fechas anteriores en el campo de fecha final
+        fechaInicioInput.addEventListener('change', () => {
+            if (fechaInicioInput.value) {
+                fechaFinInput.min = fechaInicioInput.value; // Fecha final no puede ser anterior a la fecha inicial
+                // Asegurar que no se exceda la fecha máxima permitida
+                if (new Date(fechaInicioInput.value) > hoy) {
+                    let message = 'La fecha inicial no puede ser mayor a la fecha actual'
+                    messageAlertDates(title, message, icon)
+                    fechaInicioInput.value = fechaMaximaPermitida;
+                    fechaFinInput.min = fechaMaximaPermitida;
+                }
+            } else {
+                fechaFinInput.min = fechaMinimaPermitida.toISOString().split('T')[0]; // Restablecer al mínimo permitido
+            }
+        });
+
+        // Punto #2: Si se selecciona una fecha final, deshabilitar fechas posteriores en el campo de fecha inicial
+        fechaFinInput.addEventListener('change', () => {
+            if (fechaFinInput.value) {
+                fechaInicioInput.max = fechaFinInput.value; // Fecha inicial no puede ser posterior a la fecha final
+                // Validar que la fecha final no sea futura
+                if (new Date(fechaFinInput.value) > hoy) {
+                    let message = 'La fecha final no puede ser mayor a la fecha actual'
+                    messageAlertDates(title, message, icon)
+                    fechaFinInput.value = fechaMaximaPermitida;
+                    fechaInicioInput.max = fechaMaximaPermitida;
+                }
+            } else {
+                fechaInicioInput.removeAttribute('max'); // Restablecer sin límite máximo
+                fechaInicioInput.max = fechaMaximaPermitida; // Pero manteniendo el límite de no futuro
+            }
+        });
+
+        // Punto #3: Validar que la fecha final no sea anterior a la fecha inicial
+        const validarFechas = () => {
+            if (fechaInicioInput.value && fechaFinInput.value) {
+                const fechaInicio = new Date(fechaInicioInput.value);
+                const fechaFin = new Date(fechaFinInput.value);
+
+                if (fechaFin < fechaInicio) {
+                    let message = 'La fecha final no puede ser anterior a la fecha inicial'
+                    messageAlertDates(title, message, icon)
+                    fechaFinInput.value = ''; // Limpiar el campo de fecha final
+                }
+                
+                // Validación adicional para fechas futuras
+                if (fechaInicio > hoy) {
+                    let message = 'La fecha inicial no puede ser mayor a la fecha actual'
+                    messageAlertDates(title, message, icon)
+                    fechaInicioInput.value = fechaMaximaPermitida;
+                }
+                
+                if (fechaFin > hoy) {
+                    let message = 'La fecha final no puede ser mayor a la fecha actual'
+                    messageAlertDates(title, message, icon)
+                    fechaFinInput.value = fechaMaximaPermitida;
+                }
+            }
+        };
+
+        fechaInicioInput.addEventListener('change', validarFechas);
+        fechaFinInput.addEventListener('change', validarFechas);
+
+        // - Si se borra la fecha inicial, restablecer el mínimo de la fecha final al 1/1/2025
+        fechaInicioInput.addEventListener('input', () => {
+            if (!fechaInicioInput.value) {
+                fechaFinInput.min = fechaMinimaPermitida.toISOString().split('T')[0];
+            }
+        });
+
+        // - Si se borra la fecha final, restablecer el máximo de la fecha inicial
+        fechaFinInput.addEventListener('input', () => {
+            if (!fechaFinInput.value) {
+                fechaInicioInput.removeAttribute('max');
+                fechaInicioInput.max = fechaMaximaPermitida; // Mantener el límite de no futuro
+            }
+        });
+        
+        // Validación inicial al cargar la página si hay valores en los campos
+        validarFechas();
+    }
+
+    //-----Btns Buscar en BBDD el Usuario Seguidor de Diseño/Simulación --------------
+    const userNameBanner = document.getElementById('userNameBanner').innerText
+
+    function messageAlertUser(titulo, message, icon){
+        Swal.fire(
+            titulo, 
+            message, 
+            icon);
+        return false
+    }
+
+    async function cargarUsuario() {
+        const permisos = {
+            'searchUser': {
+                permisoUsuario: 'ajuste',
+                titulo: `Seleccionar Usuario `,
+                inputTarget: `queryUsuarios`
+            },
+            'searchUserModal': {
+                permisoUsuario: 'diseno',
+                titulo: 'Seleccionar Usuario',
+                inputTarget: `queryUsuarios`
+            }
+        };
+        
+        const { permisoUsuario, titulo, inputTarget } = permisos[`searchUser`] || {};
+
+        if (!permisoUsuario || !titulo || !inputTarget) {
+            throw new Error(`Permiso no encontrado`)
+        }
+
+        try {
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            const url = `../../../api/usuarios/searchUsers/${userNameBanner}`
+            const response = await fetch(url, {
+                method: "GET",
+                headers: myHeaders,
+                mode: 'cors',
+                cache: 'default',
+            });
+
+            if(!response.ok ){
+                throw new Error(`Error en la solicitud`);
+            }
+
+            const users = await response.json(),
+                arrayUsuariosEspecificos = [], arrayUsersAll = [];
+
+            if (users && users.length > 0) {
+                users.forEach((user, i) => {
+                    const userHTML = `<label>
+                                        <span id="${user._id}" class="badge rounded-pill ${user.permiso === `${permisoUsuario}` ? 'bg-info' : 'bg-light'} text-dark my-2">
+                                            <input id="${i}" class="form-check-input mb-1" type="radio"
+                                                name="radioUsuarios" value="${[user.name, user.lastName, user.legajoId, user.username]}">
+                                                ${user.name} ${user.lastName} - Id#:${user.legajoId}   
+                                        </span>
+                                    </label>`;
+                    
+                    if (user.status) {
+                        user.permiso === `${permisoUsuario}` ? arrayUsuariosEspecificos.push(userHTML) : arrayUsersAll.push(userHTML);
+                    }    
+                });
+
+                const html = `<div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="mb-3">
+                                            <label>${titulo} ${permisoUsuario}</label>
+                                            <div name='container' class="container">
+                                                ${arrayUsuariosEspecificos.join(' ')}
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="mb-3">
+                                            <label>Usuarios</label>
+                                            <div name='container' class="container">
+                                                ${arrayUsersAll.join(' ')}
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                </div>
+                            </div>`;
+                
+                let anchoModal = 600; // Valor base
+                // Calculamos el ancho del modal basado en la cantidad de usuarios
+                const incrementos = Math.floor(users.length / 20); // Cada 20 usuarios aumenta 100px
+                if (incrementos > 0) {
+                    anchoModal += incrementos * 100;
+                    anchoModal = Math.min(anchoModal, 1400); // Limitamos el ancho máximo a 1400px
+                }
+
+                Swal.fire({
+                    title: titulo,
+                    html: html,
+                    width: anchoModal,
+                    background: "#eee",
+                    allowOutsideClick: false,
+                    showCloseButton: true,
+                    focusConfirm: false,
+                    confirmButtonText: 'Seleccionar <i class="fa-regular fa-circle-check"></i>',
+                    didOpen: () => {
+                        const btnAceptar = document.querySelector('.swal2-confirm');
+                        btnAceptar.setAttribute('id', 'btnAceptarModal');
+                        btnAceptar.style.cursor = "not-allowed";
+                        btnAceptar.disabled = true;
+
+                        const radios = document.getElementsByName('radioUsuarios');
+                        radios.forEach((radio) => {
+                            radio.addEventListener('change', () => {
+                                btnAceptar.style.cursor = "pointer";
+                                btnAceptar.disabled = false;
+                            });
+                        });
+                    }
+
+                }).then((result) => {
+                    const radioSelected = document.querySelector('input[name="radioUsuarios"]:checked');
+                    if (result.isConfirmed && radioSelected) {
+                        const inputUserSelected = document.getElementById(`${inputTarget}`);
+                        let valueUserToShow = radioSelected.value.split(',')
+                        inputUserSelected.value = valueUserToShow[0] + ', ' + valueUserToShow[1] + ', ' + valueUserToShow[2] + ', ' + valueUserToShow[3];
+
+                    } else {
+                        const titulo = 'Usuario no seleccionado',
+                            message = 'No ha seleccionado ningún usuario!',
+                            icon = 'warning'
+                        messageAlertUser(titulo, message, icon)
+                    }
+                });
+
+            } else {
+                throw new Error(`No hay usuarios que seleccionar`);
+            }
+
+        } catch (error) {
+            const titulo = 'Error',
+                message = `${error}`,
+                icon = 'error'
+            messageAlertUser(titulo, message, icon)
+        }
+        disabledBtnAceptar()
+    }
+
+    function disabledBtnAceptar () {
+        let btnAceptarModal = document.getElementsByClassName('swal2-confirm');
+        const allInputsRadio = document.querySelectorAll('input[type="radio"]')
+
+        allInputsRadio.forEach(function(input) {
+            input.value && input.name != 'ociNumber' ?
+                input.addEventListener('input', (event) => {
+                    event.preventDefault()
+                    if (btnAceptarModal) {
+                        btnAceptarModal[0].removeAttribute('disabled')
+                        btnAceptarModal[0].style = "cursor: pointer;"
+                    }
+                })    
+            : null
+        })
+    }
+
+    let btnSearchUser = document.getElementById('searchOrderUser')
+    if (btnSearchUser) {
+        btnSearchUser.addEventListener('click', async (event) => {
+            try {
+                await cargarUsuario()
+
+            } catch (error) {
+                const titulo = 'Error al cargar los usuarios'
+                const message = `${error}`
+                const icon = 'error'
+                messageAlertUser(titulo, message, icon)
+            }
+        });
+    }
+
+});
+
+
 
 //TODO:
 // const deleteFilters = document.getElementById('deleteFilters')
