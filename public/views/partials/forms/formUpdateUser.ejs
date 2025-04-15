@@ -30,11 +30,22 @@
                     <input type="text" name="creatorDisable" id="creatorDisable"
                         class="form-control-plaintext text-white" value="<%=usuario.creator[0].name%>, <%=usuario.creator[0].lastName%>" disabled>    
                 </div>
+
+                <% const offset = -3 * 60 * 60 * 1000;
+                    let utcDate = new Date(usuario.timestamp),
+                    utcDateModified = new Date(usuario.modifiedOn),
+                    localDate = new Date(utcDate.getTime() + offset),
+                    localDateModified = new Date(utcDateModified.getTime() + offset),
+                    formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
+                    formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
+
+                    formattedDate === formattedDateModified ? formattedDateModified = '' : null
+                %>
                 
                 <div class="col-auto">
                     <label for="timestampDisable">Fecha Creación</label>
                     <input type="text" name="timestampDisable" id="timestampDisable"
-                        class="form-control-plaintext text-white" value="<%=usuario.timestamp%>" disabled>
+                        class="form-control-plaintext text-white" value="<%=formattedDate%>" disabled>
                 </div>
                 
                 <div class="col-auto">
@@ -52,7 +63,7 @@
                 <div class="col-2">
                     <label for="modifiedOnDisable">Fecha Modificación</label>
                     <input type="text" name="modifiedOnDisable" id="modifiedOnDisable"
-                        class="form-control-plaintext text-white" value="<%=usuario.modifiedOn%>" disabled>
+                        class="form-control-plaintext text-white" value="<%=formattedDateModified%>" disabled>
                 </div>
             </div>
             <hr>
@@ -129,13 +140,12 @@
                 </div>
             </div>
             <br>
-            <div class="container-fluid my-auto"><h4><strong>Permisos, Áreas, Roles y Status</strong></h4>
+            <div class="container-fluid my-auto"><h4><strong>Permisos, Áreas, Unidad Negocio, Roles y Status</strong></h4>
                 <div class="row my-3 mx-auto justify-content-between align-items-center">
-                    <div class="col-3">
+                    <div class="col-2">
                         <label class="form-check-label" for="permiso">Seleccione un permiso</label>
                         <select class="form-select" aria-label=".form-select example" name="permiso" id="permiso" required>
-                            <% 
-                                const opcionesUpdate = [
+                            <%  const opcionesUpdate = [
                                     { value: "diseno", text: "Diseño" },
                                     { value: "simulacion", text: "Simulación" },
                                     { value: "disenoSimulacion", text: "Diseño/Simulación" },
@@ -153,11 +163,10 @@
                         <input type="hidden" id="permisoHidden" name="permisoHidden" value="" style="display: none;">
                     </div>
                     
-                    <div class="col-3">
+                    <div class="col-2">
                         <label class="form-check-label" for="area">Seleccione un Área</label>
                         <select class="form-select form-select" aria-label=".form-select example" name="area" id="area" required>  
-                            <% 
-                                const opciones = [
+                            <%  const opciones = [
                                     { value: "diseno", text: "Diseño" },
                                     { value: "ingenieria", text: "Ingeniería" },
                                     { value: "fabricacion", text: "Fabricación" },
@@ -165,13 +174,26 @@
                                     { value: "administracion", text: "Administración" },
                                     { value: "todas", text: "Todas" },
                                 ];
-                            
-                                opciones.forEach(opcion => {
-                            %>
+                                opciones.forEach(opcion => { %>
                                 <option value="<%= opcion.value %>" <%= opcion.value === usuario.area ? 'selected disabled' : '' %> > <%= opcion.text %> </option>
                             <% }) %>   
                         </select>
                         <input type="hidden" id="areaHidden" name="areaHidden" value="" style="display: none;">
+                    </div>
+
+                    <div class="col-2">
+                        <label class="form-check-label" for="uNegocio">Seleccione Unidad Negocio</label>
+                        <select class="form-select form-select" aria-label=".form-select example" name="uNegocio" id="uNegocio" required>  
+                            <%  const opcionesUnegocio = [
+                                    { value: "matrices", text: "Matrices" },
+                                    { value: "lineas", text: "Líneas" },
+                                    { value: "todos", text: "Todos" },
+                                ];
+                                opcionesUnegocio.forEach(opcion => { %>
+                                <option value="<%= opcion.value %>" <%= opcion.value === usuario.uNegocio.trim() ? 'selected disabled' : '' %> > <%= opcion.text %> </option>
+                            <% }) %>
+                        </select>
+                        <input type="hidden" id="uNegocioHidden" name="uNegocioHidden" value="" style="display: none;">
                     </div>
 
                     <% if (usuario.superAdmin) { %>

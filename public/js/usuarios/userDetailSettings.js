@@ -60,42 +60,50 @@ btnUpdateUserSettings.addEventListener('click', (event)=>{
 })
 
 // ----------- Avatar User Image behavior ---------------
-const dropAreaAvatarUser = document.getElementById('drop-areaAvatarUser')
-const fileInputAvatarUser = document.getElementById('fileInputAvatarUser')
-const fileImputTextAvatarUser = document.getElementById('fileInputTextAvatarUser')
-const removeImageButtonAvatarUser = document.getElementById('removeImageAvatarUser')
-const alertAvatarUser = document.getElementById('alertAvatarUser')
-const alertSizeAvatarUser = document.getElementById('alertSizeAvatarUser')
+const dropAreaAvatarUser = document.getElementById('drop-areaAvatarUser'),
+    fileInputAvatarUser = document.getElementById('fileInputAvatarUser'),
+    fileImputTextAvatarUser = document.getElementById('fileInputTextAvatarUser'),
+    removeImageButtonAvatarUser = document.getElementById('removeImageAvatarUser'),
+    alertAvatarUser = document.getElementById('alertAvatarUser'),
+    alertSizeAvatarUser = document.getElementById('alertSizeAvatarUser')
 
-dropAreaAvatarUser.style.width = "300px"
-dropAreaAvatarUser.style.height = "200px"
-dropAreaAvatarUser.style.border = "2px dashed #ccc"
-dropAreaAvatarUser.style.margin = "0 auto 0 50px"
-dropAreaAvatarUser.style.borderRadius = "5px"
-dropAreaAvatarUser.style.textAlign = "center"
-dropAreaAvatarUser.style.lineHeight = "200px"
-dropAreaAvatarUser.style.cursor = "pointer"
+Object.assign(dropAreaAvatarUser.style, {
+    width : "300px",
+    height : "200px",
+    border : "2px dashed #ccc",
+    margin : "0 auto 0 50px",
+    borderRadius : "5px",
+    textAlign : "center",
+    lineHeight : "200px",
+    cursor : "pointer"
+})
 
 dropAreaAvatarUser.addEventListener('dragover', (e) => {
     e.preventDefault()
-    dropAreaAvatarUser.style.border = '2px dashed #77d'
-    dropAreaAvatarUser.style.backgroundColor = '#7777dd10'
+    Object.assign(dropAreaAvatarUser.style, {
+        border : '2px dashed #77d',
+        backgroundColor : '#7777dd10'
+    })
 })
 
 dropAreaAvatarUser.addEventListener('dragleave', (e) => {
     e.preventDefault()
-    dropAreaAvatarUser.style.border = '2px dashed #ccc'
-    dropAreaAvatarUser.style.backgroundColor = '#838383'
+    Object.assign(dropAreaAvatarUser.style, {
+        border : '2px dashed #ccc',
+        backgroundColor : '#838383'
+    })
 })
 
 function alertRefresh() {
     fileInputAvatarUser.value = ''
     fileImputTextAvatarUser.value = ''
     removeImageButtonAvatarUser.style.display = 'none'
-    dropAreaAvatarUser.style.border = "2px dashed #ccc"
-    dropAreaAvatarUser.style.textAlign = "center"
-    dropAreaAvatarUser.style.backgroundColor = '#838383'
-    dropAreaAvatarUser.style.display = 'block'
+    Object.assign(dropAreaAvatarUser.style, {
+        border : "2px dashed #ccc",
+        textAlign : "center",
+        backgroundColor : '#838383',
+        display : 'block'
+    })
     dropAreaAvatarUser.innerHTML = 'Arrastra y suelta una imagen aquí'
 }
 
@@ -135,8 +143,10 @@ fileInputAvatarUser.addEventListener('change', (e) => {
     const file = fileInputAvatarUser.files[0]
     
     if (file && file.type.startsWith('image/')) {
-        dropAreaAvatarUser.style.border = '3px dashed #2d2'
-        dropAreaAvatarUser.style.backgroundColor = '#22dd2210'
+        Object.assign(dropAreaAvatarUser.style, {
+            border : '3px dashed #2d2',
+            backgroundColor : '#22dd2210'
+        })
 
         handleFileUploadAvatarUser(file)
 
@@ -198,20 +208,15 @@ const btnAceptarForm = document.getElementById('btnUpdateUserSettings');
                 if (forbiddenChars.test(key)) {
                     // Cancelar el evento para evitar que se ingrese el carácter
                     event.preventDefault()
-                    input.classList.add("border")
-                    input.classList.add("border-danger")
-                    input.classList.add("border-2")
+                    input.classList.add("border", "border-danger", "border-2")
+
                 } else {
-                    input.classList.remove("border")
-                    input.classList.remove("border-danger")
-                    input.classList.remove("border-2")
+                    input.classList.remove("border", "border-danger", "border-2")
                 }
             })
             input.addEventListener('input', (event) => {
                 event.preventDefault()
-                input.classList.add("border-primary")
-                input.classList.add("border-2")
-                input.classList.add("shadow")
+                input.classList.add("border-primary", "border-2", "shadow")
                 btnAceptarForm.removeAttribute('disabled')
                 btnAceptarForm.style = "cursor: pointer;"
             })

@@ -1,144 +1,53 @@
 async function switchFilterClients(filter, Clientes, nameAndCodeQuery) {
-    switch (filter) {
-        case 'nullAllAll': {
-            var resultados = ['vacio']
-        break;
-        }
-        case 'nullAllWith': {
-            var resultados = await Clientes.find({
-                'project': { $gt: 0 } // Proyectos mayores que 0
-            })
-        break;
-        }
-        case 'nullAllWithout': {
-            var resultados = await Clientes.find({
-                'project': { $eq: 0 }
-            })
-        break;    
-        }
-        case 'nullActiveAll': {
-            var resultados = await Clientes.find({
-                'status': true,
-            })
-            break;
-        }
-        case 'nullActiveWith': {
-            var resultados = await Clientes.find({
-                'status': true,
-                'project': { $gt: 0 }
-            })
-            break;
-        }
-        case 'nullActiveWithout': {
-            var resultados = await Clientes.find({
-                'status': true,
-                'project': { $eq: 0 } 
-                
-            })
-            break;
-        }
-        case 'nullInactiveAll': {
-            var resultados = await Clientes.find({
-                'status': false
-            })
-            break;
-        }
-        case 'nullInactiveWith': {
-            var resultados = await Clientes.find({
-                'status': false,
-                'project': { $gt: 0 }
-            })
-            break;
-        }
-        case 'nullInactiveWithout': {
-            var resultados = await Clientes.find({
-                'status': false,
-                'project': { $eq: 0 }
-            })
-            break;
-        }
-        //--------------- input w/text ----------
-        case 'notNullAllAll': {
-            var resultados = await Clientes.find({
-                $or: nameAndCodeQuery
-            })
-            break;
-        }
-        case 'notNullAllWith': {
-            var resultados = await Clientes.find({
-                $or: nameAndCodeQuery,
-                $and: [
-                    { 'project': { $gt: 0 } }
-                ]
-            })
-            break;
-        }
-        case 'notNullAllWithout': {
-            var resultados = await Clientes.find({
-                $or: nameAndCodeQuery,
-                $and: [
-                    { 'project': { $eq: 0 } }
-                ]
-            })
-            break;
-        }
-        case 'notNullActiveAll': {
-            var resultados = await Clientes.find({
-                $or: nameAndCodeQuery,
-                $and: [
-                    { 'status': true }
-                ]
-            })
-            break;
-        }
-        case 'notNullActiveWith': {
-            var resultados = await Clientes.find({
-                $or: nameAndCodeQuery,
-                $and: [
-                    { 'status': true },
-                    { 'project': { $gt: 0 } }
-                ]
-            })
-            break;
-        }
-        case 'notNullActiveWithout': {
-            var resultados = await Clientes.find({
-                $or: nameAndCodeQuery,
-                $and: [
-                    { 'status': true },
-                    { 'project': { $eq: 0 } }
-                ]
-            })
-            break;
-        }
-        case 'notNullInactiveAll': {
-            var resultados = await Clientes.find({
-                $or: nameAndCodeQuery
-            })
-            break;
-        }
-        case 'notNullInactiveWith': {
-            var resultados = await Clientes.find({
-                $or: nameAndCodeQuery,
-                $and: [
-                    { 'status': false },
-                    { 'project': { $gt: 0 } }
-                ]
-            })
-            break;
-        }
-        case 'notNullInactiveWithout': {
-            var resultados = await Clientes.find({
-                $or: nameAndCodeQuery,
-                $and: [
-                    { 'status': false },
-                    { 'project': { $eq: 0 } }
-                ]
-            })
-            break;
-        }
+    let query = {};
+    
+    // Procesar $or si existe (búsqueda por nombre o código)
+    if (nameAndCodeQuery && Array.isArray(nameAndCodeQuery)) {
+        nameAndCodeQuery.$or = nameAndCodeQuery.filter(Boolean);
+        if (nameAndCodeQuery.$or.length > 0) query.$or = nameAndCodeQuery.$or;
     }
-    return resultados
+
+    // Procesar campo status (activo/inactivo)
+    if (filter[1] === 'Active') {
+        query.status = true;
+    } else if (filter[1] === 'Inactive') {
+        query.status = false;
+    }
+
+    // Procesar campo proyectos (With/Without)
+    if (filter[2] === 'With') {                
+        // Si hay un tipo específico (Matrices/Lineas), escribimos el $or
+        if (filter[3] === 'Matrices') {
+            query = {
+                ...query,
+                project: { $gt: 0 }
+            };
+            
+        } else if (filter[3] === 'Lineas') {
+            query = {
+                ...query,
+                projectLineas: { $gt: 0 }
+            };
+
+        } else {
+            // Modificación clave aquí: Usamos $or para project O projectLineas
+            query.$or = [
+                { project: { $gt: 0 } },
+                { projectLineas: { $gt: 0 } }
+            ];
+        }
+
+    } else if (filter[2] === 'Without') {
+        query.project = 0;
+        query.projectLineas = 0;
+    }
+    
+    // Ejecutar consulta o devolver vacío si no hay filtros
+    const resultados = Object.keys(query).length > 0
+        ? await Clientes.find(query)
+        : ['vacio'];
+
+    return resultados;
 }
 
 module.exports = {

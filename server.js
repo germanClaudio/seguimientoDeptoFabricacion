@@ -76,7 +76,7 @@ const initServer = () => {
             secure: false //true     
         },
         resave: false,
-        saveUninitialized: false,
+        saveUninitialized: false
     }))
 
     app.use('/api/config', (req, res) => {

@@ -30,7 +30,8 @@ function validateSelectField(value) {
     const validOptions = [
         'diseno', 'simulacion', 'disenoSimulacion', 'projectManager',
         'cadCam', 'mecanizado', 'ajuste', 'todos',
-        'ingenieria', 'fabricacion', 'proyectos', 'administracion', 'todas'
+        'ingenieria', 'fabricacion', 'proyectos', 'administracion', 'todas',
+        'matrices', 'lineas'
     ]
     return validOptions.includes(value);
 }
@@ -194,9 +195,10 @@ class UsersController {
                 req.body.password !== req.body.confirmPassword ? catchError400_3(req, res, next) : null
 
                 const selectFieldPermiso = req.body.permiso,
-                    selectFieldArea = req.body.area;
+                    selectFieldArea = req.body.area,
+                    selectFieldUNegocio = req.body.uNegocio;
 
-                if (validateSelectField(selectFieldPermiso) && validateSelectField(selectFieldArea)) {
+                if (validateSelectField(selectFieldPermiso) && validateSelectField(selectFieldArea) && validateSelectField(selectFieldUNegocio)) {
                     if (userInfo.admin && !userInfo.superAdmin) {
                         req.body.superAdmin = 'off';
                         req.body.admin = 'off';
@@ -212,13 +214,14 @@ class UsersController {
                         password: req.body.password,
                         permiso: selectFieldPermiso,
                         area: selectFieldArea,
+                        uNegocio: selectFieldUNegocio,
                         status: req.body.status === 'on' ? Boolean(true) : Boolean(false) || Boolean(true),
                         admin: req.body.admin === 'on' ? Boolean(true) : Boolean(false),
                         superAdmin: req.body.superAdmin === 'on' ? Boolean(true) : Boolean(false),
-                        creator: dataUserCreator(userCreator),
-                        timestamp: formatDate(),
-                        modificator: dataUserModificatorEmpty(),
-                        modifiedOn: '',
+                        creator: await dataUserCreator(userCreator),
+                        timestamp: new Date(),
+                        modificator: await dataUserModificatorEmpty(),
+                        modifiedOn: new Date(),
                         visible: true,
                         visits: 0
                     };
@@ -313,10 +316,11 @@ class UsersController {
                 }
 
                 const selectFieldPermiso = req.body.permisoHidden,
-                    selectFieldArea = req.body.areaHidden
+                    selectFieldArea = req.body.areaHidden,
+                    selectFieldUNegocio = req.body.uNegocioHidden
 
                 // Validar y sanitizar los datos recibidos
-                if (validateSelectField(selectFieldPermiso) && validateSelectField(selectFieldArea)) {
+                if (validateSelectField(selectFieldPermiso) && validateSelectField(selectFieldArea) && validateSelectField(selectFieldUNegocio)) {
                     // Procesar los datos si son válidos
                     if (userInfo.admin && !userInfo.superAdmin) {
                         req.body.superAdmin = 'off'
@@ -333,12 +337,13 @@ class UsersController {
                             avatar: req.body.imageTextAvatarUser,
                             legajoId: legajoIdInput,
                             area: selectFieldArea,
+                            uNegocio: selectFieldUNegocio,
                             admin: req.body.admin === 'on' ? Boolean(true) : Boolean(false),
                             superAdmin: req.body.superAdmin === 'on' ? Boolean(true) : Boolean(false),
                             status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
                             permiso: selectFieldPermiso,
-                            modificator: dataUserModificatorNotEmpty(userLogged),
-                            modifiedOn: formatDate(),
+                            modificator: await dataUserModificatorNotEmpty(userLogged),
+                            modifiedOn: new Date(),
                             visits: parseInt(userToModify.visits)
                         }
 
@@ -349,10 +354,11 @@ class UsersController {
                             email: emailInput,
                             avatar: req.body.imageTextAvatarUser,
                             area: selectFieldArea,
+                            uNegocio: selectFieldUNegocio,
                             status: req.body.status === 'on' ? Boolean(true) : Boolean(false),
                             permiso: selectFieldPermiso,
-                            modificator: dataUserModificatorNotEmpty(),
-                            modifiedOn: formatDate(),
+                            modificator: await dataUserModificatorNotEmpty(),
+                            modifiedOn: new Date(),
                             visits: parseInt(userToModify.visits)
                         }
                     }
@@ -418,8 +424,8 @@ class UsersController {
                             lastName: req.body.lastName,
                             email: emailInput,
                             avatar: req.body.imageTextAvatarUser,
-                            modificator: dataUserModificatorNotEmpty(userLogged),
-                            modifiedOn: formatDate()
+                            modificator: await dataUserModificatorNotEmpty(userLogged),
+                            modifiedOn: new Date()
                         }
                     
                         const usuario = await this.users.updateUserPreferences(id, updatedUser, dataUserModificatorNotEmpty(userLogged))
@@ -510,7 +516,7 @@ class UsersController {
                 userLogged = await this.users.getUserById(userId)
             !userLogged ? catchError401_3(req, res, next) : null
 
-            const usuario = await this.users.deleteUserById(id, dataUserModificatorNotEmpty(userLogged))
+            const usuario = await this.users.deleteUserById(id, await dataUserModificatorNotEmpty(userLogged))
             !usuario ? catchError401_3(req, res, next) : null
 
             const ordenes = await this.orders.getAllOrders()
@@ -725,14 +731,14 @@ class UsersController {
             if(userToModify.visible && userToModify.status) {
                 const updatedUserPassword = {
                     password: newPassword || confirmNewPassword,
-                    modificator: dataUserModificatorNotEmpty(userLogged),
-                    modifiedOn: formatDate()
+                    modificator: await dataUserModificatorNotEmpty(userLogged),
+                    modifiedOn: new Date()
                 }
 
                 try {
                     const usuario = await this.users.updatePasswordByUser(id,
                         updatedUserPassword,
-                        dataUserModificatorNotEmpty(userLogged)
+                        updatedUserPassword.modificator
                     )
                     if(!usuario) {
                         const err = new Error('No fue posible Actualizar el Password!')

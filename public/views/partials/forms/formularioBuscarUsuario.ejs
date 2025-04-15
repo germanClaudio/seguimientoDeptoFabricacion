@@ -5,7 +5,7 @@
             <input class="form-control" type="text" id="queryUsers" name="queryUsers" placeholder="Buscar Usuarios">
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md">
             <label class="form-check-label ms-2 text-white" for="statusUser">Status</label>
             <select class="form-select small" aria-label=".form-select" name="statusUser" id="statusUser" style="font-size: 13px;">
                 <option selected value="todos">Todos</option>
@@ -14,7 +14,7 @@
             </select>
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md">
             <label class="form-check-label ms-2 text-white" for="rolUser">Rol</label>
             <select class="form-select small" aria-label=".form-select" name="rolUser" id="rolUser" style="font-size: 13px;">
                 <option selected value="todos">Todos</option>
@@ -23,7 +23,16 @@
             </select>
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md">
+            <label class="form-check-label ms-2 text-white" for="uNegocioUser">Unidad Negocio</label>
+            <select class="form-select small" aria-label=".form-select" name="uNegocioUser" id="uNegocioUser" style="font-size: 13px;">
+                <option selected value="todos">Todos</option>
+                <option value="matrices">Matrices</option>
+                <option value="lineas">Líneas</option>
+            </select>
+        </div>
+
+        <div class="col-md">
             <label class="form-check-label ms-2 text-white" for="areaUser">Area</label>
             <select class="form-select small" aria-label=".form-select" name="areaUser" id="areaUser" style="font-size: 13px;">
                 <option selected value="todos">Todos</option>
@@ -52,7 +61,7 @@
             <button class="btn rounded-circle bg-white me-2 text-dark" title="Buscar" type="submit">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
-            <button class="btn rounded-circle bg-white ms-2 text-dark" title="Eliminar filtros" type="reset">
+            <button id="resetFilter" class="btn rounded-circle bg-white ms-2 text-dark" title="Eliminar filtros" type="reset">
                 <i class="fa-solid fa-filter-circle-xmark"></i>
             </button>
         </div>

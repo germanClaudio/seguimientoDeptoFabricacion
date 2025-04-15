@@ -51,6 +51,9 @@ let ociProjectSchema = new Schema({
     ociStatus: {
         type: Boolean, default: true
     },
+    ociPrio: {
+        type: Number, maxlength: 3, defautl: 1
+    },
     ociImage: { 
         type: String,
         maxlength: 1000,

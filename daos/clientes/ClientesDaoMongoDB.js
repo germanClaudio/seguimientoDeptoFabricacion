@@ -28,8 +28,9 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                 modifiedOn: -1 // Luego ordena por "timestamp" de más reciente a más antiguo
             });
             
-            if ( clients === undefined || clients === null) {
+            if (!clients) {
                 return new Error ('No hay clientes en la DB!')
+            
             } else {
                 // console.info('Clientes encontrados...>')
                 // await Clientes.updateMany(
@@ -288,8 +289,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
     }
 
     async updateClient(id, client, userModificator) {
-        console.log('userModificator-Dao: ', userModificator)
-        if (client) {
+        if (id && client) {
             try {
                 const itemMongoDB = await Clientes.findById({_id: id})
                 let logoCliente = ''
@@ -389,7 +389,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
 
     async reduceClientProjectQty(id, clienteSelected, user, uNegocio) {
         let updatedClientProjectsQty
-        if (id && clienteSelected) {
+        if (id && clienteSelected && uNegocio) {
             try {
                 const itemMongoDB = await Clientes.findById({_id: id})
                 
@@ -480,76 +480,36 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
     }
 
     async getClientBySearching(query) {
-        var filter
-        var nameAndCodeQuery = [{ 'name': { $regex: `${query.query}`, $options: 'i' } }, 
+        let nameAndCodeQuery = [{ 'name': { $regex: `${query.query}`, $options: 'i' } }, 
                                 { 'code': { $regex: `${query.query}`, $options: 'i' } }]
 
-        if (query.query === '') {
-            if (query.status === 'todos') {
-                if (query.proyectos === 'all') {
-                    filter = 'nullAllAll'
-                } else if (query.proyectos === 'with') {
-                    filter = 'nullAllWith'
-                } else {
-                    filter = 'nullAllWithout'
-                }
+        const { query: searchQuery, status = 'todos', proyectos = 'all', uNegocio = 'todos' } = query;
 
-            } else if (query.status === 'activos') {
-                if (query.proyectos === 'all') {
-                    filter = 'nullActiveAll'
-                } else if (query.proyectos === 'with') {
-                    filter = 'nullActiveWith'
-                } else {
-                    filter = 'nullActiveWithout'
-                }
+        const prefix = searchQuery === '' ? 'null' : 'notNull';
+        
+        const statusPrefix = {
+        todos: 'All',
+        activos: 'Active',
+        inactivos: 'Inactive'
+        }[status];
 
-            } else if (query.status === 'inactivos') {
-                if (query.proyectos === 'all') {
-                    filter = 'nullInactiveAll'
-                } else if (query.proyectos === 'with') {
-                    filter = 'nullInactiveWith'
-                } else {
-                    filter = 'nullInactiveWithout'
-                }
-            }
+        const projectSuffix = {
+        all: 'All',
+        with: 'With',
+        without: 'Without'
+        }[proyectos];
 
-        } else {
-            if (query.status === 'todos') {
-                if (query.proyectos === 'all') {
-                    filter = 'notNullAllAll'
-                } else if (query.proyectos === 'with') {
-                    filter = 'notNullAllWith'
-                } else {
-                    filter = 'notNullAllWithout'
-                }
+        const uNegocioSuffix = {
+        todos: 'All',
+        matrices: 'Matrices',
+        lineas: 'Lineas'
+        }[uNegocio];
 
-            } else if (query.status === 'activos') {
-                if (query.proyectos === 'all') {
-                    filter = 'notNullActiveAll'
-                } else if (query.proyectos === 'with') {
-                    filter = 'notNullActiveWith'
-                } else {
-                    filter = 'notNullActiveWithout'
-                }
-
-            } else if (query.status === 'inactivos') {
-                if (query.proyectos === 'all') {
-                    filter = 'notNullInactiveAll'
-                } else if (query.proyectos === 'with') {
-                    filter = 'notNullInactiveWith'
-                } else {
-                    filter = 'notNullInactiveWithout'
-                }
-            }
-        }
+        const filter = [`${prefix}`,`${statusPrefix}`,`${projectSuffix}`,`${uNegocioSuffix}`];
 
         try {
             const resultados = await switchFilterClients(filter, Clientes, nameAndCodeQuery)
-            if (resultados) {
-                return resultados
-            } else {
-                return false
-            }
+            if (resultados) return resultados.length ? resultados : []
 
         } catch (error) {
             console.error("Error MongoDB getClientBySearching: ",error)

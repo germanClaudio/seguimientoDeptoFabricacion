@@ -15,7 +15,7 @@ let otProjectSchema = new Schema({
     },
     otNumber: { 
         type: Number,
-        maxlength: 4,
+        maxlength: 5,
     },
     opNumber: {
         type: String,
@@ -29,6 +29,11 @@ let otProjectSchema = new Schema({
     otStatus:{
         type: Boolean,
         default: true,
+    },
+    otPrio:{
+        type: Number,
+        maxlength: 3,
+        defautl: 1
     },
     otDesign:{
         type: String,

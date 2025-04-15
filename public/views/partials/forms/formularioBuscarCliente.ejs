@@ -1,10 +1,10 @@
 <div class="shadow-lg col-md-6 mx-auto my-1 w-50 border rounded p-3 text-white bg-opacity-75" style="background-color: #272787;">
     <form class="row align-items-center" id="searchForm" onsubmit="return searchClient(this)">
-        <div class="col-md-4">
+        <div class="col-md-auto mx-1">
             <input class="form-control" type="text" id="query" name="query" placeholder="Buscar clientes">
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md-2 mx-1">
             <select class="form-select form-select small" aria-label=".form-select" name="status" id="status" style="font-size: 13px;">
                 <option selected value="todos">Todos</option>
                 <option value="activos">Activos</option>
@@ -12,7 +12,7 @@
             </select>
         </div>
 
-        <div class="col-md-3" style="font-size: 13px;">
+        <div class="col-md-auto mx-1" style="font-size: 13px;">
             <div class="form-check d-flex align-items-start">
                 <input class="form-check-input" type="radio" name="projects" id="allProjects"  value="all" checked>
                 <label class="form-check-label ms-2 text-white" for="allProjects">Todos</label>
@@ -26,12 +26,27 @@
                 <label class="form-check-label ms-2 text-white" for="withoutProjects">Sin proyectos</label>
             </div>
         </div>
+
+        <div class="col-md-3 mx-1" style="font-size: 13px;">
+            <div class="form-check d-flex align-items-start">
+                <input class="form-check-input" type="radio" name="uNegocio" id="todos"  value="todos" checked>
+                <label class="form-check-label ms-2 text-white" for="todos">Todos</label>
+            </div>
+            <div class="form-check d-flex align-items-start">
+                <input class="form-check-input" type="radio" name="uNegocio" id="matrices" value="matrices" >
+                <label class="form-check-label ms-2 text-white" for="matrices">Proyectos Matrices</label>
+            </div>
+            <div class="form-check d-flex align-items-start">
+                <input class="form-check-input" type="radio" name="uNegocio" id="lineas" value="lineas" >
+                <label class="form-check-label ms-2 text-white" for="lineas">Proyectos Líneas</label>
+            </div>
+        </div>
         
-        <div class="col-md">
+        <div class="col-md mx-1">
             <button class="btn rounded-circle bg-white me-2 text-dark" title="Buscar" type="submit">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
-            <button class="btn rounded-circle bg-white ms-2 text-dark" title="Eliminar filtros" type="reset">
+            <button id="resetFilter" class="btn rounded-circle bg-white ms-2 text-dark" title="Eliminar filtros" type="reset">
                 <i class="fa-solid fa-filter-circle-xmark"></i>
             </button>
         </div>

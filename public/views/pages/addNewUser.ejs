@@ -23,11 +23,13 @@
         <%- include('../partials/forms/formularioBuscarUsuario'); %>
         <%- include('../partials/data/dataUserSearch'); %>
     </div>
-
+    <!-- ------------ Lista de Usuarios ------------ -->
     <%- include('../partials/sections/sectionUsersList'); %>
     
     <div class="d-block mx-auto px-5 mb-5 text-center w-100">
         <%- include('../partials/data/dataUsersTable'); %>
+        <!-- Contenedor de paginación -->
+        <div id="paginationUsuarios"></div>
     </div>
     <br>
     <%- include('../partials/btnFooterBottom/btnFooterBottom-goUp'); %>

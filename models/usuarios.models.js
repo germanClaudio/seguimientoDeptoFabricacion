@@ -63,21 +63,23 @@ const userSchema = new Schema({
         type: String,
         default: 'disenoSimulacion'
     },
-    // creator: {
-    //     type: Array,
-    // },
-    creator: [creatorModels],
-    timestamp: {
+    uNegocio: {
         type: String,
-        default: now,
+        default: 'matrices'
     },
-    modificator: [modificatorModels],
-    // modificator: {
-    //     type: Array,
-    // },
+    creator: {
+        type: Array,
+        default: [creatorModels], 
+    },
+    timestamp: {
+        type: Date,
+    },
+    modificator: {
+        type: Array,
+        default: [modificatorModels]
+    },
     modifiedOn: {
-        type: String,
-        default: now,
+        type: Date,
     },
     visible: {
         type: Boolean,

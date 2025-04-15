@@ -1,6 +1,6 @@
 const socket = io.connect()
-let URL_GOOGLE_STORE_AVATARS
 
+let URL_GOOGLE_STORE_AVATARS
 fetch('/api/config')
     .then(response => response.json())
     .then(config => {
@@ -53,9 +53,9 @@ function message(name, lastName, username) {
 const btnUpdate = document.getElementById('btnUpdateUser')
 btnUpdate.addEventListener('click', (event)=>{
     event.preventDefault()
-    const name = document.getElementById('name').value
-    const lastName = document.getElementById('lastName').value
-    const username = document.getElementById('username').value
+    const name = document.getElementById('name').value,
+        lastName = document.getElementById('lastName').value,
+        username = document.getElementById('username').value
     if (name && lastName && username) {
         message(name, lastName, username)
     }
@@ -63,42 +63,51 @@ btnUpdate.addEventListener('click', (event)=>{
 
 
 // ----------- Avatar User Image behavior ---------------
-const dropAreaAvatarUser = document.getElementById('drop-areaAvatarUser')
-const fileInputAvatarUser = document.getElementById('fileInputAvatarUser')
-const fileImputTextAvatarUser = document.getElementById('fileInputTextAvatarUser')
-const removeImageButtonAvatarUser = document.getElementById('removeImageAvatarUser')
-const alertAvatarUser = document.getElementById('alertAvatarUser')
-const alertSizeAvatarUser = document.getElementById('alertSizeAvatarUser')
+const dropAreaAvatarUser = document.getElementById('drop-areaAvatarUser'),
+    fileInputAvatarUser = document.getElementById('fileInputAvatarUser'),
+    fileImputTextAvatarUser = document.getElementById('fileInputTextAvatarUser'),
+    removeImageButtonAvatarUser = document.getElementById('removeImageAvatarUser'),
+    alertAvatarUser = document.getElementById('alertAvatarUser'),
+    alertSizeAvatarUser = document.getElementById('alertSizeAvatarUser')
 
-dropAreaAvatarUser.style.width = "60%"
-dropAreaAvatarUser.style.height = "200px"
-dropAreaAvatarUser.style.border = "2px dashed #ccc"
-dropAreaAvatarUser.style.margin = "0 auto 0 50px"
-dropAreaAvatarUser.style.borderRadius = "10px"
-dropAreaAvatarUser.style.textAlign = "center"
-dropAreaAvatarUser.style.lineHeight = "200px"
-dropAreaAvatarUser.style.cursor = "pointer"
+Object.assign(dropAreaAvatarUser.style, {
+    width : "60%",
+    height : "200px",
+    border : "2px dashed #ccc",
+    margin : "0 auto 0 50px",
+    borderRadius : "10px",
+    textAlign : "center",
+    lineHeight : "200px",
+    cursor : "pointer",
+})
 
 dropAreaAvatarUser.addEventListener('dragover', (e) => {
     e.preventDefault()
-    dropAreaAvatarUser.style.border = '2px dashed #77d'
-    dropAreaAvatarUser.style.backgroundColor = '#7777dd10'
+    Object.assign(dropAreaAvatarUser.style, {
+        border : '2px dashed #77d',
+        backgroundColor : '#7777dd10'
+    })
 })
 
 dropAreaAvatarUser.addEventListener('dragleave', (e) => {
     e.preventDefault()
-    dropAreaAvatarUser.style.border = '2px dashed #ccc'
-    dropAreaAvatarUser.style.backgroundColor = '#7a7a7a87'
+    Object.assign(dropAreaAvatarUser.style, {
+        border : '2px dashed #ccc',
+        backgroundColor : '#7a7a7a87',
+    })
 })
 
 function alertRefresh() {
     removeImageButtonAvatarUser.style.display = 'none'
     fileInputAvatarUser.value = ''
     fileImputTextAvatarUser.value = ''
-    dropAreaAvatarUser.style.border = "2px dashed #ccc"
-    dropAreaAvatarUser.style.textAlign = "center"
-    dropAreaAvatarUser.style.backgroundColor = '#7a7a7a87'
-    dropAreaAvatarUser.style.display = 'block'
+
+    Object.assign(dropAreaAvatarUser.style, {
+        border : '2px dashed #ccc',
+        backgroundColor : '#7a7a7a87',    
+        textAlign : "center",
+        display : 'block',
+    })
     dropAreaAvatarUser.innerHTML = 'Haz click o arrastra y suelta una imagen aquí'
 }
 
@@ -137,8 +146,10 @@ fileInputAvatarUser.addEventListener('change', (e) => {
     const file = fileInputAvatarUser.files[0]
     
     if (file && file.type.startsWith('image/')) {
-        dropAreaAvatarUser.style.border = '3px dashed #2d2'
-        dropAreaAvatarUser.style.backgroundColor = '#22dd2210'
+        Object.assign(dropAreaAvatarUser.style, {
+            border : '3px dashed #2d2',
+            backgroundColor : '#22dd2210'
+        })
 
         handleFileUploadAvatarUser(file)
         
@@ -204,7 +215,18 @@ area.addEventListener('change', ()=>{
     areaHidden.value = area.value
 })
 
-var inputsDeTexto = document.querySelectorAll('input[type="text"]')
+const uNegocioHidden = document.getElementById('uNegocioHidden')
+const uNegocio = document.getElementById('uNegocio')
+
+document.addEventListener('DOMContentLoaded', ()=> {
+    uNegocioHidden.value = uNegocio.value
+})
+
+uNegocio.addEventListener('change', ()=>{
+    uNegocioHidden.value = uNegocio.value
+})
+
+let inputsDeTexto = document.querySelectorAll('input[type="text"]')
     // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
         if (input) {
@@ -256,7 +278,7 @@ var inputsDeTexto = document.querySelectorAll('input[type="text"]')
         })
     })
 
-    var inputsDeCheckbox = document.querySelectorAll('input[type="checkbox"]')
+    let inputsDeCheckbox = document.querySelectorAll('input[type="checkbox"]')
     inputsDeCheckbox.forEach(function(input) {
         if (input) {
             input.addEventListener('input', (event) => {

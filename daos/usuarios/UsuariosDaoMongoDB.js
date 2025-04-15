@@ -26,7 +26,13 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
 
     async getAllUsers() {
         try {
-            const users = await Usuarios.find()
+            const users = await Usuarios.find({
+                visible: true
+            }).sort({ 
+                timestamp: -1, // Luego ordena por "timestamp" de más reciente a más antiguo
+                modifiedOn: -1 // Luego ordena por "timestamp" de más reciente a más antiguo
+            });
+
             if (!users) {
                 return new Error ('No hay usuarios en la DB!')
                 
@@ -169,6 +175,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
             query: ['', 'noEmptyString', , 'noEmptyNumber'],
             status: ['todos', true, false],
             admin: ['todos', true, false],
+            uNegocio: ['todos', 'matrices', 'lineas'],
             area: ['todos', 'ingenieria', 'fabricacion', 'proyectos', 'administracion'],
             permiso: ['todos', 'diseno', 'simulacion', 'disenoSimulacion', 'projectManager', 'cadCam', 'mecanizado', 'ajuste']
         };
@@ -179,9 +186,11 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
             posiblesValores.status.forEach(s => {
                 posiblesValores.admin.forEach(r => {
                     posiblesValores.area.forEach(a => {
-                        posiblesValores.permiso.forEach(p => {
-                            const clave = `${q}-${s}-${r}-${a}-${p}`;
-                            combinaciones[clave] = `filterFor-${q}-${s}-${r}-${a}-${p}`;  // Aquí puedes asignar un valor específico para cada combinación
+                        posiblesValores.uNegocio.forEach(u => {
+                            posiblesValores.permiso.forEach(p => {
+                                const clave = `${q}-${s}-${r}-${a}-${u}-${p}`;
+                                combinaciones[clave] = `filterFor-${q}-${s}-${r}-${a}-${u}-${p}`;  // Aquí puedes asignar un valor específico para cada combinación
+                            });
                         });
                     });
                 });
@@ -192,14 +201,14 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
         let queryKey = ''
         if (query.queryUser != '') {
             if (!isNaN(number)) {
-                queryKey = `noEmptyNumber-todos-todos-todos-todos`;
+                queryKey = `noEmptyNumber-todos-todos-todos-todos-todos`;
 
             } else {
-                queryKey = `noEmptyString-${query.statusUser}-${query.rolUser}-${query.areaUser}-${query.permisoUser}`;
+                queryKey = `noEmptyString-${query.statusUser}-${query.rolUser}-${query.areaUser}-${query.uNegocioUser}-${query.permisoUser}`;
             }
 
         } else {
-            queryKey = `${query.queryUser}-${query.statusUser}-${query.rolUser}-${query.areaUser}-${query.permisoUser}`;
+            queryKey = `${query.queryUser}-${query.statusUser}-${query.rolUser}-${query.areaUser}-${query.uNegocioUser}-${query.permisoUser}`;
         }
         
         // Asignar el filtro basado en la clave generada
@@ -218,24 +227,6 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
             console.error("Error MongoDB getClientBySearching: ",error)
         }
     }
-
-    // async searchUsers(permiso) {
-    //     if(permiso){
-    //         try {
-    //             const users = await Usuarios.find( { permiso: `simulacion` })
-                
-    //              if (!users) {
-    //                 return false
-    //              } else {
-    //                 return users
-    //              }
-    //         } catch (error) {
-    //             console.error('Aca esta el error: ', error)
-    //         }
-    //     } else {
-    //         return console.error('Aca esta el error(permiso: invalid)')
-    //     }
-    // }
     
     async getUserByUsernameAndPassword(username, password) {
         if(username || password) {
@@ -293,6 +284,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
 
             if (!username || !password ) {
                 process.exit(1)
+
             } else {
                 try {
                     function createHash(password) {
@@ -314,13 +306,14 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                         password: password,
                         permiso: newUser.permiso,
                         area: newUser.area,
+                        uNegocio: newUser.uNegocio,
                         status: newUser.status,
                         admin: newUser.admin,
                         
                         creator: newUser.creator,
                         timestamp: newUser.timestamp,
                         modificator: newUser.modificator,
-                        modifiedOn: '',
+                        modifiedOn: newUser.timestamp,
                         visible: newUser.visible,
                         visits: 0
                     }             
@@ -533,7 +526,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                             $set: {
                                 password: newPasswordEncoded,
                                 modificator: userModificator,
-                                modifiedOn: formatDate()
+                                modifiedOn: new Date()
                             }
                         },
                         { new: true }
@@ -589,8 +582,9 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                                 status: updatedUser.status,
                                 permiso: updatedUser.permiso,
                                 area: updatedUser.area,
+                                uNegocio: updatedUser.uNegocio,
                                 modificator: userModificator,
-                                modifiedOn: formatDate()
+                                modifiedOn: new Date()
                             }
                         },
                         { new: true }
@@ -639,7 +633,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                                 email: updatedUser.email,
                                 avatar: updatedUser.avatar,
                                 modificator: userModificator,
-                                modifiedOn: formatDate()
+                                modifiedOn: new Date()
                             }
                         },
                         { new: true }
@@ -720,7 +714,7 @@ class UsuariosDaoMongoDB extends ContainerMongoDB {
                                 visible: inactive,
                                 status: inactive,
                                 modificator: userModificator,
-                                modifiedOn: formatDate()
+                                modifiedOn: new Date()
                             }
                         },
                         { new: true }

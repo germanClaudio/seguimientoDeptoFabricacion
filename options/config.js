@@ -1,5 +1,4 @@
 const options = {
-      
   mongoDB: {
     connection: {
       URL: process.env.MONGO_URL_CONNECT_PROD
@@ -15,7 +14,7 @@ const options = {
 }
 
   const sessionTime = {
-    expirateTime: 10 * 60 * 1000  //10 minutes 10 * 60 * 1000
+    expirateTime: process.env.SHORT_SESSION_TIME //10 * 60 * 1000  //10 minutes 10 * 60 * 1000
   }
 
   module.exports = {

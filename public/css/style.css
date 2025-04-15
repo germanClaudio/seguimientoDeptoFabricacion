@@ -1921,15 +1921,15 @@ td {
 }
 
 .imgLazyLoad {
-  width: 40%;
-  height: 40%; /*auto*/
+  width: 70%;
+  height: 70%; /*auto*/
   transition: opacity 0.4s ease-in-out; /* Suaviza la aparición */
   opacity: 1;
   object-fit: contain;
 }
 
 .imgLazyLoad.loaded {
-  width: 50%;
+  width: 80%;
   height: 80%; /*auto*/
   min-height: 100%;
   opacity: 1;
@@ -2184,3 +2184,7 @@ td {
 }
 
 /*---------- End Charts --------------*/
+
+[id^="show"], [id^="showCount"] {
+  transition: opacity 1.5s ease;
+}

@@ -10,23 +10,31 @@ socket.on('searchClientsAll', async (arrClientSearch) => {
 const searchClient = () => {
     const query = document.getElementById('query').value,
         status = document.getElementById('status').value,
-        proyectosRadio = document.getElementsByName('projects')
+        proyectosRadio = document.getElementsByName('projects'),
+        uNegocioRadio = document.getElementsByName('uNegocio')
+    
+    let proyectos, uNegocio
     
     for (let i=0; i<proyectosRadio.length; i++) {
-        if (proyectosRadio[i].checked) {
-            var proyectos = proyectosRadio[i].value
-        }
+        if (proyectosRadio[i].checked) proyectos = proyectosRadio[i].value
+    }
+
+    for (let i=0; i<uNegocioRadio.length; i++) {
+        if (uNegocioRadio[i].checked) uNegocio = uNegocioRadio[i].value
     }
 
     socket.emit('searchClienteAll', {
         query,
         status,
-        proyectos
+        proyectos,
+        uNegocio
     })
     return false
 }
 
 const renderSearchedClients = (arrClientSearch) => {
+    document.getElementById('showCountClientSearch').innerHTML = ''
+
     if(arrClientSearch.length === 0) {
         const htmlSearchClientNull = (
             `<div class="col mx-auto">
@@ -199,6 +207,19 @@ const renderSearchedClients = (arrClientSearch) => {
                 )
             }
         }).join(" ");
+        let mensaje = ''
+        arrClientSearch.length === 1
+        ? mensaje = `Se encontró <strong>${arrClientSearch.length}</strong> resultado.`
+        : mensaje = `Se encontraron <strong>${arrClientSearch.length}</strong> resultados.`
+
+        const htmlResultados = `<div class="row align-items-center">
+                                    <div class="col mx-auto">
+                                        <span class="my-1">${mensaje}</span>
+                                    </div>
+                                </div>`
+        
+        document.getElementById('showCountClientSearch').innerHTML = htmlResultados
+
         document.getElementById('showClientSearch').innerHTML = htmlSearchClient
     }
 }
@@ -212,25 +233,31 @@ socket.on('searchClientsNew', async (arrClientNewSearch) => {
 const searchClientNew = () => {
     const query = document.getElementById('query').value,
         status = document.getElementById('status').value,
-        proyectosRadio = document.getElementsByName('projects')
+        proyectosRadio = document.getElementsByName('projects'),
+        uNegocioRadio = document.getElementsByName('uNegocio')
+
+    let proyectos, uNegocio
     
     for (let i=0; i<proyectosRadio.length; i++) {
-        if (proyectosRadio[i].checked) {
-            var proyectos = proyectosRadio[i].value
-        }
+        if (proyectosRadio[i].checked) proyectos = proyectosRadio[i].value
+    }
+
+    for (let i=0; i<uNegocioRadio.length; i++) {
+        if (uNegocioRadio[i].checked) uNegocio = uNegocioRadio[i].value
     }
 
     socket.emit('searchClienteNew', {
         query,
         status,
-        proyectos
+        proyectos,
+        uNegocio
     })
     return false
 }
 
 const renderSearchedNewClients = (arrClientNewSearch) => {
     document.getElementById('showCountClientSearch').innerHTML = ''
-    
+
     if(arrClientNewSearch.length === 0) {
         const htmlSearchClientNewNull = (
             `<div class="col mx-auto">
@@ -417,7 +444,7 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
         }).join(" ");
 
         let mensaje = ''
-        arrClientNewSearch.length ===1
+        arrClientNewSearch.length === 1
         ? mensaje = `Se encontró <strong>${arrClientNewSearch.length}</strong> resultado.`
         : mensaje = `Se encontraron <strong>${arrClientNewSearch.length}</strong> resultados.`
         
@@ -444,21 +471,20 @@ const searchUsers = () => {
         rolUser = document.getElementById('rolUser').value
     const queryUser = document.getElementById('queryUsers').value,
         areaUser = document.getElementById('areaUser').value,
-        permisoUser = document.getElementById('permisoUser').value
+        permisoUser = document.getElementById('permisoUser').value,
+        uNegocioUser = document.getElementById('uNegocioUser').value
 
-    if (statusUser != 'todos') {
-        statusUser === 'activos' ? statusUser = true : statusUser = false
-    }
-    if (rolUser != 'todos') {
-        rolUser === 'administradores' ? rolUser = true : rolUser = false
-    }
+    if (statusUser != 'todos') statusUser === 'activos' ? statusUser = true : statusUser = false
     
+    if (rolUser != 'todos') rolUser === 'administradores' ? rolUser = true : rolUser = false
+
     socket.emit('searchUsuarioAll', {
         queryUser,
         statusUser,
         rolUser,
         areaUser,
         permisoUser,
+        uNegocioUser
     })
     return false
 }
@@ -472,10 +498,8 @@ const renderSearchedUsers = (arrUsersSearch) => {
                 <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
                     <div class="row g-0">
                         <div class="col-md-4 my-auto px-1">
-                            <img src="${clientNotFound}"
-                                style="max-width=170vw; object-fit: contain;"
-                                class="img-fluid rounded p-1"
-                                alt="Usuario no encontrado">
+                            <img src="${clientNotFound}" style="max-width=170vw; object-fit: contain;"
+                                class="img-fluid rounded p-1" alt="Usuario no encontrado">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
@@ -501,10 +525,8 @@ const renderSearchedUsers = (arrUsersSearch) => {
                 <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
                     <div class="row g-0">
                         <div class="col-md-4 my-auto px-1">
-                            <img src="${allClientsFound}"
-                                style="max-width=170vw; object-fit: contain;"
-                                class="img-fluid rounded p-1"
-                                alt="Todos los Usuarios">
+                            <img src="${allClientsFound}" style="max-width=170vw; object-fit: contain;"
+                                class="img-fluid rounded p-1" alt="Todos los Usuarios">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
@@ -533,37 +555,55 @@ const renderSearchedUsers = (arrUsersSearch) => {
                 optionAdmin = element.admin ? black : grey,
                 optionPermiso = element.permiso ? grey : red,
                 optionArea = element.area ? cian : green,
+                optionUnegocio = element.uNegocio ? black : green,
+                textUnegocio = element.uNegocio ? black : white,
+                textArea = element.uNegocio ? black : white,
+                textPermiso = element.uNegocio ? black : white,
+                textAdmin = element.admin ? white : black,
+                textStatus = element.status ? white : black,
                 showStatus = element.status ? active : inactive,
                 showAdmin = element.admin ? admin : user
 
+            const uNegocioMap = {
+                'matrices': { show: 'Matrices', option: black, text: white },
+                'lineas': { show: 'Líneas', option: blue, text: white },
+                'default': { show: 'Todos', option: green, text: white }
+            };
+
             const areaMap = {
-                'ingenieria': { show: 'Ingeniería', option: cian },
-                'fabricacion': { show: 'Fabricación', option: yellow },
-                'administracion': { show: 'Administración', option: yellow },
-                'proyectos': { show: 'Proyectos', option: yellow },
-                'default': { show: 'Todas', option: green }
+                'ingenieria': { show: 'Ingeniería', option: cian, text: black },
+                'fabricacion': { show: 'Fabricación', option: yellow, text: black },
+                'administracion': { show: 'Administración', option: yellow, text: black },
+                'proyectos': { show: 'Proyectos', option: yellow, text: black },
+                'default': { show: 'Todas', option: green, text: white }
             };
 
             const permisoMap = {
-                'diseno': { show: 'Diseño', option: cian },
-                'simulacion': { show: 'Simulación', option: yellow },
-                'disenoSimulacion': { show: 'Diseño/Simulación', option: red },
-                'cadCam': { show: 'Cad-Cam', option: grey },
-                'projectManager': { show: 'Project Manager', option: black },
-                'mecanizado': { show: 'Mecanizado', option: yellow },
-                'ajuste': { show: 'Ajuste', option: red },
-                'default': { show: 'Todos', option: blue }
+                'diseno': { show: 'Diseño', option: cian, text: black },
+                'simulacion': { show: 'Simulación', option: yellow, text: black },
+                'disenoSimulacion': { show: 'Diseño/Simulación', option: red, text: white },
+                'cadCam': { show: 'Cad-Cam', option: grey, text: white },
+                'projectManager': { show: 'Project Manager', option: black, text: white },
+                'mecanizado': { show: 'Mecanizado', option: yellow, text: black },
+                'ajuste': { show: 'Ajuste', option: red, text: white },
+                'default': { show: 'Todos', option: blue, text: white }
             };
+
+            let showUnegocio = uNegocioMap[element.uNegocio]?.show || uNegocioMap['default'].show;
+            optionUnegocio = uNegocioMap[element.uNegocio]?.option || uNegocioMap['default'].option;
+            textUnegocio = uNegocioMap[element.uNegocio]?.text || uNegocioMap['default'].text;
 
             let showArea = areaMap[element.area]?.show || areaMap['default'].show;
             optionArea = areaMap[element.area]?.option || areaMap['default'].option;
+            textArea = areaMap[element.area]?.text || areaMap['default'].text;
 
             let showPermiso = permisoMap[element.permiso]?.show || permisoMap['default'].show;
             optionPermiso = permisoMap[element.permiso]?.option || permisoMap['default'].option;
+            textPermiso = permisoMap[element.permiso]?.text || permisoMap['default'].text;
 
             let superAdmin = element.superAdmin 
                 ? '<i class="fa-solid fa-crown fa-rotate-by fa-xl" title="SuperAdmin" style="color: #a89c0d; --fa-rotate-angle: 20deg;"></i>' 
-                : null;
+                : '';
 
             element.visible && !element.superAdmin ? disabled = '' : null
 
@@ -571,34 +611,30 @@ const renderSearchedUsers = (arrUsersSearch) => {
                 <div class="col mx-auto">
                     <div class="card mx-auto rounded-2 shadow-lg" style="max-width: 540px;">
                         <div class="row align-items-center">
-                            <div class="col-md-4 text-center">
-                                <img src="${element.avatar}"
-                                    style="max-width=160vw; object-fit: contain;"
-                                    class="img-fluid rounded p-3 mx-auto"
-                                    alt="Avatar Usuario">
+                            <div class="col-md-4 text-center position-relative">
+                                <img src="${element.avatar}" style="max-width=160vw; object-fit: contain;"
+                                    class="img-fluid rounded p-3 mx-auto" alt="Avatar Usuario">
                             </div>
                             <div class="col-md-8 border-start">
                                 <div class="card-body">
                                     <h6 class="card-title"><strong>${element.name} ${element.lastName}</strong></h6>
                                     <h7 class="card-title">Legajo #<strong>${element.legajoId}</strong></h7> 
                                     <p class="card-text mb-1">Em@il: ${element.email}</p>
-                                    <p class="card-text mb-1">Username: ${element.username}</p>
-                                    Status: <span class="badge rounded-pill bg-${optionStatus} my-1">${showStatus}</span><br>
-                                    Rol: <span class="badge rounded-pill bg-${optionAdmin} my-1">${showAdmin}
-                                            <span class="position-absolute top-0 start-100 translate-middle">
-                                                ${superAdmin}
-                                            </span>
+                                    <p class="card-text mb-1">Username: <strong>${element.username}</strong></p>
+                                    Status: <span class="badge rounded-pill bg-${optionStatus} text-${textStatus} my-1">${showStatus}</span> - 
+                                    Rol: <span class="badge rounded-pill bg-${optionAdmin} text-${textAdmin} my-1 position-relative">${showAdmin}
+                                            <span class="position-absolute top-0 start-100 translate-middle">${superAdmin}</span>
                                         </span><br>
-                                    Area: <span class="badge rounded-pill bg-${optionArea} my-1">${showArea}</span><br>
-                                    Permisos: <span class="badge rounded-pill bg-${optionPermiso}">${showPermiso}</span>
+                                    Unidad de Negocio: <span class="badge rounded-pill bg-${optionUnegocio} text-${textUnegocio} my-1">${showUnegocio}</span><br>
+                                    Area: <span class="badge rounded-pill bg-${optionArea} text-${textArea} my-1">${showArea}</span><br>
+                                    Permisos: <span class="badge rounded-pill bg-${optionPermiso} text-${textPermiso}">${showPermiso}</span>
                                 </div>
                                 <div class="card-footer px-2">
                                     <div class="row">
                                         <div class="col m-auto">
                                             <a class="btn text-light small" ${disabled} type="submit" href="/api/usuarios/${element._id}"
                                                 style="background-color: #272787; font-size: .85rem; width: 15em;">
-                                                    <i class="fa-solid fa-info-circle"></i>
-                                                        Info Usuario
+                                                    <i class="fa-solid fa-info-circle"></i> Info Usuario
                                             </a>
                                         </div>
                                     </div>
@@ -1919,95 +1955,6 @@ const renderSearchedOrdenesUser = (arrOrdenesSearch) => {
 
     }
 
-    //---------------------------------------------------
-    // const extractIdNumber = (id) => id ? id.split('_').pop() : '';
-
-    // Función para actualizar estilo de cards
-    // function updateCardStyle(checkbox) {
-    //     const card = checkbox.closest("div[id^='cardRow_']");
-    //     if (checkbox.checked) {
-    //         card.style.boxShadow = '0 0 0 2px #0d6efd';
-    //         card.style.backgroundColor = 'rgba(13, 110, 253, 0.1)';
-    //     } else {
-    //         card.style.boxShadow = '';
-    //         card.style.backgroundColor = '';
-    //     }
-    // }
-
-    // Función para actualizar estilo de filas en tabla (si existe)
-    // function updateTableRowStyle(checkbox) {
-    //     const table = document.getElementById('ordenesTable');
-    //     if (!table) return;
-        
-    //     const row = checkbox.closest("tr");
-    //     if (row) {
-    //         if (checkbox.checked) {
-    //             row.style.backgroundColor = 'rgba(13, 110, 253, 0.1)';
-    //             row.style.boxShadow = '0 0 0 2px #0d6efd';
-    //         } else {
-    //             row.style.backgroundColor = '';
-    //             row.style.boxShadow = '';
-    //         }
-    //     }
-    // }
-
-    // Función global para sincronizar selección
-    // window.syncSelection = function(sourceCheckbox, isCard = true) {
-    //     // Función para extraer ID (compartida con el otro código)
-    //     const orderId = extractIdNumber(sourceCheckbox.id);
-    //     const tableCheckbox = document.getElementById(`inputCheckOrder_${orderId}`);
-    //     const cardCheckbox = document.getElementById(`cardCheckOrder_${orderId}`);
-        
-    //     // Sincronizar con el otro componente
-    //     if (isCard && tableCheckbox) {
-    //         tableCheckbox.checked = sourceCheckbox.checked;
-    //         updateTableRowStyle(tableCheckbox);
-    //     } else if (!isCard && cardCheckbox) {
-    //         cardCheckbox.checked = sourceCheckbox.checked;
-    //         updateCardStyle(cardCheckbox);
-    //     }
-        
-    //     // Actualizar contadores globales
-    //     updateGlobalSelectionState();
-    // };
-
-    // Función para actualizar estado global
-    // function updateGlobalSelectionState() {
-    //     const tableCheckboxes = document.querySelectorAll('#ordenesTable input[type="checkbox"]:checked');
-    //     const cardCheckboxes = document.querySelectorAll('.order-checkbox:checked');
-    //     const totalSelected = tableCheckboxes.length + cardCheckboxes.length;
-
-    //     // Actualizar botones y contadores
-    //     const btnCheckSelectionDownload = document.getElementById('btnCheckSelectionDownload');
-    //     const spanCheckSelecMasive = document.getElementById('spanCheckSelecMasive');
-        
-    //     if (btnCheckSelectionDownload) btnCheckSelectionDownload.disabled = totalSelected === 0;
-    //     if (spanCheckSelecMasive) {
-    //         spanCheckSelecMasive.textContent = totalSelected;
-    //         spanCheckSelecMasive.classList.toggle("bg-danger", totalSelected === 0);
-    //         spanCheckSelecMasive.classList.toggle("bg-success", totalSelected > 0);
-    //     }
-    // }
-
-    // Modificar el evento de los checkboxes de cards
-    // document.querySelectorAll('.order-checkbox').forEach(checkbox => {
-    //     checkbox.addEventListener('change', function() {
-    //         syncSelection(this, true);
-    //         updateCardStyle(this);
-    //     });
-    // });
-
-    // Modificar el "Seleccionar todos"
-    // document.getElementById('selectAllOrders')?.addEventListener('change', function() {
-    //     const isChecked = this.checked;
-    //     document.querySelectorAll('.order-checkbox').forEach(checkbox => {
-    //         checkbox.checked = isChecked;
-    //         syncSelection(checkbox, true);
-    //         updateCardStyle(checkbox);
-    //     });
-    // });
-    //--------------------------------------------------
-
     // Resto de las funciones existentes (downloadPdf, messageDeleteOrder, etc.)
     function downloadPdf(orderNumber) {
         const pdfUrl = `https://storage.googleapis.com/imagenesproyectosingenieria/upload/PdfOrders/Invoice_${orderNumber}.pdf`;
@@ -3022,13 +2969,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
+// --------------- Reset filters -------------------
+document.addEventListener('DOMContentLoaded', () => {
+    const btnResetFilters = document.getElementById('resetFilter');
+    
+    if (btnResetFilters) {
+        btnResetFilters.addEventListener('click', async () => {
+            try {
+                // Animación de fade out
+                const resultsContainers = document.querySelectorAll('[id^="show"]');
+                resultsContainers.forEach(el => el.style.opacity = '0');
 
+                // Esperar a que complete la animación
+                await new Promise(resolve => setTimeout(resolve, 1000));
 
-//TODO:
-// const deleteFilters = document.getElementById('deleteFilters')
-//     console.log('deleteFilters: ', deleteFilters)
-//     deleteFilters.addEventListener('clic', () => {
-//         document.getElementById('showCountOrdenesSearch').innerHTML = ''
-//         document.getElementById('showOrdenesSearch').innerHTML = ''
-//         console.log('document.getElementById', document.getElementById('showCountOrdenesSearch'))
-//     })
+                // Limpiar contenido
+                document.querySelectorAll('[id^="showCount"]').forEach(el => {
+                    el.innerHTML = `<div class="row align-items-center">
+                                        <div class="col mx-auto">
+                                            <span class="my-1"></span>
+                                        </div>
+                                    </div>`;
+                });
+
+                resultsContainers.forEach(el => {
+                    el.innerHTML = '';
+                    el.style.opacity = '1';
+                });
+
+                // Resetear formularios
+                document.querySelectorAll('form[data-filter-form]').forEach(f => f.reset());
+
+                // Notificación
+                await Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Filtros reseteados',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+
+            } catch (error) {
+                console.error('Error al resetear filtros:', error);
+                Swal.fire('Error', 'No se pudieron resetear los filtros', 'error');
+            }
+        });
+    }
+});

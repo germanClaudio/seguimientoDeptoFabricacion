@@ -1,10 +1,10 @@
-const socket = io.connect(),
-    offset = -3 * 60 * 60 * 1000;
-
+const socket = io.connect();
+let offset = -3 * 60 * 60 * 1000;
 let currentPage = 1;
 let itemsPerPage = 10; // Valor por defecto
 let clientesGlobales = [];
 const maxVisiblePages = 3;
+
 
 let URL_GOOGLE_STORE_LOGOCLIENTS,
     imagenLazy = `https://i.gifer.com/7GW7.gif` || '../../../src/images/upload/ConsumiblesImages/loader.gif';
@@ -228,7 +228,7 @@ const renderClientAdmin = async (arrClient, page = 1, direction = 'none') => {
                 formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
 
                 formattedDate === formattedDateModified ? formattedDateModified = '-' : null
-
+                
             if(element.visible) {
                 return (`<tr>
                             <th scope="row" class="text-center"><strong>...${idChain}</strong></th>

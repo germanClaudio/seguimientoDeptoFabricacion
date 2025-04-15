@@ -25,11 +25,22 @@
                     <input type="text" name="creatorDisable" id="creatorDisable"
                         class="form-control-plaintext text-white" value="<%=usuario.creator[0].name%>, <%=usuario.creator[0].lastName%>" disabled>    
                 </div>
+
+                <% const offset = -3 * 60 * 60 * 1000;
+                    let utcDate = new Date(usuario.timestamp),
+                    utcDateModified = new Date(usuario.modifiedOn),
+                    localDate = new Date(utcDate.getTime() + offset),
+                    localDateModified = new Date(utcDateModified.getTime() + offset),
+                    formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
+                    formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
+
+                    formattedDate === formattedDateModified ? formattedDateModified = '' : null
+                %>
                 
                 <div class="col-auto">
                     <label for="timestampDisable">Fecha Creación</label>
                     <input type="text" name="timestampDisable" id="timestampDisable"
-                        class="form-control-plaintext text-white" value="<%=usuario.timestamp%>" disabled>
+                        class="form-control-plaintext text-white" value="<%=formattedDate%>" disabled>
                 </div>
                 
                 <div class="col-auto">
@@ -47,7 +58,7 @@
                 <div class="col-auto">
                     <label for="modifiedOnDisable">Fecha Modificación</label>
                     <input type="text" name="modifiedOnDisable" id="modifiedOnDisable"
-                        class="form-control-plaintext text-white" value="<%=usuario.modifiedOn%>" disabled>
+                        class="form-control-plaintext text-white" value="<%=formattedDateModified%>" disabled>
                 </div>
             </div>
             <hr>
@@ -90,6 +101,24 @@
                         <%= areaActual.texto %>
                     </span>
                 </div>
+
+                <!-- Unidad Negocio -->
+                <div class="col-auto">
+                    <label for="areaDisable">Unidad Negocio</label><br>
+                    <% const uNegocio = {
+                            matrices: { clase: "text-bg-dark text-light", texto: "Matrices" },
+                            lineas: { clase: "text-bg-primary text-light", texto: "Líneas" },
+                            default: { clase: "text-bg-success text-light", texto: "Todos" }
+                        };
+                        const uNegocioActual = uNegocio[usuario.uNegocio] || uNegocio.default;
+                    %>
+
+                    <span name="uNegocioDisable" id="uNegocioDisable" class="badge rounded-pill <%= uNegocioActual.clase %> mt-3" 
+                        value="<%= usuario.uNegocio %>" disabled>
+                        <%= uNegocioActual.texto %>
+                    </span>
+                </div>
+
                 <!-- Rol -->
                 <%  if (usuario.admin) { %>
                     <div class="col-3 mx-5" style="background-color: #00029063;">
