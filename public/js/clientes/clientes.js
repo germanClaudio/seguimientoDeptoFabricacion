@@ -2,6 +2,7 @@ const socket = io.connect();
 let offset = -3 * 60 * 60 * 1000;
 let currentPage = 1;
 let itemsPerPage = 10; // Valor por defecto
+let selectedItemsPerPage = 10; // Valor por defecto
 let clientesGlobales = [];
 const maxVisiblePages = 3;
 
@@ -112,9 +113,6 @@ const generarControlesPaginacion = () => {
     paginationHTML += '</div>';
     return paginationHTML;
 };
-
-// Función para cambiar el número de filas por página
-let selectedItemsPerPage = 10; // Valor por defecto
 
 const cambiarItemsPorPagina = (nuevoItemsPerPage) => {
     selectedItemsPerPage = nuevoItemsPerPage; // Guardar la selección del usuario
@@ -274,7 +272,6 @@ const renderClientAdmin = async (arrClient, page = 1, direction = 'none') => {
     container.classList.remove('transition-out', 'left', 'right');
     container.classList.add('transition-in', direction);
 
-
     const clientsActiveQty = []
     for(let c=0; c<arrClient.length; c++) {
         clientesGlobales[c].visible ? clientsActiveQty.push(c) : null
@@ -320,108 +317,261 @@ const renderClientAdmin = async (arrClient, page = 1, direction = 'none') => {
     agregarSelectItemsPorPagina();
 };
 
-//----------------------- Render User -------------------------------
-const renderClientUser = (arrClient) => {
-    const arrayClient = arrClient
+// Función para generar los controles de paginación
+const generarControlesPaginacionUser = () => {
+    const totalPages = Math.ceil(clientesGlobales.length / itemsPerPage);
+    let paginationHTML = `<div class="pagination-anchor">
+                            <div class="pagination-container justify-content-center">`;
     
-    const html = arrClient.map((element) => {
-        let green = 'success', red = 'danger', text = "Activo", grey = 'secondary', black = 'dark',
-            blue = 'primary', result = resultLineas = 'S/P', colorResult = colorResultLineas = grey, colorStatus = green, idChain = element._id.substring(19)
+    // Botón Anterior
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderClientAdmin(clientesGlobales, ${currentPage - 1}, 'right')">
+            &laquo; Anterior
+        </button>`;
 
-        let userArr = []
-        function loopUserId() {
-            for (let i=0; i < element.creator.length; i++) {
-                userArr.push(
-                    element.creator[i].name,
-                    element.creator[i].lastName
-                )
-            }
-            return userArr.join('<br>')
-        }
+    // Primeros números
+    if (currentPage > maxVisiblePages + 1) {
+        paginationHTML += `
+            <button class="pagination-btn" onclick="renderClientAdmin(clientesGlobales, 1)">1</button>
+            <span class="pagination-ellipsis">...</span>`;
+    }
 
-        let modifArr = []
-        function loopModifId() {
-            for (let i=0; i < element.modificator.length; i++) {
-                modifArr.push(
-                    element.modificator[i].name,
-                    element.modificator[i].lastName
-                )
-            }
-            return modifArr.join('<br>')
+    // Números centrales
+    const start = Math.max(1, currentPage - maxVisiblePages);
+    const end = Math.min(totalPages, currentPage + maxVisiblePages);
+    
+    for (let i = start; i <= end; i++) {
+        paginationHTML += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                onclick="renderClientAdmin(clientesGlobales, ${i})">
+                ${i}
+            </button>`;
+    }
+
+    // Últimos números
+    if (currentPage < totalPages - maxVisiblePages) {
+        paginationHTML += `
+            <span class="pagination-ellipsis">...</span>
+            <button class="pagination-btn" onclick="renderClientAdmin(clientesGlobales, ${totalPages})">${totalPages}</button>`;
+    }
+
+    // Botón Siguiente
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderClientAdmin(clientesGlobales, ${currentPage + 1}, 'left')">
+            Siguiente &raquo;
+        </button>`;
+
+    paginationHTML += '</div>';
+    return paginationHTML;
+};
+
+const cambiarItemsPorPaginaUser = (nuevoItemsPerPage) => {
+    selectedItemsPerPage = nuevoItemsPerPage; // Guardar la selección del usuario
+    itemsPerPage = nuevoItemsPerPage;
+    currentPage = 1; // Reiniciar a la primera página
+    renderClientAdmin(clientesGlobales);
+};
+
+const agregarSelectItemsPorPaginaUser = () => {
+    // Crear el HTML del select y la leyenda
+    let selectHTML = `
+        Mostrando 
+        <select class="form-select small w-auto mx-2" id="itemsPerPageSelect" onchange="cambiarItemsPorPagina(parseInt(this.value))">
+            <option value="10" ${selectedItemsPerPage === 10 ? 'selected' : ''}>10</option>
+            <option value="25" ${selectedItemsPerPage === 25 ? 'selected' : ''}>25</option>
+            <option value="50" ${selectedItemsPerPage === 50 ? 'selected' : ''}>50</option>
+            <option value="100" ${selectedItemsPerPage === 100 ? 'selected' : ''}>100</option>
+            <option value="${clientesGlobales.length}" ${selectedItemsPerPage === clientesGlobales.length ? 'selected' : ''}>Todos</option>
+        </select>
+        clientes de ${clientesGlobales.length}
+    `;
+
+    const paginationContainer = document.getElementById('paginationClientes');
+    const existingSelectContainer = document.getElementById('selectContainer');
+
+    // Verificar si el contenedor de paginación existe
+    if (paginationContainer) {
+        // Si ya existe un contenedor para el select, actualizamos su contenido
+        if (existingSelectContainer) {
+            existingSelectContainer.innerHTML = selectHTML;
+        } else {
+            // Si no existe, creamos un nuevo contenedor y lo insertamos
+            const selectContainer = document.createElement('div');
+            selectContainer.id = 'selectContainer';
+            selectContainer.classList.add('row', 'align-items-center', 'justify-content-center')
+            selectContainer.innerHTML = selectHTML;
+            paginationContainer.insertAdjacentHTML('beforebegin', selectContainer.outerHTML);
         }
+    } else {
+        console.error("El contenedor de paginación no existe en el DOM.");
+    }
+};
+
+//----------------------- Render User -------------------------------
+const renderClientUser = async (arrClient, page = 1, direction = 'none') => {
+    clientesGlobales = arrClient;
+    currentPage = page;
+
+    const container = document.getElementById('mostrarClientes');
+    const pagination = document.getElementById('paginationClientes');
+    container.classList.add('transition-out', direction);
+
+    // Esperar a que termine la animación de salida
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedItems = arrClient.slice(startIndex, endIndex);
+
+    let html = '', htmlPagination = ''
+    
+    if (paginatedItems.length > 0) {
+    
+        html = arrClient.map((element) => {
+            let green = 'success', red = 'danger', text = "Activo", grey = 'secondary', black = 'dark',
+                blue = 'primary', result = resultLineas = 'S/P', colorResult = colorResultLineas = grey, colorStatus = green, idChain = element._id.substring(19)
+
+            let userArr = []
+            function loopUserId() {
+                for (let i=0; i < element.creator.length; i++) {
+                    userArr.push(
+                        element.creator[i].name,
+                        element.creator[i].lastName
+                    )
+                }
+                return userArr.join('<br>')
+            }
+
+            let modifArr = []
+            function loopModifId() {
+                for (let i=0; i < element.modificator.length; i++) {
+                    modifArr.push(
+                        element.modificator[i].name,
+                        element.modificator[i].lastName
+                    )
+                }
+                return modifArr.join('<br>')
+            }
         
-        if ( element.status === true && element.project > 0) {
-            colorStatus = green
-            colorResult = black
-            result = element.project
-        } else if ( element.status === true && element.project === 0 ) {
-            colorStatus = green
-        } else if ( element.status === false && element.project > 0 ) {
-            colorStatus = red
-            colorResult = blue
-            result = element.project
-            text = "Inactivo"
-        } else if ( element.status === false && element.project === 0 ) {
-            colorStatus = red
-            text = "Inactivo"
-        }
+            // Asignar colorStatus basado en element.status
+            colorStatus = element.status ? green : red;
 
-        if (element.projectLineas > 0) {
-            colorResultLineas = element.status ? blue : red;
-            resultLineas = element.projectLineas;
-        }
+            // Asignar colorResult y result solo si project > 0
+            if (element.project > 0) {
+                colorResult = element.status ? black : red;
+                result = element.project;
+            }
 
-        let utcDate = new Date(element.timestamp),
-            utcDateModified = new Date(element.modifiedOn),
-            localDate = new Date(utcDate.getTime() + offset),
-            localDateModified = new Date(utcDateModified.getTime() + offset),
-            formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
-            formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
+            if (element.projectLineas > 0) {
+                colorResultLineas = element.status ? blue : red;
+                resultLineas = element.projectLineas;
+            }
 
-            formattedDate === formattedDateModified ? formattedDateModified = '-' : null
+            // Asignar text solo si está inactivo
+            !element.status ? text = "Inactivo" : text
 
-        if(element.visible) {
-            return (`<tr>
-                        <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
-                        <td class="text-center" id="name_${element._id}">${element.name}</td>
-                        <td class="text-center"><a href="/api/clientes/select/${element._id}"><img id="logo_${element._id}" class="img-fluid rounded m-2" alt="Logo Cliente" src='${element.logo}' width="100px" height="80px"></a></td>
-                        <td class="text-center">${element.code}</td>
-                        <td class="text-center"><span class="badge rounded-pill bg-${colorStatus}">${text}</span></td>
-                        <td class="text-center"><span id="projectQty_${element._id}" class="badge rounded-pill bg-${colorResult}">${result}</span></td>
-                        <td class="text-center"><span id="projectLineasQty_${element._id}" class="badge rounded-pill bg-${colorResultLineas}">${resultLineas}</span></td>
-                        <td class="text-center">${loopUserId()}</td>
-                        <td class="text-center">${formattedDate}</td>
-                        <td class="text-center">${loopModifId()}</td>
-                        <td class="text-center">${formattedDateModified}</td>
-                        <td class="text-center">
-                            <div class="d-block align-items-center">
-                                <a href="/api/clientes/select/${element._id}" class="btn btn-secondary btn-sm me-1" data-toggle="tooltip" data-placement="top" title="Ver cliente ${element.name}"><i class="fa-regular fa-eye"></i></a>
-                                <a href="/api/clientes/${element._id}" class="btn btn-primary btn-sm mx-1" title="Ver proyectos cliente ${element.name}"><i class="icon-rocket"></i></a>
-                                <button type="button" class="btn btn-danger btn-sm ms-1 disabled" title="Solo Admin puede modificar esto"><i class="fa-solid fa-info-circle"></i></button>
-                            </div>
-                        </td>
-                    </tr>`)
-        }
-    }).join(" ");
+            let utcDate = new Date(element.timestamp),
+                utcDateModified = new Date(element.modifiedOn),
+                localDate = new Date(utcDate.getTime() + offset),
+                localDateModified = new Date(utcDateModified.getTime() + offset),
+                formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
+                formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
+
+                formattedDate === formattedDateModified ? formattedDateModified = '-' : null
+
+            if(element.visible) {
+                return (`<tr>
+                            <th scope="row" class="text-center"><strong>...${idChain}</strong></th>
+                            <td class="text-center" id="name_${element._id}">${element.name}</td>
+                            <td class="text-center"><a href="/api/clientes/select/${element._id}"><img id="logo_${element._id}" class="img-fluid rounded m-2" alt="Logo Cliente" src='${element.logo}' width="100px" height="80px"></a></td>
+                            <td class="text-center">${element.code}</td>
+                            <td class="text-center"><span class="badge rounded-pill bg-${colorStatus}">${text}</span></td>
+                            <td class="text-center"><span id="projectQty_${element._id}" class="badge rounded-pill bg-${colorResult}">${result}</span></td>
+                            <td class="text-center"><span id="projectLineasQty_${element._id}" class="badge rounded-pill bg-${colorResultLineas}">${resultLineas}</span></td>
+                            <td class="text-center">${loopUserId()}</td>
+                            <td class="text-center">${formattedDate}</td>
+                            <td class="text-center">${loopModifId()}</td>
+                            <td class="text-center">${formattedDateModified}</td>
+                            <td class="text-center">
+                                <div class="d-block align-items-center">
+                                    <a href="/api/clientes/select/${element._id}" class="btn btn-secondary btn-sm me-1" data-toggle="tooltip" data-placement="top" title="Ver cliente ${element.name}"><i class="fa-regular fa-eye"></i></a>
+                                    <a href="/api/clientes/${element._id}" class="btn btn-primary btn-sm mx-1" title="Ver proyectos cliente ${element.name}"><i class="icon-rocket"></i></a>
+                                    <button type="button" class="btn btn-danger btn-sm ms-1 disabled" title="Solo Admin puede modificar esto"><i class="fa-solid fa-info-circle"></i></button>
+                                </div>
+                            </td>
+                        </tr>`)
+            }
+        }).join(" ");
+
+    } else {
+        html = (`<tr>
+                    <td colspan="11">
+                        <img class="img-fluid rounded-2 my-2 shadow-lg" alt="No hay items cargados para mostrar"
+                            src='../src/images/clean_table_graphic.png' width="auto" height="auto">
+                    </td>
+                </tr>`)
+
+        document.getElementById('mostrarClientes').innerHTML = html
+    }
+
+    // Ocultar el spinner y mostrar la tabla
+    document.getElementById('loading-spinner').style.display = 'none';
+    document.getElementById('clientTable').style.display = 'block';
+    
+    container.innerHTML = html;
+    pagination.innerHTML = htmlPagination;
+    container.classList.remove('transition-out', 'left', 'right');
+    container.classList.add('transition-in', direction);
 
     document.getElementById('mostrarClientes').innerHTML = html
 
     const clientsActiveQty = []
     for(let c=0; c<arrClient.length; c++) {
-        if (arrayClient[c].visible) {
+        if (arrClient[c].visible) {
             clientsActiveQty.push(c)
         }
     }
 
     const htmlClientList = 
         ( `<caption id="capClientList">Cantidad de Clientes: ${parseInt(clientsActiveQty.length)}</caption><br>
-        <caption id="capClientDeletedList">Cantidad de Clientes Eliminados: ${parseInt(arrayClient.length - clientsActiveQty.length)}</caption>`)
+        <caption id="capClientDeletedList">Cantidad de Clientes Eliminados: ${parseInt(arrClient.length - clientsActiveQty.length)}</caption>`)
 
     document.getElementById('capClientList').innerHTML = htmlClientList
-    
-    // Ocultar el spinner y mostrar la tabla
-    document.getElementById('loading-spinner').style.display = 'none';
-    document.getElementById('clientTable').style.display = 'block';
+
+    // Remover clases de animación después de completar
+    setTimeout(() => {
+        container.classList.remove('transition-in', direction);
+    }, 500);
+
+    //------------- LazyLoad Images ------------------
+    const lazyImages = document.querySelectorAll("img[data-src]");
+    if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries, observer) => {
+            setTimeout(() => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src; // Sustituye data-src por src
+                        img.onload = () => img.classList.add("loaded");
+                        img.removeAttribute("data-src"); // Limpia el atributo
+                        observer.unobserve(img); // Deja de observar esta imagen
+                    }
+                });
+            }, 1000);
+        });
+        lazyImages.forEach(img => observer.observe(img));
+        
+    } else {
+        // Fallback para navegadores sin IntersectionObserver
+        lazyImages.forEach(img => {
+            img.src = img.dataset.src;
+        });
+    }
+
+    // Llamar a la función para agregar el select después de renderizar la tabla
+    agregarSelectItemsPorPagina();
 }
 
 // ---- mensaje confirmacion eliminar Cliente

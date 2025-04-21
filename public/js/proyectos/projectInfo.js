@@ -1,11 +1,11 @@
 //variable limite maximo de proyectos por Cliente
-const varLimMaxProyectoCliente = 25
+const varLimMaxProyectoCliente = 99
 
 //variable limite maximo de Ot por Proyecto
-const varLimMaxOtProyecto = 50
+const varLimMaxOtProyecto = 99
 
 //variable limite maximo de OCI por Proyecto
-const varLimMaxOciProyecto = 25
+const varLimMaxOciProyecto = 99
 
 //variable limite maximo de Columnas Info por Ot
 const varLimMaxColData = 20
@@ -15,8 +15,8 @@ const varLimMaxRevData = 99
 
 // Manejador de eventos de tablas General y Seguimiento -------------------
 const arrBtnHidde = []
-for (let i = 0; i<varLimMaxOciProyecto; i++) { //25
-    document.getElementById(`tablaGeneral${i}`) ? arrBtnHidde.push(i) : null
+for (let i = 0; i<varLimMaxOciProyecto; i++) {
+    if (document.getElementById(`tablaGeneral${i}`) ) arrBtnHidde.push(i)
 }
 
 function hiddeTableGeneral(k) {
@@ -72,14 +72,10 @@ function extractNumbers(str) {
     if (numbers) {
         if (numbers.length === 2) {
             // If two numbers are found, check if both are numbers
-            if (!isNaN(parseInt(numbers[0])) && !isNaN(parseInt(numbers[1]))) {
-                return numbers; // Return both numbers as an array
-            }
+            if (!isNaN(parseInt(numbers[0])) && !isNaN(parseInt(numbers[1]))) return numbers; // Return both numbers as an array
         } else if (numbers.length === 1) {
             // If only one number is found, check if it's a number
-            if (!isNaN(parseInt(numbers[0]))) {
-                return numbers[0]; // Return the single number
-            }
+            if (!isNaN(parseInt(numbers[0]))) return numbers[0]; // Return the single number
         }
     }
     return null; // Return null if no valid numbers are found
@@ -178,19 +174,18 @@ document.addEventListener('DOMContentLoaded', function (event) {
     let initIndex = event.eventPhase
     const arrayCarousel = []
     for (let i = 0; i<varLimMaxOciProyecto; i++) {
-        document.getElementById(`carouselExampleControls${i}`) ? arrayCarousel.push(i) : null
+        if (document.getElementById(`carouselExampleControls${i}`)) arrayCarousel.push(i)
     }
 
     if(arrayCarousel !=[]) {
         for (let i=0; i<arrayCarousel.length; i++) {
             let myCarousel = document.getElementById(`carouselExampleControls${arrayCarousel[i]}`)
             
-            myCarousel ?
-                initIndex === 2 ?
-                    myCarousel.querySelector('[data-bs-slide="prev"]').setAttribute('disabled', 'disabled')
-                :
-                    myCarousel.querySelector('[data-bs-slide="prev"]').removeAttribute('disabled')
-            : null
+            myCarousel
+                ? initIndex === 2
+                    ? myCarousel.querySelector('[data-bs-slide="prev"]').setAttribute('disabled', 'disabled')
+                    : myCarousel.querySelector('[data-bs-slide="prev"]').removeAttribute('disabled')
+                : null
 
             // Detectar cuando el slide cambia
             myCarousel.addEventListener('slid.bs.carousel', function (event) {
@@ -198,16 +193,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
                 let currentIndex = event.to
 
                 // Si el slide actual es el último, deshabilita el botón "Next"
-                currentIndex === slideCount - 1 ? 
-                    myCarousel.querySelector('[data-bs-slide="next"]').setAttribute('disabled', 'disabled')
-                :
-                    myCarousel.querySelector('[data-bs-slide="next"]').removeAttribute('disabled')
+                currentIndex === slideCount - 1
+                    ? myCarousel.querySelector('[data-bs-slide="next"]').setAttribute('disabled', 'disabled')
+                    : myCarousel.querySelector('[data-bs-slide="next"]').removeAttribute('disabled')
                 
                 // Si el slide actual es el primero, deshabilita el botón "Prev"
-                currentIndex === 0 ?
-                    myCarousel.querySelector('[data-bs-slide="prev"]').setAttribute('disabled', 'disabled')
-                :
-                    myCarousel.querySelector('[data-bs-slide="prev"]').removeAttribute('disabled')
+                currentIndex === 0
+                    ? myCarousel.querySelector('[data-bs-slide="prev"]').setAttribute('disabled', 'disabled')
+                    : myCarousel.querySelector('[data-bs-slide="prev"]').removeAttribute('disabled')
             })
         }
     }
@@ -267,8 +260,8 @@ buttonOne.addEventListener('click', () => {
 
 //*********** */
 tippy(btnAddNewRow, {
-    content: `<strong>Límite máximo de OT 10</strong><br>
-                Puedes agregar 9 OT's mas`,
+    content: `<strong>Límite máximo de OT 100</strong><br>
+                Puedes agregar ${varLimMaxOtProyecto} OT's mas`,
     allowHTML: true,
     maxWidth: 350,
     inlinePositioning: true,
@@ -312,12 +305,12 @@ btnAddNewRow.addEventListener('click', () => {
             </div>
             <div class="col-1">
                 <label for="otNumber${i}" id="labelOtNumber${i}">OT#</label>
-                <input type="number" name="otNumber${i}" id="otNumber${i}" class="form-control mt-3" min="0" max="9999"
+                <input type="number" name="otNumber${i}" id="otNumber${i}" class="form-control mt-3" min="1" max="19999"
                 placeholder="Número OT" value="${otNumberValue + i}">
             </div>
             <div class="col-1">
                 <label for="opNumber${i}" id="labelOpNumber${i}">OP#</label>
-                <input type="number" name="opNumber${i}" id="opNumber${i}" class="form-control mt-3" min="0" max="9999"
+                <input type="number" name="opNumber${i}" id="opNumber${i}" class="form-control mt-3" min="1" max="9999"
                 placeholder="Número OP" value="${opNumberValue + i * 10}">
             </div>
             <div class="col-2">
@@ -386,7 +379,7 @@ btnAddNewRow.addEventListener('click', () => {
         hideRemoveButton(i - 1);
     }
 
-    if (i >= 10) {
+    if (i >= varLimMaxOtProyecto) {
         btnAddNewRow.disabled = true;
     }
 
@@ -415,15 +408,15 @@ btnAddNewRow.addEventListener('click', () => {
         }
     //*************** ToolTip cantidad de OT a agregar *************** */
     let contentMessage;
-    if (i < 8) {
-        contentMessage = `<strong>Límite máximo de OT (10)</strong><br> 
-                        Puedes agregar ${9 - i} OT's más`;
-    } else if (i == 8) {
-        contentMessage = `<strong>Límite máximo de OT (10)</strong><br> 
+    if (i < (varLimMaxOtProyecto-1)) {
+        contentMessage = `<strong>Límite máximo de OT (100)</strong><br> 
+                        Puedes agregar ${varLimMaxOtProyecto - i} OT's más`;
+    } else if (i == (varLimMaxOtProyecto-1)) {
+        contentMessage = `<strong>Límite máximo de OT (100)</strong><br> 
                         Puedes agregar 1 OT más`;
     }
 
-    if (i <= 8) {
+    if (i <= (varLimMaxOtProyecto-1)) {
         tippy(btnAddNewRow, {
             content: contentMessage,
             allowHTML: true,
@@ -571,7 +564,7 @@ function removeRow(e) {
     }
 
     function tippyLabel(i, tippyFormula) {
-        let tippyContent = `<strong>Límite máximo de OT (10)</strong><br>
+        let tippyContent = `<strong>Límite máximo de OT (100)</strong><br>
                             Puedes agregar ${tippyFormula} OT's mas`
         
         tippy(btnAddNewRow, {
@@ -587,12 +580,12 @@ function removeRow(e) {
         })
     }
 
-    if (i > 1 && i <= 9) {
-        let tippyFormula = (10-i)+1
+    if (i > 1 && i <= varLimMaxOtProyecto) {
+        let tippyFormula = ((varLimMaxOtProyecto+1)-i)+1
         tippyLabel(i, tippyFormula)
 
     } else if (i == 1) {
-        let tippyFormula = 10-i
+        let tippyFormula = (varLimMaxOtProyecto+1)-i
         tippyLabel(i, tippyFormula)
     }
 }

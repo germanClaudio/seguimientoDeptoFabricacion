@@ -29,7 +29,7 @@ let duenoOciSchema = new Schema({
     },
     avatar: {
         type: String,
-        maxlength: 1000
+        maxlength: 2000
     }
 })
 
@@ -56,7 +56,7 @@ let ociProjectSchema = new Schema({
     },
     ociImage: { 
         type: String,
-        maxlength: 1000,
+        maxlength: 2000,
         default: '../../../src/images/upload/LogoClientImages/noImageFound.png'
     },
     ociOwner: [duenoOciSchema],

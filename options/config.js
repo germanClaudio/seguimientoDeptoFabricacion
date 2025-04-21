@@ -14,7 +14,7 @@ const options = {
 }
 
   const sessionTime = {
-    expirateTime: process.env.SHORT_SESSION_TIME //10 * 60 * 1000  //10 minutes 10 * 60 * 1000
+    expirateTime: 10 * 60 * 1000  //10 minutes 10 * 60 * 1000
   }
 
   module.exports = {

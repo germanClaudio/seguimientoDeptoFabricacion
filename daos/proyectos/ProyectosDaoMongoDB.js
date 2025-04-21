@@ -5,6 +5,8 @@ const ContenedorMongoDB = require('../../contenedores/containerMongoDB.js'),
     advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000},
     { dataUserCreator, dataUserModificatorEmpty, dataUserModificatorNotEmpty, dataUserOciOwnerEmpty } = require('../../utils/generateUsers.js')
 
+const { switchFilterProjects } = require('../../utils/switchFilterProjects.js')
+
 let formatDate = require('../../utils/formatDate.js')
 
 class ProyectosDaoMongoDB extends ContenedorMongoDB {
@@ -20,17 +22,22 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
     // get all Projects form DB ----------------
     async getAllProjects() {
         try {
-            const projects = await Proyectos.find()
+            const projects = await Proyectos.find({
+                visible: true
+                }).sort({ 
+                    prioProject: -1, // Luego ordena por "prio" de más reciente a más antiguo
+                    timestamp: -1 // Luego ordena por "timestamp" de más reciente a más antiguo
+            })
             
-            if (projects === undefined || projects === null) {
+            if (!projects) {
                 return new Error('No hay proyectos cargados en ningún cliente!')
 
-            } else {
+            } else {                
                 return projects
             }
 
         } catch (error) {
-            console.error("Error MongoDB getClients: ", error)
+            console.error("Error MongoDB getAllProjects: ", error)
             return new Error('No hay proyectos en la DB!')
         }
     }
@@ -56,22 +63,22 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
 
     // Get all projects from a Client by Id ----------------
     async getProjectsByClientId(id) {
-        if (id) {
-            try {
-                const project = await Proyectos.find({ 'client.0._id': id })
-                return project
-
-            } catch (error) {
-                console.error("Error MongoDB getProjectsByClientId: ", error)
-            }
-
-        } else {
+        if (!id) {
             try {
                 const project = await Proyectos.find()
                 return project
 
             } catch (error) {
-                console.error("Error MongoDB getOneClientById: ", error)
+                console.error("Error MongoDB getProjectsByClientId-Dao1: ", error)
+            }
+            
+        } else {
+            try {
+                const project = await Proyectos.find({ 'client.0._id': id })
+                return project
+
+            } catch (error) {
+                console.error("Error MongoDB getProjectsByClientId-Dao2: ", error)
             }
         }
     }
@@ -84,7 +91,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                 return project
 
             } catch (error) {
-                console.error("Error MongoDB getProjectsByClientId: ", error)
+                console.error("Error MongoDB selectProjectsByMainProjectId: ", error)
             }
 
         } else {
@@ -3264,6 +3271,45 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
             return new Error(`No se pudo eliminar el Proyecto!`)
         }
     }
+
+    async getProjectBySearching(query) {
+            let nameAndCodeQuery = [{ 'project.projectName': { $regex: `${query.query}`, $options: 'i' } }, 
+                                    { 'project.projectDescription': { $regex: `${query.query}`, $options: 'i' } }, 
+                                    { 'project.codeProject': { $regex: `${query.query}`, $options: 'i' } }]
+    
+            const { query: searchQuery, status = 'todos', uNegocio = 'todos', nivel = 'todos' } = query;
+    
+            const prefix = searchQuery === '' ? 'null' : 'notNull';
+            
+            const statusPrefix = {
+                todos: 'All',
+                activos: 'Active',
+                inactivos: 'Inactive'
+            }[status];
+    
+            const uNegocioSuffix = {
+                todos: 'All',
+                matrices: 'Matrices',
+                lineas: 'Lineas'
+            }[uNegocio];
+
+            const nivelPrefix = {
+                todos: 'All',
+                ganados: 'Ganados',
+                paraCotizar: 'ParaCotizar',
+                aRiesgo: 'ARiesgo'
+            }[nivel];
+    
+            const filter = [`${prefix}`,`${statusPrefix}`,`${uNegocioSuffix}`,`${nivelPrefix}`];
+    console.log('filter: ', filter)
+            try {
+                const resultados = await switchFilterProjects(filter, Proyectos, nameAndCodeQuery)
+                if (resultados) return resultados.length ? resultados : []
+    
+            } catch (error) {
+                console.error("Error MongoDB getProjectBySearching: ",error)
+            }
+        }
 
     async disconnet() {
         await this.disconnection

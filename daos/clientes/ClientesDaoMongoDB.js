@@ -6,7 +6,7 @@ const advancedOptions = { connectTimeoutMS: 30000, socketTimeoutMS: 45000 }
 
 const { switchFilterClients } = require('../../utils/switchFilterClients.js')
 
-const formatDate = require('../../utils/formatDate.js')
+//const formatDate = require('../../utils/formatDate.js')
 
 class ClientesDaoMongoDB extends ContenedorMongoDB {
     constructor(cnxStr) {
@@ -125,7 +125,8 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
 
                 // const clients = await Clientes.find()
                 return clients
-            }    
+            }
+            
         } catch (error) {
             console.error("Error MongoDB getClients: ",error)
             return new Error ('No hay clientes en la DB!')
@@ -136,7 +137,7 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
         const query = name.name
         try {
             const clients = await Clientes.find( {$or:[ { name: query }, { code: query } ] } ).exec()
-            if ( clients === undefined || clients === null) {
+            if (!clients) {
                 return null
             } else {
                 return clients
@@ -147,25 +148,32 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
         }
     }
 
-    async getClientById(id) {   
-        if(id){
-            
+    async getClientById(id) {
+        // console.log('id: ', id)
+        // console.log('id-typeOf: ', typeof id)
+
+        if (!id) {
+            try {
+                const clients = await Clientes.find({
+                    visible: true
+                }).sort({ 
+                    timestamp: -1, // Luego ordena por "timestamp" de más reciente a más antiguo
+                    modifiedOn: -1 // Luego ordena por "modifiedOn" de más reciente a más antiguo
+                });
+                return clients
+
+            } catch (error) {
+                console.error("Error MongoDB getClientById-Dao1: ",error)
+            }
+
+        } else {
             try {
                 const client = await Clientes.findById({_id: id })
                 // console.info('Cliente encontrado: ',client)
                 return client
 
             } catch (error) {
-                console.error("Error MongoDB getClientById-Dao: ",error)
-            }
-
-        } else {
-            try {
-                const clients = await Clientes.find()
-                return clients
-
-            } catch (error) {
-                console.error("Error MongoDB getClientById-Dao: ",error)
+                console.error("Error MongoDB getClientById-Dao2: ", error)
             }
         }
     }

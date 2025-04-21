@@ -1,3 +1,18 @@
+//variable limite maximo de proyectos por Cliente
+const varLimMaxProyectoCliente = 99
+
+//variable limite maximo de Ot por Proyecto
+const varLimMaxOtProyecto = 99
+
+//variable limite maximo de OCI por Proyecto
+const varLimMaxOciProyecto = 99
+
+//variable limite maximo de Columnas Info por Ot
+const varLimMaxColData = 20
+
+//variable limite maximo de Revisiones por dato
+const varLimMaxRevData = 99
+
 let URL_GOOGLE_STORE_IMGPROJECTS
 
 fetch('/api/config')
@@ -537,7 +552,6 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
 
         }).then((result) => {
             if (result.isConfirmed) {
-                // const form = document.getElementById('formNewProject');
                 document.getElementById('mensajeError').style.display = 'none';
                 
                 // Mostrar loader mientras se envía
@@ -556,7 +570,7 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
                     const ociNumber = parseInt(document.getElementById('ociNumber').value)
                     const projectName = document.getElementById('projectName').value
                     const formularioNewProject = document.getElementById('formNewProject')
-                    //formularioNewProject.submit()
+                    formularioNewProject.submit()
                 
                     setTimeout(() => {
                         swal.fire({
@@ -601,30 +615,6 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
                     }
                 }
 
-                // fetch(form.action, {
-                //     method: 'POST',
-                //     body: result.value.formData
-                // })
-                // .then(response => {
-                //     if (!response.ok) throw new Error('Error en el servidor');
-                //     return response.json();
-                // })
-                // .then(data => {
-                //     swal.fire({
-                //         icon: 'success',
-                //         title: `Proyecto ${result.value.projectName} creado exitosamente!`,
-                //         timer: 2000,
-                //         showConfirmButton: false
-                //     });
-                // })
-                // .catch(error => {
-                //     swal.fire({
-                //         icon: 'error',
-                //         title: 'Error al guardar el proyecto',
-                //         text: error.message
-                //     });
-                // });
-
             } else {
                 swal.fire(
                     'Proyecto no creado!',
@@ -656,17 +646,16 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
         buttonOne.addEventListener('click', () => {
             let ariaExpanded = buttonOne.getAttribute('aria-expanded')
         
-            ariaExpanded === 'true' ?
-                btnAddNewRow.removeAttribute('disabled')
-            :
-                btnAddNewRow.setAttribute('disabled', true)
+            ariaExpanded === 'true'
+            ? btnAddNewRow.removeAttribute('disabled')
+            : btnAddNewRow.setAttribute('disabled', true)
         })
     }
 
     //*********** */
     tippy(btnAddNewRow, {
-        content: `<strong>Límite máximo de OCI 5</strong><br>
-                Puedes agregar 4 OCI's mas`,
+        content: `<strong>Límite máximo de OCI ${varLimMaxOciProyecto+1}</strong><br>
+                Puedes agregar ${varLimMaxOciProyecto} OCI's mas`,
         allowHTML: true,
         maxWidth: 350,
         inlinePositioning: true,
@@ -765,7 +754,7 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
             if (i == 1) {
                 originalDiv
         
-            } else if (i !== 1 && i < 4) { //cantidad maxima de OCI en conjunto a agregar 5
+            } else if (i !== 1 && i < (varLimMaxOciProyecto-1)) { //cantidad maxima de OCI en conjunto a agregar 100
                 originalDiv
                 btnRemoveItem = document.getElementById(`btnRemoveRow${i - 1}`)
                 btnRemoveItem.style.display = 'none'
@@ -947,10 +936,10 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
             })
             
             //*************** ToolTip cantidad de OCI a agregar *************** */
-            if (i == 1 || i < 4) {
+            if (i == 1 || i < varLimMaxOciProyecto) {
                 tippy(btnAddNewRow, {
-                    content: `<strong>Límite máximo de OCI (5)</strong><br>
-                                Puedes agregar ${4-i} OCI's mas`,
+                    content: `<strong>Límite máximo de OCI (${varLimMaxOciProyecto+1})</strong><br>
+                                Puedes agregar ${varLimMaxOciProyecto-i} OCI's mas`,
                     allowHTML: true,
                     maxWidth: 350,
                     inlinePositioning: true,
@@ -960,9 +949,10 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
                     interactive: false,
                     hideOnClick: true, // Oculta el tooltip al hacer clic en cualquier lugar fuera de él
                 })
-            } else if (i == 4) {
+
+            } else if (i == varLimMaxOciProyecto) {
                 tippy(btnAddNewRow, {
-                    content: `<strong>Límite máximo de OCI (5)</strong><br>
+                    content: `<strong>Límite máximo de OCI (${varLimMaxOciProyecto+1})</strong><br>
                                 Puedes agregar 1 OCI mas`,
                     allowHTML: true,
                     maxWidth: 350,
@@ -1007,7 +997,7 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
                 if (numberIdToDelete === 1) {
                     btnAddNewRow.removeAttribute('disabled')
 
-                } else if (numberIdToDelete !== 1 && numberIdToDelete < 4) {
+                } else if (numberIdToDelete !== 1 && numberIdToDelete < varLimMaxOciProyecto) {
                     btnRemoveItem = document.getElementById(`btnRemoveRow${numberIdToDelete - 1}`)
                     btnRemoveItem.style.display = 'inline'
 
@@ -1019,10 +1009,10 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
             }
         }
         //********************** */
-        if (i > 1 && i <= 4) {
+        if (i > 1 && i <= varLimMaxOciProyecto) {
             tippy(btnAddNewRow, {
-                content: `<strong>Límite máximo de OCI (5)</strong><br>
-                            Puedes agregar ${(5-i)+1} OCI's mas`,
+                content: `<strong>Límite máximo de OCI (${varLimMaxOciProyecto+1})</strong><br>
+                            Puedes agregar ${((varLimMaxOciProyecto)-i)+1} OCI's mas`,
                 allowHTML: true,
                 maxWidth: 350,
                 inlinePositioning: true,
@@ -1032,10 +1022,11 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
                 interactive: false,
                 hideOnClick: true, // Oculta el tooltip al hacer clic en cualquier lugar fuera de él
             })
+            
         } else if (i == 1) {
             tippy(btnAddNewRow, {
-                content: `<strong>Límite máximo de OCI (5)</strong><br>
-                            Puedes agregar ${5-i} OCI's mas`,
+                content: `<strong>Límite máximo de OCI (${varLimMaxOciProyecto+1})</strong><br>
+                            Puedes agregar ${(varLimMaxOciProyecto+1)-i} OCI's mas`,
                 allowHTML: true,
                 maxWidth: 350,
                 inlinePositioning: true,
@@ -1309,6 +1300,7 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
     }
     //------------------------------------------------------------------------------
 }
+
 const btnCreateNewProjectOutSide = document.getElementById('btnNewProject'),
     btnCreateNewProject = document.getElementById('btnAddProjectToClient0')
 
@@ -1988,8 +1980,8 @@ function messageDeleteOci(
 
 let maxOciQuantity
 document.getElementById('totalOciQtyHidden')
-? maxOciQuantity = parseInt(document.getElementById('totalOciQtyHidden').value)
-: maxOciQuantity=0
+    ? maxOciQuantity = parseInt(document.getElementById('totalOciQtyHidden').value)
+    : maxOciQuantity=0
 
 let arrayBtnChangeStatusOci = [], arrayBtnUpdateOci = [], arrayBtnDeleteOci = []
 for (let m=0; m<maxOciQuantity; m++) {
@@ -2190,12 +2182,14 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
                     icon: 'success',
                     title: `OCI agregada con éxito!`
                 })
+
             } else {
                 Toast.fire({
                     icon: 'success',
                     title: `OCI's agregadas con éxito!`
                 })
             }
+
         } else {
             Swal.fire(
                 'Nueva OCI no agregada!',
@@ -2214,7 +2208,7 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
             let key = event.key;
 
             // Lista de caracteres especiales prohibidos
-            let forbiddenChars = /["$%&?¡¿^/()=!'~`´Ø\\*{}\[\]<>@]/;
+            let forbiddenChars = /["$%&?¡¿^/=!'~`´Ø\\*{}\[\]<>@]/;
 
             // Verificar si la tecla presionada es un carácter especial
             if (forbiddenChars.test(key)) {
@@ -2246,36 +2240,46 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
         fileInputNewOciFileModal0 = document.getElementById(`fileInputNewOciModal0`),
         alertSizeOciModal0 = document.getElementById('alertSizeOciModal0')
 
-    dropAreasOciFileModal0.style.width = "100%"
-    dropAreasOciFileModal0.style.height = "160px"
-    dropAreasOciFileModal0.style.border = "2px dashed #ccc"
-    dropAreasOciFileModal0.style.margin = "0 auto 0 25px"
-    dropAreasOciFileModal0.style.borderRadius = "10px"
-    dropAreasOciFileModal0.style.textAlign = "center"
-    dropAreasOciFileModal0.style.lineHeight = "40px"
-    dropAreasOciFileModal0.style.cursor = "pointer"
+        Object.assign(dropAreasOciFileModal0.style, {
+            width : "100%",
+            height : "160px",
+            border : "2px dashed #ccc",
+            margin : "0 auto 0 25px",
+            borderRadius : "10px",
+            textAlign : "center",
+            lineHeight : "40px",
+            cursor : "pointer",
+        });
 
     dropAreasOciFileModal0.addEventListener('dragover', (e) => {
         e.preventDefault()
-        dropAreasOciFileModal0.style.border = '2px dashed #77d'
-        dropAreasOciFileModal0.style.backgroundColor = '#7777dd10'
+        Object.assign(dropAreasOciFileModal0.style, {
+            border : '2px dashed #77d',
+            backgroundColor : '#7777dd10',
+        });
     })
 
     dropAreasOciFileModal0.addEventListener('dragleave', (e) => {
         e.preventDefault()
-        dropAreasOciFileModal0.style.border = '2px dashed #ccc'
-        dropAreasOciFileModal0.style.backgroundColor = '#efefef'
+        Object.assign(dropAreasOciFileModal0.style, {
+            border : '2px dashed #ccc',
+            backgroundColor : '#efefef',
+        });
     })
 
     function alertRefreshNewOciModal0() {
         btnRemoveOciImageFileModal0.style.display = 'none'
         fileInputNewOciFileModal0.value = ''
         fileInputNewOciTextFileModal0.value = ''
-        dropAreasOciFileModal0.style.border = "2px dashed #ccc"
-        dropAreasOciFileModal0.style.textAlign = "center"
-        dropAreasOciFileModal0.style.backgroundColor = '#efefef'
-        dropAreasOciFileModal0.style.display = 'block'
-        dropAreasOciFileModal0.style.fontSize = '.75em'
+
+        Object.assign(dropAreasOciFileModal0.style, {
+            border : "2px dashed #ccc",
+            textAlign : "center",
+            backgroundColor : '#efefef',
+            display : 'block',
+            fontSize : '.75em',
+        });
+
         dropAreasOciFileModal0.innerHTML = 'Seleccione una imagen para la OCI <br>Haz click o arrastra y suelta una imagen aquí'
     }
 
@@ -2295,7 +2299,6 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
         e.preventDefault()
         const file = e.dataTransfer.files[0]
         
-                    
         if (file && file.type.startsWith('image/')) {
             dropAreasOciFileModal0.style.border = '3px dashed #2d2'
             dropAreasOciFileModal0.style.backgroundColor = '#22dd2210'
@@ -2315,7 +2318,7 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
         e.preventDefault()
         const file = fileInputNewOciFileModal0.files[0]
         
-            if (file && file.type.startsWith('image/')) { 
+            if (file && file.type.startsWith('image/')) {
                 dropAreasOciFileModal0.style.border = '3px dashed #2d2'
                 dropAreasOciFileModal0.style.backgroundColor = '#22dd2210'
                     
@@ -2344,6 +2347,7 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
             reader.onload = () => {
                 dropAreasOciFileModal0.innerHTML = 
                     `<img class="m-auto mt-3" src="${reader.result}" style="max-width: 75%; max-height: 75%;">`
+
                 alertOciFileModal0.style.display = 'none'
                 alertSizeOciModal0.style.display = 'none'
             }
@@ -2429,12 +2433,13 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
                 originalDiv
                 btnAddNewOciRow.title = 'Agregar una línea de OCI'
     
-            } else if (i !== 1 && i < 4) { //cantidad maxima de OCI en conjunto a agregar 5
+            } else if (i !== 1 && i < varLimMaxOciProyecto) { //cantidad maxima de OCI en conjunto a agregar 100
                 originalDiv
                 btnRemoveNewItem = document.getElementById(`btnRemoveNewOciRow${i-1}`)
                 btnRemoveNewItem.style.display = 'none'
                 btnAddNewOciRow.title = 'Agregar una línea de OCI'
                 btnRemoveNewItem.title= 'Eliminar línea de OCI'
+
             } else {
                 btnRemoveNewItem = document.getElementById(`btnRemoveNewOciRow${i-1}`)
                 btnRemoveNewItem.style.display = 'none'
@@ -2462,12 +2467,9 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
             }
             
             //---------------------New Oci Imges behavior ------------------------------
-            let arrayDropAreasModal = [],
-                arrayBtnRemoveOciImageModal = [],
-                arrayAlertOciModal = [],
-                arrayAlertSizeOciModal = [],
-                arrayImageOciFileNameModal = [],
-                arrayFileInputNewOciModal = []
+            let arrayDropAreasModal = [], arrayBtnRemoveOciImageModal = [],
+                arrayAlertOciModal = [], arrayAlertSizeOciModal = [],
+                arrayImageOciFileNameModal = [], arrayFileInputNewOciModal = []
             
             for (let m=0; m<parseInt(ociQty.value); m++) {
                 let dropAreasOciFileModal = document.getElementById(`drop-area-ociModal${m}`),
@@ -2490,12 +2492,14 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
                 arrayBtnRemoveOciImageModal[number].style.display = 'none'
                 arrayImageOciFileNameModal[number].value = ''
 
-                arrayDropAreasModal[number].style.border = "2px dashed #ccc"
-                arrayDropAreasModal[number].style.textAlign = "center"
-                arrayDropAreasModal[number].style.backgroundColor = '#efefef'
-                arrayDropAreasModal[number].style.display = 'block'
-                arrayDropAreasModal[number].style.fontSize = '.75em'
-                arrayDropAreasModal[number].style.overflowWrap = 'break-word'
+                Object.assign(arrayDropAreasModal[number].style, {
+                    border : "2px dashed #ccc",
+                    textAlign : "center",
+                    backgroundColor : '#efefef',
+                    display : 'block',
+                    fontSize : '.75em',
+                    overflowWrap : 'break-word',
+                });
 
                 arrayDropAreasModal[number].innerHTML = 'Seleccione una imagen para la OCI <br>Haz click o arrastra y suelta una imagen aquí'
             }
@@ -2514,14 +2518,16 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
 
     
             arrayDropAreasModal.forEach(function(elemento) {
-                elemento.style.width = "100%"
-                elemento.style.height = "160px"
-                elemento.style.border = "2px dashed #ccc"
-                elemento.style.margin = "0 auto 0 25px"
-                elemento.style.borderRadius = "10px"
-                elemento.style.textAlign = "center"
-                elemento.style.lineHeight = "40px"
-                elemento.style.cursor = "pointer"
+                Object.assign(elemento.style, {
+                    width : "100%",
+                    height : "160px",
+                    border : "2px dashed #ccc",
+                    margin : "0 auto 0 25px",
+                    borderRadius : "10px",
+                    textAlign : "center",
+                    lineHeight : "40px",
+                    cursor : "pointer",
+                });
     
                 elemento.addEventListener('dragover', (e) => {
                     e.preventDefault()
@@ -2643,7 +2649,7 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
                     btnAddNewOciRow.removeAttribute('disabled')
                     btnAddNewOciRow.title = 'Agregar una línea de OCI'
 
-                } else if (numberIdToDelete !== 1 && numberIdToDelete < 4) {
+                } else if (numberIdToDelete !== 1 && numberIdToDelete < varLimMaxOciProyecto) {
                     btnRemoveNewItem = document.getElementById(`btnRemoveNewOciRow${numberIdToDelete - 1}`)
                     btnRemoveNewItem.style.display = 'inline'
                     btnRemoveNewItem.title = 'Eliminar línea de OCI'
@@ -2917,14 +2923,16 @@ function messageUpdateProject(
         alertImage = document.getElementById('alertImage'),
         alertProjectImageSize = document.getElementById('alertProjectImageSize')
     
-    dropArea.style.width = "50%"
-    dropArea.style.height = "200px"
-    dropArea.style.border = "2px dashed #ccc"
-    dropArea.style.margin = "0 auto 0 50px"
-    dropArea.style.borderRadius = "10px"
-    dropArea.style.textAlign = "center"
-    dropArea.style.lineHeight = "40px"
-    dropArea.style.cursor = "pointer"
+        Object.assign(dropArea.style, {
+            width : "50%",
+            height : "200px",
+            border : "2px dashed #ccc",
+            margin : "0 auto 0 50px",
+            borderRadius : "10px",
+            textAlign : "center",
+            lineHeight : "40px",
+            cursor : "pointer",
+        });
 
     dropArea.addEventListener('dragover', (e) => {
         e.preventDefault()
@@ -2943,13 +2951,14 @@ function messageUpdateProject(
         fileImputText.value = ''
         removeImageButton.style.display = 'none'
 
-        dropArea.style.border = "2px dashed #ccc"
-        dropArea.style.textAlign = "center"
-        dropArea.style.backgroundColor = '#fff'
-        dropArea.style.display = 'block'
-        dropArea.style.fontSize = '.85em'
-        dropArea.style.overflowWrap = 'break-word'
-
+        Object.assign(dropArea.style, {
+            border : "2px dashed #ccc",
+            textAlign : "center",
+            backgroundColor : '#fff',
+            display : 'block',
+            fontSize : '.85em',
+            overflowWrap : 'break-word',
+        });
         dropArea.innerHTML = 'Seleccione una imagen para el Proyecto <br>Haz click o arrastra y suelta una imagen aquí'
     }
 
@@ -3037,8 +3046,7 @@ function messageUpdateProject(
 }
 
 
-var arrayBtnUpdateProject = []
-let l=0
+let arrayBtnUpdateProject = [], l=0
 for (let k=0; k<projectQuantity; k++) {
     let btnUpdateProject = document.getElementById(`btnUpdateProject${k}_${l}`)
     btnUpdateProject ? arrayBtnUpdateProject.push(btnUpdateProject) : null
@@ -3198,7 +3206,7 @@ inputsDeTexto.forEach(function(input) {
         let key = event.key;
 
         // Lista de caracteres especiales prohibidos
-        let forbiddenChars = /["$%?¡¿^/()=!'~`´Ø\\*{}\[\]<>@]/;
+        let forbiddenChars = /["$%?¡¿^/=!'~`´Ø\\*{}\[\]<>@]/;
 
         // Verificar si la tecla presionada es un carácter especial
         if (forbiddenChars.test(key)) {
@@ -3278,10 +3286,9 @@ function disabledBtnAceptar () {
                 btnAceptarModal[0].style = "cursor: pointer;" 
                 
                 if (checkbox) {
-                    checkbox.checked ? 
-                    ociNumberDisabled.removeAttribute('disabled')
-                    :
-                    ociNumberDisabled.setAttribute('disabled', 'true')
+                    checkbox.checked
+                    ? ociNumberDisabled.removeAttribute('disabled')
+                    : ociNumberDisabled.setAttribute('disabled', 'true')
                 }
             })
         }        
@@ -3312,19 +3319,9 @@ function disabledBtnAceptar () {
     });
 
     // Configurar el observador para que observe los cambios en los nodos hijos del div
-    if (dropAreaUpdate) {
-        observer.observe(dropAreaUpdate, { childList: true });
-    }
-    if (dropArea) {
-        observer.observe(dropArea, { childList: true });
-    }
-    if (dropAreaProject) {
-        observer.observe(dropAreaProject, { childList: true });
-    }
-    if (dropAreaOci) {
-        observer.observe(dropAreaOci, { childList: true });
-    }
-    if (dropAreasOciFileModal0) {
-        observer.observe(dropAreasOciFileModal0, { childList: true });
-    }
+    if (dropAreaUpdate) observer.observe(dropAreaUpdate, { childList: true });
+    if (dropArea) observer.observe(dropArea, { childList: true });
+    if (dropAreaProject) observer.observe(dropAreaProject, { childList: true });
+    if (dropAreaOci) observer.observe(dropAreaOci, { childList: true });
+    if (dropAreasOciFileModal0) observer.observe(dropAreasOciFileModal0, { childList: true });
 }

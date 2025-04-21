@@ -1,11 +1,11 @@
 //variable limite maximo de proyectos por Cliente
-const varLimMaxProyectoCliente = 25
+const varLimMaxProyectoCliente = 99
 
 //variable limite maximo de Ot por Proyecto
-const varLimMaxOtProyecto = 50
+const varLimMaxOtProyecto = 99
 
 //variable limite maximo de OCI por Proyecto
-const varLimMaxOciProyecto = 25
+const varLimMaxOciProyecto = 99
 
 //variable limite maximo de Columnas Info por Ot
 const varLimMaxColData = 20
@@ -217,10 +217,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
             let myCarousel = document.getElementById(`carouselExampleControls${arrayCarousel[i]}`)
             
             myCarousel ?
-                initIndex === 2 ?
-                    myCarousel.querySelector('[data-bs-slide="prev"]').setAttribute('disabled', 'disabled')
-                :
-                    myCarousel.querySelector('[data-bs-slide="prev"]').removeAttribute('disabled')
+                initIndex === 2
+                    ? myCarousel.querySelector('[data-bs-slide="prev"]').setAttribute('disabled', 'disabled')
+                    : myCarousel.querySelector('[data-bs-slide="prev"]').removeAttribute('disabled')
             : null
 
             // Detectar cuando el slide cambia
@@ -229,16 +228,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
                 let currentIndex = event.to
 
                 // Si el slide actual es el último, deshabilita el botón "Next"
-                currentIndex === slideCount - 1 ?
-                    myCarousel.querySelector('[data-bs-slide="next"]').setAttribute('disabled', 'disabled')
-                :
-                    myCarousel.querySelector('[data-bs-slide="next"]').removeAttribute('disabled')
+                currentIndex === slideCount - 1
+                    ? myCarousel.querySelector('[data-bs-slide="next"]').setAttribute('disabled', 'disabled')
+                    : myCarousel.querySelector('[data-bs-slide="next"]').removeAttribute('disabled')
                 
                 // Si el slide actual es el primero, deshabilita el botón "Prev"
-                currentIndex === 0 ?
-                    myCarousel.querySelector('[data-bs-slide="prev"]').setAttribute('disabled', 'disabled')
-                :
-                    myCarousel.querySelector('[data-bs-slide="prev"]').removeAttribute('disabled')
+                currentIndex === 0
+                    ? myCarousel.querySelector('[data-bs-slide="prev"]').setAttribute('disabled', 'disabled')
+                    : myCarousel.querySelector('[data-bs-slide="prev"]').removeAttribute('disabled')
             })
         }
     }
@@ -298,8 +295,8 @@ buttonOne.addEventListener('click', () => {
 
 //*********** */
 tippy(btnAddNewRow, {
-    content: `<strong>Límite máximo de OT 10</strong><br>
-                Puedes agregar 9 OT's mas`,
+    content: `<strong>Límite máximo de OT (${varLimMaxOtProyecto+1})</strong><br>
+                Puedes agregar ${varLimMaxOtProyecto} OT's mas`,
     allowHTML: true,
     maxWidth: 350,
     inlinePositioning: true,
@@ -342,7 +339,7 @@ btnAddNewRow.addEventListener('click', () => {
             </div>
             <div class="col-1">
                 <label for="otNumber${i}" id="labelOtNumber${i}">OT#</label>
-                <input type="number" name="otNumber${i}" id="otNumber${i}" class="form-control mt-3" min="0" max="9999"
+                <input type="number" name="otNumber${i}" id="otNumber${i}" class="form-control mt-3" min="0" max="19999"
                 placeholder="Número OT" value="${otNumberValue + i}">
             </div>
             <div class="col-1">
@@ -414,17 +411,16 @@ btnAddNewRow.addEventListener('click', () => {
 
     // Lógica principal
     if (i !== 1) hideRemoveButton(i - 1);
-    if (i >= 10) btnAddNewRow.disabled = true;
+    if (i >= (varLimMaxOtProyecto+1)) btnAddNewRow.disabled = true;
 
     const newDiv = document.createElement('div');
     newDiv.setAttribute('class', 'row my-2');
     newDiv.id = `otItemRow${i}`;
 
     // Configurar el contenido del nuevo div según el valor de i
-    i === 1 ?
-        newDiv.innerHTML = `<hr class="my-2"> ${originalDiv} <hr class="my-2">`
-    :
-        newDiv.innerHTML = i === 10 ? originalDiv : originalDiv + `<hr class="my-2">`
+    i === 1
+    ? newDiv.innerHTML = `<hr class="my-2"> ${originalDiv} <hr class="my-2">`
+    : newDiv.innerHTML = i === (varLimMaxOtProyecto+1) ? originalDiv : originalDiv + `<hr class="my-2">`
     
     parentDiv.appendChild(newDiv)
     const otQty = document.getElementById("otQuantity")
@@ -443,15 +439,15 @@ btnAddNewRow.addEventListener('click', () => {
 
     //*************** ToolTip cantidad de OT a agregar *************** */
     let contentMessage;
-    if (i < 8) {
-        contentMessage = `<strong>Límite máximo de OT (10)</strong><br> 
-                        Puedes agregar ${9 - i} OT's más`;
-    } else if (i == 8) {
-        contentMessage = `<strong>Límite máximo de OT (10)</strong><br> 
+    if (i < (varLimMaxOtProyecto-1)) {
+        contentMessage = `<strong>Límite máximo de OT (${varLimMaxOtProyecto+1})</strong><br> 
+                        Puedes agregar ${varLimMaxOtProyecto - i} OT's más`;
+    } else if (i == (varLimMaxOtProyecto-1)) {
+        contentMessage = `<strong>Límite máximo de OT (${varLimMaxOtProyecto+1})</strong><br> 
                         Puedes agregar 1 OT más`;
     }
 
-    if (i <= 8) {
+    if (i <= (varLimMaxOtProyecto-1)) {
         tippy(btnAddNewRow, {
             content: contentMessage,
             allowHTML: true,
@@ -585,7 +581,7 @@ function removeRow(e) {
             if (numberIdToDelete === 1) {
                 btnAddNewRow.removeAttribute('disabled')
 
-            } else if (numberIdToDelete !== 1 && numberIdToDelete < 9) {
+            } else if (numberIdToDelete !== 1 && numberIdToDelete < varLimMaxOtProyecto) {
                 btnRemoveItem = document.getElementById(`btnRemoveRow${numberIdToDelete - 1}`)
                 btnRemoveItem.style.display = 'inline'
                 btnAddNewRow.removeAttribute('disabled')
@@ -599,7 +595,7 @@ function removeRow(e) {
     }
 
     function tippyLabel(i, tippyFormula) {
-        let tippyContent = `<strong>Límite máximo de OT (10)</strong><br>
+        let tippyContent = `<strong>Límite máximo de OT (${varLimMaxOtProyecto+1})</strong><br>
                             Puedes agregar ${tippyFormula} OT's mas`
         
         tippy(btnAddNewRow, {
@@ -615,12 +611,12 @@ function removeRow(e) {
         })
     }
 
-    if (i > 1 && i <= 9) {
-        let tippyFormula = (10-i)+1
+    if (i > 1 && i <= varLimMaxOtProyecto) {
+        let tippyFormula = ((varLimMaxOtProyecto+1)-i)+1
         tippyLabel(i, tippyFormula)
 
     } else if (i == 1) {
-        let tippyFormula = 10-i
+        let tippyFormula = (varLimMaxOtProyecto+1)-i
         tippyLabel(i, tippyFormula)
     }
 }
@@ -660,7 +656,7 @@ function lastOtNumberFn(i) {
             n--
         } else if (k > 0) {
             k--
-            n = 24
+            n = varLimMaxOciProyecto-1
         } else {
             break;
         }
@@ -726,16 +722,18 @@ function messageAddDetalleOt(
     statusOtDetalle,
     otDescription
 ) {
-    let numberKOci = parseInt(ociKNumber)
-    let numberOci = parseInt(ociNumber)
-    let numberKOt = parseInt(otKNumber)
-    let numberOt = parseInt(otNumber)
-    let numberOp = parseInt(opNumber)
-    let checked = 'checked'
+    let numberKOci = parseInt(ociKNumber),
+        numberOci = parseInt(ociNumber),
+        numberKOt = parseInt(otKNumber),
+        numberOt = parseInt(otNumber),
+        numberOp = parseInt(opNumber),
+        checked = 'checked'
     statusOtDetalle=='Activo' ? checked : checked = ''
 
     let bgColorStatus
-    statusOtDetalle=='Activo' ? bgColorStatus='background-color: #55dd5560;' : bgColorStatus='background-color: #dd555560;'
+    statusOtDetalle=='Activo'
+        ? bgColorStatus='background-color: #55dd5560;'
+        : bgColorStatus='background-color: #dd555560;'
 
     const Toast = Swal.mixin({
         toast: true,
@@ -829,14 +827,13 @@ function messageAddDetalleOt(
                 })
 
             } else {
-                numeroOtDetalle ?
-                    Swal.fire(
+                numeroOtDetalle
+                    ? Swal.fire(
                         `Ítem #<b>${numberOt}.${numeroOtDetalle}</b> no se creó!`,
                         `El ítem #${numberOt}.${numeroOtDetalle}, no se creó correctamente!`,
                         'warning'
                     )
-                :
-                    Swal.fire(
+                    : Swal.fire(
                         `Ítem #<b>${numberOt}</b> no se creó!`,
                         `El ítem de la OT#${numberOt}, no se creó correctamente!`,
                         'warning'
@@ -848,8 +845,8 @@ function messageAddDetalleOt(
 
     } else {
         let numeroOtDetalle = document.getElementById('numeroOtDetalle').value
-        numeroOtDetalle ?
-            Swal.fire({
+        numeroOtDetalle
+            ? Swal.fire({
                 title: 'Error',
                 position: 'center',
                 timer: 3500,
@@ -858,8 +855,7 @@ function messageAddDetalleOt(
                 showCancelButton: false,
                 showConfirmButton: false,
             })
-            :
-            Swal.fire({
+            : Swal.fire({
                 title: 'Error',
                 position: 'center',
                 timer: 3500,
@@ -870,9 +866,9 @@ function messageAddDetalleOt(
             })
     }
 
-    let inputsDeTexto = document.querySelectorAll('input[type="text"]')
-    let inputNumeroOtDetalle = document.getElementById('numeroOtDetalle')
-    let swal2Title = document.getElementById('swal2-title')
+    let inputsDeTexto = document.querySelectorAll('input[type="text"]'),
+        inputNumeroOtDetalle = document.getElementById('numeroOtDetalle'),
+        swal2Title = document.getElementById('swal2-title')
 
     // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
@@ -1020,14 +1016,13 @@ function messageModalAddDetallesOt(idProjectSelected, clientId,  arrayIdOciOt, a
                 })
                 
             } else {
-                numeroOtDetalle ?
-                    Swal.fire(
+                numeroOtDetalle
+                    ? Swal.fire(
                         `Ítem #<b>${numeroOt}.${numeroOtDetalle}</b> no se creó!`,
                         `El ítem #${numeroOt}.${numeroOtDetalle}, no se creó correctamente!`,
                         'warning'
                     )
-                :
-                    Swal.fire(
+                    : Swal.fire(
                         `Ítem #<b>${numeroOt}</b> no se creó!`,
                         `El ítem de la OT#${numeroOt}, no se creó correctamente!`,
                         'warning'
@@ -1039,8 +1034,8 @@ function messageModalAddDetallesOt(idProjectSelected, clientId,  arrayIdOciOt, a
 
     } else {
         let numeroOtDetalle = document.getElementById('numeroOtDetalle').value
-        numeroOtDetalle ?
-            Swal.fire({
+        numeroOtDetalle
+            ? Swal.fire({
                 title: 'Error',
                 position: 'center',
                 timer: 3500,
@@ -1049,8 +1044,7 @@ function messageModalAddDetallesOt(idProjectSelected, clientId,  arrayIdOciOt, a
                 showCancelButton: false,
                 showConfirmButton: false,
             })
-            :
-            Swal.fire({
+            : Swal.fire({
                 title: 'Error',
                 position: 'center',
                 timer: 3500,
@@ -1566,13 +1560,13 @@ function messageUpdateOtDetalle(
     detalleIdSelected
     ) {
     
-    let numberKOci = parseInt(ociKNumber)
-    let numberOci = parseInt(ociNumber)
-    let numberKOt = parseInt(otKNumber)
-    let numberOt = parseInt(otNumber)
-    let numberKDetail = parseInt(detailKNumber)
-    let numberOp = parseInt(opNumber)
-    let checked = 'checked'
+    let numberKOci = parseInt(ociKNumber),
+        numberOci = parseInt(ociNumber),
+        numberKOt = parseInt(otKNumber),
+        numberOt = parseInt(otNumber),
+        numberKDetail = parseInt(detailKNumber),
+        numberOp = parseInt(opNumber),
+        checked = 'checked'
     statusOtDetalle==='Activo' ? checked : checked = ''
 
     let bgColorStatus
@@ -1726,11 +1720,11 @@ function messageChangeOtDetalleStatus(
     otDetalleDescripcion,
     detalleIdSelected
 ) {
-    let numberKOci = parseInt(ociKNumber)
-    let numberKOt = parseInt(otKNumber)
-    let numberOt = parseInt(otNumber)
-    let numberKDetail = parseInt(detailKNumber)
-    let checked = 'checked'
+    let numberKOci = parseInt(ociKNumber),
+        numberKOt = parseInt(otKNumber),
+        numberOt = parseInt(otNumber),
+        numberKDetail = parseInt(detailKNumber),
+        checked = 'checked'
     statusOtDetalle==='Activo' ? checked : checked = ''
     
     const Toast = Swal.mixin({
@@ -1798,11 +1792,11 @@ function messageDeleteOtDetalle(
     detalleIdSelected
     ) {
 
-    let numberKOci = parseInt(ociKNumber)
-    let numberKOt = parseInt(otKNumber)
-    let numberOt = parseInt(otNumber)
-    let numberKDetail = parseInt(detailKNumber)
-    let checked = 'checked'
+    let numberKOci = parseInt(ociKNumber),
+        numberKOt = parseInt(otKNumber),
+        numberOt = parseInt(otNumber),
+        numberKDetail = parseInt(detailKNumber),
+        checked = 'checked'
     statusOtDetalle==='Activo' ? checked : checked = ''
 
     const Toast = Swal.mixin({
@@ -1955,11 +1949,11 @@ arrayBtnAddDetallesOt.forEach(function(elemento) {
                 otDescription = arrayValueBtn[3]
             }
             
-            const idProjectSelected = document.getElementById('projectIdHidden').value
-            const clientId = document.getElementById(`clientIdHidden`).value
-            const ociKNumber = parseInt(arrayOciOtSelected[0])
-            const ociNumber = parseInt(document.getElementById(`ociNumber${ociKNumber}`).textContent)
-            const otKNumber = parseInt(arrayOciOtSelected[1])
+            const idProjectSelected = document.getElementById('projectIdHidden').value,
+                clientId = document.getElementById(`clientIdHidden`).value,
+                ociKNumber = parseInt(arrayOciOtSelected[0]),
+                ociNumber = parseInt(document.getElementById(`ociNumber${ociKNumber}`).textContent),
+                otKNumber = parseInt(arrayOciOtSelected[1])
 
             //console.log(idProjectSelected, ociKNumber, ociNumber, otNumber, otKNumber, opNumber, statusOt, otDescription)
 
@@ -2090,18 +2084,18 @@ arrayBtnUpdateOtDetalle.forEach(function(elemento) {
             // console.log('filteredRowsNodes: ', filteredRowsNodes)
             let idOciOtDet = filteredRowsNodes[filteredRowsNodes.length-1].id.replace(regexRows, '')
             
-            const idProjectSelected = document.getElementById('projectIdHidden').value
-            const ociKNumber = parseInt(arrayOciOtSelected[0])
-            const ociNumber = document.getElementById(`ociNumber${ociKNumber}`).textContent
-            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOciOtDet}`).textContent)
-            const otKNumber = parseInt(arrayOciOtSelected[1])       
-            const opNumber = parseInt(document.getElementById(`lastOpNumber${idOciOtDet}`).textContent)
-            const statusOt = document.getElementById(`statusDetalle${idOciOtDet}`).textContent
-            const opDescription = document.getElementById(`lastOpDescription${idOciOtDet}`).textContent
-            const otDetail =  document.getElementById(`numeroDetalle${idOciOtDet}`).textContent
-            const detailKNumber = parseInt(arrayOciOtSelected[2])
-            const detailDescription =  document.getElementById(`descripcionDetalle${idOciOtDet}`).textContent
-            const detailIdSelected = document.getElementById(`detalleIdHidden${idOciOtDet}`).textContent
+            const idProjectSelected = document.getElementById('projectIdHidden').value,
+                ociKNumber = parseInt(arrayOciOtSelected[0]),
+                ociNumber = document.getElementById(`ociNumber${ociKNumber}`).textContent,
+                otNumber = parseInt(document.getElementById(`lastOtNumber${idOciOtDet}`).textContent),
+                otKNumber = parseInt(arrayOciOtSelected[1]),
+                opNumber = parseInt(document.getElementById(`lastOpNumber${idOciOtDet}`).textContent),
+                statusOt = document.getElementById(`statusDetalle${idOciOtDet}`).textContent,
+                opDescription = document.getElementById(`lastOpDescription${idOciOtDet}`).textContent,
+                otDetail =  document.getElementById(`numeroDetalle${idOciOtDet}`).textContent,
+                detailKNumber = parseInt(arrayOciOtSelected[2]),
+                detailDescription =  document.getElementById(`descripcionDetalle${idOciOtDet}`).textContent,
+                detailIdSelected = document.getElementById(`detalleIdHidden${idOciOtDet}`).textContent
             
             messageUpdateOtDetalle(
                 idProjectSelected,
@@ -2141,15 +2135,15 @@ arrayBtnChangeStatusOtDetalle.forEach(function(elemento) {
 
             let idOciOtDet = filteredRowsNodes[filteredRowsNodes.length-1].id.replace(regexRows, '')
             
-            const idProjectSelected = document.getElementById('projectIdHidden').value
-            const ociKNumber = parseInt(arrayOciOtSelected[0])
-            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOciOtDet}`).textContent)
-            const otKNumber = parseInt(arrayOciOtSelected[1])       
-            const statusOt = document.getElementById(`statusDetalle${idOciOtDet}`).textContent
-            const otDetail =  document.getElementById(`numeroDetalle${idOciOtDet}`).textContent
-            const detailKNumber = parseInt(arrayOciOtSelected[2])
-            const detailDescription =  document.getElementById(`descripcionDetalle${idOciOtDet}`).textContent
-            const detailIdSelected = document.getElementById(`detalleIdHidden${idOciOtDet}`).textContent
+            const idProjectSelected = document.getElementById('projectIdHidden').value,
+                ociKNumber = parseInt(arrayOciOtSelected[0]),
+                otNumber = parseInt(document.getElementById(`lastOtNumber${idOciOtDet}`).textContent),
+                otKNumber = parseInt(arrayOciOtSelected[1]),
+                statusOt = document.getElementById(`statusDetalle${idOciOtDet}`).textContent,
+                otDetail =  document.getElementById(`numeroDetalle${idOciOtDet}`).textContent,
+                detailKNumber = parseInt(arrayOciOtSelected[2]),
+                detailDescription =  document.getElementById(`descripcionDetalle${idOciOtDet}`).textContent,
+                detailIdSelected = document.getElementById(`detalleIdHidden${idOciOtDet}`).textContent
             
             messageChangeOtDetalleStatus(
                 idProjectSelected,
@@ -2186,15 +2180,15 @@ arrayBtnDeleteOtDetalle.forEach(function(elemento) {
             // console.log('filteredRowsNodes: ', filteredRowsNodes)
             let idOciOtDet = filteredRowsNodes[filteredRowsNodes.length-1].id.replace(regexRows, '')
             
-            const idProjectSelected = document.getElementById('projectIdHidden').value
-            const ociKNumber = parseInt(arrayOciOtSelected[0])
-            const otNumber = parseInt(document.getElementById(`lastOtNumber${idOciOtDet}`).textContent)
-            const otKNumber = parseInt(arrayOciOtSelected[1])       
-            const statusDetalle = document.getElementById(`statusDetalle${idOciOtDet}`).textContent
-            const otDetail =  document.getElementById(`numeroDetalle${idOciOtDet}`).textContent
-            const detailKNumber = parseInt(arrayOciOtSelected[2])
-            const detailDescription =  document.getElementById(`descripcionDetalle${idOciOtDet}`).textContent
-            const detailIdSelected = document.getElementById(`detalleIdHidden${idOciOtDet}`).textContent
+            const idProjectSelected = document.getElementById('projectIdHidden').value,
+                ociKNumber = parseInt(arrayOciOtSelected[0]),
+                otNumber = parseInt(document.getElementById(`lastOtNumber${idOciOtDet}`).textContent),
+                otKNumber = parseInt(arrayOciOtSelected[1]),
+                statusDetalle = document.getElementById(`statusDetalle${idOciOtDet}`).textContent,
+                otDetail =  document.getElementById(`numeroDetalle${idOciOtDet}`).textContent,
+                detailKNumber = parseInt(arrayOciOtSelected[2]),
+                detailDescription =  document.getElementById(`descripcionDetalle${idOciOtDet}`).textContent,
+                detailIdSelected = document.getElementById(`detalleIdHidden${idOciOtDet}`).textContent
             
             messageDeleteOtDetalle(
                 idProjectSelected,
@@ -2228,10 +2222,9 @@ arrayCheckBoxSelect.forEach(function(element) {
         updateBtnCheckSelecMasive(idOci)
 
         for (let q=0; q<rowSelectCheck.length; q++) { //7
-            rowSelectCheck[q] && rowSelectCheck[q].style.cssText === "height: 5vh;" ?
-                rowSelectCheck[q].setAttribute('style', "height: 5vh; background-color: #c4f0fd;")
-            :
-                rowSelectCheck[q].setAttribute('style', "height: 5vh;")
+            rowSelectCheck[q] && rowSelectCheck[q].style.cssText === "height: 5vh;"
+                ? rowSelectCheck[q].setAttribute('style', "height: 5vh; background-color: #c4f0fd;")
+                : rowSelectCheck[q].setAttribute('style', "height: 5vh;")
         }
     })
 })
@@ -2271,7 +2264,9 @@ arrayBtnCheckSelectionAll.forEach(function(element) {
             const seleccionarTodasFilas = () => {
                 arrQueryRows.forEach(nodeList => {
                     nodeList.forEach(element => {
-                        element.style = seleccionarFilas ? "height: 5vh;" : "height: 5vh; background-color: rgb(196, 240, 253);";
+                        element.style = seleccionarFilas
+                            ? "height: 5vh;"
+                            : "height: 5vh; background-color: rgb(196, 240, 253);";
                     });
                 });
                 seleccionarFilas = !seleccionarFilas;
@@ -2380,9 +2375,9 @@ async function cargarUsuario(idPermiso, idPermisoNumero) {
             throw new Error(`Error en la solicitud`);
         }
 
-        const users = await response.json();
-        const arrayUsuariosEspecificos = [];
-        const arrayUsersAll = [];
+        const users = await response.json(),
+            arrayUsuariosEspecificos = [],
+            arrayUsersAll = [];
 
         if (users && users.length > 0) {
             users.forEach((user, i) => {
@@ -2442,9 +2437,9 @@ async function cargarUsuario(idPermiso, idPermisoNumero) {
                     inputUserSelected.value = radioSelected.value;
 
                 } else {
-                    const titulo = 'Usuario no seleccionado'
-                    const message = 'No ha seleccionado ningún usuario!'
-                    const icon = 'warning'
+                    const titulo = 'Usuario no seleccionado',
+                        message = 'No ha seleccionado ningún usuario!',
+                        icon = 'warning'
                     messageAlertUser(titulo, message, icon)
                 }
             });
@@ -2454,9 +2449,9 @@ async function cargarUsuario(idPermiso, idPermisoNumero) {
         }
 
     } catch (error) {
-        const titulo = 'Error'
-        const message = `${error}`
-        const icon = 'error'
+        const titulo = 'Error',
+            message = `${error}`,
+            icon = 'error'
         messageAlertUser(titulo, message, icon)
     }
     disabledBtnAceptar()
@@ -2576,9 +2571,9 @@ async function cargarProveedor(idPermiso, idPermisoNumero) {
         }
 
     } catch (error) {
-        const titulo = 'Error'
-        const message = `${error}`
-        const icon = 'error'
+        const titulo = 'Error',
+            message = `${error}`,
+            icon = 'error'
         messageAlertUser(titulo, message, icon)
     }
     disabledBtnAceptar()
@@ -2602,9 +2597,9 @@ arrayBtnSearchDesignerUser.forEach(function(element) {
                 await cargarUsuario(idPermiso, idPermisoNumero);
 
             } catch (error) {
-                const titulo = 'Error al cargar los usuarios'
-                const message = error
-                const icon = 'error'
+                const titulo = 'Error al cargar los usuarios',
+                    message = error,
+                    icon = 'error'
                 messageAlertUser(titulo, message, icon)
             }
         }, { once: true });
@@ -2629,9 +2624,9 @@ arrayBtnSearchSimulationUser.forEach(function(element) {
                 await cargarUsuario(idPermiso, idPermisoNumero);
 
             } catch (error) {
-                const titulo = 'Error al cargar los usuarios'
-                const message = error
-                const icon = 'error'
+                const titulo = 'Error al cargar los usuarios',
+                    message = error,
+                    icon = 'error'
                 messageAlertUser(titulo, message, icon)
             }
         }, { once: true });
@@ -2656,9 +2651,9 @@ arrayBtnSearchSupplier.forEach(function(element) {
                 await cargarProveedor(idPermiso, idPermisoNumero);
 
             } catch (error) {
-                const titulo = 'Error al cargar los proveedores'
-                const message = error
-                const icon = 'error'
+                const titulo = 'Error al cargar los proveedores',
+                    message = error,
+                    icon = 'error'
                 messageAlertUser(titulo, message, icon)
             }
         }, { once: true });
@@ -2765,10 +2760,10 @@ btnCreateNewOt.addEventListener('click', (event) => {
 
 //---------- Obtiene la lista de OT e Items ------------
 function getOtList(i) {
-    const parentDiv = document.getElementById(`tablaGeneral${i}`);
-    const tableBody = parentDiv.lastElementChild;
-    const lastChild = tableBody.childElementCount;
-    const k = i;
+    const parentDiv = document.getElementById(`tablaGeneral${i}`),
+        tableBody = parentDiv.lastElementChild,
+        lastChild = tableBody.childElementCount,
+        k = i;
 
     // Función auxiliar para obtener el texto de un elemento si existe
     const getElementText = id => document.getElementById(id)?.innerText || null;
@@ -2790,10 +2785,10 @@ function getOtList(i) {
     for (let n = 0; n < lastChild; n++) {
         for (let o = 0; o < lastChild; o++) {
             mappings.forEach(({ prefix, array, isDetalle, isOt }) => {
-                const id = `${prefix}${k}_${n}_${o}`;
-                const text = getElementText(id);
-                const checkId = `checkSelect${k}_${n}_${o}`;
-                const selectCheck = document.getElementById(checkId);
+                const id = `${prefix}${k}_${n}_${o}`,
+                    text = getElementText(id),
+                    checkId = `checkSelect${k}_${n}_${o}`,
+                    selectCheck = document.getElementById(checkId);
 
                 selectCheck?.checked ? arraySelectedCheck.push(`${k}_${n}_${o}`) : null
 
@@ -2842,12 +2837,11 @@ function getOtList(i) {
 
 //---------- Obtiene los valores de la lista de OT ------------
 function getOtListValues(i, idTabla, qInicial, qFinal) {
-    const parentDiv = document.getElementById(idTabla);
-    const tableBody = parentDiv.lastElementChild;
-    const lastChild = parseInt(tableBody.childElementCount);
-
-    const qInicialX = parseInt(qInicial);
-    const qFinalX = parseInt(qFinal);
+    const parentDiv = document.getElementById(idTabla),
+        tableBody = parentDiv.lastElementChild,
+        lastChild = parseInt(tableBody.childElementCount),
+        qInicialX = parseInt(qInicial),
+        qFinalX = parseInt(qFinal);
     let k = i;
     
     const arrays = {
@@ -2891,10 +2885,10 @@ function getOtListValues(i, idTabla, qInicial, qFinal) {
     for (let n = 0; n < lastChild; n++) {
         for (let o = 0; o < lastChild; o++) {
             for (let q = qInicialX; q < qFinalX; q++) {
-                const resHidden = document.getElementById(`resHidden${k}_${n}_${o}_${q}`);
-                const resDatoHidden = document.getElementById(`resDatoHidden${k}_${n}_${o}_${q}`);
-                const resEstadoHidden = document.getElementById(`resEstadoHidden${k}_${n}_${o}_${q}`);
-                const resRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${o}_${q}`);
+                const resHidden = document.getElementById(`resHidden${k}_${n}_${o}_${q}`),
+                    resDatoHidden = document.getElementById(`resDatoHidden${k}_${n}_${o}_${q}`),
+                    resEstadoHidden = document.getElementById(`resEstadoHidden${k}_${n}_${o}_${q}`),
+                    resRevisionHidden = document.getElementById(`resRevisionHidden${k}_${n}_${o}_${q}`);
                 
                 let otHidden, otRevisionHidden, estadoDetalleHidden, otInfo, otRevision, estadoInfo;
                 let flag = 0;
@@ -3134,14 +3128,14 @@ const cabeceraFormulario = `
     </div>`
 
 function datosCabeceraFormulario (
-            arrayOtDetalleStatus, 
-            y, 
-            arrayOtNumber, 
-            arrayOpNumber,
-            arrayOtDetalle,
-            arrayDescripcionDetalle,
-            arrayOnumber,
-            arrayDetalleId
+        arrayOtDetalleStatus, 
+        y, 
+        arrayOtNumber, 
+        arrayOpNumber,
+        arrayOtDetalle,
+        arrayDescripcionDetalle,
+        arrayOnumber,
+        arrayDetalleId
     ) {
 
     const datosCabecera = 
@@ -3230,9 +3224,9 @@ function swalFireAlert (
             resultadoElement.classList.add('listDetailNum')
         })
         
-        let htmlLista = resultadoElement.outerHTML;
-        let outputOk = `La información ${titulo}, fue agregada a los ítems: ${htmlLista}`
-        let outputNok = `La información ${titulo}, no fue agregada a los ítems: ${htmlLista}`
+        let htmlLista = resultadoElement.outerHTML,
+            outputOk = `La información ${titulo}, fue agregada a los ítems: ${htmlLista}`,
+            outputNok = `La información ${titulo}, no fue agregada a los ítems: ${htmlLista}`
         
         if (result.isConfirmed) {
             const formValues = document.getElementById(formulario)
@@ -3397,13 +3391,13 @@ function addDatoToOtDistribucion(i, idTabla, qInicial, qFinal) {
                         </fieldset>
                     </form>`
 
-        const titulo = "Distribución"
-        const ancho = 1600
-        const background = '#eeeeee'
-        const formulario = 'formDistribucionValues'
-        const arrayDeOtNumber = arrayOtSelected
-        const arrayDeDetalleNumber = arrayItemsSelected
-        const arrayDeDetalleDescription = arrayItemsDescriptionSelected
+        const titulo = "Distribución",
+            ancho = 1600,
+            background = '#eeeeee',
+            formulario = 'formDistribucionValues',
+            arrayDeOtNumber = arrayOtSelected,
+            arrayDeDetalleNumber = arrayItemsSelected,
+            arrayDeDetalleDescription = arrayItemsDescriptionSelected
 
         swalFireAlert (
             titulo,
@@ -3638,13 +3632,13 @@ function addDatoToOtProgramacionPrimera(i, idTabla, qInicial, qFinal) {
                     </fieldset>
                 </form>`
     
-        const titulo = "Programación (1° Parte)"
-        const formulario = 'formProgramacionPrimeraValues'
-        const ancho = 1880
-        const background = '#efefef'
-        const arrayDeOtNumber = arrayOtSelected
-        const arrayDeDetalleNumber = arrayItemsSelected
-        const arrayDeDetalleDescription = arrayItemsDescriptionSelected
+        const titulo = "Programación (1° Parte)",
+            formulario = 'formProgramacionPrimeraValues',
+            ancho = 1880,
+            background = '#efefef',
+            arrayDeOtNumber = arrayOtSelected,
+            arrayDeDetalleNumber = arrayItemsSelected,
+            arrayDeDetalleDescription = arrayItemsDescriptionSelected
     
         swalFireAlert (
             titulo,
@@ -3809,13 +3803,13 @@ function addDatoToOtProgramacionSegunda(i, idTabla, qInicial, qFinal) {
                     </fieldset>
                 </form>`
 
-        const titulo = "Programación (2° Parte)"
-        const formulario = 'formProgramacionSegundaValues'
-        const ancho = 1880
-        const background = '#efefef'
-        const arrayDeOtNumber = arrayOtSelected
-        const arrayDeDetalleNumber = arrayItemsSelected
-        const arrayDeDetalleDescription = arrayItemsDescriptionSelected
+        const titulo = "Programación (2° Parte)",
+            formulario = 'formProgramacionSegundaValues',
+            ancho = 1880,
+            background = '#efefef',
+            arrayDeOtNumber = arrayOtSelected,
+            arrayDeDetalleNumber = arrayItemsSelected,
+            arrayDeDetalleDescription = arrayItemsDescriptionSelected
     
         swalFireAlert (
             titulo,
@@ -3842,9 +3836,9 @@ async function cargarMaquina(res) {
             .catch(error => new Error(`Error en la solicitud: ${error}`));
 
     } catch (error) {
-        const titulo = 'Error'
-        const message = `${error}`
-        const icon = 'error'
+        const titulo = 'Error',
+            message = `${error}`,
+            icon = 'error'
         messageAlertUser(titulo, message, icon)
     }
 
@@ -4047,13 +4041,13 @@ function addDatoToMecanizadoPrimera(i, idTabla, qInicial, qFinal) {
                     </fieldset>
                 </form>`
 
-        const titulo = "Mecanizado (1° Parte)"
-        const ancho = 1880
-        const background = '#efefff'
-        const formulario = 'formMecanizadoPrimeraValues'
-        const arrayDeOtNumber = arrayOtSelected
-        const arrayDeDetalleNumber = arrayItemsSelected
-        const arrayDeDetalleDescription = arrayItemsDescriptionSelected
+        const titulo = "Mecanizado (1° Parte)",
+            ancho = 1880,
+            background = '#efefff',
+            formulario = 'formMecanizadoPrimeraValues',
+            arrayDeOtNumber = arrayOtSelected,
+            arrayDeDetalleNumber = arrayItemsSelected,
+            arrayDeDetalleDescription = arrayItemsDescriptionSelected
 
         swalFireAlert (
             titulo,
@@ -4217,13 +4211,13 @@ function addDatoToMecanizadoSegunda(i, idTabla, qInicial, qFinal) {
                     </fieldset>
                 </form>`
 
-        const titulo = "Mecanizado (2° Parte)"
-        const ancho = 1880
-        const background = '#efefff'
-        const formulario = 'formMecanizadoSegundaValues'
-        const arrayDeOtNumber = arrayOtSelected
-        const arrayDeDetalleNumber = arrayItemsSelected
-        const arrayDeDetalleDescription = arrayItemsDescriptionSelected
+        const titulo = "Mecanizado (2° Parte)",
+            ancho = 1880,
+            background = '#efefff',
+            formulario = 'formMecanizadoSegundaValues',
+            arrayDeOtNumber = arrayOtSelected,
+            arrayDeDetalleNumber = arrayItemsSelected,
+            arrayDeDetalleDescription = arrayItemsDescriptionSelected
 
         swalFireAlert (
             titulo,
@@ -4337,10 +4331,10 @@ function updateInputsTextarea() {
 // Función para habilitar el btn aceptar de los models
 function disabledBtnAceptar() {
     let btnAceptarModal = document.getElementsByClassName('swal2-confirm');
-    const allInputs = document.querySelectorAll('input[type="text"], input[type="number"], select, textarea')
-    const allInputsRange = document.querySelectorAll('input[type="range"]')
-    const allInputsCheck = document.querySelectorAll('input[type="checkbox"]')
-    const allInputsRadio = document.querySelectorAll('input[type="radio"]')
+    const allInputs = document.querySelectorAll('input[type="text"], input[type="number"], select, textarea'),
+        allInputsRange = document.querySelectorAll('input[type="range"]'),
+        allInputsCheck = document.querySelectorAll('input[type="checkbox"]'),
+        allInputsRadio = document.querySelectorAll('input[type="radio"]')
 
     allInputs.forEach(function(input) {
         if (input) {
@@ -4465,7 +4459,7 @@ inputsDeTexto.forEach(function(input) {
         let key = event.key;
 
         // Lista de caracteres especiales prohibidos
-        let forbiddenChars = /["$%?¡¿^/()=!'~`\\*{}\[\]<>@]/;
+        let forbiddenChars = /["$%?¡¿^/=!'~`\\*{}\[\]<>@]/;
 
         // Verificar si la tecla presionada es un carácter especial
         if (forbiddenChars.test(key)) {
@@ -4490,8 +4484,6 @@ inputsDeTextarea.forEach(function(input) {
             // Cancelar el evento para evitar que se ingrese el carácter
             event.preventDefault()
             input.classList.toggle("border", "border-danger", "border-2")
-            // input.classList.toggle("border-danger")
-            // input.classList.toggle("border-2")
         }
     })
 })

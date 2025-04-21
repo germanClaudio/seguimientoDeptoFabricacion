@@ -3,6 +3,7 @@ const socket = io.connect(),
 
 let currentPage = 1;
 let itemsPerPage = 10; // Valor por defecto
+let selectedItemsPerPage = 10; // Valor por defecto
 let consumiblesGlobales = [];
 const maxVisiblePages = 3;
 
@@ -161,9 +162,6 @@ const generarControlesPaginacion = () => {
     paginationHTML += '</div>';
     return paginationHTML;
 };
-
-// Función para cambiar el número de filas por página
-let selectedItemsPerPage = 10; // Valor por defecto
 
 const cambiarItemsPorPagina = (nuevoItemsPerPage) => {
     selectedItemsPerPage = nuevoItemsPerPage; // Guardar la selección del usuario
@@ -424,6 +422,98 @@ const renderConsumiblesAdmin = async (arrConsumibles, page = 1, direction = 'non
     agregarSelectItemsPorPagina();
 };
 
+// Función para generar los controles de paginación
+const generarControlesPaginacionUser = () => {
+    const totalPages = Math.ceil(consumiblesGlobales.length / itemsPerPage);
+    let paginationHTML = `<div class="pagination-anchor">
+                            <div class="pagination-container justify-content-center">`;
+    
+    // Botón Anterior
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderConsumiblesUser(consumiblesGlobales, ${currentPage - 1}, 'right')">
+            &laquo; Anterior
+        </button>`;
+
+    // Primeros números
+    if (currentPage > maxVisiblePages + 1) {
+        paginationHTML += `
+            <button class="pagination-btn" onclick="renderConsumiblesUser(consumiblesGlobales, 1)">1</button>
+            <span class="pagination-ellipsis">...</span>`;
+    }
+
+    // Números centrales
+    const start = Math.max(1, currentPage - maxVisiblePages);
+    const end = Math.min(totalPages, currentPage + maxVisiblePages);
+    
+    for (let i = start; i <= end; i++) {
+        paginationHTML += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                onclick="renderConsumiblesUser(consumiblesGlobales, ${i})">
+                ${i}
+            </button>`;
+    }
+
+    // Últimos números
+    if (currentPage < totalPages - maxVisiblePages) {
+        paginationHTML += `
+            <span class="pagination-ellipsis">...</span>
+            <button class="pagination-btn" onclick="renderConsumiblesUser(consumiblesGlobales, ${totalPages})">${totalPages}</button>`;
+    }
+
+    // Botón Siguiente
+    paginationHTML += `
+        <button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" 
+            onclick="if(!this.classList.contains('disabled')) renderConsumiblesUser(consumiblesGlobales, ${currentPage + 1}, 'left')">
+            Siguiente &raquo;
+        </button>`;
+
+    paginationHTML += '</div>';
+    return paginationHTML;
+};
+
+const cambiarItemsPorPaginaUser = (nuevoItemsPerPage) => {
+    selectedItemsPerPage = nuevoItemsPerPage; // Guardar la selección del usuario
+    itemsPerPage = nuevoItemsPerPage;
+    currentPage = 1; // Reiniciar a la primera página
+    renderConsumiblesUser(consumiblesGlobales);
+};
+
+const agregarSelectItemsPorPaginaUser = () => {
+    // Crear el HTML del select y la leyenda
+    let selectHTML = `
+        Mostrando 
+        <select class="form-select small w-auto mx-2" id="itemsPerPageSelect" onchange="cambiarItemsPorPaginaUser(parseInt(this.value))">
+            <option value="10" ${selectedItemsPerPage === 10 ? 'selected' : ''}>10</option>
+            <option value="25" ${selectedItemsPerPage === 25 ? 'selected' : ''}>25</option>
+            <option value="50" ${selectedItemsPerPage === 50 ? 'selected' : ''}>50</option>
+            <option value="100" ${selectedItemsPerPage === 100 ? 'selected' : ''}>100</option>
+            <option value="${consumiblesGlobales.length}" ${selectedItemsPerPage === consumiblesGlobales.length ? 'selected' : ''}>Todos</option>
+        </select>
+        consumibles de ${consumiblesGlobales.length}
+    `;
+
+    const paginationContainer = document.getElementById('paginationConsumibles');
+    const existingSelectContainer = document.getElementById('selectContainer');
+
+    // Verificar si el contenedor de paginación existe
+    if (paginationContainer) {
+        // Si ya existe un contenedor para el select, actualizamos su contenido
+        if (existingSelectContainer) {
+            existingSelectContainer.innerHTML = selectHTML;
+        } else {
+            // Si no existe, creamos un nuevo contenedor y lo insertamos
+            const selectContainer = document.createElement('div');
+            selectContainer.id = 'selectContainer';
+            selectContainer.classList.add('row', 'align-items-center', 'justify-content-center')
+            selectContainer.innerHTML = selectHTML;
+            paginationContainer.insertAdjacentHTML('beforebegin', selectContainer.outerHTML);
+        }
+    } else {
+        console.error("El contenedor de paginación no existe en el DOM.");
+    }
+};
+
 // Llamar a la función para agregar el select después de renderizar la tabla
 const renderConsumiblesUser = async (arrConsumibles, page = 1, direction = 'none') => {
     consumiblesGlobales = arrConsumibles;
@@ -514,7 +604,7 @@ const renderConsumiblesUser = async (arrConsumibles, page = 1, direction = 'none
                         </tr>`)
             }
         }).join(" ");
-        htmlPagination = generarControlesPaginacion();
+        htmlPagination = generarControlesPaginacionUser();
     
     } else {
         html = (`<tr>
@@ -577,7 +667,7 @@ const renderConsumiblesUser = async (arrConsumibles, page = 1, direction = 'none
     }
 
     // Llamar a la función para agregar el select después de renderizar la tabla
-    agregarSelectItemsPorPagina();
+    agregarSelectItemsPorPaginaUser();
 };
 
 // ----------- Image Consumible Image behavior ---------------
@@ -1412,7 +1502,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-
 
 // Función para manejar el cambio en la selección de tipo de talle
 function handleTipoTalleChangeVisible(selectedValue) {

@@ -15,15 +15,24 @@
     </header>
     
     <div class="container" style="padding-top: 70px;"></div>
+
     <div class="container-fluid m-t-30">
         <%- include('../partials/btnHeaderTop/btnHeaderTop-proyectos'); %>
     </div>
+    <br>
+    <div class="d-block mx-auto mt-1 text-center bg-primary-light">    
+        <%- include('../partials/forms/formularioBuscarProyectoWon'); %>
+        <%- include('../partials/data/dataProyectSearch'); %>
+    </div>
 
+    <!-- ------------ Lista de Proyectos Ganados ------------ -->
     <%- include('../partials/sections/sectionProjectWonList'); %>
     
     <br>
     <div class="d-block mx-auto mb-3 text-center w-100 px-3">
         <%- include('../partials/data/dataProjectsWonTable'); %>
+        <!-- Contenedor de paginación -->
+        <div id="paginationProyectos"></div>
     </div>
     <br>
         <%- include('../partials/btnFooterBottom/btnFooterBottom-goUp'); %>
@@ -33,6 +42,7 @@
     </footer>
 <!--    scripts     -->
 <script type="text/javascript" src="/js/proyectos/projectsWon.js"></script>
+<script type="text/javascript" src="/js/comunes/search.js"></script>
 
 </body>
 

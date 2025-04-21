@@ -53,7 +53,7 @@ class ProjectsController {
             const usuario = await this.users.getUserByUsername(username)
             !usuario ? catchError401_3(req, res, next) : null
 
-            const cliente = await this.clients.getClientById()
+            const cliente = await this.clients.getAllClients()
             !cliente ? catchError401(req, res, next) : null
 
             const proyectos = await this.projects.getAllProjects()
@@ -86,40 +86,42 @@ class ProjectsController {
         const { id } = req.params,
             expires = cookie(req)
         let username = res.locals.username,
-            userInfo = res.locals.userInfo
+            userInfo = res.locals.userInfo;
 
-        try {
-            const usuario = await this.users.getUserByUsername(username)
-            !usuario ? catchError401_3(req, res, next) : null
-
-            const cliente = await this.clients.getClientById(id)
-            !cliente ? catchError401(req, res, next) : null
-
-            const proyectos = await this.projects.getProjectsByClientId(id)
-            !proyectos ? catchError400(req, res, next) : null
-
-            const ordenes = await this.orders.getAllOrders()
-            !ordenes ? catchError400_5(req, res, next) : null
-
-            const userCart = await this.carts.getCartByUserId(usuario._id)
-            
-            const csrfToken = csrfTokens.create(req.csrfSecret);
-            setTimeout(() => {
-                return res.render('clientProjectsDetails', {
-                    proyectos,
-                    username,
-                    userInfo,
-                    userCart,
-                    ordenes,
-                    expires,
-                    cliente,
-                    data,
-                    csrfToken
-                })
-            }, 500)
-
-        } catch (err) {
-            catchError500(err, req, res, next)
+        if (id) {
+            try {
+                const usuario = await this.users.getUserByUsername(username)
+                !usuario ? catchError401_3(req, res, next) : null
+    
+                const cliente = await this.clients.getClientById(id)
+                !cliente ? catchError401(req, res, next) : null
+    
+                const proyectos = await this.projects.getProjectsByClientId(id)
+                !proyectos ? catchError400(req, res, next) : null
+    
+                const ordenes = await this.orders.getAllOrders()
+                !ordenes ? catchError400_5(req, res, next) : null
+    
+                const userCart = await this.carts.getCartByUserId(usuario._id)
+                
+                const csrfToken = csrfTokens.create(req.csrfSecret);
+                setTimeout(() => {
+                    return res.render('clientProjectsDetails', {
+                        proyectos,
+                        username,
+                        userInfo,
+                        userCart,
+                        ordenes,
+                        expires,
+                        cliente,
+                        data,
+                        csrfToken
+                    })
+                }, 500)
+    
+            } catch (err) {
+                catchError500(err, req, res, next)
+            }
         }
     }
 
@@ -127,40 +129,42 @@ class ProjectsController {
         const { id } = req.params,
             expires = cookie(req)
         let username = res.locals.username,
-            userInfo = res.locals.userInfo
+            userInfo = res.locals.userInfo;
 
-        try {
-            const usuario = await this.users.getUserByUsername(username)
-            !usuario ? catchError401_3(req, res, next) : null
+        if (id) {
+            try {
+                const usuario = await this.users.getUserByUsername(username)
+                !usuario ? catchError401_3(req, res, next) : null
 
-            const cliente = await this.clients.getClientById(id)
-            !cliente ? catchError401(req, res, next) : null
+                const cliente = await this.clients.getClientById(id)
+                !cliente ? catchError401(req, res, next) : null
 
-            const proyectos = await this.projects.getProjectsByClientId(id)
-            !proyectos ? catchError400(req, res, next) : null
+                const proyectos = await this.projects.getProjectsByClientId(id)
+                !proyectos ? catchError400(req, res, next) : null
 
-            const ordenes = await this.orders.getAllOrders()
-            !ordenes ? catchError400_5(req, res, next) : null
+                const ordenes = await this.orders.getAllOrders()
+                !ordenes ? catchError400_5(req, res, next) : null
 
-            const userCart = await this.carts.getCartByUserId(usuario._id)
+                const userCart = await this.carts.getCartByUserId(usuario._id)
 
-            const csrfToken = csrfTokens.create(req.csrfSecret);
-            setTimeout(() => {
-                return res.render('clientProjectsDetails', {
-                    proyectosCargados,
-                    username,
-                    userInfo,
-                    userCart,
-                    ordenes,
-                    expires,
-                    cliente,
-                    data,
-                    csrfToken
-                })
-            }, 500)
+                const csrfToken = csrfTokens.create(req.csrfSecret);
+                setTimeout(() => {
+                    return res.render('clientProjectsDetails', {
+                        proyectosCargados,
+                        username,
+                        userInfo,
+                        userCart,
+                        ordenes,
+                        expires,
+                        cliente,
+                        data,
+                        csrfToken
+                    })
+                }, 500)
 
-        } catch (err) {
-            catchError500(err, req, res, next)
+            } catch (err) {
+                catchError500(err, req, res, next)
+            }
         }
     }
 
@@ -169,40 +173,41 @@ class ProjectsController {
             expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-
-        try {
-            const usuario = await this.users.getUserByUsername(username)
-            !usuario ? catchError401_3(req, res, next) : null
-
-            const proyecto = await this.projects.selectProjectByProjectId(id)
-            !proyecto ? catchError401_1(req, res, next) : null
-
-            const idCliente = proyecto[0].client[0]._id
-            const cliente = await this.clients.getClientByProjectId(idCliente)
-            !cliente ? catchError401(req, res, next) : null
-
-            const ordenes = await this.orders.getAllOrders()
-            !ordenes ? catchError400_5(req, res, next) : null
-
-            const userCart = await this.carts.getCartByUserId(usuario._id)
-            
-            const csrfToken = csrfTokens.create(req.csrfSecret);
-            setTimeout(() => {
-                return res.render('projectSelectedDetail', {
-                    proyecto,
-                    username,
-                    userInfo,
-                    userCart,
-                    ordenes,
-                    expires,
-                    cliente,
-                    data,
-                    csrfToken
-                })
-            }, 100)
-
-        } catch (err) {
-            catchError500(err, req, res, next)
+        if (id) {
+            try {
+                const usuario = await this.users.getUserByUsername(username)
+                !usuario ? catchError401_3(req, res, next) : null
+    
+                const proyecto = await this.projects.selectProjectByProjectId(id)
+                !proyecto ? catchError401_1(req, res, next) : null
+    
+                const idCliente = proyecto[0].client[0]._id
+                const cliente = await this.clients.getClientByProjectId(idCliente)
+                !cliente ? catchError401(req, res, next) : null
+    
+                const ordenes = await this.orders.getAllOrders()
+                !ordenes ? catchError400_5(req, res, next) : null
+    
+                const userCart = await this.carts.getCartByUserId(usuario._id)
+                
+                const csrfToken = csrfTokens.create(req.csrfSecret);
+                setTimeout(() => {
+                    return res.render('projectSelectedDetail', {
+                        proyecto,
+                        username,
+                        userInfo,
+                        userCart,
+                        ordenes,
+                        expires,
+                        cliente,
+                        data,
+                        csrfToken
+                    })
+                }, 100)
+    
+            } catch (err) {
+                catchError500(err, req, res, next)
+            }
         }
     }
 
@@ -215,19 +220,14 @@ class ProjectsController {
                 
                 const userId = userInfo.id
                 const userCreator = await this.users.getUserById(userId)
-                if (!userCreator) {
-                    catchError401_3(req, res, next)
-                }
+                if (!userCreator) catchError401_3(req, res, next)
                 
                 const clientId = req.params.id
                 const clienteSeleccionado = await this.clients.selectClientById(clientId)
-                if (!clienteSeleccionado) {
-                    catchError401(req, res, next)
-                }
+                if (!clienteSeleccionado) catchError401(req, res, next)
                 
-                if (req.files && req.files.length != 0) {
-                    await uploadToGCSingleFile(req, res, next)
-                }
+                if (req.files && req.files.length != 0) await uploadToGCSingleFile(req, res, next)
+                
                 // console.log('req.body: ', req.body)
                 let arrayOciNumber=[],
                     arrayOciDescription=[],
@@ -423,378 +423,99 @@ class ProjectsController {
         const { id } = req.params,
             expires = cookie(req)
         let username = res.locals.username,
-            userInfo = res.locals.userInfo
+            userInfo = res.locals.userInfo;
 
-        try {
-            const usuario = await this.users.getUserByUsername(username)
-            !usuario ? catchError401_3(req, res, next) : null
-
-            const clientId = req.body.clientIdHidden,
-                cliente = await this.clients.selectClientById(clientId)
-            !cliente ? catchError401(req, res, next) : null
+        if (id) {
+            try {
+                const usuario = await this.users.getUserByUsername(username)
+                !usuario ? catchError401_3(req, res, next) : null
+    
+                const clientId = req.body.clientIdHidden,
+                    cliente = await this.clients.selectClientById(clientId)
+                !cliente ? catchError401(req, res, next) : null
+                
+                const numberOci = parseInt(req.body.ociNumber),
+                    ociNumberK = parseInt(req.body.ociNumberK),
+                    projectId = id || req.body.projectIdHidden,
+                    otQuantity = parseInt(req.body.otQuantity),
+                    userId = userInfo.id,
+                    userCreator = await this.users.getUserById(userId)
+    
+                !userCreator ? catchError401_3(req, res, next) : null
             
-            const numberOci = parseInt(req.body.ociNumber),
-                ociNumberK = parseInt(req.body.ociNumberK),
-                projectId = id || req.body.projectIdHidden,
-                otQuantity = parseInt(req.body.otQuantity),
-                userId = userInfo.id,
-                userCreator = await this.users.getUserById(userId)
-
-            !userCreator ? catchError401_3(req, res, next) : null
-        
-            let arrayOtNumber=[], arrayOpNumber=[],
-                arrayOpDescription=[], arrayOtStatus=[],
-                arrayOtDesign=[], arrayOtSimulation=[], arrayOtSupplier=[]
-
-            const prefixes = [
-                { prefix: 'otNumber', array: arrayOtNumber },
-                { prefix: 'opNumber', array: arrayOpNumber },
-                { prefix: 'opDescription', array: arrayOpDescription },
-                { prefix: 'otStatus', array: arrayOtStatus },
-                { prefix: 'internoDiseno', array: arrayOtDesign },
-                { prefix: 'internoSimulacion', array: arrayOtSimulation },
-                { prefix: 'externoDiseno', array: arrayOtSupplier }
-            ];
-            // console.log('req.body: ', req.body)
-            for (const key in req.body) {
-                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                match ? match.array.push(req.body[key]) : null
-            }
-
-            const otInformationEmpty = [{
-                otInfoR14: [], otInfoProceso: [],
-                otInfoDisenoPrimera: [], otInfoDisenoSegunda: [],
-                otInfoInfo80: [], otInfoInfo100: [],
-                otInfoSim0: [], otInfoSim1: [], otInfoSim2_3: [],
-                otInfoSim4Primera: [], otInfoSim4Segunda: [], otInfoSim5: []
-            }]
-
-            const arrayOtAddedToOci = []
-            if (otQuantity>0) {
-                for(let i=0; i<otQuantity; i++) {
-                    let otAddedToOci = {
-                        otNumber: arrayOtNumber[i],
-                        opNumber: arrayOpNumber[i],
-                        opDescription: arrayOpDescription[i],
-                        otStatus: arrayOtStatus[i] == 'on' ? true : false,
-                        otDesign: arrayOtDesign[i],
-                        otSimulation: arrayOtSimulation[i],
-                        otSupplier: arrayOtSupplier[i],
-                        creator: dataUserCreator(userCreator),
-                        timestamp: new Date(),
-                        modificator: dataUserModificatorEmpty(),
-                        modifiedOn: "",
-                        otInformation: otInformationEmpty,
-                        otDetalles: []
-                    }
-                    arrayOtAddedToOci.push(otAddedToOci)
+                let arrayOtNumber=[], arrayOpNumber=[],
+                    arrayOpDescription=[], arrayOtStatus=[],
+                    arrayOtDesign=[], arrayOtSimulation=[], arrayOtSupplier=[]
+    
+                const prefixes = [
+                    { prefix: 'otNumber', array: arrayOtNumber },
+                    { prefix: 'opNumber', array: arrayOpNumber },
+                    { prefix: 'opDescription', array: arrayOpDescription },
+                    { prefix: 'otStatus', array: arrayOtStatus },
+                    { prefix: 'internoDiseno', array: arrayOtDesign },
+                    { prefix: 'internoSimulacion', array: arrayOtSimulation },
+                    { prefix: 'externoDiseno', array: arrayOtSupplier }
+                ];
+                // console.log('req.body: ', req.body)
+                for (const key in req.body) {
+                    const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                    match ? match.array.push(req.body[key]) : null
                 }
-
-            } else {
-                catchError400_1(req, res, next)
-            }
-
-            await this.projects.addOtToOciProject(
-                projectId,
-                numberOci,
-                ociNumberK,
-                arrayOtAddedToOci
-            )
-
-            await this.clients.updateClient(
-                clientId, 
-                cliente, 
-                dataUserModificatorNotEmpty(userCreator)
-            )
-
-            const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
-            !proyecto || !cliente ? catchError401_1(req, res, next) : null
-
-            const ordenes = await this.orders.getAllOrders()
-            !ordenes ? catchError400_5(req, res, next) : null
-
-            const userCart = await this.carts.getCartByUserId(usuario._id)
-
-            const csrfToken = csrfTokens.create(req.csrfSecret);
-            setTimeout(() => {
-                return res.render('projectSelectedDetail', {
-                    proyecto,
-                    username,
-                    userInfo,
-                    userCart,
-                    ordenes,
-                    expires,
-                    cliente,
-                    data,
-                    csrfToken
-                })
-            }, 400)
-
-        } catch (err) {
-            catchError500(err, req, res, next)
-        }
-    }
-
-    updateStatusProject = async (req, res, next) => {
-        const id = req.params.id,
-            expires = cookie(req)
-        let username = res.locals.username,
-            userInfo = res.locals.userInfo
-
-        try {
-            const proyecto = await this.projects.selectProjectByProjectId(id)
-            !proyecto ? catchError401_1(req, res, next) : null
-
-            const clientId = proyecto[0].client[0]._id
-            const cliente = await this.clients.selectClientById(clientId)
-            !cliente ? catchError401(req, res, next) : null
-
-            const userId = userInfo.id
-            const userCreator = await this.users.getUserById(userId)
-            !userCreator ? catchError401_3(req, res, next) : null
-
-            const statusProjectHidden = req.body.statusProjectHidden
-            if (validateSelectField(statusProjectHidden)) {
-                await this.projects.updateStatusProject(
-                    id, 
-                    proyecto, 
-                    statusProjectHidden,
-                    dataUserModificatorNotEmpty(userCreator)
+    
+                const otInformationEmpty = [{
+                    otInfoR14: [], otInfoProceso: [],
+                    otInfoDisenoPrimera: [], otInfoDisenoSegunda: [],
+                    otInfoInfo80: [], otInfoInfo100: [],
+                    otInfoSim0: [], otInfoSim1: [], otInfoSim2_3: [],
+                    otInfoSim4Primera: [], otInfoSim4Segunda: [], otInfoSim5: []
+                }]
+    
+                const arrayOtAddedToOci = []
+                if (otQuantity>0) {
+                    for(let i=0; i<otQuantity; i++) {
+                        let otAddedToOci = {
+                            otNumber: arrayOtNumber[i],
+                            opNumber: arrayOpNumber[i],
+                            opDescription: arrayOpDescription[i],
+                            otStatus: arrayOtStatus[i] == 'on' ? true : false,
+                            otDesign: arrayOtDesign[i],
+                            otSimulation: arrayOtSimulation[i],
+                            otSupplier: arrayOtSupplier[i],
+                            creator: dataUserCreator(userCreator),
+                            timestamp: new Date(),
+                            modificator: dataUserModificatorEmpty(),
+                            modifiedOn: "",
+                            otInformation: otInformationEmpty,
+                            otDetalles: []
+                        }
+                        arrayOtAddedToOci.push(otAddedToOci)
+                    }
+    
+                } else {
+                    catchError400_1(req, res, next)
+                }
+    
+                await this.projects.addOtToOciProject(
+                    projectId,
+                    numberOci,
+                    ociNumberK,
+                    arrayOtAddedToOci
                 )
-
+    
                 await this.clients.updateClient(
                     clientId, 
                     cliente, 
                     dataUserModificatorNotEmpty(userCreator)
                 )
-
-                const proyectos = await this.projects.getProjectsByClientId(clientId)
-                !proyectos ? catchError401_1(req, res, next) : null
-
+    
+                const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+                !proyecto || !cliente ? catchError401_1(req, res, next) : null
+    
                 const ordenes = await this.orders.getAllOrders()
                 !ordenes ? catchError400_5(req, res, next) : null
-
-                const userCart = await this.carts.getCartByUserId(userId)
-
-                const csrfToken = csrfTokens.create(req.csrfSecret);
-                setTimeout(() => {
-                    return res.render('clientProjectsDetails', {
-                        username,
-                        userInfo,
-                        userCart,
-                        ordenes,
-                        expires,
-                        cliente,
-                        proyectos,
-                        data,
-                        csrfToken
-                    })
-                }, 400)
-
-            } else {
-                catchError400_3(req, res, next)
-            }
-
-            function validateSelectField(value) {
-                const validOptions = [
-                    'true', 'false'
-                ];
-                return validOptions.includes(value);
-            }
-
-        } catch (err) {
-            catchError500(err, req, res, next)
-        }
-    }
-
-    updateLevelProject = async (req, res, next) => {
-        const id = req.params.id,
-            expires = cookie(req)
-        let username = res.locals.username,
-            userInfo = res.locals.userInfo
-
-        try {
-            const proyecto = await this.projects.selectProjectByProjectId(id)
-            !proyecto ? catchError401_1(req, res, next) : null
-
-            const clientId = proyecto[0].client[0]._id
-            const cliente = await this.clients.selectClientById(clientId)
-            !cliente ? catchError401(req, res, next) : null
-        
-            const userId = userInfo.id
-            const userCreator = await this.users.getUserById(userId)
-            !userCreator ? catchError401_3(req, res, next) : null
-        
-            const levelProject = req.body.levelProject
-            if (validateSelectField(levelProject)) {
-                await this.projects.updateLevelProject(
-                    id, 
-                    proyecto, 
-                    levelProject,
-                    dataUserModificatorNotEmpty(userCreator)
-                )        
-
-                await this.clients.updateClient(
-                    clientId, 
-                    cliente, 
-                    dataUserModificatorNotEmpty(userCreator)
-                )
-
-                const proyectos = await this.projects.getProjectsByClientId(clientId)
-                !proyectos ? catchError401_1(req, res, next) : null
-
-                const ordenes = await this.orders.getAllOrders()
-                !ordenes ? catchError400_5(req, res, next) : null
-
-                const userCart = await this.carts.getCartByUserId(userId)
-
-                const csrfToken = csrfTokens.create(req.csrfSecret);
-                setTimeout(() => {
-                    return res.render('clientProjectsDetails', {
-                        username,
-                        userInfo,
-                        userCart,
-                        ordenes,
-                        expires,
-                        cliente,
-                        proyectos,
-                        csrfToken
-                    })
-                }, 400)
-
-            } else {
-                catchError400_3(req, res, next)
-            }
-
-            function validateSelectField(value) {
-                const validOptions = [
-                    'ganado', 'aRiesgo', 'paraCotizar'
-                ];
-                return validOptions.includes(value);
-            }
-
-        } catch (err) {
-            catchError500(err, req, res, next)
-        }
-    }
-
-    updateStatusOci = async (req, res, next) => {
-        const id = req.params.id,
-            expires = cookie(req)            
-        let username = res.locals.username,
-            userInfo = res.locals.userInfo
-
-        try {
-            const proyecto = await this.projects.selectProjectByProjectId(id)
-            !proyecto ? catchError401_1(req, res, next) : null
-
-            const clientId = proyecto[0].client[0]._id
-            const cliente = await this.clients.selectClientById(clientId)
-            !cliente ? catchError401(req, res, next) : null
-            
-            const userId = userInfo.id
-            const userCreator = await this.users.getUserById(userId)
-            !userCreator ? catchError401_3(req, res, next) : null
-            
-            const ociKNumber = parseInt(req.body.ociKNumberHidden)
-            const statusOciHidden = req.body.statusOciHidden
-            if (validateSelectField(statusOciHidden)) {
-                await this.projects.updateStatusOci(
-                    id, 
-                    proyecto,
-                    statusOciHidden,
-                    ociKNumber,
-                    dataUserModificatorNotEmpty(userCreator)
-                )
-
-                await this.clients.updateClient(
-                    clientId, 
-                    cliente, 
-                    dataUserModificatorNotEmpty(userCreator)
-                )
-
-                const proyectos = await this.projects.getProjectsByClientId(clientId)
-                !proyectos ? catchError401_1(req, res, next) : null
-
-                const ordenes = await this.orders.getAllOrders()
-                !ordenes ? catchError400_5(req, res, next) : null
-
-                const userCart = await this.carts.getCartByUserId(userId)
-                
-                const csrfToken = csrfTokens.create(req.csrfSecret);
-                setTimeout(() => {
-                    return res.render('clientProjectsDetails', {
-                        username,
-                        userInfo,
-                        userCart,
-                        ordenes,
-                        expires,
-                        cliente,
-                        proyectos,
-                        data,
-                        csrfToken
-                    })
-                }, 400)
-
-            } else {
-                catchError400_3(req, res, next)
-            }
-
-            function validateSelectField(value) {
-                const validOptions = [ 'true', 'false' ];
-                return validOptions.includes(value);
-            }
-
-        } catch (err) {
-            catchError500(err, req, res, next)
-        }
-    }
-
-    updateStatusOt = async (req, res, next) => {
-        const id = req.params.id,
-            expires = cookie(req)
-        let username = res.locals.username,
-            userInfo = res.locals.userInfo
-
-        try {
-            const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
-            !mainProyecto ? catchError401_1(req, res, next) : null          
-            
-            const clientId = mainProyecto[0].client[0]._id
-            const cliente = await this.clients.selectClientById(clientId)
-            !cliente ? hError401(req, res, next) : null
-            
-            const userId = userInfo.id
-            const userCreator = await this.users.getUserById(userId)
-            !userCreator ? hError401_3(req, res, next) : null         
-            const ociKNumberHidden = parseInt(req.body.ociKNumberHidden)
-            const otKNumberHidden = parseInt(req.body.otKNumberHidden)
-        
-            await this.projects.updateStatusOt(
-                id, 
-                mainProyecto,
-                statusOtHidden,
-                ociKNumberHidden,
-                otKNumberHidden,
-                dataUserModificatorNotEmpty(userCreator)
-            )
-
-            await this.clients.updateClient(
-                clientId, 
-                cliente, 
-                dataUserModificatorNotEmpty(userCreator)
-            )
-
-            const statusOtHidden = req.body.statusOtHidden
-            if (validateSelectField(statusOtHidden)) {
-                const proyecto = await this.projects.selectProjectsByMainProjectId(id)
-                !proyecto ? catchError401_1(req, res, next) : null
-
-                const ordenes = await this.orders.getAllOrders()
-                !ordenes ? catchError400_5(req, res, next) : null
-
-                const userCart = await this.carts.getCartByUserId(userId)
-                
+    
+                const userCart = await this.carts.getCartByUserId(usuario._id)
+    
                 const csrfToken = csrfTokens.create(req.csrfSecret);
                 setTimeout(() => {
                     return res.render('projectSelectedDetail', {
@@ -809,18 +530,307 @@ class ProjectsController {
                         csrfToken
                     })
                 }, 400)
-
-            } else {
-                catchError400_3(req, res, next)
+    
+            } catch (err) {
+                catchError500(err, req, res, next)
             }
+        }
+    }
 
-            function validateSelectField(value) {
-                const validOptions = [ 'true', 'false' ];
-                return validOptions.includes(value);
+    updateStatusProject = async (req, res, next) => {
+        const id = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo;
+
+        if (id) {
+            try {
+                const proyecto = await this.projects.selectProjectByProjectId(id)
+                !proyecto ? catchError401_1(req, res, next) : null
+    
+                const clientId = proyecto[0].client[0]._id
+                const cliente = await this.clients.selectClientById(clientId)
+                !cliente ? catchError401(req, res, next) : null
+    
+                const userId = userInfo.id
+                const userCreator = await this.users.getUserById(userId)
+                !userCreator ? catchError401_3(req, res, next) : null
+    
+                const statusProjectHidden = req.body.statusProjectHidden
+                if (validateSelectField(statusProjectHidden)) {
+                    await this.projects.updateStatusProject(
+                        id, 
+                        proyecto, 
+                        statusProjectHidden,
+                        dataUserModificatorNotEmpty(userCreator)
+                    )
+    
+                    await this.clients.updateClient(
+                        clientId, 
+                        cliente, 
+                        dataUserModificatorNotEmpty(userCreator)
+                    )
+    
+                    const proyectos = await this.projects.getProjectsByClientId(clientId)
+                    !proyectos ? catchError401_1(req, res, next) : null
+    
+                    const ordenes = await this.orders.getAllOrders()
+                    !ordenes ? catchError400_5(req, res, next) : null
+    
+                    const userCart = await this.carts.getCartByUserId(userId)
+    
+                    const csrfToken = csrfTokens.create(req.csrfSecret);
+                    setTimeout(() => {
+                        return res.render('clientProjectsDetails', {
+                            username,
+                            userInfo,
+                            userCart,
+                            ordenes,
+                            expires,
+                            cliente,
+                            proyectos,
+                            data,
+                            csrfToken
+                        })
+                    }, 400)
+    
+                } else {
+                    catchError400_3(req, res, next)
+                }
+    
+                function validateSelectField(value) {
+                    const validOptions = [
+                        'true', 'false'
+                    ];
+                    return validOptions.includes(value);
+                }
+    
+            } catch (err) {
+                catchError500(err, req, res, next)
             }
+        }
+    }
 
-        } catch (err) {
-            catchError500(err, req, res, next)
+    updateLevelProject = async (req, res, next) => {
+        const id = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo;
+
+        if (id) {
+            try {
+                const proyecto = await this.projects.selectProjectByProjectId(id)
+                !proyecto ? catchError401_1(req, res, next) : null
+    
+                const clientId = proyecto[0].client[0]._id
+                const cliente = await this.clients.selectClientById(clientId)
+                !cliente ? catchError401(req, res, next) : null
+            
+                const userId = userInfo.id
+                const userCreator = await this.users.getUserById(userId)
+                !userCreator ? catchError401_3(req, res, next) : null
+            
+                const levelProject = req.body.levelProject
+                if (validateSelectField(levelProject)) {
+                    await this.projects.updateLevelProject(
+                        id, 
+                        proyecto, 
+                        levelProject,
+                        dataUserModificatorNotEmpty(userCreator)
+                    )        
+    
+                    await this.clients.updateClient(
+                        clientId, 
+                        cliente, 
+                        dataUserModificatorNotEmpty(userCreator)
+                    )
+    
+                    const proyectos = await this.projects.getProjectsByClientId(clientId)
+                    !proyectos ? catchError401_1(req, res, next) : null
+    
+                    const ordenes = await this.orders.getAllOrders()
+                    !ordenes ? catchError400_5(req, res, next) : null
+    
+                    const userCart = await this.carts.getCartByUserId(userId)
+    
+                    const csrfToken = csrfTokens.create(req.csrfSecret);
+                    setTimeout(() => {
+                        return res.render('clientProjectsDetails', {
+                            username,
+                            userInfo,
+                            userCart,
+                            ordenes,
+                            expires,
+                            cliente,
+                            proyectos,
+                            csrfToken
+                        })
+                    }, 400)
+    
+                } else {
+                    catchError400_3(req, res, next)
+                }
+    
+                function validateSelectField(value) {
+                    const validOptions = [
+                        'ganado', 'aRiesgo', 'paraCotizar'
+                    ];
+                    return validOptions.includes(value);
+                }
+    
+            } catch (err) {
+                catchError500(err, req, res, next)
+            }
+        }
+    }
+
+    updateStatusOci = async (req, res, next) => {
+        const id = req.params.id,
+            expires = cookie(req)            
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo;
+        
+        if (id) {
+            try {
+                const proyecto = await this.projects.selectProjectByProjectId(id)
+                !proyecto ? catchError401_1(req, res, next) : null
+    
+                const clientId = proyecto[0].client[0]._id
+                const cliente = await this.clients.selectClientById(clientId)
+                !cliente ? catchError401(req, res, next) : null
+                
+                const userId = userInfo.id
+                const userCreator = await this.users.getUserById(userId)
+                !userCreator ? catchError401_3(req, res, next) : null
+                
+                const ociKNumber = parseInt(req.body.ociKNumberHidden)
+                const statusOciHidden = req.body.statusOciHidden
+                if (validateSelectField(statusOciHidden)) {
+                    await this.projects.updateStatusOci(
+                        id, 
+                        proyecto,
+                        statusOciHidden,
+                        ociKNumber,
+                        dataUserModificatorNotEmpty(userCreator)
+                    )
+    
+                    await this.clients.updateClient(
+                        clientId, 
+                        cliente, 
+                        dataUserModificatorNotEmpty(userCreator)
+                    )
+    
+                    const proyectos = await this.projects.getProjectsByClientId(clientId)
+                    !proyectos ? catchError401_1(req, res, next) : null
+    
+                    const ordenes = await this.orders.getAllOrders()
+                    !ordenes ? catchError400_5(req, res, next) : null
+    
+                    const userCart = await this.carts.getCartByUserId(userId)
+                    
+                    const csrfToken = csrfTokens.create(req.csrfSecret);
+                    setTimeout(() => {
+                        return res.render('clientProjectsDetails', {
+                            username,
+                            userInfo,
+                            userCart,
+                            ordenes,
+                            expires,
+                            cliente,
+                            proyectos,
+                            data,
+                            csrfToken
+                        })
+                    }, 400)
+    
+                } else {
+                    catchError400_3(req, res, next)
+                }
+    
+                function validateSelectField(value) {
+                    const validOptions = [ 'true', 'false' ];
+                    return validOptions.includes(value);
+                }
+    
+            } catch (err) {
+                catchError500(err, req, res, next)
+            }
+        }
+    }
+
+    updateStatusOt = async (req, res, next) => {
+        const id = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo;
+
+        if (id) {
+            try {
+                const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
+                !mainProyecto ? catchError401_1(req, res, next) : null          
+                
+                const clientId = mainProyecto[0].client[0]._id
+                const cliente = await this.clients.selectClientById(clientId)
+                !cliente ? hError401(req, res, next) : null
+                
+                const userId = userInfo.id
+                const userCreator = await this.users.getUserById(userId)
+                !userCreator ? hError401_3(req, res, next) : null         
+                const ociKNumberHidden = parseInt(req.body.ociKNumberHidden)
+                const otKNumberHidden = parseInt(req.body.otKNumberHidden)
+            
+                await this.projects.updateStatusOt(
+                    id, 
+                    mainProyecto,
+                    statusOtHidden,
+                    ociKNumberHidden,
+                    otKNumberHidden,
+                    dataUserModificatorNotEmpty(userCreator)
+                )
+    
+                await this.clients.updateClient(
+                    clientId, 
+                    cliente, 
+                    dataUserModificatorNotEmpty(userCreator)
+                )
+    
+                const statusOtHidden = req.body.statusOtHidden
+                if (validateSelectField(statusOtHidden)) {
+                    const proyecto = await this.projects.selectProjectsByMainProjectId(id)
+                    !proyecto ? catchError401_1(req, res, next) : null
+    
+                    const ordenes = await this.orders.getAllOrders()
+                    !ordenes ? catchError400_5(req, res, next) : null
+    
+                    const userCart = await this.carts.getCartByUserId(userId)
+                    
+                    const csrfToken = csrfTokens.create(req.csrfSecret);
+                    setTimeout(() => {
+                        return res.render('projectSelectedDetail', {
+                            proyecto,
+                            username,
+                            userInfo,
+                            userCart,
+                            ordenes,
+                            expires,
+                            cliente,
+                            data,
+                            csrfToken
+                        })
+                    }, 400)
+    
+                } else {
+                    catchError400_3(req, res, next)
+                }
+    
+                function validateSelectField(value) {
+                    const validOptions = [ 'true', 'false' ];
+                    return validOptions.includes(value);
+                }
+    
+            } catch (err) {
+                catchError500(err, req, res, next)
+            }
         }
     }
 
@@ -828,302 +838,308 @@ class ProjectsController {
         const id = req.params.id,
             expires = cookie(req)
         let username = res.locals.username,
-            userInfo = res.locals.userInfo
+            userInfo = res.locals.userInfo;
 
-        const csrfToken = req.csrfSecret;
-        csrfTokens.verify(req.csrfSecret, csrfToken) ? catchError403(req, res, next) : null
-        
-        const userId = userInfo.id
-        const userCreator = await this.users.getUserById(userId)
-        !userCreator ? catchError401_3(req, res, next) : null
-
-        const proyecto = await this.projects.selectProjectByProjectId(id)
-        !proyecto ? catchError401_4(req, res, next) : null
-        const projectId = proyecto[0]._id
-
-        const clientId = proyecto[0].client[0]._id
-        const cliente = await this.clients.selectClientById(clientId)
-        !cliente ? catchError401(req, res, next) : null
-
-        uploadMulterMultiImages(req, res, async (err) => {
-            try {
-                req.files && req.files.length != 0
-                ? await uploadToGCSingleFile(req, res, next)
-                : null
-
-                const ociQuantity = parseInt(req.body.ociQuantityModal)
-                        
-                let arrayOciNumber=[],
-                    arrayOciDescription=[],
-                    arrayOciStatus=[],
-                    arrayOciImages=[],
-                    arrayOciAlias=[]                
-
-                const prefixes = [
-                    { prefix: 'ociNumber', array: arrayOciNumber },
-                    { prefix: 'ociDescription', array: arrayOciDescription },
-                    { prefix: 'ociStatus', array: arrayOciStatus },
-                    { prefix: 'imageOciFileNameModal', array: arrayOciImages },
-                    { prefix: 'ociAlias', array: arrayOciAlias }
-                ];
-                
-                for (const key in req.body) {
-                    const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                    if (match) {
-                        if (key.startsWith('ociStatus')) {
-                            match.array.push(req.body[key] === 'on' ? true : false)
-                        } else if (key.startsWith('imageOciFileNameModal')) {
-                            const keyValue = req.body[key] === '' ?  imageNotFound : (req.body[key]);
-                            match.array.push(keyValue);
-                        } else {
-                            match.array.push(req.body[key]);
-                        }    
-                    }
-                }
-
-                const ociKNumber = 0
-                let invalidOciNumber = true, indexArrayOciNumber = 0
-                for (let h=0; h<arrayOciNumber.length; h++) {
-                    const ociNumberValid = await this.projects.selectOciByOciNumber(arrayOciNumber[h], ociKNumber)
-                    const otherOciNumbers = proyecto[0].project[0].oci.map(oci => oci.ociNumber);
-                    if (otherOciNumbers.includes(parseInt(ociNumberValid))) {
-                        invalidOciNumber = false
-                        indexArrayOciNumber = h
-                    }
-                }
+        if (id) {
+            const csrfToken = req.csrfSecret;
+            csrfTokens.verify(req.csrfSecret, csrfToken) ? catchError403(req, res, next) : null
             
-                if (!invalidOciNumber) {
-                    const err = new Error (`Ya existe una OCI# ${arrayOciNumber[indexArrayOciNumber]} o Numero de OCI inválido!`)
-                    err.dirNumber = 400
-                    return next(err);
-                }
-
-                let arrayOciAddedToProject = []
-                for (let i=0; i<ociQuantity; i++ ) {
-                    let infoOciAddedToProject = {
-                        ociNumber: parseInt(arrayOciNumber[i]),
-                        ociDescription: arrayOciDescription[i] || "sinDatos",
-                        ociStatus: arrayOciStatus[i] || true,
-                        ociImage: arrayOciImages[i],
-                        ociAlias: arrayOciAlias[i] || "Sin Apodo",
-                        ociOwner: dataUserOciOwnerEmpty(),
-                        timestamp: new Date(),
-                        creator: dataUserCreator(userCreator),
-                        modificator: dataUserModificatorEmpty(),
-                        modifiedOn: "",
-                    }
-                    arrayOciAddedToProject.push(infoOciAddedToProject)
-                }
-                
-                await this.clients.updateClient(
-                    clientId, 
-                    cliente, 
-                    dataUserModificatorNotEmpty(userCreator)
-                )
+            const userId = userInfo.id
+            const userCreator = await this.users.getUserById(userId)
+            !userCreator ? catchError401_3(req, res, next) : null
+    
+            const proyecto = await this.projects.selectProjectByProjectId(id)
+            !proyecto ? catchError401_4(req, res, next) : null
+            const projectId = proyecto[0]._id
+    
+            const clientId = proyecto[0].client[0]._id
+            const cliente = await this.clients.selectClientById(clientId)
+            !cliente ? catchError401(req, res, next) : null
+    
+            uploadMulterMultiImages(req, res, async (err) => {
+                try {
+                    req.files && req.files.length != 0
+                    ? await uploadToGCSingleFile(req, res, next)
+                    : null
+    
+                    const ociQuantity = parseInt(req.body.ociQuantityModal)
+                            
+                    let arrayOciNumber=[],
+                        arrayOciDescription=[],
+                        arrayOciStatus=[],
+                        arrayOciImages=[],
+                        arrayOciAlias=[]                
+    
+                    const prefixes = [
+                        { prefix: 'ociNumber', array: arrayOciNumber },
+                        { prefix: 'ociDescription', array: arrayOciDescription },
+                        { prefix: 'ociStatus', array: arrayOciStatus },
+                        { prefix: 'imageOciFileNameModal', array: arrayOciImages },
+                        { prefix: 'ociAlias', array: arrayOciAlias }
+                    ];
                     
-                await this.projects.addNewOciToProject(
-                    projectId,
-                    ociQuantity,
-                    arrayOciAddedToProject
-                )
+                    for (const key in req.body) {
+                        const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                        if (match) {
+                            if (key.startsWith('ociStatus')) {
+                                match.array.push(req.body[key] === 'on' ? true : false)
+                            } else if (key.startsWith('imageOciFileNameModal')) {
+                                const keyValue = req.body[key] === '' ?  imageNotFound : (req.body[key]);
+                                match.array.push(keyValue);
+                            } else {
+                                match.array.push(req.body[key]);
+                            }    
+                        }
+                    }
+    
+                    const ociKNumber = 0
+                    let invalidOciNumber = true, indexArrayOciNumber = 0
+                    for (let h=0; h<arrayOciNumber.length; h++) {
+                        const ociNumberValid = await this.projects.selectOciByOciNumber(arrayOciNumber[h], ociKNumber)
+                        const otherOciNumbers = proyecto[0].project[0].oci.map(oci => oci.ociNumber);
+                        if (otherOciNumbers.includes(parseInt(ociNumberValid))) {
+                            invalidOciNumber = false
+                            indexArrayOciNumber = h
+                        }
+                    }
                 
-                const proyectos = await this.projects.getProjectsByClientId(clientId)
-                !proyectos ? catchError401_1(req, res, next) : null
-
-                const ordenes = await this.orders.getAllOrders()
-                !ordenes ? catchError400_5(req, res, next) : null
-
-                const userCart = await this.carts.getCartByUserId(userId)
-
-                const csrfToken = csrfTokens.create(req.csrfSecret);
-                setTimeout(() => {
-                    return res.render('clientProjectsDetails', {
-                        username,
-                        userInfo,
-                        userCart,
-                        ordenes,
-                        expires,
-                        cliente,
-                        proyectos,
-                        data,
-                        csrfToken
-                    })
-                }, 400)
-                
-            } catch (err) {
-                catchError500(err, req, res, next)
-            }
-        })
+                    if (!invalidOciNumber) {
+                        const err = new Error (`Ya existe una OCI# ${arrayOciNumber[indexArrayOciNumber]} o Numero de OCI inválido!`)
+                        err.dirNumber = 400
+                        return next(err);
+                    }
+    
+                    let arrayOciAddedToProject = []
+                    for (let i=0; i<ociQuantity; i++ ) {
+                        let infoOciAddedToProject = {
+                            ociNumber: parseInt(arrayOciNumber[i]),
+                            ociDescription: arrayOciDescription[i] || "sinDatos",
+                            ociStatus: arrayOciStatus[i] || true,
+                            ociImage: arrayOciImages[i],
+                            ociAlias: arrayOciAlias[i] || "Sin Apodo",
+                            ociOwner: dataUserOciOwnerEmpty(),
+                            timestamp: new Date(),
+                            creator: dataUserCreator(userCreator),
+                            modificator: dataUserModificatorEmpty(),
+                            modifiedOn: "",
+                        }
+                        arrayOciAddedToProject.push(infoOciAddedToProject)
+                    }
+                    
+                    await this.clients.updateClient(
+                        clientId, 
+                        cliente, 
+                        dataUserModificatorNotEmpty(userCreator)
+                    )
+                        
+                    await this.projects.addNewOciToProject(
+                        projectId,
+                        ociQuantity,
+                        arrayOciAddedToProject
+                    )
+                    
+                    const proyectos = await this.projects.getProjectsByClientId(clientId)
+                    !proyectos ? catchError401_1(req, res, next) : null
+    
+                    const ordenes = await this.orders.getAllOrders()
+                    !ordenes ? catchError400_5(req, res, next) : null
+    
+                    const userCart = await this.carts.getCartByUserId(userId)
+    
+                    const csrfToken = csrfTokens.create(req.csrfSecret);
+                    setTimeout(() => {
+                        return res.render('clientProjectsDetails', {
+                            username,
+                            userInfo,
+                            userCart,
+                            ordenes,
+                            expires,
+                            cliente,
+                            proyectos,
+                            data,
+                            csrfToken
+                        })
+                    }, 400)
+                    
+                } catch (err) {
+                    catchError500(err, req, res, next)
+                }
+            })
+        }
     }
 
     updateProject = async (req, res, next) => {
         const id = req.params.id,
             expires = cookie(req)
         let username = res.locals.username,
-            userInfo = res.locals.userInfo
+            userInfo = res.locals.userInfo;
         
-        //------ Storage Project Image in Google Store --------
-        uploadMulterSingleImageProject(req, res, async (err) => {
-            try{
-                req.file ? await uploadToGCS(req, res, next) : null
-
-                const proyecto = await this.projects.selectProjectByProjectId(id)
-                !proyecto ? catchError401_1(req, res, next) : null
-                
-                const clientId = proyecto[0].client[0]._id
-                const cliente = await this.clients.selectClientById(clientId)
-                !cliente ? catchError401(req, res, next) : null
-                
-                const userId = userInfo.id
-                const userCreator = await this.users.getUserById(userId)
-                !userCreator ? catchError401_3(req, res, next) : null
-        
-                const statusProject = req.body.statusProjectForm,
-                    projectName = req.body.projectName,
-                    projectDescription = req.body.projectDescription,
-                    prioProject = req.body.prioProject,
-                    levelProject = req.body.levelProject,
-                    codeProject = req.body.codeProject,
-                    imageProjectText = req.body.imageProjectFileName
-                        
-                await this.projects.updateProject(
-                    id,
-                    proyecto,
-                    statusProject,
-                    projectName,
-                    projectDescription,
-                    prioProject,
-                    levelProject,
-                    codeProject,
-                    imageProjectText,
-                    dataUserModificatorNotEmpty(userCreator)
-                )
-
-                await this.clients.updateClient(
-                    clientId, 
-                    cliente, 
-                    dataUserModificatorNotEmpty(userCreator)
-                )
-
-                const proyectos = await this.projects.getProjectsByClientId(clientId)
-                !proyectos ? catchError401_1(req, res, next) : null
-
-                const ordenes = await this.orders.getAllOrders()
-                !ordenes ? catchError400_5(req, res, next) : null
-                
-                const userCart = await this.carts.getCartByUserId(usuario._id)
-
-                const csrfToken = csrfTokens.create(req.csrfSecret);
-                setTimeout(() => {
-                    return res.render('clientProjectsDetails', {
-                        username,
-                        userInfo,
-                        userCart,
-                        ordenes,
-                        expires,
-                        cliente,
-                        proyectos,
-                        data,
-                        csrfToken
-                    })
-                }, 400)
-
-            } catch (err) {
-                catchError500(err, req, res, next)
-            }
-        })
+        if (id) {
+            //------ Storage Project Image in Google Store --------
+            uploadMulterSingleImageProject(req, res, async (err) => {
+                try{
+                    req.file ? await uploadToGCS(req, res, next) : null
+    
+                    const proyecto = await this.projects.selectProjectByProjectId(id)
+                    !proyecto ? catchError401_1(req, res, next) : null
+                    
+                    const clientId = proyecto[0].client[0]._id
+                    const cliente = await this.clients.selectClientById(clientId)
+                    !cliente ? catchError401(req, res, next) : null
+                    
+                    const userId = userInfo.id
+                    const userCreator = await this.users.getUserById(userId)
+                    !userCreator ? catchError401_3(req, res, next) : null
+            
+                    const statusProject = req.body.statusProjectForm,
+                        projectName = req.body.projectName,
+                        projectDescription = req.body.projectDescription,
+                        prioProject = req.body.prioProject,
+                        levelProject = req.body.levelProject,
+                        codeProject = req.body.codeProject,
+                        imageProjectText = req.body.imageProjectFileName
+                            
+                    await this.projects.updateProject(
+                        id,
+                        proyecto,
+                        statusProject,
+                        projectName,
+                        projectDescription,
+                        prioProject,
+                        levelProject,
+                        codeProject,
+                        imageProjectText,
+                        dataUserModificatorNotEmpty(userCreator)
+                    )
+    
+                    await this.clients.updateClient(
+                        clientId, 
+                        cliente, 
+                        dataUserModificatorNotEmpty(userCreator)
+                    )
+    
+                    const proyectos = await this.projects.getProjectsByClientId(clientId)
+                    !proyectos ? catchError401_1(req, res, next) : null
+    
+                    const ordenes = await this.orders.getAllOrders()
+                    !ordenes ? catchError400_5(req, res, next) : null
+                    
+                    const userCart = await this.carts.getCartByUserId(usuario._id)
+    
+                    const csrfToken = csrfTokens.create(req.csrfSecret);
+                    setTimeout(() => {
+                        return res.render('clientProjectsDetails', {
+                            username,
+                            userInfo,
+                            userCart,
+                            ordenes,
+                            expires,
+                            cliente,
+                            proyectos,
+                            data,
+                            csrfToken
+                        })
+                    }, 400)
+    
+                } catch (err) {
+                    catchError500(err, req, res, next)
+                }
+            })
+        }
     }
 
     updateOci = async (req, res, next) => {
         const id = req.params.id,
             expires = cookie(req)
         let username = res.locals.username,
-            userInfo = res.locals.userInfo
+            userInfo = res.locals.userInfo;
 
-        try{
-            uploadMulterSingleImageOci(req, res, async (err) => {
-                req.file ? uploadToGCS(req, res, next) : null
-
-                const proyecto = await this.projects.selectProjectByProjectId(id)
-                !proyecto ? catchError401_1(req, res, next) : null
-                
-                const clientId = proyecto[0].client[0]._id
-                const cliente = await this.clients.selectClientById(clientId)
-                !cliente ? catchError401(req, res, next) : null
-        
-                const userId = userInfo.id
-                const userCreator = await this.users.getUserById(userId)
-                !userCreator ? catchError401_3(req, res, next) : null
-
-                const ociNumberInput = parseInt(req.body.numberOci),
-                    numberOciHidden = parseInt(req.body.numberOciHidden),
-                    ociKNumber = parseInt(req.body.ociKNumberHidden),
-                    confirmationNumberOci = Boolean(req.body.confirmationNumberOci)
-                let ociNumberValid = 1
-
-                if (!confirmationNumberOci) {
-                    ociNumberValid = numberOciHidden
-
-                } else {
-                    ociNumberValid = await this.projects.selectOciByOciNumber(ociNumberInput, ociKNumber)         
-                    const otherOciNumbers = proyecto[0].project[0].oci.map(oci => oci.ociNumber);
-                
-                    if (otherOciNumbers.includes(ociNumberValid)) {
-                        const err = new Error (`Ya existe una OCI# ${ociNumberInput} o Numero de OCI inválido!`)
-                        err.dirNumber = 400
-                        return next(err);
-                    }
-                }    
-
-                const statusOci = req.body.statusOciForm,
-                    ociDescription = req.body.descriptionOci,
-                    ociAlias = req.body.aliasOci,
-                    ociImageText = req.body.imageOciFileName
-
-                await this.projects.updateOci(
-                    id,
-                    proyecto,
-                    statusOci,
-                    ociDescription,
-                    ociAlias,
-                    ociNumberValid,
-                    ociKNumber,
-                    ociImageText,
-                    dataUserModificatorNotEmpty(userCreator)
-                )
-
-                await this.clients.updateClient(
-                    clientId, 
-                    cliente, 
-                    dataUserModificatorNotEmpty(userCreator)
-                )
-
-                const proyectos = await this.projects.getProjectsByClientId(clientId)
-                !proyectos ? catchError401_2(req, res, next) : null
-
-                const ordenes = await this.orders.getAllOrders()
-                !ordenes ? catchError400_5(req, res, next) : null
-
-                const userCart = await this.carts.getCartByUserId(userId)
-
-                const csrfToken = csrfTokens.create(req.csrfSecret);
-                setTimeout(() => {
-                    return res.render('clientProjectsDetails', {
-                        username,
-                        userInfo,
-                        userCart,
-                        ordenes,
-                        expires,
-                        cliente,
-                        proyectos,
-                        data,
-                        csrfToken
-                    })
-                }, 400)
-            })
-
-        } catch (err) {
-            catchError500(err, req, res, next)
+        if (id) {
+            try{
+                uploadMulterSingleImageOci(req, res, async (err) => {
+                    req.file ? uploadToGCS(req, res, next) : null
+    
+                    const proyecto = await this.projects.selectProjectByProjectId(id)
+                    !proyecto ? catchError401_1(req, res, next) : null
+                    
+                    const clientId = proyecto[0].client[0]._id
+                    const cliente = await this.clients.selectClientById(clientId)
+                    !cliente ? catchError401(req, res, next) : null
+            
+                    const userId = userInfo.id
+                    const userCreator = await this.users.getUserById(userId)
+                    !userCreator ? catchError401_3(req, res, next) : null
+    
+                    const ociNumberInput = parseInt(req.body.numberOci),
+                        numberOciHidden = parseInt(req.body.numberOciHidden),
+                        ociKNumber = parseInt(req.body.ociKNumberHidden),
+                        confirmationNumberOci = Boolean(req.body.confirmationNumberOci)
+                    let ociNumberValid = 1
+    
+                    if (!confirmationNumberOci) {
+                        ociNumberValid = numberOciHidden
+    
+                    } else {
+                        ociNumberValid = await this.projects.selectOciByOciNumber(ociNumberInput, ociKNumber)         
+                        const otherOciNumbers = proyecto[0].project[0].oci.map(oci => oci.ociNumber);
+                    
+                        if (otherOciNumbers.includes(ociNumberValid)) {
+                            const err = new Error (`Ya existe una OCI# ${ociNumberInput} o Numero de OCI inválido!`)
+                            err.dirNumber = 400
+                            return next(err);
+                        }
+                    }    
+    
+                    const statusOci = req.body.statusOciForm,
+                        ociDescription = req.body.descriptionOci,
+                        ociAlias = req.body.aliasOci,
+                        ociImageText = req.body.imageOciFileName
+    
+                    await this.projects.updateOci(
+                        id,
+                        proyecto,
+                        statusOci,
+                        ociDescription,
+                        ociAlias,
+                        ociNumberValid,
+                        ociKNumber,
+                        ociImageText,
+                        dataUserModificatorNotEmpty(userCreator)
+                    )
+    
+                    await this.clients.updateClient(
+                        clientId, 
+                        cliente, 
+                        dataUserModificatorNotEmpty(userCreator)
+                    )
+    
+                    const proyectos = await this.projects.getProjectsByClientId(clientId)
+                    !proyectos ? catchError401_2(req, res, next) : null
+    
+                    const ordenes = await this.orders.getAllOrders()
+                    !ordenes ? catchError400_5(req, res, next) : null
+    
+                    const userCart = await this.carts.getCartByUserId(userId)
+    
+                    const csrfToken = csrfTokens.create(req.csrfSecret);
+                    setTimeout(() => {
+                        return res.render('clientProjectsDetails', {
+                            username,
+                            userInfo,
+                            userCart,
+                            ordenes,
+                            expires,
+                            cliente,
+                            proyectos,
+                            data,
+                            csrfToken
+                        })
+                    }, 400)
+                })
+    
+            } catch (err) {
+                catchError500(err, req, res, next)
+            }
         }
     }
 
@@ -1131,101 +1147,103 @@ class ProjectsController {
         const id = req.params.id,
             expires = cookie(req)
         let username = res.locals.username,
-            userInfo = res.locals.userInfo
+            userInfo = res.locals.userInfo;
 
-        try {
-            const proyectoBuscado = await this.projects.selectProjectsByMainProjectId(id)
-            !proyectoBuscado ? catchError401_1(req, res, next) : null
-            
-            const clientId = proyectoBuscado[0].client[0]._id
-            const cliente = await this.clients.selectClientById(clientId)
-            !cliente ? catchError401(req, res, next) : null
-            
-            const userId = userInfo.id
-            const userCreator = await this.users.getUserById(userId)
-            !userCreator ? catchError401_3(req, res, next) : null
-
-            const ociKNumber = parseInt(req.body.ociKNumberHidden),
-                otKNumber =  parseInt(req.body.otKNumberHidden),
-                numberOtHidden = parseInt(req.body.otNumberHidden),
-                otNumberInput = parseInt(req.body.numberOt),
-                confirmationNumberOt = Boolean(req.body.confirmationNumberOt)
-            let otNumberValid = 1
-
-            if (!confirmationNumberOt) {
-                otNumberValid = numberOtHidden
-
-            } else {
-                otNumberValid = await this.projects.selectOtByOtNumber(otNumberInput, otKNumber, ociKNumber)
-                const ociQuantity = proyectoBuscado[0].project[0].oci
-                const arrayOts = []
-                for (let a=0; a<parseInt(ociQuantity.length); a++) {
-                    arrayOts.push(proyectoBuscado[0].project[0].oci[a].otProject)
-                }
+        if (id) {
+            try {
+                const proyectoBuscado = await this.projects.selectProjectsByMainProjectId(id)
+                !proyectoBuscado ? catchError401_1(req, res, next) : null
                 
-                const flattenedArray = arrayOts.flat(1)
-                const otherOtNumbers = flattenedArray.map(ot => ot.otNumber);
-
-                if (otherOtNumbers.includes(otNumberInput)) {
-                    const err = new Error (`Ya existe una OT#${otNumberInput} en esta OCI o Numero de OT inválido!`)
-                    err.statusCode = 400
-                    return next(err);
+                const clientId = proyectoBuscado[0].client[0]._id
+                const cliente = await this.clients.selectClientById(clientId)
+                !cliente ? catchError401(req, res, next) : null
+                
+                const userId = userInfo.id
+                const userCreator = await this.users.getUserById(userId)
+                !userCreator ? catchError401_3(req, res, next) : null
+    
+                const ociKNumber = parseInt(req.body.ociKNumberHidden),
+                    otKNumber =  parseInt(req.body.otKNumberHidden),
+                    numberOtHidden = parseInt(req.body.otNumberHidden),
+                    otNumberInput = parseInt(req.body.numberOt),
+                    confirmationNumberOt = Boolean(req.body.confirmationNumberOt)
+                let otNumberValid = 1
+    
+                if (!confirmationNumberOt) {
+                    otNumberValid = numberOtHidden
+    
+                } else {
+                    otNumberValid = await this.projects.selectOtByOtNumber(otNumberInput, otKNumber, ociKNumber)
+                    const ociQuantity = proyectoBuscado[0].project[0].oci
+                    const arrayOts = []
+                    for (let a=0; a<parseInt(ociQuantity.length); a++) {
+                        arrayOts.push(proyectoBuscado[0].project[0].oci[a].otProject)
+                    }
+                    
+                    const flattenedArray = arrayOts.flat(1)
+                    const otherOtNumbers = flattenedArray.map(ot => ot.otNumber);
+    
+                    if (otherOtNumbers.includes(otNumberInput)) {
+                        const err = new Error (`Ya existe una OT#${otNumberInput} en esta OCI o Numero de OT inválido!`)
+                        err.statusCode = 400
+                        return next(err);
+                    }
                 }
+    
+                const opNumber = parseInt(req.body.numeroOp),
+                    statusOt = req.body.statusOtForm,
+                    otDescription = req.body.descriptionOt,
+                    otDesign = req.body.designOt,
+                    otSimulation = req.body.simulationOt,
+                    otSupplier = req.body.supplierOt
+    
+                await this.projects.updateOt(
+                    id,
+                    proyectoBuscado,
+                    ociKNumber,
+                    otNumberValid,
+                    otKNumber,
+                    opNumber,
+                    statusOt,
+                    otDescription,
+                    otDesign,
+                    otSimulation,
+                    otSupplier,
+                    dataUserModificatorNotEmpty(userCreator)
+                )
+                
+                await this.clients.updateClient(
+                    clientId, 
+                    cliente, 
+                    dataUserModificatorNotEmpty(userCreator)
+                )
+    
+                const proyecto = await this.projects.selectProjectsByMainProjectId(id)
+                !proyecto ? catchError401_1(req, res, next) : null
+    
+                const ordenes = await this.orders.getAllOrders()
+                !ordenes ? catchError400_5(req, res, next) : null
+    
+                const userCart = await this.carts.getCartByUserId(userId)
+    
+                const csrfToken = csrfTokens.create(req.csrfSecret);
+                setTimeout(() => {
+                    res.render('projectSelectedDetail', {
+                        proyecto,
+                        username,
+                        userInfo,
+                        userCart,
+                        ordenes,
+                        expires,
+                        cliente,
+                        data,
+                        csrfToken
+                    })
+                }, 400)
+    
+            } catch (err) {
+                catchError500(err, req, res, next)
             }
-
-            const opNumber = parseInt(req.body.numeroOp),
-                statusOt = req.body.statusOtForm,
-                otDescription = req.body.descriptionOt,
-                otDesign = req.body.designOt,
-                otSimulation = req.body.simulationOt,
-                otSupplier = req.body.supplierOt
-
-            await this.projects.updateOt(
-                id,
-                proyectoBuscado,
-                ociKNumber,
-                otNumberValid,
-                otKNumber,
-                opNumber,
-                statusOt,
-                otDescription,
-                otDesign,
-                otSimulation,
-                otSupplier,
-                dataUserModificatorNotEmpty(userCreator)
-            )
-            
-            await this.clients.updateClient(
-                clientId, 
-                cliente, 
-                dataUserModificatorNotEmpty(userCreator)
-            )
-
-            const proyecto = await this.projects.selectProjectsByMainProjectId(id)
-            !proyecto ? catchError401_1(req, res, next) : null
-
-            const ordenes = await this.orders.getAllOrders()
-            !ordenes ? catchError400_5(req, res, next) : null
-
-            const userCart = await this.carts.getCartByUserId(userId)
-
-            const csrfToken = csrfTokens.create(req.csrfSecret);
-            setTimeout(() => {
-                res.render('projectSelectedDetail', {
-                    proyecto,
-                    username,
-                    userInfo,
-                    userCart,
-                    ordenes,
-                    expires,
-                    cliente,
-                    data,
-                    csrfToken
-                })
-            }, 400)
-
-        } catch (err) {
-            catchError500(err, req, res, next)
         }
     }
 
@@ -1235,44 +1253,169 @@ class ProjectsController {
             ociKNumber = parseInt(req.body.ociKNumberHidden)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
-        
-        try { 
-            const proyecto = await this.projects.selectProjectByProjectId(id)
-            !proyecto ? catchError401_1(req, res, next) : null
-            
-            const clientId = proyecto[0].client[0]._id
-            const clienteSeleccionado = await this.clients.selectClientById(clientId)
-            !clienteSeleccionado ? catchError401(req, res, next) : null
-            
-            const userId = userInfo.id
-            const userCreator = await this.users.getUserById(userId)
-            !userCreator ? catchError401_3(req, res, next) : null
-            
-            await this.projects.deleteOci(
-                id, 
-                proyecto,
-                ociKNumber,
-                dataUserModificatorNotEmpty(userCreator)
-            )
-            
-            const cliente = await this.clients.updateClient(
-                clientId, 
-                clienteSeleccionado, 
-                dataUserModificatorNotEmpty(userCreator)
-            )
-            !cliente ? catchError401_1(req, res, next) : null
 
-            const proyectos = await this.projects.getProjectsByClientId(clientId)
-            !proyectos ? catchError401_1(req, res, next) : null
+        if (id) {
+            try { 
+                const proyecto = await this.projects.selectProjectByProjectId(id)
+                !proyecto ? catchError401_1(req, res, next) : null
+                
+                const clientId = proyecto[0].client[0]._id
+                const clienteSeleccionado = await this.clients.selectClientById(clientId)
+                !clienteSeleccionado ? catchError401(req, res, next) : null
+                
+                const userId = userInfo.id
+                const userCreator = await this.users.getUserById(userId)
+                !userCreator ? catchError401_3(req, res, next) : null
+                
+                await this.projects.deleteOci(
+                    id, 
+                    proyecto,
+                    ociKNumber,
+                    dataUserModificatorNotEmpty(userCreator)
+                )
+                
+                const cliente = await this.clients.updateClient(
+                    clientId, 
+                    clienteSeleccionado, 
+                    dataUserModificatorNotEmpty(userCreator)
+                )
+                !cliente ? catchError401_1(req, res, next) : null
+    
+                const proyectos = await this.projects.getProjectsByClientId(clientId)
+                !proyectos ? catchError401_1(req, res, next) : null
+    
+                const ordenes = await this.orders.getAllOrders()
+                !ordenes ? catchError400_5(req, res, next) : null
+    
+                const userCart = await this.carts.getCartByUserId(userId)
+    
+                const csrfToken = csrfTokens.create(req.csrfSecret);
+                setTimeout(() => {
+                    return res.render('clientProjectsDetails', {
+                            username,
+                            userInfo,
+                            userCart,
+                            ordenes,
+                            expires,
+                            cliente,
+                            proyectos,
+                            data,
+                            csrfToken
+                    })
+                }, 400)
+    
+            } catch (err) {
+                catchError500(err, req, res, next)
+            }
+        }
+    }
 
-            const ordenes = await this.orders.getAllOrders()
-            !ordenes ? catchError400_5(req, res, next) : null
+    deleteOt = async (req, res, next) => {
+        const id = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo;
 
-            const userCart = await this.carts.getCartByUserId(userId)
+        if (id) {
+            try {
+                const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
+                !mainProyecto ? catchError401_1(req, res, next) : null
+                
+                const clientId = mainProyecto[0].client[0]._id
+                const clienteSeleccionado = await this.clients.selectClientById(clientId)
+                !clienteSeleccionado ? catchError401(req, res, next) : null
+    
+                const userId = userInfo.id
+                const userCreator = await this.users.getUserById(userId)
+                !userCreator ? catchError401_3(req, res, next) : null
+                
+                const ociKNumber = parseInt(req.body.ociKNumberHidden),
+                    otKNumber = parseInt(req.body.otKNumberHidden)
+            
+                await this.projects.deleteOt(
+                    id, 
+                    mainProyecto,
+                    ociKNumber,
+                    otKNumber,
+                    dataUserModificatorNotEmpty(userCreator)
+                    )
+                
+                const cliente = await this.clients.updateClient(
+                    clientId, 
+                    clienteSeleccionado, 
+                    dataUserModificatorNotEmpty(userCreator)
+                )
+                !cliente ? catchError401_1(req, res, next) : null
+    
+                const proyecto = await this.projects.selectProjectsByMainProjectId(id)
+                !proyecto ? catchError401_1(req, res, next) : null
+    
+                const ordenes = await this.orders.getAllOrders()
+                !ordenes ? catchError400_5(req, res, next) : null
+    
+                const userCart = await this.carts.getCartByUserId(userId)
+    
+                const csrfToken = csrfTokens.create(req.csrfSecret);
+                setTimeout(() => {
+                    return res.render('projectSelectedDetail', {
+                            username,
+                            userInfo,
+                            userCart,
+                            ordenes,
+                            expires,
+                            cliente,
+                            proyecto,
+                            data,
+                            csrfToken
+                    })
+                }, 400)
+    
+            } catch (err) {
+                catchError500(err, req, res, next)
+            }
+        }
+    }
 
-            const csrfToken = csrfTokens.create(req.csrfSecret);
-            setTimeout(() => {
-                return res.render('clientProjectsDetails', {
+    deleteProjectById = async (req, res, next) => {
+        const id = req.params.id,
+            expires = cookie(req)
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo;
+
+        if (id) {
+            try {
+                const proyecto = await this.projects.selectProjectByProjectId(id)
+                !proyecto ? catchError401_1(req, res, next) : null
+                const clientId = proyecto[0].client[0]._id
+                const clienteSeleccionado = await this.clients.selectClientById(clientId)
+                !clienteSeleccionado ? catchError401(req, res, next) : null
+    
+                const userId = userInfo.id
+                const userCreator = await this.users.getUserById(userId)
+                !userCreator ? catchError401_3(req, res, next) : null
+            
+                const proyectos = await this.projects.deleteProjectById(
+                    id, 
+                    proyecto, 
+                    dataUserModificatorNotEmpty(userCreator)
+                )
+                !proyectos ? catchError401_1(req, res, next) : null
+                
+                const cliente = await this.clients.reduceClientProjectQty(
+                    clientId, 
+                    clienteSeleccionado, 
+                    dataUserModificatorNotEmpty(userCreator)
+                )
+                !cliente ? catchError401_1(req, res, next) : null
+    
+                const ordenes = await this.orders.getAllOrders()
+                !ordenes ? catchError400_5(req, res, next) : null
+    
+                const userCart = await this.carts.getCartByUserId(userId)
+    
+                const csrfToken = csrfTokens.create(req.csrfSecret);
+                setTimeout(() => {
+                    res.render('clientProjectsDetails', {
                         username,
                         userInfo,
                         userCart,
@@ -1282,131 +1425,12 @@ class ProjectsController {
                         proyectos,
                         data,
                         csrfToken
-                })
-            }, 400)
-
-        } catch (err) {
-            catchError500(err, req, res, next)
-        }
-    }
-
-    deleteOt = async (req, res, next) => {
-        const id = req.params.id,
-            expires = cookie(req)
-        let username = res.locals.username,
-            userInfo = res.locals.userInfo
-
-        try {
-            const mainProyecto = await this.projects.selectProjectsByMainProjectId(id)
-            !mainProyecto ? catchError401_1(req, res, next) : null
-            
-            const clientId = mainProyecto[0].client[0]._id
-            const clienteSeleccionado = await this.clients.selectClientById(clientId)
-            !clienteSeleccionado ? catchError401(req, res, next) : null
-
-            const userId = userInfo.id
-            const userCreator = await this.users.getUserById(userId)
-            !userCreator ? catchError401_3(req, res, next) : null
-            
-            const ociKNumber = parseInt(req.body.ociKNumberHidden),
-                otKNumber = parseInt(req.body.otKNumberHidden)
-        
-            await this.projects.deleteOt(
-                id, 
-                mainProyecto,
-                ociKNumber,
-                otKNumber,
-                dataUserModificatorNotEmpty(userCreator)
-                )
-            
-            const cliente = await this.clients.updateClient(
-                clientId, 
-                clienteSeleccionado, 
-                dataUserModificatorNotEmpty(userCreator)
-            )
-            !cliente ? catchError401_1(req, res, next) : null
-
-            const proyecto = await this.projects.selectProjectsByMainProjectId(id)
-            !proyecto ? catchError401_1(req, res, next) : null
-
-            const ordenes = await this.orders.getAllOrders()
-            !ordenes ? catchError400_5(req, res, next) : null
-
-            const userCart = await this.carts.getCartByUserId(userId)
-
-            const csrfToken = csrfTokens.create(req.csrfSecret);
-            setTimeout(() => {
-                return res.render('projectSelectedDetail', {
-                        username,
-                        userInfo,
-                        userCart,
-                        ordenes,
-                        expires,
-                        cliente,
-                        proyecto,
-                        data,
-                        csrfToken
-                })
-            }, 400)
-
-        } catch (err) {
-            catchError500(err, req, res, next)
-        }
-    }
-
-    deleteProjectById = async (req, res, next) => {
-        const id = req.params.id,
-            expires = cookie(req)
-        let username = res.locals.username,
-            userInfo = res.locals.userInfo
-
-        try {
-            const proyecto = await this.projects.selectProjectByProjectId(id)
-            !proyecto ? catchError401_1(req, res, next) : null
-            const clientId = proyecto[0].client[0]._id
-            const clienteSeleccionado = await this.clients.selectClientById(clientId)
-            !clienteSeleccionado ? catchError401(req, res, next) : null
-
-            const userId = userInfo.id
-            const userCreator = await this.users.getUserById(userId)
-            !userCreator ? catchError401_3(req, res, next) : null
-        
-            const proyectos = await this.projects.deleteProjectById(
-                id, 
-                proyecto, 
-                dataUserModificatorNotEmpty(userCreator)
-            )
-            !proyectos ? catchError401_1(req, res, next) : null
-            
-            const cliente = await this.clients.reduceClientProjectQty(
-                clientId, 
-                clienteSeleccionado, 
-                dataUserModificatorNotEmpty(userCreator)
-            )
-            !cliente ? catchError401_1(req, res, next) : null
-
-            const ordenes = await this.orders.getAllOrders()
-            !ordenes ? catchError400_5(req, res, next) : null
-
-            const userCart = await this.carts.getCartByUserId(userId)
-
-            const csrfToken = csrfTokens.create(req.csrfSecret);
-            setTimeout(() => {
-                res.render('clientProjectsDetails', {
-                    username,
-                    userInfo,
-                    userCart,
-                    ordenes,
-                    expires,
-                    cliente,
-                    proyectos,
-                    data,
-                    csrfToken
-                })
-            }, 400)
-
-        } catch (err) {
-            catchError500(err, req, res, next)
+                    })
+                }, 400)
+    
+            } catch (err) {
+                catchError500(err, req, res, next)
+            }
         }
     }
 

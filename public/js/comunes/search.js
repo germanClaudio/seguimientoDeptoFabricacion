@@ -461,6 +461,456 @@ const renderSearchedNewClients = (arrClientNewSearch) => {
 }
 
 //*******************************************************/
+// -------------- Show Searched Projects Project page----------------
+socket.on('searchProjects', async (arrProjectSearch) => {
+    renderSearchedProjects (await arrProjectSearch)
+})
+
+const searchProject = () => {
+    const query = document.getElementById('query').value,
+        status = document.getElementById('status').value,
+        nivel = document.getElementById('nivel').value || 'ganados',
+        proyectosRadio = document.getElementsByName('projects'),
+        uNegocioRadio = document.getElementsByName('uNegocio')
+    
+    let proyectos, uNegocio
+    
+    for (let i=0; i<proyectosRadio.length; i++) {
+        if (proyectosRadio[i].checked) proyectos = proyectosRadio[i].value
+    }
+
+    for (let i=0; i<uNegocioRadio.length; i++) {
+        if (uNegocioRadio[i].checked) uNegocio = uNegocioRadio[i].value
+    }
+
+    socket.emit('searchProyectoAll', {
+        query,
+        status,
+        nivel,
+        proyectos,
+        uNegocio
+    })
+    return false
+}
+
+const renderSearchedProjects = (arrProjectSearch) => {
+    document.getElementById('showCountProjectSearch').innerHTML = ''
+    const dnoneContainer = document.getElementById('projectTableSearch')
+    const dnoneTableHead = document.getElementById('theadSearchTable')
+
+    if(arrProjectSearch.length === 0) {
+        dnoneContainer.classList.remove('d-none', 'card');
+        dnoneTableHead.classList.add('d-none')
+        const htmlSearchProjectNull = (
+            `<tr>
+                <td colspan="14">
+                    <div class="col mx-auto">
+                        <div class="card rounded-2 mx-auto shadow-lg" style="max-width: 540px;">
+                            <div class="row g-0">
+                                <div class="col-md-4 my-auto px-1">
+                                    <img src="${clientNotFound}" style="max-width=170vw; object-fit: contain;"
+                                        class="img-fluid rounded p-1" alt="Proyecto no encontrado">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Proyecto no encontrado</h5>
+                                        <p class="card-text">Lo siento, no pudimos encontrar el proyecto</p>
+                                        <p class="card-text">
+                                            <small class="text-muted">
+                                                Pruebe nuevamente con un nombre, código o descripción diferente.
+                                            </small>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>`
+        )
+        document.getElementById('showProjectSearch').innerHTML = htmlSearchProjectNull
+    
+    } else if (arrProjectSearch.length === 1 && arrProjectSearch[0] === 'vacio') {
+        dnoneContainer.classList.remove('d-none', 'card');
+        dnoneTableHead.classList.add('d-none')
+        const htmlSearchProjectNull = (
+            `<tr>
+                <td colspan="14">
+                    <div class="col mx-auto">
+                        <div class="shadow-lg card rounded-2 mx-auto" style="max-width: 540px;">
+                            <div class="row g-0">
+                                <div class="col-md-4 my-auto px-1">
+                                    <img src="${allClientsFound}" style="max-width=170vw; object-fit: contain;"
+                                        class="img-fluid rounded p-1" alt="Todos los Proyectos">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Todos los proyectos</h5>
+                                        <p class="card-text">Todos los proyectos están listados abajo</p>
+                                        <p class="card-text">
+                                            <small class="text-muted">
+                                                Pruebe nuevamente con un nombre, código o descripción diferente o haga scroll hacia abajo
+                                            </small>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>`
+        )
+        document.getElementById('showProjectSearch').innerHTML = htmlSearchProjectNull
+
+    } else {
+        dnoneContainer.classList.remove('d-none');
+        dnoneContainer.classList.add('card');
+        dnoneTableHead.classList.remove('d-none');
+
+        const htmlSearchProject = arrProjectSearch.map((element) => {
+            let green = 'success', blue = 'primary', red = 'danger', dark = 'dark', white = 'light',
+                grey = 'secondary', yellow = 'warning', cian = 'info', btnGroup = "";
+
+            // Definir valores predeterminados
+            let colorResult = grey, colorLevel = white, text = "Cotizado";
+
+            // ----------- Loops de Array OCI ----------------
+            function loopOci(j) {
+                let ociArr = []
+                let otVisibleLength = 0
+                for (let i=0; i < element.project[0].oci[j].otProject.length; i++) {
+                    if (element.project[0].oci[j].otProject[i].visible) otVisibleLength++
+                }
+                
+                if (otVisibleLength > 0 ) {
+                    if (otVisibleLength % 2 === 0) {
+                        for (let i=0; i < otVisibleLength; i++) {
+                            if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-1) {
+                                element.project[0].oci[j].ociStatus
+                                    ? ociArr.push(element.project[0].oci[j].ociNumber)
+                                    : ociArr.push(element.project[0].oci[j].ociNumber + ' ' + '<i class="fa-solid fa-circle-info" title="OCI Inactiva" style="color: #ff0000;"></i><br>')
+                            
+                            } else {
+                                ociArr.push('&#8203;')
+                            }
+                        }
+
+                    } else {
+                        for (let i=0; i < otVisibleLength; i++) {
+                            if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-0.5) {
+                                element.project[0].oci[j].ociStatus
+                                    ? ociArr.push(element.project[0].oci[j].ociNumber)
+                                    : ociArr.push(element.project[0].oci[j].ociNumber + ' ' + '<i class="fa-solid fa-circle-info" title="OCI Inactiva" style="color: #ff0000;"></i><br>')
+                            
+                            } else {
+                                ociArr.push('&#8203;')
+                            }
+                        }
+                    }
+                    return ociArr.join('<br>')
+
+                } else {
+                    return (`${element.project[0].oci[j].ociNumber} <i class="fa-solid fa-circle-exclamation" title="Sin Datos" style="color: #fd7e14;"></i>`)
+                }
+            }
+
+            let arrOciArr = []
+            function loopArrayOci() {
+                for (let j=0; j < element.project[0].oci.length; j++) {
+                    if (element.project[0].oci[j].visible) arrOciArr.push(loopOci(j))
+                }
+                return arrOciArr.join('<hr>')
+            }
+
+            //************* Loop  Alias de Oci *******************
+            function loopAliasOci(j) {
+                let ociAliasArr = []
+                let otVisibleLength = 0
+                for (let i=0; i < element.project[0].oci[j].otProject.length; i++) {
+                    if (element.project[0].oci[j].otProject[i].visible) otVisibleLength++
+                }
+                
+                if (otVisibleLength > 0 ) {
+                    if (otVisibleLength % 2 === 0) {
+                        for (let i=0; i < otVisibleLength; i++) {
+                            if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-1) {
+                                element.project[0].oci[j].ociStatus
+                                    ? ociAliasArr.push(`<span class="badge bg-primary text-light my-auto">${element.project[0].oci[j].ociAlias}</span>`)
+                                    : ociAliasArr.push(`<span class="badge bg-danger text-light my-auto">${element.project[0].oci[j].ociAlias}</span><br>`)
+
+                            } else {
+                                ociAliasArr.push('&#8203;')
+                            }
+                        }
+
+                    } else {
+                        for (let i=0; i < otVisibleLength; i++) {
+                            if (element.project[0].oci[j].visible && i === (otVisibleLength/2)-0.5) {
+                                element.project[0].oci[j].ociStatus
+                                    ? ociAliasArr.push(`<span class="badge bg-primary text-light my-auto">${element.project[0].oci[j].ociAlias}</span>`)
+                                    : ociAliasArr.push(`<span class="badge bg-danger text-light my-auto">${element.project[0].oci[j].ociAlias}</span><br>`)
+
+                            } else {
+                                ociAliasArr.push('&#8203;')
+                            }
+                        }
+                    }
+                    return ociAliasArr.join('<br>')
+
+                } else {
+                    return (`<span class="badge bg-secondary text-light my-auto">${element.project[0].oci[j].ociAlias}</span>`)
+                }
+            }
+
+            let arrOciAliasArr = []
+            function loopArrayAliasOci() {
+                for (let j=0; j < element.project[0].oci.length; j++) {
+                    if (element.project[0].oci[j].visible) arrOciAliasArr.push(loopAliasOci(j))
+                }
+                return arrOciAliasArr.join('<hr>')
+            }
+
+            // ----------- Loops de Array OTs ----------------
+            function loopOt(j) {
+                let otArr = []
+                if (element.project[0].oci[j].otProject.length > 0 ) {
+
+                    for (let i=0; i < element.project[0].oci[j].otProject.length; i++) {
+                        if (element.project[0].oci[j].otProject[i].visible) {
+                            element.project[0].oci[j].otProject[i].otStatus
+                                ? otArr.push(element.project[0].oci[j].otProject[i].otNumber)
+                                : otArr.push(element.project[0].oci[j].otProject[i].otNumber + ' ' + '<i class="fa-solid fa-circle-info" title="OT Inactiva" style="color: #ff0000;"></i>')
+                        }
+                    }
+                    return otArr.join('<br>')
+
+                } else {
+                    return ('<span class="badge rounded-pill bg-secondary text-light my-auto">S/D</span>')
+                }
+            }
+            
+            let arrOtArr = []
+            function loopArrayOt() {
+                for (let j=0; j < element.project[0].oci.length; j++) {
+                    if (element.project[0].oci[j].visible) arrOtArr.push(loopOt(j))
+                }
+                return arrOtArr.join('<hr>')
+            }
+
+            // ----------- Loops de Array OPs ----------------
+            function loopOp(j) {
+                let opArr = []
+                if (element.project[0].oci[j].otProject.length > 0 ) {
+                    for (let i=0; i < element.project[0].oci[j].otProject.length; i++) {
+                        if (element.project[0].oci[j].otProject[i].visible) opArr.push(element.project[0].oci[j].otProject[i].opNumber)
+                    }
+                    return opArr.join('<br>')
+
+                } else {
+                    return ('<span class="badge rounded-pill bg-secondary text-light my-auto">S/D</span>')
+                }
+            }
+
+            let arrOpArr = []
+            function loopArrayOp() {
+                for (let j=0; j < element.project[0].oci.length; j++) {
+                    if (element.project[0].oci[j].visible) arrOpArr.push(loopOp(j))
+                }
+                return arrOpArr.join('<hr>')
+            }
+
+            // ----------- Loops de Array Op Descriptions ----------------
+            function loopDescription(j) {
+                let DescriptionArr = []
+                if (element.project[0].oci[j].otProject.length > 0 ) {
+                    for (let i=0; i < element.project[0].oci[j].otProject.length; i++) {
+                        if (element.project[0].oci[j].otProject[i].visible) {
+                            DescriptionArr.push(element.project[0].oci[j].otProject[i].opDescription)
+                        }
+                    }
+                    return DescriptionArr.join('<br>')
+
+                } else {
+                    return ('<span class="badge rounded-pill bg-secondary text-light my-auto">S/D</span>')
+                }
+            }
+
+            let arrDescriptionArr = []
+            function loopArrayDescription() {
+                for (let j=0; j < element.project[0].oci.length; j++) {
+                    if (element.project[0].oci[j].visible) arrDescriptionArr.push(loopDescription(j))
+                }
+                return arrDescriptionArr.join('<hr>')
+            }    
+
+            // Crear un objeto para mapear los diferentes estados
+            const levelProjectMap = {
+                ganado: {
+                    colorLevel: white,
+                    colorResult: green,
+                    text: "Ganado"
+                },
+                paraCotizar: {
+                    colorLevel: yellow,
+                    colorResult: grey,
+                    text: "Para Cotizar"
+                },
+                default: {
+                    colorLevel: white,
+                    colorResult: red,
+                    text: "A Riesgo"
+                }
+            };
+
+            // Obtener los valores correspondientes al levelProject
+            const projectLevel = element.project[0].levelProject || 'ganado';
+            const levelData = levelProjectMap[projectLevel] || levelProjectMap.default;
+
+            // Asignar los valores
+            colorLevel = levelData.colorLevel;
+            colorResult = levelData.colorResult;
+            text = levelData.text;
+
+            const uNegocioMapping = {
+                'matrices': { showUNegocio: 'M', optionUNegocio: dark, optionTextUNegocio: white },
+                'lineas': { showUNegocio: 'L', optionUNegocio: blue, optionTextUNegocio: white }
+            };
+        
+            // Valores predeterminados
+            const defaultValuesuNegocio = { showUNegocio: 'ML', optionUNegocio: green };
+            
+            // Asignar valores basados en el Unidad de Negocio
+            const { showUNegocio, optionUNegocio, optionTextUNegocio } = uNegocioMapping[element.uNegocio] || defaultValuesuNegocio;
+
+            let utcDate = new Date(element.timestamp),
+                utcDateModified = new Date(element.modifiedOn),
+                localDate = new Date(utcDate.getTime() + offset),
+                localDateModified = new Date(utcDateModified.getTime() + offset),
+                formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
+                formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
+
+                formattedDate === formattedDateModified ? formattedDateModified = '' : null
+
+            if(element.project[0].visible) {
+                element.uNegocio === 'lineas'
+                    ? completeTr = `rgba(0, 0, 255, 0.1)">`
+                    : completeTr = `rgba(0, 0, 0, 0.2)">`
+                
+                element.uNegocio === 'lineas'
+                    ? btnGroup = `<a href="/api/clientes/${element.client[0]._id}" class="btn btn-${grey} btn-sm my-2 shadow-lg" data-toggle="tooltip" data-placement="top" title="Ver proyecto"><i class="fa-solid fa-eye"></i></a>
+                                    <a href="/api/ingenieriaLineas/selectWonProjects/${element.project[0]._id}" class="btn btn-${blue} btn-sm my-2 shadow-lg" title="Editar datos de Ingeniería Líneas"><i class="fa-solid fa-pencil"></i></a>
+                                    <a href="/api/ajustes/selectLineasProjects/${element.project[0]._id}" class="btn btn-${cian} btn-sm my-2 shadow-lg" title="Editar datos de Fabricación"><i class="fa-solid fa-file-pen"></i></a>`
+                    
+                    : btnGroup = `<a href="/api/clientes/${element.client[0]._id}" class="btn btn-${grey} btn-sm my-2 shadow-lg" data-toggle="tooltip" data-placement="top" title="Ver proyecto"><i class="fa-solid fa-eye"></i></a>
+                                    <a href="/api/programas/selectWonProjects/${element.project[0]._id}" class="btn btn-${dark} btn-sm my-2 shadow-lg" title="Editar datos de Programación"><i class="fa-solid fa-pencil"></i></a>
+                                    <a href="/api/ajustes/selectAjusteProjects/${element.project[0]._id}" class="btn btn-${yellow} btn-sm my-2 shadow-lg" title="Editar datos de Ajuste"><i class="fa-solid fa-file-pen"></i></a>`
+
+                return (`<tr style="border-bottom: 2px solid #dedede; background-color: ${completeTr}
+                            <td class="text-center">${element.project[0].codeProject}<br><span class="badge rounded-pill bg-${optionUNegocio} text-${optionTextUNegocio} mt-2">${showUNegocio}</span></td>
+                            <td class="text-center border-start border-light">${element.project[0].projectName}</td>
+                            <td class="text-center border-start border-light"><a href="/api/clientes/${element.client[0]._id}"><img id="imgProject_${element._id}" class="imgLazyLoad img-fluid rounded-3 m-auto p-1 shadow" alt="Imagen Proyecto" data-src="${element.project[0].imageProject}" src='${imagenLazy}' width="90%" height="90%" loading="lazy"></a></td>
+                            <td class="text-center border-start border-light"><p style="display: none;">${element.client[0].name}</p><img id="logo_${element._id}" class="imgLazyLoad img-fluid rounded-3 m-auto p-1 shadow" alt="Logo Cliente" data-src='${element.client[0].logo}' src='${imagenLazy}' width="90%" height="90%" loading="lazy"></td>
+                            <td class="text-center border-start border-light"><span class="badge rounded-pill bg-dark">${element.project[0].prioProject}</span></td>
+                            <td class="text-center border-start border-light"><span class="badge rounded-pill bg-${colorResult} text-${colorLevel}">${text}</span></td>
+                            <td class="text-center px-2 border-start border-light">${element.project[0].projectDescription}</td>
+                            <td class="text-center border-start border-light">
+                                <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
+                                    <tbody>
+                                        <tr>
+                                            <td class="border border-0">${loopArrayAliasOci()}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td class="text-center border-start border-light">
+                                <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
+                                    <tbody>
+                                        <tr>
+                                            <td class="border border-0">${loopArrayOci()}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td class="text-center border-start border-light">
+                                <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
+                                    <tbody>
+                                        <tr>
+                                            <td class="border border-0">${loopArrayOt()}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td class="text-center border-start border-light">
+                                <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
+                                    <tbody>
+                                        <tr>
+                                            <td class="border border-0">${loopArrayOp()}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td class="text-center border-start border-light">
+                                <table class="table-responsive mx-auto my-3" style="font-size: 10pt; width: 100%;">
+                                    <tbody>
+                                        <tr>
+                                            <td class="border border-0 text-center align-middle overflow-ellipsis">${loopArrayDescription()}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td class="text-center border-start border-light">${formattedDate}</td>
+                            <td class="text-center border-start border-light">
+                                <div class="d-block align-items-center">
+                                    ${btnGroup}
+                                </div>
+                            </td>
+                        </tr>`
+                    )
+            }            
+        }).join(" ");
+
+        let mensaje = ''
+        arrProjectSearch.length === 1
+            ? mensaje = `Se encontró <strong>${arrProjectSearch.length}</strong> resultado.`
+            : mensaje = `Se encontraron <strong>${arrProjectSearch.length}</strong> resultados.`
+
+        const htmlResultados = `<div class="row align-items-center">
+                                    <div class="col mx-auto">
+                                        <span class="my-1">${mensaje}</span>
+                                    </div>
+                                </div>`
+        
+        document.getElementById('showCountProjectSearch').innerHTML = htmlResultados
+        document.getElementById('showProjectSearch').innerHTML = htmlSearchProject
+
+        //------------- LazyLoad Images ------------------
+        const lazyImages = document.querySelectorAll("img[data-src]");
+        if ("IntersectionObserver" in window) {
+            const observer = new IntersectionObserver((entries, observer) => {
+                setTimeout(() => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src; // Sustituye data-src por src
+                            img.onload = () => img.classList.add("loaded");
+                            img.removeAttribute("data-src"); // Limpia el atributo
+                            observer.unobserve(img); // Deja de observar esta imagen
+                        }
+                    });
+                }, 1000);
+            });
+            lazyImages.forEach(img => observer.observe(img));
+            
+        } else {
+            // Fallback para navegadores sin IntersectionObserver
+            lazyImages.forEach(img => {
+                img.src = img.dataset.src;
+            });
+        }
+    }
+}
+
+//*******************************************************/
 // -------------- Show Searched Users ----------------
 socket.on('searchUsersAll', async (arrUsersSearch) => {
     renderSearchedUsers (await arrUsersSearch)
@@ -1364,7 +1814,6 @@ const renderSearchedConsumibles = (arrConsumiblesSearch) => {
         document.getElementById('showCountConsumiblesSearch').innerHTML = htmlResultados
     }
 }
-
 
 //*******************************************************/
 // -------------- Show Searched Ordenes ----------------
@@ -2971,7 +3420,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --------------- Reset filters -------------------
 document.addEventListener('DOMContentLoaded', () => {
-    const btnResetFilters = document.getElementById('resetFilter');
+    const btnResetFilters = document.getElementById('resetFilter'),
+        dnoneContainer = document.getElementById('projectTableSearch') || false,
+        dnoneTableHead = document.getElementById('theadSearchTable') || false;
+
     
     if (btnResetFilters) {
         btnResetFilters.addEventListener('click', async () => {
@@ -2984,6 +3436,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 await new Promise(resolve => setTimeout(resolve, 1000));
 
                 // Limpiar contenido
+                if (dnoneTableHead) dnoneTableHead.classList.add('d-none')
+                if (dnoneContainer) dnoneContainer.classList.add('d-none')
+
                 document.querySelectorAll('[id^="showCount"]').forEach(el => {
                     el.innerHTML = `<div class="row align-items-center">
                                         <div class="col mx-auto">

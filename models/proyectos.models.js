@@ -86,7 +86,7 @@ const ProyectoSchema = new Schema({
     creator: [creatorModels],
     client: [ClientSchema],
     project: [projectSchema],
-    uNegocioProject: {
+    uNegocio: {
         type: String,
         default: 'matrices',
     },
