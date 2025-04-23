@@ -1,4 +1,5 @@
 <!-- dataProjectsClientCard -->
+<% const offset = -3 * 60 * 60 * 1000; %>
 <div class="card mt-2 mb-5 mx-auto text-center rounded-3" style="max-width: 95vw;">
     <div class="row align-items-center">
         <div class="col-2 mx-auto my-2">    
@@ -14,36 +15,56 @@
                 <% } else { %>
                     <span class="badge rounded-pill bg-danger text-white"> Inactivo </span>
                 <% } %>
-                    <p class="my-2 card-text">Proyectos:
+                <div class="d-flex align-items-center justify-content-center flex-wrap gap-2 mt-2">
+                    <p class="my-2 card-text my-2">Proyectos Matrices:
                         <small id="projectQuantity" class="badge rounded-pill bg-dark text-white"><%= cliente.project %></small>
                     </p>
+                    <% if (cliente.project > 0) { %>
+                        <button id="btnHiddeProyectosMatrices"
+                            class="btn btn-secondary shadow" title="Ocultar Proyectos Matrices"
+                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; background-color: rgb(24, 24, 41); border: none">
+                            <i class="fa-solid fa-eye-slash"></i>
+                        </button>
+                    <% } %>
+                    
+                    <p class="my-2 card-text my-2">Proyectos Líneas:
+                        <small id="projectQuantityLineas" class="badge rounded-pill bg-primary text-white"><%= cliente.projectLineas %></small>
+                    </p>
+                    <% if (cliente.projectLineas > 0) { %>
+                        <button id="btnHiddeProyectosLineas"
+                            class="btn btn-secondary shadow" title="Ocultar Proyectos Líneas"
+                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; background-color: rgb(23, 23, 209); border: none">
+                            <i class="fa-solid fa-eye-slash"></i>
+                        </button>
+                    <% } %>
+                </div>
         </div>
         <div class="col-10 mx-auto">
             <div class="card-body px-1">
                 
-                <% var ociCount=0
-                var arrVisibleProjects = []
+                <% let ociCount=0, arrVisibleProjects = [];
                     for ( let p = 0; proyectos.length>p; p++) {    
-                        if (proyectos[p].project[0].visible) {
-                            arrVisibleProjects.push(proyectos[p])
-                        }
+                        if (proyectos[p].project[0].visible) arrVisibleProjects.push(proyectos[p])
                     }
                     
-                if (cliente.project > 0) {
+                if (cliente.project > 0 || cliente.projectLineas > 0 ) {
                     let projectWonToShowUsers = 0 
                     for (let m=0; arrVisibleProjects.length>m; m++) {
                         if (arrVisibleProjects[m].project[0].visible && cliente.status) { %>
                             <div class="accordion" id="accordionPanelsStayOpen<%=m %>">
                                 <% for ( let j = 0;  arrVisibleProjects[m].project.length > j; j++ ) {
-                                    if ( userInfo.admin || userInfo.area === 'ingenieria') { %>
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header" id="panelsStayOpen-headingOneCard">
-                                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    if ( userInfo.admin || userInfo.area === 'ingenieria') {
+                                        let colorMainBtn="primary", textColorMainBtn="light", uNegocioType='lineas'
+                                        if (arrVisibleProjects[m].uNegocio == 'matrices') (colorMainBtn="dark", uNegocioType='matrices') %>
+                                        <div class="accordion-item" id="<%= uNegocioType %>_<%=m %>">
+                                            <h2 class="accordion-header" id="panelsStayOpen-headingOneCard<%=m %>">
+                                                <button class="accordion-button bg-<%= colorMainBtn %> text-<%= textColorMainBtn %>" type="button" data-bs-toggle="collapse"
                                                     data-bs-target="#panelsStayOpen-collapseOneCard<%=m %>" aria-expanded="false"
                                                     aria-controls="panelsStayOpen-collapseOneCard<%=m %>">
                                                         <strong># <%= m+1 %></strong> -
-                                                        Codigo Proyecto: <%= arrVisibleProjects[m].project[j].codeProject %> -
-                                                        Nombre Proyecto: <strong class="mx-2"> <%= arrVisibleProjects[m].project[j].projectName %> </strong> -
+                                                        Código: <strong class="mx-2"> <%= arrVisibleProjects[m].project[j].codeProject %> </strong> -
+                                                        Nombre: <strong class="mx-2"> <%= arrVisibleProjects[m].project[j].projectName %> </strong> -
+                                                        Prio: <strong class="mx-2"> <%= arrVisibleProjects[m].project[j].prioProject %> </strong> -
                                                     
                                                     <% if (arrVisibleProjects[m].project[j].levelProject == "ganado") { %>
                                                             Nivel: <span class="badge rounded-pill bg-success text-white mx-2"> Ganado </span>
@@ -70,16 +91,12 @@
                                                                 </div>
                                                                 <div class="mb-3" id="prioProject<%=m%>">Prio: <span class="badge bg-dark text-white mx-2"> <%= proyectos[m].project[j].prioProject %> </span>
                                                                 </div>
-                                                                <% if (arrVisibleProjects[m].project[j].statusProject) {
-                                                                    const status="Activo" %>
-                                                                    <div class="mb-3">Status: <span class="badge rounded-pill bg-primary text-white mx-2"> <%= status %> </span>
-                                                                    </div>
-                                                                <% } else {
-                                                                    const status="Inactivo" %>
-                                                                    <div class="mb-3">Status: <span class="badge rounded-pill bg-danger text-white mx-2"> <%= status %> </span>
-                                                                    </div>
-                                                                <% } %>
-                                                                <div class="mb-3" id="codeProject<%=m%>"><span class="badge bg-light text-dark mx-2"> <%= arrVisibleProjects[m].project[j].codeProject %> </span>
+                                                                <% let status = 'Activo', color = 'primary' 
+                                                                if (!arrVisibleProjects[m].project[j].statusProject) (status="Inactivo", color='danger') %>
+                                                                <div class="mb-3">Status: <span class="badge rounded-pill bg-<%= color %> text-white mx-2"> <%= status %> </span>
+                                                                </div>
+                                                            
+                                                                <div class="mb-3" id="codeProject<%=m%>">Código: <span class="badge bg-light text-dark mx-2"> <%= arrVisibleProjects[m].project[j].codeProject %> </span>
                                                                 </div>
                                                                 
                                                                 <div class="container px-1">
@@ -106,6 +123,7 @@
                                                                         <input type="hidden" name="projectNameHidden" id="projectNameHidden<%= m %>_<%= j %>" value="<%= arrVisibleProjects[m].project[j].projectName %>">
                                                                         <input type="hidden" name="projectIdHidden" id="projectIdHidden<%= m %>_<%= j %>" value="<%= arrVisibleProjects[m].project[j].id %>">
                                                                         <input type="hidden" name="statusProjectHidden" id="statusProjectHidden<%= m %>_<%= j %>" value="<%= arrVisibleProjects[m].project[j].statusProject %>">
+                                                                        <input type="hidden" name="uNegocioProjectHidden" id="uNegocioProjectHidden<%= m %>_<%= j %>" value="<%= arrVisibleProjects[m].project[j].uNegocio %>">
                                                                         <input type="hidden" id="totalOciQtyHidden" value="<%= arrVisibleProjects[m].project[j].oci.length %>">
                                                                     </fieldset>
                                                                 </form>
@@ -118,18 +136,16 @@
                                                             </div>
                                                             <!-- -------------- seccion OCI's ---------------------- -->
                                                             <div class="col my-auto border-start">
-                                                                <% var countOci=0
-                                                                    var arrVisibleOci = []
-                                                                    var xOciNumber = []
+                                                                <% let arrVisibleOci = [], xOciNumber = []
                                                                     for ( let x=0; arrVisibleProjects[m].project[j].oci.length > x; x++) {
                                                                         if (arrVisibleProjects[m].project[j].oci[x].visible) { 
                                                                             arrVisibleOci.push(arrVisibleProjects[m].project[j].oci[x])
                                                                             xOciNumber.push(x)
-                                                                            countOci++
+                                                                            ociCount++
                                                                         }
                                                                     }
 
-                                                                    if (arrVisibleOci.length > 0 && countOci > 0) {
+                                                                    if (arrVisibleOci.length > 0 && ociCount > 0) {
                                                                         for (let k=0; arrVisibleOci.length > k; k++) { %>
                                                                             <div class="row align-items-center">
                                                                                 <!-- ----------- seccion Imagen de OCI's ------------ -->
@@ -143,13 +159,11 @@
                                                                                     <div class="mb-3">OCI #: <strong><%= arrVisibleOci[k].ociNumber %></strong></div>
                                                                                     <div class="my-3" id="ociDescription<%= ociCount %>_<%= k %>">Descripción: <%= arrVisibleOci[k].ociDescription %> </div>
                                                                                     <div class="my-3" id="ociAlias<%= ociCount %>_<%= k %>">Alias: <span class="badge rounded-pill bg-info text-dark"><%= arrVisibleOci[k].ociAlias %></span></div>
-                                                                                    <% if (arrVisibleOci[k].ociStatus) {
-                                                                                        const ociStatus="Activa" %>
-                                                                                        <div class="my-3">Status OCI: <span class="badge rounded-pill bg-primary text-white"> <%= ociStatus %> </span> </div>
-                                                                                    <% } else {
-                                                                                        const ociStatus="Inactiva" %>
-                                                                                        <div class="my-3">Status OCI: <span class="badge rounded-pill bg-danger text-white"> <%= ociStatus %> </span> </div>
-                                                                                    <% } %>
+                                                                                    <div class="my-3" id="ociPrio<%= ociCount %>_<%= k %>">Prio: <span class="badge rounded-pill bg-dark text-light"><%= arrVisibleOci[k].ociPrio %></span></div>
+                                                                                    <% let status = 'Activa', color = 'primary'
+                                                                                    if (!arrVisibleOci[k].ociStatus) (status="Inactiva", color='danger') %>
+                                                                                    <div class="my-3">Status OCI: <span class="badge rounded-pill bg-<%= color %> text-white"> <%= status %> </span> </div>
+                                                                                    
                                                                                         <div class="my-3">
                                                                                             <% if (arrVisibleProjects[m].project[j].statusProject) { %>
                                                                                                 <div class="d-flex justify-content-center">
@@ -157,8 +171,13 @@
                                                                                                         <a type="button" title="Ver OCI#<%= arrVisibleOci[k].ociNumber %>" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeOciDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
                                                                                                         <button type="button" title="Editar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnUpdateOci<%= ociCount %>_<%= k %>" name="btnUpdateOci" class="btn btn-primary rounded-circle mx-2 border border-dark border-1 shadow" value="<%= j%>"><i class="fa-solid fa-pencil"></i></button>
                                                                                                         <button type="button" title="Cambiar Estado OCI#<%= arrVisibleOci[k].ociNumber %>" id="<%= ociCount %>_<%= k %>" class="btn btn-dark rounded-circle mx-2 border border-dark border-1 shadow"><i class="fa-solid fa-power-off"></i></button>
-                                                                                                        <button type="button" title="Eliminar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnDeleteOci<%= ociCount %>_<%= k %>" class="btn btn-danger rounded-circle ms-2 border border-dark border-1 shadow"><i class="fa-solid fa-trash"></i></button>
-                                                                                                    <% } else { %>
+                                                                                                        <% if (ociCount===1) { %>
+                                                                                                            <button type="button" class="btn btn-danger rounded-circle ms-2 border shadow disabled"><i class="fa-solid fa-trash"></i></button>
+                                                                                                        <% } else { %>
+                                                                                                            <button type="button" title="Eliminar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnDeleteOci<%= ociCount %>_<%= k %>" class="btn btn-danger rounded-circle ms-2 border border-dark border-1 shadow"><i class="fa-solid fa-trash"></i></button>
+                                                                                                        <% } 
+
+                                                                                                    } else { %>
                                                                                                         <a type="button" title="Ver OCI#<%= arrVisibleOci[k].ociNumber %>" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeOciDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
                                                                                                     <% } %>
                                                                                                 </div>
@@ -228,13 +247,22 @@
                                                                                 <!-- ----------- seccion creador / modificador de OCI's --------- -->
                                                                                 <div class="col-3 my-auto px-1" style="font-size: 9pt">
                                                                                     <div class="container mb-4">
+                                                                                        <% let utcDate = new Date(arrVisibleOci[k].timestamp),
+                                                                                        utcDateModified = new Date(arrVisibleOci[k].modifiedOn),
+                                                                                        localDate = new Date(utcDate.getTime() + offset),
+                                                                                        localDateModified = new Date(utcDateModified.getTime() + offset),
+                                                                                        formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
+                                                                                        formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
+
+                                                                                        formattedDate === formattedDateModified ? formattedDateModified = '' : null
+                                                                                        %>
                                                                                         <span>OCI creada por: <%= arrVisibleOci[k].creator[0].name %>, <%= arrVisibleOci[k].creator[0].lastName %> </span><br>
-                                                                                        <span>Fecha: <%= arrVisibleOci[k].timestamp %> </span>
+                                                                                        <span>Fecha: <%= formattedDate %> </span>
                                                                                     </div>
                                                                                     <div class="container mb-4">
                                                                                             <% if (arrVisibleOci[k].modificator[j]) { %>
                                                                                                 <span>OCI modif. por: <%= arrVisibleOci[k].modificator[j].name %>, <%= arrVisibleOci[k].modificator[j].lastName %> </span><br>
-                                                                                                <span>Fecha modif.: <%= arrVisibleOci[k].modifiedOn %> </span>
+                                                                                                <span>Fecha modif.: <%= formattedDateModified %> </span>
                                                                                             <% } else { %>
                                                                                                 <span>OCI modifi. por: </span><br>
                                                                                                 <span>Fecha modif.: </span>
@@ -266,15 +294,26 @@
                                                         <!-- -------------- seccion creador / modificador de Proyecto --------- -->
                                                         <div class="container px-1" style="font-size: 9pt">
                                                             <div class="row my-auto">
-                                                                <% for ( let k = 0; arrVisibleProjects[m].project.length > k; k++) { %>
+                                                                <% for ( let k = 0; arrVisibleProjects[m].project.length > k; k++) { 
+
+                                                                    let utcDate = new Date(arrVisibleProjects[m].timestamp),
+                                                                    utcDateModified = new Date(arrVisibleProjects[m].modifiedOn),
+                                                                    localDate = new Date(utcDate.getTime() + offset),
+                                                                    localDateModified = new Date(utcDateModified.getTime() + offset),
+                                                                    formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
+                                                                    formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
+
+                                                                    formattedDate === formattedDateModified ? formattedDateModified = '' : null
+                                                                %>
+
                                                                     <div class="col my-auto px-1">
-                                                                        <ul>Proyecto creador por: <%= arrVisibleProjects[m].creator[j].name %>, <%= arrVisibleProjects[m].creator[j].lastName %> </ul>
-                                                                        <ul>Fecha: <%= proyectos[m].timestamp %> </ul>
+                                                                        <ul>Proyecto creado por: <%= arrVisibleProjects[m].creator[j].name %>, <%= arrVisibleProjects[m].creator[j].lastName %> </ul>
+                                                                        <ul>Fecha: <%= formattedDate %> </ul>
                                                                     </div>
                                                                     <div class="col my-auto px-1">
                                                                         <% if (proyectos[m].modificator[j]) { %>
                                                                             <ul>Proyecto modificado por: <%= arrVisibleProjects[m].modificator[j].name %>, <%= arrVisibleProjects[m].modificator[j].lastName %> </ul>
-                                                                            <ul>Fecha modificación: <%= arrVisibleProjects[m].modifiedOn %> </ul>
+                                                                            <ul>Fecha modificación: <%= formattedDateModified %> </ul>
                                                                         <% } else { %>
                                                                             <ul>Proyecto Modificado por: </ul>
                                                                             <ul>Fecha modificación: </ul>
@@ -289,17 +328,21 @@
                                             </div>
                                         </div>
                                         <% projectWonToShowUsers++ %>
+
                                     <% } else {
                                         if (arrVisibleProjects[m].project[j].levelProject == "ganado") { %>
                                             <div class="accordion-item">
-                                                <h2 class="accordion-header" id="panelsStayOpen-headingOneCard">
-                                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                <h2 class="accordion-header" id="panelsStayOpen-headingOneCard<%=m %>">
+                                                    <% let colorMainBtn="primary", textColorMainBtn="dark"
+                                                    if (arrVisibleProjects[m].uNegocio == 'matrices') colorMainBtn="dark" %>
+                                                    <button class="accordion-button bg-<%= colorMainBtn %> text-<%= textColorMainBtn %>" type="button" data-bs-toggle="collapse"
                                                         data-bs-target="#panelsStayOpen-collapseOneCard<%=m %>" aria-expanded="false"
                                                         aria-controls="panelsStayOpen-collapseOneCard<%=m %>">
                                                             <strong># <%= m+1 %></strong> -
-                                                            Codigo Proyecto: <%= arrVisibleProjects[m].project[j].codeProject %> -
-                                                            Nombre Proyecto: <strong class="mx-2"> <%= arrVisibleProjects[m].project[j].projectName %> </strong> -
+                                                            Código: <strong class="mx-2"> <%= arrVisibleProjects[m].project[j].codeProject %> </strong> -
+                                                            Nombre: <strong class="mx-2"> <%= arrVisibleProjects[m].project[j].projectName %> </strong> -
                                                             Nivel: <span class="badge rounded-pill bg-success text-white mx-2"> Ganado </span>
+                                                            Prio: <span class="badge rounded-pill bg-dark text-white mx-2"> <%= arrVisibleProjects[m].project[j].prioProject %> </span>
                                                     </button>
                                                 </h2>
                                                 <div id="panelsStayOpen-collapseOneCard<%=m %>" class="accordion-collapse collapse"
@@ -318,15 +361,11 @@
                                                                     </div>
                                                                     <div class="mb-3" id="prioProject<%=m%>">Prio: <span class="badge bg-dark text-white mx-2"> <%= proyectos[m].project[j].prioProject %> </span>
                                                                     </div>
-                                                                    <% if (arrVisibleProjects[m].project[j].statusProject) {
-                                                                        const status="Activo" %>
-                                                                        <div class="mb-3">Status: <span class="badge rounded-pill bg-primary text-white mx-2"> <%= status %> </span>
+                                                                    <% let status = 'Activo', color = 'primary'
+                                                                    if (arrVisibleProjects[m].project[j].statusProject) (status="Inactivo", color='danger') %>
+                                                                        <div class="mb-3">Status: <span class="badge rounded-pill bg-<%= color %> text-white mx-2"> <%= status %> </span>
                                                                         </div>
-                                                                    <% } else {
-                                                                        const status="Inactivo" %>
-                                                                        <div class="mb-3">Status: <span class="badge rounded-pill bg-danger text-white mx-2"> <%= status %> </span>
-                                                                        </div>
-                                                                    <% } %>
+                                                                    
                                                                     <div class="mb-3" id="codeProject<%=m%>"><span class="badge bg-light text-dark mx-2"> <%= arrVisibleProjects[m].project[j].codeProject %> </span>
                                                                     </div>
                                                                     <div class="container px-1">
@@ -355,6 +394,7 @@
                                                                             <input type="hidden" name="projectNameHidden" id="projectNameHidden<%= m %>_<%= j %>" value="<%= arrVisibleProjects[m].project[j].projectName %>">
                                                                             <input type="hidden" name="projectIdHidden" id="projectIdHidden<%= m %>_<%= j %>" value="<%= arrVisibleProjects[m].project[j].id %>">
                                                                             <input type="hidden" name="statusProjectHidden" id="statusProjectHidden<%= m %>_<%= j %>" value="<%= arrVisibleProjects[m].project[j].statusProject %>">
+                                                                            <input type="hidden" name="uNegocioProjectHidden" id="uNegocioProjectHidden<%= m %>_<%= j %>" value="<%= arrVisibleProjects[m].project[j].uNegocio %>">
                                                                             <input type="hidden" id="totalOciQtyHidden" value="<%= arrVisibleProjects[m].project[j].oci.length %>">
                                                                         </fieldset>
                                                                     </form>
@@ -367,18 +407,16 @@
                                                                 </div>
                                                                 <!-- -------------- seccion OCI's ---------------------- -->
                                                                 <div class="col my-auto border-start">
-                                                                    <% var countOci=0
-                                                                        var arrVisibleOci = []
-                                                                        var xOciNumber = []
+                                                                    <% let arrVisibleOci = [], xOciNumber = []
                                                                         for ( let x=0; arrVisibleProjects[m].project[j].oci.length > x; x++) {
                                                                             if (arrVisibleProjects[m].project[j].oci[x].visible) { 
                                                                                 arrVisibleOci.push(arrVisibleProjects[m].project[j].oci[x])
                                                                                 xOciNumber.push(x)
-                                                                                countOci++
+                                                                                ociCount++
                                                                             }
                                                                         }
 
-                                                                        if (arrVisibleOci.length > 0 && countOci > 0) {
+                                                                        if (arrVisibleOci.length > 0 && ociCount > 0) {
                                                                             for (let k=0; arrVisibleOci.length > k; k++) { %>
                                                                                 <div class="row align-items-center">
                                                                                     <!-- ----------- seccion Imagen de OCI's ------------ -->
@@ -391,14 +429,13 @@
                                                                                     <div class="col my-auto px-1">
                                                                                         <div class="mb-3">OCI #: <strong><%= arrVisibleOci[k].ociNumber %></strong></div>
                                                                                         <div class="my-3" id="ociDescription<%= ociCount %>_<%= k %>">Descripción: <%= arrVisibleOci[k].ociDescription %> </div>
+                                                                                        <div class="my-3" id="ociPrio<%= ociCount %>_<%= k %>">Prio: <span class="badge rounded-pill bg-dark text-light"><%= arrVisibleOci[k].ociPrio %></span></div>
                                                                                         <div class="my-3" id="ociAlias<%= ociCount %>_<%= k %>">Alias: <span class="badge rounded-pill bg-info text-dark"><%= arrVisibleOci[k].ociAlias %></span></div>
-                                                                                        <% if (arrVisibleOci[k].ociStatus) {
-                                                                                            const ociStatus="Activa" %>
-                                                                                            <div class="my-3">Status OCI: <span class="badge rounded-pill bg-primary text-white"> <%= ociStatus %> </span> </div>
-                                                                                        <% } else {
-                                                                                            const ociStatus="Inactiva" %>
-                                                                                            <div class="my-3">Status OCI: <span class="badge rounded-pill bg-danger text-white"> <%= ociStatus %> </span> </div>
-                                                                                        <% } %>
+                                                                                        
+                                                                                        <% let status = 'Activa', color = 'primary'
+                                                                                        if (arrVisibleOci[k].ociStatus) (status="Inactiva", color='danger') %>
+                                                                                            <div class="my-3">Status OCI: <span class="badge rounded-pill bg-<%= color %> text-white"> <%= status %> </span> </div>
+                                                                                        
                                                                                             <div class="my-3">
                                                                                                 <% if (arrVisibleProjects[m].project[j].statusProject) { %>
                                                                                                     <div class="d-flex justify-content-center">
@@ -406,8 +443,14 @@
                                                                                                             <a type="button" title="Ver OCI#<%= arrVisibleOci[k].ociNumber %>" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeOciDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
                                                                                                             <button type="button" title="Editar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnUpdateOci<%= ociCount %>_<%= k %>" name="btnUpdateOci" class="btn btn-primary rounded-circle mx-2 border border-dark border-1 shadow" value="<%= j%>"><i class="fa-solid fa-pencil"></i></button>
                                                                                                             <button type="button" title="Cambiar Estado OCI#<%= arrVisibleOci[k].ociNumber %>" id="<%= ociCount %>_<%= k %>" class="btn btn-dark rounded-circle mx-2 border border-dark border-1 shadow"><i class="fa-solid fa-power-off"></i></button>
-                                                                                                            <button type="button" title="Eliminar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnDeleteOci<%= ociCount %>_<%= k %>" class="btn btn-danger rounded-circle ms-2 border border-dark border-1 shadow"><i class="fa-solid fa-trash"></i></button>
-                                                                                                        <% } else { %>
+                                                                                                            
+                                                                                                            <% if (ociCount===1) { %>
+                                                                                                                <button type="button" class="btn btn-danger rounded-circle ms-2 border shadow disabled"><i class="fa-solid fa-trash"></i></button>
+                                                                                                            <% } else { %>
+                                                                                                                <button type="button" title="Eliminar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnDeleteOci<%= ociCount %>_<%= k %>" class="btn btn-danger rounded-circle ms-2 border border-dark border-1 shadow"><i class="fa-solid fa-trash"></i></button>
+                                                                                                            <% } 
+
+                                                                                                        } else { %>
                                                                                                             <a type="button" title="Ver OCI#<%= arrVisibleOci[k].ociNumber %>" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeOciDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
                                                                                                             <button type="button" title="Editar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnUpdateOci<%= ociCount %>_<%= k %>" name="btnUpdateOci" class="btn btn-primary rounded-circle mx-2 border border-dark border-1 shadow" value="<%= j%>"><i class="fa-solid fa-pencil"></i></button>
                                                                                                         <% } %>
@@ -478,13 +521,22 @@
                                                                                     <!-- ----------- seccion creador / modificador de OCI's --------- -->
                                                                                     <div class="col-3 my-auto px-1" style="font-size: 9pt">
                                                                                         <div class="container mb-4">
+                                                                                            <% let utcDate = new Date(arrVisibleOci[k].timestamp),
+                                                                                            utcDateModified = new Date(arrVisibleOci[k].modifiedOn),
+                                                                                            localDate = new Date(utcDate.getTime() + offset),
+                                                                                            localDateModified = new Date(utcDateModified.getTime() + offset),
+                                                                                            formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
+                                                                                            formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
+
+                                                                                            formattedDate === formattedDateModified ? formattedDateModified = '' : null %>
+
                                                                                             <span>OCI creada por: <%= arrVisibleOci[k].creator[0].name %>, <%= arrVisibleOci[k].creator[0].lastName %> </span><br>
-                                                                                            <span>Fecha: <%= arrVisibleOci[k].timestamp %> </span>
+                                                                                            <span>Fecha: <%= formattedDate %> </span>
                                                                                         </div>
                                                                                         <div class="container mb-4">
                                                                                                 <% if (arrVisibleOci[k].modificator[j]) { %>
                                                                                                     <span>OCI modif. por: <%= arrVisibleOci[k].modificator[j].name %>, <%= arrVisibleOci[k].modificator[j].lastName %> </span><br>
-                                                                                                    <span>Fecha modif.: <%= arrVisibleOci[k].modifiedOn %> </span>
+                                                                                                    <span>Fecha modif.: <%= formattedDateModified %> </span>
                                                                                                 <% } else { %>
                                                                                                     <span>OCI modifi. por: </span><br>
                                                                                                     <span>Fecha modif.: </span>
@@ -517,14 +569,23 @@
                                                             <div class="container px-1" style="font-size: 9pt">
                                                                 <div class="row my-auto">
                                                                     <% for ( let k = 0; arrVisibleProjects[m].project.length > k; k++) { %>
+                                                                        <% let utcDate = new Date(arrVisibleProjects[m].timestamp),
+                                                                            utcDateModified = new Date(arrVisibleProjects[m].modifiedOn),
+                                                                            localDate = new Date(utcDate.getTime() + offset),
+                                                                            localDateModified = new Date(utcDateModified.getTime() + offset),
+                                                                            formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
+                                                                            formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
+
+                                                                            formattedDate === formattedDateModified ? formattedDateModified = '' : null %>
+
                                                                         <div class="col my-auto px-1">
-                                                                            <ul>Proyecto creador por: <%= arrVisibleProjects[m].creator[j].name %>, <%= arrVisibleProjects[m].creator[j].lastName %> </ul>
-                                                                            <ul>Fecha: <%= proyectos[m].timestamp %> </ul>
+                                                                            <ul>Proyecto creado por: <%= arrVisibleProjects[m].creator[j].name %>, <%= arrVisibleProjects[m].creator[j].lastName %> </ul>
+                                                                            <ul>Fecha: <%= formattedDate %> </ul>
                                                                         </div>
                                                                         <div class="col my-auto px-1">
                                                                             <% if (proyectos[m].modificator[j]) { %>
                                                                                 <ul>Proyecto modificado por: <%= arrVisibleProjects[m].modificator[j].name %>, <%= arrVisibleProjects[m].modificator[j].lastName %> </ul>
-                                                                                <ul>Fecha modificación: <%= arrVisibleProjects[m].modifiedOn %> </ul>
+                                                                                <ul>Fecha modificación: <%= formattedDateModified %> </ul>
                                                                             <% } else { %>
                                                                                 <ul>Proyecto Modificado por: </ul>
                                                                                 <ul>Fecha modificación: </ul>

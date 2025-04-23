@@ -1,5 +1,4 @@
 const { Schema, model, mongoose } = require('mongoose')
-let now = require('../utils/formatDate.js')
 
 const creatorModels = require('./creator.models.js')
 const modificatorModels = require('./modificator.models.js')
@@ -62,13 +61,11 @@ let ociProjectSchema = new Schema({
     ociOwner: [duenoOciSchema],
     creator: [creatorModels],
     timestamp: {
-        type: String,
-        default: now,
+        type: Date,
     },
     modificator: [modificatorModels],
     modifiedOn: {
-        type: String,
-        default: ""
+        type: Date,
     },
     visible:{
         type: Boolean,
@@ -78,4 +75,4 @@ let ociProjectSchema = new Schema({
     
 })
 
-module.exports = { ociProjectSchema }
+module.exports = ociProjectSchema //{ ociProjectSchema }

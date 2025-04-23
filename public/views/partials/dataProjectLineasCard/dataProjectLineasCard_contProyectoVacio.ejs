@@ -1,0 +1,19 @@
+<!-- contenedor de Proyecto vacío -->
+<div class="container my-3">
+    <span class="badge rounded-pill bg-danger text-white">No hay Proyectos o datos cargados para mostrar</span>
+</div>
+<% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+    Puedes agregar proyectos en el cliente <strong><%= cliente.name %>,<br>haciendo click en el siguiente botón
+    <button class="btn btn-success m-1 rounded-circle shadow" id="btnAddOtFormSelected<%=k%>"
+        aria-controls="collapseExample" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false"
+        style="--bs-btn-font-size: .95rem; color: var(--bs-white);" type="button" name="<%= proyectos[m].project[j].oci[k].ociNumber %>"
+        title="Agregar Proyectos a cliente <%= cliente.name %>">
+        <i class="fa-solid fa-plus-circle fa-lg" aria-hidden="true"></i>
+    </button>
+<% } else { %>
+    No puedes agregar proyectos en el cliente <strong><%= cliente.name %>,<br> debido a tus permisos
+    <button class="btn btn-danger m-1 rounded-circle shadow disabled"
+        style="--bs-btn-font-size: .95rem; color: var(--bs-white);" type="button">
+        <i class="fa-solid fa-ban" aria-hidden="true"></i>
+    </button>
+<% } %>

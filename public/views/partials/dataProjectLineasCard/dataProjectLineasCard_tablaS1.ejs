@@ -1,0 +1,652 @@
+<!-- --------- tabla Sim1 ----------- -->
+<table id="tabla1Sim<%=k%>"
+    class="table-responsive align-middle col-2 border-end border-dark" style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #88c">
+        <tr>
+            <th colspan="5" class="text-center">Sim 1
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                    <button id="posBtnAddData1Sim<%=k%>" type="button" name="btn1Sim" class="btn btn-small btn-success shadow m-1 position-relative"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                        <span id="spanCheckSelecMasiveSim1<%=k%>" class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                            <span class="visually-hidden">Elementos seleccionados</span>
+                        </span>
+                    </button>
+                    <% } else { %>
+                        <button type="button" class="btn btn-small btn-danger shadow m-1 disabled"
+                            style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                            <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>
+                    </button>
+                    <% } %>
+            </th>
+        </tr>
+        <tr>
+            <th style="width:20vw" scope="col-1" class="text-center">Sim 1 | Rev</th>
+            <th style="width:20vw" scope="col-1" class="text-center"><i class="fa-solid fa-video"></i> | Rev</th>
+            <th style="width:20vw" scope="col-1" class="text-center">Informe | Rev</th>
+            <th style="width:20vw" scope="col-1" class="text-center">PPT | Rev</th>
+            <th style="width:20vw" scope="col-1" class="text-center">S1 p/Op20 | Rev</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        
+        <% const sim1Config = {
+            ok: { text: "OK", classes: "bg-success text-white" },
+            noOk: { text: "No OK", classes: "bg-danger text-white" },
+            pendiente: { text: "Pendte.", classes: "bg-warning text-dark" },
+            noAplica: { text: "N/A", classes: "bg-info text-dark" },
+            default: { text: "S/D", classes: "bg-secondary text-white" }
+        };
+        
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => { 
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+            largoArrayOtProject = parseInt(pathMongoOtProject.length),
+            pathMongoOtInformation = pathMongoOtProject[n].otInformation
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                res1Sim = 'sinDato', resRevision1Sim = 0,
+                resVideo = 'sinDato', resRevisionVideo = 0,
+                resInforme = 'sinDato', resRevisionInforme = 0,
+                resPpt = 'sinDato', resRevisionPpt = 0,
+                resS1p20Op = 'sinDato', resRevisionS1p20Op = 0
+
+            if (pathMongoOtProject[n].visible) {
+                let pathMongoOtSim1 = pathMongoOtInformation[0].otInfoSim1 || [],
+                largoArraySim1 = parseInt(pathMongoOtSim1.length);
+
+                let arrRes1Sim = [], valueArrayRes1Sim = 0, arrResRevision1Sim = [], arrResCreador1Sim = [],
+                arrResModificador1Sim = [], arrResFecha1Sim = [], arrResFechaMod1Sim = [];
+
+                let arrResVideo = [], valueArrayResVideo = 0, arrResRevisionVideo = [], arrResCreadorVideo = [],
+                arrResModificadorVideo = [], arrResFechaVideo = [], arrResFechaModVideo = [];
+
+                let arrResInforme = [], valueArrayResInforme = 0, arrResRevisionInforme = [], arrResCreadorInforme = [],
+                arrResModificadorInforme = [], arrResFechaInforme = [], arrResFechaModInforme = [];
+
+                let arrResPpt = [], valueArrayResPpt = 0, arrResRevisionPpt = [], arrResCreadorPpt = [],
+                arrResModificadorPpt = [], arrResFechaPpt = [], arrResFechaModPpt = [];
+
+                let arrResS1p20Op = [], valueArrayResS1p20Op = 0, arrResRevisionS1p20Op = [], arrResCreadorS1p20Op = [],
+                arrResModificadorS1p20Op = [], arrResFechaS1p20Op = [], arrResFechaModS1p20Op = [];
+
+                if (pathMongoOtProject[n].otStatus) { %>
+                    <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
+                        <% for (let q = 20; totalColDataSim1 > q; q++) {
+                            if (q==20) { %>
+                                <!-- Simulacion 1 data Activo--> 
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim1 > 0) {
+                                        for (let i = 0; largoArraySim1 > i; i++) {
+                                            if (pathMongoOtSim1[i]) {
+                                                let largoArray = parseInt(largoArraySim1)
+                                                res1Sim = pathMongoOtSim1[largoArray-1].sim1 || 'sinDato'
+                                                resRevision1Sim = pathMongoOtSim1[largoArray-1].revisionSim1 || 0
+                                                
+                                                arrRes1Sim.push(pathMongoOtSim1[i].sim1)
+                                                arrResRevision1Sim.push(pathMongoOtSim1[i].revisionSim1)
+                                                
+                                                arrResCreador1Sim.push(pathMongoOtSim1[i].creator[0].username)
+                                                arrResModificador1Sim.push(pathMongoOtSim1[i].modificator[0].username)
+                                                arrResFecha1Sim.push(pathMongoOtSim1[i].timestamp)
+                                                arrResFechaMod1Sim.push(pathMongoOtSim1[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayRes1Sim = parseInt(arrRes1Sim.length-1)
+                                                
+                                        if (arrRes1Sim.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrRes1Sim.length == arrResRevision1Sim.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                    
+                                    } else {
+                                        arrRes1Sim.push(res1Sim)
+                                        arrResRevision1Sim.push(resRevision1Sim)
+
+                                        arrResCreador1Sim.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificador1Sim.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFecha1Sim.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaMod1Sim.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguiente1Sim<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnterior1Sim<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnterior1Sim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrRes1Sim %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes1Sim %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision1Sim %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreador1Sim %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificador1Sim %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFecha1Sim %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMod1Sim %>">
+                                        
+                                        <% const config = sim1Config[res1Sim] || sim1Config.default; %>  
+                                        <span id="res1Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevision1Sim<%=k%>_<%=n%>_<%=q%>" name="resRevision1Sim" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevision1Sim %>
+                                        </span>
+                                        
+                                        <button id="btnSiguiente1Sim<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguiente1Sim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else if (q==21) { %>
+                                <!-- Video Sim1 data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim1 > 0) {
+                                        
+                                        for (let i = 0; largoArraySim1 > i; i++) {
+                                            if (pathMongoOtSim1[i]) {
+                                                let largoArray = parseInt(largoArraySim1)
+                                                resVideo = pathMongoOtSim1[largoArray-1].video || 'sinDato'
+                                                resRevisionVideo = parseInt(pathMongoOtSim1[largoArray-1].revisionVideo) || 0
+                                                
+                                                arrResVideo.push(pathMongoOtSim1[i].video)
+                                                arrResRevisionVideo.push(pathMongoOtSim1[i].revisionVideo)
+                                            
+                                                arrResCreadorVideo.push(pathMongoOtSim1[i].creator[0].username)
+                                                arrResModificadorVideo.push(pathMongoOtSim1[i].modificator[0].username)
+                                                arrResFechaVideo.push(pathMongoOtSim1[i].timestamp)
+                                                arrResFechaModVideo.push(pathMongoOtSim1[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResVideo = parseInt(arrResVideo.length-1)
+                                            
+                                        if (arrResVideo.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResVideo.length == arrResRevisionVideo.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                                
+                                    } else {
+                                        arrResVideo.push(resVideo)
+                                        arrResRevisionVideo.push(resRevisionVideo)
+                                        
+                                        arrResCreadorVideo.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorVideo.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaVideo.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModVideo.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteVideo<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorVideo<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorVideo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResVideo %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResVideo %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionVideo %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorVideo %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorVideo %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaVideo %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModVideo %>">
+        
+                                        <% const config = sim1Config[resVideo] || sim1Config.default; %>  
+                                        <span id="resVideo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionVideo<%=k%>_<%=n%>_<%=q%>" name="resRevisionVideo" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionVideo %>
+                                        </span>
+                                            
+                                        <button id="btnSiguienteVideo<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteVideo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else if (q==22) { %>
+                                <!-- Informe Sim1 data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim1 > 0) {
+                                        
+                                        for (let i = 0; largoArraySim1 > i; i++) {
+                                            if (pathMongoOtSim1[i]) {
+                                                
+                                                let largoArray = parseInt(largoArraySim1)
+                                                resInforme = pathMongoOtSim1[largoArray-1].informe || 'sinDato'
+                                                resRevisionInforme = parseInt(pathMongoOtSim1[largoArray-1].revisionInforme) || 0
+                                                
+                                                arrResInforme.push(pathMongoOtSim1[i].informe)
+                                                arrResRevisionInforme.push(pathMongoOtSim1[i].revisionInforme)
+                                            
+                                                arrResCreadorInforme.push(pathMongoOtSim1[i].creator[0].username)
+                                                arrResModificadorInforme.push(pathMongoOtSim1[i].modificator[0].username)
+                                                arrResFechaInforme.push(pathMongoOtSim1[i].timestamp)
+                                                arrResFechaModInforme.push(pathMongoOtSim1[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResInforme = parseInt(arrResInforme.length-1)
+                                        
+                                        if (arrResInforme.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResInforme.length == arrResRevisionInforme.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                            
+                                    } else {
+                                        arrResInforme.push(resInforme)
+                                        arrResRevisionInforme.push(resRevisionInforme)
+
+                                        arrResCreadorInforme.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorInforme.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaInforme.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModInforme.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteInforme<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorInforme<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorInforme" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResInforme %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResInforme %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionInforme %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorInforme %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorInforme %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaInforme %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModInforme %>">
+        
+                                        <% const config = sim1Config[resInforme] || sim1Config.default; %>  
+                                        <span id="resInforme<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionInforme<%=k%>_<%=n%>_<%=q%>" name="resRevisionInforme" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionInforme %>
+                                        </span>
+                                    
+                                        <button id="btnSiguienteInforme<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteInforme" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else if (q==23) { %>
+                                <!-- Ppt Sim1 data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim1 > 0) {
+                                        
+                                        for (let i = 0; largoArraySim1 > i; i++) {
+                                            if (pathMongoOtSim1[i]) {
+                                                let largoArray = parseInt(largoArraySim1)
+                                                resPpt = pathMongoOtSim1[largoArray-1].ppt || 'sinDato'
+                                                resRevisionPpt = parseInt(pathMongoOtSim1[largoArray-1].revisionPpt) || 0
+                                                
+                                                arrResPpt.push(pathMongoOtSim1[i].ppt)
+                                                arrResRevisionPpt.push(pathMongoOtSim1[i].revisionPpt)
+                                            
+                                                arrResCreadorPpt.push(pathMongoOtSim1[i].creator[0].username)
+                                                arrResModificadorPpt.push(pathMongoOtSim1[i].modificator[0].username)
+                                                arrResFechaPpt.push(pathMongoOtSim1[i].timestamp)
+                                                arrResFechaModPpt.push(pathMongoOtSim1[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResPpt = parseInt(arrResPpt.length-1)
+                                                
+                                        if (arrResPpt.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResPpt.length == arrResRevisionPpt.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                                
+                                    } else {
+                                        arrResPpt.push(resPpt)
+                                        arrResRevisionPpt.push(resRevisionPpt)
+
+                                        arrResCreadorPpt.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorPpt.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaPpt.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModPpt.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguientePpt<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorPpt<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorPpt" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPpt %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPpt %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPpt %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorPpt %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorPpt %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaPpt %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModPpt %>">
+        
+                                        <% const config = sim1Config[resPpt] || sim1Config.default; %>  
+                                        <span id="resPpt<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionPpt<%=k%>_<%=n%>_<%=q%>" name="resRevisionPpt" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionPpt %>
+                                        </span>
+                                        
+                                        <button id="btnSiguientePpt<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguientePpt" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else { %>
+                                <!-- S1pOp20 Sim1 data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim1 > 0) {
+
+                                        for (let i = 0; largoArraySim1 > i; i++) {
+                                            if (pathMongoOtSim1[i]) {
+                                                let largoArray = parseInt(largoArraySim1)
+                                                resS1p20Op = pathMongoOtSim1[largoArray-1].s1pOp20 || 'sinDato'
+                                                resRevisionS1p20Op = parseInt(pathMongoOtSim1[largoArray-1].revisionS1pOp20) || 0
+                                                
+                                                arrResS1p20Op.push(pathMongoOtSim1[i].s1pOp20)
+                                                arrResRevisionS1p20Op.push(pathMongoOtSim1[i].revisionS1pOp20)
+                                                                                                        
+                                                arrResCreadorS1p20Op.push(pathMongoOtSim1[i].creator[0].username)
+                                                arrResModificadorS1p20Op.push(pathMongoOtSim1[i].modificator[0].username)
+                                                arrResFechaS1p20Op.push(pathMongoOtSim1[i].timestamp)
+                                                arrResFechaModS1p20Op.push(pathMongoOtSim1[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResS1p20Op = parseInt(arrResS1p20Op.length-1)
+                                        
+                                        if (arrResS1p20Op.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResS1p20Op.length == arrResRevisionS1p20Op.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                                
+                                    } else {
+                                        arrResS1p20Op.push(resS1p20Op)
+                                        arrResRevisionS1p20Op.push(resRevisionS1p20Op)
+
+                                        arrResCreadorS1p20Op.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorS1p20Op.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaS1p20Op.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModS1p20Op.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteS1p20Op<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorS1p20Op<%=k%>_<%=n%>_<%=q%>" name="btnAnteriorS1p20Op" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResS1p20Op %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResS1p20Op %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionS1p20Op %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorS1p20Op %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorS1p20Op %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaS1p20Op %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModS1p20Op %>">
+        
+                                        <% const config = sim1Config[resS1p20Op] || sim1Config.default; %>  
+                                        <span id="resS1p20Op<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionS1p20Op<%=k%>_<%=n%>_<%=q%>" name="resRevisionS1p20Op" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionS1p20Op %>
+                                        </span>
+                                        
+                                        <button id="btnSiguienteS1p20Op<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteS1p20Op" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+
+                <% } else { %>
+                    <tr class="pe-none" name="rowSelected<%=k%>_<%=n%>" style="height: 7vh; background-color: #dedede;">
+                        <% for (let q = 20; totalColDataSim1 > q; q++) {
+                            if (q==20) { %>
+                                <!-- Sim1 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim1 > 0) {
+                                    
+                                        for (let i = 0; largoArraySim1 > i; i++) {
+                                            if (pathMongoOtSim1[i]) {
+                                                let largoArray = parseInt(largoArraySim1)
+                                                res1Sim = pathMongoOtSim1[largoArray-1].sim1 || 'sinDato'
+                                                resRevision1Sim = parseInt(pathMongoOtSim1[largoArray-1].revisionSim1) || 0
+                                                
+                                                arrRes1Sim.push(pathMongoOtSim1[i].sim1)
+                                                arrResRevision1Sim.push(pathMongoOtSim1[i].revisionSim1)
+                                            }
+                                        }
+                                        valueArrayRes1Sim = parseInt(arrRes1Sim.length-1)
+                                        res1Sim = pathMongoOtSim1[0].sim1
+
+                                    } else {
+                                        arrRes1Sim.push(res1Sim)
+                                        arrResRevision1Sim.push(resRevision1Sim)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrRes1Sim %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes1Sim %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision1Sim %>">
+                                
+                                    <% const config = sim1Config[res1Sim] || sim1Config.default; %>  
+                                    <span id="res1Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevision1Sim<%=k%>_<%=n%>_<%=q%>" name="resRevision1Sim" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevision1Sim %>
+                                    </span>
+                                </td>
+
+                            <% } else if (q==21) { %>
+                                <!-- Video Sim1 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim1 > 0) {
+                                    
+                                        for (let i = 0; largoArraySim1 > i; i++) {
+                                            if (pathMongoOtSim1[i]) {
+                                                let largoArray = parseInt(largoArraySim1)
+                                                resVideo = pathMongoOtSim1[largoArray-1].video || 'sinDato'
+                                                resRevisionVideo = parseInt(pathMongoOtSim1[largoArray-1].revisionVideo) || 0
+                                                
+                                                arrResVideo.push(pathMongoOtSim1[i].video)
+                                                arrResRevisionVideo.push(pathMongoOtSim1[i].revisionVideo)
+                                            }
+                                        }
+                                        valueArrayResVideo = parseInt(arrResVideo.length-1)
+                                        resVideo = pathMongoOtSim1[0].video
+
+                                    } else {
+                                        arrResVideo.push(resVideo)
+                                        arrResRevisionVideo.push(resRevisionVideo)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResVideo %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResVideo %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionVideo %>">
+
+                                    <% const config = sim1Config[resVideo] || sim1Config.default; %>  
+                                        <span id="resVideo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionVideo<%=k%>_<%=n%>_<%=q%>" name="resRevisionVideo" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionVideo %>
+                                        </span>                                        
+                                </td>
+
+                            <% } else if (q==22) { %>
+                                <!-- Informe Sim1 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim1 > 0) {
+                                    
+                                            for (let i = 0; largoArraySim1 > i; i++) {
+                                                if (pathMongoOtSim1[i]) {
+                                                    let largoArray = parseInt(largoArraySim1)
+                                                    resInforme = pathMongoOtSim1[largoArray-1].informe || 'sinDato'
+                                                    resRevisionInforme = parseInt(pathMongoOtSim1[largoArray-1].revisionInforme) || 0
+                                                    
+                                                    arrResInforme.push(pathMongoOtSim1[i].informe)
+                                                    arrResRevisionInforme.push(pathMongoOtSim1[i].revisionInforme)
+                                                }
+                                            }
+                                            valueArrayResInforme = parseInt(arrResInforme.length-1)
+                                            resInforme = pathMongoOtSim1[0].informe
+                                    
+                                    } else {
+                                        arrResInforme.push(resInforme)
+                                        arrResRevisionInforme.push(resRevisionInforme)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResInforme %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResInforme %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionInforme %>">
+
+                                    <% const config = sim1Config[resInforme] || sim1Config.default; %>  
+                                    <span id="resInforme<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionInforme<%=k%>_<%=n%>_<%=q%>" name="resRevisionInforme" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionInforme %>
+                                    </span>
+                                </td>
+
+                            <% } else if (q==23) { %>
+                                <!-- PPT Sim1 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim1 > 0) {
+                                    
+                                        for (let i = 0; largoArraySim1 > i; i++) {
+                                            if (pathMongoOtSim1[i]) {
+                                                let largoArray = parseInt(largoArraySim1)
+                                                resPpt = pathMongoOtSim1[largoArray-1].ppt || 'sinDato'
+                                                resRevisionPpt = parseInt(pathMongoOtSim1[largoArray-1].revisionPpt) || 0
+                                                
+                                                arrResPpt.push(pathMongoOtSim1[i].ppt)
+                                                arrResRevisionPpt.push(pathMongoOtSim1[i].revisionPpt)
+                                            }
+                                        }
+                                        valueArrayResPpt = parseInt(arrResPpt.length-1)
+                                        resPpt = pathMongoOtSim1[0].ppt
+                                    
+                                    } else {
+                                        arrResPpt.push(resPpt)
+                                        arrResRevisionPpt.push(resRevisionPpt)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResPpt %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResPpt %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionPpt %>">
+
+                                    <% const config = sim1Config[resPpt] || sim1Config.default; %>  
+                                    <span id="resPpt<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionPpt<%=k%>_<%=n%>_<%=q%>" name="resRevisionPpt" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionPpt %>
+                                    </span>
+                                </td>
+
+                            <% } else { %>
+                                <!-- S1pOp20 Sim1 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim1 > 0) {
+                                    
+                                        for (let i = 0; largoArraySim1 > i; i++) {
+                                            if (pathMongoOtSim1[i]) {
+                                                let largoArray = parseInt(largoArraySim1)
+                                                resS1p20Op = pathMongoOtSim1[largoArray-1].s1pOp20
+                                                resRevisionS1p20Op = pathMongoOtSim1[largoArray-1].revisionS1pOp20
+                                                
+                                                arrResS1p20Op.push(pathMongoOtSim1[i].s1pOp20)
+                                                arrResRevisionS1p20Op.push(pathMongoOtSim1[i].revisionS1pOp20)
+                                            }
+                                        }
+                                        valueArrayResS1p20Op = parseInt(arrResS1p20Op.length-1)
+                                        resS1p20Op = pathMongoOtSim1[0].s1pOp20
+                                    
+                                    } else {
+                                        arrResS1p20Op.push(resS1p20Op)
+                                        arrResRevisionS1p20Op.push(resRevisionS1p20Op)
+                                    } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResS1p20Op %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResS1p20Op %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionS1p20Op %>">
+
+                                    <% const config = sim1Config[resS1p20Op] || sim1Config.default; %>  
+                                    <span id="resS1p20Op<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionS1p20Op<%=k%>_<%=n%>_<%=q%>" name="resRevisionS1p20Op" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionS1p20Op %>
+                                    </span>                                        
+                                </td>
+
+                            <% }
+                        } %>
+                    </tr>
+                <% }
+            }
+        }) %>
+    </tbody>
+</table>

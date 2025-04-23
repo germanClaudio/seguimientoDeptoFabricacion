@@ -442,13 +442,13 @@ const renderProjectsForAdmin = async (arrayProjects, page = 1, direction = 'none
                     : completeTr = `rgba(0, 0, 0, 0.05)`
 
                 element.uNegocio === 'lineas'
-                    ? btnGroup = `<a href="/api/clientes/${element.client[0]._id}" class="btn btn-${grey} btn-sm my-2 shadow-lg" data-toggle="tooltip" data-placement="top" title="Ver proyecto"><i class="fa-solid fa-eye"></i></a>
-                                    <a href="/api/ingenieriaLineas/selectWonProjects/${element.project[0]._id}" class="btn btn-${blue} btn-sm my-2 shadow-lg" title="Editar datos de Ingeniería Líneas"><i class="fa-solid fa-pencil"></i></a>
-                                    <a href="/api/proyectos/delete/${element.project[0]._id}" class="btn btn-${red} btn-sm mx-1 my-2" title="Eliminar proyectos"><i class="fa-solid fa-trash"></i></a>`
+                    ? btnGroup = `<a href="/api/clientes/${element.client[0]._id}" class="btn btn-${grey} btn-sm mx-1 my-2 shadow-lg" data-toggle="tooltip" data-placement="top" title="Ver proyecto Líneas"><i class="fa-solid fa-eye"></i></a>
+                                    <a href="/api/programas/selectWonProjectsLineas/${element.project[0]._id}" class="btn btn-${blue} btn-sm mx-1 my-2 shadow-lg" title="Editar datos de OCI Ingeniería Líneas"><i class="fa-solid fa-pencil"></i></a>
+                                    <a href="/api/proyectos/delete/${element.project[0]._id}" class="btn btn-${red} btn-sm mx-1 my-2" title="Eliminar proyecto Líneas"><i class="fa-solid fa-trash"></i></a>`
                     
-                    : btnGroup = `<a href="/api/clientes/${element.client[0]._id}" class="btn btn-${grey} btn-sm me-1 my-2" data-toggle="tooltip" data-placement="top" title="Ver proyecto"><i class="fa-solid fa-eye"></i></a>
-                                    <a href="/api/proyectos/selectProject/${element.project[0]._id}" class="btn btn-${dark} btn-sm mx-1 my-2" title="Editar datos de OCI"><i class="fa-solid fa-pencil"></i></a>
-                                    <a href="/api/proyectos/delete/${element.project[0]._id}" class="btn btn-${red} btn-sm mx-1 my-2" title="Eliminar proyectos"><i class="fa-solid fa-trash"></i></a>`
+                    : btnGroup = `<a href="/api/clientes/${element.client[0]._id}" class="btn btn-${grey} btn-sm me-1 my-2" data-toggle="tooltip" data-placement="top" title="Ver proyecto Matrices"><i class="fa-solid fa-eye"></i></a>
+                                    <a href="/api/proyectos/selectProject/${element.project[0]._id}" class="btn btn-${dark} btn-sm mx-1 my-2" title="Editar datos de OCI Ingeniería Matrices"><i class="fa-solid fa-pencil"></i></a>
+                                    <a href="/api/proyectos/delete/${element.project[0]._id}" class="btn btn-${red} btn-sm mx-1 my-2" title="Eliminar proyecto Matrices"><i class="fa-solid fa-trash"></i></a>`
                 
                 return (`<tr style="border-bottom: 2px solid #dedede; background-color: ${completeTr}">
                             <td class="text-center">${element.project[0].codeProject}<br><span class="badge rounded-pill bg-${optionUNegocio} text-${optionTextUNegocio} mt-2">${showUNegocio}</span></td>
@@ -943,12 +943,12 @@ const renderProjectsForUser = async (arrayProjects, page = 1, direction = 'none'
                     : completeTr = `rgba(0, 0, 0, 0.05)`
 
                 element.uNegocio === 'lineas'
-                    ? btnGroup = `<a href="/api/clientes/${element.client[0]._id}" class="btn btn-${grey} btn-sm my-2 shadow-lg" data-toggle="tooltip" data-placement="top" title="Ver proyecto"><i class="fa-solid fa-eye"></i></a>
-                                    <a href="/api/ingenieriaLineas/selectWonProjects/${element.project[0]._id}" class="btn btn-${dark} btn-sm my-2 shadow-lg" title="Editar datos de Ingeniería Líneas"><i class="fa-solid fa-pencil"></i></a>
+                    ? btnGroup = `<a href="/api/clientes/${element.client[0]._id}" class="btn btn-${grey} btn-sm mx-1 my-2 shadow-lg" data-toggle="tooltip" data-placement="top" title="Ver proyecto Líneas"><i class="fa-solid fa-eye"></i></a>
+                                    <a href="/api/programas/selectWonProjects/${element.project[0]._id}" class="btn btn-${blue} btn-sm mx-1 my-2 shadow-lg" title="Editar datos de OCI Ingeniería Líneas"><i class="fa-solid fa-pencil"></i></a>
                                     <button class="btn btn-${red} btn-sm mx-1 my-2 disabled" title="Eliminar proyectos"><i class="fa-solid fa-trash"></i></button>`
     
-                    : btnGroup = `<a href="/api/clientes/${element.client[0]._id}" class="btn btn-${grey} btn-sm me-1 my-2" data-toggle="tooltip" data-placement="top" title="Ver proyecto"><i class="fa-solid fa-eye"></i></a>
-                                    <a href="/api/proyectos/selectProject/${element.project[0]._id}" class="btn btn-${blue} btn-sm mx-1 my-2" title="Editar datos de OCI"><i class="fa-solid fa-pencil"></i></a>
+                    : btnGroup = `<a href="/api/clientes/${element.client[0]._id}" class="btn btn-${grey} btn-sm mx-1 my-2" data-toggle="tooltip" data-placement="top" title="Ver proyecto Matrices"><i class="fa-solid fa-eye"></i></a>
+                                    <a href="/api/proyectos/selectProject/${element.project[0]._id}" class="btn btn-${dark} btn-sm mx-1 my-2" title="Editar datos de OCI Ingeniería Matrices"><i class="fa-solid fa-pencil"></i></a>
                                     <button class="btn btn-${red} btn-sm mx-1 my-2 disabled" title="Eliminar proyectos"><i class="fa-solid fa-trash"></i></button>`
                 
                 return (`<tr style="border-bottom: 2px solid #dedede; background-color: ${completeTr}">

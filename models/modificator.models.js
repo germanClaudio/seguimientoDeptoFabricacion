@@ -20,4 +20,4 @@ let modificatorSchema = new Schema({
     }
 })
 
-module.exports = { modificatorSchema }
+module.exports = modificatorSchema //{ modificatorSchema }

@@ -15,10 +15,8 @@ const ProyectosService = require("../services/projects.service.js"),
     { uploadMulterMultiImages, uploadMulterSingleImageProject, uploadMulterSingleImageOci } = require("../utils/uploadMulter.js");
 
 let data = require('../utils/variablesInicializator.js'),
-    formatDate = require('../utils/formatDate.js'),
     tieneNumeros = require('../utils/gotNumbers.js'),
     esStringUObjeto = require('../utils/isNumberOrObject.js')
-
 
 const {catchError400,
     catchError400_1,
@@ -212,26 +210,31 @@ class ProjectsController {
     }
 
     createNewProject = async (req, res, next) => {
+        let username = res.locals.username,
+            userInfo = res.locals.userInfo
+        const expires = cookie(req)
+
+        //------ Storage New User Image in Google Store --------
         uploadMulterMultiImages(req, res, async (err) => {
             try {
-                const expires = cookie(req)
-                let username = res.locals.username,
-                    userInfo = res.locals.userInfo
-                
+                // console.log('req.body: ', req.body)
+
                 const userId = userInfo.id
                 const userCreator = await this.users.getUserById(userId)
                 if (!userCreator) catchError401_3(req, res, next)
                 
                 const clientId = req.params.id
+                if (!clientId) catchError401_3(req, res, next)
+
                 const clienteSeleccionado = await this.clients.selectClientById(clientId)
                 if (!clienteSeleccionado) catchError401(req, res, next)
                 
                 if (req.files && req.files.length != 0) await uploadToGCSingleFile(req, res, next)
                 
-                // console.log('req.body: ', req.body)
                 let arrayOciNumber=[],
                     arrayOciDescription=[],
                     arrayOciAlias=[],
+                    arrayOciPrio=[],
                     arrayOciStatus=[],
                     arrayOciImages=[]
 
@@ -239,6 +242,7 @@ class ProjectsController {
                         { prefix: 'ociNumber', array: arrayOciNumber },
                         { prefix: 'ociDescription', array: arrayOciDescription },
                         { prefix: 'ociAlias', array: arrayOciAlias },
+                        { prefix: 'ociPrio', array: arrayOciPrio },
                         { prefix: 'ociStatus', array: arrayOciStatus },
                         { prefix: 'imageOciFileName', array: arrayOciImages }
                     ];
@@ -249,8 +253,7 @@ class ProjectsController {
                     }
 
                 const ociKNumber = 0
-                let invalidOciNumber = true
-                let indexArrayOciNumber = 0
+                let invalidOciNumber = true, indexArrayOciNumber = 0
                 for (let h=0; h<arrayOciNumber.length; h++) {
                     const ociNumberValid = await this.projects.selectOciByOciNumber(arrayOciNumber[h], ociKNumber)
                     // console.log('ociNumberValid: ', ociNumberValid)            
@@ -265,7 +268,6 @@ class ProjectsController {
                                 break;
                             }
                         }
-
                     }
                 }
                 !invalidOciNumber ? catchError401(req, res, next) : null
@@ -282,35 +284,39 @@ class ProjectsController {
                             ociNumber: parseInt(arrayOciNumber[i]),
                             ociDescription: arrayOciDescription[i],
                             ociAlias: arrayOciAlias[i],
+                            ociPrio: arrayOciPrio[i],
                             ociStatus: arrayOciStatus[i] === 'on' ?  Boolean(true) : Boolean(false),
                             ociOwner: await dataUserOciOwnerEmpty(),
                             creator: await dataUserCreator(userCreator),
                             timestamp: new Date(),
                             ociImage: arrayOciImages[i] || imageNotFound,
                             modificator: await dataUserModificatorEmpty(),
-                            modifiedOn: "",
+                            modifiedOn: new Date(),
                             visible: true
                         }
                         arrayOciProjects.push(ociProject)
                     }
-                }  
+                }
+
+                // console.log('arrayOciProjects: ', arrayOciProjects)
             
-                const projectInput = req.body.projectName
-                const projectCodeInput = req.body.codeProject
+                const projectInput = req.body.projectName.trim();
+                const projectCodeInput = req.body.codeProject.trim();
                 const projectNameExist = await this.projects.getExistingProject(projectInput, projectCodeInput);
                 projectNameExist ? catchError400_2(req, res, next) : null
-                const projectUnidadNegocio = req.body.uNegocio || "matrices";
+                
+                const selectFieldUNegocio = req.body.uNegocioProject || "matrices";
+                const selectFieldLevel = req.body.levelProject || 'ganado';
 
-                const selectFieldLevel = req.body.levelProject;
-                if (validateSelectField(selectFieldLevel)) {
+                if (validateSelectField(selectFieldLevel) && validateSelectField(selectFieldUNegocio) ) {
                     
                     const project = {
                         projectName: projectInput,
                         statusProject: req.body.statusProject == 'on' ? Boolean(true) : Boolean(false),
                         levelProject: selectFieldLevel,
-                        uNegocioProject: projectUnidadNegocio,
+                        uNegocioProject: selectFieldUNegocio,
                         codeProject: projectCodeInput,
-                        projectDescription: req.body.projectDescription,
+                        projectDescription: req.body.projectDescription.trim(),
                         prioProject: parseInt(req.body.prioProject),
                         imageProject: req.body.imageProject || imageNotFound,
                         visible: true,
@@ -322,24 +328,25 @@ class ProjectsController {
                     }
 
                     const newProject = {
-                        creator: dataUserCreator(userCreator),
+                        creator: await dataUserCreator(userCreator),
                         client: clienteSeleccionado,
                         project: project,
-                        uNegocioProject: projectUnidadNegocio,
+                        uNegocio: project.uNegocioProject,
                         timestamp: new Date(),
-                        modificator: dataUserModificatorEmpty(),
+                        modificator: await dataUserModificatorEmpty(),
                         modifiedOn: new Date(),
                         visible: true
                     }
                     // console.log('newProject:', newProject)
+                    
                     const newProjectCreated = await this.projects.createNewProject(newProject)
                     !newProjectCreated ? catchError401_1(req, res, next) : null
 
                     const cliente = await this.clients.updateClientProjectsQty(
                         clientId, 
                         clienteSeleccionado, 
-                        dataUserCreator(userCreator),
-                        projectUnidadNegocio
+                        await dataUserCreator(userCreator),
+                        project.uNegocioProject
                     )
 
                     const proyectos = await this.projects.getProjectsByClientId(clientId)
@@ -371,7 +378,7 @@ class ProjectsController {
             
                 function validateSelectField(value) {
                     const validOptions = [
-                        'ganado', 'aRiesgo', 'paraCotizar'
+                        'ganado', 'aRiesgo', 'paraCotizar', 'matrices', 'lineas'
                     ];
                     return validOptions.includes(value);
                 }
@@ -481,9 +488,9 @@ class ProjectsController {
                             otDesign: arrayOtDesign[i],
                             otSimulation: arrayOtSimulation[i],
                             otSupplier: arrayOtSupplier[i],
-                            creator: dataUserCreator(userCreator),
+                            creator: await dataUserCreator(userCreator),
                             timestamp: new Date(),
-                            modificator: dataUserModificatorEmpty(),
+                            modificator: await dataUserModificatorEmpty(),
                             modifiedOn: "",
                             otInformation: otInformationEmpty,
                             otDetalles: []
@@ -505,7 +512,7 @@ class ProjectsController {
                 await this.clients.updateClient(
                     clientId, 
                     cliente, 
-                    dataUserModificatorNotEmpty(userCreator)
+                    await dataUserModificatorNotEmpty(userCreator)
                 )
     
                 const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
@@ -562,13 +569,13 @@ class ProjectsController {
                         id, 
                         proyecto, 
                         statusProjectHidden,
-                        dataUserModificatorNotEmpty(userCreator)
+                        await dataUserModificatorNotEmpty(userCreator)
                     )
     
                     await this.clients.updateClient(
                         clientId, 
                         cliente, 
-                        dataUserModificatorNotEmpty(userCreator)
+                        await dataUserModificatorNotEmpty(userCreator)
                     )
     
                     const proyectos = await this.projects.getProjectsByClientId(clientId)
@@ -636,13 +643,13 @@ class ProjectsController {
                         id, 
                         proyecto, 
                         levelProject,
-                        dataUserModificatorNotEmpty(userCreator)
+                        await dataUserModificatorNotEmpty(userCreator)
                     )        
     
                     await this.clients.updateClient(
                         clientId, 
                         cliente, 
-                        dataUserModificatorNotEmpty(userCreator)
+                        await dataUserModificatorNotEmpty(userCreator)
                     )
     
                     const proyectos = await this.projects.getProjectsByClientId(clientId)
@@ -711,13 +718,13 @@ class ProjectsController {
                         proyecto,
                         statusOciHidden,
                         ociKNumber,
-                        dataUserModificatorNotEmpty(userCreator)
+                        await dataUserModificatorNotEmpty(userCreator)
                     )
     
                     await this.clients.updateClient(
                         clientId, 
                         cliente, 
-                        dataUserModificatorNotEmpty(userCreator)
+                        await dataUserModificatorNotEmpty(userCreator)
                     )
     
                     const proyectos = await this.projects.getProjectsByClientId(clientId)
@@ -785,13 +792,13 @@ class ProjectsController {
                     statusOtHidden,
                     ociKNumberHidden,
                     otKNumberHidden,
-                    dataUserModificatorNotEmpty(userCreator)
+                    await dataUserModificatorNotEmpty(userCreator)
                 )
     
                 await this.clients.updateClient(
                     clientId, 
                     cliente, 
-                    dataUserModificatorNotEmpty(userCreator)
+                    await dataUserModificatorNotEmpty(userCreator)
                 )
     
                 const statusOtHidden = req.body.statusOtHidden
@@ -858,24 +865,24 @@ class ProjectsController {
     
             uploadMulterMultiImages(req, res, async (err) => {
                 try {
-                    req.files && req.files.length != 0
-                    ? await uploadToGCSingleFile(req, res, next)
-                    : null
-    
+                    if (req.files && req.files.length != 0) await uploadToGCSingleFile(req, res, next)
+                        
                     const ociQuantity = parseInt(req.body.ociQuantityModal)
                             
                     let arrayOciNumber=[],
                         arrayOciDescription=[],
                         arrayOciStatus=[],
                         arrayOciImages=[],
-                        arrayOciAlias=[]                
+                        arrayOciAlias=[],
+                        arrayOciPrio=[]
     
                     const prefixes = [
                         { prefix: 'ociNumber', array: arrayOciNumber },
                         { prefix: 'ociDescription', array: arrayOciDescription },
                         { prefix: 'ociStatus', array: arrayOciStatus },
                         { prefix: 'imageOciFileNameModal', array: arrayOciImages },
-                        { prefix: 'ociAlias', array: arrayOciAlias }
+                        { prefix: 'ociAlias', array: arrayOciAlias },
+                        { prefix: 'ociPrio', array: arrayOciPrio }
                     ];
                     
                     for (const key in req.body) {
@@ -917,11 +924,12 @@ class ProjectsController {
                             ociStatus: arrayOciStatus[i] || true,
                             ociImage: arrayOciImages[i],
                             ociAlias: arrayOciAlias[i] || "Sin Apodo",
-                            ociOwner: dataUserOciOwnerEmpty(),
+                            ociPrio: arrayOciPrio[i],
+                            ociOwner: await dataUserOciOwnerEmpty(),
                             timestamp: new Date(),
-                            creator: dataUserCreator(userCreator),
-                            modificator: dataUserModificatorEmpty(),
-                            modifiedOn: "",
+                            creator: await dataUserCreator(userCreator),
+                            modificator: await dataUserModificatorEmpty(),
+                            modifiedOn: new Date(),
                         }
                         arrayOciAddedToProject.push(infoOciAddedToProject)
                     }
@@ -929,7 +937,7 @@ class ProjectsController {
                     await this.clients.updateClient(
                         clientId, 
                         cliente, 
-                        dataUserModificatorNotEmpty(userCreator)
+                        await dataUserModificatorNotEmpty(userCreator)
                     )
                         
                     await this.projects.addNewOciToProject(
@@ -990,32 +998,39 @@ class ProjectsController {
                     const userId = userInfo.id
                     const userCreator = await this.users.getUserById(userId)
                     !userCreator ? catchError401_3(req, res, next) : null
-            
-                    const statusProject = req.body.statusProjectForm,
+
+                    const selectFieldUNegocio = req.body.uNegocioProject;
+                    const selectFieldLevel = req.body.levelProject;
+
+                if (validateSelectField(selectFieldLevel) && validateSelectField(selectFieldUNegocio) ) {
+
+                    const statusProject = req.body.statusProjectForm == 'on' ? Boolean(true) : Boolean(false),
                         projectName = req.body.projectName,
-                        projectDescription = req.body.projectDescription,
-                        prioProject = req.body.prioProject,
-                        levelProject = req.body.levelProject,
+                        projectDescription = req.body.projectDescription.trim(),
+                        prioProject = parseInt(req.body.prioProject) || 1,
+                        levelProject = selectFieldLevel,
+                        uNegocioProject = selectFieldUNegocio,
                         codeProject = req.body.codeProject,
                         imageProjectText = req.body.imageProjectFileName
-                            
-                    await this.projects.updateProject(
-                        id,
-                        proyecto,
-                        statusProject,
-                        projectName,
-                        projectDescription,
-                        prioProject,
-                        levelProject,
-                        codeProject,
-                        imageProjectText,
-                        dataUserModificatorNotEmpty(userCreator)
-                    )
-    
+                        
+                        await this.projects.updateProject(
+                            id,
+                            proyecto,
+                            statusProject,
+                            projectName,
+                            projectDescription,
+                            prioProject,
+                            uNegocioProject,
+                            levelProject,
+                            codeProject,
+                            imageProjectText,
+                            await dataUserModificatorNotEmpty(userCreator)
+                        )
+                
                     await this.clients.updateClient(
-                        clientId, 
+                        clientId,
                         cliente, 
-                        dataUserModificatorNotEmpty(userCreator)
+                        await dataUserModificatorNotEmpty(userCreator)
                     )
     
                     const proyectos = await this.projects.getProjectsByClientId(clientId)
@@ -1040,6 +1055,17 @@ class ProjectsController {
                             csrfToken
                         })
                     }, 400)
+
+                } else {
+                    catchError400_3(req, res, next)
+                }
+
+                function validateSelectField(value) {
+                    const validOptions = [
+                        'ganado', 'aRiesgo', 'paraCotizar', 'matrices', 'lineas'
+                    ];
+                    return validOptions.includes(value);
+                }
     
                 } catch (err) {
                     catchError500(err, req, res, next)
@@ -1091,8 +1117,9 @@ class ProjectsController {
                     }    
     
                     const statusOci = req.body.statusOciForm,
-                        ociDescription = req.body.descriptionOci,
-                        ociAlias = req.body.aliasOci,
+                        ociDescription = req.body.descriptionOci.trim(),
+                        ociAlias = req.body.aliasOci.trim(),
+                        ociPrio = parseInt(req.body.prioOci),
                         ociImageText = req.body.imageOciFileName
     
                     await this.projects.updateOci(
@@ -1101,16 +1128,17 @@ class ProjectsController {
                         statusOci,
                         ociDescription,
                         ociAlias,
+                        ociPrio,
                         ociNumberValid,
                         ociKNumber,
                         ociImageText,
-                        dataUserModificatorNotEmpty(userCreator)
+                        await dataUserModificatorNotEmpty(userCreator)
                     )
     
                     await this.clients.updateClient(
                         clientId, 
                         cliente, 
-                        dataUserModificatorNotEmpty(userCreator)
+                        await dataUserModificatorNotEmpty(userCreator)
                     )
     
                     const proyectos = await this.projects.getProjectsByClientId(clientId)
@@ -1209,13 +1237,13 @@ class ProjectsController {
                     otDesign,
                     otSimulation,
                     otSupplier,
-                    dataUserModificatorNotEmpty(userCreator)
+                    await dataUserModificatorNotEmpty(userCreator)
                 )
                 
                 await this.clients.updateClient(
                     clientId, 
                     cliente, 
-                    dataUserModificatorNotEmpty(userCreator)
+                    await dataUserModificatorNotEmpty(userCreator)
                 )
     
                 const proyecto = await this.projects.selectProjectsByMainProjectId(id)
@@ -1271,13 +1299,13 @@ class ProjectsController {
                     id, 
                     proyecto,
                     ociKNumber,
-                    dataUserModificatorNotEmpty(userCreator)
+                    await dataUserModificatorNotEmpty(userCreator)
                 )
                 
                 const cliente = await this.clients.updateClient(
                     clientId, 
                     clienteSeleccionado, 
-                    dataUserModificatorNotEmpty(userCreator)
+                    await dataUserModificatorNotEmpty(userCreator)
                 )
                 !cliente ? catchError401_1(req, res, next) : null
     
@@ -1337,13 +1365,13 @@ class ProjectsController {
                     mainProyecto,
                     ociKNumber,
                     otKNumber,
-                    dataUserModificatorNotEmpty(userCreator)
-                    )
+                    await dataUserModificatorNotEmpty(userCreator)
+                )
                 
                 const cliente = await this.clients.updateClient(
                     clientId, 
                     clienteSeleccionado, 
-                    dataUserModificatorNotEmpty(userCreator)
+                    await dataUserModificatorNotEmpty(userCreator)
                 )
                 !cliente ? catchError401_1(req, res, next) : null
     
@@ -1397,14 +1425,14 @@ class ProjectsController {
                 const proyectos = await this.projects.deleteProjectById(
                     id, 
                     proyecto, 
-                    dataUserModificatorNotEmpty(userCreator)
+                    await dataUserModificatorNotEmpty(userCreator)
                 )
                 !proyectos ? catchError401_1(req, res, next) : null
                 
                 const cliente = await this.clients.reduceClientProjectQty(
                     clientId, 
                     clienteSeleccionado, 
-                    dataUserModificatorNotEmpty(userCreator)
+                    await dataUserModificatorNotEmpty(userCreator)
                 )
                 !cliente ? catchError401_1(req, res, next) : null
     
@@ -1486,8 +1514,8 @@ class ProjectsController {
                     aprobadoR14: arrayAprobadoR14[i] || "sinDato",
                     revisionAprobadoR14: parseInt(arrayRevisionAprobadoR14[i]) || 0,
                     timestamp: new Date(),
-                    creator: dataUserCreator(userCreator),
-                    modificator: dataUserModificatorEmpty(),
+                    creator: await dataUserCreator(userCreator),
+                    modificator: await dataUserModificatorEmpty(),
                     modifiedOn: "",
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
@@ -1583,8 +1611,8 @@ class ProjectsController {
                     horasProceso3d: parseInt(arrayHorasProceso3d[i]) || 0,
                     revisionHorasProceso3d: parseInt(arrayRevisionHorasProceso3d[i]) || 0,
                     timestamp: new Date(),
-                    creator: dataUserCreator(userCreator),
-                    modificator: dataUserModificatorEmpty(),
+                    creator: await dataUserCreator(userCreator),
+                    modificator: await dataUserModificatorEmpty(),
                     modifiedOn: "",
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
@@ -1689,8 +1717,8 @@ class ProjectsController {
                     envioCliente: arrayEnvioCliente[i] || 'sinDato',
                     revisionEnvioCliente: parseInt(arrayRevisionEnvioCliente[i]) || 0,
                     timestamp: new Date(),
-                    creator: dataUserCreator(userCreator),
-                    modificator: dataUserModificatorEmpty(),
+                    creator: await dataUserCreator(userCreator),
+                    modificator: await dataUserModificatorEmpty(),
                     modifiedOn: "",
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
@@ -1795,8 +1823,8 @@ class ProjectsController {
                     aprobadoCliente: arrayAprobadoCliente[i] || 'sinDato',
                     revisionAprobadoCliente: parseInt(arrayRevisionAprobadoCliente[i]) || 0,
                     timestamp: new Date(),
-                    creator: dataUserCreator(userCreator),
-                    modificator: dataUserModificatorEmpty(),
+                    creator: await dataUserCreator(userCreator),
+                    modificator: await dataUserModificatorEmpty(),
                     modifiedOn: "",
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
@@ -1901,8 +1929,8 @@ class ProjectsController {
                     infoModelo: parseInt(arrayInfoModelo[i]) || 0,
                     revisionInfoModelo: parseInt(arrayRevisionInfoModelo[i]) || 0,
                     timestamp: new Date(),
-                    creator: dataUserCreator(userCreator),
-                    modificator: dataUserModificatorEmpty(),
+                    creator: await dataUserCreator(userCreator),
+                    modificator: await dataUserModificatorEmpty(),
                     modifiedOn: "",
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
@@ -1998,8 +2026,8 @@ class ProjectsController {
                     info100: parseInt(arrayInfo100[i]) || 0,
                     revisionInfo100: parseInt(arrayRevisionInfo100[i]) || 0,
                     timestamp: new Date(),
-                    creator: dataUserCreator(userCreator),
-                    modificator: dataUserModificatorEmpty(),
+                    creator: await dataUserCreator(userCreator),
+                    modificator: await dataUserModificatorEmpty(),
                     modifiedOn: "",
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
@@ -2094,8 +2122,8 @@ class ProjectsController {
                     docuSim0: arrayDocuSim0[i] || "sinDato",
                     revisionDocuSim0: parseInt(arrayRevisionDocuSim0[i]) || 0,
                     timestamp: new Date(),
-                    creator: dataUserCreator(userCreator),
-                    modificator: dataUserModificatorEmpty(),
+                    creator: await dataUserCreator(userCreator),
+                    modificator: await dataUserModificatorEmpty(),
                     modifiedOn: "",
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
@@ -2206,8 +2234,8 @@ class ProjectsController {
                     s1pOp20: arrayS1pOp20[i] || "sinDato",
                     revisionS1pOp20: parseInt(arrayRevisionS1pOp20[i]) || 0,
                     timestamp: new Date(),
-                    creator: dataUserCreator(userCreator),
-                    modificator: dataUserModificatorEmpty(),
+                    creator: await dataUserCreator(userCreator),
+                    modificator: await dataUserModificatorEmpty(),
                     modifiedOn: "",
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
@@ -2313,8 +2341,8 @@ class ProjectsController {
                     sim3: arraySim3[i] || "sinDato",
                     revisionSim3: parseInt(arrayRevisionSim3[i]) || 0,
                     timestamp: new Date(),
-                    creator: dataUserCreator(userCreator),
-                    modificator: dataUserModificatorEmpty(),
+                    creator: await dataUserCreator(userCreator),
+                    modificator: await dataUserModificatorEmpty(),
                     modifiedOn: "",
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
@@ -2420,8 +2448,8 @@ class ProjectsController {
                     reunionSim: arrayReunionSim[i] || "sinDato",
                     revisionReunionSim: parseInt(arrayRevisionReunionSim[i]) || 0,
                     timestamp: new Date(),
-                    creator: dataUserCreator(userCreator),
-                    modificator: dataUserModificatorEmpty(),
+                    creator: await dataUserCreator(userCreator),
+                    modificator: await dataUserModificatorEmpty(),
                     modifiedOn: "",
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
@@ -2527,8 +2555,8 @@ class ProjectsController {
                     horasSim: parseInt(arrayHorasSim[i]) || 0,
                     revisionHorasSim: parseInt(arrayRevisionHorasSim[i]) || 0,
                     timestamp: new Date(),
-                    creator: dataUserCreator(userCreator),
-                    modificator: dataUserModificatorEmpty(),
+                    creator: await dataUserCreator(userCreator),
+                    modificator: await dataUserModificatorEmpty(),
                     modifiedOn: "",
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)
@@ -2624,8 +2652,8 @@ class ProjectsController {
                     mpEnsayada: arrayMpEnsayada[i] || "sinDato",
                     revisionMpEnsayada: parseInt(arrayRevisionMpEnsayada[i]) || 0,
                     timestamp: new Date(),
-                    creator: dataUserCreator(userCreator),
-                    modificator: dataUserModificatorEmpty(),
+                    creator: await dataUserCreator(userCreator),
+                    modificator: await dataUserModificatorEmpty(),
                     modifiedOn: "",
                 }
                 arrayInfoAddedToOt.push(infoAddedToOt)

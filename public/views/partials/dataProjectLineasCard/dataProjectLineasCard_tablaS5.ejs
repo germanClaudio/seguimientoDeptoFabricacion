@@ -1,0 +1,299 @@
+<!-- --------- tabla S5 ----------- -->
+<table id="tabla5Sim<%=k%>"
+    class="table-responsive align-middle col-2 border-end border-dark"
+    style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #88c">
+        <tr>
+            <th colspan="2" class="text-center">Sim 5
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                    <button id="posBtnAddDataS5<%=k%>" type="button" name="btn5Sim" class="btn btn-small btn-success shadow m-1 position-relative"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                        <span id="spanCheckSelecMasiveSim5<%=k%>" class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                            <span class="visually-hidden">Elementos seleccionados</span>
+                        </span>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 disabled"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } %>
+            </th>
+        </tr>
+        <tr>
+            <th style="width:50vw" scope="col-1" class="text-center">Grillado <i class="fa-solid fa-table-cells fa-lg"></i> | Rev</th>
+            <th style="width:50vw" scope="col-1" class="text-center">MP Ensayada | Rev</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        
+        <% const sim5Config = {
+            ok: { text: "OK", classes: "bg-success text-white" },
+            noOk: { text: "No OK", classes: "bg-danger text-white" },
+            pendiente: { text: "Pendiente", classes: "bg-warning text-dark" },
+            noAplica: { text: "N/A", classes: "bg-info text-dark" },
+            default: { text: "S/D", classes: "bg-secondary text-white" }
+        };
+
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => { 
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+            largoArrayOtProject = parseInt(pathMongoOtProject.length),
+            pathMongoOtInformation = pathMongoOtProject[n].otInformation
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                resGrillado = 'sinDato', resRevisionGrillado = 0,
+                resMpEnsayada = 'sinDato', resRevisionMpEnsayada = 0
+
+            if (pathMongoOtProject[n].visible) {
+                let pathMongoOtInfoSim5 = pathMongoOtInformation[0].otInfoSim5 || [],
+                largoArraySim5 = parseInt(pathMongoOtInfoSim5.length);
+
+                let arrResGrillado = [], valueArrayResGrillado = 0, arrResRevisionGrillado = [], arrResCreadorGrillado = [],
+                arrResModificadorGrillado = [], arrResFechaGrillado = [], arrResFechaModGrillado = [];
+
+                let arrResMpEnsayada = [], valueArrayResMpEnsayada = 0, arrResRevisionMpEnsayada = [], arrResCreadorMpEnsayada = [],
+                arrResModificadorMpEnsayada = [], arrResFechaMpEnsayada = [], arrResFechaModMpEnsayada = [];
+
+                if (pathMongoOtProject[n].otStatus) { %>
+                    <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
+                        <% for (let q = 37; totalColDataSim5 > q; q++) {
+                            if (q==37) { %>
+                                <!-- Grillado data Activo--> 
+                                <td class="text-center align-middle">
+                                    
+                                    <% if (largoArraySim5 > 0) {
+                                        
+                                        for (let i = 0; largoArraySim5 > i; i++) {
+                                            if (pathMongoOtInfoSim5[i]) {
+                                                let largoArray = parseInt(largoArraySim5)
+                                                resGrillado = pathMongoOtInfoSim5[largoArray-1].grillado || 'sinDato'
+                                                resRevisionGrillado = parseInt(pathMongoOtInfoSim5[largoArray-1].revisionGrillado) || 0
+                                                
+                                                arrResGrillado.push(pathMongoOtInfoSim5[i].grillado)
+                                                arrResRevisionGrillado.push(pathMongoOtInfoSim5[i].revisionGrillado)
+                                                
+                                                arrResCreadorGrillado.push(pathMongoOtInfoSim5[i].creator[0].username)
+                                                arrResModificadorGrillado.push(pathMongoOtInfoSim5[i].modificator[0].username)
+                                                arrResFechaGrillado.push(pathMongoOtInfoSim5[i].timestamp)
+                                                arrResFechaModGrillado.push(pathMongoOtInfoSim5[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResGrillado = parseInt(arrResGrillado.length-1)
+                                        
+                                        if (arrResGrillado.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResGrillado.length == arrResRevisionGrillado.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                    
+                                    } else {
+                                        arrResGrillado.push(resGrillado)
+                                        arrResRevisionGrillado.push(resRevisionGrillado)
+
+                                        arrResCreadorGrillado.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorGrillado.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaGrillado.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModGrillado.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteGrillado<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorGrillado<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorGrillado" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResGrillado %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResGrillado %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionGrillado %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorGrillado %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorGrillado %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaGrillado %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModGrillado %>">
+        
+                                        <% const config = sim5Config[resGrillado] || sim5Config.default; %>
+                                        <span id="resGrillado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionGrillado<%=k%>_<%=n%>_<%=q%>" name="resRevisionGrillado" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionGrillado %>
+                                        </span>
+        
+                                        <button id="btnSiguienteGrillado<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteGrillado" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else { %>
+                                <!-- MP Ensayada data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim5 > 0) {
+                                        
+                                        for (let i = 0; largoArraySim5 > i; i++) {
+                                            if (pathMongoOtInfoSim5[i]) {
+                                                let largoArray = parseInt(largoArraySim5)
+                                                resMpEnsayada = pathMongoOtInfoSim5[largoArray-1].mpEnsayada || 'sinDato'
+                                                resRevisionMpEnsayada = parseInt(pathMongoOtInfoSim5[largoArray-1].revisionMpEnsayada) || 0
+                                                
+                                                arrResMpEnsayada.push(pathMongoOtInfoSim5[i].mpEnsayada)
+                                                arrResRevisionMpEnsayada.push(pathMongoOtInfoSim5[i].revisionMpEnsayada)
+                                                
+                                                arrResCreadorMpEnsayada.push(pathMongoOtInfoSim5[i].creator[0].username)
+                                                arrResModificadorMpEnsayada.push(pathMongoOtInfoSim5[i].modificator[0].username)
+                                                arrResFechaMpEnsayada.push(pathMongoOtInfoSim5[i].timestamp)
+                                                arrResFechaModMpEnsayada.push(pathMongoOtInfoSim5[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResMpEnsayada = parseInt(arrResMpEnsayada.length-1)
+                                                
+                                        if (arrResMpEnsayada.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResMpEnsayada.length == arrResRevisionMpEnsayada.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                    
+                                    } else {
+                                        arrResMpEnsayada.push(resMpEnsayada)
+                                        arrResRevisionMpEnsayada.push(resRevisionMpEnsayada)
+
+                                        arrResCreadorMpEnsayada.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorMpEnsayada.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaMpEnsayada.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModMpEnsayada.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteMpEnsayada<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorMpEnsayada<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorMpEnsayada" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMpEnsayada %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMpEnsayada %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMpEnsayada %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorMpEnsayada %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorMpEnsayada %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMpEnsayada %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModMpEnsayada %>">
+        
+                                        <% const config = sim5Config[resMpEnsayada] || sim5Config.default; %>
+                                        <span id="resMpEnsayada<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionMpEnsayada<%=k%>_<%=n%>_<%=q%>" name="resRevisionMpEnsayada" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionMpEnsayada %>
+                                        </span>
+                                        
+                                        <button id="btnSiguienteMpEnsayada<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteMpEnsayada" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+
+                <% } else { %>
+                    <tr class="pe-none" name="rowSelected<%=k%>_<%=n%>" style="height: 7vh; background-color: #dedede;">
+                        <% for (let q = 37; totalColDataSim5 > q; q++) {
+                            if (q==37) { %>
+                                <!-- Mat Ensayo data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim5 > 0) {
+                                    
+                                        for (let i = 0; largoArraySim5 > i; i++) {
+                                            if (pathMongoOtInfoSim5[i]) {
+                                                let largoArray = parseInt(largoArraySim5)
+                                                resGrillado = pathMongoOtInfoSim5[largoArray-1].grillado || 'sinDato'
+                                                resRevisionGrillado = parseInt(pathMongoOtInfoSim5[largoArray-1].revisionGrillado) || 0
+                                                
+                                                arrResGrillado.push(pathMongoOtInfoSim5[i].grillado)
+                                                arrResRevisionGrillado.push(pathMongoOtInfoSim5[i].revisionGrillado)
+                                            }
+                                        }
+                                        valueArrayRes1Sim = parseInt(arrResGrillado.length-1)
+                                        resGrillado = pathMongoOtInfoSim5[0].grillado
+
+                                    } else {
+                                        arrResGrillado.push(resGrillado)
+                                        arrResRevisionGrillado.push(resRevisionGrillado)
+                                    } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResGrillado %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes1Sim %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionGrillado %>">
+                                    
+                                    <% const config = sim5Config[resGrillado] || sim5Config.default; %>
+                                    <span id="resGrillado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionGrillado<%=k%>_<%=n%>_<%=q%>" name="resRevisionGrillado" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionGrillado %>
+                                    </span>
+                                </td>
+
+                            <% } else { %>
+                                <!-- MpEnsayada data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim5 > 0) {
+                                    
+                                        for (let i = 0; largoArraySim5 > i; i++) {
+                                            if (pathMongoOtInfoSim5[i]) {
+                                                let largoArray = parseInt(largoArraySim5)
+                                                resMpEnsayada = pathMongoOtInfoSim5[largoArray-1].mpEnsayada || 'sinDato'
+                                                resRevisionMpEnsayada =  parseInt(pathMongoOtInfoSim5[largoArray-1].revisionMpEnsayada) || 0
+                                                
+                                                arrResMpEnsayada.push(pathMongoOtInfoSim5[i].mpEnsayada)
+                                                arrResRevisionMpEnsayada.push(pathMongoOtInfoSim5[i].revisionMpEnsayada)
+                                            }
+                                        }
+                                        valueArrayResMpEnsayada = parseInt(arrResMpEnsayada.length-1)
+                                        resMpEnsayada = pathMongoOtInfoSim5[0].mpEnsayada
+                                    
+                                    } else {
+                                        arrResMpEnsayada.push(resMpEnsayada)
+                                        arrResRevisionMpEnsayada.push(resRevisionMpEnsayada)
+                                    } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMpEnsayada %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMpEnsayada %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMpEnsayada %>">
+
+                                    <% const config = sim5Config[resMpEnsayada] || sim5Config.default; %>
+                                    <span id="resMpEnsayada<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionMpEnsayada<%=k%>_<%=n%>_<%=q%>" name="resRevisionMpEnsayada" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionMpEnsayada %>
+                                    </span>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+                <% }
+            }
+        }) %>
+    </tbody>
+</table>

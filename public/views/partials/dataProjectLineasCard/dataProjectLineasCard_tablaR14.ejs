@@ -1,0 +1,292 @@
+<!-- tabla R14 -->
+<table id="tablaR14<%=k%>"
+    class="table-responsive align-middle col-5 border-end border-dark" style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #aac">
+        <tr>
+            <th colspan="2" class="text-center">R-14
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                    <button id="posBtnAddDataR14<%=k%>" type="button" name="btnR14" class="btn btn-small btn-success shadow m-1 position-relative"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                        <span id="spanCheckSelecMasiveR14<%=k%>" class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                            <span class="visually-hidden">Elementos seleccionados</span>
+                        </span>                                                    
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 disabled"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>                                                    
+                    </button>
+                <% } %>
+            </th>
+        </tr>
+        <tr>
+            <th id="colData0" style="width:50vw" scope="col-1" class="text-center">Proceso R14 | Rev</th>
+            <th id="colData1" style="width:50vw" scope="col-1" class="text-center">Aprobado PM | Rev</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        <% const procesoR14Config = {
+                ok: { text: "OK", classes: "bg-success text-white" },
+                noOk: { text: "No OK", classes: "bg-danger text-white" },
+                pendiente: { text: "Pendiente", classes: "bg-warning text-dark" },
+                noAplica: { text: "N/A", classes: "bg-info text-dark" },
+                default: { text: "S/D", classes: "bg-secondary text-white" }
+            };
+        
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+                largoArrayOtProject = parseInt(pathMongoOtProject.length),
+                pathMongoOtInformation = pathMongoOtProject[n].otInformation
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                resProcesoR14 = "sinDato", resRevisionProcesoR14 = 0,
+                resAprobadoR14 = "sinDato", resRevisionAprobadoR14 = 0;
+
+            if (pathMongoOtProject[n].visible) {
+                let pathMongoOtInfoR14 = pathMongoOtInformation[0].otInfoR14 || [],
+                    largoArrayInfoR14 = parseInt(pathMongoOtInfoR14.length);
+
+                let arrResProcesoR14 = [], valueArrayResProcesoR14 = 0, arrResRevisionProcesoR14 = [],
+                    arrResCreadorProcesoR14 = [], arrResModificadorProcesoR14 = [], arrResFechaProcesoR14 = [], arrResFechaModProcesoR14 = [];
+
+                let arrResAprobadoR14 = [], valueArrayResAprobadoR14 = 0, arrResRevisionAprobadoR14 = [],
+                    arrResCreadorAprobadoR14 = [], arrResModificadorAprobadoR14 = [], arrResFechaAprobadoR14 = [], arrResFechaModAprobadoR14 = [];
+
+                if (pathMongoOtProject[n].otStatus) { %>
+                    <!-- Activos --> 
+                    <tr name="rowSelected<%=k%>_<%=n%>" class="border-bottom fw-semibold fs-6" style="height: 7vh;">
+                        <% for (let q = 0; totalColDataR14 > q; q++) {
+                            if (q==0) { %>
+                                <!-- Proceso R14 data Activo--> 
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayInfoR14 > 0) {
+                                        
+                                        for (let i = 0; largoArrayInfoR14 > i; i++) {
+                                            if (pathMongoOtInfoR14[i]) {
+                                                let largoArray = parseInt(largoArrayInfoR14)
+                                                resProcesoR14 = pathMongoOtInfoR14[largoArray-1].procesoR14 || "sinDato"
+                                                resRevisionProcesoR14 = pathMongoOtInfoR14[largoArray-1].revisionProcesoR14 || 0
+                                                
+                                                arrResProcesoR14.push(pathMongoOtInfoR14[i].procesoR14)
+                                                arrResRevisionProcesoR14.push(pathMongoOtInfoR14[i].revisionProcesoR14)
+                                                
+                                                arrResCreadorProcesoR14.push(pathMongoOtInfoR14[i].creator[0].username)
+                                                arrResModificadorProcesoR14.push(pathMongoOtInfoR14[i].modificator[0].username)
+                                                arrResFechaProcesoR14.push(pathMongoOtInfoR14[i].timestamp)
+                                                arrResFechaModProcesoR14.push(pathMongoOtInfoR14[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResProcesoR14 = parseInt(arrResProcesoR14.length-1)
+                                                
+                                        if (arrResProcesoR14.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResProcesoR14.length == arrResRevisionProcesoR14.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResProcesoR14.push(resProcesoR14)
+                                        arrResRevisionProcesoR14.push(resRevisionProcesoR14)
+                                        
+                                        arrResCreadorProcesoR14.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorProcesoR14.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaProcesoR14.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModProcesoR14.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteProcesoR14<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorProcesoR14<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorProcesoR14" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResProcesoR14 %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResProcesoR14 %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionProcesoR14 %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorProcesoR14 %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorProcesoR14 %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaProcesoR14 %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModProcesoR14 %>">
+
+                                        <% const config = procesoR14Config[resProcesoR14] || procesoR14Config.default; %>
+                                        <span id="resProcesoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span> |
+                                        <span id="resRevisionProcesoR14<%=k%>_<%=n%>_<%=q%>" name="resRevisionProcesoR14" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionProcesoR14 %>
+                                        </span>
+
+                                        <button id="btnSiguienteProcesoR14<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteProcesoR14" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else { %>
+                                <!-- Aprobado Proceso R14 data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayInfoR14 > 0) {
+                                        
+                                        for (let i = 0; largoArrayInfoR14 > i; i++) {
+                                            if (pathMongoOtInfoR14[i]) {
+                                                let largoArray = parseInt(largoArrayInfoR14)
+                                                resAprobadoR14 = pathMongoOtInfoR14[largoArray-1].aprobadoR14 || "sinDato"
+                                                resRevisionAprobadoR14 = pathMongoOtInfoR14[largoArray-1].revisionAprobadoR14 || 0
+                                                
+                                                arrResAprobadoR14.push(pathMongoOtInfoR14[i].aprobadoR14)
+                                                arrResRevisionAprobadoR14.push(pathMongoOtInfoR14[i].revisionAprobadoR14)
+                                                
+                                                arrResCreadorAprobadoR14.push(pathMongoOtInfoR14[i].creator[0].username)
+                                                arrResModificadorAprobadoR14.push(pathMongoOtInfoR14[i].modificator[0].username)
+                                                arrResFechaAprobadoR14.push(pathMongoOtInfoR14[i].timestamp)
+                                                arrResFechaModAprobadoR14.push(pathMongoOtInfoR14[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResAprobadoR14 = parseInt(arrResAprobadoR14.length-1)
+                                        
+                                        if (arrResAprobadoR14.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResAprobadoR14.length == arrResRevisionAprobadoR14.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResAprobadoR14.push(resAprobadoR14)
+                                        arrResRevisionAprobadoR14.push(resRevisionAprobadoR14)
+                                        
+                                        arrResCreadorAprobadoR14.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorAprobadoR14.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaAprobadoR14.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModAprobadoR14.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteAprobadoR14<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorAprobadoR14<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorAprobadoR14" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResAprobadoR14 %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAprobadoR14 %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAprobadoR14 %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorAprobadoR14 %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorAprobadoR14 %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaAprobadoR14 %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModAprobadoR14 %>">
+        
+                                        <% const config = procesoR14Config[resAprobadoR14] || procesoR14Config.default; %>  
+                                        <span id="resAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                            <%= config.text %>
+                                        </span> |
+                                        <span id="resRevisionAprobadoR14<%=k%>_<%=n%>_<%=q%>" name="resRevisionAprobadoR14" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionAprobadoR14 %>
+                                        </span>
+
+                                        <button id="btnSiguienteAprobadoR14<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteAprobadoR14" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+
+                <% } else { %>
+                    <!-- Inactivos -->
+                    <tr class="pe-none" name="rowSelected<%=k%>_<%=n%>" style="height: 7vh; background-color: #dedede;">
+                        <% for (let q = 0; totalColDataR14 > q; q++) {
+                            if (q==0) { %>
+                                <!-- Proceso R14 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayInfoR14 > 0) {
+                                        for (let i = 0; largoArrayInfoR14 > i; i++) {
+                                            if (pathMongoOtInfoR14[i]) {
+                                                let largoArray = parseInt(largoArrayInfoR14)
+                                                resProcesoR14 = pathMongoOtInfoR14[largoArray-1].procesoR14 || 'sinDato'
+                                                resRevisionProcesoR14 = pathMongoOtInfoR14[largoArray-1].revisionProcesoR14  || 0
+                                                
+                                                arrResProcesoR14.push(pathMongoOtInfoR14[i].procesoR14)
+                                                arrResRevisionProcesoR14.push(pathMongoOtInfoR14[i].revisionProcesoR14)
+                                            }
+                                        }
+                                        valueArrayResProcesoR14 = parseInt(arrResProcesoR14.length-1)
+                                        resProcesoR14 = pathMongoOtInfoR14[0].procesoR14
+                                    
+                                    } else {
+                                        arrResProcesoR14.push(resProcesoR14)
+                                        arrResRevisionProcesoR14.push(resRevisionProcesoR14)
+                                    } %>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResProcesoR14 %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResProcesoR14 %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionProcesoR14 %>">
+                                    
+                                        <% const config = procesoR14Config[resAprobadoR14] || procesoR14Config.default; %>  
+                                        <span id="resAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                            <%= config.text %>
+                                        </span> |
+                                        <span id="resRevisionAprobadoR14<%=k%>_<%=n%>_<%=q%>" name="resRevisionAprobadoR14" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionAprobadoR14 %>
+                                        </span>
+                                </td>
+
+                            <% } else { %>
+                                <!-- Aprobado Proceso R14 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayInfoR14 > 0) {
+                                        for (let i = 0; largoArrayInfoR14 > i; i++) {
+                                            if (pathMongoOtInfoR14[i]) {
+                                                let largoArray = parseInt(largoArrayInfoR14)
+                                                resAprobadoR14 = pathMongoOtInfoR14[largoArray-1].aprobadoR14 || 'sinDato'
+                                                resRevisionAprobadoR14 = pathMongoOtInfoR14[largoArray-1].revisionAprobadoR14
+                                                
+                                                arrResAprobadoR14.push(pathMongoOtInfoR14[i].aprobadoR14)
+                                                arrResRevisionAprobadoR14.push(pathMongoOtInfoR14[i].revisionAprobadoR14)
+                                            }
+                                        }
+                                        valueArrayResAprobadoR14 = parseInt(arrResAprobadoR14.length-1)
+                                        resAprobadoR14 = pathMongoOtInfoR14[0].aprobadoR14
+                                    
+                                    } else {
+                                        arrResAprobadoR14.push(resAprobadoR14)
+                                        arrResRevisionAprobadoR14.push(resRevisionAprobadoR14)
+                                    } %>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResAprobadoR14 %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAprobadoR14 %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAprobadoR14 %>">
+                                    
+                                        <% const config = procesoR14Config[resAprobadoR14] || procesoR14Config.default; %>  
+                                        <span id="resAprobadoR14<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span> |
+                                        <span id="resRevisionAprobadoR14<%=k%>_<%=n%>_<%=q%>" name="resRevisionAprobadoR14" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionAprobadoR14 %>
+                                        </span>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+                <% }
+            }
+        }) %>
+    </tbody>
+</table>

@@ -1,0 +1,547 @@
+<!-- --------- tabla S4 Segunda Parte ----------- -->
+<table id="tabla4SimSegunda<%=k%>"
+    class="table-responsive align-middle col-2 border-end border-dark"
+    style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #88c">
+        <tr>
+            <th colspan="4" class="text-center">Sim 4 (Segunda Parte)
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                    <button id="posBtnAddDataS4Segunda<%=k%>" type="button" name="btn4SegundaSim" class="btn btn-small btn-success shadow m-1 position-relative"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                        <span id="spanCheckSelecMasiveSim4Seg<%=k%>" class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                            <span class="visually-hidden">Elementos seleccionados</span>
+                        </span>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 disabled"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } %>
+            </th>
+        </tr>
+        <tr>
+            <th style="width:23vw" scope="col-1" class="text-center">Informe | Rev</th>
+            <th style="width:23vw" scope="col-1" class="text-center">Geo Cop#1 | Rev</th>
+            <th style="width:23vw" scope="col-1" class="text-center">Geo Cop#2 | Rev</th>
+
+            <% let arrayHsSim4Segunda = [], sumaHsSim4SegundaTotal = 0,
+                pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+                largoArrayOtProject = parseInt(pathMongoOtProject.length);
+                
+                for ( let n=0; largoArrayOtProject > n; n++) {
+                    if (pathMongoOtProject[n].otInformation[0].otInfoSim4Segunda.length > 0 ) {
+                        let largoArrayHsSim4Segunda = pathMongoOtProject[n].otInformation[0].otInfoSim4Segunda.length
+                        arrayHsSim4Segunda.push(parseInt(pathMongoOtProject[n].otInformation[0].otInfoSim4Segunda[largoArrayHsSim4Segunda-1].horasSim))
+                    } else {
+                        arrayHsSim4Segunda.push(0)
+                    }
+                    sumaHsSim4SegundaTotal = arrayHsSim4Segunda.reduce(function(acumulador, valorActual) {
+                        return acumulador + valorActual;
+                    }, 0);
+                } %>
+            <th style="width:31vw" scope="col-1" class="text-center">Hs Sim | Rev | Total Hs
+                <span id="resHsTotalSim4Segunda<%=k%>" class="badge rounded-pill bg-dark text-white"><%= sumaHsSim4SegundaTotal %></span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        
+        <% const sim4SegundaConfig = {
+            ok: { text: "OK", classes: "bg-success text-white" },
+            noOk: { text: "No OK", classes: "bg-danger text-white" },
+            pendiente: { text: "Pendiente", classes: "bg-warning text-dark" },
+            noAplica: { text: "N/A", classes: "bg-info text-dark" },
+            default: { text: "S/D", classes: "bg-secondary text-white" }
+        };
+
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
+            let pathMongoOtInformation = pathMongoOtProject[n].otInformation;
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                resInforme4Sim = 'sinDato', resRevisionInforme4Sim = 0,
+                resGeo1Copiado = 'sinDato', resRevisionGeo1Copiado = 0,
+                resGeo2Copiado = 'sinDato', resRevisionGeo2Copiado = 0,
+                resHorasSim = 0, resRevisionHorasSim = 0
+
+            if (pathMongoOtProject[n].visible) {
+                let pathMongoOtSim4Segunda = pathMongoOtInformation[0].otInfoSim4Segunda || [],
+                largoArraySim4Segunda = parseInt(pathMongoOtSim4Segunda.length)
+
+                let arrResInforme4Sim = [], valueArrayResInforme4Sim = 0, arrResRevisionInforme4Sim = [], arrResCreadorInforme4Sim = [],
+                arrResModificadorInforme4Sim = [], arrResFechaInforme4Sim = [], arrResFechaModInforme4Sim = [];
+
+                let arrResGeo1Copiado = [], valueArrayResGeo1Copiado = 0, arrResRevisionGeo1Copiado = [], arrResCreadorGeo1Copiado = [],
+                arrResModificadorGeo1Copiado = [], arrResFechaGeo1Copiado = [], arrResFechaModGeo1Copiado = [];
+
+                let arrResGeo2Copiado = [], valueArrayResGeo2Copiado = 0, arrResRevisionGeo2Copiado = [], arrResCreadorGeo2Copiado = [],
+                arrResModificadorGeo2Copiado = [], arrResFechaGeo2Copiado = [], arrResFechaModGeo2Copiado = [];
+
+                let arrResHorasSim = [], valueArrayResHorasSim = 0, arrResRevisionHorasSim = [], arrResCreadorHorasSim = [],
+                arrResModificadorHorasSim = [], arrResFechaHorasSim = [], arrResFechaModHorasSim = [];
+
+                if (pathMongoOtProject[n].otStatus) { %>
+                    <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
+                        <% for (let q = 33; totalColDataSim4Segunda > q; q++) {
+                            if (q==33) { %>
+                                <!-- Informe Sim 4 data Activo--> 
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim4Segunda > 0) {
+                                        
+                                        for (let i = 0; largoArraySim4Segunda > i; i++) {
+                                            if (pathMongoOtSim4Segunda[i]) {
+                                                let largoArray = parseInt(largoArraySim4Segunda) 
+                                                resInforme4Sim = pathMongoOtSim4Segunda[largoArray-1].informeSim4 || 'sinDato'
+                                                resRevisionInforme4Sim = parseInt(pathMongoOtSim4Segunda[largoArray-1].revisionInformeSim4) || 0
+                                                
+                                                arrResInforme4Sim.push(pathMongoOtSim4Segunda[i].informeSim4)
+                                                arrResRevisionInforme4Sim.push(pathMongoOtSim4Segunda[i].revisionInformeSim4)
+                                            
+                                                arrResCreadorInforme4Sim.push(pathMongoOtSim4Segunda[i].creator[0].username)
+                                                arrResModificadorInforme4Sim.push(pathMongoOtSim4Segunda[i].modificator[0].username)
+                                                arrResFechaInforme4Sim.push(pathMongoOtSim4Segunda[i].timestamp)
+                                                arrResFechaModInforme4Sim.push(pathMongoOtSim4Segunda[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResInforme4Sim = parseInt(arrResInforme4Sim.length-1)
+                                                
+                                        if (arrResInforme4Sim.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResInforme4Sim.length == arrResRevisionInforme4Sim.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                                
+                                    } else {
+                                        arrResInforme4Sim.push(resInforme4Sim)
+                                        arrResRevisionInforme4Sim.push(resRevisionInforme4Sim)
+
+                                        arrResCreadorInforme4Sim.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorInforme4Sim.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaInforme4Sim.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModInforme4Sim.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteInforme4Sim<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorInforme4Sim<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorInforme4Sim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResInforme4Sim %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResInforme4Sim %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionInforme4Sim %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorInforme4Sim %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorInforme4Sim %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaInforme4Sim %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModInforme4Sim %>">
+        
+                                        <% const config = sim4SegundaConfig[resInforme4Sim] || sim4SegundaConfig.default; %>
+                                        <span id="resInforme4Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionInforme4Sim<%=k%>_<%=n%>_<%=q%>" name="resRevisionInforme4Sim" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionInforme4Sim %>
+                                        </span>
+                                        
+                                        <button id="btnSiguienteInforme4Sim<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteInforme4Sim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else if (q==34) { %>
+                                <!-- GeoCopiado1 data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim4Segunda> 0) {
+                                        
+                                        for (let i = 0; largoArraySim4Segunda> i; i++) {
+                                            if (pathMongoOtSim4Segunda[i]) {
+                                                let largoArray = parseInt(largoArraySim4Segunda) 
+                                                resGeo1Copiado = pathMongoOtSim4Segunda[largoArray-1].geoCopiado1 || 'sinDato'
+                                                resRevisionGeo1Copiado = parseInt(pathMongoOtSim4Segunda[largoArray-1].revisionGeoCopiado1) || 0
+                                                
+                                                arrResGeo1Copiado.push(pathMongoOtSim4Segunda[i].geoCopiado1)
+                                                arrResRevisionGeo1Copiado.push(pathMongoOtSim4Segunda[i].revisionGeoCopiado1)
+                                            
+                                                arrResCreadorGeo1Copiado.push(pathMongoOtSim4Segunda[i].creator[0].username)
+                                                arrResModificadorGeo1Copiado.push(pathMongoOtSim4Segunda[i].modificator[0].username)
+                                                arrResFechaGeo1Copiado.push(pathMongoOtSim4Segunda[i].timestamp)
+                                                arrResFechaModGeo1Copiado.push(pathMongoOtSim4Segunda[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResGeo1Copiado = parseInt(arrResGeo1Copiado.length-1)
+                                                
+                                        if (arrResGeo1Copiado.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResGeo1Copiado.length == arrResRevisionGeo1Copiado.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResGeo1Copiado.push(resGeo1Copiado)
+                                        arrResRevisionGeo1Copiado.push(resRevisionGeo1Copiado)
+
+                                        arrResCreadorGeo1Copiado.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorGeo1Copiado.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaGeo1Copiado.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModGeo1Copiado.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteGeo1Copiado<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorGeo1Copiado<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorGeo1Copiado" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResGeo1Copiado %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResGeo1Copiado %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionGeo1Copiado %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorGeo1Copiado %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorGeo1Copiado %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaGeo1Copiado %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModGeo1Copiado %>">
+        
+                                        <% const config = sim4SegundaConfig[resGeo1Copiado] || sim4SegundaConfig.default; %>
+                                        <span id="resGeo1Copiado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionGeo1Copiado<%=k%>_<%=n%>_<%=q%>" name="resRevisionGeo1Copiado" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionGeo1Copiado %>
+                                        </span>
+                                        
+                                        <button id="btnSiguienteGeo1Copiado<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteGeo1Copiado" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else if (q==35) { %>
+                                <!-- GeoCopiado2 Sim1 data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim4Segunda> 0) {
+                                        
+                                        for (let i = 0; largoArraySim4Segunda > i; i++) {
+                                            if (pathMongoOtSim4Segunda[i]) {
+                                                let largoArray = parseInt(largoArraySim4Segunda) 
+                                                resGeo2Copiado = pathMongoOtSim4Segunda[largoArray-1].geoCopiado2 || 'sinDato'
+                                                resRevisionGeo2Copiado = parseInt(pathMongoOtSim4Segunda[largoArray-1].revisionGeoCopiado2) || 0
+                                                
+                                                arrResGeo2Copiado.push(pathMongoOtSim4Segunda[i].geoCopiado2)
+                                                arrResRevisionGeo2Copiado.push(pathMongoOtSim4Segunda[i].revisionGeoCopiado2)
+                                            
+                                                arrResCreadorGeo2Copiado.push(pathMongoOtSim4Segunda[i].creator[0].username)
+                                                arrResModificadorGeo2Copiado.push(pathMongoOtSim4Segunda[i].modificator[0].username)
+                                                arrResFechaGeo2Copiado.push(pathMongoOtSim4Segunda[i].timestamp)
+                                                arrResFechaModGeo2Copiado.push(pathMongoOtSim4Segunda[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResGeo2Copiado = parseInt(arrResGeo2Copiado.length-1)
+                                        
+                                        if (arrResGeo2Copiado.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResGeo2Copiado.length == arrResRevisionGeo2Copiado.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResGeo2Copiado.push(resGeo2Copiado)
+                                        arrResRevisionGeo2Copiado.push(resRevisionGeo2Copiado)
+
+                                        arrResCreadorGeo2Copiado.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorGeo2Copiado.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaGeo2Copiado.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModGeo2Copiado.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteGeo2Copiado<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorGeo2Copiado<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorGeo2Copiado" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResGeo2Copiado %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResGeo2Copiado %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionGeo2Copiado %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorGeo2Copiado %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorGeo2Copiado %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaGeo2Copiado %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModGeo2Copiado %>">
+        
+                                        <% const config = sim4SegundaConfig[resGeo2Copiado] || sim4SegundaConfig.default; %>
+                                        <span id="resGeo2Copiado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionGeo2Copiado<%=k%>_<%=n%>_<%=q%>" name="resRevisionGeo2Copiado" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionGeo2Copiado %>
+                                        </span>
+                                                
+                                        <button id="btnSiguienteGeo2Copiado<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteGeo2Copiado" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else { %>
+                                <!-- HorasSim data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim4Segunda > 0) {
+                                    
+                                        for (let i = 0; largoArraySim4Segunda > i; i++) {
+                                            if (pathMongoOtSim4Segunda[i]) {
+                                                let largoArray = parseInt(largoArraySim4Segunda) 
+                                                resHorasSim = pathMongoOtSim4Segunda[largoArray-1].horasSim || 'sinDato'
+                                                resRevisionHorasSim = parseInt(pathMongoOtSim4Segunda[largoArray-1].revisionHorasSim) || 0
+                                                
+                                                arrResHorasSim.push(pathMongoOtSim4Segunda[i].horasSim)
+                                                arrResRevisionHorasSim.push(pathMongoOtSim4Segunda[i].revisionHorasSim)
+                                            
+                                                arrResCreadorHorasSim.push(pathMongoOtSim4Segunda[i].creator[0].username)
+                                                arrResModificadorHorasSim.push(pathMongoOtSim4Segunda[i].modificator[0].username)
+                                                arrResFechaHorasSim.push(pathMongoOtSim4Segunda[i].timestamp)
+                                                arrResFechaModHorasSim.push(pathMongoOtSim4Segunda[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResHorasSim = parseInt(arrResHorasSim.length-1)
+                                                
+                                        if (arrResHorasSim.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResHorasSim.length == arrResRevisionHorasSim.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResHorasSim.push(resHorasSim)
+                                        arrResRevisionHorasSim.push(resRevisionHorasSim)
+
+                                        arrResCreadorHorasSim.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorHorasSim.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaHorasSim.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModHorasSim.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteHorasSim<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorHorasSim<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorHorasSim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResHorasSim %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResHorasSim %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionHorasSim %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorHorasSim %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorHorasSim %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaHorasSim %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModHorasSim %>">
+        
+                                        <span id="resHorasSim<%=k%>_<%=n%>_<%=q%>" name="resHorasSim" class="text-black mx-2" style="font-size: .9rem;">
+                                            <%= resHorasSim %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionHorasSim<%=k%>_<%=n%>_<%=q%>" name="resRevisionHorasSim" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionHorasSim %>
+                                        </span>
+        
+                                        <button id="btnSiguienteHorasSim<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteHorasSim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            <% }
+                        } %>
+                        
+                    </tr>
+                <% } else { %>
+                    <tr class="pe-none" name="rowSelected<%=k%>_<%=n%>" style="height: 7vh; background-color: #dedede;">
+                        <% for (let q = 33; totalColDataSim4Segunda > q; q++) {
+                            if (q==33) { %>
+                                <!-- Mat Ensayo data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim4Segunda > 0) {
+                                    
+                                        for (let i = 0; largoArraySim4Segunda > i; i++) {
+                                            if (pathMongoOtSim4Segunda[i]) {
+                                                let largoArray = parseInt(largoArraySim4Segunda) 
+                                                resInforme4Sim = pathMongoOtSim4Segunda[largoArray-1].informeSim4 || 'sinDato'
+                                                resRevisionInforme4Sim = parseInt(pathMongoOtSim4Segunda[largoArray-1].revisionInformeSim4) || 0
+                                                
+                                                arrResInforme4Sim.push(pathMongoOtSim4Segunda[i].informeSim4)
+                                                arrResRevisionInforme4Sim.push(pathMongoOtSim4Segunda[i].revisionInformeSim4)
+                                                }
+                                            }
+                                            valueArrayRes1Sim = parseInt(arrResInforme4Sim.length-1)
+                                            resInforme4Sim = pathMongoOtSim4Segunda[0].informeSim4
+
+                                    } else {
+                                        arrResInforme4Sim.push(resInforme4Sim)
+                                        arrResRevisionInforme4Sim.push(resRevisionInforme4Sim)
+                                    } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResInforme4Sim %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes1Sim %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionInforme4Sim %>">
+                                    
+                                    <% const config = sim4SegundaConfig[resInforme4Sim] || sim4SegundaConfig.default; %>
+                                    <span id="resInforme4Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionInforme4Sim<%=k%>_<%=n%>_<%=q%>" name="resRevisionInforme4Sim" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionInforme4Sim %>
+                                    </span>
+                                </td>
+
+                            <% } else if (q==34) { %>
+                                <!-- GeoCopiado1 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim4Segunda > 0) {
+                                    
+                                        for (let i = 0; largoArraySim4Segunda > i; i++) {
+                                            if (pathMongoOtSim4Segunda[i]) {
+                                                let largoArray = parseInt(largoArraySim4Segunda) 
+                                                resGeo1Copiado = pathMongoOtSim4Segunda[largoArray-1].geoCopiado1 || 'sinDato'
+                                                resRevisionGeo1Copiado = parseInt(pathMongoOtSim4Segunda[largoArray-1].revisionGeoCopiado1) || 0
+                                                
+                                                arrResGeo1Copiado.push(pathMongoOtSim4Segunda[i].geoCopiado1)
+                                                arrResRevisionGeo1Copiado.push(pathMongoOtSim4Segunda[i].revisionGeoCopiado1)
+                                            }
+                                        }
+                                        valueArrayResGeo1Copiado = parseInt(arrResGeo1Copiado.length-1)
+                                        resGeo1Copiado = pathMongoOtSim4Segunda[0].geoCopiado1
+                                    
+                                    } else {
+                                        arrResGeo1Copiado.push(resGeo1Copiado)
+                                        arrResRevisionGeo1Copiado.push(resRevisionGeo1Copiado)
+                                    } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResGeo1Copiado %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResGeo1Copiado %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionGeo1Copiado %>">
+
+                                    <% const config = sim4SegundaConfig[resGeo1Copiado] || sim4SegundaConfig.default; %>
+                                    <span id="resGeo1Copiado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionGeo1Copiado<%=k%>_<%=n%>_<%=q%>" name="resRevisionGeo1Copiado" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionGeo1Copiado %>
+                                    </span>
+                                </td>
+
+                            <% } else if (q==35) { %>
+                                <!--GeoCopiado2 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim4Segunda > 0) {
+                                    
+                                        for (let i = 0; largoArraySim4Segunda > i; i++) {
+                                            if (pathMongoOtSim4Segunda[i]) {
+                                                let largoArray = parseInt(largoArraySim4Segunda) 
+                                                resGeo2Copiado = pathMongoOtSim4Segunda[largoArray-1].geoCopiado2 || 'sinDato'
+                                                resRevisionGeo2Copiado = parseInt(pathMongoOtSim4Segunda[largoArray-1].revisionGeoCopiado2) || 0
+                                                
+                                                arrResGeo2Copiado.push(pathMongoOtSim4Segunda[i].geoCopiado2)
+                                                arrResRevisionGeo2Copiado.push(pathMongoOtSim4Segunda[i].revisionGeoCopiado2)
+                                            }
+                                        }
+                                        valueArrayResGeo2Copiado = parseInt(arrResGeo2Copiado.length-1)
+                                        resGeo2Copiado = pathMongoOtSim4Segunda[0].geoCopiado2
+                                    
+                                    } else {
+                                        arrResGeo2Copiado.push(resGeo2Copiado)
+                                        arrResRevisionGeo2Copiado.push(resRevisionGeo2Copiado)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResGeo2Copiado %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResGeo2Copiado %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionGeo2Copiado %>">
+
+                                    <% const config = sim4SegundaConfig[resGeo2Copiado] || sim4SegundaConfig.default; %>
+                                    <span id="resGeo2Copiado<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionGeo2Copiado<%=k%>_<%=n%>_<%=q%>" name="resRevisionGeo2Copiado" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionGeo2Copiado %>
+                                    </span>
+                                </td>
+
+                            <% } else { %>
+                                <!-- HorasSim data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim4Segunda > 0) {
+                                    
+                                        for (let i = 0; largoArraySim4Segunda > i; i++) {
+                                            if (pathMongoOtSim4Segunda[i]) {
+                                                let largoArray = parseInt(largoArraySim4Segunda) 
+                                                resHorasSim = pathMongoOtSim4Segunda[largoArray-1].horasSim || 0
+                                                resRevisionHorasSim = parseInt(pathMongoOtSim4Segunda[largoArray-1].revisionHorasSim) || 0
+                                                
+                                                arrResHorasSim.push(pathMongoOtSim4Segunda[i].horasSim)
+                                                arrResRevisionHorasSim.push(pathMongoOtSim4Segunda[i].revisionHorasSim)
+                                            }
+                                        }
+                                        valueArrayResHorasSim = parseInt(arrResHorasSim.length-1)
+                                        resHorasSim = pathMongoOtSim4Segunda[0].horasSim
+                                    
+                                    } else {
+                                        arrResHorasSim.push(resHorasSim)
+                                        arrResRevisionHorasSim.push(resRevisionHorasSim)
+                                    } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResHorasSim %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResHorasSim %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionHorasSim %>">
+
+                                    <span id="resHorasSim<%=k%>_<%=n%>_<%=q%>" name="resHorasSim" class="text-black mx-2" style="font-size: .9rem;">
+                                        <%= resHorasSim %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionHorasSim<%=k%>_<%=n%>_<%=q%>" name="resRevisionHorasSim" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionHorasSim %>
+                                    </span>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+                <% }
+            }
+        }) %>
+    </tbody>
+</table>

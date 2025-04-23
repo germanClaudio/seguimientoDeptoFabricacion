@@ -1,0 +1,315 @@
+<!-- --------- tablaProceso3D ----------- -->
+<table id="tablaProceso3D<%=k%>"
+    class="table-responsive align-middle col-5 border-end border-dark" style="font-size: 10pt; width: 100%;">
+    <thead class="align-middle" style="background-color: #aac">
+        <tr>
+            <th colspan="2" class="text-center">PROCESO 3D
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                    <button id="posBtnAddDataProceso3d<%=k%>" type="button" name="btnProceso3d" class="btn btn-small btn-success shadow m-1 position-relative"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);"
+                        title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                        <span id="spanCheckSelecMasiveProc3d<%=k%>" class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                            <span class="visually-hidden">Elementos seleccionados</span>
+                        </span>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 disabled"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } %>
+            </th>
+        </tr>
+        <tr>
+            <th id="colData3" style="width:50vw" scope="col-1" class="text-center"> Proceso 3D | Rev.</th>
+
+            <% let arrayHsProceso3d = [], sumaHsProceso3dTotal = 0
+                for ( let n=0; proyecto[m].project[j].oci[k].otProject.length > n; n++) {
+                    if (proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoProceso.length > 0 ) {
+                        let largoArrayInfoProceso = proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoProceso.length
+                        arrayHsProceso3d.push(parseInt(proyecto[m].project[j].oci[k].otProject[n].otInformation[0].otInfoProceso[largoArrayInfoProceso-1].horasProceso3d))
+                    } else {
+                        arrayHsProceso3d.push(0)
+                    }
+
+                    sumaHsProceso3dTotal = arrayHsProceso3d.reduce(function(acumulador, valorActual) {
+                        return acumulador + valorActual;
+                    }, 0);
+                } %>
+
+                <th id="colData4" style="width:50vw" scope="col-1" class="text-center"> Hs Proceso 3D | Rev. | Total Hs:
+                    <span id="resHsTotalProceso3d<%=k%>" class="badge rounded-pill bg-dark text-white">
+                        <%= sumaHsProceso3dTotal %>
+                    </span>
+                </th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+
+        <% const proceso3dConfig = {
+            ok: { text: "OK", classes: "bg-success text-white" },
+            noOk: { text: "No OK", classes: "bg-danger text-white" },
+            pendiente: { text: "Pendiente", classes: "bg-warning text-dark" },
+            noAplica: { text: "N/A", classes: "bg-info text-dark" },
+            default: { text: "S/D", classes: "bg-secondary text-white" }
+        };
+        
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => { 
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+            largoArrayOtProject = parseInt(pathMongoOtProject.length),
+            pathMongoOtInformation = pathMongoOtProject[n].otInformation
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                resProceso3d = "sinDato", resRevisionProceso3d = 0,
+                resHorasProceso3d = "sinDato", resRevisionHorasProceso3d = 0;
+
+            if (pathMongoOtProject[n].visible) {
+                let pathMongoOtProceso3d = pathMongoOtInformation[0].otInfoProceso || [],
+                largoArrayProceso3d = parseInt(pathMongoOtProceso3d.length);
+
+                let arrResProceso3d = [], valueArrayResProceso3d = 0, arrResRevisionProceso3d = [],
+                arrResCreadorProceso3d = [], arrResModificadorProceso3d = [], arrResFechaProceso3d = [], arrResFechaModProceso3d = [];
+
+                let arrResHorasProceso3d = [], valueArrayResHorasProceso3d = 0, arrResRevisionHorasProceso3d = [],
+                arrResCreadorHorasProceso3d = [], arrResModificadorHorasProceso3d = [], arrResFechaHorasProceso3d = [], arrResFechaModHorasProceso3d = [];
+
+                if (pathMongoOtProject[n].otStatus) { %>
+                    <!-- Activos --> 
+                    <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
+                        <% for (let q = 2; totalColDataProceso3D > q; q++) {
+                            if (q==2) { %>
+                                <!-- Proceso 3d data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayProceso3d > 0) {
+                                        
+                                        for (let i = 0; largoArrayProceso3d > i; i++) {
+                                            if (pathMongoOtProceso3d[i]) {
+                                                let largoArray = parseInt(largoArrayProceso3d)
+                                                resProceso3d = pathMongoOtProceso3d[largoArray-1].proceso3d || "sinDato"
+                                                resRevisionProceso3d = pathMongoOtProceso3d[largoArray-1].revisionProceso3d || 0
+
+                                                arrResProceso3d.push(pathMongoOtProceso3d[i].proceso3d)
+                                                arrResRevisionProceso3d.push(pathMongoOtProceso3d[i].revisionProceso3d)
+                                            
+                                                arrResCreadorProceso3d.push(pathMongoOtProceso3d[i].creator[0].username)
+                                                arrResModificadorProceso3d.push(pathMongoOtProceso3d[i].modificator[0].username)
+                                                arrResFechaProceso3d.push(pathMongoOtProceso3d[i].timestamp)
+                                                arrResFechaModProceso3d.push(pathMongoOtProceso3d[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResProceso3d = parseInt(arrResProceso3d.length-1)
+                                        
+                                        if (arrResProceso3d.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResProceso3d.length == arrResRevisionProceso3d.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResProceso3d.push(resProceso3d)
+                                        arrResRevisionProceso3d.push(resRevisionProceso3d)
+                                        
+                                        arrResCreadorProceso3d.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorProceso3d.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaProceso3d.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModProceso3d.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+
+                                    <div id="btnAnteriorSiguienteProceso3d<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorProceso3d<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorProceso3d" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResProceso3d %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResProceso3d %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionProceso3d %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorProceso3d %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorProceso3d %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaProceso3d %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModProceso3d %>">
+
+                                        <% const config = proceso3dConfig[resProceso3d] || proceso3dConfig.default; %>  
+                                        <span id="resProceso3d<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionProceso3d<%=k%>_<%=n%>_<%=q%>" name="resRevisionProceso3d" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionProceso3d %>
+                                        </span>
+                                        
+                                        <button id="btnSiguienteProceso3d<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteProceso3d" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else { %>
+                                <!-- Horas Proceso 3D data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayProceso3d > 0) {
+                                    
+                                        for (let i = 0; largoArrayProceso3d > i; i++) {
+                                            if (pathMongoOtProceso3d[i]) {
+                                                let largoArray = parseInt(largoArrayProceso3d)
+                                                resHorasProceso3d = pathMongoOtProceso3d[largoArray-1].horasProceso3d || "sinDato"
+                                                resRevisionHorasProceso3d = pathMongoOtProceso3d[largoArray-1].revisionHorasProceso3d || 0
+                                                
+                                                arrResHorasProceso3d.push(pathMongoOtProceso3d[i].horasProceso3d)
+                                                arrResRevisionHorasProceso3d.push(pathMongoOtProceso3d[i].revisionHorasProceso3d)
+                                                
+                                                arrResCreadorHorasProceso3d.push(pathMongoOtProceso3d[i].creator[0].username)
+                                                arrResModificadorHorasProceso3d.push(pathMongoOtProceso3d[i].modificator[0].username)
+                                                arrResFechaHorasProceso3d.push(pathMongoOtProceso3d[i].timestamp)
+                                                arrResFechaModHorasProceso3d.push(pathMongoOtProceso3d[i].modifiedOn) 
+                                            }
+                                        }
+                                        valueArrayResHorasProceso3d = parseInt(arrResHorasProceso3d.length-1)
+                                            
+                                        if (arrResHorasProceso3d.length == 1) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResHorasProceso3d.length == arrResRevisionHorasProceso3d.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+
+                                    } else {
+                                        arrResHorasProceso3d.push(resHorasProceso3d)
+                                        arrResRevisionHorasProceso3d.push(resRevisionHorasProceso3d)
+                                        
+                                        arrResCreadorHorasProceso3d.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorHorasProceso3d.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaHorasProceso3d.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModHorasProceso3d.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+        
+                                    <div id="btnAnteriorSiguienteHorasProceso3d<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorHorasProceso3d<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorHorasProceso3d" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black);"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResHorasProceso3d %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResHorasProceso3d %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionHorasProceso3d %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorHorasProceso3d %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorHorasProceso3d %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaHorasProceso3d %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModHorasProceso3d %>">
+                                        
+                                        <span id="resHorasProceso3d<%=k%>_<%=n%>_<%=q%>" name="resHorasProceso3d" class="text-black mx-2" style="font-size: .9rem;">
+                                            <%= resHorasProceso3d %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionHorasProceso3d<%=k%>_<%=n%>_<%=q%>" name="resRevisionHorasProceso3d" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionHorasProceso3d %>
+                                        </span>
+
+                                        <button id="btnSiguienteHorasProceso3d<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteHorasProceso3d" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black);"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>    
+                                </td>
+                            <% } 
+                        } %>
+                    </tr>
+
+                <% } else { %>
+                    <tr class="pe-none" style="height: 7vh; background-color: #dedede;">
+                        <% for (let q = 2; totalColDataProceso3D > q; q++) {
+                            if (q==2) { %>
+                                <!-- Proceso 3D data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayProceso3d > 0) {
+                                        for (let i = 0; largoArrayProceso3d > i; i++) {
+                                            if (pathMongoOtProceso3d[i]) {
+                                                let largoArray = parseInt(largoArrayProceso3d)
+                                                resProceso3d = pathMongoOtProceso3d[largoArray-1].proceso3d || "sinDato"
+                                                resRevisionProceso3d = pathMongoOtProceso3d[largoArray-1].revisionProceso3d || 0
+                                                
+                                                arrResProceso3d.push(pathMongoOtProceso3d[i].proceso3d)
+                                                arrResRevisionProceso3d.push(pathMongoOtProceso3d[i].revisionProceso3d)
+                                            }
+                                        }
+                                        valueArrayResProceso3d = parseInt(arrResProceso3d.length-1)
+                                        resProceso3d = pathMongoOtProceso3d[0].proceso3d
+                                    
+                                    } else {
+                                        arrResProceso3d.push(resProceso3d)
+                                        arrResRevisionProceso3d.push(resRevisionProceso3d)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResProceso3d %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResProceso3d %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionProceso3d %>">
+
+                                    <% const config = proceso3dConfig[resProceso3d] || proceso3dConfig.default; %>  
+                                        <span id="resProceso3d<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionProceso3d<%=k%>_<%=n%>_<%=q%>" name="resRevisionProceso3d" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionProceso3d %>
+                                        </span>
+                                </td>
+
+                            <% } else { %>
+                                <!-- Horas Proceso 3D data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayProceso3d > 0) {
+                                        for (let i = 0; largoArrayProceso3d > i; i++) {
+                                            if (pathMongoOtProceso3d[i]) {
+                                                let largoArray = parseInt(largoArrayProceso3d)
+                                                resHorasProceso3d = pathMongoOtProceso3d[largoArray-1].horasProceso3d
+                                                resRevisionHorasProceso3d = pathMongoOtProceso3d[largoArray-1].revisionHorasProceso3d
+                                                
+                                                arrResHorasProceso3d.push(pathMongoOtProceso3d[i].horasProceso3d)
+                                                arrResRevisionHorasProceso3d.push(pathMongoOtProceso3d[i].revisionHorasProceso3d)
+                                            }
+                                        }
+                                        valueArrayResHorasProceso3d = parseInt(arrResHorasProceso3d.length-1)
+                                        resHorasProceso3d = pathMongoOtProceso3d[0].horasProceso3d
+
+                                    } else {
+                                        arrResHorasProceso3d.push(resHorasProceso3d)
+                                        arrResRevisionHorasProceso3d.push(resRevisionHorasProceso3d)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResHorasProceso3d %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResHorasProceso3d %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionHorasProceso3d %>">
+                                
+                                    <span id="resHorasProceso3d<%=k%>_<%=n%>_<%=q%>" name="resHorasProceso3d" class="text-black mx-2" style="font-size: .9rem;">
+                                        <%= resHorasProceso3d %>
+                                    </span> |
+                                    <span id="resRevisionHorasProceso3d<%=k%>_<%=n%>_<%=q%>" name="resRevisionHorasProceso3d" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionHorasProceso3d %>
+                                    </span>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+                <% }
+            }
+        }) %>
+    </tbody>
+</table>

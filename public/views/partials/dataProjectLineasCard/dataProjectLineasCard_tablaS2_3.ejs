@@ -1,0 +1,538 @@
+<!-- --------- tabla S2-S3 ----------- -->
+<table id="tabla2_3Sim<%=k%>"
+    class="table-responsive align-middle col-2 border-end border-dark" style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #88c">
+        <tr>
+            <th colspan="3" class="text-center border-end border-dark">Sim 2
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                    <button id="posBtnAddData2_3Sim<%=k%>" type="button" name="btn2_3Sim" class="btn btn-small btn-success shadow m-1 ms-5 position-relative"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                        <span id="spanCheckSelecMasiveSim2_3<%=k%>" class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                            <span class="visually-hidden">Elementos seleccionados</span>
+                        </span>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 ms-5 disabled"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } %>
+            </th>
+            <th colspan="1" class="text-center">Sim 3
+            </th>
+        </tr>
+        <tr>
+            <th style="width:25vw" scope="col-1" class="text-center">Sim 2 | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center">Reporte | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center border-end border-dark">DFN Prodismo | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center">Sim 3 | Rev</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        
+        <% const sim2_3Config = {
+            ok: { text: "OK", classes: "bg-success text-white" },
+            noOk: { text: "No OK", classes: "bg-danger text-white" },
+            pendiente: { text: "Pendiente", classes: "bg-warning text-dark" },
+            noAplica: { text: "N/A", classes: "bg-info text-dark" },
+            default: { text: "S/D", classes: "bg-secondary text-white" }
+        };
+    
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => { 
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+            largoArrayOtProject = parseInt(pathMongoOtProject.length),
+            pathMongoOtInformation = pathMongoOtProject[n].otInformation
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                res2Sim = 'sinDato', resRevision2Sim = 0,
+                resReporte = 'sinDato', resRevisionReporte = 0,
+                resDfnProdismo = 'sinDato', resRevisionDfnProdismo = 0,
+                res3Sim = 'sinDato', resRevision3Sim = 0
+
+            if (pathMongoOtProject[n].visible) {
+                let pathMongoOtSim2_3 = pathMongoOtInformation[0].otInfoSim2_3 || [],
+                largoArraySim2_3 = parseInt(pathMongoOtSim2_3.length);
+
+                let arrRes2Sim = [], valueArrayRes2Sim = 0, arrResRevision2Sim = [], arrResCreador2Sim = [],
+                arrResModificador2Sim = [], arrResFecha2Sim = [], arrResFechaMod2Sim = [];
+
+                let arrResReporte = [], valueArrayResReporte = 0, arrResRevisionReporte = [], arrResCreadorReporte = [],
+                arrResModificadorReporte = [], arrResFechaReporte = [], arrResFechaModReporte = [];
+
+                let arrResDfnProdismo = [], valueArrayResDfnProdismo = 0, arrResRevisionDfnProdismo = [], arrResCreadorDfnProdismo = [],
+                arrResModificadorDfnProdismo = [], arrResFechaDfnProdismo = [], arrResFechaModDfnProdismo = [];
+
+                let arrRes3Sim = [], valueArrayRes3Sim = 0, arrResRevision3Sim = [], arrResCreador3Sim = [],
+                arrResModificador3Sim = [], arrResFecha3Sim = [], arrResFechaMod3Sim = [];
+
+                if (pathMongoOtProject[n].otStatus) { %>
+                    <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
+                        <% for (let q = 25; totalColDataSim2_3 > q; q++) {
+                            if (q==25) { %>
+                                <!-- Simulacion 2 data Activo--> 
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim2_3 > 0) {
+                                        
+                                        for (let i = 0; largoArraySim2_3 > i; i++) {
+                                            if (pathMongoOtSim2_3[i]) {
+                                                let largoArray = parseInt(largoArraySim2_3)
+                                                res2Sim = pathMongoOtSim2_3[largoArray-1].sim2 || 'sinDato'
+                                                resRevision2Sim = parseInt(pathMongoOtSim2_3[largoArray-1].revisionSim2) || 0
+                                                
+                                                arrRes2Sim.push(pathMongoOtSim2_3[i].sim2)
+                                                arrResRevision2Sim.push(pathMongoOtSim2_3[i].revisionSim2)
+                                                
+                                                arrResCreador2Sim.push(pathMongoOtSim2_3[i].creator[0].username)
+                                                arrResModificador2Sim.push(pathMongoOtSim2_3[i].modificator[0].username)
+                                                arrResFecha2Sim.push(pathMongoOtSim2_3[i].timestamp)
+                                                arrResFechaMod2Sim.push(pathMongoOtSim2_3[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayRes2Sim = parseInt(arrRes2Sim.length-1)
+                                                
+                                        if (arrRes2Sim.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrRes2Sim.length == arrResRevision2Sim.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                    
+                                    } else {
+                                        arrRes2Sim.push(res2Sim)
+                                        arrResRevision2Sim.push(resRevision2Sim)
+
+                                        arrResCreador2Sim.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificador2Sim.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFecha2Sim.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaMod2Sim.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguiente2Sim<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnterior2Sim<%=k%>_<%=n%>_<%=q%>" name="btnAnterior2Sim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrRes2Sim %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes2Sim %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision2Sim %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreador2Sim %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificador2Sim %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFecha2Sim %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMod2Sim %>">
+
+                                        <% const config = sim2_3Config[res2Sim] || sim2_3Config.default; %>
+                                        <span id="res2Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevision2Sim<%=k%>_<%=n%>_<%=q%>" name="resRevision2Sim" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevision2Sim %>
+                                        </span>
+                                        
+                                        <button id="btnSiguiente2Sim<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguiente2Sim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else if (q==26) { %>
+                                <!-- Reporte data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim2_3 > 0) {
+                                        
+                                        for (let i = 0; largoArraySim2_3 > i; i++) {
+                                            if (pathMongoOtSim2_3[i]) {
+                                                
+                                                let largoArray = parseInt(largoArraySim2_3)
+                                                resReporte = pathMongoOtSim2_3[largoArray-1].reporte || 'sinDato'
+                                                resRevisionReporte = parseInt(pathMongoOtSim2_3[largoArray-1].revisionReporte) || 0
+                                                
+                                                arrResReporte.push(pathMongoOtSim2_3[i].reporte)
+                                                arrResRevisionReporte.push(pathMongoOtSim2_3[i].revisionReporte)
+                                                
+                                                arrResCreadorReporte.push(pathMongoOtSim2_3[i].creator[0].username)
+                                                arrResModificadorReporte.push(pathMongoOtSim2_3[i].modificator[0].username)
+                                                arrResFechaReporte.push(pathMongoOtSim2_3[i].timestamp)
+                                                arrResFechaModReporte.push(pathMongoOtSim2_3[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResReporte = parseInt(arrResReporte.length-1)
+                                        
+                                        if (arrResReporte.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResReporte.length == arrResRevisionReporte.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResReporte.push(resReporte)
+                                        arrResRevisionReporte.push(resRevisionReporte)
+
+                                        arrResCreadorReporte.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorReporte.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaReporte.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModReporte.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                        <div id="btnAnteriorSiguienteReporte<%=k%>_<%=n%>_<%=q%>">
+                                            <button id="btnAnteriorReporte<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnAnteriorReporte" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= anteriorDisabled %>
+                                                ><i class="fa-solid fa-arrow-left"></i>
+                                            </button>
+                                            <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResReporte %>">
+                                            <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResReporte %>">
+                                            <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionReporte %>">
+                                            <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorReporte %>">
+                                            <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorReporte %>">
+                                            <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaReporte %>">
+                                            <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModReporte %>">
+            
+                                            <% const config = sim2_3Config[resReporte] || sim2_3Config.default; %>
+                                            <span id="resReporte<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                                <%= config.text %>
+                                            </span>
+                                            |
+                                            <span id="resRevisionReporte<%=k%>_<%=n%>_<%=q%>" name="resRevisionReporte" class="badge text-dark my-2" style="cursor: help;">
+                                                <%= resRevisionReporte %>
+                                            </span>
+                                            
+                                            <button id="btnSiguienteReporte<%=k%>_<%=n%>_<%=q%>"
+                                                name="btnSiguienteReporte" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                                <%= siguienteDisabled %>
+                                                ><i class="fa-solid fa-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                </td>
+
+                            <% } else if (q==27) { %>
+                                <!-- DfnProdismo Sim1 data Activo-->
+                                <td class="text-center align-middle border-end border-dark">
+                                    <% if (largoArraySim2_3 > 0) {
+                                        
+                                        for (let i = 0; largoArraySim2_3 > i; i++) {
+                                            if (pathMongoOtSim2_3[i]) {
+                                                let largoArray = parseInt(largoArraySim2_3)
+                                                resDfnProdismo = pathMongoOtSim2_3[largoArray-1].dfnProdismo || 'sinDato'
+                                                resRevisionDfnProdismo = parseInt(pathMongoOtSim2_3[largoArray-1].revisionDfnProdismo) || 0
+                                                
+                                                arrResDfnProdismo.push(pathMongoOtSim2_3[i].dfnProdismo)
+                                                arrResRevisionDfnProdismo.push(pathMongoOtSim2_3[i].revisionDfnProdismo)
+
+                                                arrResCreadorDfnProdismo.push(pathMongoOtSim2_3[i].creator[0].username)
+                                                arrResModificadorDfnProdismo.push(pathMongoOtSim2_3[i].modificator[0].username)
+                                                arrResFechaDfnProdismo.push(pathMongoOtSim2_3[i].timestamp)
+                                                arrResFechaModDfnProdismo.push(pathMongoOtSim2_3[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResDfnProdismo = parseInt(arrResDfnProdismo.length-1)
+                                        
+                                        if (arrResDfnProdismo.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResDfnProdismo.length == arrResRevisionDfnProdismo.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResDfnProdismo.push(resDfnProdismo)
+                                        arrResRevisionDfnProdismo.push(resRevisionDfnProdismo)
+
+                                        arrResCreadorDfnProdismo.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorDfnProdismo.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaDfnProdismo.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModDfnProdismo.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteDfnProdismo<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorDfnProdismo<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorDfnProdismo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDfnProdismo %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResDfnProdismo %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionDfnProdismo %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorDfnProdismo %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorDfnProdismo %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaDfnProdismo %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModDfnProdismo %>">
+        
+                                        <% const config = sim2_3Config[resDfnProdismo] || sim2_3Config.default; %>
+                                        <span id="resDfnProdismo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionDfnProdismo<%=k%>_<%=n%>_<%=q%>" name="resRevisionDfnProdismo" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionDfnProdismo %>
+                                        </span>
+                                        
+                                        <button id="btnSiguienteDfnProdismo<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteDfnProdismo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else { %>
+                                <!-- Simulacion 3 data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim2_3 > 0) {
+                                                
+                                        for (let i = 0; largoArraySim2_3 > i; i++) {
+                                            if (pathMongoOtSim2_3[i]) {
+                                                
+                                                let largoArray = parseInt(largoArraySim2_3)
+                                                res3Sim = pathMongoOtSim2_3[largoArray-1].sim3 || 'sinDato'
+                                                resRevision3Sim = parseInt(pathMongoOtSim2_3[largoArray-1].revisionSim3) || 0
+                                                
+                                                arrRes3Sim.push(pathMongoOtSim2_3[i].sim3)
+                                                arrResRevision3Sim.push(pathMongoOtSim2_3[i].revisionSim3)
+                                                
+                                                arrResCreador3Sim.push(pathMongoOtSim2_3[i].creator[0].username)
+                                                arrResModificador3Sim.push(pathMongoOtSim2_3[i].modificator[0].username)
+                                                arrResFecha3Sim.push(pathMongoOtSim2_3[i].timestamp)
+                                                arrResFechaMod3Sim.push(pathMongoOtSim2_3[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayRes3Sim = parseInt(arrRes3Sim.length-1)
+                                        
+                                        if (arrRes3Sim.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrRes3Sim.length == arrResRevision3Sim.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrRes3Sim.push(res3Sim)
+                                        arrResRevision3Sim.push(resRevision3Sim)
+
+                                        arrResCreador3Sim.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificador3Sim.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFecha3Sim.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaMod3Sim.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguiente3Sim<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnterior3Sim<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnterior3Sim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrRes3Sim %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes3Sim %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision3Sim %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreador3Sim %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificador3Sim %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFecha3Sim %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMod3Sim %>">
+        
+                                        <% const config = sim2_3Config[res3Sim] || sim2_3Config.default; %>
+                                        <span id="res3Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevision3Sim<%=k%>_<%=n%>_<%=q%>" name="resRevision3Sim" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevision3Sim %>
+                                        </span>
+                                        
+                                        <button id="btnSiguiente3Sim<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguiente3Sim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            <% }
+                        } %>
+                        
+                    </tr>
+
+                <% } else { %>
+                    <tr class="pe-none" name="rowSelected<%=k%>_<%=n%>" style="height: 7vh; background-color: #dedede;">
+                        <% for (let q = 25; totalColDataSim2_3 > q; q++) {
+                            if (q==25) { %>
+                                <!-- Sim1 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim2_3 > 0) {
+                                    
+                                        for (let i = 0; largoArraySim2_3 > i; i++) {
+                                            if (pathMongoOtSim2_3[i]) {
+                                                let largoArray = parseInt(largoArraySim2_3)
+                                                res1Sim = pathMongoOtSim2_3[largoArray-1].sim1 || 'sinDato'
+                                                resRevision1Sim = parseInt(pathMongoOtSim2_3[largoArray-1].revisionSim1) || 0
+                                                
+                                                arrRes1Sim.push(pathMongoOtSim2_3[i].sim1)
+                                                arrResRevision1Sim.push(pathMongoOtSim2_3[i].revisionSim1)
+                                            }
+                                        }
+                                        valueArrayRes1Sim = parseInt(arrRes1Sim.length-1)
+                                        res1Sim = pathMongoOtSim2_3[0].sim1
+                                    
+                                    } else {
+                                        arrRes1Sim.push(res1Sim)
+                                        arrResRevision1Sim.push(resRevision1Sim)
+                                    } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrRes1Sim %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes1Sim %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision1Sim %>">
+                                
+                                    <% const config = sim2_3Config[res2Sim] || sim2_3Config.default; %>
+                                    <span id="res2Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevision2Sim<%=k%>_<%=n%>_<%=q%>" name="resRevision2Sim" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevision2Sim %>
+                                    </span>                                        
+                                </td>
+
+                            <% } else if (q==26) { %>
+                                <!-- Reporte data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim2_3 > 0) {
+                                    
+                                        for (let i = 0; largoArraySim2_3 > i; i++) {
+                                            if (pathMongoOtSim2_3[i]) {
+                                                let largoArray = parseInt(largoArraySim2_3)
+                                                resReporte = pathMongoOtSim2_3[largoArray-1].reporte || 'sinDato'
+                                                resRevisionReporte = parseInt(pathMongoOtSim2_3[largoArray-1].revisionReporte) || 0
+                                                
+                                                arrResReporte.push(pathMongoOtSim2_3[i].reporte)
+                                                arrResRevisionReporte.push(pathMongoOtSim2_3[i].revisionReporte)
+                                            }
+                                        }
+                                        valueArrayResReporte = parseInt(arrResReporte.length-1)
+                                        resReporte = pathMongoOtSim2_3[0].reporte
+                                    
+                                    } else {
+                                        arrResReporte.push(resReporte)
+                                        arrResRevisionReporte.push(resRevisionReporte)
+                                    } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResReporte %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResReporte %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionReporte %>">
+
+                                    <% const config = sim2_3Config[resReporte] || sim2_3Config.default; %>
+                                    <span id="resReporte<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionReporte<%=k%>_<%=n%>_<%=q%>" name="resRevisionReporte" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionReporte %>
+                                    </span>                                        
+                                </td>
+
+                            <% } else if (q==27) { %>
+                                <!-- Dfn Prodismo data Inactivo -->
+                                <td class="text-center align-middle border-end border-dark">
+                                    <% if (largoArraySim2_3 > 0) {
+                                    
+                                        for (let i = 0; largoArraySim2_3 > i; i++) {
+                                            if (pathMongoOtSim2_3[i]) {
+                                                let largoArray = parseInt(largoArraySim2_3)
+                                                resDfnProdismo = pathMongoOtSim2_3[largoArray-1].dfnProdismo || 'sinDato'
+                                                resRevisionDfnProdismo = parseInt(pathMongoOtSim2_3[largoArray-1].revisionDfnProdismo) || 0
+                                                
+                                                arrResDfnProdismo.push(pathMongoOtSim2_3[i].dfnProdismo)
+                                                arrResRevisionDfnProdismo.push(pathMongoOtSim2_3[i].revisionDfnProdismo)
+                                                
+                                            }
+                                        }
+                                        valueArrayResDfnProdismo = parseInt(arrResDfnProdismo.length-1)
+                                        resDfnProdismo = pathMongoOtSim2_3[0].dfnProdismo
+                                    
+                                    } else {
+                                        arrResDfnProdismo.push(resDfnProdismo)
+                                        arrResRevisionDfnProdismo.push(resRevisionDfnProdismo)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDfnProdismo %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResDfnProdismo %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionDfnProdismo %>">
+
+                                    <% const config = sim2_3Config[resDfnProdismo] || sim2_3Config.default; %>
+                                    <span id="resDfnProdismo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionDfnProdismo<%=k%>_<%=n%>_<%=q%>" name="resRevisionDfnProdismo" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionDfnProdismo %>
+                                    </span>                                        
+                                </td>
+
+                            <% } else { %>
+                                <!-- Sim3 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim2_3 > 0) {
+                                    
+                                        for (let i = 0; largoArraySim2_3 > i; i++) {
+                                            if (pathMongoOtSim2_3[i]) {
+                                                let largoArray = parseInt(largoArraySim2_3)
+                                                res3Sim = pathMongoOtSim2_3[largoArray-1].sim3 || 'sinDato'
+                                                resRevision3Sim = parseInt(pathMongoOtSim2_3[largoArray-1].revisionSim3) || 0
+                                                
+                                                arrRes3Sim.push(pathMongoOtSim2_3[i].sim3)
+                                                arrResRevision3Sim.push(pathMongoOtSim2_3[i].revisionSim3)
+                                            }
+                                        }
+                                        valueArrayRes3Sim = parseInt(arrRes3Sim.length-1)
+                                        res3Sim = pathMongoOtSim2_3[0].sim3
+                                    
+                                    } else {
+                                        arrRes3Sim.push(res3Sim)
+                                        arrResRevision3Sim.push(resRevision3Sim)
+                                    } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrRes3Sim %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes3Sim %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision3Sim %>">
+
+                                    <% const config = sim2_3Config[res3Sim] || sim2_3Config.default; %>
+                                    <span id="res3Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevision3Sim<%=k%>_<%=n%>_<%=q%>" name="resRevision3Sim" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevision3Sim %>
+                                    </span>
+                                </td>
+
+                            <% }
+                        } %>
+                    </tr>
+                <% }
+            }
+        }) %>
+    </tbody>
+</table>

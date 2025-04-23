@@ -80,6 +80,12 @@ const ContainerMessages = require("../daos/mensajes/MensajesDaoFactory.js"),
                 )
             })
 
+            socket.on('searchProyectoAllWon', async (query) => {
+                io.sockets.emit('searchProjectsWon', 
+                    await containerProject.getProjectBySearching(query)
+                )
+            })
+
             socket.emit('projectsAll',
                 await containerProject.getAllProjects(),
                 await containerUser.getAllUsers()            

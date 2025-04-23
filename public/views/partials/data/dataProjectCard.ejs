@@ -14,12 +14,11 @@
                             
                             <div class="accordion" id="accordionPanelsStayOpenExample">
                                 
-                                <% var countVisibleOci=0
-                                    var arrayVisibleOci = [] 
+                                <% let countVisibleOci=0, arrayVisibleOci = [] 
                                     for ( let x=0; proyecto[m].project[j].oci.length> x; x++) {
                                         if (proyecto[m].project[j].oci[x].visible) { 
                                             arrayVisibleOci.push(proyecto[m].project[j].oci[x])
-                                                countVisibleOci++
+                                            countVisibleOci++
                                         }
                                     }    
 

@@ -17,7 +17,7 @@ function catchError400_2(req, res, next) {
 }
 
 function catchError400_3(req, res, next) {
-    const err = new Error('Datos inválidos')
+    const err = new Error('Datos inválidos', req)
     err.statusCode = 400;
     return next(err);
 }

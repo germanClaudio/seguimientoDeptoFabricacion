@@ -22,4 +22,4 @@ let creatorSchema = new Schema({
         type: Number,
     }
 })
-module.exports = { creatorSchema }
+module.exports = creatorSchema // { creatorSchema }

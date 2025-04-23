@@ -1,0 +1,298 @@
+<!-- --------- tabla Sim0 ----------- -->
+<table id="tabla0Sim<%=k%>"
+    class="table-responsive align-middle col-5 border-end border-dark" style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #99c">
+        <tr>
+            <th colspan="2" class="text-center">Sim 0
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                    <button id="posBtnAddData0Sim<%=k%>" type="button" name="btn0Sim" class="btn btn-small btn-success shadow m-1 position-relative"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                        <span id="spanCheckSelecMasiveSim0<%=k%>" class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                            <span class="visually-hidden">Elementos seleccionados</span>
+                        </span>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 disabled"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } %>
+            </th>
+        </tr>
+        <tr>
+            <th style="width:50vw" scope="col-1" class="text-center">Sim 0 | Rev</th>
+            <th style="width:50vw" scope="col-1" class="text-center">Docum. | Rev</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        
+        <% const sim0Config = {
+            ok: { text: "OK", classes: "bg-success text-white" },
+            noOk: { text: "No OK", classes: "bg-danger text-white" },
+            pendiente: { text: "Pendiente", classes: "bg-warning text-dark" },
+            noAplica: { text: "N/A", classes: "bg-info text-dark" },
+            default: { text: "S/D", classes: "bg-secondary text-white" }
+        };
+        
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+            largoArrayOtProject = parseInt(pathMongoOtProject.length),
+            pathMongoOtInformation = pathMongoOtProject[n].otInformation
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                res0Sim = 'sinDato', resRevision0Sim = 0,
+                resDocu0Sim = 'sinDato', resRevisionDocu0Sim = 0
+
+            if (pathMongoOtProject[n].visible) {
+                let pathMongoOtInfoSim0 = pathMongoOtInformation[0].otInfoSim0 || [],
+                largoArrayInfoSim0 = parseInt(pathMongoOtInfoSim0.length);
+
+                let arrRes0Sim = [], valueArrayRes0Sim = 0, arrResRevision0Sim = [], arrResCreador0Sim = [],
+                arrResModificador0Sim = [], arrResFecha0Sim = [], arrResFechaMod0Sim = [];
+
+                let arrResDocu0Sim = [], valueArrayResDocu0Sim = 0, arrResRevisionDocu0Sim = [], arrResCreadorDocu0Sim = [],
+                arrResModificadorDocu0Sim = [], arrResFechaDocu0Sim = [], arrResFechaModDocu0Sim = []; 
+
+                if (proyecto[m].project[j].oci[k].otProject[n].otStatus) { %>
+                    <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
+                        <% for (let q = 18; totalColDataSim0 > q; q++) {
+                            if (q==18) { %>
+                                <!-- Simulacion 0 data Activo--> 
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayInfoSim0 > 0) {
+                                        for (let i = 0; largoArrayInfoSim0 > i; i++) {
+                                            if (pathMongoOtInfoSim0[i]) {
+                                                let largoArray = parseInt(largoArrayInfoSim0)
+                                                res0Sim = pathMongoOtInfoSim0[largoArray-1].sim0 || 'sinDato'
+                                                resRevision0Sim = pathMongoOtInfoSim0[largoArray-1].revisionSim0 || 0
+                                                
+                                                arrRes0Sim.push(pathMongoOtInfoSim0[i].sim0)
+                                                arrResRevision0Sim.push(pathMongoOtInfoSim0[i].revisionSim0)
+                                                
+                                                arrResCreador0Sim.push(pathMongoOtInfoSim0[i].creator[0].username)
+                                                arrResModificador0Sim.push(pathMongoOtInfoSim0[i].modificator[0].username)
+                                                arrResFecha0Sim.push(pathMongoOtInfoSim0[i].timestamp)
+                                                arrResFechaMod0Sim.push(pathMongoOtInfoSim0[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayRes0Sim = parseInt(arrRes0Sim.length-1)
+                                        
+                                        if (arrRes0Sim.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrRes0Sim.length == arrResRevision0Sim.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                                
+                                    } else {
+                                        arrRes0Sim.push(res0Sim)
+                                        arrResRevision0Sim.push(resRevision0Sim)
+
+                                        arrResCreador0Sim.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificador0Sim.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFecha0Sim.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaMod0Sim.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguiente0Sim<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnterior0Sim<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnterior0Sim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrRes0Sim %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes0Sim %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision0Sim %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreador0Sim %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificador0Sim %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFecha0Sim %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMod0Sim %>">
+        
+                                        <% const config = sim0Config[res0Sim] || sim0Config.default; %>  
+                                        <span id="res0Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevision0Sim<%=k%>_<%=n%>_<%=q%>" name="resRevision0Sim" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevision0Sim %>
+                                        </span>
+                                        
+                                        <button id="btnSiguiente0Sim<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguiente0Sim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else { %>
+                                <!-- Documentacion Sim0 data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayInfoSim0 > 0) {
+                                        
+                                        for (let i = 0; largoArrayInfoSim0 > i; i++) {
+                                            if (pathMongoOtInfoSim0[i]) {
+                                                let largoArray = parseInt(largoArrayInfoSim0)
+                                                resDocu0Sim = pathMongoOtInfoSim0[largoArray-1].docuSim0 || 'sinDato'
+                                                resRevisionDocu0Sim = pathMongoOtInfoSim0[largoArray-1].revisionDocuSim0 || 0
+                                                
+                                                arrResDocu0Sim.push(pathMongoOtInfoSim0[i].docuSim0)
+                                                arrResRevisionDocu0Sim.push(pathMongoOtInfoSim0[i].revisionDocuSim0)
+                                                
+                                                arrResCreadorDocu0Sim.push(pathMongoOtInfoSim0[i].creator[0].username)
+                                                arrResModificadorDocu0Sim.push(pathMongoOtInfoSim0[i].modificator[0].username)
+                                                arrResFechaDocu0Sim.push(pathMongoOtInfoSim0[i].timestamp)
+                                                arrResFechaModDocu0Sim.push(pathMongoOtInfoSim0[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResDocu0Sim = parseInt(arrResDocu0Sim.length-1)
+                                        
+                                        if (arrResDocu0Sim.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResDocu0Sim.length == arrResRevisionDocu0Sim.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                    
+                                    } else {
+                                        arrResDocu0Sim.push(resDocu0Sim)
+                                        arrResRevisionDocu0Sim.push(resRevisionDocu0Sim)
+
+                                        arrResCreadorDocu0Sim.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorDocu0Sim.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaDocu0Sim.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModDocu0Sim.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteDocu0Sim<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorDocu0Sim<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorDocu0Sim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDocu0Sim %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResDocu0Sim %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionDocu0Sim %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorDocu0Sim %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorDocu0Sim %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaDocu0Sim %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModDocu0Sim %>">
+        
+                                        <% const config = sim0Config[resDocu0Sim] || sim0Config.default; %>  
+                                        <span id="resDocu0Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionDocu0Sim<%=k%>_<%=n%>_<%=q%>" name="resRevisionDocu0Sim" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionDocu0Sim %>
+                                        </span>
+                                        
+                                        <button id="btnSiguienteDocu0Sim<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteDocu0Sim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            <% }
+                        } %>
+                        
+                    </tr>
+
+                <% } else { %>
+                    <tr class="pe-none" name="rowSelected<%=k%>_<%=n%>" style="height: 7vh; background-color: #dedede;">
+                        <% for (let q = 18; totalColDataSim0 > q; q++) {
+                            if (q==18) { %>
+                                <!-- Proceso Sim0 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayInfoSim0 > 0) {
+                                    
+                                        for (let i = 0; largoArrayInfoSim0 > i; i++) {
+                                            if (pathMongoOtInfoSim0[i]) {
+                                                let largoArray = parseInt(largoArrayInfoSim0)
+                                                res0Sim = pathMongoOtInfoSim0[largoArray-1].sim0 || 'sinDato'
+                                                resRevision0Sim = parseInt(pathMongoOtInfoSim0[i][largoArray-1].revisionSim0) || 0
+                                                
+                                                arrRes0Sim.push(pathMongoOtInfoSim0[i].sim0)
+                                                arrResRevision0Sim.push(pathMongoOtInfoSim0[i].revisionSim0)
+                                            }
+                                        }
+                                        valueArrayRes0Sim = parseInt(arrRes0Sim.length-1)
+                                        res0Sim = pathMongoOtInfoSim0[0].sim0
+
+                                    } else {
+                                        arrRes0Sim.push(res0Sim)
+                                        arrResRevision0Sim.push(resRevision0Sim)
+                                    } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrRes0Sim %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes0Sim %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevision0Sim %>">
+                                
+                                    <% const config = sim0Config[res0Sim] || sim0Config.default; %>  
+                                    <span id="res0Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevision0Sim<%=k%>_<%=n%>_<%=q%>" name="resRevision0Sim" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevision0Sim %>
+                                    </span>
+                                </td>
+
+                            <% } else { %>
+                                <!-- Documentacion Sim0 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayInfoSim0 > 0) {
+                                    
+                                        for (let i = 0; largoArrayInfoSim0 > i; i++) {
+                                            if (pathMongoOtInfoSim0[i]) {
+                                                let largoArray = parseInt(largoArrayInfoSim0)
+                                                resDocu0Sim = pathMongoOtInfoSim0[largoArray-1].docuSim0 || 'sinDato'
+                                                resRevisionDocu0Sim = parseInt(pathMongoOtInfoSim0[largoArray-1].revisionDocuSim0) || 0
+                                                
+                                                arrResDocu0Sim.push(pathMongoOtInfoSim0[i].docuSim0)
+                                                arrResRevisionDocu0Sim.push(pathMongoOtInfoSim0[i].revisionDocuSim0)
+                                            }
+                                        }
+                                        valueArrayResDocu0Sim = parseInt(arrResDocu0Sim.length-1)
+                                        resDocu0Sim = pathMongoOtInfoSim0[0].docuSim0
+                                    
+                                    } else {
+                                        arrResDocu0Sim.push(resDocu0Sim)
+                                        arrResRevisionDocu0Sim.push(resRevisionDocu0Sim)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResDocu0Sim %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResDocu0Sim %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionDocu0Sim %>">
+
+                                    <% const config = sim0Config[resDocu0Sim] || sim0Config.default; %>  
+                                    <span id="resDocu0Sim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionDocu0Sim<%=k%>_<%=n%>_<%=q%>" name="resRevisionDocu0Sim" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionDocu0Sim %>
+                                    </span>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+                <% }
+            }
+        }) %>
+    </tbody>
+</table>

@@ -1,0 +1,172 @@
+<!-- tabla general -->
+<table id="tablaGeneral<%=k%>" name="tablaGeneral" class="table-responsive align-middle col-3 border-end border-dark display" style="font-size: 10pt">
+    <thead class="align-middle" style="background-color: #ccc">
+        <tr>
+            <th colspan="6" class="text-center pb-1"> <div class="mb-3">GENERAL</div></th>
+        </tr>
+        <tr>
+            <th style="width:18vw" scope="col-1" class="text-center pb-1">Acciones</th>
+            <th style="width:8vw" scope="col-1" class="text-center pb-1">Status</th>
+            <th style="width:8vw" scope="col-1" class="text-center pb-1">Item</th>
+            <th style="width:8vw" scope="col-1" class="text-center pb-1">Prio</th>
+            <th style="width:8vw" scope="col-1" class="text-center pb-1">OT#</th>
+            <th style="width:50vw" scope="col-1" class="text-center pb-1">Descripción</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        <% let pathMongoOtProject = proyecto[m].project[j].oci[k]?.otProject;
+        pathMongoOtProject.forEach((ot, n) => {
+            if (pathMongoOtProject[n].visible) {
+                if (pathMongoOtProject[n].otStatus) { %>
+                    <tr id="rowSelected<%=k%>_<%=n%>" name="rowSelected<%=k%>_<%=n%>" class="border-bottom" style="height: 7vh;">
+                        <!-- Acciones -->
+                        <td class="text-center align-middle">
+                            <% if ( userInfo.admin && userInfo.superAdmin ) { %>
+                                <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
+                                    <input id="checkSelect<%=k%>_<%=n%>" title="Checkbox  OT#<%= pathMongoOtProject[n].otNumber %>"
+                                        class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect">
+                                    <button id="btnEditOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="edit" name="btnEditOt"
+                                        title="Editar OT#<%= pathMongoOtProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button id="btnStatusOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="changeStatus" name="btnStatusOt"
+                                        title="Cambiar status OT#<%= pathMongoOtProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
+                                        <i class="fa-solid fa-power-off"></i>
+                                    </button>
+                                    <button id="btnDeleteOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="delete" name="btnDeleteOt"
+                                        title="Eliminar OT#<%= pathMongoOtProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            <% } else { %>
+                                <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
+                                    <input id="checkSelect<%=k%>_<%=n%>" class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect">
+                                    <% if ( userInfo.area === 'ingenieria' ) { %>
+                                        <button id="btnEditOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="edit" name="btnEditOt"
+                                            title="Editar OT#<%= pathMongoOtProject[n].otNumber %>"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <button id="btnStatusOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="changeStatus" name="btnStatusOt"
+                                            title="Cambiar status OT#<%= pathMongoOtProject[n].otNumber %>"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
+                                            <i class="fa-solid fa-power-off"></i>
+                                        </button>
+
+                                    <% } else { %>
+                                        <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;"">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;">
+                                            <i class="fa-solid fa-power-off"></i>
+                                        </button>
+                                    <% } %>
+
+                                    <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            <% } %>
+                        </td>
+                        <!-- status OT -->
+                        <td class="text-center align-middle">
+                            <% let colorStatus = 'success', textStatus = 'A' 
+                            if (!pathMongoOtProject[n].otStatus) colorStatus = 'danger', textStatus = 'I' %>
+                                <span id="lastOtStatus<%=k%>_<%=n%>" class="badge rounded-pill bg-<%= colorStatus %> text-white my-2"><%= textStatus %></span>
+                        </td>
+                        <!-- Item Number -->
+                        <td class="text-center align-middle">
+                            <span id="lastItemNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-secondary text-white my-2"><%= pathMongoOtProject[n]?.itemNumber %></span>
+                        </td>
+                        <!-- Prio -->
+                        <td class="text-center align-middle">
+                            <span id="lastPrioNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-warning text-dark my-2"><%= pathMongoOtProject[n]?.prioNumber %></span>
+                        </td>
+                        <!-- OT Number -->
+                        <td class="text-center align-middle">
+                            <span id="lastOtNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-dark text-white my-2"><%= pathMongoOtProject[n]?.otNumber %></span>
+                        </td>
+                        <!-- op Description -->
+                        <td class="text-center align-middle overflow-ellipsis">
+                            <small id="lastOpDescription<%=k%>_<%=n%>" class="text-dark my-2"><%= pathMongoOtProject[n]?.opDescription %></small>
+                        </td>
+                    </tr>
+
+                <% } else { %>
+                    <tr style="height: 7vh; background-color: #dedede;">
+                        <!-- Acciones -->
+                        <td class="text-center align-middle">
+                            <% if ( userInfo.admin && userInfo.superAdmin ) { %>
+                                <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
+                                    <input id="checkSelect<%=k%>_<%=n%>" class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect" disabled>
+                                    <button id="btnEditOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="edit" name="btnEditOt"
+                                        title="Editar OT#<%= pathMongoOtProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button id="btnStatusOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="changeStatus" name="btnStatusOt"
+                                        title="Cambiar status OT#<%= pathMongoOtProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;">
+                                        <i class="fa-solid fa-power-off"></i>
+                                    </button>
+                                    <button id="btnDeleteOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="delete" name="btnDeleteOt"
+                                        title="Eliminar OT#<%= pathMongoOtProject[n].otNumber %>"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+
+                            <% } else { %>
+                                <div class="btn-group my-2" role="group" aria-label="Basic outlined example">
+                                    <input id="checkSelect<%=k%>_<%=n%>" class="form-check-input my-auto me-2" type="checkbox" value="" name="checkSelect" style="background-color: #575757;" disabled>
+                                    <% if ( userInfo.area === 'ingenieria' ) { %>
+                                        <button id="btnEditOt<%=k%>_<%=n%>" type="button" class="btn btn-sm btn-light" value="edit" name="btnEditOt"
+                                            title="Solo Admin puede Editar OT#<%= pathMongoOtProject[n].otNumber %>"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                    <% } else { %>
+                                        <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; background-color: #adadad;"">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                    <% } %>
+                                    <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
+                                        <i class="fa-solid fa-power-off"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-light disabled" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem;" disabled>
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            <% } %>
+                        </td>
+                        <!-- status OT -->
+                        <td class="text-center align-middle">
+                            <% let colorStatus = 'success', textStatus = 'A' 
+                            if (!pathMongoOtProject[n].otStatus) colorStatus = 'danger', textStatus = 'I' %>
+                                <span id="lastOtStatus<%=k%>_<%=n%>" class="badge rounded-pill bg-<%= colorStatus %> text-white my-2"><%= textStatus %></span>
+                        </td>
+                        <!-- Item Number -->
+                        <td class="text-center align-middle">
+                            <span id="lastItemNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-secondary text-white my-2"><%= pathMongoOtProject[n]?.itemNumber %></span>
+                        </td>
+                        <!-- Prio -->
+                        <td class="text-center align-middle">
+                            <span id="lastPrioNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-warning text-dark my-2"><%= pathMongoOtProject[n]?.otPrio %></span>
+                        </td>
+                        <!-- OT Number -->
+                        <td class="text-center align-middle">
+                            <span id="lastOtNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-dark text-white my-2"><%= pathMongoOtProject[n]?.otNumber %></span>
+                        </td>
+                        <!-- op Description -->
+                        <td class="text-center align-middle overflow-ellipsis">
+                            <small id="lastOpDescription<%=k%>_<%=n%>" class="text-dark my-2"><%= pathMongoOtProject[n]?.opDescription %></small>
+                        </td>
+                    </tr>
+                <% }
+            }
+        }) %>    
+    </tbody>
+</table>

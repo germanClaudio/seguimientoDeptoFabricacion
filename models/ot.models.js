@@ -1,5 +1,4 @@
 const { Schema, model, mongoose } = require('mongoose')
-const now = require('../utils/formatDate.js')
 
 const creatorModels = require('./creator.models.js')
 const modificatorModels = require('./modificator.models.js')
@@ -50,18 +49,36 @@ let otProjectSchema = new Schema({
         maxlength: 150,
         default: 'No definido'
     },
+    otDibujado:{
+        type: Number,
+        maxlength: 5,
+        default: 1
+    },
+    otSymetrico:{
+        type: Number,
+        maxlength: 5,
+        default: 1
+    },
+    otFuncion:{
+        type: String,
+        maxlength: 150,
+        default: 'No definida'
+    },
+    otLineaCelda:{
+        type: String,
+        maxlength: 150,
+        default: 'No definida'
+    },
     otInformation: [ingeneiriaMatricesModels.otInformationSchema],
     otDetalles: [programacionModels.ProgramacionSchema],
     otAjuste: [ajusteModels.AjusteSchema],
     creator: [creatorModels],
     timestamp: {
-        type: String,
-        default: now,
+        type: Date,
     },
     modificator: [modificatorModels],
     modifiedOn: {
-        type: String,
-        default: ""
+        type: Date,
     },
     visible: {
         type: Boolean,
@@ -70,5 +87,5 @@ let otProjectSchema = new Schema({
 
 })
 
-module.exports = { otProjectSchema }
+module.exports = otProjectSchema // { otProjectSchema }
 

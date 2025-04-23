@@ -1,22 +1,17 @@
 <div class="mx-auto" style="width: 90vw;">
     <div class="card-body d-flex justify-content-center">
         <div class="form-group col-12 mx-auto my-2 w-100 border px-5 py-1 text-white" style="background-color: #a3aeb4;">
-
             <form id="formNewOt" action="/api/proyectos/oci" method="post" name="formNewOt">
-
                 <fieldset>
                     <% if ( proyecto.length > 0 ) { 
                         if (proyecto[0].project[0].oci.length == 1 && proyecto[0].project[0].oci[0].visible) { %>
-                            
-                            <h5 id="tituloForm"
-                                class="d-block mx-auto my-2 text-center text-dark">
+                            <h5 id="tituloForm" class="d-block mx-auto my-2 text-center text-dark">
                                 Agregar Nueva/s OT's a OCI # <strong><%= proyecto[0].project[0].oci[0].ociNumber %></strong> - Alias: "<%= proyecto[0].project[0].oci[0].ociAlias %>" <br> Proyecto: "<%= proyecto[0].project[0].projectName %>"
                             </h5>
                             <hr>
-                        <% } else { %>
 
-                            <h5 id="tituloForm"
-                                class="d-block mx-auto my-2 text-center text-dark">
+                        <% } else { %>
+                            <h5 id="tituloForm" class="d-block mx-auto my-2 text-center text-dark">
                                 Agregar Nueva/s OT's a OCI # <strong class="bg-danger">(Seleccionar # OCI)</strong> - Alias: "Alias" <br> Proyecto: "<%= proyecto[0].project[0].projectName %>"
                             </h5>
                             <hr>
@@ -27,19 +22,15 @@
                                 <% let j=0;
                                 if ( proyecto.length > 0 ) {
                                     for ( let m = 0; proyecto.length > m; m++ ) { %>
-                                        <input class="form-control" type="hidden" name="projectIdHidden" id="projectIdHidden"
-                                            value="<%= proyecto[m]._id %>">
-                                        <input class="form-control" type="hidden" name="projectNameHidden" id="projectNameHidden"
-                                            value="<%= proyecto[0].project[0].projectName %>">
+                                        <input class="form-control" type="hidden" name="projectIdHidden" id="projectIdHidden" value="<%= proyecto[m]._id %>">
+                                        <input class="form-control" type="hidden" name="projectNameHidden" id="projectNameHidden" value="<%= proyecto[0].project[0].projectName %>">
                                         
-                                        <% var arrayOciVisibles = [];
-                                        for ( let k = 0; proyecto[m].project[j].oci.length > k; k++ ) {
-                                            if (proyecto[m].project[j].oci[k].visible) {
-                                                arrayOciVisibles.push(proyecto[m].project[j].oci[k])
-                                            }
+                                        <% let arrayOciVisibles = [];
+                                        for ( let k = 0; parseInt(proyecto[m].project[j].oci.length) > k; k++ ) {
+                                            if (proyecto[m].project[j].oci[k].visible) arrayOciVisibles.push(proyecto[m].project[j].oci[k])
                                         }
-
-                                        if ( proyecto[m].project[j].oci.length === 1 ) { %>
+                                        
+                                        if ( arrayOciVisibles.length === 1 ) { %>
                                             <div class="form-check form-check-inline">
                                                 <label class="form-check-label" for="radioSelectedValue0">OCI #<%= arrayOciVisibles[0].ociNumber %> - Alias: "<%= arrayOciVisibles[0].ociAlias %>"</label>
 
@@ -62,20 +53,17 @@
                                                         <input class="form-check-input" type="radio" name="ociNumber" id="radioSelectedValue<%= k %>" value="<%= arrayOciVisibles[k].ociNumber %>" value2="<%= arrayOciVisibles[k].ociAlias %>" disabled>
                                                     <% } %>
                                                 </div>
-
                                             <% } %>
+                                                <!-- <input class="form-input" type="hidden" name="ociAlias" id="ociAliasHidden" value="arrayOciVisibles[k].ociAlias"> -->
                                                 <input class="form-input" type="hidden" name="ociNumberK" id="ociNumberK" value="">
-                                                <input class="form-input" type="hidden" name="ociNumberHidden" id="ociNumberHidden" value="">    
-                                                <input class="form-input" type="hidden" name="ociAlias" id="ociAliasHidden" value="<%= arrayOciVisibles[k].ociAlias %>">
+                                                <input class="form-input" type="hidden" name="ociNumberHidden" id="ociNumberHidden" value="">
                                         <% } 
                                     }
 
                                 } else { %>
                                     <span class="badge rounded-pill bg-danger text-white"> No hay datos cargados aún</span>
                                 <% } %>
-
                             </div>
-
                             <br>
                         </div>
 
@@ -90,7 +78,6 @@
                                             data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOneForm"
                                             aria-expanded="false" aria-controls="panelsStayOpen-collapseOneForm">
                                             <strong>Información OT</strong>
-                                            
                                         </button>
                                     </h2>
                                     <div id="panelsStayOpen-collapseOneForm" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
@@ -101,7 +88,7 @@
                                                 </div>
                                                 <div class="col-1">
                                                     <label for="otNumber" id="labelOtNumber">OT#</label>
-                                                    <input type="number" name="otNumber" id="otNumber" class="form-control mt-3" min="0" max="9999" placeholder="Número OT">
+                                                    <input type="number" name="otNumber" id="otNumber" class="form-control mt-3" min="0" max="19999" placeholder="Número OT">
                                                 </div>
                                                 <div class="col-1">
                                                     <label for="opNumber" id="labelOpNumber">OP#</label>

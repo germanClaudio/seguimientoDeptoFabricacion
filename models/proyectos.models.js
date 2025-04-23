@@ -1,5 +1,4 @@
 const { Schema, model, mongoose } = require('mongoose')
-// let now = require('../utils/formatDate.js')
 
 const creatorModels = require('./creator.models.js')
 const modificatorModels = require('./modificator.models.js')

@@ -184,8 +184,8 @@ async function uploadToGCSingleFile(req, res, next) {
                 
         blobStream.on('finish', () => {
             req.files.cloudStorageObject = `${originalname}`
-            console.log('originalname: ', originalname)
-            console.log('blob.name: ', blob.name)
+            console.log('Single_originalname: ', originalname)
+            console.log('Single_blob.name: ', blob.name)
             req.files.cloudStoragePublicUrl = `https://storage.googleapis.com/${bucket.name}/${folderName}/${subFolderName}/${blob.name}`;
         });
         blobStream.end(data);

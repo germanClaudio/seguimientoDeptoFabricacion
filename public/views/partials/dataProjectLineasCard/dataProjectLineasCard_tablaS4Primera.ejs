@@ -1,0 +1,537 @@
+<!-- --------- tabla S4 Primera Parte ----------- -->
+<table id="tabla4SimPrimera<%=k%>"
+    class="table-responsive align-middle col-2 border-end border-dark" style="font-size: 10pt; width: 100%">
+    <thead class="align-middle" style="background-color: #88c">
+        <tr>
+            <th colspan="4" class="text-center">Sim 4 (Primera Parte)
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                    <button id="posBtnAddDataS4Primera<%=k%>" type="button" name="btn4PrimeraSim" class="btn btn-small btn-success shadow m-1 position-relative"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                        <span id="spanCheckSelecMasiveSim4Prima<%=k%>" class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                            <span class="visually-hidden">Elementos seleccionados</span>
+                        </span>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 disabled"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } %>
+            </th>
+        </tr>
+        <tr>
+            <th style="width:25vw" scope="col-1" class="text-center">Mat Ensayo | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center"><i class="fa-solid fa-plus-minus"></i>10% | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center">MP <i class="fa-solid fa-shapes"></i> | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center">Reun. Sim | Rev</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        
+        <% const sim4PrimeraConfig = {
+            ok: { text: "OK", classes: "bg-success text-white" },
+            noOk: { text: "No OK", classes: "bg-danger text-white" },
+            pendiente: { text: "Pendiente", classes: "bg-warning text-dark" },
+            noAplica: { text: "N/A", classes: "bg-info text-dark" },
+            default: { text: "S/D", classes: "bg-secondary text-white" }
+        };
+
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => { 
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+            largoArrayOtProject = parseInt(pathMongoOtProject.length),
+            pathMongoOtInformation = pathMongoOtProject[n].otInformation
+
+            let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+                resMatEnsayo = 'sinDato', resRevisionMatEnsayo = 0,
+                resMas10Menos  = 'sinDato', resRevisionMas10Menos = 0,
+                resMpAlternativo = 'sinDato', resRevisionMpAlternativo = 0,
+                resReunionSim = 'sinDato', resRevisionReunionSim = 0
+        
+            if (pathMongoOtProject[n].visible) {
+                let pathMongoOtSim4Primera = pathMongoOtInformation[0].otInfoSim4Primera || [],
+                largoArraySim4Primera = parseInt(pathMongoOtSim4Primera.length);
+
+                let arrResMatEnsayo = [], valueArrayResMatEnsayo = 0, arrResRevisionMatEnsayo = [], arrResCreadorMatEnsayo = [],
+                arrResModificadorMatEnsayo = [], arrResFechaMatEnsayo = [], arrResFechaModMatEnsayo = [];
+
+                let arrResMas10Menos = [], valueArrayResMas10Menos = 0, arrResRevisionMas10Menos = [], arrResCreadorMas10Menos = [],
+                arrResModificadorMas10Menos = [], arrResFechaMas10Menos = [], arrResFechaModMas10Menos = [];
+
+                let arrResMpAlternativo = [], valueArrayResMpAlternativo = 0, arrResRevisionMpAlternativo = [], arrResCreadorMpAlternativo = [],
+                arrResModificadorMpAlternativo = [], arrResFechaMpAlternativo = [], arrResFechaModMpAlternativo = [];
+
+                let arrResReunionSim = [], valueArrayResReunionSim = 0, arrResRevisionReunionSim = [], arrResCreadorReunionSim = [],
+                arrResModificadorReunionSim = [], arrResFechaReunionSim = [], arrResFechaModReunionSim = [];
+
+                if (pathMongoOtProject[n].otStatus) { %>
+                    <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
+                        <% for (let q = 29; totalColDataSim4Primera > q; q++) {
+                            if (q==29) { %>
+                                <!-- Mat Ensayo data Activo--> 
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim4Primera > 0) {
+                                                
+                                        for (let i = 0; largoArraySim4Primera > i; i++) {
+                                            if (pathMongoOtSim4Primera[i]) {
+                                                let largoArray = parseInt(largoArraySim4Primera)
+                                                resMatEnsayo = pathMongoOtSim4Primera[largoArray-1].matEnsayo || 'sinDato'
+                                                resRevisionMatEnsayo = parseInt(pathMongoOtSim4Primera[largoArray-1].revisionMatEnsayo) || 'sinDato'
+                                                
+                                                arrResMatEnsayo.push(pathMongoOtSim4Primera[i].matEnsayo)
+                                                arrResRevisionMatEnsayo.push(pathMongoOtSim4Primera[i].revisionMatEnsayo)
+                                            
+                                                arrResCreadorMatEnsayo.push(pathMongoOtSim4Primera[i].creator[0].username)
+                                                arrResModificadorMatEnsayo.push(pathMongoOtSim4Primera[i].modificator[0].username)
+                                                arrResFechaMatEnsayo.push(pathMongoOtSim4Primera[i].timestamp)
+                                                arrResFechaModMatEnsayo.push(pathMongoOtSim4Primera[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResMatEnsayo = parseInt(arrResMatEnsayo.length-1)
+                                                
+                                        if (arrResMatEnsayo.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResMatEnsayo.length == arrResRevisionMatEnsayo.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                    
+                                    } else {
+                                        arrResMatEnsayo.push(resMatEnsayo)
+                                        arrResRevisionMatEnsayo.push(resRevisionMatEnsayo)
+
+                                        arrResCreadorMatEnsayo.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorMatEnsayo.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaMatEnsayo.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModMatEnsayo.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteMatEnsayo<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorMatEnsayo<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorMatEnsayo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMatEnsayo %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMatEnsayo %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMatEnsayo %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorMatEnsayo %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorMatEnsayo %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMatEnsayo %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModMatEnsayo %>">
+        
+                                        <% const config = sim4PrimeraConfig[resMatEnsayo] || sim4PrimeraConfig.default; %>
+                                        <span id="resMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionMatEnsayo<%=k%>_<%=n%>_<%=q%>" name="resRevisionMatEnsayo" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionMatEnsayo %>
+                                        </span>
+                                            
+                                        <button id="btnSiguienteMatEnsayo<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteMatEnsayo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else if (q==30) { %>
+                                <!-- MasMenos10 data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim4Primera > 0) {
+                                        
+                                        for (let i = 0; largoArraySim4Primera > i; i++) {
+                                            if (pathMongoOtSim4Primera[i]) {
+                                                let largoArray = parseInt(largoArraySim4Primera)
+                                                resMas10Menos = pathMongoOtSim4Primera[largoArray-1].masMenos10 || 'sinDato'
+                                                resRevisionMas10Menos = parseInt(pathMongoOtSim4Primera[largoArray-1].revisionMasMenos10) || 0
+                                                
+                                                arrResMas10Menos.push(pathMongoOtSim4Primera[i].masMenos10)
+                                                arrResRevisionMas10Menos.push(pathMongoOtSim4Primera[i].revisionMasMenos10)
+                                                
+                                                arrResCreadorMas10Menos.push(pathMongoOtSim4Primera[i].creator[0].username)
+                                                arrResModificadorMas10Menos.push(pathMongoOtSim4Primera[i].modificator[0].username)
+                                                arrResFechaMas10Menos.push(pathMongoOtSim4Primera[i].timestamp)
+                                                arrResFechaModMas10Menos.push(pathMongoOtSim4Primera[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResMas10Menos = parseInt(arrResMas10Menos.length-1)
+                                        
+                                        if (arrResMas10Menos.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResMas10Menos.length == arrResRevisionMas10Menos.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResMas10Menos.push(resMas10Menos)
+                                        arrResRevisionMas10Menos.push(resRevisionMas10Menos)
+
+                                        arrResCreadorMas10Menos.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorMas10Menos.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaMas10Menos.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModMas10Menos.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteMas10Menos<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorMas10Menos<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorMas10Menos" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMas10Menos %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMas10Menos %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMas10Menos %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorMas10Menos %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorMas10Menos %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMas10Menos %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModMas10Menos %>">
+        
+                                        <% const config = sim4PrimeraConfig[resMas10Menos] || sim4PrimeraConfig.default; %>
+                                        <span id="resMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionMas10Menos<%=k%>_<%=n%>_<%=q%>" name="resRevisionMas10Menos" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionMas10Menos %>
+                                        </span>
+                                        
+                                        <button id="btnSiguienteMas10Menos<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteMas10Menos" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else if (q==31) { %>
+                                <!-- MpAlternativo Sim1 data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim4Primera > 0) {
+                                        
+                                        for (let i = 0; largoArraySim4Primera > i; i++) {
+                                            if (pathMongoOtSim4Primera[i]) {
+                                                let largoArray = parseInt(largoArraySim4Primera)
+                                                resMpAlternativo = pathMongoOtSim4Primera[largoArray-1].mpAlternativo || 'sinDato'
+                                                resRevisionMpAlternativo = parseInt(pathMongoOtSim4Primera[largoArray-1].revisionMpAlternativo) || 0
+                                                
+                                                arrResMpAlternativo.push(pathMongoOtSim4Primera[i].mpAlternativo)
+                                                arrResRevisionMpAlternativo.push(pathMongoOtSim4Primera[i].revisionMpAlternativo)
+                                            
+                                                arrResCreadorMpAlternativo.push(pathMongoOtSim4Primera[i].creator[0].username)
+                                                arrResModificadorMpAlternativo.push(pathMongoOtSim4Primera[i].modificator[0].username)
+                                                arrResFechaMpAlternativo.push(pathMongoOtSim4Primera[i].timestamp)
+                                                arrResFechaModMpAlternativo.push(pathMongoOtSim4Primera[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResMpAlternativo = parseInt(arrResMpAlternativo.length-1)
+                                        
+                                        if (arrResMpAlternativo.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResMpAlternativo.length == arrResRevisionMpAlternativo.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResMpAlternativo.push(resMpAlternativo)
+                                        arrResRevisionMpAlternativo.push(resRevisionMpAlternativo)
+
+                                        arrResCreadorMpAlternativo.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorMpAlternativo.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaMpAlternativo.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModMpAlternativo.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteMpAlternativo<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorMpAlternativo<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorMpAlternativo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMpAlternativo %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMpAlternativo %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMpAlternativo %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorMpAlternativo %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorMpAlternativo %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaMpAlternativo %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModMpAlternativo %>">
+        
+                                        <% const config = sim4PrimeraConfig[resMpAlternativo] || sim4PrimeraConfig.default; %>
+                                        <span id="resMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionMpAlternativo<%=k%>_<%=n%>_<%=q%>" name="resRevisionMpAlternativo" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionMpAlternativo %>
+                                        </span>
+                                                    
+                                        <button id="btnSiguienteMpAlternativo<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteMpAlternativo" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else { %>
+                                <!-- ReunionSim data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim4Primera > 0) {
+                                                
+                                        for (let i = 0; largoArraySim4Primera > i; i++) {
+                                            if (pathMongoOtSim4Primera[i]) {
+                                                let largoArray = parseInt(largoArraySim4Primera)
+                                                resReunionSim = pathMongoOtSim4Primera[largoArray-1].reunionSim
+                                                resRevisionReunionSim = pathMongoOtSim4Primera[largoArray-1].revisionReunionSim
+                                                
+                                                arrResReunionSim.push(pathMongoOtSim4Primera[i].reunionSim)
+                                                arrResRevisionReunionSim.push(pathMongoOtSim4Primera[i].revisionReunionSim)
+                                                
+                                                arrResCreadorReunionSim.push(pathMongoOtSim4Primera[i].creator[0].username)
+                                                arrResModificadorReunionSim.push(pathMongoOtSim4Primera[i].modificator[0].username)
+                                                arrResFechaReunionSim.push(pathMongoOtSim4Primera[i].timestamp)
+                                                arrResFechaModReunionSim.push(pathMongoOtSim4Primera[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResReunionSim = parseInt(arrResReunionSim.length-1)
+                                        
+                                        if (arrResReunionSim.length == 1 ) {
+                                            siguienteDisabled = "disabled"
+                                            anteriorDisabled = "disabled"
+                                        } else if (arrResReunionSim.length == arrResRevisionReunionSim.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+                                        
+                                    } else {
+                                        arrResReunionSim.push(resReunionSim)
+                                        arrResRevisionReunionSim.push(resRevisionReunionSim)
+
+                                        arrResCreadorReunionSim.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorReunionSim.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaReunionSim.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModReunionSim.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+                                    
+                                    <div id="btnAnteriorSiguienteReunionSim<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorReunionSim<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorReunionSim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResReunionSim %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResReunionSim %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionReunionSim %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorReunionSim %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorReunionSim %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaReunionSim %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModReunionSim %>">
+        
+                                        <% const config = sim4PrimeraConfig[resMpAlternativo] || sim4PrimeraConfig.default; %>
+                                        <span id="resReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                            <%= config.text %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionReunionSim<%=k%>_<%=n%>_<%=q%>" name="resRevisionReunionSim" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionReunionSim %>
+                                        </span>
+                                        
+                                        <button id="btnSiguienteReunionSim<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteReunionSim" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-2" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            <% }
+                        } %>
+                        
+                    </tr>
+                    
+                <% } else { %>
+                    <tr class="pe-none" name="rowSelected<%=k%>_<%=n%>" style="height: 7vh; background-color: #dedede;">
+                        <% for (let q = 29; totalColDataSim4Primera > q; q++) {
+                            if (q==29) { %>
+                                <!-- Mat Ensayo data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim4Primera > 0) {
+                                    
+                                        for (let i = 0; largoArraySim4Primera > i; i++) {
+                                            if (pathMongoOtSim4Primera[i]) {
+                                                let largoArray = parseInt(largoArraySim4Primera)
+                                                resMatEnsayo = pathMongoOtSim4Primera[largoArray-1].matEnsayo || 'sinDato'
+                                                resRevisionMatEnsayo = parseInt(pathMongoOtSim4Primera[largoArray-1].revisionMatEnsayo) || 0
+                                                
+                                                arrResMatEnsayo.push(pathMongoOtSim4Primera[i].matEnsayo)
+                                                arrResRevisionMatEnsayo.push(pathMongoOtSim4Primera[i].revisionMatEnsayo)
+                                            }
+                                        }
+                                        valueArrayRes1Sim = parseInt(arrResMatEnsayo.length-1)
+                                        resMatEnsayo = pathMongoOtSim4Primera[0].matEnsayo
+
+                                    } else {
+                                        arrResMatEnsayo.push(resMatEnsayo)
+                                        arrResRevisionMatEnsayo.push(resRevisionMatEnsayo)
+                                    } %>
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMatEnsayo %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayRes1Sim %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMatEnsayo %>">
+                                
+                                    <% const config = sim4PrimeraConfig[resMatEnsayo] || sim4PrimeraConfig.default; %>
+                                    <span id="resMatEnsayo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionMatEnsayo<%=k%>_<%=n%>_<%=q%>" name="resRevisionMatEnsayo" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionMatEnsayo %>
+                                    </span>
+                                </td>
+
+                            <% } else if (q==30) { %>
+                                <!-- MasMenos10 data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim4Primera > 0) {
+                                    
+                                        for (let i = 0; largoArraySim4Primera > i; i++) {
+                                            if (pathMongoOtSim4Primera[i]) {
+                                                let largoArray = parseInt(largoArraySim4Primera)
+                                                resMas10Menos = pathMongoOtSim4Primera[largoArray-1].masMenos10 || 'sinDato'
+                                                resRevisionMas10Menos = parseInt(pathMongoOtSim4Primera[largoArray-1].revisionMasMenos10) || 0
+                                                
+                                                arrResMas10Menos.push(pathMongoOtSim4Primera[i].masMenos10)
+                                                arrResRevisionMas10Menos.push(pathMongoOtSim4Primera[i].revisionMasMenos10)
+                                            }
+                                        }
+                                        valueArrayResMas10Menos = parseInt(arrResMas10Menos.length-1)
+                                            resMas10Menos = pathMongoOtSim4Primera[0].masMenos10
+                                    
+                                    } else {
+                                        arrResMas10Menos.push(resMas10Menos)
+                                        arrResRevisionMas10Menos.push(resRevisionMas10Menos)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMas10Menos %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMas10Menos %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMas10Menos %>">
+
+                                    <% const config = sim4PrimeraConfig[resMas10Menos] || sim4PrimeraConfig.default; %>
+                                    <span id="resMas10Menos<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionMas10Menos<%=k%>_<%=n%>_<%=q%>" name="resRevisionMas10Menos" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionMas10Menos %>
+                                    </span>
+                                </td>
+
+                            <% } else if (q==31) { %>
+                                <!-- Mp Alternativo data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim4Primera > 0) {
+                                    
+                                        for (let i = 0; largoArraySim4Primera > i; i++) {
+                                            if (pathMongoOtSim4Primera) {
+                                                let largoArray = parseInt(largoArraySim4Primera)
+                                                resMpAlternativo = pathMongoOtSim4Primera[largoArray-1].mpAlternativo || 'sinDato'
+                                                resRevisionMpAlternativo = parseInt(pathMongoOtSim4Primera[largoArray-1].revisionMpAlternativo) || 0
+                                                
+                                                arrResMpAlternativo.push(pathMongoOtSim4Primera[i].mpAlternativo)
+                                                arrResRevisionMpAlternativo.push(pathMongoOtSim4Primera[i].revisionMpAlternativo)
+                                            }
+                                        }
+                                        valueArrayResMpAlternativo = parseInt(arrResMpAlternativo.length-1)
+                                        resMpAlternativo = pathMongoOtSim4Primera[0].mpAlternativo
+                                    
+                                    } else {
+                                        arrResMpAlternativo.push(resMpAlternativo)
+                                        arrResRevisionMpAlternativo.push(resRevisionMpAlternativo)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResMpAlternativo %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResMpAlternativo %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionMpAlternativo %>">
+
+                                    <% const config = sim4PrimeraConfig[resMpAlternativo] || sim4PrimeraConfig.default; %>
+                                    <span id="resMpAlternativo<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionMpAlternativo<%=k%>_<%=n%>_<%=q%>" name="resRevisionMpAlternativo" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionMpAlternativo %>
+                                    </span>
+                                </td>
+
+                            <% } else { %>
+                                <!-- ReunionSim data Inactivo -->
+                                <td class="text-center align-middle">
+                                    <% if (largoArraySim4Primera > 0) {
+                                    
+                                        for (let i = 0; largoArraySim4Primera > i; i++) {
+                                            if (pathMongoOtSim4Primera[i]) {
+                                                let largoArray = parseInt(largoArraySim4Primera)
+                                                resReunionSim = pathMongoOtSim4Primera[largoArray-1].reunionSim
+                                                resRevisionReunionSim = pathMongoOtSim4Primera[largoArray-1].revisionReunionSim
+                                                
+                                                arrResReunionSim.push(pathMongoOtSim4Primera[i].reunionSim)
+                                                arrResRevisionReunionSim.push(pathMongoOtSim4Primera[i].revisionReunionSim)
+                                                
+                                            }
+                                        }
+                                        valueArrayResReunionSim = parseInt(arrResReunionSim.length-1)
+                                        resReunionSim = pathMongoOtSim4Primera[0].reunionSim
+                                    
+                                    } else {
+                                        arrResReunionSim.push(resReunionSim)
+                                        arrResRevisionReunionSim.push(resRevisionReunionSim)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResReunionSim %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResReunionSim %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionReunionSim %>">
+
+                                    <% const config = sim4PrimeraConfig[resMpAlternativo] || sim4PrimeraConfig.default; %>
+                                    <span id="resReunionSim<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2" >
+                                        <%= config.text %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionReunionSim<%=k%>_<%=n%>_<%=q%>" name="resRevisionReunionSim" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionReunionSim %>
+                                    </span>
+                                </td>
+
+                            <% }
+                        } %>
+                    </tr>
+                <% }
+            }
+        }) %>
+    </tbody>
+</table>

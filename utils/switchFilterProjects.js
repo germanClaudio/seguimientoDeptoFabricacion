@@ -33,9 +33,13 @@ async function switchFilterProjects(filter, Proyectos, nameAndCodeQuery) {
         
     } else if (filter[2] === 'Lineas') {
         query.uNegocio = filter[2].toLowerCase();
+        query['project.levelProject'] = 'ganado';
+
+    } else {
+        query['project.levelProject'] = 'ganado';
     }
 
-console.log('query: ', query)
+// console.log('query: ', query)
 
     // Ejecutar consulta o devolver vacío si no hay filtros
     const resultados = Object.keys(query).length > 0

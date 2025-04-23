@@ -87,7 +87,7 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
                             <label for="uNegocioProject" class="d-flex justify-content-start">Unidad de Negocio</label>
                             <select id="uNegocioProject" name="uNegocioProject" class="form-select" required>
                                 <option selected disabled value="">Seleccione Unidad Negocio</option>
-                                <option value="mtrices">Matrices</option>
+                                <option value="matrices">Matrices</option>
                                 <option value="lineas">Líneas</option>
                             </select>
                         </div>
@@ -100,8 +100,8 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
                         <br>
                         <div class="col-2">
                             <label for="prioProject" class="d-flex justify-content-start">Prioridad Proyecto</label>
-                            <input type="number" name="prioProject" id="prioProject" class="form-control" min="0" max="9999"
-                                placeholder="Prioridad Proyecto" value="0">
+                            <input type="number" name="prioProject" id="prioProject" class="form-control" min="0" max="999"
+                                placeholder="Prio Proyecto" value="0">
                         </div>
                     </div>
 
@@ -158,10 +158,15 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
                                                     <strong>#1</strong>
                                                 </div>
                                                 <hr>
-                                                <div class="col-2">
+                                                <div class="col-1">
                                                     <label for="ociNumber" id="labelOciNumber" class="d-flex text-start">Núm. OCI</label>
                                                     <input type="number" name="ociNumber" id="ociNumber" class="form-control"
                                                     min="0" max="9999" placeholder="Número OCI" value="1" required>
+                                                </div>
+                                                <div class="col-1">
+                                                    <label for="ociPrio" id="labelOciPrio" class="d-flex text-start">Prio OCI</label>
+                                                    <input type="number" name="ociPrio" id="ociPrio" class="form-control"
+                                                    min="0" max="999" placeholder="Prio OCI" value="1" required>
                                                 </div>
                                                 <div class="col-3">
                                                     <label for="ociDescription" id="labelOciDescription" class="d-flex text-start">Descripción OCI</label>
@@ -224,186 +229,9 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
                     <div id="mensajeError" class="alert alert-warning align-items-center justify-content-center w-50 mx-auto" role="alert"
                         style="display: none; font-size: 0.85rem; height: 1.15rem;">
                     </div>
-                    <input type="hidden" name="ociQuantity" id="ociQuantity" value="0">
+                    <input type="hidden" name="ociQuantity" id="ociQuantity" value="1">
                 </fieldset>
             </form>`
-
-        // swal.fire({
-        //     title: `Ingreso Nuevo Proyecto a cliente: ${nameCliente}`,
-        //     position: 'center',
-        //     html: html,
-        //     width: 1500,
-        //     imageUrl: `${imgCliente}`,
-        //     imageWidth: `8%`,
-        //     focusConfirm: false,
-        //     showCancelButton: true,
-        //     showConfirmButton: true,
-        //     showCloseButton: true,
-        //     confirmButtonText: 'Guardar <i class="fa-regular fa-save"></i>',
-        //     cancelButtonText: 'Cancelar <i class="fa-solid fa-xmark"></i>',
-        //     didOpen: ()=> {
-        //         let btnAceptar = document.getElementsByClassName('swal2-confirm');
-        //         btnAceptar[0].setAttribute('id','btnAceptarModal')
-        //         btnAceptar[0].style = "cursor: not-allowed;"
-        //         btnAceptar[0].disabled = true
-        //     },
-        //     showLoaderOnConfirm: true,
-        //     preConfirm: async () => {
-                
-        //             // Validar formulario
-        //             const form = document.getElementById('formNewProject');
-        //             let isValid = true;
-        //             let firstInvalidElement = null;
-        //             let errorMessages = [];
-                    
-        //             // 1. Validar campos principales
-        //             const mainFields = form.querySelectorAll('input, textarea, select');
-        //             mainFields.forEach(field => {
-        //                 if (field.hasAttribute('required') && !field.value.trim() && !field.closest('[id^="ociItemRow"]')) {
-        //                     field.classList.add('is-invalid');
-        //                     field.style.border = '1px solid red';
-        //                     isValid = false;
-                            
-        //                     const fieldLabel = document.querySelector(`label[for="${field.id}"]`);
-        //                     errorMessages.push(fieldLabel ? fieldLabel.textContent.trim() : field.name);
-                            
-        //                     if (!firstInvalidElement) firstInvalidElement = field;
-        //                 }
-        //             });
-            
-        //             // 2. Validar campos OCI
-        //             const ociQuantity = parseInt(document.getElementById('ociQuantity').value);
-
-        //             if (parseInt(ociQuantity) === 0) {
-        //                 swal.showValidationMessage(`El proyecto debe contener al menos 1 OCI!`);
-        //                 return false
-                        
-        //             } else {
-        //                 for (let i = 0; i < ociQuantity; i++) {
-        //                     const suffix = i === 0 ? '' : i;
-        //                     const ociFields = [
-        //                         {id: `ociNumber${suffix}`, name: `Número OCI #${i+1}`},
-        //                         {id: `ociDescription${suffix}`, name: `Descripción OCI #${i+1}`}
-        //                     ];
-                            
-        //                     ociFields.forEach(field => {
-        //                         const element = document.getElementById(field.id);
-        //                         if (element && !element.value.trim()) {
-        //                             element.classList.add('is-invalid');
-        //                             element.style.border = '1px solid red';
-        //                             isValid = false;
-        //                             errorMessages.push(field.name);
-        //                             if (!firstInvalidElement) firstInvalidElement = element;
-        //                         }
-        //                     });
-                            
-        //                     // Validar imagen OCI
-        //                     const ociImageInput = document.getElementById(`fileInputNewOci${suffix}`);
-        //                     const ociDropArea = document.getElementById(`drop-area-oci${suffix}`);
-    
-        //                     if (ociImageInput && ociImageInput.hasAttribute('required') && !ociImageInput.files[0]) {
-        //                         ociDropArea.style.border = '1px solid red';
-        //                         isValid = false;
-        //                         errorMessages.push(`Imagen OCI #${i+1}`);
-        //                         if (!firstInvalidElement) firstInvalidElement = ociDropArea;
-        //                     }
-        //                 }
-        //             }
-                    
-        //             // 3. Manejo de errores
-        //             if (!isValid) {
-        //                 const errorMessage = document.getElementById('mensajeError');
-        //                 errorMessage.style.display = 'flex';
-        //                 errorMessage.innerHTML = `
-        //                     <i class="fa-solid fa-triangle-exclamation me-2"></i>
-        //                     Faltan campos requeridos: ${errorMessages.join(', ')}
-        //                 `;
-                        
-        //                 // Abrir acordeón si es necesario
-        //                 if (firstInvalidElement?.closest('.accordion-item')) {
-        //                     const accordion = document.getElementById('panelsStayOpen-collapseOneForm');
-        //                     if (accordion.classList.contains('collapse')) {
-        //                         document.getElementById('buttonOne').click();
-        //                     }
-        //                 }
-                        
-        //                 // Scroll al primer error
-        //                 firstInvalidElement?.scrollIntoView({
-        //                     behavior: 'smooth',
-        //                     block: 'center'
-        //                 });
-        //             }
-        //             swal.showValidationMessage(`Faltan campos requeridos!`);
-                
-        //     },
-        //     allowOutsideClick: () => !swal.isLoading()
-
-        // }).then((result) => {
-        //     if (result.isConfirmed) {
-        
-        //         // 4. Si todo es válido, enviar formulario
-                // document.getElementById('mensajeError').style.display = 'none';
-                
-                // const ociTotalQuantity = parseInt(document.getElementById('ociQuantity').value)
-        
-                // if (ociTotalQuantity === 1) {
-                //     const ociNumber = parseInt(document.getElementById('ociNumber').value)
-                //     const projectName = document.getElementById('projectName').value
-                //     const formularioNewProject = document.getElementById('formNewProject')
-                //     //formularioNewProject.submit()
-                
-                //     setTimeout(() => {
-                //         swal.fire({
-                //             icon: 'success',
-                //             title: `El proyecto ${projectName}, con la OCI# ${ociNumber}, se creó con éxito!`
-                //         })
-                //     }, 1000)
-
-                // } else {
-                //     let arrayOciNumbers = []
-                //     const ociNumber = parseInt(document.getElementById('ociNumber').value)
-                //     arrayOciNumbers.push(ociNumber)
-
-                //     for (let oci=0; oci<ociTotalQuantity; oci++) {
-                //         if (document.getElementById(`ociNumber${oci}`)) {
-                //             arrayOciNumbers.push(parseInt(document.getElementById(`ociNumber${oci}`).value))
-                //         }
-                //     }
-                //     // Filtrar los elementos únicos
-                //     const elementosUnicos = arrayOciNumbers.filter((valor, indice, self) => {
-                //         return self.indexOf(valor) === indice;
-                //     });
-                
-                //     if (elementosUnicos.length !== arrayOciNumbers.length) {
-                //         swal.fire(
-                //             'Números de OCI repetidas!',
-                //             `El proyecto no puede tener 2 números de OCI repetidas!`,
-                //             'warning'
-                //         )
-                //         return false
-
-                //     } else {
-                //         const projectName = document.getElementById('projectName').value
-                //         document.getElementById('formNewProject').submit()
-                
-                //         setTimeout(() => {
-                //             swal.fire({
-                //                 icon: 'success',
-                //                 title: `El proyecto ${projectName} con ${ociTotalQuantity} OCI's, se creó con éxito!`
-                //             })
-                //         }, 1000)            
-                //     }
-                // }
-
-            // } else {
-            //     swal.fire(
-            //         'Proyecto no creado!',
-            //         `El proyecto, no se creó correctamente!`,
-            //         'warning'
-            //     )
-            //     return false
-            // }
-        // })
 
         swal.fire({
             title: `Ingreso Nuevo Proyecto a cliente: ${nameCliente}`,
@@ -528,7 +356,7 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
                     // Scroll y acordeón
                     if (firstInvalidElement?.closest('.accordion-item')) {
                         const accordion = document.getElementById('panelsStayOpen-collapseOneForm');
-                        if (!accordion.classList.contains('show')) { //collapse
+                        if (!accordion.classList.contains('show')) {
                             document.getElementById('buttonOne').click();
                         }
                     }
@@ -545,7 +373,9 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
                 // Si todo está validado, retornar los datos
                 return {
                     formData: new FormData(form),
-                    projectName: document.getElementById('projectName').value
+                    projectName: document.getElementById('projectName').value,
+                    totalOciQty: parseInt(document.getElementById('ociQuantity').value),
+                    ociNumbersValues: ociNumbers
                 };
             },
             allowOutsideClick: () => !swal.isLoading()
@@ -555,27 +385,28 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
                 document.getElementById('mensajeError').style.display = 'none';
                 
                 // Mostrar loader mientras se envía
-                swal.fire({
-                    title: 'Guardando proyecto...',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        swal.isLoading()  //showLoading();
-                    }
-                });
+                // swal.fire({
+                //     title: 'Guardando proyecto...',
+                //     allowOutsideClick: false,
+                //     didOpen: () => {
+                //         swal.isLoading()  //showLoading();
+                //     }
+                // });
         
                 // Enviar formulario                
                 const ociTotalQuantity = parseInt(document.getElementById('ociQuantity').value)
         
                 if (ociTotalQuantity === 1) {
                     const ociNumber = parseInt(document.getElementById('ociNumber').value)
-                    const projectName = document.getElementById('projectName').value
+                    const projectNameString = document.getElementById('projectName').value
                     const formularioNewProject = document.getElementById('formNewProject')
+                    // console.log('formularioNewProject: ', formularioNewProject)
                     formularioNewProject.submit()
                 
                     setTimeout(() => {
                         swal.fire({
                             icon: 'success',
-                            title: `El proyecto ${projectName}, con la OCI# ${ociNumber}, se creó con éxito!`
+                            title: `El proyecto ${projectNameString}, con la OCI# ${ociNumber}, se creó con éxito!`
                         })
                     }, 1000)
 
@@ -687,19 +518,24 @@ function messageNewProject(imgCliente, idCliente, nameCliente) {
                 numberId1 >= 0 && numberId2 ? numberIdLastChild = numberId2 : numberIdLastChild = numberId1;
         
                 i = numberIdLastChild + 1
-                // console.log('i line 50: ', i)
             }
             
             const ociNumberValue = parseInt(document.getElementById('ociNumber').value),
+                ociPrioValue = parseInt(document.getElementById('ociPrio').value),
                 originalDiv = (
                     `<div class="row text-start">
                         <strong>#${i+1}</strong>
                     </div>
                     <hr>
-                    <div class="col-2">
+                    <div class="col-1">
                         <label for="ociNumber${i}" id="labelOciNumber${i}" class="d-flex text-start">Núm. OCI</label>
                         <input type="number" name="ociNumber${i}" id="ociNumber${i}" class="form-control" min="0" max="9999"
                         placeholder="Número OCI" value="${ociNumberValue+i}" required>
+                    </div>
+                    <div class="col-1">
+                        <label for="ociPrio${i}" id="labelOciPrio${i}" class="d-flex text-start">Prio OCI</label>
+                        <input type="number" name="ociPrio${i}" id="ociPrio${i}" class="form-control" min="0" max="999"
+                        placeholder="Número OCI" value="${ociPrioValue+i}" required>
                     </div>
                     <div class="col-3">
                         <label for="ociDescription${i}" id="labelOciDescription${i}">Descripción OCI</label>
@@ -1382,8 +1218,8 @@ function messageChangeProjectStatus(projectName, statusProject, k) {
     }
 }
 
-const projectQuantity = parseInt(document.getElementById('projectQuantity').innerText)
-
+const projectQuantity = parseInt(document.getElementById('projectQuantity').innerText) + parseInt(document.getElementById('projectQuantityLineas').innerText)
+// console.log('projectQuantity: ', projectQuantity)
 let arrayBtnChangeStatusProject = [], j=0
 for (let k=0; k<projectQuantity; k++) {
     let btnChangeStatusProject = document.getElementById(`btnChangeStatusProyect${k}_${j}`)
@@ -1598,11 +1434,13 @@ function messageUpdateOci(
     ociDescription,
     ociNumber,
     ociAlias,
+    ociPrio,
     k
 ) {
     
     let descriptionOci = ociDescription.slice(13),
         aliasOci = ociAlias.slice(7),
+        prioOci = ociPrio.slice(6),
         numberOci = parseInt(ociNumber),
         checked = 'checked'
     statusOci=='true' ? checked : checked = ''
@@ -1620,12 +1458,12 @@ function messageUpdateOci(
         timerProgressBar: false,
     })
 
-    var html = `<form id="formUpdateOci${k}" enctype="multipart/form-data" action="/api/proyectos/updateOci/${projectId}" method="post">
+    let html = `<form id="formUpdateOci${k}" enctype="multipart/form-data" action="/api/proyectos/updateOci/${projectId}" method="post">
                     <fieldset>
                         <div class="row justify-content-evenly mb-3 mx-1 px-1">
                             <div class="col-3">
                                 <label for="numberOciModal" class="form-label d-flex justify-content-start ms-1">Número OCI</label>
-                                <input type="number" name="numberOci" id="numberOciModal" class="form-control" placeholder="Número OCI" value="${numberOci}" disabled required>
+                                <input type="number" name="numberOci" id="numberOciModal" class="form-control" placeholder="Número OCI" value="${numberOci}" min="0" max="9999" disabled required>
                             </div>
                             <div class="col-5 my-auto">
                                 <input class="form-check-input" type="checkbox" name="confirmationNumberOci" id="confirmationNumberOci" value="true">
@@ -1645,11 +1483,18 @@ function messageUpdateOci(
                         </div>    
                         
                         <div class="row mb-3 mx-1 px-1">
-                            <div class="col-8">
+                            <div class="col-6">
                                 <label for="descriptionOci" class="form-label d-flex justify-content-start ms-1">Descripción OCI</label>
                                 <input type="text" name="descriptionOci" class="form-control"
                                     placeholder="Descripción OCI" value="${descriptionOci}" required>
                             </div>
+
+                            <div class="col-2">
+                                <label for="prioOci" class="form-label d-flex justify-content-start ms-1">Prio OCI</label>
+                                <input type="number" name="prioOci" class="form-control"
+                                    placeholder="Prio OCI" value="${prioOci}" min="0" max="999" required>
+                            </div> 
+
                             <div class="col-4">
                                 <label for="aliasOci" class="form-label d-flex justify-content-start ms-1">Alias OCI</label>
                                 <input type="text" name="aliasOci" class="form-control"
@@ -1697,7 +1542,7 @@ function messageUpdateOci(
             title: `Actualizar OCI# ${numberOci} - Alias: ${aliasOci}`,
             position: 'center',
             html: html,
-            width: 750,
+            width: 800,
             imageUrl: `${imageOci}`,
             imageWidth: `25%`,
             showCancelButton: true,
@@ -1741,7 +1586,7 @@ function messageUpdateOci(
         })
     }
 
-    var inputsDeTexto = document.querySelectorAll('input[type="text"]')
+    let inputsDeTexto = document.querySelectorAll('input[type="text"]')
 
     // Agregar un listener de evento a cada input
     inputsDeTexto.forEach(function(input) {
@@ -1770,14 +1615,16 @@ function messageUpdateOci(
         alertUpdate = document.getElementById('alertUpdate'),
         alertOciSizeFileUpdate = document.getElementById('alertOciSizeFileUpdate')
 
-    dropAreaUpdate.style.width = "50%"
-    dropAreaUpdate.style.height = "200px"
-    dropAreaUpdate.style.border = "2px dashed #ccc"
-    dropAreaUpdate.style.margin = "0 auto 0 50px"
-    dropAreaUpdate.style.borderRadius = "10px"
-    dropAreaUpdate.style.textAlign = "center"
-    dropAreaUpdate.style.lineHeight = "40px"
-    dropAreaUpdate.style.cursor = "pointer"
+    Object.assign(dropAreaUpdate.style, {
+        width : "50%",
+        height : "200px",
+        border : "2px dashed #ccc",
+        margin : "0 auto 0 50px",
+        borderRadius : "10px",
+        textAlign : "center",
+        lineHeight : "40px",
+        cursor : "pointer",
+    });
 
     dropAreaUpdate.addEventListener('dragover', (e) => {
         e.preventDefault()
@@ -1796,12 +1643,14 @@ function messageUpdateOci(
         fileImputTextUpdate.value = ''
         removeImageButtonUpdate.style.display = 'none'
 
-        dropAreaUpdate.style.border = "2px dashed #ccc"
-        dropAreaUpdate.style.textAlign = "center"
-        dropAreaUpdate.style.backgroundColor = '#fff'
-        dropAreaUpdate.style.display = 'block'
-        dropAreaUpdate.style.fontSize = '.85em'
-        dropAreaUpdate.style.overflowWrap = 'break-word'
+        Object.assign(dropAreaUpdate.style, {
+            border : "2px dashed #ccc",
+            textAlign : "center",
+            backgroundColor : '#fff',
+            display : 'block',
+            fontSize : '.85em',
+            overflowWrap : 'break-word',
+        });
 
         dropAreaUpdate.innerHTML = 'Seleccione una imagen para la OCI <br>Haz click o arrastra y suelta una imagen aquí'
     }
@@ -1894,10 +1743,13 @@ function messageDeleteOci(
     ociKNumber,
     ociDescription,
     ociAlias,
+    ociPrio,
     imageOci
     ) {
         
-    const descriptionOci = ociDescription.slice(13)
+    const descriptionOci = ociDescription.slice(13),
+        aliasOci = ociAlias.slice(7),
+        prioOci = ociPrio.slice(6)
     
     const Toast = Swal.mixin({
         toast: true,
@@ -1909,7 +1761,7 @@ function messageDeleteOci(
 
     const htmlForm = `
         <div class="container m-auto">
-            La OCI#<strong>${ociNumber}</strong> - ${ociAlias}<br>
+            La OCI#<strong>${ociNumber}</strong> - Alias: ${aliasOci} - Prio: <b>${prioOci}</b><br>
             Descripcion: "${descriptionOci}" y toda su información interna, <br>
             <b>se eliminará completamente</b>.
             
@@ -1980,8 +1832,8 @@ function messageDeleteOci(
 
 let maxOciQuantity
 document.getElementById('totalOciQtyHidden')
-    ? maxOciQuantity = parseInt(document.getElementById('totalOciQtyHidden').value)
-    : maxOciQuantity=0
+    ? maxOciQuantity = parseInt(document.getElementById('totalOciQtyHidden').value + 1)
+    : maxOciQuantity = 1
 
 let arrayBtnChangeStatusOci = [], arrayBtnUpdateOci = [], arrayBtnDeleteOci = []
 for (let m=0; m<maxOciQuantity; m++) {
@@ -2014,13 +1866,15 @@ arrayBtnChangeStatusOci.forEach(function(elemento) {
 arrayBtnUpdateOci.forEach(function(element) {
     element.addEventListener('click', (event) => {
         event.preventDefault()
-        const projectId = document.getElementById(`projectIdHidden${element.id.slice(12)}`).value,
-            statusOci = document.getElementById(`statusOciHidden${element.id.slice(12)}`).value,
-            imageOci = document.getElementById(`imageOci${element.id.slice(12)}`).src,
-            ociDescription = document.getElementById(`ociDescription${element.id.slice(12)}`).innerText,
-            ociAlias = document.getElementById(`ociAlias${element.id.slice(12)}`).innerText,
-            ociNumber = document.getElementById(`ociNumberHidden${element.id.slice(12)}`).value,
-            ociKNumber = document.getElementById(`ociKNumberHidden${element.id.slice(12)}`).value
+        const idElement = element.id.slice(12)
+        const projectId = document.getElementById(`projectIdHidden${idElement}`).value,
+            statusOci = document.getElementById(`statusOciHidden${idElement}`).value,
+            imageOci = document.getElementById(`imageOci${idElement}`).src,
+            ociDescription = document.getElementById(`ociDescription${idElement}`).innerText,
+            ociAlias = document.getElementById(`ociAlias${idElement}`).innerText,
+            ociPrio = document.getElementById(`ociPrio${idElement}`).innerText,
+            ociNumber = document.getElementById(`ociNumberHidden${idElement}`).value,
+            ociKNumber = document.getElementById(`ociKNumberHidden${idElement}`).value
 
         messageUpdateOci(
             projectId,
@@ -2029,6 +1883,7 @@ arrayBtnUpdateOci.forEach(function(element) {
             ociDescription,
             ociNumber,
             ociAlias,
+            ociPrio,
             ociKNumber
         )
     })
@@ -2037,12 +1892,14 @@ arrayBtnUpdateOci.forEach(function(element) {
 arrayBtnDeleteOci.forEach(function(element) {
     element.addEventListener('click', (event) => {
         event.preventDefault()
-        const projectId = document.getElementById(`projectIdHidden${element.id.slice(12)}`).value,
-            ociNumber = document.getElementById(`ociNumberHidden${element.id.slice(12)}`).value,
-            ociKNumber = document.getElementById(`ociKNumberHidden${element.id.slice(12)}`).value,
-            ociDescription = document.getElementById(`ociDescription${element.id.slice(12)}`).innerText,
-            ociAlias = document.getElementById(`ociAlias${element.id.slice(12)}`).innerText,
-            imageOci = document.getElementById(`imageOci${element.id.slice(12)}`).src
+        const idElement = element.id.slice(12)
+        const projectId = document.getElementById(`projectIdHidden${idElement}`).value,
+            ociNumber = document.getElementById(`ociNumberHidden${idElement}`).value,
+            ociKNumber = document.getElementById(`ociKNumberHidden${idElement}`).value,
+            ociDescription = document.getElementById(`ociDescription${idElement}`).innerText,
+            ociAlias = document.getElementById(`ociAlias${idElement}`).innerText,
+            ociPrio = document.getElementById(`ociPrio${idElement}`).innerText,
+            imageOci = document.getElementById(`imageOci${idElement}`).src
         
         messageDeleteOci(
             projectId,
@@ -2050,6 +1907,7 @@ arrayBtnDeleteOci.forEach(function(element) {
             ociKNumber,
             ociDescription,
             ociAlias,
+            ociPrio,
             imageOci
         )
     })
@@ -2057,16 +1915,20 @@ arrayBtnDeleteOci.forEach(function(element) {
     
 
 // --------------- Adding New OCI to an existing Project ------------------------
-function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
+function addNewOciToProject(projectName, lastOciNumber, lastOciPrio,projectIdHidden) {
         let arrayBloque = []
         arrayBloque.push(`
             <div id="ociItemRow0" class="row m-1">
                 <div class="row text-start">
                     <strong>#1</strong>
                 </div>
-                <div class="col-2 my-1 align-self-middle">
+                <div class="col-1 my-1 align-self-middle">
                     <input type="number" name="ociNumber0" id="ociNumber0" class="form-control" min="0" max="9999"
                     placeholder="Número OCI" value="${lastOciNumber+1}" required>
+                </div>
+                <div class="col-1 my-1 align-self-middle">
+                    <input type="number" name="ociPrio0" id="ociPrio0" class="form-control" min="0" max="999"
+                    placeholder="Prio OCI" value="${lastOciPrio+1}" required>
                 </div>
                 <div class="col-3 my-1 align-self-middle">
                     <textarea name="ociDescription0" id="ociDescription0" class="form-control" rows="3" maxlength="100" placeholder="Descripcion OCI" required></textarea>
@@ -2116,8 +1978,11 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
             <form id="formNewOciValues" enctype="multipart/form-data" action="/api/proyectos/addNewOciToProject/${projectIdHidden}" method="post" style="font-size: 10pt">
                 <fieldset id="ociNewItemRow">
                     <div class="row my-auto mx-1">
-                        <div class="col-2 my-auto align-self-middle">
+                        <div class="col-1 my-auto align-self-middle">
                             <label for="ociNumber"><strong>OCI#</strong></label>
+                        </div>
+                        <div class="col-1 my-auto align-self-middle">
+                            <label for="ociPrio"><strong>Prio OCI</strong></label>
                         </div>
                         <div class="col-3 my-auto align-self-middle">
                             <label for="ociDescription"><strong>Descripcion OCI</strong></label>
@@ -2155,9 +2020,9 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
     })
     
     Swal.fire({
-        title: `Agregar Nueva OCI al proyecto ${projectName}`,
+        title: `Agregar Nueva OCI al proyecto: ${projectName}`,
         html: html,
-        width: 1300,
+        width: 1375,
         background: "#efefef",
         allowOutsideClick: false,
         showCloseButton: true,
@@ -2374,14 +2239,19 @@ function addNewOciToProject(projectName, lastOciNumber, projectIdHidden) {
             const parentDiv = document.getElementById('ociNewItemRow')
             let i = parseInt(document.getElementById('ociQuantityModal').value)
             const ociNumberValue = parseInt(document.getElementById(`ociNumber${i-1}`).value)
+            const ociPrioValue = parseInt(document.getElementById(`ociPrio${i-1}`).value)
     
             const originalDiv = (
                 `<div class="row text-start">
                     <strong>#${i+1}</strong>
                 </div>   
-                    <div class="col-2 my-1 align-self-middle">
+                    <div class="col-1 my-1 align-self-middle">
                         <input type="number" name="ociNumber${i}" id="ociNumber${i}" class="form-control"
                         min="0" max="9999" placeholder="Número OCI" value="${ociNumberValue+1}" required>
+                    </div>
+                    <div class="col-1 my-1 align-self-middle">
+                        <input type="number" name="ociPrio${i}" id="ociPrio${i}" class="form-control"
+                        min="0" max="999" placeholder="Prio OCI" value="${ociPrioValue+1}" required>
                     </div>
                     <div class="col-3 my-1 align-self-middle">
                         <textarea type="text" name="ociDescription${i}" id="ociDescription${i}" rows="3" maxlength="100" class="form-control" placeholder="Descripción OCI" required></textarea>
@@ -2684,17 +2554,19 @@ const arrayProjectList = []
                         projectName = document.getElementById(`projectNameHidden${btnValue}_0`).value,
                         projectIdHidden = document.getElementById(`projectIdHidden${btnValue}_0`).value
 
-                    let arrayLastOciNumber=[]
+                    let arrayLastOciNumber=[], arrayLastOciPrio = []
                     for(let n=0; n<maxOciQuantity; n++) { 
                         if(document.getElementById(`ociNumberHidden${btnValue}_${n}`)) {
                             arrayLastOciNumber.push(parseInt(document.getElementById(`ociNumberHidden${btnValue}_${n}`).value))
+                            arrayLastOciPrio.push(parseInt(document.getElementById(`ociPrioHidden${btnValue}_${n}`).value))
                         }
                     }
 
                     let lastOciIndex = parseInt(arrayLastOciNumber.length-1)
                     addNewOciToProject(
                         projectName, 
-                        arrayLastOciNumber[lastOciIndex], 
+                        arrayLastOciNumber[lastOciIndex],
+                        arrayLastOciPrio[lastOciIndex],
                         projectIdHidden
                     )
                 })
@@ -2706,7 +2578,8 @@ const arrayProjectList = []
 function messageUpdateProject(
     projectId, 
     projectName, 
-    statusProject, 
+    statusProject,
+    uNegocioProject,
     imgProject, 
     descriptionProject,
     prioProject,
@@ -2714,9 +2587,10 @@ function messageUpdateProject(
     levelProject,
     k
     ) {
-                
-        let projectDescription = descriptionProject.slice(13),
+    
+        let projectDescription = descriptionProject.slice(13).trim(),
             projectPrio = parseInt(prioProject.slice(5)),
+            projectCode = codeProject.slice(8).trim(),
             checked = 'checked',
             bgColorStatus
         statusProject=='true' ? checked : checked = ''
@@ -2741,6 +2615,16 @@ function messageUpdateProject(
                             <option value="ganado">Ganado</option>
                             <option value="paraCotizar">Para Cotizar</option>`
         }
+
+        let projectUNegocio
+        if (uNegocioProject==='matrices') {
+            projectUNegocio = `<option selected disabled value="matrices">Matrices</option>
+                            <option value="lineas">Líneas</option>`
+
+        } else {
+            projectUNegocio = `<option selected disabled value="lineas">Líneas</option>
+                            <option value="matrices">Matrices</option>`
+        }
         
     const Toast = Swal.mixin({
         toast: true,
@@ -2750,7 +2634,7 @@ function messageUpdateProject(
         timerProgressBar: false,
     })
 
-    var html = `<form id="formUpdateProject${k}" enctype="multipart/form-data" action="/api/proyectos/updateProject/${projectId}" method="post">
+    let html = `<form id="formUpdateProject${k}" enctype="multipart/form-data" action="/api/proyectos/updateProject/${projectId}" method="post">
                     <fieldset>
                         <div class="row justify-content-evenly mb-2 mx-1 px-1">
                             <div class="col-6">
@@ -2787,17 +2671,24 @@ function messageUpdateProject(
                         </div> 
 
                         <div class="row justify-content-between mb-4 mx-1 px-1">    
-                            <div class="col-4">
+                            <div class="col-3">
                                 <label for="levelProject" class="form-label d-flex justify-content-start ms-1">Nivel</label>
                                 <select name="levelProject" class="form-select" required>
                                     ${projectLevel}
                                 </select>
                             </div>
+
+                            <div class="col-3">
+                                <label for="uNegocioProject" class="form-label d-flex justify-content-start ms-1">Unidad Negocio</label>
+                                <select name="uNegocioProject" class="form-select" required>
+                                    ${projectUNegocio}
+                                </select>
+                            </div>
                             
-                            <div class="col-4">
-                                <label for="codeProject" class="form-label d-flex justify-content-start ms-1">Codigo Proyecto</label>
+                            <div class="col-3">
+                                <label for="codeProject" class="form-label d-flex justify-content-start ms-1">Código Proyecto</label>
                                 <input type="text" name="codeProject" class="form-control"
-                                    placeholder="Codigo Proyecto" value="${codeProject}" required>
+                                    placeholder="Codigo Proyecto" value="${projectCode}" required>
                             </div>
                         </div>
                         
@@ -3045,11 +2936,11 @@ function messageUpdateProject(
     })
 }
 
-
 let arrayBtnUpdateProject = [], l=0
 for (let k=0; k<projectQuantity; k++) {
     let btnUpdateProject = document.getElementById(`btnUpdateProject${k}_${l}`)
     btnUpdateProject ? arrayBtnUpdateProject.push(btnUpdateProject) : null
+
     
     arrayBtnUpdateProject.length !=0 ?
         arrayBtnUpdateProject[k].addEventListener('click', (event) => {
@@ -3058,6 +2949,7 @@ for (let k=0; k<projectQuantity; k++) {
                 levelProject = document.getElementById(`levelProjectHidden${k}_${l}`).value,
                 idProject = document.getElementById(`projectIdHidden${k}_${l}`).value,
                 statusProject = document.getElementById(`statusProjectHidden${k}_${l}`).value,
+                uNegocioProject = document.getElementById(`uNegocioProjectHidden${k}_${l}`).value,
                 descriptionProject = document.getElementById(`projectDescription${k}`).innerText,
                 prioProject = document.getElementById(`prioProject${k}`).innerText,
                 codeProject = document.getElementById(`codeProject${k}`).innerText,
@@ -3067,6 +2959,7 @@ for (let k=0; k<projectQuantity; k++) {
                 idProject,
                 projectName,
                 statusProject,
+                uNegocioProject,
                 imgProject,
                 descriptionProject,
                 prioProject,
@@ -3325,3 +3218,87 @@ function disabledBtnAceptar () {
     if (dropAreaOci) observer.observe(dropAreaOci, { childList: true });
     if (dropAreasOciFileModal0) observer.observe(dropAreasOciFileModal0, { childList: true });
 }
+
+// --------- Manejador de eventos de Accordion Proyectos -------------------
+const btnProyectosLineas = document.getElementById('btnHiddeProyectosLineas');
+const btnProyectosMatrices = document.getElementById('btnHiddeProyectosMatrices');
+
+// Función para verificar si todos los elementos están ocultos
+function allElementsHidden(type) {
+    for (let k = 0; k < varLimMaxProyectoCliente; k++) {
+        const element = document.getElementById(`${type}_${k}`);
+        if (element && !element.classList.contains('d-none')) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Función principal
+async function hiddeAccordionProyectosMatrices(clickedBtn) {
+    const isLineasBtn = clickedBtn === btnProyectosLineas,
+        elementType = isLineasBtn ? 'lineas' : 'matrices',
+        otherElementType = isLineasBtn ? 'matrices' : 'lineas',
+        btnIcon = clickedBtn.querySelector('i');
+    
+    // Verificar estado actual antes de cambiar
+    const allHiddenBefore = allElementsHidden(elementType);
+    
+    // Cambiar visibilidad
+    for (let k = 0; k < varLimMaxProyectoCliente; k++) {
+        const element = document.getElementById(`${elementType}_${k}`);
+        if (element) element.classList.toggle('d-none');
+    }
+    
+    // Actualizar ícono
+    const allHiddenAfter = allElementsHidden(elementType);
+    btnIcon.classList.toggle('fa-eye', allHiddenAfter);
+    btnIcon.classList.toggle('fa-eye-slash', !allHiddenAfter);
+    
+    // Actualizar title de los botones
+    if (isLineasBtn) {
+        clickedBtn.title = allHiddenAfter ? "Mostrar Proyectos Líneas" : "Ocultar Proyectos Líneas";
+        btnProyectosMatrices.title = allHiddenAfter ? "Mostrar Proyectos Matrices" : "Ocultar Proyectos Matrices";
+    } else {
+        clickedBtn.title = allHiddenAfter ? "Mostrar Proyectos Matrices" : "Ocultar Proyectos Matrices";
+        btnProyectosLineas.title = allHiddenAfter ? "Mostrar Proyectos Líneas" : "Ocultar Proyectos Líneas";
+    }
+    
+    // Verificar si ambos tipos están ocultos
+    const otherAllHidden = allElementsHidden(otherElementType);
+    if (allHiddenAfter && otherAllHidden) {
+        await Swal.fire({
+            title: '¡Atención!',
+            text: 'Estás ocultando ambos tipos de proyectos. ¿Estás seguro?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, ocultar ambos',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                // Revertir cambios si el usuario cancela
+                for (let k = 0; k < varLimMaxProyectoCliente; k++) {
+                    const element = document.getElementById(`${elementType}_${k}`);
+                    if (element) {
+                        element.classList.toggle('d-none');
+                    }
+                }
+                btnIcon.classList.toggle('fa-eye', !allHiddenAfter);
+                btnIcon.classList.toggle('fa-eye-slash', allHiddenAfter);
+
+                // También revertir los títulos si se cancela
+                if (isLineasBtn) {
+                    clickedBtn.title = !allHiddenAfter ? "Mostrar Proyectos Líneas" : "Ocultar Proyectos Líneas";
+                    btnProyectosMatrices.title = !allHiddenAfter ? "Mostrar Proyectos Matrices" : "Ocultar Proyectos Matrices";
+                } else {
+                    clickedBtn.title = !allHiddenAfter ? "Mostrar Proyectos Matrices" : "Ocultar Proyectos Matrices";
+                    btnProyectosLineas.title = !allHiddenAfter ? "Mostrar Proyectos Líneas" : "Ocultar Proyectos Líneas";
+                }
+            }
+        });
+    }
+}
+
+// Asignación de eventos
+if (btnProyectosLineas) btnProyectosLineas.addEventListener('click', () => hiddeAccordionProyectosMatrices(btnProyectosLineas));
+if (btnProyectosMatrices) btnProyectosMatrices.addEventListener('click', () => hiddeAccordionProyectosMatrices(btnProyectosMatrices));

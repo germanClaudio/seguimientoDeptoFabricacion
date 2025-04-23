@@ -1,0 +1,543 @@
+<!-- --------- tabla Diseno Segunda Parte ----------- -->
+<table id="tablaDisenoSegunda<%=k%>"
+    class="table-responsive align-middle col-5 border-end border-dark" style="font-size: 10pt; width: 100%;">
+    <thead class="align-middle" style="background-color: #aac">
+        <tr>
+            <th colspan="4" class="text-center">DISEÑO SEGUNDA PARTE
+                <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                    <button id="posBtnAddDataDisenoSegunda<%=k%>" type="button" name="btnDisenoSegunda" class="btn btn-small btn-success shadow m-1 position-relative me-5"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);" title="Agregar/Modificar Datos" value="<%=k%>">
+                        <i class="fa-solid fa-pencil fa-lg" aria-hidden="true"></i>
+                        <span id="spanCheckSelecMasiveDisSeg<%=k%>" class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                            <span class="visually-hidden">Elementos seleccionados</span>
+                        </span>
+                    </button>
+                <% } else { %>
+                    <button type="button" class="btn btn-small btn-danger shadow m-1 me-5 disabled"
+                        style="--bs-btn-font-size: .6rem; color: var(--bs-white);">
+                        <i class="fa-solid fa-ban fa-lg" aria-hidden="true"></i>
+                    </button>
+                <% } %>
+                <i class="fa-solid fa-circle-check fa-lg" style="color: #067e00;"></i> Terminado -
+                <i class="fa-solid fa-spinner fa-lg" style="color: #970000f5;"></i> No iniciado -
+                <i class="fa-solid fa-person-digging fa-lg" style="color: #080183;"></i> En Proceso
+            </th>
+        </tr>
+        <tr>
+            <th style="width:25vw" scope="col-1" class="text-center">Rev. Cliente | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center">LDM Provisoria | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center">Rev. 100% | Rev</th>
+            <th style="width:25vw" scope="col-1" class="text-center">Aprob. Cliente | Rev</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+
+        <% let anteriorDisabled = "disabled", siguienteDisabled = "disabled",
+            resRevisionCliente = 'S/D', resRevisionRevisionCliente = 0,
+            resLdmProvisoria = 'S/D', resRevisionLdmProvisoria = 0,
+            resAv100Diseno = 0, resRevisionAv100Diseno = 0,
+            resAprobadoCliente = 'S/D', resRevisionAprobadoCliente = 0
+        
+        const DisenoSegundaConfig = {
+            ok: { text: "OK", classes: "bg-success text-white" },
+            noOk: { text: "No OK", classes: "bg-danger text-white" },
+            pendiente: { text: "Pendiente", classes: "bg-warning text-dark" },
+            noAplica: { text: "N/A", classes: "bg-info text-dark" },
+            sinDato: { text: "S/D", classes: "bg-secondary text-white" },
+            default: { text: "S/D", classes: "bg-secondary text-white" }
+        };
+        
+        proyecto[m].project[j].oci[k].otProject.forEach((ot, n) => {
+            let pathMongoOtProject = proyecto[m].project[j].oci[k].otProject,
+            largoArrayOtProject = parseInt(pathMongoOtProject.length),
+            pathMongoOtInformation = pathMongoOtProject[n].otInformation
+
+            if (pathMongoOtProject[n].visible) {
+                let pathMongoOtDisenoSegunda = pathMongoOtInformation[0].otInfoDisenoSegunda || [],
+                largoArrayDisenoSegunda = parseInt(pathMongoOtDisenoSegunda.length);
+                
+                let arrResRevisionCliente = [], valueArrayResRevisionCliente = 0, arrResRevisionRevisionCliente = [], arrResCreadorRevisionCliente = [],
+                arrResModificadorRevisionCliente = [], arrResFechaRevisionCliente = [], arrResFechaModRevisionCliente = [];
+                
+                let arrResLdmProvisoria = [], valueArrayResLdmProvisoria = 0, arrResRevisionLdmProvisoria = [], arrResCreadorLdmProvisoria = [],
+                arrResModificadorLdmProvisoria = [], arrResFechaLdmProvisoria = [], arrResFechaModLdmProvisoria = [];
+                
+                let arrResAv100Diseno = [], valueArrayResAv100Diseno = 0, arrResRevisionAv100Diseno = [], arrResCreadorAv100Diseno = [],
+                arrResModificadorAv100Diseno = [], arrResFechaAv100Diseno = [], arrResFechaModAv100Diseno = [];
+
+                let arrResAprobadoCliente = [], valueArrayResAprobadoCliente = 0, arrResRevisionAprobadoCliente = [], arrResCreadorAprobadoCliente = [],
+                arrResModificadorAprobadoCliente = [], arrResFechaAprobadoCliente = [], arrResFechaModAprobadoCliente = [];
+
+                if (pathMongoOtProject[n].otStatus) { %>
+                    <tr name="rowSelected<%=k%>_<%=n%>" style="height: 7vh;">
+                        <% for (let q = 8; totalColDataDisenoSegunda > q; q++) {
+                            if (q==8) { %>
+                                <!-- Revision Cliente data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayDisenoSegunda > 0) {
+                                        for (let i = 0; largoArrayDisenoSegunda > i; i++) {
+                                            if (pathMongoOtDisenoSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayDisenoSegunda)
+                                                resRevisionCliente = pathMongoOtDisenoSegunda[largoArray-1].revisionCliente || "S/D"
+                                                resRevisionRevisionCliente = parseInt(pathMongoOtDisenoSegunda[largoArray-1].revisionRevisionCliente) || 0
+                                                
+                                                arrResRevisionCliente.push(pathMongoOtDisenoSegunda[i].revisionCliente)
+                                                arrResRevisionRevisionCliente.push(pathMongoOtDisenoSegunda[i].revisionRevisionCliente)
+                                                
+                                                arrResCreadorRevisionCliente.push(pathMongoOtDisenoSegunda[i].creator[0].username)
+                                                arrResModificadorRevisionCliente.push(pathMongoOtDisenoSegunda[i].modificator[0].username)
+                                                arrResFechaRevisionCliente.push(pathMongoOtDisenoSegunda[i].timestamp)
+                                                arrResFechaModRevisionCliente.push(pathMongoOtDisenoSegunda[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResRevisionCliente = parseInt(arrResRevisionCliente.length-1)
+
+                                        if (arrResRevisionCliente.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResRevisionCliente.length == arrResRevisionRevisionCliente.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+
+                                    } else {
+                                        arrResRevisionCliente.push(resRevisionCliente)
+                                        arrResRevisionRevisionCliente.push(resRevisionRevisionCliente)
+                                        
+                                        arrResCreadorRevisionCliente.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorRevisionCliente.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaRevisionCliente.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModRevisionCliente.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+
+                                    <div id="btnAnteriorSiguienteRevisionCliente<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorRevisionCliente<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorRevisionCliente" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-2" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionCliente %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResRevisionCliente %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionRevisionCliente %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorRevisionCliente %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorRevisionCliente %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaRevisionCliente %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModRevisionCliente %>">
+
+                                        <% const config = DisenoSegundaConfig[resRevisionCliente] || DisenoSegundaConfig.default; %>
+                                        <span id="resRevisionCliente<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                            <%= config.text %>
+                                        </span> |
+                                        <span id="resRevisionRevisionCliente<%=k%>_<%=n%>_<%=q%>" name="resRevisionRevisionCliente" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionRevisionCliente %>
+                                        </span>
+
+                                        <button id="btnSiguienteRevisionCliente<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteRevisionCliente" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-1" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else if (q==9) { %>
+                                <!-- LDM Provisoria data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayDisenoSegunda > 0) {
+
+                                        for (let i = 0; largoArrayDisenoSegunda > i; i++) {
+                                            if (pathMongoOtDisenoSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayDisenoSegunda)
+                                                resLdmProvisoria = pathMongoOtDisenoSegunda[largoArray-1].ldmProvisoria || 'S/D'
+                                                resRevisionLdmProvisoria = parseInt(pathMongoOtDisenoSegunda[largoArray-1].revisionLdmProvisoria) || 0
+                                                
+                                                arrResLdmProvisoria.push(pathMongoOtDisenoSegunda[i].ldmProvisoria)
+                                                arrResRevisionLdmProvisoria.push(pathMongoOtDisenoSegunda[i].revisionLdmProvisoria)
+                                                
+                                                arrResCreadorLdmProvisoria.push(pathMongoOtDisenoSegunda[i].creator[0].username)
+                                                arrResModificadorLdmProvisoria.push(pathMongoOtDisenoSegunda[i].modificator[0].username)
+                                                arrResFechaLdmProvisoria.push(pathMongoOtDisenoSegunda[i].timestamp)
+                                                arrResFechaModLdmProvisoria.push(pathMongoOtDisenoSegunda[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResLdmProvisoria = parseInt(arrResLdmProvisoria.length-1)
+
+                                        if (arrResLdmProvisoria.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResLdmProvisoria.length == arrResRevisionLdmProvisoria.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+
+                                    } else {
+                                        arrResLdmProvisoria.push(resLdmProvisoria)
+                                        arrResRevisionLdmProvisoria.push(resRevisionLdmProvisoria)
+                                        
+                                        arrResCreadorLdmProvisoria.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorLdmProvisoria.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaLdmProvisoria.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModLdmProvisoria.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+
+                                    <div id="btnAnteriorSiguienteLdmProvisoria<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorLdmProvisoria<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorLdmProvisoria" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-1" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResLdmProvisoria %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResLdmProvisoria %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionLdmProvisoria %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorLdmProvisoria %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorLdmProvisoria %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaLdmProvisoria %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModLdmProvisoria %>">
+
+                                        <% const config = DisenoSegundaConfig[resLdmProvisoria] || DisenoSegundaConfig.default; %>
+                                        <span id="resLdmProvisoria<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                            <%= config.text %>
+                                        </span> |
+                                        <span id="resRevisionLdmProvisoria<%=k%>_<%=n%>_<%=q%>" name="resRevisionLdmProvisoria" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionLdmProvisoria %>
+                                        </span>
+                                        
+                                        <button id="btnSiguienteLdmProvisoria<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteLdmProvisoria" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-1" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            <% } else if (q==10) { %>
+                                <!-- Diseno 100% data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayDisenoSegunda > 0) {
+
+                                        for (let i = 0; largoArrayDisenoSegunda > i; i++) {
+                                            if (pathMongoOtDisenoSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayDisenoSegunda)
+                                                resAv100Diseno = parseInt(pathMongoOtDisenoSegunda[largoArray-1].avDiseno100) || 0
+                                                resRevisionAv100Diseno = parseInt(pathMongoOtDisenoSegunda[largoArray-1].revisionAvDiseno100) || 0
+                                                
+                                                arrResAv100Diseno.push(pathMongoOtDisenoSegunda[i].avDiseno100)
+                                                arrResRevisionAv100Diseno.push(pathMongoOtDisenoSegunda[i].revisionAvDiseno100)
+                                                
+                                                arrResCreadorAv100Diseno.push(pathMongoOtDisenoSegunda[i].creator[0].username)
+                                                arrResModificadorAv100Diseno.push(pathMongoOtDisenoSegunda[i].modificator[0].username)
+                                                arrResFechaAv100Diseno.push(pathMongoOtDisenoSegunda[i].timestamp)
+                                                arrResFechaModAv100Diseno.push(pathMongoOtDisenoSegunda[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResAv100Diseno = parseInt(arrResAv100Diseno.length-1)
+
+                                        if (arrResAv100Diseno.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResAv100Diseno.length == arrResRevisionAv100Diseno.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+
+                                    } else {
+                                        arrResAv100Diseno.push(resAv100Diseno)
+                                        arrResRevisionAv100Diseno.push(resRevisionAv100Diseno)
+                                        
+                                        arrResCreadorAv100Diseno.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorAv100Diseno.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaAv100Diseno.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModAv100Diseno.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+
+                                    <div id="btnAnteriorSiguienteAv100Diseno<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorAv100Diseno<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorAv100Diseno" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-1" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResAv100Diseno %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAv100Diseno %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAv100Diseno %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorAv100Diseno %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorAv100Diseno %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaAv100Diseno %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModAv100Diseno %>">
+
+                                        <span id="resAv100Diseno<%=k%>_<%=n%>_<%=q%>" name="resAv100Diseno" class="text-dark" style="font-size: .9rem;">
+                                            <%= resAv100Diseno %>% 
+                                            <% if (resAv100Diseno == 100) { %>
+                                                <i class="fa-solid fa-circle-check fa-lg" style="color: #067e00;"></i>
+                                            <% } else if (resAv100Diseno == 0) { %>
+                                                <i class="fa-solid fa-spinner fa-lg fa-spin-pulse" style="color: #970000f5;"></i>
+                                            <% } else { %>
+                                                <i class="fa-solid fa-person-digging fa-lg" style="color: #080183;"></i>
+                                            <% } %>
+                                        </span>
+                                        |
+                                        <span id="resRevisionAv100Diseno<%=k%>_<%=n%>_<%=q%>" name="resRevisionAv100Diseno" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionAv100Diseno %>
+                                        </span>
+                                        
+                                        <button id="btnSiguienteAv100Diseno<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteAv100Diseno" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-1" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            <% } else { %>
+                                <!-- Aprobado Cliente data Activo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayDisenoSegunda > 0) {
+
+                                        for (let i = 0; largoArrayDisenoSegunda > i; i++) {
+                                            if (pathMongoOtDisenoSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayDisenoSegunda)
+                                                resAprobadoCliente = pathMongoOtDisenoSegunda[largoArray-1].aprobadoCliente || "S/D"
+                                                resRevisionAprobadoCliente = parseInt(pathMongoOtDisenoSegunda[largoArray-1].revisionAprobadoCliente) || 0
+                                                
+                                                arrResAprobadoCliente.push(pathMongoOtDisenoSegunda[i].aprobadoCliente)
+                                                arrResRevisionAprobadoCliente.push(pathMongoOtDisenoSegunda[i].revisionAprobadoCliente)
+                                            
+                                                arrResCreadorAprobadoCliente.push(pathMongoOtDisenoSegunda[i].creator[0].username)
+                                                arrResModificadorAprobadoCliente.push(pathMongoOtDisenoSegunda[i].modificator[0].username)
+                                                arrResFechaAprobadoCliente.push(pathMongoOtDisenoSegunda[i].timestamp)
+                                                arrResFechaModAprobadoCliente.push(pathMongoOtDisenoSegunda[i].modifiedOn)
+                                            }
+                                        }
+                                        valueArrayResAprobadoCliente = parseInt(arrResAprobadoCliente.length-1)
+
+                                        if (arrResAprobadoCliente.length == 1 ) {
+                                            anteriorDisabled = "disabled"
+                                            siguienteDisabled = "disabled"
+                                        } else if (arrResAprobadoCliente.length == arrResRevisionAprobadoCliente.length) {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        } else {
+                                            anteriorDisabled = ""
+                                            siguienteDisabled = "disabled"
+                                        }
+
+                                    } else {
+                                        arrResAprobadoCliente.push(resAprobadoCliente)
+                                        arrResRevisionAprobadoCliente.push(resRevisionAprobadoCliente)
+                                        
+                                        arrResCreadorAprobadoCliente.push(pathMongoOtProject[n].creator[0].username)
+                                        arrResModificadorAprobadoCliente.push(pathMongoOtProject[n].modificator[0].username)
+                                        arrResFechaAprobadoCliente.push(pathMongoOtProject[n].timestamp)
+                                        arrResFechaModAprobadoCliente.push(pathMongoOtProject[n].modifiedOn)
+                                    } %>
+
+                                    <div id="btnAnteriorSiguienteAprobadoCliente<%=k%>_<%=n%>_<%=q%>">
+                                        <button id="btnAnteriorAprobadoCliente<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnAnteriorAprobadoCliente" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm me-1" title="Ver anterior" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= anteriorDisabled %>
+                                            ><i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                        <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResAprobadoCliente %>">
+                                        <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAprobadoCliente %>">
+                                        <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAprobadoCliente %>">
+                                        <input type="hidden" id="arrResCreadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResCreadorAprobadoCliente %>">
+                                        <input type="hidden" id="arrResModificadorHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResModificadorAprobadoCliente %>">
+                                        <input type="hidden" id="arrResFechaHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaAprobadoCliente %>">
+                                        <input type="hidden" id="arrResFechaModificacionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResFechaModAprobadoCliente %>">
+
+                                        <% const config = DisenoSegundaConfig[resAprobadoCliente] || DisenoSegundaConfig.default; %>
+                                        <span id="resAprobadoCliente<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                            <%= config.text %>
+                                        </span> |
+                                        <span id="resRevisionAprobadoCliente<%=k%>_<%=n%>_<%=q%>" name="resRevisionAprobadoCliente" class="badge text-dark my-2" style="cursor: help;">
+                                            <%= resRevisionAprobadoCliente %>
+                                        </span>
+
+                                        <button id="btnSiguienteAprobadoCliente<%=k%>_<%=n%>_<%=q%>"
+                                            name="btnSiguienteAprobadoCliente" value="<%=k%>_<%=n%>_<%=q%>" class="btn btn-light btn-sm ms-1" title="Ver siguiente" type="button"
+                                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .35rem; --bs-btn-font-size: .75rem; color: var(--bs-black); cursor: pointer;"
+                                            <%= siguienteDisabled %>
+                                            ><i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+
+                <% } else { %>
+                    <tr class="pe-none" style="height: 7vh; background-color: #dedede;">
+                        <% for (let q = 8; totalColDataDisenoSegunda > q; q++) {
+                            if (q==8) { %>
+                                <!-- Revision Cliente data Inactivo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayDisenoSegunda > 0) {
+
+                                        for (let i = 0; largoArrayDisenoSegunda > i; i++) {
+                                            if (pathMongoOtDisenoSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayDisenoSegunda)
+                                                resRevisionCliente = pathMongoOtDisenoSegunda[largoArray-1].revisionCliente  || 'S/D'
+                                                resRevisionRevisionCliente = parseInt(pathMongoOtDisenoSegunda[largoArray-1].revisionRevisionCliente) || 0
+                                                
+                                                arrResRevisionCliente.push(pathMongoOtDisenoSegunda[i].RevisionCliente)
+                                                arrResRevisionRevisionCliente.push(pathMongoOtDisenoSegunda[i].revisionRevisionCliente)
+                                            }
+                                        }
+                                        valueArrayResRevisionCliente = parseInt(arrResRevisionCliente.length-1)
+                                        resRevisionCliente = pathMongoOtDisenoSegunda[0].revisionCliente
+
+                                    } else {
+                                        arrResRevisionCliente.push(resRevisionCliente)
+                                        arrResRevisionRevisionCliente.push(resRevisionRevisionCliente)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionCliente %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResRevisionCliente %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionRevisionCliente %>">
+                                    
+                                    <% const config = DisenoSegundaConfig[resRevisionCliente] || DisenoSegundaConfig.default; %>
+                                    <span id="resRevisionCliente<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                        <%= config.text %>
+                                    </span> |
+                                    <span id="resRevisionRevisionCliente<%=k%>_<%=n%>_<%=q%>" name="resRevisionRevisionCliente" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionRevisionCliente %>
+                                    </span>
+                                </td>
+
+                            <% } else if (q==9) { %>
+                                <!-- LDM Provisoria data Inactivo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayDisenoSegunda > 0) {
+
+                                        for (let i = 0; largoArrayDisenoSegunda > i; i++) {
+                                            if (pathMongoOtDisenoSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayDisenoSegunda)
+                                                resLdmProvisoria = pathMongoOtDisenoSegunda[largoArray-1].ldmProvisoria || 'S/D'
+                                                resRevisionLdmProvisoria = parseInt(pathMongoOtDisenoSegunda[largoArray-1].revisionLdmProvisoria) || 0
+                                                
+                                                arrResLdmProvisoria.push(pathMongoOtDisenoSegunda[i].ldmProvisoria)
+                                                arrResRevisionLdmProvisoria.push(pathMongoOtDisenoSegunda[i].revisionLdmProvisoria)
+                                            }
+                                        }
+                                        valueArrayResLdmProvisoria = parseInt(arrResLdmProvisoria.length-1)
+                                        resLdmProvisoria = pathMongoOtDisenoSegunda[0].ldmProvisoria
+
+                                    } else {
+                                        arrResLdmProvisoria.push(resLdmProvisoria)
+                                        arrResRevisionLdmProvisoria.push(resRevisionLdmProvisoria)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResLdmProvisoria %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResLdmProvisoria %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionLdmProvisoria %>">
+
+                                    <% const config = DisenoSegundaConfig[LdmProvisoria] || DisenoSegundaConfig.default; %>
+                                    <span id="LdmProvisoria<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                        <%= config.text %>
+                                    </span> |
+                                    <span id="resRevisionLdmProvisoria<%=k%>_<%=n%>_<%=q%>" name="resRevisionLdmProvisoria" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionLdmProvisoria %>
+                                    </span>
+                                </td>
+
+                            <% } else if (q==10) { %>
+                                <!-- Diseno 100% data Inactivo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayDisenoSegunda > 0) {
+    
+                                        for (let i = 0; largoArrayDisenoSegunda > i; i++) {
+                                            if (pathMongoOtDisenoSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayDisenoSegunda)
+                                                resAv100Diseno = parseInt(pathMongoOtDisenoSegunda[largoArray-1].avDiseno100) || 0
+                                                resRevisionAv100Diseno = parseInt(pathMongoOtDisenoSegunda[largoArray-1].revisionAvDiseno100) || 0
+                                                
+                                                arrResAv100Diseno.push(pathMongoOtDisenoSegunda[i].avDiseno100)
+                                                arrResRevisionAv100Diseno.push(pathMongoOtDisenoSegunda[i].revisionAvDiseno100)
+                                            }
+                                        }
+                                        valueArrayResAv100Diseno = parseInt(arrResAv100Diseno.length-1)
+                                        resAv100Diseno = pathMongoOtDisenoSegunda[0].avDiseno100
+    
+                                    } else {
+                                        arrResAv100Diseno.push(resAv100Diseno)
+                                        arrResRevisionAv100Diseno.push(resRevisionAv100Diseno)
+                                    } %>
+        
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResAv100Diseno %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAv100Diseno %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAv100Diseno %>">
+                                    
+                                    <span id="resAv100Diseno<%=k%>_<%=n%>_<%=q%>" name="resAv100Diseno" class="text-dark" style="font-size: .9rem;">
+                                        <%= resAv100Diseno %>% 
+                                        <% if (resAv100Diseno == 100) { %>
+                                            <i class="fa-solid fa-circle-check fa-lg" style="color: #067e00;"></i>
+                                        <% } else if (resAv100Diseno == 0) { %>
+                                            <i class="fa-solid fa-spinner fa-lg fa-spin-pulse" style="color: #970000f5;"></i>
+                                        <% } else { %>
+                                            <i class="fa-solid fa-person-digging fa-lg" style="color: #080183;"></i>
+                                        <% } %>
+                                    </span>
+                                    |
+                                    <span id="resRevisionAv100Diseno<%=k%>_<%=n%>_<%=q%>" name="resRevisionAv100Diseno" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionAv100Diseno %>
+                                    </span>
+                                </td>    
+
+                            <% } else { %>
+                                <!-- Aprobado Cliente data Inactivo-->
+                                <td class="text-center align-middle">
+                                    <% if (largoArrayDisenoSegunda > 0) {
+
+                                        for (let i = 0; largoArrayDisenoSegunda > i; i++) {
+                                            if (pathMongoOtDisenoSegunda[i]) {
+                                                let largoArray = parseInt(largoArrayDisenoSegunda)
+                                                resAprobadoCliente = pathMongoOtDisenoSegunda[largoArray-1].aprobadoCliente || 'S/D'
+                                                resRevisionAprobadoCliente = parseInt(pathMongoOtDisenoSegunda[largoArray-1].revisionAprobadoCliente) || 0
+                                                
+                                                arrResAprobadoCliente.push(pathMongoOtDisenoSegunda[i].aprobadoCliente)
+                                                arrResRevisionAprobadoCliente.push(pathMongoOtDisenoSegunda[i].revisionAprobadoCliente)
+                                            }
+                                        }
+                                        valueArrayResAprobadoCliente = parseInt(arrResAprobadoCliente.length-1)
+                                        resAprobadoCliente = pathMongoOtDisenoSegunda[0].aprobadoCliente
+
+                                    } else {
+                                        arrResAprobadoCliente.push(resAprobadoCliente)
+                                        arrResRevisionAprobadoCliente.push(resRevisionAprobadoCliente)
+                                    } %>
+
+                                    <input type="hidden" id="resHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResAprobadoCliente %>">
+                                    <input type="hidden" id="resIndexHidden<%=k%>_<%=n%>_<%=q%>" value="<%= valueArrayResAprobadoCliente %>">
+                                    <input type="hidden" id="resRevisionHidden<%=k%>_<%=n%>_<%=q%>" value="<%= arrResRevisionAprobadoCliente %>">
+                                    
+                                    <% const config = DisenoSegundaConfig[resAprobadoCliente] || DisenoSegundaConfig.default; %>
+                                    <span id="resAprobadoCliente<%=k%>_<%=n%>_<%=q%>" class="badge rounded-pill <%= config.classes %> my-2">
+                                        <%= config.text %>
+                                    </span> |
+                                    <span id="resRevisionAprobadoCliente<%=k%>_<%=n%>_<%=q%>" name="resRevisionAprobadoCliente" class="badge text-dark my-2" style="cursor: help;">
+                                        <%= resRevisionAprobadoCliente %>
+                                    </span>
+                                </td>
+                            <% }
+                        } %>
+                    </tr>
+                <% }
+            }
+        }) %>
+    </tbody>
+</table>
