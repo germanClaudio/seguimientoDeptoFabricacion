@@ -437,14 +437,14 @@ function handleFileUploadImageSupplier(file) {
 
     if (fileSizeInMb < 3) {
         let pathToImage = URL_GOOGLE_STORE_SUPPLIERIMAGE
-        console.log('pathToImage: ', pathToImage)
+        // console.log('pathToImage: ', pathToImage)
         // Separar el nombre del archivo y la extensión
         const dotIndex = file.name.lastIndexOf('.'),
             name = file.name.substring(0, dotIndex),
             extension = file.name.substring(dotIndex);
         fileInputTextImageSupplier.value = pathToImage + name + "-" + formatDate(new Date()) + extension
         removeImageButtonImageSupplier.style.display = 'flex'
-console.log('fileInputTextImageSupplier.value: ', fileInputTextImageSupplier.value)
+// console.log('fileInputTextImageSupplier.value: ', fileInputTextImageSupplier.value)
         const reader = new FileReader()
         reader.readAsDataURL(file)
         reader.onload = () => {
@@ -552,7 +552,9 @@ btnAddNewSupplier.addEventListener('click', (event) => {
     const code = document.getElementById('code').value
     const type = document.getElementById('type').value
 
-    designation && code && type ?  messageNewSupplier(designation, code, type.toUpperCase()) :  messageWarningEmptyFields(designation, code, type.toUpperCase())
+    designation && code && type
+        ? messageNewSupplier(designation, code, type.toUpperCase())
+        : messageWarningEmptyFields(designation, code, type.toUpperCase())
 })
 
 const btnResetFormNewSupplier = document.getElementById('btnResetFormNewSupplier')

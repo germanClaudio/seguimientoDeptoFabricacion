@@ -1,0 +1,245 @@
+<div class="card mb-5 mx-auto text-center" style="max-width: 99vw;">
+    <div class="row align-items-center mx-1">
+
+        <!-- --------- columna #1 datos de proyecto --------- -->
+        <%- include('../../partials/dataProjectCard/dataProjectCard_col1_projData'); %>
+        
+        <!-- --------- contenedor status de proyecto --------- -->
+        <%- include('../../partials/dataProjectCard/dataProjectCard_contStatusProy'); %>
+
+            <div class="card-body px-1">
+                <% let j=0;
+                    if (proyecto.length > 0) { 
+                        for ( let m=0; proyecto.length> m; m++) { %>
+                            
+                            <div class="accordion" id="accordionPanelsStayOpenExample">
+                                
+                                <% let countVisibleOci=0, arrayVisibleOci = [] 
+                                    for ( let x=0; proyecto[m].project[j].oci.length> x; x++) {
+                                        if (proyecto[m].project[j].oci[x].visible) { 
+                                            arrayVisibleOci.push(proyecto[m].project[j].oci[x])
+                                            countVisibleOci++
+                                        }
+                                    }    
+
+                                        if (arrayVisibleOci.length > 0 && countVisibleOci > 0) {
+                                            for (let k=0; arrayVisibleOci.length > k; k++) { %>
+                                        
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="panelsStayOpen-headingOneCard">
+
+                                                        <!-- ------ boton accordion OCI's ------ -->
+                                                        <%- include('../../partials/dataProjectCard/dataProjectCard_btnAccord', { k, m, j, arrayVisibleOci }); %>
+                                                    </h2>
+
+                                                    <div id="panelsStayOpen-collapseOneCard<%=k %>" class="accordion-collapse show"
+                                                        aria-labelledby="panelsStayOpen-headingOne">
+
+                                                        <% if (arrayVisibleOci[k].ociStatus) { %>
+                                                            <div class="accordion-body px-1 mw-100">
+                                                        <% } else { %>
+                                                            <div class="accordion-body px-1 mw-100 pe-none" contenteditable="false" style="background-color: rgba(0, 0, 0, 0.25); opacity: 0.5">
+                                                        <% } %>
+
+                                                                <div class="container-fluid">
+                                                                    <% if (arrayVisibleOci[k].otProject.length> 0) { %>
+
+                                                                        <!-- cabecera botonera principal de OCI -->
+                                                                        <%- include('../../partials/dataProjectLineasCard/dataProjectLineasCard_btnOci', { k, m, j, arrayVisibleOci }); %>                    
+                                                                        
+                                                                        <div class="d-flex flex-row my-3">
+                                                                            <!-- ----- tabla general ----- -->
+                                                                            <%- include('../../partials/dataProjectLineasCard/dataProjectLineasCard_tablaGral', { k, m, j }); %>
+                                                                            
+                                                                            <!-- ----- tabla seguimiento ----- -->
+                                                                            <%- include('../../partials/dataProjectLineasCard/dataProjectLineasCard_tablaSeguim', { k, m, j }); %>
+
+                                                                            <!-- Carousel de Tablas ----- -->
+                                                                            <div id="carouselExampleControls<%=k%>" class="carousel slide" data-bs-ride="carousel">
+
+                                                                                <!-- ----- mostrar botones de acuerdo a cantidad de slides ----- -->
+                                                                                <%- include('../../partials/dataProjectCard/dataProjectCard_btnSlides', { k, m, j }); %>
+                                                                                                                                                    
+                                                                                <% if (proyecto[0].project[0].levelProject == 'paraCotizar') { 
+                                                                                    let totalColDataSim0 = 20;
+                                                                                    let totalColDataProceso3D = 4; %>
+                                                                                    <div class="carousel-inner">
+                                                                                        <div id="slideSimulacion0" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla S0 ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaS0', { k, m, j, totalColDataSim0 }); %>
+                                                                                        </div>
+                                                                                        <div id="slideProceso3d" class="carousel-item" data-bs-interval="600000">
+
+                                                                                        <!-- --------- tablaProceso3D ----------- -->
+                                                                                        <%- include('../../partials/dataProjectCard/dataProjectCard_tablaProceso3d', { k, m, j, totalColDataProceso3D }); %>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                <% } else if (proyecto[0].project[0].levelProject == 'aRiesgo') { 
+                                                                                    let totalColDataR14 = 2;
+                                                                                    let totalColDataProceso3D = 4;
+                                                                                    let totalColDataDisenoPrimera = 8;
+                                                                                    let totalColDataDisenoSegunda = 12;
+                                                                                    let totalColDataInfo80 = 16;
+                                                                                    let totalColDataSim0 = 20;
+                                                                                    let totalColDataSim1 = 25;
+                                                                                    let totalColDataSim2_3 = 29; %>                                                                
+                                                                                    <div class="carousel-inner">
+                                                                                        <div id="slideProcesoR14" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla R14 ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaR14', { k, m, j, totalColDataR14 }); %>
+                                                                                        </div>
+                                                                                        <div id="slideProceso3d" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla Proceso3D ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaProceso3d', { k, m, j, totalColDataProceso3D }); %>
+                                                                                        </div>
+                                                                                        <div id="slideDienoPrimera" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla Diseno Primera Parte ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaDisenoPrimera', { k, m, j, totalColDataDisenoPrimera }); %>
+                                                                                        </div>
+                                                                                        <div id="slideDienoSegunda" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla Diseno Segunda Parte ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaDisenoSegunda', { k, m, j, totalColDataDisenoSegunda }); %>
+                                                                                        </div>                    
+                                                                                        <div id="slideInformacion80" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla Info al 80% ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaInfo80', { k, m, j, totalColDataInfo80 }); %>
+                                                                                        </div>
+                                                                                        <div id="slideSimulacion0" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla S0 ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaS0', { k, m, j, totalColDataSim0 }); %>
+                                                                                        </div>
+                                                                                        <div id="slideSimulacion1" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla S1 ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaS1', { k, m, j, totalColDataSim1 }); %>
+                                                                                        </div>
+                                                                                        <div id="slideSimulacion2y3" class="carousel-item" data-bs-interval="600000">
+
+                                                                                        <!-- --------- tabla S2-S3 ----------- -->
+                                                                                        <%- include('../../partials/dataProjectCard/dataProjectCard_tablaS2_3', { k, m, j, totalColDataSim2_3 }); %>
+                                                                                        </div>                                                
+                                                                                    </div>
+                                                                                
+                                                                                <% } else if (proyecto[0].project[0].levelProject == 'ganado') { 
+                                                                                    let totalColDataR14 = 2;
+                                                                                    let totalColDataProceso3D = 4;
+                                                                                    let totalColDataDisenoPrimera = 8;
+                                                                                    let totalColDataDisenoSegunda = 12;
+                                                                                    let totalColDataInfo80 = 16;
+                                                                                    let totalColDataInfo100 = 18;
+                                                                                    let totalColDataSim0 = 20;
+                                                                                    let totalColDataSim1 = 25;
+                                                                                    let totalColDataSim2_3 = 29;
+                                                                                    let totalColDataSim4Primera = 33;
+                                                                                    let totalColDataSim4Segunda = 37;
+                                                                                    let totalColDataSim5 = 39; %>
+                                                                                    <div class="carousel-inner">
+                                                                                        <div id="slideProcesoR14" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla R14 ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaR14', { k, m, j, totalColDataR14 }); %>
+                                                                                        </div>
+                                                                                        <div id="slideProceso3d" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tablaProceso3D ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaProceso3d', { k, m, j, totalColDataProceso3D }); %>
+                                                                                        </div>
+                                                                                        <div id="slideDienoPrimera" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla Diseno Primera Parte ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaDisenoPrimera', { k, m, j, totalColDataDisenoPrimera }); %>
+                                                                                        </div>
+                                                                                        <div id="slideDienoSegunda" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla Diseno Segunda Parte ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaDisenoSegunda', { k, m, j, totalColDataDisenoSegunda }); %>
+                                                                                        </div>
+                                                                                        <div id="slideInformacion80" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla Info al 80% ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaInfo80', { k, m, j, totalColDataInfo80 }); %>
+                                                                                        </div>
+                                                                                        <div id="slideInformacion100" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla Info al 100% ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaInfo100', { k, m, j, totalColDataInfo100 }); %>
+                                                                                        </div>
+                                                                                        <div id="slideSimulacion0" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla S0 ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaS0', { k, m, j, totalColDataSim0 }); %>
+                                                                                        </div>
+                                                                                        <div id="slideSimulacion1" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla S1 ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaS1', { k, m, j, totalColDataSim1 }); %>
+                                                                                        </div>
+                                                                                        <div id="slideSimulacion2y3" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla S2-S3 ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaS2_3', { k, m, j, totalColDataSim2_3 }); %>
+                                                                                        </div>
+                                                                                        <div id="slideSimulacion4Primera" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla S4 Primera ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaS4Primera', { k, m, j, totalColDataSim4Primera }); %>
+                                                                                        </div>
+                                                                                        <div id="slideSimulacion4Segunda" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla S4 Segunda ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaS4Segunda', { k, m, j, totalColDataSim4Segunda }); %>
+                                                                                        </div>
+                                                                                        <div id="slideSimulacion5" class="carousel-item" data-bs-interval="600000">
+
+                                                                                            <!-- --------- tabla S5 ----------- -->
+                                                                                            <%- include('../../partials/dataProjectCard/dataProjectCard_tablaS5', { k, m, j, totalColDataSim5 }); %>
+                                                                                        </div>                                                    
+                                                                                    </div>
+                                                                                <% } %>
+                                                                                    <!-- --------- botonera carrusel < > ----------- -->
+                                                                                    <%- include('../../partials/dataProjectCard/dataProjectCard_btnCarrousel', { k, m, j }); %>
+                                                                                    <input id="slideHidden" type="hidden" value="<%= slide %>">                                                                
+                                                                            </div>
+                                                                        </div>
+                                                                        <hr>
+
+                                                                        <!-- ------ contenedor datos creador por y modificado por ------ -->
+                                                                        <%- include('../../partials/dataProjectCard/dataProjectCard_containerDatos', { k, m, j }); %>
+                                                                        
+                                                                    <% } else { %>
+
+                                                                        <!-- ------ contenedor de OCI vacía ------ -->
+                                                                        <%- include('../../partials/dataProjectCard/dataProjectCard_contOciVacia', { k, m, j , arrayVisibleOci}); %>
+
+                                                                    <% } %>
+
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                            <% } 
+                                        } %>
+                            </div>
+                        <% } %>
+
+                    <% } else { %>
+
+                        <!-- -------- contenedor de Proyecto vacío --------- -->
+                        <%- include('../../partials/dataProjectCard/dataProjectCard_contProyectoVacio', { k, m, j }); %>
+
+                    <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- contenedor botonera inferior de pagina 'volver atras' 'volver al home' -->
+    <%- include('../../partials/dataProjectCard/dataProjectCard_btnInferior', { k, m, j }); %>
+</div>

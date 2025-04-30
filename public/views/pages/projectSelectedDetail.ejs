@@ -26,8 +26,8 @@
 
     <%- include('../partials/sections/sectionProjectNameTitle'); %>
     
-    <div id="updateCliente">
-    </div>
+    <!-- <div id="updateCliente">
+    </div> -->
     <%- include('../partials/data/dataProjectCard', { k: data.k, m: data.m, j: data.j, slide: data.slide}); %>
     <br>
     <footer>
@@ -37,7 +37,7 @@
     <!--    scripts     -->
     <script type="text/javascript" src="/js/proyectos/projectInfo.js"></script>
     <%  if (proyecto[0].project[0].levelProject == 'aRiesgo') { %>
-        <script type="text/javascript" src="/jsingenieria/projectInfoR14.js"></script>
+        <script type="text/javascript" src="/js/ingenieria/projectInfoR14.js"></script>
         <script type="text/javascript" src="/js/ingenieria/projectInfoProceso3d.js"></script>
         <script type="text/javascript" src="/js/ingenieria/projectInfoDisenoPrimera.js"></script>
         <script type="text/javascript" src="/js/ingenieria/projectInfoDisenoSegunda.js"></script>

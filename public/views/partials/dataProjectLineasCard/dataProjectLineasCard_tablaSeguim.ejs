@@ -2,14 +2,15 @@
 <table id="tablaSeguimiento<%=k%>" name="tablaSeguimiento" class="table-responsive align-middle col-3 border-end border-dark" style="font-size: 10pt">
     <thead class="align-middle" style="background-color: #bbc">
         <tr>
-            <th colspan="2" class="text-center pb-1"> <div class="mb-3">CANT DISP.</div></th>
+            <th colspan="3" class="text-center pb-1"> <div class="mb-3">CANT DISP.</div></th>
             <th colspan="2" class="text-center pb-1"> <div class="mb-3"> </div></th>
         </tr>
         <tr>
-            <th style="width:15vw" scope="col-1" class="text-center pb-1">Dib</th>
-            <th style="width:15vw" scope="col-1" class="text-center pb-1">Sym</th> 
-            <th style="width:40vw" scope="col-1" class="text-center pb-1"><i class="fa-solid fa-puzzle-piece"></i> Función</th> 
-            <th style="width:30vw" scope="col-1" class="text-center pb-1"><i class="fa-solid fa-diagram-project"></i> Línea / Celda</th> 
+            <th style="width:10vw" scope="col-1" class="text-center pb-1">Dib</th>
+            <th style="width:10vw" scope="col-1" class="text-center pb-1">Sym</th>
+            <th style="width:10vw" scope="col-1" class="text-center pb-1">Unidades</th> 
+            <th style="width:40vw" scope="col-1" class="text-center pb-1"><i class="fa-solid fa-puzzle-piece fa-lg"></i> Función</th> 
+            <th style="width:30vw" scope="col-1" class="text-center pb-1"><i class="fa-solid fa-diagram-project fa-lg"></i> Línea / Celda</th> 
         </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -23,22 +24,32 @@
                     <% } %>        
                             <td class="text-center align-middle overflow-ellipsis">
                                 <small id="otDibujado<%=k%>_<%=n%>" class="text-dark align-middle">
-                                    <%= pathMongoOtProject[n].otDibujado %>
+                                    <%= pathMongoOtProject[n]?.otDibujado %>
                                 </small>
                             </td>
                             <td class="text-center align-middle overflow-ellipsis">
                                 <small id="otSymetrico<%=k%>_<%=n%>" class="text-dark align-middle">
-                                    <%= pathMongoOtProject[n].otSymetrico %>
+                                    <%= pathMongoOtProject[n]?.otSymetrico %>
+                                </small>
+                            </td>
+                            <td class="text-center align-middle overflow-ellipsis">
+                                <small id="otUnidad<%=k%>_<%=n%>" class="text-dark align-middle">
+                                    <%= pathMongoOtProject[n]?.otUnidad %>
                                 </small>
                             </td>
                             <td class="text-center align-middle overflow-ellipsis">
                                 <small id="otFuncion<%=k%>_<%=n%>" class="text-dark">
-                                    <%= pathMongoOtProject[n].otFuncion %>
+                                    <%= pathMongoOtProject[n]?.otFuncion %>
                                 </small>
                             </td>
                             <td class="text-center align-middle overflow-ellipsis">
                                 <small id="otLineaCelda<%=k%>_<%=n%>" class="text-dark">
-                                    <%= pathMongoOtProject[n].otLineaCelda %>
+                                    <%= pathMongoOtProject[n]?.otLineaCelda %>
+                                </small>
+                            </td>
+                            <td class="text-center align-middle d-none">
+                                <small id="otSupplier<%=k%>_<%=n%>">
+                                    <%= pathMongoOtProject[n]?.otSupplier %>
                                 </small>
                             </td>
                         </tr>

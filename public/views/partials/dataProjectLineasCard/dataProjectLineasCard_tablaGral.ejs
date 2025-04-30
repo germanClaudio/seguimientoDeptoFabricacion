@@ -73,17 +73,21 @@
                         </td>
                         <!-- status OT -->
                         <td class="text-center align-middle">
-                            <% let colorStatus = 'success', textStatus = 'A' 
+                            <% let colorStatus = 'success', textStatus = 'A'
                             if (!pathMongoOtProject[n].otStatus) colorStatus = 'danger', textStatus = 'I' %>
                                 <span id="lastOtStatus<%=k%>_<%=n%>" class="badge rounded-pill bg-<%= colorStatus %> text-white my-2"><%= textStatus %></span>
                         </td>
                         <!-- Item Number -->
                         <td class="text-center align-middle">
-                            <span id="lastItemNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-secondary text-white my-2"><%= pathMongoOtProject[n]?.itemNumber %></span>
+                            <span id="lastItemNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-secondary text-white my-2"><%= parseInt(n+1) %></span>
                         </td>
                         <!-- Prio -->
                         <td class="text-center align-middle">
-                            <span id="lastPrioNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-warning text-dark my-2"><%= pathMongoOtProject[n]?.prioNumber %></span>
+                            <span id="lastPrioNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-warning text-dark my-2"><%= pathMongoOtProject[n]?.otPrio %></span>
+                        </td>
+                        <!-- Op Number -->
+                        <td class="text-center align-middle d-none">
+                            <span id="lastOpNumber<%=k%>_<%=n%>"><%= pathMongoOtProject[n]?.opNumber %></span>
                         </td>
                         <!-- OT Number -->
                         <td class="text-center align-middle">
@@ -155,6 +159,10 @@
                         <!-- Prio -->
                         <td class="text-center align-middle">
                             <span id="lastPrioNumber<%=k%>_<%=n%>" class="badge rounded-pill bg-warning text-dark my-2"><%= pathMongoOtProject[n]?.otPrio %></span>
+                        </td>
+                        <!-- Op Number -->
+                        <td class="text-center align-middle d-none">
+                            <span id="lastOpNumber<%=k%>_<%=n%>"><%= pathMongoOtProject[n]?.opNumber %></span>
                         </td>
                         <!-- OT Number -->
                         <td class="text-center align-middle">

@@ -1,7 +1,7 @@
 const countdownElement = document.getElementById('countdown'),
     expires = document.getElementById('expires')
-    ? document.getElementById('expires').innerText
-    : null
+        ? document.getElementById('expires').innerText
+        : null
 
     function updateCountdown() {
         const countdownDate = new Date(`${expires}`).getTime(),
@@ -33,8 +33,8 @@ function confirmLogout({userName, rolUser, avatarUser}) {
     let spanToShow = ''
 // console.log('nameUser: ', nameUser, 'rol: ', rol)
     rol === "Admin"
-    ? spanToShow = `<span class="badge rounded-pill bg-primary">${rol}</span>`
-    : spanToShow = `<span class="badge rounded-pill bg-info text-dark">${rol}</span>`
+        ? spanToShow = `<span class="badge rounded-pill bg-primary">${rol}</span>`
+        : spanToShow = `<span class="badge rounded-pill bg-info text-dark">${rol}</span>`
 
     const htmlForm = `<div>${nameUser} - ${spanToShow}?</div><br>
                         Está seguro que desea continuar?<br>

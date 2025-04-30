@@ -126,8 +126,8 @@ let arrayBtnChangeStatusOt = [], arrayBtnUpdateOt = [],
     arrayBtnDeleteOt = [], arrayCheckBoxSelect = [],
     arrayBtnCheckSelectionAll = [], arrayBtnCheckSelecMasive = [],
     arrayCheckBoxNotNull = [], arrayStatusOt = [],
-    arrayBtnSearchDesignerUser = [], arrayBtnSearchSimulationUser = [], arrayBtnSearchSupplier = [],
-    arrayBtnSearchDesignerUserClean = [], arrayBtnSearchSimulationUserClean = [], arrayBtnSearchSupplierClean = [];
+    arrayBtnSearchFuncion = [], arrayBtnSearchSupplier = [],
+    arrayBtnSearchFuncionClean = [], arrayBtnSearchSupplierClean = [];
 
 // Función auxiliar para buscar y agregar elementos si existen
 const addElementIfExists = (selector, array, attribute = null) => {
@@ -142,8 +142,7 @@ const addElementIfExists = (selector, array, attribute = null) => {
 for (let m = 0; m < ociTotalQty; m++) {
     addElementIfExists(`btnCheckSelectionAll${m}`, arrayBtnCheckSelectionAll);
     addElementIfExists(`btnCheckSelecMasive${m}`, arrayBtnCheckSelecMasive, 'disabled');
-    addElementIfExists(`searchDesignUser${m}`, arrayBtnSearchDesignerUser);
-    addElementIfExists(`searchSimulationUser${m}`, arrayBtnSearchSimulationUser);
+    addElementIfExists(`searchFuncion${m}`, arrayBtnSearchFuncion);
     addElementIfExists(`searchSupplier${m}`, arrayBtnSearchSupplier);
 
     // Recorrido de maxOtQuantity
@@ -166,8 +165,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const projectNameHidden = document.getElementById('projectNameHidden').value,
         projectNameTitle = document.getElementById('projectNameTitle'),
         projectUNegocio = document.getElementById('projectUNegocioHidden')
+
     let colorIconRocket = '00'
-    if (projectUNegocio === 'lineas') colorIconRocket = 'ff'
+    if (projectUNegocio.getAttribute('value') == 'lineas') colorIconRocket = 'ff'
     projectNameTitle.innerHTML = `Proyecto <strong>${projectNameHidden}</strong> <i class="fa-solid fa-rocket fa-sm" style="color: #0000${colorIconRocket};"></i>`
 })
 
@@ -292,20 +292,22 @@ btnAddNewRow.addEventListener('click', () => {
         let numberIdLastChild
 
         numberId1 >= 0 && numberId2 ? numberIdLastChild = numberId2 : numberIdLastChild = numberId1;
-
         i = parseInt(numberIdLastChild + 1)
     }
 
     let otNumberValue = parseInt(document.getElementById('otNumber').value),
         opNumberValue = parseInt(document.getElementById('opNumber').value),
         otPrioValue = parseInt(document.getElementById('otPrio').value),
-        internoDisenoValue = document.getElementById(`internoDiseno${i-1}`).value,
-        internoSimulacion = document.getElementById(`internoSimulacion${i-1}`).value,
+        otDibujadoValue = parseInt(document.getElementById('otDibujado').value),
+        otSymetricoValue = parseInt(document.getElementById('otSymetrico').value),
+        otUnidadValue = parseInt(document.getElementById('otUnidad').value),
+        otFuncionValue = document.getElementById(`otFuncion${i-1}`).value,
+        otLineaCeldaValue = document.getElementById('otLineaCelda').value,
         externoDiseno = document.getElementById(`externoDiseno${i-1}`).value
 
     const originalDiv = (
             `<div class="row">
-                <strong id="itemNumber">Iten #${i+1}</strong>
+                <strong id="itemNumber">Item #${i+1}</strong>
             </div>
             <!-- Prio -->
             <div class="col-auto pe-2">
@@ -316,65 +318,69 @@ btnAddNewRow.addEventListener('click', () => {
             <!-- OT Numero -->
             <div class="col-auto pe-1">
                 <label for="otNumber${i}" id="labelOtNumber${i}">OT#</label>
-                <input type="number" name="otNumber${i}" id="otNumber${i}" class="form-control mt-3" min="1" max="9999"
-                placeholder="Número OT" value="${otNumberValue + i}">
+                <input type="number" name="otNumber${i}" id="otNumber${i}" class="form-control mt-2" min="1" max="19999"
+                placeholder="# OT" value="${otNumberValue + i}">
             </div>
             <!-- OP Numero -->
             <div class="col-auto pe-2">
                 <label for="opNumber${i}" id="labelOpNumber${i}">OP#</label>
-                <input type="number" name="opNumber${i}" id="opNumber${i}" class="form-control mt-3" min="1" max="9999"
-                placeholder="Número OP" value="${opNumberValue + i * 10}">
+                <input type="number" name="opNumber${i}" id="opNumber${i}" class="form-control mt-2" min="1" max="9999"
+                placeholder="# OP" value="${opNumberValue + i * 10}">
             </div>
             <!-- OP Descripcion -->
             <div class="col-auto pe-2">
                 <label for="opDescription${i}" id="labelOpDescription${i}">Descripción OP</label>
-                <input type="text" name="opDescription${i}" id="opDescription${i}" class="form-control mt-3"
+                <input type="text" name="opDescription${i}" id="opDescription${i}" class="form-control mt-2"
                 placeholder="Descripción OP">
             </div>
-            <!-- Status -->
-            <div class="col-auto pe-1">
-                <label for="otStatus${i}" id="labelOtStatus${i}">Status OT</label><br>
-                <div class="form-check form-switch d-inline-block mt-2">
-                    <input class="form-check-input mt-3" type="checkbox" aria-checked="true" disabled checked>
-                    <input class="d-none" type="checkbox" id="otStatus${i}" name="otStatus" aria-checked="true" checked>
-                    <label class="form-check-label mt-2" for="otStatus${i}">Activa</label>
-                </div>
+            <!-- OT Dibujado -->
+            <div class="col-auto pe-2">
+                <label for="otDibujado${i}" id="labelOtDibujado${i}">Dib</label>
+                <input type="number" name="otDibujado${i}" id="otDibujado${i}" class="form-control mt-2" min="0" max="999"
+                    value="${otDibujadoValue}">
             </div>
-            <!-- Interno Diseno -->
-            <div class="col-2 pe-2">
-                <label for="internoDiseno${i}" id="labelInternoDiseno${i}">Diseño seguido por</label>
+            <!-- OT Symetrico -->
+            <div class="col-auto pe-2">
+                <label for="otSymetrico${i}" id="labelOtSymetrico${i}">Sym</label>
+                <input type="number" name="otSymetrico${i}" id="otSymetrico${i}" class="form-control mt-2" min="0" max="999"
+                    value="${otSymetricoValue}">
+            </div>
+            <!-- OT Unidad -->
+            <div class="col-auto pe-2">
+                <label for="otUnidad${i}" id="labelOtUnidad${i}">Unidades</label>
+                <input type="number" name="otUnidad${i}" id="otUnidad${i}" class="form-control mt-2" min="1" max="9999"
+                    value="${otUnidadValue}">
+            </div>
+            <!-- Funcion -->
+            <div class="col-2 me-1">
+                <label for="otFuncion${i}" id="labelOtFuncion${i}">Función</label>
                 <div class="input-group mb-3">
-                    <input type="text" name="internoDiseno${i}" id="internoDiseno${i}" class="form-control mt-3 position-relative"
-                    placeholder="Diseño" value="${internoDisenoValue}" disabled>  
-                    <button type="button" title="Buscar Diseñador" id="searchDesignUser${i}" class="btn btn-sm btn-primary rounded-circle ms-1 mt-3 border shadow position-absolute top-0 start-100 translate-middle">
+                    <input type="text" name="otFuncion${i}" id="otFuncion${i}" class="form-control mt-2 position-relative"
+                        placeholder="Función" value="${otFuncionValue}" disabled>
+                    <button type="button" title="Buscar Función" id="searchFuncion${i}" class="btn btn-sm btn-primary rounded-circle ms-1 mt-3 border shadow position-absolute top-0 start-100 translate-middle">
                         <i class="fa-solid fa-database"></i>
                     </button>
                 </div>
             </div>
-            <!-- Interno Simulacion -->
-            <div class="col-2 pe-2">
-                <label for="internoSimulacion${i}" id="labelInternoSimulacion${i}">Simulación seguida por</label>
-                <div class="input-group mb-3">
-                    <input type="text" name="internoSimulacion${i}" id="internoSimulacion${i}" class="form-control mt-3 position-relative"
-                    placeholder="Simulación" value="${internoSimulacion}" disabled>
-                    <button type="button" title="Buscar Simulador" id="searchSimulationUser${i}" class="btn btn-sm btn-primary rounded-circle ms-1 mt-3 border shadow position-absolute top-0 start-100 translate-middle">
-                        <i class="fa-solid fa-database"></i>
-                    </button>
-                </div>
+            <!-- Linea/Celda -->
+            <div class="col-2 pe-1">
+                <label for="otLineaCelda${i}" id="labelOtLineaCelda${i}">Línea / Celda</label>
+                <input type="text" name="otLineaCelda${i}" id="otLineaCelda${i}" class="form-control mt-2"
+                    placeholder="Línea/Celda" value="${otLineaCeldaValue}">
             </div>
             <!-- Proveedor -->
-            <div class="col-2 pe-2">
-                <label for="externoDiseno${i}" id="labelExternoDiseno${i}">Proveedor externo</label>
+            <div class="col-1 pe-1">
+                <label for="externoDiseno${i}" id="labelExternoDiseno${i}">Proveedor</label>
                 <div class="input-group mb-3">
-                    <input type="text" name="externoDiseno${i}" id="externoDiseno${i}" class="form-control mt-3 position-relative"
-                    placeholder="Proveedor" value="${externoDiseno}" disabled>
+                    <input type="text" name="externoDiseno${i}" id="externoDiseno${i}" class="form-control mt-2 position-relative"
+                        placeholder="Proveedor" value="${externoDiseno}" disabled>
                     <button type="button" title="Buscar Proveedor" id="searchSupplier${i}" class="btn btn-sm btn-primary rounded-circle ms-1 mt-3 border shadow position-absolute top-0 start-100 translate-middle">
                         <i class="fa-solid fa-database"></i>
                     </button>
-                </div>  
+                </div>
             </div>
-            <div class="col-auto my-auto">
-                <div class="d-flex">
+            <div class="col-auto mx-auto">
+                <div class="d-flex align-items-center justify-content-center">
                     <button title="Eliminar fila" name="btnRemoveRow" type="button" id="btnRemoveRow${i}" value="${i}" class="btn btn-danger rounded-circle m-2 border border-2 shadow">
                         <i class="fa-solid fa-trash"></i>
                     </button>
@@ -385,19 +391,12 @@ btnAddNewRow.addEventListener('click', () => {
     // Función para ocultar el botón de remover
     function hideRemoveButton(index) {
         const btnRemoveItem = document.getElementById(`btnRemoveRow${index}`);
-        if (btnRemoveItem) {
-            btnRemoveItem.style.display = 'none';
-        }
+        if (btnRemoveItem) btnRemoveItem.style.display = 'none';
     }
 
     // Lógica principal
-    if (i !== 1) {
-        hideRemoveButton(i - 1);
-    }
-
-    if (i >= varLimMaxOtProyecto) {
-        btnAddNewRow.disabled = true;
-    }
+    if (i !== 1) hideRemoveButton(i - 1);
+    if (i >= varLimMaxOtProyecto) btnAddNewRow.disabled = true;
 
     const newDiv = document.createElement('div');
     newDiv.setAttribute('class', 'row my-2');
@@ -405,8 +404,8 @@ btnAddNewRow.addEventListener('click', () => {
 
     // Configurar el contenido del nuevo div según el valor de i
     i === 1
-    ? newDiv.innerHTML = `<hr class="my-2"> ${originalDiv} <hr class="my-2">`
-    : newDiv.innerHTML = i === 10 ? originalDiv : originalDiv + `<hr class="my-2">`
+        ? newDiv.innerHTML = `<hr class="my-2"> ${originalDiv} <hr class="my-2">`
+        : newDiv.innerHTML = i === parseInt(varLimMaxOtProyecto+1) ? originalDiv : originalDiv + `<hr class="my-2">`
 
     parentDiv.appendChild(newDiv)
     const otQty = document.getElementById("otQuantity")
@@ -448,21 +447,19 @@ btnAddNewRow.addEventListener('click', () => {
     //*************************************** */
     // Recorrido de varLimMaxOtProyecto
     for (let m = 0; m < varLimMaxOtProyecto; m++) {
-        addElementIfExists(`searchDesignUser${m}`, arrayBtnSearchDesignerUser);
-        addElementIfExists(`searchSimulationUser${m}`, arrayBtnSearchSimulationUser);
+        addElementIfExists(`searchFuncion${m}`, arrayBtnSearchFuncion);
         addElementIfExists(`searchSupplier${m}`, arrayBtnSearchSupplier);
     }
 
-    arrayBtnSearchDesignerUserClean = [...new Set(arrayBtnSearchDesignerUser)];
-    arrayBtnSearchSimulationUserClean = [...new Set(arrayBtnSearchSimulationUser)];
+    arrayBtnSearchFuncionClean = [...new Set(arrayBtnSearchFuncion)];
     arrayBtnSearchSupplierClean = [...new Set(arrayBtnSearchSupplier)];
 
-    arrayBtnSearchDesignerUserClean.forEach(function(element) {
+    arrayBtnSearchFuncionClean.forEach(function(element) {
         if (element) {
             element.addEventListener('click', async (event) => {
-                let idPermiso = (element.id).replace(/\d+$/, '');
+                let idFuncion = (element.id).replace(/\d+$/, '');
                 event.preventDefault();
-                
+    
                 function obtenerNumeroFinal(element) {
                     let match = element.id.match(/\d+$/);
                     return match ? parseInt(match[0], 10) : null;
@@ -470,42 +467,15 @@ btnAddNewRow.addEventListener('click', () => {
                 let idPermisoNumero =  obtenerNumeroFinal(element)
                 event.stopPropagation();
                 event.stopImmediatePropagation();
-
+    
                 try {
-                    await cargarUsuario(idPermiso, idPermisoNumero);
-
+                    await cargarFuncion(idFuncion, idPermisoNumero);
+    
                 } catch (error) {
-                    const titulo = 'Error al cargar los usuarios',
+                    const titulo = 'Error al cargar las funciones',
                         message = error,
                         icon = 'error'
-                    messageAlertUser(titulo, message, icon)
-                }
-            }, { once: true });
-        }
-    });
-
-    arrayBtnSearchSimulationUserClean.forEach(function(element) {
-        if (element) {
-            element.addEventListener('click', async (event) => {
-                let idPermiso = (element.id).replace(/\d+$/, '');
-                event.preventDefault();
-    
-                function obtenerNumeroFinal(element) {
-                    let match = element.id.match(/\d+$/);
-                    return match ? parseInt(match[0], 10) : null;
-                }
-                let idPermisoNumero =  obtenerNumeroFinal(element)
-                event.stopPropagation();
-                event.stopImmediatePropagation();
-    
-                try {
-                    await cargarUsuario(idPermiso, idPermisoNumero);
-    
-                } catch (error) {
-                    const titulo = 'Error al cargar los usuarios'
-                    const message = error
-                    const icon = 'error'
-                    messageAlertUser(titulo, message, icon)
+                    messageAlertSelection(titulo, message, icon)
                 }
             }, { once: true });
         }
@@ -529,10 +499,10 @@ btnAddNewRow.addEventListener('click', () => {
                     await cargarProveedor(idPermiso, idPermisoNumero);
     
                 } catch (error) {
-                    const titulo = 'Error al cargar los proveedores'
-                    const message = error
-                    const icon = 'error'
-                    messageAlertUser(titulo, message, icon)
+                    const titulo = 'Error al cargar los proveedores',
+                        message = error,
+                        icon = 'error'
+                    messageAlertSelection(titulo, message, icon)
                 }
             }, { once: true });
         }
@@ -606,7 +576,7 @@ function removeRow(e) {
     }
 }
 
-const formulario = document.getElementById("formNewOt"),
+const formulario = document.getElementById("formNewOtLineas"),
     radios = document.querySelectorAll('[name="ociNumber"]'),
     tituloForm = document.getElementById('tituloForm'),
     projectNameHidden = document.getElementById('projectNameHidden').value,
@@ -641,7 +611,7 @@ function lastOtNumberFn(i) {
             n--
         } else if (k > 0) {
             k--
-            n = 24
+            n = varLimMaxOciProyecto // 24
         } else {
             break;
         }
@@ -650,11 +620,11 @@ function lastOtNumberFn(i) {
 
 //-------------------- Boton agregar nuevas OT's a OCI ------------------------
 function radioSelected(radioSelectedValue, elementoId) {
+    // console.log('616- radioSelectedValue: ', radioSelectedValue)
     const radioSelected = document.getElementById(`radioSelectedValue${elementoId}`)
-    //console.log('radioSelected.value2: ', radioSelected.getAttribute('value2'))
     radioSelected.checked = true
     tituloForm.innerHTML = `Agregar Nueva/s OT's a OCI #<strong>${radioSelected.value}</strong> - Alias: "${radioSelected.getAttribute('value2')}" <br>
-    Proyecto: <strong>${projectNameHidden}</strong>`
+        Proyecto: <strong>${projectNameHidden}</strong>`
     
     ociNumberK.value = extractNumbers(elementoId)
     ociNumberHidden.value = radioSelected.value
@@ -669,7 +639,7 @@ function radioSelected(radioSelectedValue, elementoId) {
 let arrayBtnAddOtFormSelected = []
 for (let i=0; i<radios.length; i++) {
     let btnAddOtFormSelected = document.getElementById(`btnAddOtFormSelected${i}`)
-    btnAddOtFormSelected ? arrayBtnAddOtFormSelected.push(btnAddOtFormSelected) : null
+    if (btnAddOtFormSelected) arrayBtnAddOtFormSelected.push(btnAddOtFormSelected)
 }
 
 arrayBtnAddOtFormSelected.forEach(function(elemento) {
@@ -691,7 +661,8 @@ for (let i=0; i<radios.length; i++) {
         event.preventDefault()
         let ociSeleccionada = event.target.value
         let ociAliasSeleccionada = event.target.getAttribute('value2')
-        tituloForm.innerHTML = `Agregar Nueva/s OT's a OCI #<strong>${ociSeleccionada}</strong> - Alias: "${ociAliasSeleccionada}" <br> Proyecto: ${projectNameHidden}`
+        tituloForm.innerHTML = `Agregar Nueva/s OT's a OCI #<strong>${ociSeleccionada}</strong> - Alias: <strong>"${ociAliasSeleccionada}"</strong><br>
+            Proyecto: <strong>${projectNameHidden}</strong>`
         ociNumberK.value = i
         ociNumberHidden.value = ociSeleccionada
         aliasNameHidden.value =  ociAliasSeleccionada
@@ -701,12 +672,9 @@ for (let i=0; i<radios.length; i++) {
 
 //------- Change OT status ----------------
 function messageChangeOtStatus(
-    statusOt, 
-    otNumber, 
-    idProjectSelected, 
+    payload, 
     ociKNumber, 
-    otKNumber,
-    otDescription
+    otKNumber
 ) {
     
     const Toast = Swal.mixin({
@@ -718,20 +686,19 @@ function messageChangeOtStatus(
     })
     
         Swal.fire({
-            title: `Cambio status de OT#${otNumber} ${otDescription}`,
+            title: `Cambio status de OT#${payload.otNumber} ${payload.otDescription}`,
             position: 'center',
-            html: `El status de la OT#<strong>${otNumber}</strong> se modificará a
-                    <span class="badge rounded-pill bg-${ statusOt==='Activo' ? 'danger' : 'primary' } text-white">
-                    ${ statusOt==='Activo' ? 'Inactivo' : 'Activo' }
-                    </span> y ${ statusOt==='Activo' ? 'no' : '' } podrá ingresar o modificar datos en esta OT.
-                    <form id="formChangeStatusOt${idProjectSelected}" action="/api/proyectos/updateStatusOt/${idProjectSelected}" method="post" style="display: none;">
+            html: `El status de la OT#<strong>${payload.otNumber}</strong> se modificará a
+                    <span class="badge rounded-pill bg-${ payload.statusOt==='A' ? 'danger' : 'primary' } text-white">
+                    ${ payload.statusOt==='A' ? 'Inactivo' : 'Activo' }
+                    </span> y ${ payload.statusOt==='A' ? '<b>no</b>' : '' } podrá ingresar o modificar datos en esta OT.
+                    <form id="formChangeStatusOt${payload.idProjectSelected}" action="/api/proyectos/updateStatusOt/${payload.idProjectSelected}" method="post" style="display: none;">
                         <fieldset>
                             <input type="hidden" name="ociKNumberHidden" value="${ociKNumber}">
                             <input type="hidden" name="otKNumberHidden" value="${otKNumber}">
-                            <input type="hidden" name="statusOtHidden" value="${statusOt}">
+                            <input type="hidden" name="statusOtHidden" value=${ payload.statusOt==='A' ? "Inactivo" : "Activo" }>
                         </fieldset>
-                    </form>
-                    `,
+                    </form>`,
             icon: 'info',
             showCancelButton: true,
             showConfirmButton: true,
@@ -741,15 +708,16 @@ function messageChangeOtStatus(
 
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById(`formChangeStatusOt${idProjectSelected}`).submit()
+                document.getElementById(`formChangeStatusOt${payload.idProjectSelected}`).submit()
                 Toast.fire({
                     icon: 'success',
-                    title: `El status de la OT#<strong>${otNumber}</strong>, se modificó con éxito!`
+                    title: `El status de la OT#<strong>${payload.otNumber}</strong>, se modificó con éxito!`
                 })
+
             } else {
                 Swal.fire(
-                    `Status de OT#${otNumber} no modificado!`,
-                    `El status de la OT#<strong>${otNumber}</strong>, no se modificó!`,
+                    `Status de OT#${payload.otNumber} no modificado!`,
+                    `El status de la OT#<strong>${payload.otNumber}</strong>, no se modificó!`,
                     'warning'
                 )
                 return false
@@ -759,32 +727,28 @@ function messageChangeOtStatus(
 
 //---- Update OT Data ----------------
 function messageUpdateOt(
-    idProjectSelected,
+    payload,
     ociKNumber,
-    otNumber,
-    otKNumber,
-    opNumber,
-    statusOt,
-    otDescription,
-    otDesign,
-    otSimulation,
-    otSupplier,
-    imageOci,
-    flag
+    otKNumber
 ) {
-    
+    // console.log('payload: ', payload)
+
     let numberKOci = parseInt(ociKNumber),
         numberKOt = parseInt(otKNumber),
-        numberOt = parseInt(otNumber),
-        numberOp = parseInt(opNumber),
-        checked = 'checked'
-    statusOt === 'Activo' ? checked : checked = ''
+        numberItem = parseInt(payload.otItem),
+        numberOt = parseInt(payload.otNumber),
+        numberOp = parseInt(payload.opNumber),
+        numberPrio = parseInt(payload.otPrio),
+        numberDibujado = parseInt(payload.otDibujado),
+        numberSymetrico = parseInt(payload.otSymetrico),
+        numberUnidad = parseInt(payload.otUnidad) || 0,
+        checked = 'checked',
+        initialFlag = Boolean(false),
+        bgColorStatus = 'background-color: #dd555560;'
 
-    let initialFlag = false
-    flag ? initialFlag = flag : initialFlag = false
-
-    let bgColorStatus
-    statusOt=='Activo' ? bgColorStatus='background-color: #55dd5560;' : bgColorStatus='background-color: #dd555560;'
+    if (payload.statusOt !== 'A') checked = ''
+    if (!payload.flag) initialFlag = Boolean(true)
+    if (payload.statusOt == 'A') bgColorStatus='background-color: #55dd5560;'
 
     const Toast = Swal.mixin({
         toast: true,
@@ -794,7 +758,7 @@ function messageUpdateOt(
         timerProgressBar: false,
     })
 
-    let html = `<form id="formUpdateOt${idProjectSelected}" action="/api/proyectos/updateOt/${idProjectSelected}" method="post">
+    let html = `<form id="formUpdateOt${payload.idProjectSelected}" action="/api/proyectos/updateOt/${payload.idProjectSelected}" method="post">
                     <fieldset>
                         <div class="row justify-content-between mb-3 mx-1 px-1">
                             <div class="col-3">
@@ -821,45 +785,68 @@ function messageUpdateOt(
                             </div>
                         </div>    
                         
-                        <div class="row mb-3 mx-1 px-1">
-                            <div class="col-8">
+                        <div class="row justify-content-between mb-3 mx-1 px-1">
+                            <div class="col-1">
+                                <label for="itemOt" class="form-label d-flex justify-content-start ms-1">Item #</label>
+                                <input type="text" name="itemOt" id="itemOt" class="form-control disabled"
+                                    value="${numberItem}">
+                            </div>
+                            <div class="col-auto">
+                                <label for="prioOt" class="form-label d-flex justify-content-start ms-1">Prio</label>
+                                <input type="number" name="prioOt" id="prioOt" class="form-control" min="0" max="999" value="${numberPrio}"
+                                    placeholder="Prio OT">
+                            </div>
+                            <div class="col-3">
                                 <label for="descriptionOt" class="form-label d-flex justify-content-start ms-1">Descripción OT</label>
                                 <input type="text" name="descriptionOt" id="descriptionOt" class="form-control"
-                                    placeholder="Descripción OT" value="${otDescription}" required>
+                                    placeholder="Descripción OT" value="${payload.otDescription}" required>
                             </div>
-                            <div class="col-4">
+                            
+                            <div class="col-auto">
+                                <label for="dibujadoOt" class="form-label d-flex justify-content-start ms-1" >Dib</label>
+                                <input type="number" name="dibujadoOt" id="dibujadoOt" class="form-control" min="0" max="999"
+                                    value="${numberDibujado}">
+                            </div>
+                            
+                            <div class="col-auto">
+                                <label for="symetricoOt" class="form-label d-flex justify-content-start ms-1">Sym</label>
+                                <input type="number" name="symetricoOt" id="symetricoOt" class="form-control" min="0" max="999"
+                                    value="${numberSymetrico}">
+                            </div>
+                            
+                            <div class="col-auto">
+                                <label for="unidadOt" class="form-label d-flex justify-content-start ms-1">Unidades</label>
+                                <input type="number" name="unidadOt" id="unidadOt" class="form-control" min="1" max="9999"
+                                    value="${numberUnidad}">
+                            </div>
+                            <div class="col-2">
                                 <label for="numeroOp" class="form-label d-flex justify-content-start ms-1">Número OP</label>
                                 <input type="number" name="numeroOp" id="numeroOp" class="form-control"
                                     placeholder="Numero Op" value="${numberOp}" required>
                             </div>
                         </div>
 
-                        <div class="row justify-content-evenly mb-3 mx-1 px-1">
+                        <div class="row justify-content-between mb-3 mx-1 px-1">
                             <div class="col-4">
-                                <label for="designOt" class="form-label d-flex justify-content-start ms-1">Diseño seguido por</label>                                
+                                <label for="funcionOt" class="form-label d-flex justify-content-start ms-1">Función</label>                                
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control position-relative" id="designOt" name="designOt" placeholder="Diseño seguido por"
-                                        aria-label="Diseño seguido por" aria-describedby="searchDesignUserModal" value="${otDesign}" disabled required>
-                                    <button type="button" title="Buscar Diseñador" class="btn btn-sm btn-primary rounded-circle ms-1 mt-3 border shadow position-absolute top-0 start-100 translate-middle" id="searchDesignUserModal">
+                                    <input type="text" class="form-control position-relative" id="funcionOt" name="funcionOt" placeholder="Función"
+                                        aria-label="Funcion" aria-describedby="searchFuncionModal" value="${payload.otFuncion}" disabled>
+                                    <button type="button" title="Buscar Función" id="searchFuncionModal" class="btn btn-sm btn-primary rounded-circle ms-1 mt-3 border shadow position-absolute top-0 start-100 translate-middle">
                                         <i class="fa-solid fa-database"></i>
                                     </button>
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <label for="simulationOt" class="form-label d-flex justify-content-start ms-1">Simulación seguida por</label>
-                                <div class="input-group mb-3">
-                                    <input type="text" class="form-control position-relative" id="simulationOt" name="simulationOt" placeholder="Simulacion seguida por"
-                                        aria-label="Simulacion seguida por" aria-describedby="searchSimulationUserModal" value="${otSimulation}" disabled required>
-                                    <button type="button" title="Buscar Simulador" class="btn btn-sm btn-primary rounded-circle ms-1 mt-3 border shadow position-absolute top-0 start-100 translate-middle" id="searchSimulationUserModal">
-                                        <i class="fa-solid fa-database"></i>
-                                    </button>
-                                </div>    
+                            <div class="col-auto">
+                                <label for="lineaCeldaOt" class="form-label d-flex justify-content-start ms-1">Línea / Celda</label>
+                                <input type="text" name="lineaCeldaOt" id="lineaCeldaOt" class="form-control"
+                                    placeholder="Línea/Celda" value=${payload.otLineaCelda}>
                             </div>
                             <div class="col-4">
                                 <label for="supplierOt" class="form-label d-flex justify-content-start ms-1">Proveedor externo</label>
                                 <div class="input-group mb-3">
                                     <input type="text" id="supplierOt" name="supplierOt" class="form-control position-relative"
-                                        placeholder="Porveedor" value="${otSupplier}" disabled>
+                                        placeholder="Porveedor" value="${payload.otSupplier}" disabled>
                                     <button type="button" title="Buscar Proveedor" id="searchSupplierModal" class="btn btn-sm btn-primary rounded-circle ms-1 mt-3 border shadow position-absolute top-0 start-100 translate-middle">
                                         <i class="fa-solid fa-database"></i>
                                     </button>
@@ -872,13 +859,13 @@ function messageUpdateOt(
                     </fieldset>
                 </form>`
 
-    if(idProjectSelected && numberOt) {
+    if(payload.idProjectSelected && numberOt) {
         Swal.fire({
-            title: `Actualizar OT# ${numberOt} - OP# ${numberOp} ${otDescription}`,
+            title: `Actualizar OT# ${numberOt} - OP# ${numberOp} ${payload.otDescription}`,
             position: 'center',
             html: html,
-            width: 850,
-            imageUrl: `${imageOci}`,
+            width: 1000,
+            imageUrl: `${payload.imageOci}`,
             imageWidth: `20%`,
             showCloseButton: true,
             showCancelButton: true,
@@ -892,40 +879,34 @@ function messageUpdateOt(
                 btnAceptarPrimerModal[0].style = "cursor: not-allowed;"
                 btnAceptarPrimerModal[0].disabled = true;
 
-                //-----Btns Buscar en BBDD el Usuario Seguidor de Diseño/Simulación --------------
-                const searchDesignUserModal = document.getElementById('searchDesignUserModal')
-                const searchSimulationUserModal = document.getElementById('searchSimulationUserModal')
+                //-----Btns Buscar en BBDD la Funcion --------------
+                const searchFuncionModal = document.getElementById('searchFuncionModal')
                 const searchSupplierModal = document.getElementById('searchSupplierModal')
 
-                async function cargarUsuarioModal(idPermiso) {
+                async function cargarFuncionModal(idPermiso) {
                     const permisos = {
-                        'searchDesignUserModal': {
-                            permisoUsuario: 'diseno',
-                            tituloSeguimiento: 'Seguimiento Diseño',
-                            inputTarget: 'designOt'
-                        },
-                        'searchSimulationUserModal': {
-                            permisoUsuario: 'simulacion',
-                            tituloSeguimiento: 'Seguimiento Simulación',
-                            inputTarget: 'simulationOt'
+                        'searchFuncionModal': {
+                            permiso: 'funcion',
+                            tituloSeguimiento: 'Lista funciones',
+                            inputTarget: 'funcionOt'
                         },
                         'searchSupplierModal': {
-                            permisoUsuario: 'proveedor',
+                            permiso: 'proveedor',
                             tituloSeguimiento: 'Proveedor',
                             inputTarget: 'supplierOt'
                         }
                     };
                     
-                    const { permisoUsuario, tituloSeguimiento, inputTarget } = permisos[idPermiso] || {};
+                    const { permiso, tituloSeguimiento, inputTarget } = permisos[idPermiso] || {};
                 
-                    if (!permisoUsuario || !tituloSeguimiento || !inputTarget) {
+                    if (!permiso || !tituloSeguimiento || !inputTarget) {
                         throw new Error(`Permiso no encontrado para id:', ${idPermiso}`)
                     }
                 
                     try {
                         const myHeaders = new Headers();
                         myHeaders.append("Content-Type", "application/json");
-                        const url = `../../../api/usuarios/searchUsers/${userNameBanner}`
+                        const url = `../../../api/lineas/searchFunciones`
                         const response = await fetch(url, {
                             method: "GET",
                             headers: myHeaders,
@@ -937,35 +918,37 @@ function messageUpdateOt(
                             throw new Error(`Error en la solicitud`);
                         }
 
-                        const users = await response.json();
-                        const arrayUsuariosEspecificos = [], arrayUsersAll = [];
-                
-                        if (users && users.length > 0) {
-                            users.forEach((user, i) => {
-                                const userHTML = `
+                        const funciones = await response.json();
+                        const arrayFuncionesEspecificas = [], arrayFuncionesAll = [];
+
+                        if (funciones && funciones.length > 0) {
+                            funciones.forEach((funcion, i) => {
+                                const funcionHTML = `
                                     <label>
-                                        <span id="${user._id}" class="badge rounded-pill ${user.permiso === `${permisoUsuario}` ? 'bg-info' : 'bg-light'} text-dark my-2">
+                                        <span id="${funcion._id}" class="badge rounded-pill ${funcion.especifica ? 'bg-light' : 'bg-info'} text-dark my-2">
                                             <input id="${i}" class="form-check-input mb-1" type="radio"
-                                                name="radioUsuarios" value="${user.name}, ${user.lastName}">
-                                            ${user.name} ${user.lastName}
+                                                name="radioFunciones" value="${funcion.funcion}">
+                                            ${funcion.funcion}
                                         </span>
                                     </label>`;
                 
-                                if (user.status) {
-                                    user.permiso === `${permisoUsuario}` ? arrayUsuariosEspecificos.push(userHTML) : arrayUsersAll.push(userHTML);
+                                if (funcion.status) {
+                                    funcion.especifica
+                                        ? arrayFuncionesEspecificas.push(funcionHTML)
+                                        : arrayFuncionesAll.push(funcionHTML);
                                 }    
                             });
                 
                             const html = `
                                 <hr>
-                                <label>${tituloSeguimiento}</label>
+                                <label>Funciones Generales</label>
                                 <div name='container' class="container">
-                                    ${arrayUsuariosEspecificos.join(' ')}
+                                    ${arrayFuncionesAll.join(' ')}
                                 </div>
                                 <hr>
-                                <label>Usuarios</label>
+                                <label>${tituloSeguimiento} (Solo const. Mec)</label>
                                 <div name='container' class="container">
-                                    ${arrayUsersAll.join(' ')}
+                                    ${arrayFuncionesEspecificas.join(' ')}
                                 </div>
                                 <hr>`;
 
@@ -984,7 +967,7 @@ function messageUpdateOt(
                                     btnAceptar.style.cursor = "not-allowed";
                                     btnAceptar.disabled = true;
 
-                                    const radios = document.getElementsByName('radioUsuarios');
+                                    const radios = document.getElementsByName('radioFunciones');
                                     radios.forEach((radio) => {
                                         radio.addEventListener('change', () => {
                                             btnAceptar.style.cursor = "pointer";
@@ -994,41 +977,39 @@ function messageUpdateOt(
                                 }
                                 
                             }).then((result) => {
-                                const radioSelected = document.querySelector('input[name="radioUsuarios"]:checked') 
+                                const radioSelected = document.querySelector('input[name="radioFunciones"]:checked') 
                                 if (result.isConfirmed && radioSelected) {
-                                    if (idPermiso==='searchDesignUserModal') {
-                                        otDesign = radioSelected.value
-                                    } else if (idPermiso==='searchSimulationUserModal') {
-                                        otSimulation = radioSelected.value
+                                    if (idPermiso==='searchFuncionModal') {
+                                        payload.otFuncion = radioSelected.value
                                     } else {
-                                        otSupplier = radioSelected.value
+                                        payload.otSupplier = radioSelected.value
                                     }
-                                    flag = true
+                                    payload.flag = true
                                     // Al cerrar el segundo modal, reabrir el primer modal
-                                    messageUpdateOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDesign, otSimulation, otSupplier, imageOci, flag);
+                                    messageUpdateOt(payload, ociKNumber, otKNumber);
                                     
                                 } else {
-                                    const titulo = 'Usuario no seleccionado'
-                                    const message = 'No ha seleccionado ningún usuario!'
-                                    const icon = 'warning'
-                                    messageAlertUser(titulo, message, icon)
-                                    flag = false
+                                    const titulo = 'Función no seleccionada',
+                                        message = 'No ha seleccionado ninguna función!',
+                                        icon = 'warning'
+                                    messageAlertSelection(titulo, message, icon)
+                                    payload.flag = false
                                     // Al cerrar el segundo modal, reabrir el primer modal
                                     setTimeout(() => {
-                                        messageUpdateOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDesign, otSimulation, otSupplier, imageOci, flag);
-                                    }, 1000)
+                                        messageUpdateOt(payload, ociKNumber, otKNumber);
+                                    }, 500)
                                 }
                             });
                             
                         } else {
-                            throw new Error(`No hay usuarios que seleccionar`);
+                            throw new Error(`No hay funciones que seleccionar`);
                         }
                 
                     } catch (error) {
-                        const titulo = 'Error'
-                        const message = `${error}`
-                        const icon = 'error'
-                        messageAlertUser(titulo, message, icon)
+                        const titulo = 'Error',
+                            message = `${error}`,
+                            icon = 'error'
+                        messageAlertSelection(titulo, message, icon)
                     }
                 }
 
@@ -1055,7 +1036,7 @@ function messageUpdateOt(
                     try {
                         const myHeaders = new Headers();
                         myHeaders.append("Content-Type", "application/json");
-                        const url = `../../../api/proveedores/searchSuppliersAll` //searchSuppliers/${userNameBanner}
+                        const url = `../../../api/proveedores/searchSuppliersAll`
                         const response = await fetch(url, {
                             method: "GET",
                             headers: myHeaders,
@@ -1082,7 +1063,9 @@ function messageUpdateOt(
                                     </label>`;
                 
                                 if (supplier.status) {
-                                    supplier.type === `${permisoProveedor}` ? arrayProveedoresEspecificos.push(supplierHTML) : arraySuppliersAll.push(supplierHTML);
+                                    supplier.type === `${permisoProveedor}`
+                                        ? arrayProveedoresEspecificos.push(supplierHTML)
+                                        : arraySuppliersAll.push(supplierHTML);
                                 }    
                             });
                 
@@ -1127,26 +1110,24 @@ function messageUpdateOt(
                                 const radioSelected = document.querySelector('input[name="radioProveedores"]:checked') 
                                 if (result.isConfirmed && radioSelected) {
                                     if (idPermiso==='searchSupplierModal') {
-                                        otSupplier = radioSelected.value
-                                    } else if (idPermiso==='searchSimulacionModal') {
-                                        otSimulation = radioSelected.value
+                                        payload.otSupplier = radioSelected.value
                                     } else {
-                                        otDesign = radioSelected.value
+                                        payload.otFuncion = radioSelected.value
                                     }
-                                    flag = true
+                                    payload.flag = true
                                     // Al cerrar el segundo modal, reabrir el primer modal
-                                    messageUpdateOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDesign, otSimulation, otSupplier, imageOci, flag);
+                                    messageUpdateOt(payload, ociKNumber, otKNumber);
                                     
                                 } else {
                                     const titulo = 'Proveedor no seleccionado',
-                                        message = 'No ha seleccionado ningún usuario!',
+                                        message = 'No ha seleccionado ningún proveedor!',
                                         icon = 'warning'
-                                    messageAlertUser(titulo, message, icon)
-                                    flag = false
+                                    messageAlertSelection(titulo, message, icon)
+                                    payload.flag = false
                                     // Al cerrar el segundo modal, reabrir el primer modal
                                     setTimeout(() => {
-                                        messageUpdateOt(idProjectSelected, ociKNumber, otNumber, otKNumber, opNumber, statusOt, otDescription, otDesign, otSimulation, otSupplier, imageOci, flag);
-                                    }, 1000)
+                                        messageUpdateOt(payload, ociKNumber, otKNumber);
+                                    }, 500)
                                 }
                             });
                             
@@ -1158,43 +1139,25 @@ function messageUpdateOt(
                         const titulo = 'Error',
                             message = `${error}`,
                             icon = 'error'
-                        messageAlertUser(titulo, message, icon)
+                        messageAlertSelection(titulo, message, icon)
                     }
                 }
 
-                searchDesignUserModal.addEventListener('click', async (event) => {
+                searchFuncionModal.addEventListener('click', async (event) => {
                     // Ocultar temporalmente el primer modal
                     Swal.close();
 
-                    let idPermiso = searchDesignUserModal.id
+                    let idFuncion = searchFuncionModal.id
                     event.preventDefault();
 
                     try {
-                        await cargarUsuarioModal(idPermiso);
+                        await cargarFuncionModal(idFuncion);
 
                     } catch (error) {
-                        const titulo = 'Error al cargar los usuarios',
+                        const titulo = 'Error al cargar las funciones',
                             message = error,
                             icon = 'error'
-                        messageAlertUser(titulo, message, icon)
-                    }
-                });
-
-                searchSimulationUserModal.addEventListener('click', async (event) => {
-                    // Ocultar temporalmente el primer modal
-                    Swal.close();
-
-                    let idPermiso = searchSimulationUserModal.id
-                    event.preventDefault();
-
-                    try {
-                        await cargarUsuarioModal(idPermiso);
-
-                    } catch (error) {
-                        const titulo = 'Error al cargar los usuarios',
-                            message = error,
-                            icon = 'error'
-                        messageAlertUser(titulo, message, icon)
+                        messageAlertSelection(titulo, message, icon)
                     }
                 });
 
@@ -1212,11 +1175,11 @@ function messageUpdateOt(
                         const titulo = 'Error al cargar los proveedores',
                             message = error,
                             icon = 'error'
-                        messageAlertUser(titulo, message, icon)
+                        messageAlertSelection(titulo, message, icon)
                     }
                 });
 
-                if (initialFlag) {
+                if (!initialFlag) {
                     btnAceptarPrimerModal = document.getElementById('btnAceptarModal');
                     btnAceptarPrimerModal.style.cursor = "pointer";
                     btnAceptarPrimerModal.disabled = false;
@@ -1225,18 +1188,17 @@ function messageUpdateOt(
             
         }).then((result) => {
             if (result.isConfirmed) {
-                if (otNumber) {
-                    document.getElementById(`designOt`).removeAttribute('disabled')
-                    document.getElementById(`simulationOt`).removeAttribute('disabled')
+                if (payload.otNumber) {
+                    document.getElementById(`funcionOt`).removeAttribute('disabled')
                     document.getElementById(`supplierOt`).removeAttribute('disabled')
                 }
-                document.getElementById(`formUpdateOt${idProjectSelected}`).submit()
+                document.getElementById(`formUpdateOt${payload.idProjectSelected}`).submit()
                 setTimeout(() => {
                     Toast.fire({
                         icon: 'success',
                         title: `La OT# <b>${numberOt}</b>, se modificó con éxito!`
                     })
-                }, 2000)
+                }, 1500)
 
             } else if (result.dismiss === 'cancel') {
                 Swal.fire(
@@ -1280,16 +1242,11 @@ function messageUpdateOt(
 
 //---- Delete OT ----------------
 function messageDeleteOt(
-    statusOt,
-    otNumber,
-    idProjectSelected,
+    payload,
     ociKNumber,
-    otKNumber,
-    otDescription
+    otKNumber
     ) {
-        
-    const descriptionOt = otDescription.slice(13)
-
+        console.log('payload: ', payload)
     const Toast = Swal.mixin({
         toast: true,
         position: 'bottom',
@@ -1300,15 +1257,15 @@ function messageDeleteOt(
 
     const htmlForm = `
         <div class="container m-auto">
-            La OT#<strong>${otNumber}</strong>, Descripcion: "${descriptionOt}",
-            Status: <span class="badge rounded-pill bg-${ statusOt==='Activo' ? 'primary' : 'danger' } text-white">
-                        ${ statusOt==='Activo' ? 'Activo' : 'Inactivo' }
+            La OT#<strong>${payload.otNumber}</strong>, Descripcion: "<b>${payload.otDescription}</b>",
+            Status: <span class="badge rounded-pill bg-${ payload.statusOt==='A' ? 'primary' : 'danger' } text-white">
+                        ${ payload.statusOt==='A' ? 'Activo' : 'Inactivo' }
                     </span>
             y toda su información interna se eliminará completamente.
             <br>
             <hr>
             Está seguro que desea continuar?
-            <form id="formDeleteOt${idProjectSelected}" action="/api/proyectos/deleteOt/${idProjectSelected}" method="post">
+            <form id="formDeleteOt${payload.idProjectSelected}" action="/api/proyectos/deleteOt/${payload.idProjectSelected}" method="post">
                 <fieldset>
                     <input type="hidden" name="ociKNumberHidden" value="${ociKNumber}">
                     <input type="hidden" name="otKNumberHidden" value="${otKNumber}">
@@ -1317,9 +1274,9 @@ function messageDeleteOt(
         </div>    
                     `
     
-    if(idProjectSelected && otNumber) {
+    if(payload.idProjectSelected && payload.otNumber) {
         Swal.fire({
-            title: `Eliminar OT# ${otNumber} - ${descriptionOt}`,
+            title: `Eliminar OT# ${payload.otNumber} - ${payload.otDescription}`,
             position: 'center',
             html: htmlForm,
             icon: 'question',
@@ -1333,15 +1290,15 @@ function messageDeleteOt(
             cancelButtonText: 'Cancelar <i class="fa-solid fa-ban"></i>'
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById(`formDeleteOt${idProjectSelected}`).submit()
+                document.getElementById(`formDeleteOt${payload.idProjectSelected}`).submit()
                 Toast.fire({
                     icon: 'success',
-                    title: `La OT#<strong>${otNumber}</strong>, se eliminó correctamente!`
+                    title: `La OT#<strong>${payload.otNumber}</strong>, se eliminó correctamente!`
                 })
             } else {
                 Swal.fire(
-                    `OT# ${otNumber}`,
-                    `La OT#<b>${otNumber}</b>, no se eliminó!`,
+                    `OT# ${payload.otNumber}`,
+                    `La OT#<b>${payload.otNumber}</b>, no se eliminó!`,
                     'warning'
                 )
                 return false
@@ -1353,7 +1310,7 @@ function messageDeleteOt(
             title: 'Error',
             position: 'center',
             timer: 3500,
-            text: `La OT#<strong>${otNumber}</strong>, no se eliminó correctamente!`,
+            text: `La OT#<strong>${payload.otNumber}</strong>, no se eliminó correctamente!`,
             icon: 'error',
             showCancelButton: false,
             showConfirmButton: false,
@@ -1361,7 +1318,7 @@ function messageDeleteOt(
     }
 }
 
-
+//FIXME:
 function updateBtnCheckSelecMasive(idOci) {     
     const spanIds = [
         "spanCheckSelecMasive", "spanCheckSelecMasiveR14", "spanCheckSelecMasiveProc3d",
@@ -1396,6 +1353,7 @@ function updateBtnCheckSelecMasive(idOci) {
 
         btnMasive.innerHTML = `<i class="fa-solid fa-list-check"></i> Mod. multiple (${cantidadSeleccionados}/${cantidadTotalXTabla})`;
         updateSpans(cantidadSeleccionados);
+
     } else {
         btnSelectAll.title = 'Seleccionar todas las OT';
         btnSelectAll.classList.replace("btn-danger", "btn-primary");
@@ -1414,23 +1372,33 @@ arrayBtnChangeStatusOt.forEach(function(elemento) {
             let regex = /^btnStatusOt/;
 
             // Eliminar el texto inicial de la cadena
-            let idOtOci = elementoId.replace(regex, '')
-            const arrayOciOtSelected = idOtOci.split('_')
-            
-            const statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent,
-                otDescription = document.getElementById(`lastOpDescription${idOtOci}`).textContent,
-                otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent),
-                idProjectSelected = document.getElementById('projectIdHidden').value,
+            let idOtOci = elementoId.replace(regex, ''),
+                arrayOciOtSelected = idOtOci.split('_'),
                 ociKNumber = parseInt(arrayOciOtSelected[0]),
                 otKNumber = parseInt(arrayOciOtSelected[1])
+
+            const payload = {
+                idProjectSelected : document.getElementById('projectIdHidden').value,
+                otNumber : parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent),
+                opNumber : parseInt(document.getElementById(`lastOpNumber${idOtOci}`).textContent),
+                statusOt : cleanString(document.getElementById(`lastOtStatus${idOtOci}`).textContent),
+                otItem : parseInt(document.getElementById(`lastItemNumber${idOtOci}`).textContent),
+                otPrio : parseInt(document.getElementById(`lastPrioNumber${idOtOci}`).textContent),
+                otDibujado : parseInt(document.getElementById(`otDibujado${idOtOci}`).textContent),
+                otSymetrico : parseInt(document.getElementById(`otSymetrico${idOtOci}`).textContent),
+                otUnidad : parseInt(document.getElementById(`otUnidad${idOtOci}`).textContent),
+                otDescription : cleanString(document.getElementById(`lastOpDescription${idOtOci}`).textContent),
+                otFuncion :  cleanString(document.getElementById(`otFuncion${idOtOci}`).textContent),
+                otLineaCelda :  cleanString(document.getElementById(`otLineaCelda${idOtOci}`).textContent),
+                otSupplier :  cleanString(document.getElementById(`otSupplier${idOtOci}`).textContent),
+                ociImage : document.getElementById(`imageOciHeader${ociKNumber}`).src,
+                flag : false
+            }
             
             messageChangeOtStatus(
-                cleanString(statusOt),
-                otNumber,
-                idProjectSelected,
+                payload,
                 ociKNumber,
-                otKNumber,
-                otDescription
+                otKNumber
             )
         })
     }
@@ -1444,34 +1412,33 @@ arrayBtnUpdateOt.forEach(function(elemento) {
             let regex = /^btnEditOt/;
 
             // Eliminar el texto inicial de la cadena
-            let idOtOci = elementoId.replace(regex, '')
-            const arrayOciOtSelected = idOtOci.split('_'),
-                idProjectSelected = document.getElementById('projectIdHidden').value,
+            let idOtOci = elementoId.replace(regex, ''),
+                arrayOciOtSelected = idOtOci.split('_'),
                 ociKNumber = parseInt(arrayOciOtSelected[0]),
-                otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent),
-                otKNumber = parseInt(arrayOciOtSelected[1]),
-                opNumber = parseInt(document.getElementById(`lastOpNumber${idOtOci}`).textContent),
-                statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent,
-                otDescription = document.getElementById(`lastOpDescription${idOtOci}`).textContent,
-                otDesign =  document.getElementById(`otDesign${idOtOci}`).textContent,
-                otSimulation =  document.getElementById(`otSimulation${idOtOci}`).textContent,
-                otSupplier =  document.getElementById(`otSupplier${idOtOci}`).textContent,
-                ociImage = document.getElementById(`imageOciHeader${ociKNumber}`).src
-            let flag = false
+                otKNumber = parseInt(arrayOciOtSelected[1])
+
+            const payload = {
+                idProjectSelected : document.getElementById('projectIdHidden').value,
+                otNumber : parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent),
+                opNumber : parseInt(document.getElementById(`lastOpNumber${idOtOci}`).textContent),
+                statusOt : cleanString(document.getElementById(`lastOtStatus${idOtOci}`).textContent),
+                otItem : parseInt(document.getElementById(`lastItemNumber${idOtOci}`).textContent),
+                otPrio : parseInt(document.getElementById(`lastPrioNumber${idOtOci}`).textContent),
+                otDibujado : parseInt(document.getElementById(`otDibujado${idOtOci}`).textContent),
+                otSymetrico : parseInt(document.getElementById(`otSymetrico${idOtOci}`).textContent),
+                otUnidad : parseInt(document.getElementById(`otUnidad${idOtOci}`).textContent),
+                otDescription : cleanString(document.getElementById(`lastOpDescription${idOtOci}`).textContent),
+                otFuncion :  cleanString(document.getElementById(`otFuncion${idOtOci}`).textContent),
+                otLineaCelda :  cleanString(document.getElementById(`otLineaCelda${idOtOci}`).textContent),
+                otSupplier :  cleanString(document.getElementById(`otSupplier${idOtOci}`).textContent),
+                ociImage : document.getElementById(`imageOciHeader${ociKNumber}`).src,
+                flag : false
+            }
 
             messageUpdateOt(
-                idProjectSelected,
+                payload,
                 ociKNumber,
-                otNumber,
                 otKNumber,
-                opNumber,
-                cleanString(statusOt),
-                cleanString(otDescription),
-                cleanString(otDesign),
-                cleanString(otSimulation),
-                cleanString(otSupplier),
-                ociImage,
-                flag
             )
         })
     }
@@ -1485,22 +1452,33 @@ arrayBtnDeleteOt.forEach(function(elemento) {
             let regex = /^btnDeleteOt/;
 
             // Eliminar el texto inicial de la cadena
-            let idOtOci = elementoId.replace(regex, '')
-            const arrayOciOtSelected = idOtOci.split('_'),
-                statusOt = document.getElementById(`lastOtStatus${idOtOci}`).textContent,
-                otNumber = parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent),
-                idProjectSelected = document.getElementById('projectIdHidden').value,
+            let idOtOci = elementoId.replace(regex, ''),
+                arrayOciOtSelected = idOtOci.split('_'),
                 ociKNumber = parseInt(arrayOciOtSelected[0]),
-                otKNumber = parseInt(arrayOciOtSelected[1]),
-                otDescription = document.getElementById(`lastOpDescription${idOtOci}`).textContent
+                otKNumber = parseInt(arrayOciOtSelected[1])
+
+            const payload = {
+                idProjectSelected : document.getElementById('projectIdHidden').value,
+                otNumber : parseInt(document.getElementById(`lastOtNumber${idOtOci}`).textContent),
+                opNumber : parseInt(document.getElementById(`lastOpNumber${idOtOci}`).textContent),
+                statusOt : cleanString(document.getElementById(`lastOtStatus${idOtOci}`).textContent),
+                otItem : parseInt(document.getElementById(`lastItemNumber${idOtOci}`).textContent),
+                otPrio : parseInt(document.getElementById(`lastPrioNumber${idOtOci}`).textContent),
+                otDibujado : parseInt(document.getElementById(`otDibujado${idOtOci}`).textContent),
+                otSymetrico : parseInt(document.getElementById(`otSymetrico${idOtOci}`).textContent),
+                otUnidad : parseInt(document.getElementById(`otUnidad${idOtOci}`).textContent),
+                otDescription : cleanString(document.getElementById(`lastOpDescription${idOtOci}`).textContent),
+                otFuncion :  cleanString(document.getElementById(`otFuncion${idOtOci}`).textContent),
+                otLineaCelda :  cleanString(document.getElementById(`otLineaCelda${idOtOci}`).textContent),
+                otSupplier :  cleanString(document.getElementById(`otSupplier${idOtOci}`).textContent),
+                ociImage : document.getElementById(`imageOciHeader${ociKNumber}`).src,
+                flag : false
+            }
             
             messageDeleteOt(
-                cleanString(statusOt),
-                otNumber,
-                idProjectSelected,
+                payload,
                 ociKNumber,
-                otKNumber,
-                otDescription
+                otKNumber
             )
         })
     }
@@ -1513,8 +1491,7 @@ arrayCheckBoxSelect.forEach(function(element) {
         const idOtOci = (event.target.id).slice(11)
         
         let rowSelectCheck = []
-        document.getElementsByName(`rowSelected${idOtOci}`) ? 
-            rowSelectCheck = Array.from(document.getElementsByName(`rowSelected${idOtOci}`)) : null
+        if (document.getElementsByName(`rowSelected${idOtOci}`)) rowSelectCheck = Array.from(document.getElementsByName(`rowSelected${idOtOci}`))
 
         let idOci = extractNumbers(element.id)[0]
         //let idOt = extractNumbers(element.id)[1]
@@ -1523,12 +1500,13 @@ arrayCheckBoxSelect.forEach(function(element) {
 
         for (let q=0; q<rowSelectCheck.length; q++) { //12
             rowSelectCheck[q] && rowSelectCheck[q].style.cssText === "height: 7vh;"
-            ? rowSelectCheck[q].setAttribute('style', "height: 7vh; background-color: #c4f0fd;")
-            : rowSelectCheck[q].setAttribute('style', "height: 7vh;")
+                ? rowSelectCheck[q].setAttribute('style', "height: 7vh; background-color: #c4f0fd;")
+                : rowSelectCheck[q].setAttribute('style', "height: 7vh;")
         }
     })
 })
 
+//FIXME:
 arrayBtnCheckSelectionAll.forEach(element => {
     let seleccionados = seleccionarFilas = false;
 
@@ -1553,16 +1531,14 @@ arrayBtnCheckSelectionAll.forEach(element => {
                         rowsSelectCheck = document.getElementsByName(`rowSelected${idOciOt}`),
                         statusOt = document.getElementById(`lastOtStatus${idOciOt}`);
 
-                    if (rowsSelectCheck && statusOt.innerText === 'Activo') {
-                        arrQueryRows.push(rowsSelectCheck);
-                    }
+                    if (rowsSelectCheck && statusOt.innerText === 'A') arrQueryRows.push(rowsSelectCheck)
                 }
             });
 
             const toggleFilas = () => {
                 arrQueryRows.forEach(nodeList => {
                     Array.from(nodeList).forEach(row => {
-                        row.style = seleccionarFilas ? "height: 7vh;" : "height: 7vh; background-color: rgb(196, 240, 253);";
+                        row.style = seleccionarFilas ? "height: 7vh;" : "height: 7vh; background-color: #c4f0fd;"; //rgb(196, 240, 253)
                     });
                 });
                 seleccionarFilas = !seleccionarFilas;
@@ -1570,9 +1546,7 @@ arrayBtnCheckSelectionAll.forEach(element => {
 
             const toggleCheckboxes = () => {
                 checkboxes.forEach(checkbox => {
-                    if (!checkbox.disabled) {
-                        checkbox.checked = !seleccionados;
-                    }
+                    if (!checkbox.disabled) checkbox.checked = !seleccionados;
                 });
                 seleccionados = !seleccionados;
             };
@@ -1605,11 +1579,10 @@ arrayBtnCheckSelectionAll.forEach(element => {
     }
 });
 
-
-//-----Btns Buscar en BBDD el Usuario Seguidor de Diseño/Simulación --------------
+//-----Btns Buscar en BBDD la Funcion y Proveedor --------------
 const userNameBanner = document.getElementById('userNameBanner').innerText
 
-function messageAlertUser(titulo, message, icon){
+function messageAlertSelection(titulo, message, icon){
     Swal.fire(
         titulo, 
         message, 
@@ -1618,80 +1591,77 @@ function messageAlertUser(titulo, message, icon){
 }
 
 
-async function cargarUsuario(idPermiso, idPermisoNumero) {
+async function cargarFuncion(idFuncion, idPermisoNumero) {
     const permisos = {
-        'searchDesignUser': {
-            permisoUsuario: 'diseno',
-            tituloSeguimiento: 'Seguimiento Diseño',
-            inputTarget: `internoDiseno${idPermisoNumero}`
+        'searchFuncion': {
+            permiso: 'funcion',
+            tituloSeguimiento: 'Lista funciones',
+            inputTarget: `otFuncion${idPermisoNumero}`
         },
-        'searchDesignUserModal': {
-            permisoUsuario: 'diseno',
-            tituloSeguimiento: 'Seguimiento Diseño',
-            inputTarget: `internoDiseno${idPermisoNumero}`
-        },
-        'searchSimulationUser': {
-            permisoUsuario: 'simulacion',
-            tituloSeguimiento: 'Seguimiento Simulación',
-            inputTarget: `internoSimulacion${idPermisoNumero}`
+        'searchFuncionModal': {
+            permiso: 'funcion',
+            tituloSeguimiento: 'Lista funciones',
+            inputTarget: `otFuncion${idPermisoNumero}`
         },
         'searchSupplier': {
-            permisoUsuario: 'proveedor',
+            permiso: 'proveedor',
             tituloSeguimiento: 'Proveedor',
             inputTarget: `externoDiseno${idPermisoNumero}`
         }
     };
     
-    const { permisoUsuario, tituloSeguimiento, inputTarget } = permisos[idPermiso] || {};
+    const { permiso, tituloSeguimiento, inputTarget } = permisos[idFuncion] || {};
 
-    if (!permisoUsuario || !tituloSeguimiento || !inputTarget) {
-        throw new Error(`Permiso no encontrado para id:', ${idPermiso}`)
+    if (!permiso || !tituloSeguimiento || !inputTarget) {
+        throw new Error(`Función no encontrada para id:', ${idFuncion}`)
     }
 
     try {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        const url = `../../../api/usuarios/searchUsers/${userNameBanner}`
+        const url = `../../../api/lineas/searchFunciones`
         const response = await fetch(url, {
             method: "GET",
             headers: myHeaders,
             mode: 'cors',
             cache: 'default',
         });
-        
+
         if(!response.ok ){
             throw new Error(`Error en la solicitud`);
         }
 
-        const users = await response.json(),
-            arrayUsuariosEspecificos = [], arrayUsersAll = [];
+        const funciones = await response.json()
+        let arrayFuncionesEspecificas = [], arrayFuncionesAll = [];
 
-        if (users && users.length > 0) {
-            users.forEach((user, i) => {
-                const userHTML = `
+        if (funciones && funciones.length > 0) {
+            funciones.forEach((funcion, i) => {
+                const funcionHTML = `
                     <label>
-                        <span id="${user._id}" class="badge rounded-pill ${user.permiso === `${permisoUsuario}` ? 'bg-info' : 'bg-light'} text-dark my-2">
+                        <span id="${funcion._id}" class="badge rounded-pill ${funcion.especifica ? 'bg-warning' : 'bg-info'} text-dark my-2">
                             <input id="${i}" class="form-check-input mb-1" type="radio"
-                                name="radioUsuarios" value="${user.name}, ${user.lastName}">
-                            ${user.name} ${user.lastName}
+                                name="radioFunciones" value="${funcion.funcion}">
+                            ${funcion.funcion}
                         </span>
                     </label>`;
 
-                if (user.status) {
-                    user.permiso === `${permisoUsuario}` ? arrayUsuariosEspecificos.push(userHTML) : arrayUsersAll.push(userHTML);
+                if (funcion.status) {
+                    funcion.especifica
+                        ? arrayFuncionesEspecificas.push(funcionHTML)
+                        : arrayFuncionesAll.push(funcionHTML);
                 }    
             });
 
             const html = `
                 <hr>
-                <label>${tituloSeguimiento}</label>
+                <label>Funciones Generales</label>
                 <div name='container' class="container">
-                    ${arrayUsuariosEspecificos.join(' ')}
+                    ${arrayFuncionesAll.join(' ')}
                 </div>
                 <hr>
-                <label>Usuarios</label>
+                <label>${tituloSeguimiento} (Solo const. Mec)</label>
                 <div name='container' class="container">
-                    ${arrayUsersAll.join(' ')}
+                    ${arrayFuncionesEspecificas.join(' ')}
                 </div>
                 <hr>`;
 
@@ -1710,7 +1680,7 @@ async function cargarUsuario(idPermiso, idPermisoNumero) {
                     btnAceptar.style.cursor = "not-allowed";
                     btnAceptar.disabled = true;
 
-                    const radios = document.getElementsByName('radioUsuarios');
+                    const radios = document.getElementsByName('radioFunciones');
                     radios.forEach((radio) => {
                         radio.addEventListener('change', () => {
                             btnAceptar.style.cursor = "pointer";
@@ -1718,29 +1688,30 @@ async function cargarUsuario(idPermiso, idPermisoNumero) {
                         });
                     });
                 }
-            }).then((result) => {
-                const radioSelected = document.querySelector('input[name="radioUsuarios"]:checked');
-                if (result.isConfirmed && radioSelected) {
-                    const inputUserSelected = document.getElementById(`${inputTarget}`);
-                    inputUserSelected.value = radioSelected.value;
 
+            }).then((result) => {
+                const radioSelected = document.querySelector('input[name="radioFunciones"]:checked');
+                if (result.isConfirmed && radioSelected) {
+                    const inputFuncionSelected = document.getElementById(`${inputTarget}`);
+                    inputFuncionSelected.value = radioSelected.value;
+                    Swal.close()
                 } else {
-                    const titulo = 'Usuario no seleccionado',
-                        message = 'No ha seleccionado ningún usuario!',
+                    const titulo = 'Función no seleccionada',
+                        message = 'No ha seleccionado ninguna función!',
                         icon = 'warning'
-                    messageAlertUser(titulo, message, icon)
+                    messageAlertSelection(titulo, message, icon)
                 }
             });
 
         } else {
-            throw new Error(`No hay usuarios que seleccionar`);
+            throw new Error(`No hay funciones que seleccionar`);
         }
 
     } catch (error) {
-        const titulo = 'Error'
-        const message = `${error}`
-        const icon = 'error'
-        messageAlertUser(titulo, message, icon)
+        const titulo = 'Error',
+            message = `${error}`,
+            icon = 'error'
+        messageAlertSelection(titulo, message, icon)
     }
     disabledBtnAceptar()
 }
@@ -1800,22 +1771,23 @@ async function cargarProveedor(idPermiso, idPermisoNumero) {
                     </label>`;
 
                 if (supplier.status) {
-                    supplier.type === `${permisoProveedor}` ? arrayProveedoresEspecificos.push(supplierHTML) : arraySuppliersAll.push(supplierHTML);
+                    supplier.type === `${permisoProveedor}`
+                        ? arrayProveedoresEspecificos.push(supplierHTML)
+                        : arraySuppliersAll.push(supplierHTML);
                 }    
             });
 
-            const html = `
-                <hr>
-                <label>${tituloSeguimiento}</label>
-                <div name='container' class="container">
-                    ${arrayProveedoresEspecificos.join(' ')}
-                </div>
-                <hr>
-                <label>Proveedores Simulación</label>
-                <div name='container' class="container">
-                    ${arraySuppliersAll.join(' ')}
-                </div>
-                <hr>`;
+            const html = `<hr>
+                            <label>${tituloSeguimiento}</label>
+                            <div name='container' class="container">
+                                ${arrayProveedoresEspecificos.join(' ')}
+                            </div>
+                            <hr>
+                            <label>Proveedores Simulación</label>
+                            <div name='container' class="container">
+                                ${arraySuppliersAll.join(' ')}
+                            </div>
+                        <hr>`;
 
             Swal.fire({
                 title: 'Proveedores',
@@ -1845,12 +1817,12 @@ async function cargarProveedor(idPermiso, idPermisoNumero) {
                 if (result.isConfirmed && radioSelected) {
                     const inputSupplierSelected = document.getElementById(`${inputTarget}`);
                     inputSupplierSelected.value = radioSelected.value;
-
+                    Swal.close();
                 } else {
-                    const titulo = 'Proveedor no seleccionado'
-                    const message = 'No ha seleccionado ningún proveedor!'
-                    const icon = 'warning'
-                    messageAlertUser(titulo, message, icon)
+                    const titulo = 'Proveedor no seleccionado',
+                        message = 'No ha seleccionado ningún proveedor!',
+                        icon = 'warning'
+                    messageAlertSelection(titulo, message, icon)
                 }
             });
 
@@ -1859,18 +1831,18 @@ async function cargarProveedor(idPermiso, idPermisoNumero) {
         }
 
     } catch (error) {
-        const titulo = 'Error'
-        const message = `${error}`
-        const icon = 'error'
-        messageAlertUser(titulo, message, icon)
+        const titulo = 'Error',
+            message = `${error}`,
+            icon = 'error'
+        messageAlertSelection(titulo, message, icon)
     }
     disabledBtnAceptar()
 }
 
-arrayBtnSearchDesignerUser.forEach(function(element) {
+arrayBtnSearchFuncion.forEach(function(element) {
     if (element) {
         element.addEventListener('click', async (event) => {
-            let idPermiso = (element.id).replace(/\d+$/, '');
+            let idFuncion = (element.id).replace(/\d+$/, '');
             event.preventDefault();
 
             function obtenerNumeroFinal(element) {
@@ -1882,44 +1854,17 @@ arrayBtnSearchDesignerUser.forEach(function(element) {
             event.stopImmediatePropagation();
 
             try {
-                await cargarUsuario(idPermiso, idPermisoNumero);
+                await cargarFuncion(idFuncion, idPermisoNumero);
 
             } catch (error) {
-                const titulo = 'Error al cargar los usuarios'
-                const message = error
-                const icon = 'error'
-                messageAlertUser(titulo, message, icon)
+                const titulo = 'Error al cargar las funciones',
+                    message = error,
+                    icon = 'error'
+                messageAlertSelection(titulo, message, icon)
             }
         }, { once: true });
     }
 });
-
-arrayBtnSearchSimulationUser.forEach(function(element) {
-    if (element) {
-        element.addEventListener('click', async (event) => {
-            let idPermiso = (element.id).replace(/\d+$/, '');
-            event.preventDefault();
-
-            function obtenerNumeroFinal(element) {
-                let match = element.id.match(/\d+$/);
-                return match ? parseInt(match[0], 10) : null;
-            }
-            let idPermisoNumero =  obtenerNumeroFinal(element)
-            event.stopPropagation();
-            event.stopImmediatePropagation();
-
-            try {
-                await cargarUsuario(idPermiso, idPermisoNumero);
-
-            } catch (error) {
-                const titulo = 'Error al cargar los usuarios'
-                const message = error
-                const icon = 'error'
-                messageAlertUser(titulo, message, icon)
-            }
-        }, { once: true });
-    }
-})
 
 arrayBtnSearchSupplier.forEach(function(element) {
     if (element) {
@@ -1939,16 +1884,15 @@ arrayBtnSearchSupplier.forEach(function(element) {
                 await cargarProveedor(idPermiso, idPermisoNumero);
 
             } catch (error) {
-                const titulo = 'Error al cargar los proveedores'
-                const message = error
-                const icon = 'error'
-                messageAlertUser(titulo, message, icon)
+                const titulo = 'Error al cargar los proveedores',
+                    message = error,
+                    icon = 'error'
+                messageAlertSelection(titulo, message, icon)
             }
         }, { once: true });
     }
 })
 //-----End Btns Buscar en BBDD el Usuario Seguidor de Diseño/Simulación -----------
-
 
 function messageNewOt(ociNumber, otArray, ociAlias) {
     const Toast = Swal.mixin({
@@ -1972,16 +1916,17 @@ function messageNewOt(ociNumber, otArray, ociAlias) {
         showCancelButton: true,
         showConfirmButton: true,
     }).then((result) => {
+
         if (result.isConfirmed) {
             // Verifica que el formulario existe
-            const formNewOt = document.getElementById('formNewOt');
+            const formNewOt = document.getElementById('formNewOtLineas');
             if (!formNewOt) {
                 console.error('Formulario no encontrado');
                 return;
             }
             setTimeout(() => {
                 document.querySelectorAll('[disabled]').forEach(el => el.removeAttribute('disabled'));
-                document.getElementById("formNewOt").submit()
+                document.getElementById("formNewOtLineas").submit()
             }, 750)
 
             setTimeout(() => {
@@ -2010,6 +1955,7 @@ btnCreateNewOt.addEventListener('click', (event) => {
         const otQuantity = parseInt(document.getElementById('otQuantity').value)
         let otArray = [document.getElementById(`otNumber`).value]
         let ociAlias = document.getElementById('ociAliasHidden').value
+        // console.log('otArray: ', otArray, otQuantity)
         if (otQuantity > 1) {
             for (let j = 1; j < otQuantity; j++) {
                 let otNumberSelected = document.getElementById(`otNumber${j}`).value
@@ -2031,6 +1977,7 @@ btnCreateNewOt.addEventListener('click', (event) => {
     }
 })
 
+
 //---------- Obtiene la lista de OT ------------
 function getOtList(i) {
     const parentDiv = document.getElementById(`tablaGeneral${i}`),
@@ -2042,7 +1989,7 @@ function getOtList(i) {
     const getElementText = id => document.getElementById(id)?.innerText || null;
 
     // Arrays para almacenar los datos
-    let arrayOtNumber = [], arrayOpNumber = [], arrayOtStatus = [], arrayDescripcionOt = [],
+    let arrayOtNumber = [], arrayOpNumber = [], arrayOtStatus = [], arrayOtItem = [], arrayOtPrio = [], arrayDescripcionOt = [],
     arrayOnumber = [], arrayNnumber = [], arraySelectedCheck = [], arrayONumberSelect = [];
     
     // Configuración de mapeo de IDs a arrays
@@ -2050,6 +1997,8 @@ function getOtList(i) {
         { prefix: 'lastOtNumber', array: arrayOtNumber, isOt: true  },
         { prefix: 'lastOpNumber', array: arrayOpNumber },
         { prefix: 'lastOtStatus', array: arrayOtStatus },
+        { prefix: 'lastOtItem', array: arrayOtItem },
+        { prefix: 'lastOtPrio', array: arrayOtPrio },
         { prefix: 'lastOpDescription', array: arrayDescripcionOt },
     ];
 
@@ -2082,6 +2031,8 @@ function getOtList(i) {
             arrayOtNumber,
             arrayOpNumber,
             arrayOtStatus,
+            arrayOtItem,
+            arrayOtPrio,
             arrayDescripcionOt,
             arrayOnumber,
             arrayNnumber,
@@ -2430,7 +2381,7 @@ const Toast = Swal.mixin({
         showConfirmButton: false,
         timer: 4000,
         timerProgressBar: false,
-    })
+})
 
 function swalFireAlert(
     titulo,
@@ -4106,7 +4057,7 @@ function updateInputsText() {
         const idInputTextToChange = allInputsRange[y].id.substring(0, allInputsRange[y].id.length - 4) + 'Disabled' + allInputsRange[y].id.substring(allInputsRange[y].id.length - 4)
         const idInputRangeHidden = allInputsRange[y].id.substring(0, allInputsRange[y].id.length - 4) + 'Hidden' + allInputsRange[y].id.substring(allInputsRange[y].id.length - 4)
         // Obtener el valor del slider   
-        var valorSlider = document.getElementById(`${idInputRange}`).value
+        let valorSlider = document.getElementById(`${idInputRange}`).value
 
         // Actualizar el campo de texto con el valor del slider
         if (valorSlider) {
@@ -4121,10 +4072,10 @@ function updateInputsSelect () {
     let arrayInputSelectHidden = [], allInputsSelect = []
 
     for (let i = 0; i<varLimMaxOtProyecto; i++) { //variable limite maximo de OT por proyecto
-        document.getElementById(`tablaGeneral${i}`) ? arrayInputSelectHidden.push(i) : null
+        if (document.getElementById(`tablaGeneral${i}`) ) arrayInputSelectHidden.push(i)
     }
     
-    arrayInputSelectHidden !=[] ? allInputsSelect = document.querySelectorAll('select') : null
+    if (arrayInputSelectHidden !=[] ) allInputsSelect = document.querySelectorAll('select')
 
     let largoArrayInputsSelect = parseInt((allInputsSelect.length)-1)
     for (let y=0; y < largoArrayInputsSelect; y++) {
@@ -4136,20 +4087,22 @@ function updateInputsSelect () {
 
 function disabledBtnAceptar () {
     let btnAceptarModal = document.getElementsByClassName('swal2-confirm');
-    const allInputs = document.querySelectorAll('input[type="text"],input[type="number"],select,textarea,input[type="file"]' )
-    const allInputsRange = document.querySelectorAll('input[type="range"]')
-    const allInputsCheck = document.querySelectorAll('input[type="checkbox"]')
-    const allInputsRadio = document.querySelectorAll('input[type="radio"]')
-    const checkbox = document.getElementById('confirmationNumberOt')
-    const otNumberDisabled = document.getElementById('numberOtModal')
+    const allInputs = document.querySelectorAll('input[type="text"],input[type="number"],select,textarea,input[type="file"]'),
+        allInputsRange = document.querySelectorAll('input[type="range"]'),
+        allInputsCheck = document.querySelectorAll('input[type="checkbox"]'),
+        allInputsRadio = document.querySelectorAll('input[type="radio"]'),
+        checkbox = document.getElementById('confirmationNumberOt'),
+        otNumberDisabled = document.getElementById('numberOtModal')
 
     allInputs.forEach(function(input) {
         input.value ?
             input.addEventListener('change', (event) => {
                 event.preventDefault()
                 input.classList.add("border-primary", "border-2", "shadow")
-                btnAceptarModal[0].removeAttribute('disabled')
-                btnAceptarModal[0].style = "cursor: pointer;"
+                if (btnAceptarModal && btnAceptarModal.length > 0) {
+                    btnAceptarModal[0].removeAttribute('disabled')
+                    btnAceptarModal[0].style = "cursor: pointer;"
+                }
             })    
         : null       
     })
@@ -4159,8 +4112,10 @@ function disabledBtnAceptar () {
             input.addEventListener('change', (event) => {
                 event.preventDefault()
                 input.classList.add("drag__bar")
-                btnAceptarModal[0].removeAttribute('disabled')
-                btnAceptarModal[0].style = "cursor: pointer;"
+                if (btnAceptarModal) {
+                    btnAceptarModal[0].removeAttribute('disabled')
+                    btnAceptarModal[0].style = "cursor: pointer;"
+                }
             })    
         : null
     })
@@ -4170,13 +4125,14 @@ function disabledBtnAceptar () {
             input.addEventListener('change', (event) => {
                 event.preventDefault()
                 input.classList.toggle("bg-danger")
-                btnAceptarModal[0].removeAttribute('disabled')
-                btnAceptarModal[0].style = "cursor: pointer;"
+                if (btnAceptarModal) {
+                    btnAceptarModal[0].removeAttribute('disabled')
+                    btnAceptarModal[0].style = "cursor: pointer;"
+                }
 
-                checkbox.checked ? 
-                    otNumberDisabled.removeAttribute('disabled')
-                :
-                    otNumberDisabled.setAttribute('disabled', 'true')
+                checkbox.checked
+                    ? otNumberDisabled.removeAttribute('disabled')
+                    : otNumberDisabled.setAttribute('disabled', 'true')
             })    
         : null
     })
@@ -4331,7 +4287,7 @@ let inputsDeTexto = document.querySelectorAll('input[type="text"]')
 
             // Verificar si la tecla presionada es un carácter especial
             if (forbiddenChars.test(key)) {
-                event.preventDefault() // Cancelar el evento para evitar que se ingrese el carácter
+                event.preventDefault()
                 input.classList.toggle("border", "border-danger", "border-2")
             }
         })

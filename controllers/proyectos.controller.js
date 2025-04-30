@@ -171,6 +171,9 @@ class ProjectsController {
             expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo
+            console.log('req.params: ', req.params)
+            console.log('proyecto.control-id.id: ', id)
+
         if (id) {
             try {
                 const usuario = await this.users.getUserByUsername(username)
@@ -178,7 +181,7 @@ class ProjectsController {
     
                 const proyecto = await this.projects.selectProjectByProjectId(id)
                 !proyecto ? catchError401_1(req, res, next) : null
-    
+                // console.log('proyecto.control: ', proyecto)
                 const idCliente = proyecto[0].client[0]._id
                 const cliente = await this.clients.getClientByProjectId(idCliente)
                 !cliente ? catchError401(req, res, next) : null
@@ -189,18 +192,34 @@ class ProjectsController {
                 const userCart = await this.carts.getCartByUserId(usuario._id)
                 
                 const csrfToken = csrfTokens.create(req.csrfSecret);
+
                 setTimeout(() => {
-                    return res.render('projectSelectedDetail', {
-                        proyecto,
-                        username,
-                        userInfo,
-                        userCart,
-                        ordenes,
-                        expires,
-                        cliente,
-                        data,
-                        csrfToken
-                    })
+                    if (proyecto[0].uNegocio === 'matrices') {
+                        return res.render('projectSelectedDetail', {
+                            proyecto,
+                            username,
+                            userInfo,
+                            userCart,
+                            ordenes,
+                            expires,
+                            cliente,
+                            data,
+                            csrfToken
+                        })
+
+                    } else {
+                        return res.render('projectLineasSelectedDetail', {
+                            proyecto,
+                            username,
+                            userInfo,
+                            userCart,
+                            ordenes,
+                            expires,
+                            cliente,
+                            data,
+                            csrfToken
+                        })
+                    }
                 }, 100)
     
             } catch (err) {
@@ -427,104 +446,130 @@ class ProjectsController {
     }
 
     addOtToOciProject = async (req, res, next) => {
-        const { id } = req.params,
-            expires = cookie(req)
+        const expires = cookie(req)
         let username = res.locals.username,
             userInfo = res.locals.userInfo;
 
-        if (id) {
-            try {
-                const usuario = await this.users.getUserByUsername(username)
-                !usuario ? catchError401_3(req, res, next) : null
-    
-                const clientId = req.body.clientIdHidden,
-                    cliente = await this.clients.selectClientById(clientId)
-                !cliente ? catchError401(req, res, next) : null
-                
-                const numberOci = parseInt(req.body.ociNumber),
-                    ociNumberK = parseInt(req.body.ociNumberK),
-                    projectId = id || req.body.projectIdHidden,
-                    otQuantity = parseInt(req.body.otQuantity),
-                    userId = userInfo.id,
-                    userCreator = await this.users.getUserById(userId)
-    
-                !userCreator ? catchError401_3(req, res, next) : null
+        try {
+            const usuario = await this.users.getUserByUsername(username)
+            !usuario ? catchError401_3(req, res, next) : null
+
+            const clientId = req.body.clientIdHidden,
+                cliente = await this.clients.selectClientById(clientId)
+            !cliente ? catchError401(req, res, next) : null
+
+            const projectId = req.body.projectIdHidden,
+                projectMain = await this.projects.selectProjectsByMainProjectId(projectId)
+            !projectMain ? catchError401_1(req, res, next) : null
             
-                let arrayOtNumber=[], arrayOpNumber=[],
-                    arrayOpDescription=[], arrayOtStatus=[],
-                    arrayOtDesign=[], arrayOtSimulation=[], arrayOtSupplier=[]
-    
-                const prefixes = [
-                    { prefix: 'otNumber', array: arrayOtNumber },
-                    { prefix: 'opNumber', array: arrayOpNumber },
-                    { prefix: 'opDescription', array: arrayOpDescription },
-                    { prefix: 'otStatus', array: arrayOtStatus },
-                    { prefix: 'internoDiseno', array: arrayOtDesign },
-                    { prefix: 'internoSimulacion', array: arrayOtSimulation },
-                    { prefix: 'externoDiseno', array: arrayOtSupplier }
-                ];
-                // console.log('req.body: ', req.body)
-                for (const key in req.body) {
-                    const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
-                    match ? match.array.push(req.body[key]) : null
-                }
-    
-                const otInformationEmpty = [{
+            const numberOci = parseInt(req.body.ociNumber),
+                ociNumberK = parseInt(req.body.ociNumberK),
+                otQuantity = parseInt(req.body.otQuantity),
+                otTipo = req.body.otType || 'matrices',
+                userId = userInfo.id,
+                userCreator = await this.users.getUserById(userId)
+
+            !userCreator ? catchError401_3(req, res, next) : null
+        
+            let arrayOtNumber=[], arrayOtPrio=[], arrayOpNumber=[],
+                arrayOpDescription=[], arrayOtStatus=[], arrayOtDibujado=[], arrayOtSymetrico=[], arrayOtUnidad=[],
+                arrayOtLineaCelda=[], arrayOtFuncion=[], arrayOtDesign=[], arrayOtSimulation=[], arrayOtSupplier=[]
+
+            const prefixes = [
+                { prefix: 'otNumber', array: arrayOtNumber },
+                { prefix: 'otPrio', array: arrayOtPrio },
+                { prefix: 'opNumber', array: arrayOpNumber },
+                { prefix: 'opDescription', array: arrayOpDescription },
+                { prefix: 'otStatus', array: arrayOtStatus },
+                { prefix: 'otDibujado', array: arrayOtDibujado },
+                { prefix: 'otSymetrico', array: arrayOtSymetrico },
+                { prefix: 'otUnidad', array: arrayOtUnidad },
+                { prefix: 'otLineaCelda', array: arrayOtLineaCelda },
+                { prefix: 'otFuncion', array: arrayOtFuncion },
+                { prefix: 'internoDiseno', array: arrayOtDesign },
+                { prefix: 'internoSimulacion', array: arrayOtSimulation },
+                { prefix: 'externoDiseno', array: arrayOtSupplier }
+            ];
+
+            // console.log('req.body: ', req.body)
+            for (const key in req.body) {
+                const match = prefixes.find(({ prefix }) => key.startsWith(prefix));
+                match ? match.array.push(req.body[key]) : null
+            }
+
+            let otInformationEmpty = [{
                     otInfoR14: [], otInfoProceso: [],
                     otInfoDisenoPrimera: [], otInfoDisenoSegunda: [],
                     otInfoInfo80: [], otInfoInfo100: [],
                     otInfoSim0: [], otInfoSim1: [], otInfoSim2_3: [],
                     otInfoSim4Primera: [], otInfoSim4Segunda: [], otInfoSim5: []
                 }]
-    
-                const arrayOtAddedToOci = []
-                if (otQuantity>0) {
-                    for(let i=0; i<otQuantity; i++) {
-                        let otAddedToOci = {
-                            otNumber: arrayOtNumber[i],
-                            opNumber: arrayOpNumber[i],
-                            opDescription: arrayOpDescription[i],
-                            otStatus: arrayOtStatus[i] == 'on' ? true : false,
-                            otDesign: arrayOtDesign[i],
-                            otSimulation: arrayOtSimulation[i],
-                            otSupplier: arrayOtSupplier[i],
-                            creator: await dataUserCreator(userCreator),
-                            timestamp: new Date(),
-                            modificator: await dataUserModificatorEmpty(),
-                            modifiedOn: "",
-                            otInformation: otInformationEmpty,
-                            otDetalles: []
-                        }
-                        arrayOtAddedToOci.push(otAddedToOci)
+
+            let otInformationLineasEmpty = [{
+                    otInfoSimulacion: [], otInfoIngenieriaMecanica: [],
+                    otInfoIngenieriaAutomatismo: [], otInfoComprasMecanicas: [],
+                    otInfoFabricacionPrimera: [], otInfoFabricacionSegunda: [],
+                    otInfoFabricacionTercera: []
+                }]
+
+
+            const arrayOtAddedToOci = []
+            if (otQuantity>0) {
+                for(let i=0; i<otQuantity; i++) {
+                    let otAddedToOci = {
+                        otNumber: arrayOtNumber[i],
+                        otPrio: arrayOtPrio[i] || 1,
+                        otType: otTipo,
+                        opNumber: arrayOpNumber[i],
+                        opDescription: arrayOpDescription[i],
+                        otStatus: Boolean(true),
+                        otDibujado: arrayOtDibujado[i] || 1,
+                        otSymetrico: arrayOtSymetrico[i] || 0,
+                        otUnidad: arrayOtUnidad[i] || 1,
+                        otLineaCelda: arrayOtLineaCelda[i] || 'No definida',
+                        otFuncion: arrayOtFuncion[i] || 'No definida',
+                        otDesign: arrayOtDesign[i] || 'No definido',
+                        otSimulation: arrayOtSimulation[i] || 'No definido',
+                        otSupplier: arrayOtSupplier[i],
+                        creator: await dataUserCreator(userCreator),
+                        timestamp: new Date(),
+                        modificator: await dataUserModificatorEmpty(),
+                        modifiedOn: null,
+                        otInformation: otInformationEmpty,
+                        otInformationLineas: otInformationLineasEmpty,
+                        otDetalles: []
                     }
-    
-                } else {
-                    catchError400_1(req, res, next)
+                    arrayOtAddedToOci.push(otAddedToOci)
                 }
-    
-                await this.projects.addOtToOciProject(
-                    projectId,
-                    numberOci,
-                    ociNumberK,
-                    arrayOtAddedToOci
-                )
-    
-                await this.clients.updateClient(
-                    clientId, 
-                    cliente, 
-                    await dataUserModificatorNotEmpty(userCreator)
-                )
-    
-                const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
-                !proyecto || !cliente ? catchError401_1(req, res, next) : null
-    
-                const ordenes = await this.orders.getAllOrders()
-                !ordenes ? catchError400_5(req, res, next) : null
-    
-                const userCart = await this.carts.getCartByUserId(usuario._id)
-    
-                const csrfToken = csrfTokens.create(req.csrfSecret);
-                setTimeout(() => {
+
+            } else {
+                catchError400_1(req, res, next)
+            }
+
+            await this.projects.addOtToOciProject(
+                projectId,
+                numberOci,
+                ociNumberK,
+                arrayOtAddedToOci
+            )
+
+            await this.clients.updateClient(
+                clientId, 
+                cliente, 
+                await dataUserModificatorNotEmpty(userCreator)
+            )
+
+            const proyecto = await this.projects.selectProjectsByMainProjectId(projectId)
+            !proyecto || !cliente ? catchError401_1(req, res, next) : null
+
+            const ordenes = await this.orders.getAllOrders()
+            !ordenes ? catchError400_5(req, res, next) : null
+
+            const userCart = await this.carts.getCartByUserId(usuario._id)
+
+            const csrfToken = csrfTokens.create(req.csrfSecret);
+            setTimeout(() => {
+                if (proyecto[0].uNegocio === 'matrices') {
                     return res.render('projectSelectedDetail', {
                         proyecto,
                         username,
@@ -536,12 +581,26 @@ class ProjectsController {
                         data,
                         csrfToken
                     })
-                }, 400)
-    
-            } catch (err) {
-                catchError500(err, req, res, next)
-            }
+
+                } else {
+                    return res.render('projectLineasSelectedDetail', {
+                        proyecto,
+                        username,
+                        userInfo,
+                        userCart,
+                        ordenes,
+                        expires,
+                        cliente,
+                        data,
+                        csrfToken
+                    })
+                }
+            }, 400)
+
+        } catch (err) {
+            catchError500(err, req, res, next)
         }
+        
     }
 
     updateStatusProject = async (req, res, next) => {
@@ -786,23 +845,18 @@ class ProjectsController {
                 const ociKNumberHidden = parseInt(req.body.ociKNumberHidden)
                 const otKNumberHidden = parseInt(req.body.otKNumberHidden)
             
-                await this.projects.updateStatusOt(
-                    id, 
-                    mainProyecto,
-                    statusOtHidden,
-                    ociKNumberHidden,
-                    otKNumberHidden,
-                    await dataUserModificatorNotEmpty(userCreator)
-                )
-    
-                await this.clients.updateClient(
-                    clientId, 
-                    cliente, 
-                    await dataUserModificatorNotEmpty(userCreator)
-                )
-    
                 const statusOtHidden = req.body.statusOtHidden
                 if (validateSelectField(statusOtHidden)) {
+
+                    await this.projects.updateStatusOt(
+                        id, 
+                        mainProyecto,
+                        statusOtHidden,
+                        ociKNumberHidden,
+                        otKNumberHidden,
+                        await dataUserModificatorNotEmpty(userCreator)
+                    )
+                
                     const proyecto = await this.projects.selectProjectsByMainProjectId(id)
                     !proyecto ? catchError401_1(req, res, next) : null
     
@@ -813,17 +867,32 @@ class ProjectsController {
                     
                     const csrfToken = csrfTokens.create(req.csrfSecret);
                     setTimeout(() => {
-                        return res.render('projectSelectedDetail', {
-                            proyecto,
-                            username,
-                            userInfo,
-                            userCart,
-                            ordenes,
-                            expires,
-                            cliente,
-                            data,
-                            csrfToken
-                        })
+                        if (proyecto[0].uNegocio === 'matrices') {
+                            return res.render('projectSelectedDetail', {
+                                proyecto,
+                                username,
+                                userInfo,
+                                userCart,
+                                ordenes,
+                                expires,
+                                cliente,
+                                data,
+                                csrfToken
+                            })
+
+                        } else {
+                            return res.render('projectLineasSelectedDetail', {
+                                    proyecto,
+                                    username,
+                                    userInfo,
+                                    userCart,
+                                    ordenes,
+                                    expires,
+                                    cliente,
+                                    data,
+                                    csrfToken
+                                })
+                        }
                     }, 400)
     
                 } else {
@@ -831,7 +900,7 @@ class ProjectsController {
                 }
     
                 function validateSelectField(value) {
-                    const validOptions = [ 'true', 'false' ];
+                    const validOptions = [ 'true', 'false', 'Activo', 'Inactivo' ];
                     return validOptions.includes(value);
                 }
     
@@ -1212,12 +1281,12 @@ class ProjectsController {
                     const otherOtNumbers = flattenedArray.map(ot => ot.otNumber);
     
                     if (otherOtNumbers.includes(otNumberInput)) {
-                        const err = new Error (`Ya existe una OT#${otNumberInput} en esta OCI o Numero de OT inválido!`)
+                        const err = new Error (`Ya existe una OT#${otNumberInput} en esta OCI o Número de OT inválido!`)
                         err.statusCode = 400
                         return next(err);
                     }
                 }
-    
+    console.log('req.body: ', req.body)
                 const opNumber = parseInt(req.body.numeroOp),
                     statusOt = req.body.statusOtForm,
                     otDescription = req.body.descriptionOt,
@@ -1256,17 +1325,32 @@ class ProjectsController {
     
                 const csrfToken = csrfTokens.create(req.csrfSecret);
                 setTimeout(() => {
-                    res.render('projectSelectedDetail', {
-                        proyecto,
-                        username,
-                        userInfo,
-                        userCart,
-                        ordenes,
-                        expires,
-                        cliente,
-                        data,
-                        csrfToken
-                    })
+                    if (proyecto[0].uNegocio === 'matrices') {
+                        res.render('projectSelectedDetail', {
+                            proyecto,
+                            username,
+                            userInfo,
+                            userCart,
+                            ordenes,
+                            expires,
+                            cliente,
+                            data,
+                            csrfToken
+                        })
+
+                    } else {
+                        return res.render('projectLineasSelectedDetail', {
+                            proyecto,
+                            username,
+                            userInfo,
+                            userCart,
+                            ordenes,
+                            expires,
+                            cliente,
+                            data,
+                            csrfToken
+                        })
+                    }
                 }, 400)
     
             } catch (err) {
@@ -1385,7 +1469,8 @@ class ProjectsController {
     
                 const csrfToken = csrfTokens.create(req.csrfSecret);
                 setTimeout(() => {
-                    return res.render('projectSelectedDetail', {
+                    if (proyecto[0].uNegocio === 'matrices') {
+                        return res.render('projectSelectedDetail', {
                             username,
                             userInfo,
                             userCart,
@@ -1395,7 +1480,21 @@ class ProjectsController {
                             proyecto,
                             data,
                             csrfToken
-                    })
+                        })
+
+                    } else {
+                        return res.render('projectLineasSelectedDetail', {
+                            proyecto,
+                            username,
+                            userInfo,
+                            userCart,
+                            ordenes,
+                            expires,
+                            cliente,
+                            data,
+                            csrfToken
+                        })
+                    }
                 }, 400)
     
             } catch (err) {
@@ -1541,19 +1640,20 @@ class ProjectsController {
             
             data.slide = 0
             const csrfToken = csrfTokens.create(req.csrfSecret);
+
             setTimeout(() => {
                 return res.render('projectSelectedDetail', {
-                    username,
-                    userInfo,
-                    userCart,
-                    ordenes,
-                    expires,
-                    cliente,
-                    proyecto,
-                    data,
-                    csrfToken
-                })
-            }, 500)
+                        username,
+                        userInfo,
+                        userCart,
+                        ordenes,
+                        expires,
+                        cliente,
+                        proyecto,
+                        data,
+                        csrfToken
+                    })
+            }, 400)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -1649,7 +1749,7 @@ class ProjectsController {
                     data,
                     csrfToken
                 })
-            }, 500)
+            }, 400)
 
         } catch (err) {
             catchError500(err, req, res, next)
@@ -1744,14 +1844,14 @@ class ProjectsController {
             data.slide = 2
             const csrfToken = csrfTokens.create(req.csrfSecret);
             setTimeout(() => {
-                res.render('projectSelectedDetail', {
+                return res.render('projectLineasSelectedDetail', {
+                    proyecto,
                     username,
                     userInfo,
                     userCart,
                     ordenes,
                     expires,
                     cliente,
-                    proyecto,
                     data,
                     csrfToken
                 })

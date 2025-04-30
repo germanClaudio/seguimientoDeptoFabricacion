@@ -319,11 +319,11 @@ class ClientesDaoMongoDB extends ContenedorMongoDB {
                         { new: true }
                     )
 
-                    console.log('updatedClient-Dao: ', updatedClient)
+                    // console.log('updatedClient-Dao: ', updatedClient)
                     
                     if(updatedClient.acknowledged) {
                         const itemUpdated = await Clientes.findById({ _id: id })
-                        console.log('itemUpdated-Dao: ', itemUpdated)
+                        // console.log('itemUpdated-Dao: ', itemUpdated)
                         return itemUpdated
 
                     } else {

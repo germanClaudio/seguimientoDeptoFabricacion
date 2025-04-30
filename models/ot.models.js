@@ -4,6 +4,7 @@ const creatorModels = require('./creator.models.js')
 const modificatorModels = require('./modificator.models.js')
 
 const ingeneiriaMatricesModels = require('./ingenieriaMatrices.models.js')
+const ingeneiriaLineasModels = require('./ingenieriaLineas.models.js')
 const programacionModels = require('./programas.models.js')
 const ajusteModels = require('./ajustes.models.js')
 
@@ -11,6 +12,11 @@ const ajusteModels = require('./ajustes.models.js')
 let otProjectSchema = new Schema({
     otId: {
         type: mongoose.Schema.Types.ObjectId,
+    },
+    otType: { 
+        type: String,
+        maxlength: 15,
+        default: 'matrices'
     },
     otNumber: { 
         type: Number,
@@ -57,7 +63,12 @@ let otProjectSchema = new Schema({
     otSymetrico:{
         type: Number,
         maxlength: 5,
-        default: 1
+        default: 0
+    },
+    otUnidad:{
+        type: Number,
+        maxlength: 5,
+        default: null
     },
     otFuncion:{
         type: String,
@@ -70,15 +81,18 @@ let otProjectSchema = new Schema({
         default: 'No definida'
     },
     otInformation: [ingeneiriaMatricesModels.otInformationSchema],
+    otInformationLineas: [ingeneiriaLineasModels.otInformationLineasSchema],
     otDetalles: [programacionModels.ProgramacionSchema],
     otAjuste: [ajusteModels.AjusteSchema],
     creator: [creatorModels],
     timestamp: {
         type: Date,
+        default: Date.now
     },
     modificator: [modificatorModels],
     modifiedOn: {
         type: Date,
+        default: null,
     },
     visible: {
         type: Boolean,

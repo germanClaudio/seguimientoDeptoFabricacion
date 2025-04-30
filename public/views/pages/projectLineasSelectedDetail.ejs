@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head/head'); %>
+</head>
+
+<body>
+    <header>
+        <% if (userInfo.admin) { %>
+            <%- include('../partials/header/header'); %>
+        <% } else { %>
+            <%- include('../partials/header/headerToolShop'); %>
+        <% } %>
+    </header>
+    
+    <div class="container" style="padding-top: 70px;"></div>
+    <br>
+    <div class="collapse mt-5 mx-auto" id="collapseExample">
+        <%- include('../partials/forms/formularioNewOtLineas', { k: data.k, m: data.m, j: data.j }); %>
+    </div>
+            
+    <div class="d-block m-auto my-1 text-center">
+        <%- include('../partials/btnHeaderTop/btnProjectLineasSelectedDetail'); %>
+    </div>
+
+    <%- include('../partials/sections/sectionProjectNameTitle'); %>
+    
+    <%- include('../partials/data/dataProjectLineasCard', { k: data.k, m: data.m, j: data.j, slide: data.slide}); %>
+    <br>
+    <footer>
+        <%- include('../partials/footer/footer'); %>
+    </footer>
+
+    <!--    scripts     -->
+    <script type="text/javascript" src="/js/proyectos/projectLineasInfo.js"></script>
+    <%  if (proyecto[0].project[0].levelProject == 'ganado') { %>
+        <!-- <script type="text/javascript" src="/js/ingenieria/projectInfoR14.js"></script>
+        <script type="text/javascript" src="/js/ingenieria/projectInfoProceso3d.js"></script>
+        <script type="text/javascript" src="/js/ingenieria/projectInfoDisenoPrimera.js"></script>
+        <script type="text/javascript" src="/js/ingenieria/projectInfoDisenoSegunda.js"></script>
+        <script type="text/javascript" src="/js/ingenieria/projectInfo80.js"></script>
+        <script type="text/javascript" src="/js/ingenieria/projectInfo100.js"></script> -->
+    <% } %>
+
+</body>
+
+</html>

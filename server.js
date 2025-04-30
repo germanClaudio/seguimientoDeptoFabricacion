@@ -26,7 +26,8 @@ const routerUsers = require('./Routes/usuarios.route.js'),
     routerConsumibles = require('./Routes/consumibles.route.js'),
     routerSuppliers = require('./Routes/proveedores.route.js'),
     routerCarts = require('./Routes/carts.route.js'),
-    routerOrders = require('./Routes/orders.route.js')
+    routerOrders = require('./Routes/orders.route.js'),
+    routerLineas = require('./Routes/lineas.route.js')
 
 
 const { infoRouter } = require('./Routes/info.routes.js'),
@@ -131,6 +132,7 @@ const initServer = () => {
     app.use('/api/proveedores', routerSuppliers)
     app.use('/api/carts', routerCarts)
     app.use('/api/ordenes', routerOrders)
+    app.use('/api/lineas', routerLineas)
     ///////////////////////////////////////////////////
 
 

@@ -102,24 +102,25 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
         }
     }
 
-    // Select one project by project Id ----------------
+    // Select one project by project Id ---------------- ---errorrrrr
     async selectProjectByProjectId(id) {
-        if (id) {
-            try {
-                const project = await Proyectos.find({ 'project.0._id': id })
-                return project
-
-            } catch (error) {
-                console.error("Error MongoDB getProjectsByProjectId: ", error)
-            }
-
-        } else {
+        console.log('id---> ', id)
+        if (!id) {
             try {
                 const projects = await Proyectos.find()
                 return projects
 
             } catch (error) {
                 console.error("Error MongoDB getOneProjectById: ", error)
+            }
+
+        } else {
+            try {
+                const project = await Proyectos.find({ 'project.0._id': id })
+                return project
+
+            } catch (error) {
+                console.error("Error MongoDB in getProjectsByProjectId (selectProjectByProjectId): ", error)
             }
         }
     }
@@ -260,7 +261,7 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
 
                     let infoOtModificator = {
                         [`project.0.oci.${ociKNumber}.modificator`]: arrayOtAddedToOci[0].modificator,
-                        [`project.0.oci.${ociKNumber}.modifiedOn`]: ""
+                        [`project.0.oci.${ociKNumber}.modifiedOn`]: new Date()
                     }
 
                     let otAddedToOci
@@ -2760,9 +2761,9 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
     // Update Status Ot by Project Id
     async updateStatusOt(id, project, statusOt, ociKNumber, otKNumber, userModificator) {
         let booleanStatus
-        statusOt==='Activo' ? booleanStatus=true : booleanStatus=false
-        const ociNumberK = parseInt(ociKNumber)
-        const otNumberK = parseInt(otKNumber)
+        statusOt==='Activo' ? booleanStatus=Boolean(true) : booleanStatus=Boolean(false)
+        const ociNumberK = parseInt(ociKNumber),
+            otNumberK = parseInt(otKNumber)
         
         if (id && project) {
             try {
@@ -2774,11 +2775,11 @@ class ProyectosDaoMongoDB extends ContenedorMongoDB {
                         { _id: itemMongoDB._id },
                         {
                             $set: {
-                                [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.otStatus`]: !booleanStatus,
-                                [`project.0.oci.${ociNumberK}.modificator`]: userModificator,
-                                [`project.0.oci.${ociNumberK}.modifiedOn`]: new Date(), 
+                                [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.otStatus`]: booleanStatus,
                                 [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modificator`]: userModificator,
-                                [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modifiedOn`]: new Date()
+                                [`project.0.oci.${ociNumberK}.otProject.${otNumberK}.modifiedOn`]: new Date(),
+                                [`project.0.oci.${ociNumberK}.modificator`]: userModificator,
+                                [`project.0.oci.${ociNumberK}.modifiedOn`]: new Date(),
                             }
                         },
                         { new: true }

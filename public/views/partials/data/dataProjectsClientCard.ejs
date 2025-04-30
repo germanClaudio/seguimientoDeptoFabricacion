@@ -19,6 +19,7 @@
                     <p class="my-2 card-text my-2">Proyectos Matrices:
                         <small id="projectQuantity" class="badge rounded-pill bg-dark text-white"><%= cliente.project %></small>
                     </p>
+                    <!-- to be fixed -->
                     <% if (cliente.project > 0) { %>
                         <button id="btnHiddeProyectosMatrices"
                             class="btn btn-secondary shadow" title="Ocultar Proyectos Matrices"
@@ -37,6 +38,7 @@
                             <i class="fa-solid fa-eye-slash"></i>
                         </button>
                     <% } %>
+                    <!-- to be fixed -->
                 </div>
         </div>
         <div class="col-10 mx-auto">
@@ -100,9 +102,11 @@
                                                                 </div>
                                                                 
                                                                 <div class="container px-1">
-                                                                    <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
+                                                                    <% let hrefProject = "/api/proyectos/selectProject/" 
+                                                                    if (userInfo.admin || userInfo.area === 'ingenieria') { %>
                                                                         <div class="d-flex justify-content-center my-4">
-                                                                            <a type="button" title="Ver Proyecto" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeProyectDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
+                                                                            <% if (arrVisibleProjects[m].project[j].uNegocioProject == "lineas") hrefProject = "/api/proyectos/selectProjectLineas/" %>
+                                                                            <a type="button" title="Ver Proyecto" href='<%= hrefProject %><%= arrVisibleProjects[m].project[j].id %>' id="btnSeeProyectDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
                                                                             <button type="button" title="Agregar Nueva OCI" id="btnAddNewOciToProject<%= m %>" name="btnAddNewOciToProject" class="btn btn-success rounded-circle mx-2 border border-dark border-1 shadow" value="<%= arrVisibleProjects[m].project[j].id %>"><i class="fa-solid fa-plus-circle"></i></button>
                                                                             <button type="button" title="Editar proyecto <%= proyectos[m].project[j].projectDescription %>" id="btnUpdateProject<%= m %>_<%= j %>" name="btnUpdateProject" class="btn btn-primary rounded-circle ms-2 border border-dark border-1 shadow" value="<%= arrVisibleProjects[m].project[j].id %>"><i class="fa-solid fa-pencil"></i></button>
                                                                         </div>
@@ -111,9 +115,10 @@
                                                                             <button type="button" title="Cambiar Estado Proyecto <%= arrVisibleProjects[m].project[j].projectDescription %>" id="btnChangeStatusProyect<%= m %>_<%= j %>" class="btn btn-dark rounded-circle mx-2 border border-dark border-1 shadow"><i class="fa-solid fa-power-off"></i></button>
                                                                             <button type="button" title="Eliminar Proyecto <%= arrVisibleProjects[m].project[j].projectDescription %>" id="btnDeleteProject<%= m %>_<%= j %>" class="btn btn-danger rounded-circle ms-2 border border-dark border-1 shadow"><i class="fa-regular fa-trash-can fa-lg"></i></button>
                                                                         </div>
-                                                                    <% } else { %>
+                                                                    <% } else { 
+                                                                        if (arrVisibleProjects[m].project[j].uNegocioProject == "lineas") hrefProject = "/api/proyectos/selectProjectLineas/" %>
                                                                         <div class="d-flex justify-content-center my-4">
-                                                                            <a type="button" title="Ver Proyecto" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeProyectDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
+                                                                            <a type="button" title="Ver Proyecto" href='<%= hrefProject %><%= arrVisibleProjects[m].project[j].id %>' id="btnSeeProyectDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
                                                                             <button type="button" title="Agregar Nueva OCI" id="btnAddNewOciToProject<%= m %>" name="btnAddNewOciToProject" class="btn btn-success rounded-circle mx-2 border border-dark border-1 shadow" value="<%= arrVisibleProjects[m].project[j].id %>"><i class="fa-solid fa-plus-circle"></i></button>
                                                                         </div>
                                                                     <% } %>
@@ -167,18 +172,21 @@
                                                                                         <div class="my-3">
                                                                                             <% if (arrVisibleProjects[m].project[j].statusProject) { %>
                                                                                                 <div class="d-flex justify-content-center">
-                                                                                                    <% if (userInfo.admin || userInfo.area === 'ingenieria') { %>
-                                                                                                        <a type="button" title="Ver OCI#<%= arrVisibleOci[k].ociNumber %>" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeOciDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
-                                                                                                        <button type="button" title="Editar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnUpdateOci<%= ociCount %>_<%= k %>" name="btnUpdateOci" class="btn btn-primary rounded-circle mx-2 border border-dark border-1 shadow" value="<%= j%>"><i class="fa-solid fa-pencil"></i></button>
-                                                                                                        <button type="button" title="Cambiar Estado OCI#<%= arrVisibleOci[k].ociNumber %>" id="<%= ociCount %>_<%= k %>" class="btn btn-dark rounded-circle mx-2 border border-dark border-1 shadow"><i class="fa-solid fa-power-off"></i></button>
-                                                                                                        <% if (ociCount===1) { %>
-                                                                                                            <button type="button" class="btn btn-danger rounded-circle ms-2 border shadow disabled"><i class="fa-solid fa-trash"></i></button>
-                                                                                                        <% } else { %>
-                                                                                                            <button type="button" title="Eliminar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnDeleteOci<%= ociCount %>_<%= k %>" class="btn btn-danger rounded-circle ms-2 border border-dark border-1 shadow"><i class="fa-solid fa-trash"></i></button>
-                                                                                                        <% } 
+                                                                                                    <% let hrefProject = "/api/proyectos/selectProject/" 
+                                                                                                    if (userInfo.admin || userInfo.area === 'ingenieria') {
+                                                                                                        if (arrVisibleProjects[m].project[j].uNegocioProject == "lineas") hrefProject = "/api/proyectos/selectProjectLineas/" %>
+                                                                                                            <a type="button" title="Ver OCI#<%= arrVisibleOci[k].ociNumber %>" href='<%= hrefProject %><%= arrVisibleProjects[m].project[j].id %>' id="btnSeeOciDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
+                                                                                                            <button type="button" title="Editar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnUpdateOci<%= ociCount %>_<%= k %>" name="btnUpdateOci" class="btn btn-primary rounded-circle mx-2 border border-dark border-1 shadow" value="<%= j%>"><i class="fa-solid fa-pencil"></i></button>
+                                                                                                            <button type="button" title="Cambiar Estado OCI#<%= arrVisibleOci[k].ociNumber %>" id="<%= ociCount %>_<%= k %>" class="btn btn-dark rounded-circle mx-2 border border-dark border-1 shadow"><i class="fa-solid fa-power-off"></i></button>
+                                                                                                            <% if (ociCount===1) { %>
+                                                                                                                <button type="button" class="btn btn-danger rounded-circle ms-2 border shadow disabled"><i class="fa-solid fa-trash"></i></button>
+                                                                                                            <% } else { %>
+                                                                                                                <button type="button" title="Eliminar OCI#<%= arrVisibleOci[k].ociNumber %>" id="btnDeleteOci<%= ociCount %>_<%= k %>" class="btn btn-danger rounded-circle ms-2 border border-dark border-1 shadow"><i class="fa-solid fa-trash"></i></button>
+                                                                                                            <% } 
 
                                                                                                     } else { %>
-                                                                                                        <a type="button" title="Ver OCI#<%= arrVisibleOci[k].ociNumber %>" href="/api/proyectos/selectProject/<%= arrVisibleProjects[m].project[j].id %>" id="btnSeeOciDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
+                                                                                                        if (arrVisibleProjects[m].project[j].uNegocioProject == "lineas") hrefProject = "/api/proyectos/selectProjectLineas/" %>
+                                                                                                        <a type="button" title="Ver OCI#<%= arrVisibleOci[k].ociNumber %>" href='<%= hrefProject %><%= arrVisibleProjects[m].project[j].id %>' id="btnSeeOciDetails" class="btn btn-secondary rounded-circle me-2 border border-dark border-1 shadow"><i class="fa-solid fa-eye"></i></a>
                                                                                                     <% } %>
                                                                                                 </div>
                                                                                                 <form style="display: none" id="formChangeStatusOci<%= ociCount %>_<%= k %>" action="/api/proyectos/updateStatusOci/<%= arrVisibleProjects[m].project[j].id %>" method="post">
@@ -206,15 +214,26 @@
                                                                                                                 <button id="<%= arrVisibleOci[k].otProject[x].otNumber %>"
                                                                                                                     name="otNumberSpot" class="rounded-circle text-white mb-2"
                                                                                                                     style="--bs-btn-font-size: .20rem;
-                                                                                                                    background-color: #1d1da6; width: 30px; height: 30px;
-                                                                                                                    border-radius: 50%; border: 1px solid #272727;
-                                                                                                                    text-align: center; font-size: 10px; line-height: 25px;"
+                                                                                                                        width: 30px;
+                                                                                                                        height: 30px;
+                                                                                                                        border-radius: 50%;
+                                                                                                                        border: none;
+                                                                                                                        text-align: center; 
+                                                                                                                        font-size: 10px; 
+                                                                                                                        line-height: 25px;
+                                                                                                                        background: radial-gradient(circle at 30% 30%, #3a3aff, #1d1da6 70%, #0a0a4e);
+                                                                                                                        box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+                                                                                                                            inset -2px -2px 4px rgba(0, 0, 0, 0.5),
+                                                                                                                            0 2px 3px rgba(0, 0, 0, 0.6);
+                                                                                                                        cursor: pointer;
+                                                                                                                        transition: transform 0.2s;"
                                                                                                                     valueop="<%= arrVisibleOci[k].otProject[x].opNumber %>"
                                                                                                                     valuedes="<%= arrVisibleOci[k].otProject[x].opDescription %>"
                                                                                                                     valuedesig="<%= arrVisibleOci[k].otProject[x].otDesign %>"
                                                                                                                     valuesim="<%= arrVisibleOci[k].otProject[x].otSimulation %>"
-                                                                                                                    valuesup="<%= arrVisibleOci[k].otProject[x].otSupplier %>">
-                                                                                                                        
+                                                                                                                    valuesup="<%= arrVisibleOci[k].otProject[x].otSupplier %>"
+                                                                                                                    onmouseover="this.style.transform='scale(1.05)'"
+                                                                                                                    onmouseout="this.style.transform='scale(1)'">
                                                                                                                     <%= arrVisibleOci[k].otProject[x].otNumber %>
                                                                                                                 </button>
                                                                                                             </span>
@@ -224,14 +243,26 @@
                                                                                                                 <button id="<%= arrVisibleOci[k].otProject[x].otNumber %>"
                                                                                                                     name="otNumberSpot" class="rounded-circle text-white mb-2"
                                                                                                                     style="--bs-btn-font-size: .20rem;
-                                                                                                                    background-color: #a61d1d; width: 30px; height: 30px;
-                                                                                                                    border-radius: 50%; border: 1px solid #272727;
-                                                                                                                    text-align: center; font-size: 10px; line-height: 22px;"
+                                                                                                                        width: 30px;
+                                                                                                                        height: 30px;
+                                                                                                                        border-radius: 50%;
+                                                                                                                        border: none;
+                                                                                                                        text-align: center; 
+                                                                                                                        font-size: 10px; 
+                                                                                                                        line-height: 25px;
+                                                                                                                        background: radial-gradient(circle at 30% 30%, #ff3a3a, #a61d1d 70%, #4e0a0a);
+                                                                                                                        box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+                                                                                                                            inset -2px -2px 4px rgba(0, 0, 0, 0.5),
+                                                                                                                            0 2px 3px rgba(0, 0, 0, 0.6);
+                                                                                                                        cursor: pointer;
+                                                                                                                        transition: transform 0.2s;"
                                                                                                                     valueop="<%= arrVisibleOci[k].otProject[x].opNumber %>"
                                                                                                                     valuedes="<%= arrVisibleOci[k].otProject[x].opDescription %>"
                                                                                                                     valuedesig="<%= arrVisibleOci[k].otProject[x].otDesign %>"
                                                                                                                     valuesim="<%= arrVisibleOci[k].otProject[x].otSimulation %>"
-                                                                                                                    valuesup="<%= arrVisibleOci[k].otProject[x].otSupplier %>">
+                                                                                                                    valuesup="<%= arrVisibleOci[k].otProject[x].otSupplier %>"
+                                                                                                                    onmouseover="this.style.transform='scale(1.05)'"
+                                                                                                                    onmouseout="this.style.transform='scale(1)'">
                                                                                                                     <%= arrVisibleOci[k].otProject[x].otNumber %>
                                                                                                                 </button>
                                                                                                             </span>
@@ -254,14 +285,14 @@
                                                                                         formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
                                                                                         formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
 
-                                                                                        formattedDate === formattedDateModified ? formattedDateModified = '' : null
-                                                                                        %>
-                                                                                        <span>OCI creada por: <%= arrVisibleOci[k].creator[0].name %>, <%= arrVisibleOci[k].creator[0].lastName %> </span><br>
+                                                                                        formattedDate === formattedDateModified ? formattedDateModified = '' : null %>
+
+                                                                                        <span>OCI creada por: <%= arrVisibleOci[k].creator[0].name %> <%= arrVisibleOci[k].creator[0].lastName %> </span><br>
                                                                                         <span>Fecha: <%= formattedDate %> </span>
                                                                                     </div>
                                                                                     <div class="container mb-4">
                                                                                             <% if (arrVisibleOci[k].modificator[j]) { %>
-                                                                                                <span>OCI modif. por: <%= arrVisibleOci[k].modificator[j].name %>, <%= arrVisibleOci[k].modificator[j].lastName %> </span><br>
+                                                                                                <span>OCI modif. por: <%= arrVisibleOci[k].modificator[j].name %> <%= arrVisibleOci[k].modificator[j].lastName %> </span><br>
                                                                                                 <span>Fecha modif.: <%= formattedDateModified %> </span>
                                                                                             <% } else { %>
                                                                                                 <span>OCI modifi. por: </span><br>
@@ -303,16 +334,15 @@
                                                                     formattedDate = localDate.toISOString().replace('T', ' ').split('.')[0],
                                                                     formattedDateModified = localDateModified.toISOString().replace('T', ' ').split('.')[0];
 
-                                                                    formattedDate === formattedDateModified ? formattedDateModified = '' : null
-                                                                %>
+                                                                    formattedDate === formattedDateModified ? formattedDateModified = '' : null %>
 
                                                                     <div class="col my-auto px-1">
-                                                                        <ul>Proyecto creado por: <%= arrVisibleProjects[m].creator[j].name %>, <%= arrVisibleProjects[m].creator[j].lastName %> </ul>
+                                                                        <ul>Proyecto creado por: <%= arrVisibleProjects[m].creator[j].name %> <%= arrVisibleProjects[m].creator[j].lastName %> </ul>
                                                                         <ul>Fecha: <%= formattedDate %> </ul>
                                                                     </div>
                                                                     <div class="col my-auto px-1">
                                                                         <% if (proyectos[m].modificator[j]) { %>
-                                                                            <ul>Proyecto modificado por: <%= arrVisibleProjects[m].modificator[j].name %>, <%= arrVisibleProjects[m].modificator[j].lastName %> </ul>
+                                                                            <ul>Proyecto modificado por: <%= arrVisibleProjects[m].modificator[j].name %> <%= arrVisibleProjects[m].modificator[j].lastName %> </ul>
                                                                             <ul>Fecha modificación: <%= formattedDateModified %> </ul>
                                                                         <% } else { %>
                                                                             <ul>Proyecto Modificado por: </ul>
@@ -480,15 +510,26 @@
                                                                                                                     <button id="<%= arrVisibleOci[k].otProject[x].otNumber %>"
                                                                                                                         name="otNumberSpot" class="rounded-circle text-white mb-2"
                                                                                                                         style="--bs-btn-font-size: .20rem;
-                                                                                                                        background-color: #1d1da6; width: 30px; height: 30px;
-                                                                                                                        border-radius: 50%; border: 1px solid #272727;
-                                                                                                                        text-align: center; font-size: 10px; line-height: 25px;"
+                                                                                                                            width: 30px;
+                                                                                                                            height: 30px;
+                                                                                                                            border-radius: 50%;
+                                                                                                                            border: none;
+                                                                                                                            text-align: center; 
+                                                                                                                            font-size: 10px; 
+                                                                                                                            line-height: 25px;
+                                                                                                                            background: radial-gradient(circle at 30% 30%, #3a3aff, #1d1da6 70%, #0a0a4e);
+                                                                                                                            box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+                                                                                                                                inset -2px -2px 4px rgba(0, 0, 0, 0.5),
+                                                                                                                                0 2px 3px rgba(0, 0, 0, 0.6);
+                                                                                                                            cursor: pointer;
+                                                                                                                            transition: transform 0.2s;"
                                                                                                                         valueop="<%= arrVisibleOci[k].otProject[x].opNumber %>"
                                                                                                                         valuedes="<%= arrVisibleOci[k].otProject[x].opDescription %>"
                                                                                                                         valuedesig="<%= arrVisibleOci[k].otProject[x].otDesign %>"
                                                                                                                         valuesim="<%= arrVisibleOci[k].otProject[x].otSimulation %>"
-                                                                                                                        valuesup="<%= arrVisibleOci[k].otProject[x].otSupplier %>">
-                                                                                                                            
+                                                                                                                        valuesup="<%= arrVisibleOci[k].otProject[x].otSupplier %>"
+                                                                                                                        onmouseover="this.style.transform='scale(1.05)'"
+                                                                                                                        onmouseout="this.style.transform='scale(1)'">
                                                                                                                         <%= arrVisibleOci[k].otProject[x].otNumber %>
                                                                                                                     </button>
                                                                                                                 </span>
@@ -498,14 +539,26 @@
                                                                                                                     <button id="<%= arrVisibleOci[k].otProject[x].otNumber %>"
                                                                                                                         name="otNumberSpot" class="rounded-circle text-white mb-2"
                                                                                                                         style="--bs-btn-font-size: .20rem;
-                                                                                                                        background-color: #a61d1d; width: 30px; height: 30px;
-                                                                                                                        border-radius: 50%; border: 1px solid #272727;
-                                                                                                                        text-align: center; font-size: 10px; line-height: 22px;"
+                                                                                                                            width: 30px;
+                                                                                                                            height: 30px;
+                                                                                                                            border-radius: 50%;
+                                                                                                                            border: none;
+                                                                                                                            text-align: center; 
+                                                                                                                            font-size: 10px; 
+                                                                                                                            line-height: 25px;
+                                                                                                                            background: radial-gradient(circle at 30% 30%, #ff3a3a, #a61d1d 70%, #4e0a0a);
+                                                                                                                            box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+                                                                                                                                inset -2px -2px 4px rgba(0, 0, 0, 0.5),
+                                                                                                                                0 2px 3px rgba(0, 0, 0, 0.6);
+                                                                                                                            cursor: pointer;
+                                                                                                                            transition: transform 0.2s;"
                                                                                                                         valueop="<%= arrVisibleOci[k].otProject[x].opNumber %>"
                                                                                                                         valuedes="<%= arrVisibleOci[k].otProject[x].opDescription %>"
                                                                                                                         valuedesig="<%= arrVisibleOci[k].otProject[x].otDesign %>"
                                                                                                                         valuesim="<%= arrVisibleOci[k].otProject[x].otSimulation %>"
-                                                                                                                        valuesup="<%= arrVisibleOci[k].otProject[x].otSupplier %>">
+                                                                                                                        valuesup="<%= arrVisibleOci[k].otProject[x].otSupplier %>"
+                                                                                                                        onmouseover="this.style.transform='scale(1.05)'"
+                                                                                                                        onmouseout="this.style.transform='scale(1)'">
                                                                                                                         <%= arrVisibleOci[k].otProject[x].otNumber %>
                                                                                                                     </button>
                                                                                                                 </span>
@@ -530,12 +583,12 @@
 
                                                                                             formattedDate === formattedDateModified ? formattedDateModified = '' : null %>
 
-                                                                                            <span>OCI creada por: <%= arrVisibleOci[k].creator[0].name %>, <%= arrVisibleOci[k].creator[0].lastName %> </span><br>
+                                                                                            <span>OCI creada por: <%= arrVisibleOci[k].creator[0].name %> <%= arrVisibleOci[k].creator[0].lastName %> </span><br>
                                                                                             <span>Fecha: <%= formattedDate %> </span>
                                                                                         </div>
                                                                                         <div class="container mb-4">
                                                                                                 <% if (arrVisibleOci[k].modificator[j]) { %>
-                                                                                                    <span>OCI modif. por: <%= arrVisibleOci[k].modificator[j].name %>, <%= arrVisibleOci[k].modificator[j].lastName %> </span><br>
+                                                                                                    <span>OCI modif. por: <%= arrVisibleOci[k].modificator[j].name %> <%= arrVisibleOci[k].modificator[j].lastName %> </span><br>
                                                                                                     <span>Fecha modif.: <%= formattedDateModified %> </span>
                                                                                                 <% } else { %>
                                                                                                     <span>OCI modifi. por: </span><br>
@@ -579,12 +632,12 @@
                                                                             formattedDate === formattedDateModified ? formattedDateModified = '' : null %>
 
                                                                         <div class="col my-auto px-1">
-                                                                            <ul>Proyecto creado por: <%= arrVisibleProjects[m].creator[j].name %>, <%= arrVisibleProjects[m].creator[j].lastName %> </ul>
+                                                                            <ul>Proyecto creado por: <%= arrVisibleProjects[m].creator[j].name %> <%= arrVisibleProjects[m].creator[j].lastName %> </ul>
                                                                             <ul>Fecha: <%= formattedDate %> </ul>
                                                                         </div>
                                                                         <div class="col my-auto px-1">
                                                                             <% if (proyectos[m].modificator[j]) { %>
-                                                                                <ul>Proyecto modificado por: <%= arrVisibleProjects[m].modificator[j].name %>, <%= arrVisibleProjects[m].modificator[j].lastName %> </ul>
+                                                                                <ul>Proyecto modificado por: <%= arrVisibleProjects[m].modificator[j].name %> <%= arrVisibleProjects[m].modificator[j].lastName %> </ul>
                                                                                 <ul>Fecha modificación: <%= formattedDateModified %> </ul>
                                                                             <% } else { %>
                                                                                 <ul>Proyecto Modificado por: </ul>

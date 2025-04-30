@@ -3,33 +3,32 @@
             pathToClient = proyecto[0].client[0] %>
         <div class="col-1 mx-auto my-2">
             <div class="top-0 start-100">
-                <img src="<%= pathToClient.logo %>" class="img-fluid rounded mb-2"
-                    alt="Logo Cliente" width="85px">
+                <img src="<%= pathToClient.logo %>" class="img-fluid rounded mb-2" alt="Logo Cliente" width="85px">
                 <div id="projectIdHidden" value="<%= pathToProject.id %>" style="display: none;"></div>
+                <div id="projectUNegocioHidden" value="<%= pathToProject.uNegocioProject %>" style="display: none;"></div>
             </div>
-            <h6 class="card-title">
-                <%= pathToProject.projectName %>
-            </h6>
+            <h6 class="card-title"><%= pathToProject.projectName %></h6>
             <br>
             <a href="/api/clientes/<%= pathToClient.id %>">
-                <img src="<%= pathToProject.imageProject %>" class="img-fluid rounded mb-2"
-                    alt="Imagen Proyecto" width="120px">
+                <img src="<%= pathToProject.imageProject %>" class="img-fluid rounded mb-2" alt="Imagen Proyecto" width="120px">
             </a>
             <p class="card-text">
                 <small>
-                    <strong class="mx-2">
-                        <%= pathToProject.projectDescription %>
-                    </strong>
+                    <strong class="mx-2"><%= pathToProject.projectDescription %></strong> 
                 </small>
             </p>
+            <% let iconColor = '00', ociCountColor = 'dark';
+            if (pathToProject.uNegocioProject == 'lineas') iconColor = 'ff', ociCountColor = 'primary' %>
+            <i class="fa-solid fa-rocket" style="color: #0000<%= iconColor %>;"></i>
+            <br>
             <% if (pathToProject.levelProject == 'ganado') { %>
-                <span class="badge rounded-pill bg-success text-white">Ganado</span>
+                <span class="badge rounded-pill bg-success text-white my-2">Ganado</span>
 
             <% } else if (pathToProject.levelProject == 'paraCotizar') { %>
-                <span class="badge rounded-pill bg-secondary text-warning">Para Cotizar</span>
+                <span class="badge rounded-pill bg-secondary text-warning my-2">Para Cotizar</span>
 
             <% } else { %>
-                <span class="badge rounded-pill bg-danger text-white">A riesgo</span>
+                <span class="badge rounded-pill bg-danger text-white my-2">A riesgo</span>
             <% } %>
                 <p class="card-text my-3">
                     <small class="text-muted">
@@ -57,7 +56,7 @@
                             for ( let k=0; pathToProject.oci.length> k; k++) {
                                 if (pathToProject.oci[k].visible) ociTotalCount++
                             } %>
-                    <span id="ociTotalQty" class="badge rounded-pill bg-primary text-white mx-auto">
+                    <span id="ociTotalQty" class="badge rounded-pill bg-<%= ociCountColor %> text-light mx-auto">
                         <%= ociTotalCount %>
                     </span>
                 </p>

@@ -14,8 +14,11 @@ routerProyectos.get('/', checkAuthentication, projects.getAllProjects)
 // -------------------  Seleccionar Proyecto por Cliente Id ------------------ 
 routerProyectos.get('/:id', checkAuthentication, projects.getProjectsByClientId)
 
-// -------------------  Ver detalles del Proyecto por Id del proyecto ------------------ 
+// -------------------  Ver detalles del Proyecto Matrices por Id del proyecto ------------------ 
 routerProyectos.get('/selectProject/:id', checkAuthentication, projects.selectProjectById)
+
+// -------------------  Ver detalles del Proyecto Lineas por Id del proyecto ------------------ 
+routerProyectos.get('/selectProjectLineas/:id', checkAuthentication, projects.selectProjectById)
 
 // -------------------  Ver listado de OCI completo ------------------ 
 routerProyectos.get('/oci-list/all', checkAuthentication, projects.getAllOciProjects)
